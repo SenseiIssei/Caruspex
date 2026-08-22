@@ -41,6 +41,12 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Checkliste der Voraussetzungen, damit das Steuergerät nicht abbricht
 ![Drosselklappe](docs/screenshot-drosselklappe.png)
 
+**Alle Steuergeraete durchsuchen (KKL)**
+- Klappert der Reihe nach jedes bekannte Steuergeraet ab
+- Zeigt, welche das Fahrzeug hat, welche fehlen und wo etwas im Speicher steht
+- Fehler mit Klartext, aufklappbar je Steuergeraet
+- Prüfbericht als Textdatei zum Ausdrucken
+
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
 - Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit

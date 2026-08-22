@@ -13,6 +13,7 @@
 #include <QThread>
 #include <QVector>
 
+#include <atomic>
 #include <memory>
 
 #include "core/Elm327.h"
@@ -38,6 +39,16 @@ struct LiveRow {
     QString text;   // gesetzt bei Statuswerten
     double value = 0.0;
     bool warn = false;
+};
+
+// Ergebnis fuer ein Steuergeraet beim Durchsuchen des ganzen Fahrzeugs.
+struct EcuScanRow {
+    int address = 0;
+    QString name;
+    bool present = false;
+    QString identification;
+    QVector<FaultRow> faults;
+    QString note;
 };
 
 struct StatusRow {
@@ -71,6 +82,12 @@ public slots:
     void closeKkl();
     void startBasicSetting(int group);
     void stopBasicSetting();
+    // Alle bekannten Steuergeraete der Reihe nach anfunken.
+    void scanAllEcus(const QString& device);
+
+public:
+    // Bricht einen laufenden Suchlauf ab. Aus jedem Thread erlaubt.
+    void cancelScan() { cancelScan_ = true; }
 
 signals:
     void logLine(const QString& line);
@@ -88,6 +105,10 @@ signals:
     void kklConnected(bool connected, const QString& identification);
     void kklMessage(const QString& message, bool isError);
     void basicSettingValues(const QVector<caruspex::LiveRow>& values);
+    void scanStarted(int total);
+    void scanProgress(const QString& ecuName, int index, int total);
+    void scanEcuResult(const caruspex::EcuScanRow& row);
+    void scanFinished(int present, int withFaults, bool cancelled);
 
 private slots:
     void pollTick();
@@ -101,6 +122,10 @@ private:
     QTimer* pollTimer_ = nullptr;
     QVector<int> pollPids_;
     int pollIndex_ = 0;
+
+    // Wird aus dem Oberflaechen-Thread gesetzt, deshalb atomar. Der Suchlauf
+    // blockiert die Ereignisschleife des Workers, ein Signal kaeme nicht durch.
+    std::atomic<bool> cancelScan_{false};
 
     KLineStream kline_;
     std::unique_ptr<Kwp1281> kwp_;
@@ -117,6 +142,8 @@ public:
     ~Session() override;
 
     Worker* worker() const { return worker_; }
+    // Darf aus dem Oberflaechen-Thread aufgerufen werden.
+    void cancelScan();
     bool isConnected() const { return connected_; }
 
 signals:
@@ -133,6 +160,7 @@ signals:
     void closeKklRequested();
     void startBasicSettingRequested(int group);
     void stopBasicSettingRequested();
+    void scanAllRequested(const QString& device);
 
 private:
     QThread thread_;
@@ -145,3 +173,4 @@ private:
 Q_DECLARE_METATYPE(caruspex::FaultRow)
 Q_DECLARE_METATYPE(caruspex::LiveRow)
 Q_DECLARE_METATYPE(caruspex::StatusRow)
+Q_DECLARE_METATYPE(caruspex::EcuScanRow)

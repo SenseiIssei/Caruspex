@@ -20,6 +20,7 @@
 #include "app/pages/FaultsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
+#include "app/pages/ScanPage.h"
 #include "app/pages/StatsPage.h"
 #include "app/pages/ThrottlePage.h"
 #include "app/pages/ToolsPage.h"
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     tools_ = new ToolsPage;
     throttle_ = new ThrottlePage;
     stats_ = new StatsPage;
+    scan_ = new ScanPage;
     lexicon_ = new LexiconPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
@@ -52,6 +54,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     addNavigationEntry(tr("Pruefen und Werkzeuge"), tools_);
     addNavigationEntry(tr("Drosselklappe"), throttle_);
     addNavigationEntry(tr("Statistik"), stats_);
+    addNavigationEntry(tr("Alle Steuergeraete"), scan_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     layout->addWidget(pages_, 1);
     setCentralWidget(central);
@@ -77,6 +80,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::rawReply, tools_, &ToolsPage::onRawReply);
     connect(worker, &Worker::liveValue, throttle_, &ThrottlePage::onLiveValue);
     connect(worker, &Worker::liveValue, stats_, &StatsPage::onLiveValue);
+    connect(worker, &Worker::scanStarted, scan_, &ScanPage::onScanStarted);
+    connect(worker, &Worker::scanProgress, scan_, &ScanPage::onScanProgress);
+    connect(worker, &Worker::scanEcuResult, scan_, &ScanPage::onEcuResult);
+    connect(worker, &Worker::scanFinished, scan_, &ScanPage::onScanFinished);
     connect(worker, &Worker::kklConnected, throttle_, &ThrottlePage::setKklConnected);
     connect(worker, &Worker::kklMessage, throttle_, &ThrottlePage::onKklMessage);
     connect(worker, &Worker::basicSettingValues, throttle_,
@@ -107,6 +114,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             &Session::startBasicSettingRequested);
     connect(throttle_, &ThrottlePage::basicSettingStopRequested, &session_,
             &Session::stopBasicSettingRequested);
+    connect(scan_, &ScanPage::scanRequested, &session_, &Session::scanAllRequested);
+    connect(scan_, &ScanPage::cancelRequested, &session_, &Session::cancelScan);
 
     refreshPorts();
     onBrandChanged();

@@ -84,6 +84,8 @@ if(CARUSPEX_GUI)
         src/app/pages/ThrottlePage.h
         src/app/pages/StatsPage.cpp
         src/app/pages/StatsPage.h
+        src/app/pages/ScanPage.cpp
+        src/app/pages/ScanPage.h
         src/app/pages/LexiconPage.cpp
         src/app/pages/LexiconPage.h
     )

@@ -311,6 +311,80 @@ void Worker::basicSettingTick() {
     emit basicSettingValues(rows);
 }
 
+// Sucht der Reihe nach alle bekannten Steuergeraete. Jeder Versuch braucht
+// wegen der 5-Baud-Weckadresse ein paar Sekunden, bei nicht vorhandenen
+// Steuergeraeten kommt die Wartezeit auf die Antwort dazu.
+void Worker::scanAllEcus(const QString& device) {
+    closeKkl();
+    cancelScan_ = false;
+
+    std::string error;
+    if (!kline_.open(device.toStdString(), 9600, error)) {
+        emit kklMessage(QString::fromStdString(error), true);
+        emit scanFinished(0, 0, false);
+        return;
+    }
+
+    const std::vector<Ecu>& list = knownEcus();
+    const int total = static_cast<int>(list.size());
+    emit scanStarted(total);
+    emit busy(true);
+
+    int present = 0;
+    int withFaults = 0;
+    int index = 0;
+
+    for (Ecu ecu : list) {
+        if (cancelScan_) break;
+        ++index;
+        EcuScanRow row;
+        row.address = static_cast<int>(ecu);
+        row.name = QString::fromStdString(ecuName(ecu));
+        emit scanProgress(row.name, index, total);
+
+        Kwp1281 probe(kline_);
+        std::string localError;
+        if (!probe.connect(ecu, localError)) {
+            row.present = false;
+            row.note = QObject::tr("meldet sich nicht, vermutlich nicht verbaut");
+            emit scanEcuResult(row);
+            continue;
+        }
+
+        row.present = true;
+        ++present;
+        QStringList identification;
+        for (const std::string& line : probe.identification()) {
+            identification << QString::fromStdString(line).trimmed();
+        }
+        row.identification = identification.join(QStringLiteral("  |  "));
+
+        std::vector<Kwp1281Fault> faults;
+        if (probe.readFaults(faults, localError)) {
+            for (const Kwp1281Fault& f : faults) {
+                FaultRow fault;
+                fault.code = QStringLiteral("%1").arg(f.code, 5, 10, QChar('0'));
+                fault.kind = f.sporadic ? QObject::tr("sporadisch")
+                                        : QObject::tr("gespeichert");
+                fault.text = QString::fromStdString(f.text);
+                row.faults.push_back(fault);
+            }
+            if (!row.faults.isEmpty()) ++withFaults;
+            row.note = row.faults.isEmpty()
+                           ? QObject::tr("kein Eintrag")
+                           : QObject::tr("%1 Eintraege").arg(row.faults.size());
+        } else {
+            row.note = QString::fromStdString(localError);
+        }
+        probe.disconnect();
+        emit scanEcuResult(row);
+    }
+
+    kline_.close();
+    emit busy(false);
+    emit scanFinished(present, withFaults, cancelScan_.load());
+}
+
 // --- Session ----------------------------------------------------------------
 
 Session::Session(QObject* parent) : QObject(parent) {
@@ -319,6 +393,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<LiveRow>("caruspex::LiveRow");
     qRegisterMetaType<QVector<LiveRow>>("QVector<caruspex::LiveRow>");
     qRegisterMetaType<StatusRow>("caruspex::StatusRow");
+    qRegisterMetaType<EcuScanRow>("caruspex::EcuScanRow");
     qRegisterMetaType<QVector<int>>("QVector<int>");
 
     worker_ = new Worker();
@@ -338,6 +413,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::closeKklRequested, worker_, &Worker::closeKkl);
     connect(this, &Session::startBasicSettingRequested, worker_, &Worker::startBasicSetting);
     connect(this, &Session::stopBasicSettingRequested, worker_, &Worker::stopBasicSetting);
+    connect(this, &Session::scanAllRequested, worker_, &Worker::scanAllEcus);
 
     connect(worker_, &Worker::connected, this,
             [this](const QString&, const QString&, const QString&) { connected_ = true; });
@@ -346,7 +422,12 @@ Session::Session(QObject* parent) : QObject(parent) {
     thread_.start();
 }
 
+void Session::cancelScan() {
+    if (worker_) worker_->cancelScan();
+}
+
 Session::~Session() {
+    cancelScan();
     QMetaObject::invokeMethod(worker_, &Worker::closeAdapter, Qt::BlockingQueuedConnection);
     thread_.quit();
     thread_.wait(3000);
