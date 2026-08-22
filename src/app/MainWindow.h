@@ -26,6 +26,7 @@ class FaultsPage;
 class LivePage;
 class ToolsPage;
 class ThrottlePage;
+class StatsPage;
 class LexiconPage;
 
 class MainWindow : public QMainWindow {
@@ -76,6 +77,7 @@ private:
     LivePage* live_ = nullptr;
     ToolsPage* tools_ = nullptr;
     ThrottlePage* throttle_ = nullptr;
+    StatsPage* stats_ = nullptr;
     LexiconPage* lexicon_ = nullptr;
 
     bool connected_ = false;

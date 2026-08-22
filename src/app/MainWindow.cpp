@@ -20,6 +20,7 @@
 #include "app/pages/FaultsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
+#include "app/pages/StatsPage.h"
 #include "app/pages/ThrottlePage.h"
 #include "app/pages/ToolsPage.h"
 #include "core/Serial.h"
@@ -43,12 +44,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     live_ = new LivePage;
     tools_ = new ToolsPage;
     throttle_ = new ThrottlePage;
+    stats_ = new StatsPage;
     lexicon_ = new LexiconPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
     addNavigationEntry(tr("Live-Werte"), live_);
     addNavigationEntry(tr("Pruefen und Werkzeuge"), tools_);
     addNavigationEntry(tr("Drosselklappe"), throttle_);
+    addNavigationEntry(tr("Statistik"), stats_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     layout->addWidget(pages_, 1);
     setCentralWidget(central);
@@ -73,6 +76,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::vehicleInfo, tools_, &ToolsPage::onVehicleInfo);
     connect(worker, &Worker::rawReply, tools_, &ToolsPage::onRawReply);
     connect(worker, &Worker::liveValue, throttle_, &ThrottlePage::onLiveValue);
+    connect(worker, &Worker::liveValue, stats_, &StatsPage::onLiveValue);
     connect(worker, &Worker::kklConnected, throttle_, &ThrottlePage::setKklConnected);
     connect(worker, &Worker::kklMessage, throttle_, &ThrottlePage::onKklMessage);
     connect(worker, &Worker::basicSettingValues, throttle_,
@@ -312,6 +316,7 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     live_->setConnected(true);
     tools_->setConnected(true);
     throttle_->setEobdConnected(true);
+    stats_->setConnected(true);
 }
 
 void MainWindow::onFailed(const QString& error) {
@@ -339,6 +344,7 @@ void MainWindow::onClosed() {
     live_->setConnected(false);
     tools_->setConnected(false);
     throttle_->setEobdConnected(false);
+    stats_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 

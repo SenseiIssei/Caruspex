@@ -163,7 +163,10 @@ void Worker::startLive(const QVector<int>& pids) {
     pollIndex_ = 0;
     if (!pollTimer_) {
         pollTimer_ = new QTimer(this);
-        pollTimer_->setInterval(0);
+        // Nicht schneller als 50 Abfragen je Sekunde. Auf der K-Line dauert eine
+        // Abfrage ohnehin laenger, aber ein schneller CAN-Adapter oder der
+        // Simulator wuerden die Oberflaeche sonst mit Signalen zuschuetten.
+        pollTimer_->setInterval(20);
         QObject::connect(pollTimer_, &QTimer::timeout, this, &Worker::pollTick);
     }
     pollTimer_->start();

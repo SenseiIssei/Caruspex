@@ -18,6 +18,8 @@
 #include <QVBoxLayout>
 #include <QValueAxis>
 
+#include <limits>
+
 #include "app/Theme.h"
 #include "data/Pids.h"
 
@@ -211,6 +213,9 @@ void LivePage::resetChart() {
     series_.clear();
     axisX_->setRange(0, kWindowSeconds);
     axisY_->setRange(0, 100);
+    yLow_ = std::numeric_limits<double>::max();
+    yHigh_ = std::numeric_limits<double>::lowest();
+    rescaleClock_.invalidate();
 }
 
 void LivePage::onLiveValue(const LiveRow& row) {
@@ -257,17 +262,32 @@ void LivePage::onLiveValue(const LiveRow& row) {
     // Achsen mitziehen
     if (seconds > kWindowSeconds) axisX_->setRange(seconds - kWindowSeconds, seconds);
 
-    double lo = std::numeric_limits<double>::max();
-    double hi = std::numeric_limits<double>::lowest();
-    for (QLineSeries* s : std::as_const(series_)) {
-        for (const QPointF& point : s->points()) {
-            lo = qMin(lo, point.y());
-            hi = qMax(hi, point.y());
+    // Laufend mitgefuehrte Grenzen. Ueber alle Punkte aller Kurven zu laufen
+    // waere quadratisch und legt die Oberflaeche bei schnellen Adaptern lahm.
+    yLow_ = qMin(yLow_, row.value);
+    yHigh_ = qMax(yHigh_, row.value);
+
+    // Alle zwei Sekunden einmal sauber nachrechnen, damit die Achse wieder
+    // enger wird, wenn alte Ausreisser aus dem Zeitfenster gelaufen sind.
+    if (!rescaleClock_.isValid() || rescaleClock_.elapsed() > 2000) {
+        rescaleClock_.restart();
+        double lo = std::numeric_limits<double>::max();
+        double hi = std::numeric_limits<double>::lowest();
+        for (QLineSeries* line : std::as_const(series_)) {
+            for (const QPointF& point : line->points()) {
+                lo = qMin(lo, point.y());
+                hi = qMax(hi, point.y());
+            }
+        }
+        if (lo <= hi) {
+            yLow_ = lo;
+            yHigh_ = hi;
         }
     }
-    if (lo <= hi) {
-        const double pad = qMax(1.0, (hi - lo) * 0.12);
-        axisY_->setRange(lo - pad, hi + pad);
+
+    if (yLow_ <= yHigh_) {
+        const double pad = qMax(1.0, (yHigh_ - yLow_) * 0.12);
+        axisY_->setRange(yLow_ - pad, yHigh_ + pad);
     }
 }
 

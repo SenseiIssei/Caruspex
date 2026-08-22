@@ -41,6 +41,13 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Checkliste der Voraussetzungen, damit das Steuergerät nicht abbricht
 ![Drosselklappe](docs/screenshot-drosselklappe.png)
 
+**Statistik**
+- Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
+- Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit
+- Verbrauch aus der Luftmasse geschaetzt, Strecke aus dem Geschwindigkeitssignal
+- Export als CSV
+![Statistik](docs/screenshot-statistik.png)
+
 **Nachschlagen**
 - Durchsuchbares Fehlercode-Lexikon, funktioniert offline und ohne Auto
 

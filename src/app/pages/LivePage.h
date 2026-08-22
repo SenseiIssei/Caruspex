@@ -2,6 +2,8 @@
 
 #include <QElapsedTimer>
 #include <QHash>
+
+#include <limits>
 #include <QVector>
 #include <QWidget>
 
@@ -63,6 +65,9 @@ private:
 
     QHash<int, int> tableRow_;
     QElapsedTimer clock_;
+    QElapsedTimer rescaleClock_;
+    double yLow_ = std::numeric_limits<double>::max();
+    double yHigh_ = std::numeric_limits<double>::lowest();
     bool running_ = false;
     bool connected_ = false;
 
