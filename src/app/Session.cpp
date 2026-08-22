@@ -385,6 +385,58 @@ void Worker::scanAllEcus(const QString& device) {
     emit scanFinished(present, withFaults, cancelScan_.load());
 }
 
+void Worker::readAdaptationChannel(int channel) {
+    if (!kwp_ || !kwp_->connected()) {
+        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        return;
+    }
+    emit busy(true);
+    int value = 0;
+    std::vector<MeasuringValue> shown;
+    std::string error;
+    if (!kwp_->readAdaptation(channel, value, shown, error)) {
+        emit busy(false);
+        emit kklMessage(QString::fromStdString(error), true);
+        return;
+    }
+
+    QVector<LiveRow> rows;
+    int index = 1;
+    for (const MeasuringValue& m : shown) {
+        if (m.valid) {
+            LiveRow row;
+            row.pid = index;
+            row.name = QObject::tr("Feld %1: %2").arg(index).arg(
+                QString::fromStdString(m.label));
+            row.unit = QString::fromStdString(m.unit);
+            row.value = m.value;
+            rows.push_back(row);
+        }
+        ++index;
+    }
+    emit busy(false);
+    emit adaptationResult(channel, value, rows);
+    emit kklMessage(QObject::tr("Anpassungskanal %1 steht auf %2.").arg(channel).arg(value),
+                    false);
+}
+
+void Worker::runActuatorTest() {
+    if (!kwp_ || !kwp_->connected()) {
+        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        return;
+    }
+    emit busy(true);
+    std::string actuator;
+    std::string error;
+    if (!kwp_->actuatorTest(actuator, error)) {
+        emit busy(false);
+        emit kklMessage(QString::fromStdString(error), true);
+        return;
+    }
+    emit busy(false);
+    emit actuatorResult(QString::fromStdString(actuator));
+}
+
 // --- Session ----------------------------------------------------------------
 
 Session::Session(QObject* parent) : QObject(parent) {
@@ -414,6 +466,10 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::startBasicSettingRequested, worker_, &Worker::startBasicSetting);
     connect(this, &Session::stopBasicSettingRequested, worker_, &Worker::stopBasicSetting);
     connect(this, &Session::scanAllRequested, worker_, &Worker::scanAllEcus);
+    connect(this, &Session::adaptationRequested, worker_,
+            &Worker::readAdaptationChannel);
+    connect(this, &Session::actuatorTestRequested, worker_,
+            &Worker::runActuatorTest);
 
     connect(worker_, &Worker::connected, this,
             [this](const QString&, const QString&, const QString&) { connected_ = true; });

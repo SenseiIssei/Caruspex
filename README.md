@@ -47,6 +47,12 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Fehler mit Klartext, aufklappbar je Steuergeraet
 - Prüfbericht als Textdatei zum Ausdrucken
 
+**Anpassung und Stellglieder (KKL)**
+- Anpassungskanaele lesen: der eingestellte Wert plus die Anzeigefelder des Steuergeraets
+- Stellglieddiagnose: das Steuergeraet klappert seine Aktoren durch und nennt das laufende Bauteil
+- Bewusst nur lesend, ein falscher Wert im falschen Kanal legt den Motor lahm
+![Anpassung und Stellglieder](docs/screenshot-anpassung.png)
+
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
 - Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit

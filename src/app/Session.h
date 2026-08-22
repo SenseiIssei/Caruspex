@@ -84,6 +84,8 @@ public slots:
     void stopBasicSetting();
     // Alle bekannten Steuergeraete der Reihe nach anfunken.
     void scanAllEcus(const QString& device);
+    void readAdaptationChannel(int channel);
+    void runActuatorTest();
 
 public:
     // Bricht einen laufenden Suchlauf ab. Aus jedem Thread erlaubt.
@@ -109,6 +111,8 @@ signals:
     void scanProgress(const QString& ecuName, int index, int total);
     void scanEcuResult(const caruspex::EcuScanRow& row);
     void scanFinished(int present, int withFaults, bool cancelled);
+    void adaptationResult(int channel, int value, const QVector<caruspex::LiveRow>& shown);
+    void actuatorResult(const QString& actuator);
 
 private slots:
     void pollTick();
@@ -161,6 +165,8 @@ signals:
     void startBasicSettingRequested(int group);
     void stopBasicSettingRequested();
     void scanAllRequested(const QString& device);
+    void adaptationRequested(int channel);
+    void actuatorTestRequested();
 
 private:
     QThread thread_;

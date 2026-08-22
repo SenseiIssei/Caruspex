@@ -18,6 +18,7 @@
 #include "app/Theme.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
+#include "app/pages/KklToolsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
 #include "app/pages/ScanPage.h"
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     throttle_ = new ThrottlePage;
     stats_ = new StatsPage;
     scan_ = new ScanPage;
+    kklTools_ = new KklToolsPage;
     lexicon_ = new LexiconPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
@@ -55,6 +57,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     addNavigationEntry(tr("Drosselklappe"), throttle_);
     addNavigationEntry(tr("Statistik"), stats_);
     addNavigationEntry(tr("Alle Steuergeraete"), scan_);
+    addNavigationEntry(tr("Anpassung und Stellglieder"), kklTools_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     layout->addWidget(pages_, 1);
     setCentralWidget(central);
@@ -84,6 +87,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::scanProgress, scan_, &ScanPage::onScanProgress);
     connect(worker, &Worker::scanEcuResult, scan_, &ScanPage::onEcuResult);
     connect(worker, &Worker::scanFinished, scan_, &ScanPage::onScanFinished);
+    connect(worker, &Worker::kklConnected, kklTools_, &KklToolsPage::setKklConnected);
+    connect(worker, &Worker::kklMessage, kklTools_, &KklToolsPage::onMessage);
+    connect(worker, &Worker::adaptationResult, kklTools_,
+            &KklToolsPage::onAdaptationResult);
+    connect(worker, &Worker::actuatorResult, kklTools_,
+            &KklToolsPage::onActuatorResult);
     connect(worker, &Worker::kklConnected, throttle_, &ThrottlePage::setKklConnected);
     connect(worker, &Worker::kklMessage, throttle_, &ThrottlePage::onKklMessage);
     connect(worker, &Worker::basicSettingValues, throttle_,
@@ -116,6 +125,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             &Session::stopBasicSettingRequested);
     connect(scan_, &ScanPage::scanRequested, &session_, &Session::scanAllRequested);
     connect(scan_, &ScanPage::cancelRequested, &session_, &Session::cancelScan);
+    connect(kklTools_, &KklToolsPage::connectRequested, &session_,
+            &Session::openKklRequested);
+    connect(kklTools_, &KklToolsPage::disconnectRequested, &session_,
+            &Session::closeKklRequested);
+    connect(kklTools_, &KklToolsPage::adaptationRequested, &session_,
+            &Session::adaptationRequested);
+    connect(kklTools_, &KklToolsPage::actuatorTestRequested, &session_,
+            &Session::actuatorTestRequested);
 
     refreshPorts();
     onBrandChanged();
