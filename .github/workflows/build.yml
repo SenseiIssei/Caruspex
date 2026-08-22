@@ -28,8 +28,12 @@ jobs:
             os: ubuntu-latest
             qt_arch: linux_gcc_64
             artifact: caruspex-linux-x64
+          # macos-14 statt macos-latest: ab macOS 15 fehlt im SDK das
+          # AGL-Framework, auf das die vorgebauten Qt-Bibliotheken noch
+          # verweisen. Der Linker bricht dann mit "framework 'AGL' not found"
+          # ab. macos-14 laeuft mit Xcode 15 und ist ebenfalls Apple Silicon.
           - name: macOS
-            os: macos-latest
+            os: macos-14
             qt_arch: clang_64
             artifact: caruspex-macos
 
