@@ -1,6 +1,8 @@
 # Caruspex
 
-Freie Fahrzeugdiagnose für Windows. Ein Kabel oder Dongle, eine Software, alles auf Deutsch.
+[![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
+
+Freie Fahrzeugdiagnose für Windows, Linux und macOS. Ein Kabel oder Dongle, eine Software, alles auf Deutsch.
 
 Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
 
@@ -54,33 +56,75 @@ Geplant:
 - **Stufe 2**: KWP1281 über ein KKL-Kabel (VAG 409.1). Damit kommen alle Steuergeräte, Messwertblöcke, Anpassungskanäle, Stellglieddiagnose und die Grundeinstellung dazu.
 - **Stufe 3**: herstellerspezifische Diagnose über CAN mit TP 2.0 für neuere VAG-Fahrzeuge.
 
-## Bauen
+## Fertige Programme
 
-Vorausgesetzt: Visual Studio 2022 oder neuer mit C++-Werkzeugen, Python 3, Qt 6.5 oder neuer mit dem Modul Charts.
+Jeder Lauf der CI baut für alle drei Systeme sowohl die Oberfläche als auch das Konsolenwerkzeug. Die Pakete hängen als Artefakte am jeweiligen [Workflow-Lauf](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml):
 
-Qt bekommt man am schnellsten über `aqtinstall`, weil Qt über Conan von Hand gebaut würde und das Stunden dauert:
+| System | Paket | Inhalt |
+|---|---|---|
+| Windows | `caruspex-windows-x64` | `caruspex.exe`, `caruspex_cli.exe`, Qt-Bibliotheken |
+| Linux | `caruspex-linux-x64` | `caruspex`, `caruspex_cli` |
+| macOS | `caruspex-macos` | `caruspex.app`, `caruspex_cli` |
+
+## Selbst bauen
+
+Vorausgesetzt: ein C++20-Compiler (MSVC 2022, GCC 12 oder Clang 15 aufwärts), CMake 3.21, Python 3 und Qt 6.5 oder neuer mit dem Modul Charts.
+
+Qt holt man am schnellsten über `aqtinstall`. Über Conan würde Qt aus den Quellen gebaut, und das dauert Stunden:
 
 ```bash
 pip install aqtinstall conan
+```
+
+Windows:
+
+```bash
 python -m aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 -m qtcharts -O C:/Qt
 ```
 
-Dann die übrigen Abhängigkeiten und den Build:
+Linux:
+
+```bash
+python -m aqt install-qt linux desktop 6.8.3 linux_gcc_64 -m qtcharts -O ~/Qt
+```
+
+macOS:
+
+```bash
+python -m aqt install-qt mac desktop 6.8.3 clang_64 -m qtcharts -O ~/Qt
+```
+
+Dann die übrigen Abhängigkeiten und der Build, überall gleich:
 
 ```bash
 conan profile detect --force
+```
+
+```bash
 conan install . --output-folder=build/conan --build=missing -s compiler.cppstd=20
-cmake -S . -B build -A x64 -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+```
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+```
+
+```bash
 cmake --build build --config Release
 ```
 
-`cmake` muss dabei im PATH liegen, sonst kann Conan seine Pakete nicht bauen.
+`cmake` muss im PATH liegen, sonst kann Conan seine Pakete nicht bauen.
 
-Zum Schluss die Qt-Bibliotheken danebenlegen:
+Zum Schluss die Qt-Bibliotheken danebenlegen, unter Windows mit `windeployqt`, unter macOS mit `macdeployqt`.
+
+### Serielle Rechte unter Linux
+
+Damit der Adapter ohne `sudo` erreichbar ist:
 
 ```bash
-C:/Qt/6.8.3/msvc2022_64/bin/windeployqt.exe --release build/bin/Release/caruspex.exe
+sudo usermod -aG dialout $USER
 ```
+
+Danach einmal ab- und wieder anmelden.
 
 ## Tests
 
@@ -108,12 +152,15 @@ build/bin/Release/caruspex.exe --tcp 127.0.0.1:35000
 
 ```
 src/core/     Transport, ELM327-Treiber, EOBD-Dienste. Kein Qt, gut testbar.
+              Serial_win.cpp und Serial_posix.cpp, CMake wählt die passende.
 src/data/     Fehlercodes, Messwerte, Fahrzeugprofile
 src/app/      Oberfläche (Qt 6 Widgets und Charts)
 src/cli_main.cpp  Konsolenwerkzeug auf demselben Kern
 tools/        Fehlercode-Generator und Simulator
 tests/        Catch2-Tests
 ```
+
+Betriebssystemabhängig ist nur die serielle Schnittstelle. Alles darüber, also Protokoll, Parser und Dienste, ist reines C++20 mit `std::chrono` statt Plattform-APIs.
 
 Die Fehlercode-Datenbank wird erzeugt, nicht abgetippt. Viele EOBD-Codes folgen festen Familien, etwa pro Zylinder oder pro Lambdasonde. `tools/gen_dtc.py` rechnet die aus und schreibt `src/data/DtcDatabase.gen.cpp`. Nach Änderungen am Generator einmal laufen lassen:
 
