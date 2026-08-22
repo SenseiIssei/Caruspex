@@ -1,0 +1,80 @@
+cmake_minimum_required(VERSION 3.21)
+project(Caruspex VERSION 0.2.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+if(MSVC)
+    add_compile_options(/W3 /utf-8 /permissive- /MP)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS NOMINMAX WIN32_LEAN_AND_MEAN)
+endif()
+
+option(CARUSPEX_GUI   "Die grafische Anwendung mitbauen (braucht Qt 6)" ON)
+option(CARUSPEX_TESTS "Tests mitbauen (braucht Catch2 ueber Conan)"     OFF)
+
+# ---------------------------------------------------------------------------
+# Kern: Transport, Adaptertreiber, Diagnosedienste, Datenbanken. Kein Qt.
+# ---------------------------------------------------------------------------
+add_library(caruspex_core STATIC
+    src/core/Serial.cpp
+    src/core/Transport.cpp
+    src/core/Elm327.cpp
+    src/core/Obd2.cpp
+    src/data/DtcDatabase.cpp
+    src/data/DtcDatabase.gen.cpp
+    src/data/Pids.cpp
+    src/data/Vehicles.cpp
+)
+target_include_directories(caruspex_core PUBLIC src)
+
+# ---------------------------------------------------------------------------
+# Konsolenwerkzeug, benutzt denselben Kern und laesst sich skripten.
+# ---------------------------------------------------------------------------
+add_executable(caruspex_cli src/cli_main.cpp)
+target_link_libraries(caruspex_cli PRIVATE caruspex_core)
+
+# ---------------------------------------------------------------------------
+# Grafische Anwendung (Qt 6 Widgets und Charts)
+# ---------------------------------------------------------------------------
+if(CARUSPEX_GUI)
+    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts)
+    qt_standard_project_setup()
+
+    qt_add_executable(caruspex WIN32
+        src/app/main.cpp
+        src/app/MainWindow.cpp
+        src/app/MainWindow.h
+        src/app/Session.cpp
+        src/app/Session.h
+        src/app/Theme.cpp
+        src/app/Theme.h
+        src/app/GaugeWidget.cpp
+        src/app/GaugeWidget.h
+        src/app/pages/DashboardPage.cpp
+        src/app/pages/DashboardPage.h
+        src/app/pages/FaultsPage.cpp
+        src/app/pages/FaultsPage.h
+        src/app/pages/LivePage.cpp
+        src/app/pages/LivePage.h
+        src/app/pages/ToolsPage.cpp
+        src/app/pages/ToolsPage.h
+        src/app/pages/LexiconPage.cpp
+        src/app/pages/LexiconPage.h
+    )
+    target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts)
+    set_target_properties(caruspex PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
+endif()
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+if(CARUSPEX_TESTS)
+    find_package(Catch2 3 REQUIRED)
+    enable_testing()
+    add_executable(caruspex_tests tests/test_protocol.cpp)
+    target_link_libraries(caruspex_tests PRIVATE caruspex_core Catch2::Catch2WithMain)
+    add_test(NAME protocol COMMAND caruspex_tests)
+endif()

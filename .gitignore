@@ -1,0 +1,11 @@
+build/
+out/
+CMakeUserPresets.json
+CMakeSettings.json
+.vs/
+.vscode/
+.idea/
+*.user
+__pycache__/
+*.pyc
+conan.lock

@@ -1,0 +1,63 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Qt einrichten
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.8.3"
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtcharts
+
+      - name: Conan einrichten
+        run: |
+          python -m pip install --upgrade pip
+          pip install conan
+          conan profile detect --force
+
+      - name: Abhaengigkeiten holen
+        run: conan install . --output-folder=build/conan --build=missing -s compiler.cppstd=20
+
+      - name: Fehlercode-Datenbank pruefen
+        shell: bash
+        run: |
+          python tools/gen_dtc.py
+          git diff --exit-code src/data/DtcDatabase.gen.cpp
+
+      - name: Konfigurieren
+        run: >
+          cmake -S . -B build -A x64
+          -DCARUSPEX_TESTS=ON
+          -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake
+
+      - name: Bauen
+        run: cmake --build build --config Release
+
+      - name: Tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Qt-Laufzeit dazulegen
+        run: windeployqt --release --no-translations build/bin/Release/caruspex.exe
+
+      - name: Ergebnis hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: caruspex-windows
+          path: build/bin/Release/

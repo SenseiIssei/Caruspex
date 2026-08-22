@@ -1,0 +1,130 @@
+# Caruspex
+
+Freie Fahrzeugdiagnose für Windows. Ein Kabel oder Dongle, eine Software, alles auf Deutsch.
+
+Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
+
+![Übersicht](docs/screenshot-uebersicht.png)
+
+## Was es kann
+
+**Fehlerspeicher**
+- Gespeicherte, sporadische und dauerhafte Fehlercodes
+- Knapp 400 Codes in deutschem Klartext, generische EOBD-Codes plus die VAG-eigenen P1xxx
+- Unbekannte Codes fallen auf die Bedeutung ihrer Gruppe zurück statt leer zu bleiben
+- Löschen mit klarer Warnung und automatischer Gegenprobe
+- Export als CSV
+
+**Live-Werte**
+- Rund 30 Messwerte, in verständliche Einheiten umgerechnet
+- Mitlaufendes Diagramm mit mehreren Kurven und rollendem 90-Sekunden-Fenster
+- Animierte Rundanzeigen für Drehzahl, Tempo, Kühlmittel, Last, Drosselklappe, Bordspannung
+- Aufzeichnung als CSV für die spätere Auswertung
+
+**Prüfen**
+- Bereitschaftstests mit Klartext, ob es für die Abgasuntersuchung reicht
+- Freeze Frame: die Umgebungsdaten aus dem Moment, in dem der Fehler auftrat
+- Fahrgestellnummer
+- Adapter direkt ansprechen für ELM327-Rohbefehle
+
+**Nachschlagen**
+- Durchsuchbares Fehlercode-Lexikon, funktioniert offline und ohne Auto
+
+## Welche Autos
+
+Jedes Fahrzeug mit EOBD, in Europa also Benziner ab Baujahr 2001 und Diesel ab 2004, in den USA ab 1996. Für über 40 Marken sind Profile hinterlegt, damit das richtige Protokoll zuerst probiert wird statt sich durch alle neun durchzutasten.
+
+| Epoche | Bus | Beispiele |
+|---|---|---|
+| 1996 bis etwa 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, alte Golf, Toyota, Renault |
+| ab etwa 2004 | CAN (ISO 15765-4) | Audi A4 B7, Golf 5, moderne Japaner |
+| USA bis etwa 2005 | J1850 PWM und VPW | Ford, Chevrolet |
+
+## Welcher Adapter
+
+Jeder **ELM327**-kompatible Adapter, egal ob USB, Bluetooth als COM-Port oder WLAN. Adapter mit FTDI- oder CP2102-Chip sind auf der K-Line deutlich zuverlässiger als die ganz billigen Klone.
+
+Nicht kompatibel sind herstellereigene Interfaces wie Delphi DS150E, Autocom oder VAS 5054A. Die sprechen kein ELM327, sondern ihr eigenes Protokoll.
+
+## Was es (noch) nicht kann
+
+Herstellerspezifische Diagnose. EOBD kennt nur die abgasrelevanten Standarddienste. ABS, Airbag, Komfortsteuergeräte und Serviceroutinen wie das **Anlernen der Drosselklappe** laufen bei VAG über KWP1281 beziehungsweise KWP2000 mit eigenen Adressen. Ein ELM327 kann KWP1281 prinzipiell nicht abbilden, das ist ein Blockprotokoll mit byteweiser Quittung.
+
+Geplant:
+- **Stufe 2**: KWP1281 über ein KKL-Kabel (VAG 409.1). Damit kommen alle Steuergeräte, Messwertblöcke, Anpassungskanäle, Stellglieddiagnose und die Grundeinstellung dazu.
+- **Stufe 3**: herstellerspezifische Diagnose über CAN mit TP 2.0 für neuere VAG-Fahrzeuge.
+
+## Bauen
+
+Vorausgesetzt: Visual Studio 2022 oder neuer mit C++-Werkzeugen, Python 3, Qt 6.5 oder neuer mit dem Modul Charts.
+
+Qt bekommt man am schnellsten über `aqtinstall`, weil Qt über Conan von Hand gebaut würde und das Stunden dauert:
+
+```bash
+pip install aqtinstall conan
+python -m aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 -m qtcharts -O C:/Qt
+```
+
+Dann die übrigen Abhängigkeiten und den Build:
+
+```bash
+conan profile detect --force
+conan install . --output-folder=build/conan --build=missing -s compiler.cppstd=20
+cmake -S . -B build -A x64 -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+cmake --build build --config Release
+```
+
+`cmake` muss dabei im PATH liegen, sonst kann Conan seine Pakete nicht bauen.
+
+Zum Schluss die Qt-Bibliotheken danebenlegen:
+
+```bash
+C:/Qt/6.8.3/msvc2022_64/bin/windeployqt.exe --release build/bin/Release/caruspex.exe
+```
+
+## Tests
+
+```bash
+cmake -S . -B build -A x64 -DCARUSPEX_TESTS=ON -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake
+cmake --build build --config Release
+ctest --test-dir build -C Release --output-on-failure
+```
+
+Geprüft werden Antwort-Parser, Fehlercode-Dekodierung, Messwert-Umrechnung und die Fahrzeugprofile. Alles ohne Auto.
+
+## Ohne Auto ausprobieren
+
+Der mitgelieferte Simulator spielt ein Steuergerät mit Drosselklappenfehlern nach:
+
+```bash
+python tools/mock_elm327.py
+```
+
+```bash
+build/bin/Release/caruspex.exe --tcp 127.0.0.1:35000
+```
+
+## Aufbau
+
+```
+src/core/     Transport, ELM327-Treiber, EOBD-Dienste. Kein Qt, gut testbar.
+src/data/     Fehlercodes, Messwerte, Fahrzeugprofile
+src/app/      Oberfläche (Qt 6 Widgets und Charts)
+src/cli_main.cpp  Konsolenwerkzeug auf demselben Kern
+tools/        Fehlercode-Generator und Simulator
+tests/        Catch2-Tests
+```
+
+Die Fehlercode-Datenbank wird erzeugt, nicht abgetippt. Viele EOBD-Codes folgen festen Familien, etwa pro Zylinder oder pro Lambdasonde. `tools/gen_dtc.py` rechnet die aus und schreibt `src/data/DtcDatabase.gen.cpp`. Nach Änderungen am Generator einmal laufen lassen:
+
+```bash
+python tools/gen_dtc.py
+```
+
+## Löschen: was dabei passiert
+
+Modus 04 löscht Fehlerspeicher, Freeze Frame und die Bereitschaftstests. Direkt danach fällt eine Abgasuntersuchung durch, bis das Auto wieder ein paar vollständige Fahrzyklen gelaufen ist. Ein Code, dessen Ursache noch da ist, steht nach kurzer Fahrt wieder drin. Löschen ersetzt keine Reparatur.
+
+## Lizenz
+
+MIT, siehe [LICENSE](LICENSE).
