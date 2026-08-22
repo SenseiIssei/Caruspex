@@ -35,6 +35,12 @@ public:
     std::string read(int timeoutMs = 100);
     void flushInput();
 
+    // Zieht die Sendeleitung dauerhaft auf Null. Wird fuer die 5-Baud-
+    // Weckadresse von KWP1281 gebraucht, die von Hand getaktet wird.
+    bool setBreak(bool active);
+    // Baudrate im laufenden Betrieb aendern, ohne den Port zu schliessen.
+    bool changeBaud(int baud);
+
     const std::string& device() const { return device_; }
     int baud() const { return baud_; }
 

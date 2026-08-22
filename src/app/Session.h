@@ -16,6 +16,8 @@
 #include <memory>
 
 #include "core/Elm327.h"
+#include "core/KLineStream.h"
+#include "core/Kwp1281.h"
 #include "core/Obd2.h"
 
 class QTimer;
@@ -64,6 +66,12 @@ public slots:
     void stopLive();
     void sendRaw(const QString& command);
 
+    // KWP1281 ueber ein KKL-Kabel: die Wege, an die EOBD nicht herankommt.
+    void openKkl(const QString& device, int ecuAddress);
+    void closeKkl();
+    void startBasicSetting(int group);
+    void stopBasicSetting();
+
 signals:
     void logLine(const QString& line);
     void connected(const QString& adapter, const QString& transport, const QString& protocol);
@@ -77,9 +85,13 @@ signals:
                      const QVector<caruspex::LiveRow>& freezeRows);
     void supportedPids(const QVector<int>& pids);
     void rawReply(const QString& reply);
+    void kklConnected(bool connected, const QString& identification);
+    void kklMessage(const QString& message, bool isError);
+    void basicSettingValues(const QVector<caruspex::LiveRow>& values);
 
 private slots:
     void pollTick();
+    void basicSettingTick();
 
 private:
     void refreshStatusAndFaults();
@@ -89,6 +101,11 @@ private:
     QTimer* pollTimer_ = nullptr;
     QVector<int> pollPids_;
     int pollIndex_ = 0;
+
+    KLineStream kline_;
+    std::unique_ptr<Kwp1281> kwp_;
+    QTimer* basicSettingTimer_ = nullptr;
+    int basicSettingGroup_ = 60;
 };
 
 // Besitzt den Thread und den Worker, wird von der Oberflaeche benutzt.
@@ -112,6 +129,10 @@ signals:
     void startLiveRequested(const QVector<int>& pids);
     void stopLiveRequested();
     void sendRawRequested(const QString& command);
+    void openKklRequested(const QString& device, int ecuAddress);
+    void closeKklRequested();
+    void startBasicSettingRequested(int group);
+    void stopBasicSettingRequested();
 
 private:
     QThread thread_;

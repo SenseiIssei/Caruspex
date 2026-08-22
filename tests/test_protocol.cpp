@@ -4,6 +4,7 @@
 
 #include "core/Elm327.h"
 #include "data/DtcDatabase.h"
+#include "data/DtcLocation.h"
 #include "data/Pids.h"
 #include "data/Vehicles.h"
 
@@ -81,4 +82,21 @@ TEST_CASE("Fahrzeugprofile treffen die richtige Epoche", "[vehicles]") {
     REQUIRE(b7->bus == BusKind::Can);
 
     REQUIRE(vehicleBrands().size() > 25);
+}
+
+TEST_CASE("Fehlercodes zeigen auf die richtige Stelle am Fahrzeug", "[location]") {
+    REQUIRE(locateDtc("P0507").zone == CarZone::Throttle);
+    REQUIRE(locateDtc("P1559").zone == CarZone::Throttle);   // nicht der Turbo
+    REQUIRE(locateDtc("P1555").zone == CarZone::Turbo);
+    REQUIRE(locateDtc("P0301").zone == CarZone::Cylinders);
+    REQUIRE(locateDtc("P0420").zone == CarZone::Exhaust);
+    REQUIRE(locateDtc("P0442").zone == CarZone::FuelTank);
+    REQUIRE(locateDtc("P0118").zone == CarZone::Cooling);
+    REQUIRE(locateDtc("C0035").zone == CarZone::Wheels);
+    REQUIRE(locateDtc("B0001").zone == CarZone::Cabin);
+    REQUIRE(locateDtc("U0121").zone == CarZone::Network);
+    REQUIRE(locateDtc("P0700").zone == CarZone::Gearbox);
+    // Zu jeder Zone gehoert ein Hinweis, wo man nachsieht.
+    REQUIRE_FALSE(locateDtc("P0507").hint.empty());
+    REQUIRE_FALSE(locateDtc("P0507").name.empty());
 }

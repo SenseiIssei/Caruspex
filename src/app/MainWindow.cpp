@@ -20,6 +20,7 @@
 #include "app/pages/FaultsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
+#include "app/pages/ThrottlePage.h"
 #include "app/pages/ToolsPage.h"
 #include "core/Serial.h"
 #include "data/Vehicles.h"
@@ -41,11 +42,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     faults_ = new FaultsPage;
     live_ = new LivePage;
     tools_ = new ToolsPage;
+    throttle_ = new ThrottlePage;
     lexicon_ = new LexiconPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
     addNavigationEntry(tr("Live-Werte"), live_);
     addNavigationEntry(tr("Pruefen und Werkzeuge"), tools_);
+    addNavigationEntry(tr("Drosselklappe"), throttle_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     layout->addWidget(pages_, 1);
     setCentralWidget(central);
@@ -69,6 +72,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::status, tools_, &ToolsPage::onStatus);
     connect(worker, &Worker::vehicleInfo, tools_, &ToolsPage::onVehicleInfo);
     connect(worker, &Worker::rawReply, tools_, &ToolsPage::onRawReply);
+    connect(worker, &Worker::liveValue, throttle_, &ThrottlePage::onLiveValue);
+    connect(worker, &Worker::kklConnected, throttle_, &ThrottlePage::setKklConnected);
+    connect(worker, &Worker::kklMessage, throttle_, &ThrottlePage::onKklMessage);
+    connect(worker, &Worker::basicSettingValues, throttle_,
+            &ThrottlePage::onBasicSettingValues);
+    connect(worker, &Worker::kklMessage, this,
+            [this](const QString& text, bool) { appendLog(text); });
 
     // Oberflaeche zum Worker
     connect(dashboard_, &DashboardPage::readRequested, &session_, &Session::readFaultsRequested);
@@ -85,6 +95,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(tools_, &ToolsPage::rawRequested, &session_, &Session::sendRawRequested);
     connect(live_, &LivePage::startRequested, &session_, &Session::startLiveRequested);
     connect(live_, &LivePage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(throttle_, &ThrottlePage::kklConnectRequested, &session_,
+            &Session::openKklRequested);
+    connect(throttle_, &ThrottlePage::kklDisconnectRequested, &session_,
+            &Session::closeKklRequested);
+    connect(throttle_, &ThrottlePage::basicSettingRequested, &session_,
+            &Session::startBasicSettingRequested);
+    connect(throttle_, &ThrottlePage::basicSettingStopRequested, &session_,
+            &Session::stopBasicSettingRequested);
 
     refreshPorts();
     onBrandChanged();
@@ -293,6 +311,7 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     faults_->setConnected(true);
     live_->setConnected(true);
     tools_->setConnected(true);
+    throttle_->setEobdConnected(true);
 }
 
 void MainWindow::onFailed(const QString& error) {
@@ -319,6 +338,7 @@ void MainWindow::onClosed() {
     faults_->setConnected(false);
     live_->setConnected(false);
     tools_->setConnected(false);
+    throttle_->setEobdConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 

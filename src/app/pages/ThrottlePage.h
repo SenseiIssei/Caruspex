@@ -1,0 +1,68 @@
+#pragma once
+
+#include <QVector>
+#include <QWidget>
+
+#include "app/Session.h"
+
+QT_BEGIN_NAMESPACE
+class QComboBox;
+class QLabel;
+class QProgressBar;
+class QPushButton;
+class QTableWidget;
+QT_END_NAMESPACE
+
+namespace caruspex {
+
+class GaugeWidget;
+
+// Drosselklappe anlernen.
+//
+// Zwei Wege, je nachdem was fuer ein Adapter steckt:
+//  - KKL-Kabel: echte Grundeinstellung ueber KWP1281, Messwertblock 060 bzw. 098
+//  - ELM327: nur beobachten plus der Anlernversuch ohne Tester
+class ThrottlePage : public QWidget {
+    Q_OBJECT
+
+public:
+    explicit ThrottlePage(QWidget* parent = nullptr);
+
+public slots:
+    void setEobdConnected(bool connected);
+    void setKklConnected(bool connected, const QString& identification);
+    void onLiveValue(const caruspex::LiveRow& row);
+    void onBasicSettingValues(const QVector<caruspex::LiveRow>& values);
+    void onKklMessage(const QString& message, bool isError);
+
+signals:
+    void kklConnectRequested(const QString& port, int ecuAddress);
+    void kklDisconnectRequested();
+    void basicSettingRequested(int group);
+    void basicSettingStopRequested();
+
+private:
+    void refreshPorts();
+    void updateAvailability();
+
+    QComboBox* portBox_ = nullptr;
+    QComboBox* groupBox_ = nullptr;
+    QPushButton* rescanButton_ = nullptr;
+    QPushButton* connectButton_ = nullptr;
+    QPushButton* runButton_ = nullptr;
+    QLabel* kklState_ = nullptr;
+    QLabel* identification_ = nullptr;
+    QLabel* checklistHint_ = nullptr;
+    QLabel* message_ = nullptr;
+    QTableWidget* values_ = nullptr;
+    QProgressBar* activity_ = nullptr;
+    GaugeWidget* angleGauge_ = nullptr;
+    GaugeWidget* rpmGauge_ = nullptr;
+    QLabel* eobdHint_ = nullptr;
+
+    bool kklConnected_ = false;
+    bool eobdConnected_ = false;
+    bool running_ = false;
+};
+
+}  // namespace caruspex

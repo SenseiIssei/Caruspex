@@ -7,9 +7,12 @@
 
 class QLabel;
 class QPushButton;
+class QSplitter;
 class QTableWidget;
 
 namespace caruspex {
+
+class VehicleDiagram;
 
 class FaultsPage : public QWidget {
     Q_OBJECT
@@ -29,6 +32,7 @@ signals:
 private:
     void askAndClear();
     void exportCsv();
+    void showSelected(int row);
 
     QTableWidget* table_ = nullptr;
     QPushButton* readButton_ = nullptr;
@@ -36,6 +40,8 @@ private:
     QPushButton* exportButton_ = nullptr;
     QLabel* summary_ = nullptr;
     QLabel* throttleHint_ = nullptr;
+    VehicleDiagram* diagram_ = nullptr;
+    QLabel* whereLabel_ = nullptr;
     QVector<FaultRow> rows_;
 };
 

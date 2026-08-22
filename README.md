@@ -29,6 +29,18 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Fahrgestellnummer
 - Adapter direkt ansprechen für ELM327-Rohbefehle
 
+**Wo kommt der Fehler her**
+- Schematisches Fahrzeug, das die betroffene Baugruppe hervorhebt, je nach Fehlercode
+- Klartext dazu, wo man konkret nachsieht
+![Fehlerspeicher mit Fahrzeuganzeige](docs/screenshot-fehler.png)
+
+**Drosselklappe anlernen (KWP1281 über KKL-Kabel)**
+- Echte Grundeinstellung im Messwertblock 060 oder 098
+- Verbindung zu jedem Steuergerät, nicht nur zum Motor: ABS, Airbag, Kombi, Komfort
+- Fehlerspeicher und Messwertblöcke der herstellereigenen Diagnose
+- Checkliste der Voraussetzungen, damit das Steuergerät nicht abbricht
+![Drosselklappe](docs/screenshot-drosselklappe.png)
+
 **Nachschlagen**
 - Durchsuchbares Fehlercode-Lexikon, funktioniert offline und ohne Auto
 
@@ -42,19 +54,27 @@ Jedes Fahrzeug mit EOBD, in Europa also Benziner ab Baujahr 2001 und Diesel ab 2
 | ab etwa 2004 | CAN (ISO 15765-4) | Audi A4 B7, Golf 5, moderne Japaner |
 | USA bis etwa 2005 | J1850 PWM und VPW | Ford, Chevrolet |
 
-## Welcher Adapter
+## Welcher Adapter kann was
 
-Jeder **ELM327**-kompatible Adapter, egal ob USB, Bluetooth als COM-Port oder WLAN. Adapter mit FTDI- oder CP2102-Chip sind auf der K-Line deutlich zuverlässiger als die ganz billigen Klone.
+Unterstützt wird jeder **ELM327**-kompatible Adapter (USB, Bluetooth als COM-Port oder WLAN) sowie jedes **KKL-Kabel nach VAG 409.1**. Adapter mit FTDI- oder CP2102-Chip sind auf der K-Line deutlich zuverlässiger als die ganz billigen Klone, für KWP1281 sollte es ein echter FTDI FT232RL sein.
 
 Nicht kompatibel sind herstellereigene Interfaces wie Delphi DS150E, Autocom oder VAS 5054A. Die sprechen kein ELM327, sondern ihr eigenes Protokoll.
 
-## Was es (noch) nicht kann
+Was womit geht, ist der Punkt, an dem die meisten Diagnoseprogramme schwammig werden, deshalb hier deutlich:
 
-Herstellerspezifische Diagnose. EOBD kennt nur die abgasrelevanten Standarddienste. ABS, Airbag, Komfortsteuergeräte und Serviceroutinen wie das **Anlernen der Drosselklappe** laufen bei VAG über KWP1281 beziehungsweise KWP2000 mit eigenen Adressen. Ein ELM327 kann KWP1281 prinzipiell nicht abbilden, das ist ein Blockprotokoll mit byteweiser Quittung.
+| Funktion | ELM327 | KKL 409.1 |
+|---|---|---|
+| Motorfehler lesen und löschen | ja | ja |
+| Live-Werte, Freeze Frame, Bereitschaftstests | ja | ja |
+| ABS, Airbag, Kombi, Komfort | **nein** | ja |
+| Messwertblöcke der Herstellerdiagnose | **nein** | ja |
+| **Drosselklappe anlernen** | **nein** | ja |
 
-Geplant:
-- **Stufe 2**: KWP1281 über ein KKL-Kabel (VAG 409.1). Damit kommen alle Steuergeräte, Messwertblöcke, Anpassungskanäle, Stellglieddiagnose und die Grundeinstellung dazu.
-- **Stufe 3**: herstellerspezifische Diagnose über CAN mit TP 2.0 für neuere VAG-Fahrzeuge.
+Der Grund ist kein Softwareproblem: KWP1281 ist ein Blockprotokoll, bei dem jedes einzelne Byte von der Gegenstelle mit seinem Einerkomplement quittiert wird. Die Firmware eines ELM327 kennt nur ganze Anfragen und Antworten und kann diesen Takt nicht abbilden. Ein KKL-Kabel reicht die K-Leitung roh durch, dort spricht Caruspex das Protokoll selbst, inklusive der 5-Baud-Weckadresse, die Bit für Bit von Hand getaktet wird.
+
+Getestet ist das gegen ein nachgebautes Steuergerät in `tests/FakeEcu.cpp`, das den byteweisen Takt echt nachspielt.
+
+Noch nicht gebaut: herstellerspezifische Diagnose über CAN mit TP 2.0 für Fahrzeuge ab etwa 2004.
 
 ## Fertige Programme
 
@@ -151,9 +171,9 @@ build/bin/Release/caruspex.exe --tcp 127.0.0.1:35000
 ## Aufbau
 
 ```
-src/core/     Transport, ELM327-Treiber, EOBD-Dienste. Kein Qt, gut testbar.
+src/core/     Transport, ELM327-Treiber, EOBD-Dienste, KWP1281. Kein Qt, gut testbar.
               Serial_win.cpp und Serial_posix.cpp, CMake wählt die passende.
-src/data/     Fehlercodes, Messwerte, Fahrzeugprofile
+src/data/     Fehlercodes, Messwerte, Fahrzeugprofile, Zuordnung Code zu Bauteil
 src/app/      Oberfläche (Qt 6 Widgets und Charts)
 src/cli_main.cpp  Konsolenwerkzeug auf demselben Kern
 tools/        Fehlercode-Generator und Simulator

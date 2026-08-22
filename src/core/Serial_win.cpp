@@ -202,4 +202,22 @@ void Serial::flushInput() {
     if (handle_) PurgeComm(static_cast<HANDLE>(handle_), PURGE_RXCLEAR);
 }
 
+bool Serial::setBreak(bool active) {
+    if (!handle_) return false;
+    HANDLE h = static_cast<HANDLE>(handle_);
+    return active ? SetCommBreak(h) != 0 : ClearCommBreak(h) != 0;
+}
+
+bool Serial::changeBaud(int baud) {
+    if (!handle_) return false;
+    HANDLE h = static_cast<HANDLE>(handle_);
+    DCB dcb{};
+    dcb.DCBlength = sizeof(dcb);
+    if (!GetCommState(h, &dcb)) return false;
+    dcb.BaudRate = static_cast<DWORD>(baud);
+    if (!SetCommState(h, &dcb)) return false;
+    baud_ = baud;
+    return true;
+}
+
 }  // namespace caruspex

@@ -27,6 +27,8 @@ Worker::Worker() = default;
 
 Worker::~Worker() {
     elm_.disconnect();
+    if (kwp_) kwp_->disconnect();
+    kline_.close();
 }
 
 void Worker::openSerial(const QString& device, int baud, const QString& protocolOrder) {
@@ -194,6 +196,118 @@ void Worker::sendRaw(const QString& command) {
     emit rawReply(lines.join('\n'));
 }
 
+// --- KWP1281 ueber KKL ------------------------------------------------------
+
+void Worker::openKkl(const QString& device, int ecuAddress) {
+    closeKkl();
+    emit busy(true);
+    emit kklMessage(QObject::tr("Wecke das Steuergeraet mit der 5-Baud-Adresse, "
+                                "das dauert etwa drei Sekunden ..."), false);
+
+    std::string error;
+    if (!kline_.open(device.toStdString(), 9600, error)) {
+        emit busy(false);
+        emit kklMessage(QString::fromStdString(error), true);
+        return;
+    }
+
+    kwp_ = std::make_unique<Kwp1281>(kline_,
+                                     [this](const std::string& m) {
+                                         emit logLine(QString::fromStdString(m));
+                                     });
+    const Ecu ecu = static_cast<Ecu>(ecuAddress);
+    if (!kwp_->connect(ecu, error)) {
+        kwp_.reset();
+        kline_.close();
+        emit busy(false);
+        emit kklConnected(false, QString());
+        emit kklMessage(QString::fromStdString(error), true);
+        return;
+    }
+
+    QStringList identification;
+    for (const std::string& line : kwp_->identification()) {
+        identification << QString::fromStdString(line).trimmed();
+    }
+    emit busy(false);
+    emit kklConnected(true, identification.join(QStringLiteral("  |  ")));
+    emit kklMessage(QObject::tr("Verbunden mit %1. Vor dem Start die Punkte oben pruefen.")
+                        .arg(QString::fromStdString(ecuName(ecu))),
+                    false);
+    emit logLine(QStringLiteral("KWP1281 verbunden: ") + identification.join(" / "));
+}
+
+void Worker::closeKkl() {
+    stopBasicSetting();
+    if (kwp_) {
+        kwp_->disconnect();
+        kwp_.reset();
+    }
+    kline_.close();
+    emit kklConnected(false, QString());
+}
+
+void Worker::startBasicSetting(int group) {
+    if (!kwp_ || !kwp_->connected()) {
+        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        return;
+    }
+    basicSettingGroup_ = group;
+    if (!basicSettingTimer_) {
+        basicSettingTimer_ = new QTimer(this);
+        // Das Steuergeraet faellt aus der Grundeinstellung, wenn laenger als
+        // etwa eine Sekunde nichts kommt. Wir fragen deutlich haeufiger nach.
+        basicSettingTimer_->setInterval(180);
+        QObject::connect(basicSettingTimer_, &QTimer::timeout, this,
+                         &Worker::basicSettingTick);
+    }
+    basicSettingTimer_->start();
+    emit kklMessage(QObject::tr("Grundeinstellung im Messwertblock %1 laeuft. Gaspedal "
+                                "nicht antippen.")
+                        .arg(group),
+                    false);
+    emit logLine(QStringLiteral("Grundeinstellung Block %1 gestartet").arg(group));
+}
+
+void Worker::stopBasicSetting() {
+    if (basicSettingTimer_ && basicSettingTimer_->isActive()) {
+        basicSettingTimer_->stop();
+        emit kklMessage(QObject::tr("Grundeinstellung beendet."), false);
+        emit logLine(QStringLiteral("Grundeinstellung beendet"));
+    }
+}
+
+void Worker::basicSettingTick() {
+    if (!kwp_ || !kwp_->connected()) {
+        stopBasicSetting();
+        return;
+    }
+    std::vector<MeasuringValue> measured;
+    std::string error;
+    if (!kwp_->basicSetting(basicSettingGroup_, measured, error)) {
+        stopBasicSetting();
+        emit kklMessage(QString::fromStdString(error), true);
+        return;
+    }
+
+    QVector<LiveRow> rows;
+    int index = 1;
+    for (const MeasuringValue& m : measured) {
+        if (!m.valid) {
+            ++index;
+            continue;
+        }
+        LiveRow row;
+        row.pid = index;
+        row.name = QObject::tr("Feld %1: %2").arg(index).arg(QString::fromStdString(m.label));
+        row.unit = QString::fromStdString(m.unit);
+        row.value = m.value;
+        rows.push_back(row);
+        ++index;
+    }
+    emit basicSettingValues(rows);
+}
+
 // --- Session ----------------------------------------------------------------
 
 Session::Session(QObject* parent) : QObject(parent) {
@@ -217,6 +331,10 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::startLiveRequested, worker_, &Worker::startLive);
     connect(this, &Session::stopLiveRequested, worker_, &Worker::stopLive);
     connect(this, &Session::sendRawRequested, worker_, &Worker::sendRaw);
+    connect(this, &Session::openKklRequested, worker_, &Worker::openKkl);
+    connect(this, &Session::closeKklRequested, worker_, &Worker::closeKkl);
+    connect(this, &Session::startBasicSettingRequested, worker_, &Worker::startBasicSetting);
+    connect(this, &Session::stopBasicSettingRequested, worker_, &Worker::stopBasicSetting);
 
     connect(worker_, &Worker::connected, this,
             [this](const QString&, const QString&, const QString&) { connected_ = true; });

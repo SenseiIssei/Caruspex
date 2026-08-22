@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -214,6 +215,26 @@ void Serial::flushInput() {
     if (handle_) {
         ::tcflush(static_cast<int>(reinterpret_cast<intptr_t>(handle_) - 1), TCIFLUSH);
     }
+}
+
+bool Serial::setBreak(bool active) {
+    if (!handle_) return false;
+    const int fd = static_cast<int>(reinterpret_cast<intptr_t>(handle_) - 1);
+    return ::ioctl(fd, active ? TIOCSBRK : TIOCCBRK, 0) == 0;
+}
+
+bool Serial::changeBaud(int baud) {
+    if (!handle_) return false;
+    const int fd = static_cast<int>(reinterpret_cast<intptr_t>(handle_) - 1);
+    const speed_t speed = toSpeed(baud);
+    if (speed == 0) return false;
+    termios settings{};
+    if (::tcgetattr(fd, &settings) != 0) return false;
+    ::cfsetispeed(&settings, speed);
+    ::cfsetospeed(&settings, speed);
+    if (::tcsetattr(fd, TCSADRAIN, &settings) != 0) return false;
+    baud_ = baud;
+    return true;
 }
 
 }  // namespace caruspex

@@ -29,10 +29,13 @@ add_library(caruspex_core STATIC
     src/core/Transport.cpp
     src/core/Elm327.cpp
     src/core/Obd2.cpp
+    src/core/Kwp1281.cpp
+    src/core/KLineStream.cpp
     src/data/DtcDatabase.cpp
     src/data/DtcDatabase.gen.cpp
     src/data/Pids.cpp
     src/data/Vehicles.cpp
+    src/data/DtcLocation.cpp
 )
 target_include_directories(caruspex_core PUBLIC src)
 
@@ -66,6 +69,8 @@ if(CARUSPEX_GUI)
         src/app/Theme.h
         src/app/GaugeWidget.cpp
         src/app/GaugeWidget.h
+        src/app/VehicleDiagram.cpp
+        src/app/VehicleDiagram.h
         src/app/pages/DashboardPage.cpp
         src/app/pages/DashboardPage.h
         src/app/pages/FaultsPage.cpp
@@ -74,6 +79,8 @@ if(CARUSPEX_GUI)
         src/app/pages/LivePage.h
         src/app/pages/ToolsPage.cpp
         src/app/pages/ToolsPage.h
+        src/app/pages/ThrottlePage.cpp
+        src/app/pages/ThrottlePage.h
         src/app/pages/LexiconPage.cpp
         src/app/pages/LexiconPage.h
     )
@@ -91,7 +98,12 @@ endif()
 if(CARUSPEX_TESTS)
     find_package(Catch2 3 REQUIRED)
     enable_testing()
-    add_executable(caruspex_tests tests/test_protocol.cpp)
+    add_executable(caruspex_tests
+        tests/test_protocol.cpp
+        tests/test_kwp1281.cpp
+        tests/FakeEcu.cpp
+    )
+    target_include_directories(caruspex_tests PRIVATE tests)
     target_link_libraries(caruspex_tests PRIVATE caruspex_core Catch2::Catch2WithMain)
     add_test(NAME protocol COMMAND caruspex_tests)
 endif()

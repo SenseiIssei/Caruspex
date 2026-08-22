@@ -7,11 +7,14 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSplitter>
 #include <QTableWidget>
 #include <QTextStream>
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/VehicleDiagram.h"
+#include "data/DtcLocation.h"
 
 namespace caruspex {
 
@@ -60,14 +63,41 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
     table_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
     table_->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    table_->setColumnWidth(0, 110);
-    table_->setColumnWidth(1, 140);
+    table_->setColumnWidth(0, 84);
+    table_->setColumnWidth(1, 106);
     table_->verticalHeader()->setVisible(false);
     table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table_->setWordWrap(true);
     table_->setAlternatingRowColors(true);
-    root->addWidget(table_, 1);
+    connect(table_, &QTableWidget::currentCellChanged, this,
+            [this](int row, int, int, int) { showSelected(row); });
+
+    // Rechts daneben das Fahrzeug, das zeigt, wo der Fehler herkommt.
+    auto* right = new QWidget;
+    auto* rightLayout = new QVBoxLayout(right);
+    rightLayout->setContentsMargins(0, 0, 0, 0);
+    rightLayout->setSpacing(8);
+    auto* diagramTitle = new QLabel(tr("Wo kommt das her?"));
+    QFont bold = diagramTitle->font();
+    bold.setBold(true);
+    diagramTitle->setFont(bold);
+    rightLayout->addWidget(diagramTitle);
+    diagram_ = new VehicleDiagram;
+    rightLayout->addWidget(diagram_, 1);
+    whereLabel_ = new QLabel(tr("Einen Fehler in der Liste anklicken."));
+    whereLabel_->setObjectName("Subtle");
+    whereLabel_->setWordWrap(true);
+    whereLabel_->setMinimumHeight(52);
+    rightLayout->addWidget(whereLabel_);
+
+    auto* split = new QSplitter(Qt::Horizontal);
+    split->addWidget(table_);
+    split->addWidget(right);
+    split->setStretchFactor(0, 5);
+    split->setStretchFactor(1, 4);
+    split->setSizes({560, 460});
+    root->addWidget(split, 1);
 
     auto* note = new QLabel(
         tr("Loeschen setzt auch die Bereitschaftstests zurueck. Direkt danach faellt eine "
@@ -108,6 +138,32 @@ void FaultsPage::onFaults(const QVector<FaultRow>& rows) {
                "erfahrungsgemaess nicht, die Klappe muss angelernt werden."));
     }
     exportButton_->setEnabled(!rows.isEmpty());
+
+    // Alle betroffenen Stellen am Fahrzeug markieren.
+    QSet<int> zones;
+    for (const FaultRow& f : rows) {
+        const ZoneInfo info = locateDtc(f.code.toStdString());
+        if (info.zone != CarZone::Unknown) zones.insert(static_cast<int>(info.zone));
+    }
+    diagram_->setAffected(zones);
+    if (!rows.isEmpty()) {
+        table_->setCurrentCell(0, 0);
+        showSelected(0);
+    } else {
+        diagram_->clear();
+        whereLabel_->setText(tr("Kein Fehler, nichts zu zeigen."));
+    }
+}
+
+void FaultsPage::showSelected(int row) {
+    if (row < 0 || row >= rows_.size()) return;
+    const FaultRow& fault = rows_.at(row);
+    const ZoneInfo info = locateDtc(fault.code.toStdString());
+    diagram_->setFocus(info.zone);
+    whereLabel_->setText(tr("%1 zeigt auf: %2\n%3")
+                             .arg(fault.code,
+                                  QString::fromStdString(info.name),
+                                  QString::fromStdString(info.hint)));
 }
 
 void FaultsPage::setConnected(bool connected) {
@@ -119,6 +175,8 @@ void FaultsPage::setConnected(bool connected) {
         summary_->clear();
         throttleHint_->setVisible(false);
         exportButton_->setEnabled(false);
+        diagram_->clear();
+        whereLabel_->setText(tr("Einen Fehler in der Liste anklicken."));
     }
 }
 
