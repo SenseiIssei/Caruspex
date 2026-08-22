@@ -8,6 +8,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 if(MSVC)
     add_compile_options(/W3 /utf-8 /permissive- /MP)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS NOMINMAX WIN32_LEAN_AND_MEAN)
+else()
+    add_compile_options(-Wall -Wextra -Wno-unused-parameter)
 endif()
 
 option(CARUSPEX_GUI   "Die grafische Anwendung mitbauen (braucht Qt 6)" ON)
@@ -16,8 +18,14 @@ option(CARUSPEX_TESTS "Tests mitbauen (braucht Catch2 ueber Conan)"     OFF)
 # ---------------------------------------------------------------------------
 # Kern: Transport, Adaptertreiber, Diagnosedienste, Datenbanken. Kein Qt.
 # ---------------------------------------------------------------------------
+if(WIN32)
+    set(CARUSPEX_SERIAL src/core/Serial_win.cpp)
+else()
+    set(CARUSPEX_SERIAL src/core/Serial_posix.cpp)
+endif()
+
 add_library(caruspex_core STATIC
-    src/core/Serial.cpp
+    ${CARUSPEX_SERIAL}
     src/core/Transport.cpp
     src/core/Elm327.cpp
     src/core/Obd2.cpp
@@ -27,6 +35,13 @@ add_library(caruspex_core STATIC
     src/data/Vehicles.cpp
 )
 target_include_directories(caruspex_core PUBLIC src)
+
+if(WIN32)
+    target_link_libraries(caruspex_core PUBLIC setupapi ws2_32)
+endif()
+
+find_package(Threads REQUIRED)
+target_link_libraries(caruspex_core PUBLIC Threads::Threads)
 
 # ---------------------------------------------------------------------------
 # Konsolenwerkzeug, benutzt denselben Kern und laesst sich skripten.
@@ -41,7 +56,7 @@ if(CARUSPEX_GUI)
     find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts)
     qt_standard_project_setup()
 
-    qt_add_executable(caruspex WIN32
+    qt_add_executable(caruspex
         src/app/main.cpp
         src/app/MainWindow.cpp
         src/app/MainWindow.h
@@ -65,6 +80,8 @@ if(CARUSPEX_GUI)
     target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts)
     set_target_properties(caruspex PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        WIN32_EXECUTABLE ON      # unter Windows kein Konsolenfenster daneben
+        MACOSX_BUNDLE ON         # unter macOS ein richtiges Caruspex.app
     )
 endif()
 

@@ -1,7 +1,5 @@
 #include "core/Obd2.h"
 
-#include <windows.h>
-
 #include <cstdio>
 
 #include "data/DtcDatabase.h"

@@ -1,9 +1,9 @@
 #include "core/Elm327.h"
 
-#include <windows.h>
-
 #include <algorithm>
 #include <cctype>
+
+#include "core/Timing.h"
 
 namespace caruspex {
 
@@ -147,10 +147,10 @@ void Elm327::drainGreeting() {
     // WLAN- und Bluetooth-Adapter melden sich von sich aus. Wenn diese
     // Begruessung stehen bleibt, beantwortet sie das erste Kommando und
     // alle folgenden Antworten sind um eine Position verschoben.
-    Sleep(300);
+    sleepMs(300);
     transport_->flushInput();
     transport_->write("\r");
-    Sleep(200);
+    sleepMs(200);
     transport_->flushInput();
 }
 
@@ -165,8 +165,8 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
     transport_->write(command + "\r");
 
     std::string buffer;
-    const ULONGLONG deadline = GetTickCount64() + static_cast<ULONGLONG>(timeoutMs);
-    while (GetTickCount64() < deadline) {
+    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(timeoutMs);
+    while (nowMs() < deadline) {
         const std::string chunk = transport_->read(120);
         if (!chunk.empty()) {
             buffer += chunk;
@@ -255,7 +255,7 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                 error = probe.message;
                 return false;
             }
-            Sleep(400);
+            sleepMs(400);
         }
     }
 

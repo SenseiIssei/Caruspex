@@ -1,21 +1,75 @@
 #include "core/Transport.h"
 
+#ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
+#else
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
-#pragma comment(lib, "ws2_32.lib")
+#include <cerrno>
+#include <cstring>
 
 namespace caruspex {
 namespace {
 
-bool ensureWinsock() {
-    static bool ready = [] {
+#ifdef _WIN32
+using RawSocket = SOCKET;
+constexpr RawSocket kInvalid = INVALID_SOCKET;
+
+bool ensureNetwork() {
+    static const bool ready = [] {
         WSADATA wsa{};
         return WSAStartup(MAKEWORD(2, 2), &wsa) == 0;
     }();
     return ready;
 }
+
+void closeSocket(RawSocket s) { ::closesocket(s); }
+
+void setReceiveTimeout(RawSocket s, int milliseconds) {
+    DWORD value = static_cast<DWORD>(milliseconds);
+    ::setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&value),
+                 sizeof(value));
+}
+
+void setBlocking(RawSocket s, bool blocking) {
+    u_long mode = blocking ? 0 : 1;
+    ::ioctlsocket(s, FIONBIO, &mode);
+}
+#else
+using RawSocket = int;
+constexpr RawSocket kInvalid = -1;
+
+bool ensureNetwork() { return true; }
+
+void closeSocket(RawSocket s) { ::close(s); }
+
+void setReceiveTimeout(RawSocket s, int milliseconds) {
+    timeval value{};
+    value.tv_sec = milliseconds / 1000;
+    value.tv_usec = (milliseconds % 1000) * 1000;
+    ::setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &value, sizeof(value));
+}
+
+void setBlocking(RawSocket s, bool blocking) {
+    int flags = ::fcntl(s, F_GETFL, 0);
+    if (flags < 0) return;
+    ::fcntl(s, F_SETFL, blocking ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK));
+}
+#endif
+
+constexpr unsigned long long kNoSocket = ~0ull;
+
+RawSocket toRaw(unsigned long long handle) { return static_cast<RawSocket>(handle); }
 
 }  // namespace
 
@@ -28,70 +82,72 @@ std::string SerialTransport::name() const {
 }
 
 TcpTransport::~TcpTransport() {
-    if (socket_ != ~0ull) closesocket(static_cast<SOCKET>(socket_));
+    if (socket_ != kNoSocket) closeSocket(toRaw(socket_));
 }
 
 bool TcpTransport::open(const std::string& host, int port, std::string& error) {
-    if (!ensureWinsock()) {
-        error = "Windows-Netzwerk laesst sich nicht starten";
+    if (!ensureNetwork()) {
+        error = "Netzwerk laesst sich nicht starten";
         return false;
     }
     addrinfo hints{};
-    hints.ai_family = AF_INET;
+    hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     addrinfo* result = nullptr;
     const std::string service = std::to_string(port);
-    if (getaddrinfo(host.c_str(), service.c_str(), &hints, &result) != 0 || !result) {
+    if (::getaddrinfo(host.c_str(), service.c_str(), &hints, &result) != 0 || !result) {
         error = "Adresse " + host + " nicht aufloesbar";
         return false;
     }
-    SOCKET s = ::socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-    if (s == INVALID_SOCKET) {
-        freeaddrinfo(result);
-        error = "Socket laesst sich nicht anlegen";
-        return false;
+
+    RawSocket handle = kInvalid;
+    for (addrinfo* it = result; it; it = it->ai_next) {
+        handle = ::socket(it->ai_family, it->ai_socktype, it->ai_protocol);
+        if (handle == kInvalid) continue;
+        if (::connect(handle, it->ai_addr, static_cast<int>(it->ai_addrlen)) == 0) break;
+        closeSocket(handle);
+        handle = kInvalid;
     }
-    if (::connect(s, result->ai_addr, static_cast<int>(result->ai_addrlen)) == SOCKET_ERROR) {
-        freeaddrinfo(result);
-        closesocket(s);
+    ::freeaddrinfo(result);
+
+    if (handle == kInvalid) {
         error = "Keine Verbindung zu " + host + ":" + service +
-                " (WLAN des Adapters verbunden?)";
+                " (ist das WLAN des Adapters verbunden?)";
         return false;
     }
-    freeaddrinfo(result);
-    socket_ = static_cast<unsigned long long>(s);
+
+    int one = 1;
+    ::setsockopt(handle, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&one),
+                 sizeof(one));
+    socket_ = static_cast<unsigned long long>(handle);
     name_ = host + ":" + service + " (WLAN)";
     return true;
 }
 
 bool TcpTransport::write(const std::string& data) {
-    if (socket_ == ~0ull) return false;
-    const int sent = ::send(static_cast<SOCKET>(socket_), data.data(),
-                            static_cast<int>(data.size()), 0);
-    return sent == static_cast<int>(data.size());
+    if (socket_ == kNoSocket) return false;
+    const auto sent = ::send(toRaw(socket_), data.data(), static_cast<int>(data.size()), 0);
+    return sent == static_cast<decltype(sent)>(data.size());
 }
 
 std::string TcpTransport::read(int timeoutMs) {
-    if (socket_ == ~0ull) return {};
-    SOCKET s = static_cast<SOCKET>(socket_);
-    DWORD tv = static_cast<DWORD>(timeoutMs);
-    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&tv), sizeof(tv));
+    if (socket_ == kNoSocket) return {};
+    const RawSocket s = toRaw(socket_);
+    setReceiveTimeout(s, timeoutMs);
     char buffer[512];
-    const int got = ::recv(s, buffer, sizeof(buffer), 0);
+    const auto got = ::recv(s, buffer, sizeof(buffer), 0);
     if (got <= 0) return {};
     return std::string(buffer, static_cast<size_t>(got));
 }
 
 void TcpTransport::flushInput() {
-    if (socket_ == ~0ull) return;
-    SOCKET s = static_cast<SOCKET>(socket_);
-    u_long nonblocking = 1;
-    ioctlsocket(s, FIONBIO, &nonblocking);
+    if (socket_ == kNoSocket) return;
+    const RawSocket s = toRaw(socket_);
+    setBlocking(s, false);
     char buffer[512];
     while (::recv(s, buffer, sizeof(buffer), 0) > 0) {
     }
-    nonblocking = 0;
-    ioctlsocket(s, FIONBIO, &nonblocking);
+    setBlocking(s, true);
 }
 
 }  // namespace caruspex

@@ -9,8 +9,6 @@
 #include <cctype>
 #include <cstdio>
 
-#pragma comment(lib, "setupapi.lib")
-
 namespace caruspex {
 namespace {
 
