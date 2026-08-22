@@ -99,6 +99,13 @@ public:
     const std::vector<std::string>& identification() const { return identification_; }
 
     bool readFaults(std::vector<Kwp1281Fault>& out, std::string& error);
+    // Anpassungskanal lesen: liefert den eingestellten Wert und die
+    // Messwertanzeige, die das Steuergeraet dazu ausgibt.
+    bool readAdaptation(int channel, int& value, std::vector<MeasuringValue>& out,
+                        std::string& error);
+    // Stellglieddiagnose: das Steuergeraet klappert der Reihe nach seine
+    // Aktoren durch und nennt jeweils den, der gerade laeuft.
+    bool actuatorTest(std::string& activeActuator, std::string& error);
     bool clearFaults(std::string& error);
     // Messwertblock lesen, liefert bis zu vier Werte.
     bool readGroup(int group, std::vector<MeasuringValue>& out, std::string& error);

@@ -4,6 +4,7 @@
 #include <cstdio>
 
 #include "core/Timing.h"
+#include "data/VagFaults.h"
 
 namespace caruspex {
 namespace {
@@ -265,6 +266,7 @@ bool Kwp1281::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
                 fault.code = code;
                 fault.status = payload[i + 2];
                 fault.sporadic = (payload[i + 2] & 0x80) != 0;
+                fault.text = describeVagFault(code);
                 out.push_back(fault);
             }
             if (!sendBlock(block::kAck, {}, error)) return false;
@@ -356,6 +358,74 @@ bool Kwp1281::basicSetting(int group, std::vector<MeasuringValue>& out, std::str
     for (size_t i = 0; i + 2 < payload.size(); i += 3) {
         out.push_back(decodeMeasurement(payload[i], payload[i + 1], payload[i + 2]));
     }
+    return true;
+}
+
+bool Kwp1281::readAdaptation(int channel, int& value, std::vector<MeasuringValue>& out,
+                             std::string& error) {
+    out.clear();
+    value = 0;
+    if (!connected_) {
+        error = "Nicht verbunden";
+        return false;
+    }
+    if (!sendBlock(block::kReadAdaptation, {static_cast<std::uint8_t>(channel)}, error)) {
+        return false;
+    }
+
+    std::uint8_t title = 0;
+    std::vector<std::uint8_t> payload;
+    if (!receiveBlock(title, payload, error)) return false;
+
+    if (title == block::kNotSupported) {
+        error = "Anpassungskanal " + std::to_string(channel) + " gibt es hier nicht";
+        return false;
+    }
+    if (title != block::kAdaptationValue && title != block::kGroupReading) {
+        error = "Unerwartete Antwort " + hex(title) + " auf den Anpassungskanal";
+        return false;
+    }
+    // Zuerst die vier Anzeigefelder, danach zwei Bytes mit dem Kanalwert.
+    size_t i = 0;
+    for (; i + 2 < payload.size() && out.size() < 4; i += 3) {
+        out.push_back(decodeMeasurement(payload[i], payload[i + 1], payload[i + 2]));
+    }
+    if (i + 1 < payload.size()) value = (payload[i] << 8) | payload[i + 1];
+    return true;
+}
+
+bool Kwp1281::actuatorTest(std::string& activeActuator, std::string& error) {
+    activeActuator.clear();
+    if (!connected_) {
+        error = "Nicht verbunden";
+        return false;
+    }
+    if (!sendBlock(block::kActuatorTest, {}, error)) return false;
+
+    std::uint8_t title = 0;
+    std::vector<std::uint8_t> payload;
+    if (!receiveBlock(title, payload, error)) return false;
+
+    if (title == block::kNotSupported) {
+        error = "Stellglieddiagnose kennt dieses Steuergeraet nicht";
+        return false;
+    }
+    if (title == block::kAck) {
+        activeActuator = "Ende der Stellglieddiagnose";
+        return true;
+    }
+    // Das Steuergeraet nennt das laufende Stellglied entweder als Text
+    // oder als zweistellige Nummer.
+    if (title == block::kAsciiData) {
+        for (std::uint8_t byte : payload) activeActuator += static_cast<char>(byte & 0x7F);
+        return true;
+    }
+    if (payload.size() >= 2) {
+        const int number = (payload[0] << 8) | payload[1];
+        activeActuator = "Stellglied " + std::to_string(number);
+        return true;
+    }
+    activeActuator = "unbekanntes Stellglied";
     return true;
 }
 

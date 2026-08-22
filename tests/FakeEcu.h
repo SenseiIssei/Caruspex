@@ -25,6 +25,12 @@ public:
     std::vector<std::uint8_t> groupPayload{0x01, 0x40, 0x64, 0x05, 0x28, 0x8C,
                                            0x21, 0x00, 0x50, 0x00, 0x00, 0x00};
     bool supportsBasicSetting = true;
+    bool supportsAdaptation = true;
+    bool supportsActuatorTest = true;
+    int adaptationValue = 128;
+    std::string actuatorName = "Tankentlueftungsventil N80";
+    int lastAdaptationChannel = -1;
+    int actuatorTestCount = 0;
     bool clearWasCalled = false;
     int lastGroupRequested = -1;
     int lastBasicSettingGroup = -1;

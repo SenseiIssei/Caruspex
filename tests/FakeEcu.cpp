@@ -138,6 +138,29 @@ void FakeEcu::handleCompleteBlock() {
             }
             break;
 
+        case block::kReadAdaptation: {
+            lastAdaptationChannel = payload.empty() ? -1 : payload[0];
+            if (!supportsAdaptation) {
+                beginBlock(block::kNotSupported, {});
+                break;
+            }
+            std::vector<std::uint8_t> reply = groupPayload;
+            reply.push_back(static_cast<std::uint8_t>((adaptationValue >> 8) & 0xFF));
+            reply.push_back(static_cast<std::uint8_t>(adaptationValue & 0xFF));
+            beginBlock(block::kAdaptationValue, reply);
+            break;
+        }
+
+        case block::kActuatorTest:
+            ++actuatorTestCount;
+            if (!supportsActuatorTest) {
+                beginBlock(block::kNotSupported, {});
+            } else {
+                beginBlock(block::kAsciiData,
+                           std::vector<std::uint8_t>(actuatorName.begin(), actuatorName.end()));
+            }
+            break;
+
         case block::kEndOutput:
             ++endOutputCount;
             awake_ = false;

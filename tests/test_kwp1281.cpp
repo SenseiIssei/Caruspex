@@ -161,3 +161,62 @@ TEST_CASE("Steuergeraetenamen sind hinterlegt", "[kwp1281]") {
     REQUIRE(ecuName(Ecu::Abs) == "03 Bremsenelektronik (ABS)");
     REQUIRE(knownEcus().size() >= 10);
 }
+
+TEST_CASE("Anpassungskanal lesen", "[kwp1281]") {
+    FakeEcu ecu;
+    ecu.adaptationValue = 132;
+    Kwp1281 protocol(ecu);
+    std::string error;
+    REQUIRE(protocol.connect(Ecu::Engine, error));
+
+    int value = 0;
+    std::vector<MeasuringValue> shown;
+    REQUIRE(protocol.readAdaptation(1, value, shown, error));
+    REQUIRE(ecu.lastAdaptationChannel == 1);
+    REQUIRE(value == 132);
+    REQUIRE(shown.size() == 4);
+}
+
+TEST_CASE("Steuergeraete ohne Anpassung melden das sauber", "[kwp1281]") {
+    FakeEcu ecu;
+    ecu.supportsAdaptation = false;
+    Kwp1281 protocol(ecu);
+    std::string error;
+    REQUIRE(protocol.connect(Ecu::Engine, error));
+
+    int value = 0;
+    std::vector<MeasuringValue> shown;
+    REQUIRE_FALSE(protocol.readAdaptation(99, value, shown, error));
+    REQUIRE_FALSE(error.empty());
+}
+
+TEST_CASE("Stellglieddiagnose nennt das laufende Bauteil", "[kwp1281]") {
+    FakeEcu ecu;
+    ecu.actuatorName = "Tankentlueftungsventil N80";
+    Kwp1281 protocol(ecu);
+    std::string error;
+    REQUIRE(protocol.connect(Ecu::Engine, error));
+
+    std::string actuator;
+    REQUIRE(protocol.actuatorTest(actuator, error));
+    REQUIRE(actuator == "Tankentlueftungsventil N80");
+    REQUIRE(ecu.actuatorTestCount == 1);
+}
+
+TEST_CASE("VAG-Fehlernummern bekommen Klartext", "[kwp1281][vag]") {
+    FakeEcu ecu;
+    // 16486 entspricht P0102, 561 ist eine alte VAG-eigene Nummer.
+    ecu.faultPayload = {0x40, 0x66, 0x24, 0x02, 0x31, 0x24};
+    Kwp1281 protocol(ecu);
+    std::string error;
+    REQUIRE(protocol.connect(Ecu::Engine, error));
+
+    std::vector<Kwp1281Fault> faults;
+    REQUIRE(protocol.readFaults(faults, error));
+    REQUIRE(faults.size() == 2);
+    REQUIRE(faults[0].code == 16486);
+    REQUIRE(faults[0].text.find("P0102") != std::string::npos);
+    REQUIRE(faults[0].text.find("Luftmassenmesser") != std::string::npos);
+    REQUIRE(faults[1].code == 561);
+    REQUIRE(faults[1].text.find("Gemischadaption") != std::string::npos);
+}

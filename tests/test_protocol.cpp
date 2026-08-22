@@ -6,6 +6,7 @@
 #include "data/DtcDatabase.h"
 #include "data/DtcLocation.h"
 #include "data/Pids.h"
+#include "data/VagFaults.h"
 #include "data/Vehicles.h"
 
 using namespace caruspex;
@@ -99,4 +100,21 @@ TEST_CASE("Fehlercodes zeigen auf die richtige Stelle am Fahrzeug", "[location]"
     // Zu jeder Zone gehoert ein Hinweis, wo man nachsieht.
     REQUIRE_FALSE(locateDtc("P0507").hint.empty());
     REQUIRE_FALSE(locateDtc("P0507").name.empty());
+}
+
+TEST_CASE("VAG-Nummern werden in P-Codes uebersetzt", "[vag]") {
+    // Ab 16384 sind es umgerechnete EOBD-Codes.
+    REQUIRE(vagCodeToPCode(16486) == "P0102");
+    REQUIRE(vagCodeToPCode(16384) == "P0000");
+    REQUIRE(vagCodeToPCode(17747) == "P1363");
+    // Darunter gibt es keinen P-Code.
+    REQUIRE(vagCodeToPCode(561).empty());
+    REQUIRE(vagCodeToPCode(0).empty());
+
+    REQUIRE(describeVagFault(16486).find("Luftmassenmesser") != std::string::npos);
+    REQUIRE(describeVagFault(522).find("Kuehlmitteltemperaturgeber") != std::string::npos);
+    REQUIRE(describeVagFault(1249).find("Zylinder 1") != std::string::npos);
+    // Unbekanntes faellt nicht um.
+    REQUIRE_FALSE(describeVagFault(9999).empty());
+    REQUIRE(vagFaultCount() > 60);
 }

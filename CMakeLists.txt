@@ -36,6 +36,7 @@ add_library(caruspex_core STATIC
     src/data/Pids.cpp
     src/data/Vehicles.cpp
     src/data/DtcLocation.cpp
+    src/data/VagFaults.cpp
 )
 target_include_directories(caruspex_core PUBLIC src)
 
