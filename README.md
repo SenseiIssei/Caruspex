@@ -1,7 +1,5 @@
 # Caruspex
 
-[![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
-
 Freie Fahrzeugdiagnose für Windows, Linux und macOS. Ein Kabel oder Dongle, eine Software, alles auf Deutsch.
 
 Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
@@ -95,15 +93,14 @@ Getestet ist das gegen ein nachgebautes Steuergerät in `tests/FakeEcu.cpp`, das
 
 Noch nicht gebaut: herstellerspezifische Diagnose über CAN mit TP 2.0 für Fahrzeuge ab etwa 2004.
 
-## Fertige Programme
+## Was gebaut wird
 
-Jeder Lauf der CI baut für alle drei Systeme sowohl die Oberfläche als auch das Konsolenwerkzeug. Die Pakete hängen als Artefakte am jeweiligen [Workflow-Lauf](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml):
+Aus derselben Quelle entstehen auf jedem System zwei Programme:
 
-| System | Paket | Inhalt |
-|---|---|---|
-| Windows | `caruspex-windows-x64` | `caruspex.exe`, `caruspex_cli.exe`, Qt-Bibliotheken |
-| Linux | `caruspex-linux-x64` | `caruspex`, `caruspex_cli` |
-| macOS | `caruspex-macos` | `caruspex.app`, `caruspex_cli` |
+| Ergebnis | Was es ist |
+|---|---|
+| `caruspex` bzw. `caruspex.exe` bzw. `Caruspex.app` | die Anwendung mit Oberfläche |
+| `caruspex_cli` bzw. `caruspex_cli.exe` | Konsolenwerkzeug auf demselben Kern, skriptbar |
 
 ## Selbst bauen
 
