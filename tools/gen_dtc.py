@@ -89,6 +89,49 @@ for base, (side, bank) in _CAM.items():
         f"Steuerzeiten {side} Bank {bank} - zu weit in Richtung spaet")
 
 # --------------------------------------------------------------------------
+# Familie 7a: Getriebe (P07xx bis P08xx)
+# --------------------------------------------------------------------------
+for gear in range(1, 9):
+    put(f"P{0x730 + gear:04X}", f"Falsches Uebersetzungsverhaeltnis im {gear}. Gang")
+for solenoid, letter in enumerate("ABCDEFGH"):
+    base = 0x750 + solenoid * 5
+    put(f"P{base:04X}", f"Schaltmagnetventil {letter} - Stromkreis")
+    put(f"P{base + 1:04X}", f"Schaltmagnetventil {letter} - Funktion oder Rastung")
+    put(f"P{base + 2:04X}", f"Schaltmagnetventil {letter} - elektrischer Fehler")
+    put(f"P{base + 3:04X}", f"Schaltmagnetventil {letter} - Signal setzt aus")
+
+# --------------------------------------------------------------------------
+# Familie 7b: Fahrwerk, Raeder und Bremsen (C0xxx)
+# --------------------------------------------------------------------------
+_WHEELS = {0x035: "vorne links", 0x040: "vorne rechts",
+           0x045: "hinten links", 0x050: "hinten rechts"}
+for base, where in _WHEELS.items():
+    put(f"C{base:04X}", f"Raddrehzahlfuehler {where} - Stromkreis")
+    put(f"C{base + 1:04X}", f"Raddrehzahlfuehler {where} - Signal fehlt oder unplausibel")
+    put(f"C{base + 2:04X}", f"Raddrehzahlfuehler {where} - Signal setzt zeitweise aus")
+
+_VALVES = {0x055: "vorne links", 0x060: "vorne rechts",
+           0x065: "hinten links", 0x070: "hinten rechts"}
+for base, where in _VALVES.items():
+    put(f"C{base:04X}", f"ABS-Einlassventil {where} - Stromkreis")
+    put(f"C{base + 1:04X}", f"ABS-Auslassventil {where} - Stromkreis")
+
+# --------------------------------------------------------------------------
+# Familie 7c: Rueckhaltesysteme (B0xxx)
+# --------------------------------------------------------------------------
+_AIRBAGS = {
+    0x001: "Fahrerairbag Stufe 1", 0x002: "Fahrerairbag Stufe 2",
+    0x010: "Beifahrerairbag Stufe 1", 0x011: "Beifahrerairbag Stufe 2",
+    0x020: "Seitenairbag vorne links", 0x028: "Seitenairbag vorne rechts",
+    0x030: "Kopfairbag links", 0x038: "Kopfairbag rechts",
+    0x051: "Gurtstraffer Fahrer", 0x052: "Gurtstraffer Beifahrer",
+}
+for base, what in _AIRBAGS.items():
+    put(f"B{base:04X}", f"{what} - Stromkreis")
+    put(f"B{base + 3:04X}", f"{what} - Widerstand zu klein")
+    put(f"B{base + 4:04X}", f"{what} - Widerstand zu gross")
+
+# --------------------------------------------------------------------------
 # Familie 7: Fehlende Busbotschaften (U01xx)
 # --------------------------------------------------------------------------
 _MODULES = {

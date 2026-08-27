@@ -31,6 +31,7 @@
 #include "app/pages/FaultsPage.h"
 #include "app/pages/KklToolsPage.h"
 #include "app/pages/LexiconPage.h"
+#include "app/pages/MonitorPage.h"
 #include "app/pages/LivePage.h"
 #include "app/pages/ScanPage.h"
 #include "app/pages/StatsPage.h"
@@ -117,11 +118,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     stats_ = new StatsPage;
     scan_ = new ScanPage;
     kklTools_ = new KklToolsPage;
+    monitor_ = new MonitorPage;
     lexicon_ = new LexiconPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
     addNavigationEntry(tr("Live-Werte"), live_);
     addNavigationEntry(tr("Pruefen und Werkzeuge"), tools_);
+    addNavigationEntry(tr("Bauteilueberwachung"), monitor_);
     addNavigationEntry(tr("Drosselklappe"), throttle_);
     addNavigationEntry(tr("Statistik"), stats_);
     addNavigationEntry(tr("Alle Steuergeraete"), scan_);
@@ -150,6 +153,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::status, tools_, &ToolsPage::onStatus);
     connect(worker, &Worker::vehicleInfo, tools_, &ToolsPage::onVehicleInfo);
     connect(worker, &Worker::rawReply, tools_, &ToolsPage::onRawReply);
+    connect(worker, &Worker::monitorResults, monitor_,
+            &MonitorPage::onMonitorResults);
+    connect(worker, &Worker::oxygenTests, monitor_, &MonitorPage::onOxygenTests);
+    connect(worker, &Worker::identity, monitor_, &MonitorPage::onIdentity);
     connect(worker, &Worker::liveValue, throttle_, &ThrottlePage::onLiveValue);
     connect(worker, &Worker::liveValue, stats_, &StatsPage::onLiveValue);
     connect(worker, &Worker::scanStarted, scan_, &ScanPage::onScanStarted);
@@ -188,6 +195,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             &Session::bruteForceClearRequested);
     connect(tools_, &ToolsPage::detailsRequested, &session_, &Session::readDetailsRequested);
     connect(tools_, &ToolsPage::rawRequested, &session_, &Session::sendRawRequested);
+    connect(monitor_, &MonitorPage::readRequested, &session_,
+            &Session::readMonitorsRequested);
     connect(live_, &LivePage::startRequested, &session_, &Session::startLiveRequested);
     connect(live_, &LivePage::stopRequested, &session_, &Session::stopLiveRequested);
     connect(throttle_, &ThrottlePage::kklConnectRequested, &session_,
@@ -425,6 +434,7 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     faults_->setConnected(true);
     live_->setConnected(true);
     tools_->setConnected(true);
+    monitor_->setConnected(true);
     throttle_->setEobdConnected(true);
     stats_->setConnected(true);
 }
@@ -455,6 +465,7 @@ void MainWindow::onClosed() {
     faults_->setConnected(false);
     live_->setConnected(false);
     tools_->setConnected(false);
+    monitor_->setConnected(false);
     throttle_->setEobdConnected(false);
     stats_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));

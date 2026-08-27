@@ -50,6 +50,7 @@ private:
     QComboBox* portBox_ = nullptr;
     QComboBox* groupBox_ = nullptr;
     QComboBox* sessionBox_ = nullptr;
+    QWidget* sessionRow_ = nullptr;
     QLabel* sessionHint_ = nullptr;
     QPushButton* rescanButton_ = nullptr;
     QPushButton* connectButton_ = nullptr;

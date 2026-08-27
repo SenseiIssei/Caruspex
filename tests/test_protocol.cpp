@@ -1,10 +1,12 @@
 // Tests fuer die Teile, die man ohne Auto pruefen kann: Parser und Datenbanken.
 
+#include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include "core/Elm327.h"
 #include "data/DtcDatabase.h"
 #include "data/DtcLocation.h"
+#include "data/MonitorTests.h"
 #include "data/Pids.h"
 #include "data/VagFaults.h"
 #include "data/Vehicles.h"
@@ -117,4 +119,82 @@ TEST_CASE("VAG-Nummern werden in P-Codes uebersetzt", "[vag]") {
     // Unbekanntes faellt nicht um.
     REQUIRE_FALSE(describeVagFault(9999).empty());
     REQUIRE(vagFaultCount() > 60);
+}
+
+TEST_CASE("Der Messwertsatz deckt den Standard ab", "[pids]") {
+    REQUIRE(pidTable().size() >= 70);
+    // Stichproben quer durch die Bereiche.
+    for (int pid : {0x03, 0x04, 0x05, 0x0C, 0x10, 0x11, 0x14, 0x1C, 0x24,
+                    0x2C, 0x33, 0x3C, 0x42, 0x45, 0x51, 0x5C, 0x5E, 0x63}) {
+        INFO("PID 0x" << std::hex << pid);
+        REQUIRE(findPid(pid) != nullptr);
+    }
+}
+
+TEST_CASE("Die neuen Messwerte rechnen richtig", "[pids]") {
+    // Katalysatortemperatur: (256A+B)/10 - 40
+    const PidSpec* cat = findPid(0x3C);
+    REQUIRE(cat->unit == std::string("C"));
+    REQUIRE(cat->calc({0x13, 0x88}) == Catch::Approx(5000 / 10.0 - 40.0));
+
+    // Breitbandsonde: Lambda = (256A+B) * 2 / 65536
+    const PidSpec* wide = findPid(0x24);
+    REQUIRE(wide->calc({0x80, 0x00, 0x00, 0x00}) == Catch::Approx(1.0));
+
+    // Bezugsdrehmoment ist eine schlichte 16-Bit-Zahl.
+    REQUIRE(findPid(0x63)->calc({0x01, 0x00}) == Catch::Approx(256.0));
+
+    // Einspritzbeginn: ((256A+B) - 26880) / 128
+    REQUIRE(findPid(0x5D)->calc({0x69, 0x00}) == Catch::Approx((26880 - 26880) / 128.0));
+
+    // Gemischkorrektur Bank 2 verhaelt sich wie Bank 1.
+    REQUIRE(findPid(0x08)->calc({128}) == Catch::Approx(0.0));
+    REQUIRE(findPid(0x09)->calc({0}) == Catch::Approx(-100.0));
+}
+
+TEST_CASE("Statuswerte kommen als Text, nicht als Zahl", "[pids]") {
+    const PidSpec* fuel = findPid(0x03);
+    REQUIRE(fuel->text);
+    REQUIRE(fuel->text(2).find("geschlossener Regelkreis") != std::string::npos);
+
+    const PidSpec* type = findPid(0x51);
+    REQUIRE(type->text);
+    REQUIRE(type->text(4) == "Diesel");
+    REQUIRE(type->text(1) == "Benzin");
+
+    const PidSpec* norm = findPid(0x1C);
+    REQUIRE(norm->text(6).find("EOBD") != std::string::npos);
+}
+
+TEST_CASE("Bauteilueberwachung wird richtig umgerechnet", "[monitor]") {
+    std::string unit;
+    // Kennung 0x0B: Spannung in Millivolt.
+    REQUIRE(monitorScale(0x0B, 1000, unit) == Catch::Approx(1.0));
+    REQUIRE(unit == "V");
+    // Kennung 0x24: Temperatur, ein Zehntel Grad mit Versatz.
+    REQUIRE(monitorScale(0x24, 800, unit) == Catch::Approx(40.0));
+    REQUIRE(unit == "Grad C");
+    // Kennung 0x1E: Drehzahl in Vierteln.
+    REQUIRE(monitorScale(0x1E, 4000, unit) == Catch::Approx(1000.0));
+    REQUIRE(unit == "1/min");
+    // Unbekannte Kennung liefert den Rohwert statt Unsinn.
+    REQUIRE(monitorScale(0xFE, 1234, unit) == Catch::Approx(1234.0));
+
+    REQUIRE_FALSE(monitorTestName(0x21).empty());
+    REQUIRE(monitorComponentName(0x21).find("Katalysator") != std::string::npos);
+    // Unbekanntes bleibt benannt statt leer.
+    REQUIRE_FALSE(monitorTestName(0xF3).empty());
+    REQUIRE_FALSE(monitorComponentName(0xF3).empty());
+}
+
+TEST_CASE("Lambdasondenpruefung wird richtig umgerechnet", "[monitor]") {
+    std::string unit;
+    // Spannungstests: fünf Millivolt je Schritt.
+    REQUIRE(oxygenScale(0x01, 100, unit) == Catch::Approx(0.5));
+    REQUIRE(unit == "V");
+    // Zeittests: vier Millisekunden je Schritt.
+    REQUIRE(oxygenScale(0x05, 250, unit) == Catch::Approx(1.0));
+    REQUIRE(unit == "s");
+    REQUIRE(oxygenTestName(0x01).find("mager nach fett") != std::string::npos);
+    REQUIRE_FALSE(oxygenTestName(0x7F).empty());
 }

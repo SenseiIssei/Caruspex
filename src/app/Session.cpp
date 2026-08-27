@@ -538,6 +538,56 @@ void Worker::runActuatorTest() {
     emit actuatorResult(QString::fromStdString(actuator));
 }
 
+// Modus 06, 05 und 09 auf einmal: alles, was das Steuergeraet ueber sich und
+// seine laufenden Selbsttests hergibt.
+void Worker::readMonitors() {
+    if (!obd_) {
+        emit monitorResults({}, QObject::tr("Nicht verbunden."));
+        return;
+    }
+    emit busy(true);
+
+    const VehicleIdentity id = obd_->readIdentity();
+    emit identity(QString::fromStdString(id.vin),
+                  QString::fromStdString(id.calibrationId),
+                  QString::fromStdString(id.calibrationVerification),
+                  QString::fromStdString(id.ecuName));
+
+    std::string note;
+    QVector<MonitorRow> rows;
+    for (const MonitorResult& r : obd_->readMonitorResults(note)) {
+        MonitorRow row;
+        row.name = QString::fromStdString(r.name);
+        row.component = QString::fromStdString(r.component);
+        row.value = r.value;
+        row.minimum = r.minimum;
+        row.maximum = r.maximum;
+        row.unit = QString::fromStdString(r.unit);
+        row.hasMinimum = r.hasMinimum;
+        row.hasMaximum = r.hasMaximum;
+        row.passed = r.passed;
+        rows.push_back(row);
+    }
+    emit monitorResults(rows, QString::fromStdString(note));
+
+    std::string oxygenNote;
+    QVector<OxygenRow> oxygenRows;
+    for (const OxygenSensorTest& t : obd_->readOxygenSensorTests(oxygenNote)) {
+        OxygenRow row;
+        row.name = QString::fromStdString(t.name);
+        row.sensor = t.sensor;
+        row.value = t.value;
+        row.unit = QString::fromStdString(t.unit);
+        oxygenRows.push_back(row);
+    }
+    emit oxygenTests(oxygenRows, QString::fromStdString(oxygenNote));
+
+    emit busy(false);
+    emit logLine(QStringLiteral("Bauteilueberwachung gelesen: %1 Tests, %2 Sondenpruefungen.")
+                     .arg(rows.size())
+                     .arg(oxygenRows.size()));
+}
+
 // --- Session ----------------------------------------------------------------
 
 Session::Session(QObject* parent) : QObject(parent) {
@@ -547,6 +597,10 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<QVector<LiveRow>>("QVector<caruspex::LiveRow>");
     qRegisterMetaType<StatusRow>("caruspex::StatusRow");
     qRegisterMetaType<EcuScanRow>("caruspex::EcuScanRow");
+    qRegisterMetaType<MonitorRow>("caruspex::MonitorRow");
+    qRegisterMetaType<QVector<MonitorRow>>("QVector<caruspex::MonitorRow>");
+    qRegisterMetaType<OxygenRow>("caruspex::OxygenRow");
+    qRegisterMetaType<QVector<OxygenRow>>("QVector<caruspex::OxygenRow>");
     qRegisterMetaType<QVector<int>>("QVector<int>");
 
     worker_ = new Worker();
@@ -573,6 +627,8 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,
             &Worker::runActuatorTest);
+    connect(this, &Session::readMonitorsRequested, worker_,
+            &Worker::readMonitors);
     connect(this, &Session::basicSettingSessionRequested, worker_,
             &Worker::setBasicSettingSession);
 

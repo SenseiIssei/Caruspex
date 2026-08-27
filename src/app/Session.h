@@ -52,6 +52,27 @@ struct EcuScanRow {
     QString note;
 };
 
+// Ein Testergebnis aus der Bauteilueberwachung, fuer die Oberflaeche
+// aufbereitet.
+struct MonitorRow {
+    QString name;
+    QString component;
+    double value = 0.0;
+    double minimum = 0.0;
+    double maximum = 0.0;
+    QString unit;
+    bool hasMinimum = false;
+    bool hasMaximum = false;
+    bool passed = true;
+};
+
+struct OxygenRow {
+    QString name;
+    int sensor = 0;
+    double value = 0.0;
+    QString unit;
+};
+
 struct StatusRow {
     bool valid = false;
     bool mil = false;
@@ -92,6 +113,7 @@ public slots:
     void bruteForceClear(int attempts);
     void readAdaptationChannel(int channel);
     void runActuatorTest();
+    void readMonitors();
     void setBasicSettingSession(int mode);
 
 public:
@@ -123,6 +145,12 @@ signals:
     void adaptationResult(int channel, int value, const QVector<caruspex::LiveRow>& shown);
     void actuatorResult(const QString& actuator);
     void kklProtocol(const QString& protocolName, bool isKwp2000);
+    void monitorResults(const QVector<caruspex::MonitorRow>& rows,
+                        const QString& note);
+    void oxygenTests(const QVector<caruspex::OxygenRow>& rows,
+                     const QString& note);
+    void identity(const QString& vin, const QString& calibration,
+                  const QString& checksum, const QString& ecuName);
 
 private slots:
     void pollTick();
@@ -179,6 +207,7 @@ signals:
     void adaptationRequested(int channel);
     void actuatorTestRequested();
     void basicSettingSessionRequested(int mode);
+    void readMonitorsRequested();
 
 private:
     QThread thread_;
@@ -192,3 +221,5 @@ Q_DECLARE_METATYPE(caruspex::FaultRow)
 Q_DECLARE_METATYPE(caruspex::LiveRow)
 Q_DECLARE_METATYPE(caruspex::StatusRow)
 Q_DECLARE_METATYPE(caruspex::EcuScanRow)
+Q_DECLARE_METATYPE(caruspex::MonitorRow)
+Q_DECLARE_METATYPE(caruspex::OxygenRow)

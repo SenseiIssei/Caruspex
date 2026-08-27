@@ -51,6 +51,14 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Bewusst nur lesend, ein falscher Wert im falschen Kanal legt den Motor lahm
 ![Anpassung und Stellglieder](docs/screenshot-anpassung.png)
 
+**Bauteilüberwachung (Modus 06 und 05)**
+- Der ausführlichste Teil von EOBD: zu jedem internen Selbsttest der Messwert samt erlaubter Unter- und Obergrenze
+- Damit sieht man, wie knapp ein Bauteil noch im Rahmen liegt, lange bevor die Fehlerlampe angeht
+- Lambdasondenprüfung mit Schwellspannungen und Umschaltzeiten
+- Kalibrierstand, Prüfsumme und Name des Steuergeräts aus Modus 09
+- Prüfbericht als Textdatei
+![Bauteilprüfung](docs/screenshot-bauteilpruefung.png)
+
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
 - Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit

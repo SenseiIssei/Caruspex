@@ -39,6 +39,7 @@ add_library(caruspex_core STATIC
     src/data/Vehicles.cpp
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
+    src/data/MonitorTests.cpp
 )
 target_include_directories(caruspex_core PUBLIC src)
 
@@ -93,6 +94,8 @@ if(CARUSPEX_GUI)
         src/app/pages/ScanPage.h
         src/app/pages/KklToolsPage.cpp
         src/app/pages/KklToolsPage.h
+        src/app/pages/MonitorPage.cpp
+        src/app/pages/MonitorPage.h
         src/app/pages/LexiconPage.cpp
         src/app/pages/LexiconPage.h
     )

@@ -151,7 +151,11 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     // Nur bei KWP2000 sichtbar: dort gibt es keinen eigenen Dienst fuer die
     // Grundeinstellung, sondern es wird eine andere Sitzungsart eroeffnet.
     // Welche das Steuergeraet verlangt, ist nicht einheitlich.
-    auto* sessionRow = new QHBoxLayout;
+    // Die ganze Zeile wird versteckt, nicht nur das Auswahlfeld, sonst bleibt
+    // die Beschriftung ohne Inhalt stehen.
+    auto* sessionWidget = new QWidget;
+    auto* sessionRow = new QHBoxLayout(sessionWidget);
+    sessionRow->setContentsMargins(0, 0, 0, 0);
     sessionBox_ = new QComboBox;
     sessionBox_->addItem(tr("Sitzung 0x85 (Anpassung, ueblich)"), 0x85);
     sessionBox_->addItem(tr("Sitzung 0x86"), 0x86);
@@ -160,7 +164,8 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     sessionRow->addWidget(new QLabel(tr("Sitzungsart:")));
     sessionRow->addWidget(sessionBox_, 1);
     sessionRow->addStretch();
-    body->addLayout(sessionRow);
+    body->addWidget(sessionWidget);
+    sessionRow_ = sessionWidget;
     connect(sessionBox_, &QComboBox::currentIndexChanged, this, [this](int) {
         emit basicSettingSessionChanged(sessionBox_->currentData().toInt());
     });
@@ -236,7 +241,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     outer->addWidget(scroll, 1);
 
     refreshPorts();
-    sessionBox_->setVisible(false);
+    sessionRow_->setVisible(false);
     sessionHint_->setVisible(false);
     updateAvailability();
 }
@@ -276,7 +281,7 @@ void ThrottlePage::setKklConnected(bool connected, const QString& identification
 void ThrottlePage::setProtocol(const QString& protocolName, bool isKwp2000) {
     isKwp2000_ = isKwp2000;
     // Die Sitzungsart ist nur bei KWP2000 ein Thema.
-    sessionBox_->setVisible(isKwp2000);
+    sessionRow_->setVisible(isKwp2000);
     sessionHint_->setVisible(isKwp2000);
     identification_->setText(tr("%1\n%2").arg(protocolName, identification_->text()));
 }
