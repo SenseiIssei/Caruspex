@@ -21,6 +21,7 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
+class TitleBar;
 class DashboardPage;
 class FaultsPage;
 class LivePage;
@@ -40,6 +41,18 @@ public:
     // Startparameter --tcp host:port
     void autoConnectTcp(const QString& address);
 
+protected:
+    // Faengt Mausbewegungen ab, um an den Fensterkanten die Groessenaenderung
+    // anzubieten. Die Kinderwidgets bekommen die Ereignisse sonst zuerst.
+    bool eventFilter(QObject* watched, QEvent* event) override;
+    void changeEvent(QEvent* event) override;
+#ifdef Q_OS_WIN
+    // Unter Windows uebernimmt das Betriebssystem die Groessenaenderung, wenn
+    // man ihm bei WM_NCHITTEST sagt, wo die Raender liegen. Das gibt die
+    // richtigen Zeiger, das Andocken und das Ziehen ueber Bildschirmgrenzen.
+    bool nativeEvent(const QByteArray& type, void* message, qintptr* result) override;
+#endif
+
 private slots:
     void refreshPorts();
     void toggleConnection();
@@ -52,11 +65,16 @@ private slots:
 
 private:
     QWidget* buildSidebar();
+    // Liefert die Kanten, an denen der Zeiger gerade steht, sonst leer.
+    Qt::Edges edgesAt(const QPoint& windowPosition) const;
+    void toggleMaximise();
     void addNavigationEntry(const QString& text, QWidget* page);
     QString protocolOrderForSelection() const;
 
     Session session_;
 
+    TitleBar* titleBar_ = nullptr;
+    QWidget* frame_ = nullptr;
     QStackedWidget* pages_ = nullptr;
     QButtonGroup* navigation_ = nullptr;
     QVBoxLayout* navigationLayout_ = nullptr;

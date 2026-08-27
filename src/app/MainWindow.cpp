@@ -1,5 +1,11 @@
 #include "app/MainWindow.h"
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <windowsx.h>
+#endif
+
+#include <QApplication>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
@@ -12,10 +18,15 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPainterPath>
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <QWindow>
 
 #include "app/Theme.h"
+#include "app/TitleBar.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
 #include "app/pages/KklToolsPage.h"
@@ -30,9 +41,66 @@
 
 namespace caruspex {
 
+namespace {
+
+// Wie breit der Streifen an den Fensterkanten ist, in dem der Zeiger die
+// Groessenaenderung anbietet.
+constexpr int kResizeMargin = 6;
+constexpr int kCornerRadius = 12;
+
+// Zeichnet den abgerundeten Fensterhintergrund. Ohne Fensterrahmen malt das
+// sonst niemand.
+class WindowFrame : public QWidget {
+public:
+    explicit WindowFrame(QWidget* parent = nullptr) : QWidget(parent) {
+        setAttribute(Qt::WA_StyledBackground, false);
+    }
+    void setRounded(bool rounded) {
+        rounded_ = rounded;
+        update();
+    }
+
+protected:
+    void paintEvent(QPaintEvent*) override {
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
+        const double radius = rounded_ ? kCornerRadius : 0.0;
+        const QRectF box = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
+        QPainterPath path;
+        path.addRoundedRect(box, radius, radius);
+        p.fillPath(path, theme::color::background);
+        p.setPen(QPen(theme::color::borderBright, 1.0));
+        p.drawPath(path);
+    }
+
+private:
+    bool rounded_ = true;
+};
+
+}  // namespace
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle(tr("Caruspex - Fahrzeugdiagnose"));
     resize(1360, 880);
+
+    // Rahmenlos mit eigener Titelleiste. Durchsichtiger Hintergrund, damit die
+    // abgerundeten Ecken wirklich rund sind und nicht eckig unterlegt.
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setMouseTracking(true);
+    qApp->installEventFilter(this);
+
+    auto* frame = new WindowFrame;
+    frame_ = frame;
+    auto* frameLayout = new QVBoxLayout(frame);
+    frameLayout->setContentsMargins(1, 1, 1, 1);
+    frameLayout->setSpacing(0);
+
+    titleBar_ = new TitleBar;
+    frameLayout->addWidget(titleBar_);
+    connect(titleBar_, &TitleBar::minimiseRequested, this, &QWidget::showMinimized);
+    connect(titleBar_, &TitleBar::maximiseToggled, this, &MainWindow::toggleMaximise);
+    connect(titleBar_, &TitleBar::closeRequested, this, &QWidget::close);
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -60,7 +128,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     addNavigationEntry(tr("Anpassung und Stellglieder"), kklTools_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     layout->addWidget(pages_, 1);
-    setCentralWidget(central);
+    frameLayout->addWidget(central, 1);
+    setCentralWidget(frame_);
 
     Worker* worker = session_.worker();
 
@@ -176,10 +245,12 @@ QWidget* MainWindow::buildSidebar() {
     root->addWidget(separator);
 
     // Fahrzeug
-    root->addWidget(new QLabel(tr("Fahrzeug")));
+    root->addWidget(new QLabel(tr("Fahrzeug (optional)")));
     brandBox_ = new QComboBox;
     for (const std::string& b : vehicleBrands()) brandBox_->addItem(QString::fromStdString(b));
-    brandBox_->setCurrentText(QStringLiteral("Audi"));
+    // Standardmaessig automatisch. Die Auswahl bestimmt nur, welches Protokoll
+    // zuerst probiert wird, sie ist eine Abkuerzung und keine Voraussetzung.
+    brandBox_->setCurrentText(QStringLiteral("Automatisch erkennen"));
     root->addWidget(brandBox_);
 
     auto* yearRow = new QHBoxLayout;
@@ -392,6 +463,129 @@ void MainWindow::onBusy(bool active) {
 
 void MainWindow::appendLog(const QString& line) {
     log_->appendPlainText(QDateTime::currentDateTime().toString("HH:mm:ss") + "  " + line);
+}
+
+// --- Rahmenloses Fenster ----------------------------------------------------
+
+Qt::Edges MainWindow::edgesAt(const QPoint& p) const {
+    if (isMaximized() || isFullScreen()) return {};
+    Qt::Edges edges;
+    if (p.x() <= kResizeMargin) edges |= Qt::LeftEdge;
+    if (p.x() >= width() - kResizeMargin) edges |= Qt::RightEdge;
+    if (p.y() <= kResizeMargin) edges |= Qt::TopEdge;
+    if (p.y() >= height() - kResizeMargin) edges |= Qt::BottomEdge;
+    return edges;
+}
+
+// Unter Windows macht das WM_NCHITTEST weiter unten. Auf den anderen Systemen
+// wird der Randstreifen hier abgefangen, weil die Kinderwidgets die
+// Mausereignisse sonst zuerst bekommen.
+bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
+#ifdef Q_OS_WIN
+    return QMainWindow::eventFilter(watched, event);
+#else
+    const QEvent::Type type = event->type();
+    if (type != QEvent::MouseMove && type != QEvent::MouseButtonPress) {
+        return QMainWindow::eventFilter(watched, event);
+    }
+    auto* widget = qobject_cast<QWidget*>(watched);
+    if (!widget || widget->window() != this) {
+        return QMainWindow::eventFilter(watched, event);
+    }
+
+    auto* mouse = static_cast<QMouseEvent*>(event);
+    const QPoint here = mapFromGlobal(mouse->globalPosition().toPoint());
+    const Qt::Edges edges = edgesAt(here);
+
+    if (type == QEvent::MouseMove) {
+        if (edges == (Qt::LeftEdge | Qt::TopEdge) ||
+            edges == (Qt::RightEdge | Qt::BottomEdge)) {
+            setCursor(Qt::SizeFDiagCursor);
+        } else if (edges == (Qt::RightEdge | Qt::TopEdge) ||
+                   edges == (Qt::LeftEdge | Qt::BottomEdge)) {
+            setCursor(Qt::SizeBDiagCursor);
+        } else if (edges & (Qt::LeftEdge | Qt::RightEdge)) {
+            setCursor(Qt::SizeHorCursor);
+        } else if (edges & (Qt::TopEdge | Qt::BottomEdge)) {
+            setCursor(Qt::SizeVerCursor);
+        } else {
+            unsetCursor();
+        }
+        return QMainWindow::eventFilter(watched, event);
+    }
+
+    if (edges && mouse->button() == Qt::LeftButton) {
+        // Die Groessenaenderung uebernimmt der Fenstermanager, damit sie sich
+        // genauso anfuehlt wie bei jedem anderen Fenster.
+        if (QWindow* handle = windowHandle()) {
+            handle->startSystemResize(edges);
+            return true;   // nicht an das darunterliegende Bedienelement geben
+        }
+    }
+    return QMainWindow::eventFilter(watched, event);
+#endif
+}
+
+#ifdef Q_OS_WIN
+// Windows fragt bei jeder Mausbewegung, welcher Teil des Fensters unter dem
+// Zeiger liegt. Meldet man hier einen Rand, erledigt das Betriebssystem die
+// Groessenaenderung selbst, samt passendem Zeiger und Andocken. Gerechnet wird
+// in echten Bildpunkten, damit die Bildschirmskalierung keine Rolle spielt.
+bool MainWindow::nativeEvent(const QByteArray& type, void* message, qintptr* result) {
+    auto* msg = static_cast<MSG*>(message);
+    if (!msg || msg->message != WM_NCHITTEST || isMaximized() || isFullScreen()) {
+        return QMainWindow::nativeEvent(type, message, result);
+    }
+
+    RECT frame{};
+    if (!GetWindowRect(msg->hwnd, &frame)) {
+        return QMainWindow::nativeEvent(type, message, result);
+    }
+
+    const int x = GET_X_LPARAM(msg->lParam);
+    const int y = GET_Y_LPARAM(msg->lParam);
+    const int margin = static_cast<int>(kResizeMargin * devicePixelRatioF());
+
+    const bool left = x < frame.left + margin;
+    const bool right = x >= frame.right - margin;
+    const bool top = y < frame.top + margin;
+    const bool bottom = y >= frame.bottom - margin;
+
+    LRESULT where = 0;
+    if (top && left) where = HTTOPLEFT;
+    else if (top && right) where = HTTOPRIGHT;
+    else if (bottom && left) where = HTBOTTOMLEFT;
+    else if (bottom && right) where = HTBOTTOMRIGHT;
+    else if (left) where = HTLEFT;
+    else if (right) where = HTRIGHT;
+    else if (top) where = HTTOP;
+    else if (bottom) where = HTBOTTOM;
+
+    if (where != 0) {
+        *result = static_cast<qintptr>(where);
+        return true;
+    }
+    return QMainWindow::nativeEvent(type, message, result);
+}
+#endif
+
+void MainWindow::toggleMaximise() {
+    if (isMaximized()) {
+        showNormal();
+    } else {
+        showMaximized();
+    }
+}
+
+void MainWindow::changeEvent(QEvent* event) {
+    QMainWindow::changeEvent(event);
+    if (event->type() != QEvent::WindowStateChange) return;
+    const bool maximised = isMaximized() || isFullScreen();
+    if (titleBar_) titleBar_->updateMaximiseState(maximised);
+    // Maximiert muessen die Ecken eckig sein, sonst klaffen an den
+    // Bildschirmecken Luecken.
+    // Der Typ steht fest, frame_ wird nur an einer Stelle gesetzt.
+    if (frame_) static_cast<WindowFrame*>(frame_)->setRounded(!maximised);
 }
 
 void MainWindow::autoConnectTcp(const QString& address) {

@@ -71,6 +71,8 @@ if(CARUSPEX_GUI)
         src/app/Theme.h
         src/app/GaugeWidget.cpp
         src/app/GaugeWidget.h
+        src/app/TitleBar.cpp
+        src/app/TitleBar.h
         src/app/VehicleDiagram.cpp
         src/app/VehicleDiagram.h
         src/app/pages/DashboardPage.cpp

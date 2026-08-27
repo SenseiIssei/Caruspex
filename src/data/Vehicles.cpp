@@ -113,8 +113,9 @@ std::vector<VehicleProfile> build() {
     // --- Sonstige -----------------------------------------------------------
     add("Iveco", "", 2000, 2030, BusKind::Mixed, kMixed, "Nutzfahrzeug.");
     add("MAN", "", 2000, 2030, BusKind::Can, kCan, "Nutzfahrzeug, teils J1939.");
-    add("Anderes Fahrzeug", "", 1996, 2030, BusKind::Mixed, kAutoProtocolOrder,
-        "Alle Protokolle werden der Reihe nach probiert.");
+    add("Automatisch erkennen", "", 1996, 2030, BusKind::Mixed, kAutoProtocolOrder,
+        "Probiert alle Protokolle der Reihe nach durch. Funktioniert immer, "
+        "dauert nur ein paar Sekunden laenger.");
     return v;
 }
 
