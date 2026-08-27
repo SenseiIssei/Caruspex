@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QTextStream>
@@ -51,6 +52,10 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     bar->addWidget(portBox_, 1);
     bar->addWidget(rescanButton_);
     bar->addWidget(startButton_);
+    clearAllButton_ = new QPushButton(tr("Ueberall loeschen"));
+    clearAllButton_->setObjectName("Danger");
+    clearAllButton_->setMinimumHeight(40);
+    bar->addWidget(clearAllButton_);
     bar->addWidget(reportButton_);
     root->addLayout(bar);
 
@@ -70,7 +75,37 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
                                         "druecken."));
             return;
         }
-        emit scanRequested(device);
+        emit scanRequested(device, 0);
+    });
+
+    connect(clearAllButton_, &QPushButton::clicked, this, [this] {
+        const QString device = portBox_->currentData().toString();
+        if (device.isEmpty()) {
+            QMessageBox::information(this, tr("Kein Anschluss"),
+                                     tr("Erst ein KKL-Kabel anstecken und auf Suchen "
+                                        "druecken."));
+            return;
+        }
+        QMessageBox box(this);
+        box.setWindowTitle(tr("Ueberall loeschen"));
+        box.setIcon(QMessageBox::Warning);
+        box.setText(tr("In jedem gefundenen Steuergeraet den Fehlerspeicher loeschen?"));
+        box.setInformativeText(
+            tr("Jedes Steuergeraet wird angefunkt, ausgelesen und geloescht. Klappt das "
+               "Loeschen nicht, wird es bis zu dreimal wiederholt und jedes Mal "
+               "nachgepruef"
+               "t.\n\n"
+               "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. "
+               "Der steht sofort wieder drin. Loeschen ersetzt keine Reparatur.\n\n"
+               "Zuendung an, Motor aus. Der Durchlauf dauert einige Minuten."));
+        QPushButton* yes = box.addButton(tr("Ja, ueberall loeschen"), QMessageBox::AcceptRole);
+        box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
+        box.exec();
+        if (box.clickedButton() == yes) {
+            clearLog_->clear();
+            clearLog_->setVisible(true);
+            emit scanRequested(device, 3);
+        }
     });
 
     progress_ = new QProgressBar;
@@ -81,6 +116,12 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     status_->setObjectName("Subtle");
     status_->setWordWrap(true);
     root->addWidget(status_);
+
+    clearLog_ = new QPlainTextEdit;
+    clearLog_->setReadOnly(true);
+    clearLog_->setMaximumHeight(130);
+    clearLog_->setVisible(false);
+    root->addWidget(clearLog_);
 
     tree_ = new QTreeWidget;
     tree_->setColumnCount(3);
@@ -115,6 +156,11 @@ void ScanPage::onScanStarted(int total) {
     progress_->setVisible(true);
     progress_->setRange(0, total);
     progress_->setValue(0);
+}
+
+void ScanPage::onClearProgress(const QString& line) {
+    clearLog_->setVisible(true);
+    clearLog_->appendPlainText(line);
 }
 
 void ScanPage::onScanProgress(const QString& ecuName, int index, int total) {

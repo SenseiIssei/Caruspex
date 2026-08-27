@@ -6,6 +6,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSplitter>
 #include <QTableWidget>
@@ -35,9 +36,12 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     clearButton_ = new QPushButton(tr("Fehler loeschen"));
     clearButton_->setObjectName("Danger");
     clearButton_->setMinimumHeight(40);
+    bruteButton_ = new QPushButton(tr("Hartnaeckig loeschen"));
+    bruteButton_->setObjectName("Danger");
+    bruteButton_->setMinimumHeight(40);
     exportButton_ = new QPushButton(tr("Als CSV speichern"));
     exportButton_->setMinimumHeight(40);
-    for (QPushButton* b : {readButton_, clearButton_, exportButton_}) {
+    for (QPushButton* b : {readButton_, clearButton_, bruteButton_, exportButton_}) {
         b->setEnabled(false);
         buttons->addWidget(b);
     }
@@ -49,7 +53,14 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
 
     connect(readButton_, &QPushButton::clicked, this, &FaultsPage::readRequested);
     connect(clearButton_, &QPushButton::clicked, this, &FaultsPage::askAndClear);
+    connect(bruteButton_, &QPushButton::clicked, this, &FaultsPage::askAndBruteForce);
     connect(exportButton_, &QPushButton::clicked, this, &FaultsPage::exportCsv);
+
+    clearLog_ = new QPlainTextEdit;
+    clearLog_->setReadOnly(true);
+    clearLog_->setMaximumHeight(120);
+    clearLog_->setVisible(false);
+    root->addWidget(clearLog_);
 
     throttleHint_ = new QLabel;
     throttleHint_->setWordWrap(true);
@@ -169,6 +180,7 @@ void FaultsPage::showSelected(int row) {
 void FaultsPage::setConnected(bool connected) {
     readButton_->setEnabled(connected);
     clearButton_->setEnabled(connected);
+    bruteButton_->setEnabled(connected);
     if (!connected) {
         table_->setRowCount(0);
         rows_.clear();
@@ -193,6 +205,46 @@ void FaultsPage::askAndClear() {
     box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
     box.exec();
     if (box.clickedButton() == yes) emit clearRequested();
+}
+
+void FaultsPage::askAndBruteForce() {
+    QMessageBox box(this);
+    box.setWindowTitle(tr("Hartnaeckig loeschen"));
+    box.setIcon(QMessageBox::Warning);
+    box.setText(tr("Mehrfach loeschen und jedes Mal nachpruefen?"));
+    box.setInformativeText(
+        tr("Es wird bis zu fuenfmal geloescht. Nach jedem Versuch wird nachgelesen, ob der "
+           "Speicher wirklich leer ist. Bleibt etwas stehen, wird zwischendurch die "
+           "Verbindung neu aufgebaut, weil manche Steuergeraete den Loeschbefehl nur "
+           "direkt nach dem Wecken annehmen.\n\n"
+           "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. Der "
+           "steht sofort wieder drin, egal wie oft geloescht wird. Loeschen ersetzt keine "
+           "Reparatur.\n\n"
+           "Die Bereitschaftstests werden dabei ebenfalls zurueckgesetzt."));
+    QPushButton* yes = box.addButton(tr("Ja, hartnaeckig loeschen"), QMessageBox::AcceptRole);
+    box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
+    box.exec();
+    if (box.clickedButton() == yes) {
+        clearLog_->clear();
+        clearLog_->setVisible(true);
+        emit bruteForceRequested(5);
+    }
+}
+
+void FaultsPage::onClearProgress(const QString& line) {
+    clearLog_->setVisible(true);
+    clearLog_->appendPlainText(line);
+}
+
+void FaultsPage::onClearFinished(bool everythingGone, int remaining) {
+    if (everythingGone) {
+        clearLog_->appendPlainText(tr("Fertig: der Speicher ist leer."));
+        return;
+    }
+    clearLog_->appendPlainText(
+        tr("Fertig: %1 Eintraege bleiben stehen. Das heisst, die Ursache besteht noch. "
+           "Der Reiter Fehlerspeicher zeigt oben rechts am Fahrzeug, wo zu suchen ist.")
+            .arg(remaining));
 }
 
 void FaultsPage::exportCsv() {

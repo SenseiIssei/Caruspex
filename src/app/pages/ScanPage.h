@@ -8,6 +8,7 @@
 QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
+class QPlainTextEdit;
 class QProgressBar;
 class QPushButton;
 class QTreeWidget;
@@ -25,12 +26,13 @@ public:
 
 public slots:
     void onScanStarted(int total);
+    void onClearProgress(const QString& line);
     void onScanProgress(const QString& ecuName, int index, int total);
     void onEcuResult(const caruspex::EcuScanRow& row);
     void onScanFinished(int present, int withFaults, bool cancelled);
 
 signals:
-    void scanRequested(const QString& device);
+    void scanRequested(const QString& device, int clearAttempts);
     void cancelRequested();
     void reportRequested();
 
@@ -41,9 +43,11 @@ private:
     QComboBox* portBox_ = nullptr;
     QPushButton* rescanButton_ = nullptr;
     QPushButton* startButton_ = nullptr;
+    QPushButton* clearAllButton_ = nullptr;
     QPushButton* reportButton_ = nullptr;
     QProgressBar* progress_ = nullptr;
     QLabel* status_ = nullptr;
+    QPlainTextEdit* clearLog_ = nullptr;
     QTreeWidget* tree_ = nullptr;
 
     QVector<EcuScanRow> results_;

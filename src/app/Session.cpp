@@ -2,6 +2,7 @@
 
 #include <QTimer>
 
+#include "core/Timing.h"
 #include "core/Transport.h"
 #include "data/Pids.h"
 
@@ -314,7 +315,7 @@ void Worker::basicSettingTick() {
 // Sucht der Reihe nach alle bekannten Steuergeraete. Jeder Versuch braucht
 // wegen der 5-Baud-Weckadresse ein paar Sekunden, bei nicht vorhandenen
 // Steuergeraeten kommt die Wartezeit auf die Antwort dazu.
-void Worker::scanAllEcus(const QString& device) {
+void Worker::scanAllEcus(const QString& device, int clearAttempts) {
     closeKkl();
     cancelScan_ = false;
 
@@ -373,6 +374,39 @@ void Worker::scanAllEcus(const QString& device) {
             row.note = row.faults.isEmpty()
                            ? QObject::tr("kein Eintrag")
                            : QObject::tr("%1 Eintraege").arg(row.faults.size());
+
+            // Hartnaeckig loeschen: nach jedem Versuch nachlesen. Manche
+            // Steuergeraete nehmen den Loeschbefehl erst im zweiten Anlauf an.
+            if (clearAttempts > 0 && !faults.empty()) {
+                bool cleared = false;
+                for (int attempt = 1; attempt <= clearAttempts && !cleared; ++attempt) {
+                    emit clearProgress(QObject::tr("%1: loesche, Versuch %2 von %3")
+                                           .arg(row.name)
+                                           .arg(attempt)
+                                           .arg(clearAttempts));
+                    if (!probe.clearFaults(localError)) {
+                        emit clearProgress(QObject::tr("   abgelehnt: %1")
+                                               .arg(QString::fromStdString(localError)));
+                        sleepMs(300);
+                        continue;
+                    }
+                    sleepMs(400);
+                    std::vector<Kwp1281Fault> rest;
+                    if (probe.readFaults(rest, localError) && rest.empty()) cleared = true;
+                }
+                if (cleared) {
+                    row.faults.clear();
+                    row.note = QObject::tr("geloescht");
+                    --withFaults;
+                    emit clearProgress(QObject::tr("   %1: leer").arg(row.name));
+                } else {
+                    row.note = QObject::tr("%1 Eintraege, Loeschen ohne Wirkung")
+                                   .arg(row.faults.size());
+                    emit clearProgress(
+                        QObject::tr("   %1: bleibt bestehen, die Ursache ist noch da")
+                            .arg(row.name));
+                }
+            }
         } else {
             row.note = QString::fromStdString(localError);
         }
@@ -383,6 +417,61 @@ void Worker::scanAllEcus(const QString& device) {
     kline_.close();
     emit busy(false);
     emit scanFinished(present, withFaults, cancelScan_.load());
+}
+
+// Hartnaeckiges Loeschen ueber EOBD. Manche Steuergeraete nehmen den Befehl
+// nur direkt nach dem Verbindungsaufbau an, andere brauchen mehrere Anlaeufe.
+// Deshalb wird zwischendurch die Verbindung neu aufgebaut.
+void Worker::bruteForceClear(int attempts) {
+    if (!obd_) {
+        emit clearProgress(QObject::tr("Nicht verbunden."));
+        emit clearFinished(false, 0);
+        return;
+    }
+    emit busy(true);
+
+    int remaining = 0;
+    for (int attempt = 1; attempt <= attempts; ++attempt) {
+        emit clearProgress(QObject::tr("Versuch %1 von %2 ...").arg(attempt).arg(attempts));
+
+        std::string error;
+        const bool acknowledged = obd_->clearFaults(error);
+        if (!acknowledged) {
+            emit clearProgress(QObject::tr("   Steuergeraet quittiert nicht: %1")
+                                   .arg(QString::fromStdString(error)));
+        }
+        sleepMs(600);
+
+        const std::vector<Fault> left = obd_->readFaults(error);
+        remaining = static_cast<int>(left.size());
+        if (left.empty()) {
+            emit clearProgress(QObject::tr("   Speicher ist leer."));
+            emit busy(false);
+            emit clearFinished(true, 0);
+            refreshStatusAndFaults();
+            return;
+        }
+        emit clearProgress(QObject::tr("   noch %1 Eintraege").arg(remaining));
+
+        // Ab dem zweiten Fehlschlag die Verbindung neu aufbauen. Einige
+        // Steuergeraete oeffnen das Loeschfenster nur direkt nach dem Wecken.
+        if (attempt >= 2 && attempt < attempts) {
+            emit clearProgress(QObject::tr("   Verbindung wird neu aufgebaut ..."));
+            ElmResult reset = elm_.send("ATZ", 6000);
+            Q_UNUSED(reset);
+            sleepMs(400);
+            elm_.send("ATE0");
+            elm_.send("ATL0");
+            elm_.send("ATS0");
+            elm_.send("ATH0");
+            elm_.send("0100", 10000);
+            sleepMs(200);
+        }
+    }
+
+    emit busy(false);
+    emit clearFinished(false, remaining);
+    refreshStatusAndFaults();
 }
 
 void Worker::readAdaptationChannel(int channel) {
@@ -466,6 +555,8 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::startBasicSettingRequested, worker_, &Worker::startBasicSetting);
     connect(this, &Session::stopBasicSettingRequested, worker_, &Worker::stopBasicSetting);
     connect(this, &Session::scanAllRequested, worker_, &Worker::scanAllEcus);
+    connect(this, &Session::bruteForceClearRequested, worker_,
+            &Worker::bruteForceClear);
     connect(this, &Session::adaptationRequested, worker_,
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,

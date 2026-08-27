@@ -2,154 +2,283 @@
 
 #include <QApplication>
 #include <QFont>
+#include <QFontDatabase>
+#include <QGraphicsDropShadowEffect>
 #include <QPalette>
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
+#include <QWidget>
 
 namespace caruspex::theme {
+namespace {
+
+QString loadFonts() {
+    const char* files[] = {":/fonts/JetBrainsMono-Regular.ttf",
+                           ":/fonts/JetBrainsMono-Medium.ttf",
+                           ":/fonts/JetBrainsMono-Bold.ttf"};
+    QString family;
+    for (const char* file : files) {
+        const int id = QFontDatabase::addApplicationFont(QString::fromLatin1(file));
+        if (id < 0) continue;
+        const QStringList families = QFontDatabase::applicationFontFamilies(id);
+        if (!families.isEmpty() && family.isEmpty()) family = families.front();
+    }
+    // Faellt auf das zurueck, was da ist, falls die Schrift fehlt.
+    return family.isEmpty() ? QStringLiteral("Consolas") : family;
+}
+
+QString rgba(const QColor& c, double alpha) {
+    return QStringLiteral("rgba(%1, %2, %3, %4)")
+        .arg(c.red())
+        .arg(c.green())
+        .arg(c.blue())
+        .arg(alpha, 0, 'f', 3);
+}
+
+}  // namespace
 
 QString stylesheet() {
-    return QString(R"(
+    return QStringLiteral(R"(
 QWidget {
-    background: %1;
-    color: %2;
-    font-size: 14px;
+    background: %BG%;
+    color: %TEXT%;
+    font-size: 13px;
 }
-QLabel, QCheckBox, QRadioButton {
-    background: transparent;
-}
+QLabel, QCheckBox, QRadioButton { background: transparent; }
+
 QFrame#Card, QWidget#Card {
-    background: %3;
-    border: 1px solid %4;
+    background: %SURFACE%;
+    border: 1px solid %BORDER%;
     border-radius: 10px;
 }
 QFrame#Sidebar {
-    background: %5;
-    border-right: 1px solid %4;
+    background: %SURFACE%;
+    border: none;
+    border-right: 1px solid %BORDER%;
 }
+
 QLabel#Brand {
-    color: %6;
-    font-size: 26px;
+    color: %ACCENT%;
+    font-size: 24px;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: 5px;
 }
-QLabel#Subtle, QLabel#Hint {
-    color: %7;
-}
+QLabel#Subtle { color: %DIM%; }
+QLabel#Hint   { color: %FAINT%; font-size: 12px; }
 QLabel#PageTitle {
-    font-size: 21px;
-    font-weight: 600;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: %TEXT%;
 }
-QLabel#Headline {
-    font-size: 30px;
+QLabel#Headline { font-size: 27px; font-weight: 700; }
+
+QPushButton {
+    background: %SURFACE2%;
+    border: 1px solid %BORDER_BRIGHT%;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: %TEXT%;
+    font-weight: 500;
+}
+QPushButton:hover {
+    background: #20202c;
+    border-color: %ACCENT_DIM%;
+    color: %ACCENT%;
+}
+QPushButton:pressed { background: #0f0f16; }
+QPushButton:disabled { color: %FAINT%; background: #101018; border-color: %BORDER%; }
+
+QPushButton#Primary {
+    background: %ACCENT_FILL%;
+    border: 1px solid %ACCENT%;
+    color: %ACCENT%;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+QPushButton#Primary:hover    { background: %ACCENT_FILL_HOVER%; }
+QPushButton#Primary:disabled {
+    background: #101018; border-color: %BORDER%; color: %FAINT%;
+}
+
+QPushButton#Danger {
+    background: %DANGER_FILL%;
+    border: 1px solid %DANGER%;
+    color: %DANGER%;
     font-weight: 700;
 }
-QPushButton {
-    background: %8;
-    border: 1px solid %4;
-    border-radius: 8px;
-    padding: 9px 16px;
-    color: %2;
-}
-QPushButton:hover  { background: #2a3140; border-color: #3d4759; }
-QPushButton:pressed{ background: #333c4d; }
-QPushButton:disabled { color: #5b6474; background: #1a1e27; }
-QPushButton#Primary {
-    background: #1f6feb; border: none; font-weight: 600; color: #ffffff;
-}
-QPushButton#Primary:hover   { background: #2f80f5; }
-QPushButton#Primary:disabled{ background: #24303f; color: #6b7484; }
-QPushButton#Danger {
-    background: #8a2c2c; border: none; color: #ffffff;
-}
-QPushButton#Danger:hover { background: #a63636; }
+QPushButton#Danger:hover { background: %DANGER_FILL_HOVER%; }
+
 QPushButton#NavItem {
     background: transparent;
     border: none;
-    border-radius: 8px;
-    padding: 11px 14px;
+    border-left: 2px solid transparent;
+    border-radius: 0px;
+    padding: 10px 14px;
     text-align: left;
-    font-size: 15px;
-    color: %7;
+    font-size: 13px;
+    color: %DIM%;
+    letter-spacing: 0.5px;
 }
-QPushButton#NavItem:hover   { background: %8; color: %2; }
-QPushButton#NavItem:checked { background: #1d3557; color: %2; font-weight: 600; }
+QPushButton#NavItem:hover   { color: %TEXT%; background: %SURFACE2%; }
+QPushButton#NavItem:checked {
+    color: %ACCENT%;
+    background: %ACCENT_FILL%;
+    border-left: 2px solid %ACCENT%;
+    font-weight: 700;
+}
+
 QComboBox, QLineEdit, QSpinBox, QPlainTextEdit, QTextEdit {
-    background: %8;
-    border: 1px solid %4;
-    border-radius: 8px;
-    padding: 7px 10px;
-    selection-background-color: #1f6feb;
+    background: %BG%;
+    border: 1px solid %BORDER_BRIGHT%;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: %TEXT%;
+    selection-background-color: %ACCENT_DIM%;
+    selection-color: #000000;
 }
-QComboBox::drop-down { border: none; width: 22px; }
+QComboBox:focus, QLineEdit:focus, QSpinBox:focus { border-color: %ACCENT%; }
+QComboBox::drop-down { border: none; width: 20px; }
 QComboBox QAbstractItemView {
-    background: %3; border: 1px solid %4; selection-background-color: #1f6feb;
+    background: %SURFACE%;
+    border: 1px solid %BORDER_BRIGHT%;
+    selection-background-color: %ACCENT_FILL%;
+    selection-color: %ACCENT%;
+    outline: none;
 }
+
 QTableWidget, QTableView, QTreeWidget {
-    background: %3;
-    border: 1px solid %4;
-    border-radius: 10px;
-    gridline-color: %4;
-    selection-background-color: #1d3557;
+    background: %SURFACE%;
+    border: 1px solid %BORDER%;
+    border-radius: 8px;
+    gridline-color: %BORDER%;
+    selection-background-color: %ACCENT_FILL%;
+    selection-color: %ACCENT%;
+    outline: none;
 }
 QHeaderView::section {
-    background: %8; color: %7; border: none;
-    border-bottom: 1px solid %4; padding: 8px;
+    background: %BG%;
+    color: %DIM%;
+    border: none;
+    border-bottom: 1px solid %BORDER_BRIGHT%;
+    padding: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
-QScrollBar:vertical   { background: transparent; width: 11px; margin: 2px; }
-QScrollBar::handle:vertical { background: #39414f; border-radius: 5px; min-height: 30px; }
-QScrollBar::handle:vertical:hover { background: #4a5568; }
+QTreeWidget::item:hover, QTableWidget::item:hover { background: %SURFACE2%; }
+
+QScrollBar:vertical   { background: transparent; width: 7px; margin: 2px; }
+QScrollBar::handle:vertical {
+    background: %BORDER_BRIGHT%; border-radius: 3px; min-height: 30px;
+}
+QScrollBar::handle:vertical:hover { background: %ACCENT_DIM%; }
+QScrollBar:horizontal { background: transparent; height: 7px; margin: 2px; }
+QScrollBar::handle:horizontal {
+    background: %BORDER_BRIGHT%; border-radius: 3px; min-width: 30px;
+}
 QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; }
-QScrollBar:horizontal { background: transparent; height: 11px; margin: 2px; }
-QScrollBar::handle:horizontal { background: #39414f; border-radius: 5px; min-width: 30px; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
 QProgressBar {
-    background: %8; border: none; border-radius: 4px; height: 8px; text-align: center;
+    background: %BG%;
+    border: 1px solid %BORDER%;
+    border-radius: 3px;
+    height: 6px;
+    text-align: center;
 }
-QProgressBar::chunk { background: %6; border-radius: 4px; }
-QCheckBox::indicator, QRadioButton::indicator { width: 17px; height: 17px; }
+QProgressBar::chunk { background: %ACCENT%; border-radius: 3px; }
+
+QCheckBox::indicator { width: 15px; height: 15px; }
 QCheckBox::indicator:unchecked {
-    border: 1px solid %4; border-radius: 4px; background: %8;
+    border: 1px solid %BORDER_BRIGHT%; border-radius: 3px; background: %BG%;
 }
+QCheckBox::indicator:hover { border-color: %ACCENT_DIM%; }
 QCheckBox::indicator:checked {
-    border: 1px solid %6; border-radius: 4px; background: %6;
+    border: 1px solid %ACCENT%; border-radius: 3px; background: %ACCENT%;
 }
+
 QToolTip {
-    background: %3; color: %2; border: 1px solid %4; padding: 6px;
+    background: %SURFACE%; color: %ACCENT%;
+    border: 1px solid %ACCENT_DIM%; padding: 6px;
 }
-QSplitter::handle { background: %4; }
+QSplitter::handle { background: %BORDER%; }
+QScrollArea { border: none; background: transparent; }
 )")
-        .arg(color::background.name(),      // %1
-             color::text.name(),            // %2
-             color::surface.name(),         // %3
-             color::border.name(),          // %4
-             color::surfaceHigh.name(),     // %5
-             color::accent.name(),          // %6
-             color::textMuted.name(),       // %7
-             color::surfaceHigh.name());    // %8
+        .replace("%BG%", color::background.name())
+        .replace("%SURFACE2%", color::surfaceHigh.name())
+        .replace("%SURFACE%", color::surface.name())
+        .replace("%BORDER_BRIGHT%", color::borderBright.name())
+        .replace("%BORDER%", color::border.name())
+        .replace("%TEXT%", color::text.name())
+        .replace("%DIM%", color::textMuted.name())
+        .replace("%FAINT%", color::textFaint.name())
+        .replace("%ACCENT_FILL_HOVER%", rgba(color::accent, 0.20))
+        .replace("%ACCENT_FILL%", rgba(color::accent, 0.10))
+        .replace("%ACCENT_HOVER%", color::accentHover.name())
+        .replace("%ACCENT_DIM%", color::accentDim.name())
+        .replace("%ACCENT%", color::accent.name())
+        .replace("%DANGER_FILL_HOVER%", rgba(color::bad, 0.22))
+        .replace("%DANGER_FILL%", rgba(color::bad, 0.12))
+        .replace("%DANGER%", color::bad.name());
 }
 
 void apply(QApplication& app) {
-    app.setStyle("Fusion");
+    app.setStyle(QStringLiteral("Fusion"));
 
     QPalette palette;
     palette.setColor(QPalette::Window, color::background);
     palette.setColor(QPalette::WindowText, color::text);
-    palette.setColor(QPalette::Base, color::surface);
+    palette.setColor(QPalette::Base, color::background);
     palette.setColor(QPalette::AlternateBase, color::surfaceHigh);
     palette.setColor(QPalette::Text, color::text);
     palette.setColor(QPalette::Button, color::surfaceHigh);
     palette.setColor(QPalette::ButtonText, color::text);
-    palette.setColor(QPalette::Highlight, color::accent);
-    palette.setColor(QPalette::HighlightedText, Qt::white);
+    palette.setColor(QPalette::Highlight, color::accentDim);
+    palette.setColor(QPalette::HighlightedText, Qt::black);
     palette.setColor(QPalette::ToolTipBase, color::surface);
-    palette.setColor(QPalette::ToolTipText, color::text);
-    palette.setColor(QPalette::PlaceholderText, color::textMuted);
+    palette.setColor(QPalette::ToolTipText, color::accent);
+    palette.setColor(QPalette::PlaceholderText, color::textFaint);
     app.setPalette(palette);
 
-    QFont font = app.font();
-    font.setFamily("Segoe UI");
-    font.setPointSizeF(10.0);
+    QFont font(loadFonts());
+    font.setPointSizeF(9.5);
     app.setFont(font);
 
     app.setStyleSheet(stylesheet());
+}
+
+void addGlow(QWidget* widget, const QColor& colour, double strength) {
+    if (!widget) return;
+    auto* glow = new QGraphicsDropShadowEffect(widget);
+    glow->setOffset(0, 0);                       // ohne Versatz wirkt es wie Leuchten
+    glow->setBlurRadius(24.0 * strength);
+    QColor lit = colour;
+    lit.setAlphaF(static_cast<float>(qBound(0.0, 0.55 * strength, 1.0)));
+    glow->setColor(lit);
+    widget->setGraphicsEffect(glow);
+}
+
+void removeGlow(QWidget* widget) {
+    if (widget) widget->setGraphicsEffect(nullptr);
+}
+
+void pulseGlow(QWidget* widget, const QColor& colour) {
+    if (!widget) return;
+    auto* glow = new QGraphicsDropShadowEffect(widget);
+    glow->setOffset(0, 0);
+    QColor lit = colour;
+    lit.setAlphaF(0.45f);
+    glow->setColor(lit);
+    glow->setBlurRadius(10.0);
+    widget->setGraphicsEffect(glow);
+
+    auto* animation = new QPropertyAnimation(glow, "blurRadius", widget);
+    animation->setDuration(2000);
+    animation->setStartValue(10.0);
+    animation->setKeyValueAt(0.5, 30.0);
+    animation->setEndValue(10.0);
+    animation->setLoopCount(-1);
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 }  // namespace caruspex::theme

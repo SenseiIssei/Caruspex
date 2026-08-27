@@ -7,6 +7,7 @@
 
 class QLabel;
 class QPushButton;
+class QPlainTextEdit;
 class QSplitter;
 class QTableWidget;
 
@@ -23,20 +24,26 @@ public:
 public slots:
     void onFaults(const QVector<caruspex::FaultRow>& rows);
     void setConnected(bool connected);
+    void onClearProgress(const QString& line);
+    void onClearFinished(bool everythingGone, int remaining);
 
 signals:
     void readRequested();
     void clearRequested();
+    void bruteForceRequested(int attempts);
     void exportRequested();
 
 private:
     void askAndClear();
+    void askAndBruteForce();
     void exportCsv();
     void showSelected(int row);
 
     QTableWidget* table_ = nullptr;
     QPushButton* readButton_ = nullptr;
     QPushButton* clearButton_ = nullptr;
+    QPushButton* bruteButton_ = nullptr;
+    QPlainTextEdit* clearLog_ = nullptr;
     QPushButton* exportButton_ = nullptr;
     QLabel* summary_ = nullptr;
     QLabel* throttleHint_ = nullptr;

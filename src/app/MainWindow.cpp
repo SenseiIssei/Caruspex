@@ -87,6 +87,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::scanProgress, scan_, &ScanPage::onScanProgress);
     connect(worker, &Worker::scanEcuResult, scan_, &ScanPage::onEcuResult);
     connect(worker, &Worker::scanFinished, scan_, &ScanPage::onScanFinished);
+    connect(worker, &Worker::clearProgress, scan_, &ScanPage::onClearProgress);
+    connect(worker, &Worker::clearProgress, faults_, &FaultsPage::onClearProgress);
+    connect(worker, &Worker::clearFinished, faults_, &FaultsPage::onClearFinished);
     connect(worker, &Worker::kklConnected, kklTools_, &KklToolsPage::setKklConnected);
     connect(worker, &Worker::kklMessage, kklTools_, &KklToolsPage::onMessage);
     connect(worker, &Worker::adaptationResult, kklTools_,
@@ -111,6 +114,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     });
     connect(faults_, &FaultsPage::readRequested, &session_, &Session::readFaultsRequested);
     connect(faults_, &FaultsPage::clearRequested, &session_, &Session::clearFaultsRequested);
+    connect(faults_, &FaultsPage::bruteForceRequested, &session_,
+            &Session::bruteForceClearRequested);
     connect(tools_, &ToolsPage::detailsRequested, &session_, &Session::readDetailsRequested);
     connect(tools_, &ToolsPage::rawRequested, &session_, &Session::sendRawRequested);
     connect(live_, &LivePage::startRequested, &session_, &Session::startLiveRequested);
@@ -149,6 +154,7 @@ QWidget* MainWindow::buildSidebar() {
 
     auto* brand = new QLabel(QStringLiteral("CARUSPEX"));
     brand->setObjectName("Brand");
+    theme::addGlow(brand, theme::color::accent, 1.1);
     auto* claim = new QLabel(tr("Fahrzeugdiagnose"));
     claim->setObjectName("Subtle");
     root->addWidget(brand);
@@ -215,6 +221,7 @@ QWidget* MainWindow::buildSidebar() {
     connectButton_ = new QPushButton(tr("Verbinden"));
     connectButton_->setObjectName("Primary");
     connectButton_->setMinimumHeight(44);
+    theme::pulseGlow(connectButton_, theme::color::accent);
     root->addWidget(connectButton_);
     connect(connectButton_, &QPushButton::clicked, this, &MainWindow::toggleConnection);
 
@@ -334,8 +341,11 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     connectButton_->setObjectName("Danger");
     connectButton_->style()->unpolish(connectButton_);
     connectButton_->style()->polish(connectButton_);
-    stateLabel_->setText(tr("verbunden"));
-    stateLabel_->setStyleSheet(QStringLiteral("color: %1;").arg(theme::color::good.name()));
+    stateLabel_->setText(tr("VERBUNDEN"));
+    stateLabel_->setStyleSheet(QStringLiteral("color: %1; font-weight: 700;")
+                                   .arg(theme::color::good.name()));
+    theme::addGlow(connectButton_, theme::color::bad, 0.8);
+    theme::addGlow(stateLabel_, theme::color::good, 0.7);
     adapterLabel_->setText(tr("Adapter: %1\nWeg: %2\nProtokoll: %3")
                                .arg(adapter, transport, protocol));
     faults_->setConnected(true);
@@ -364,6 +374,8 @@ void MainWindow::onClosed() {
     stateLabel_->setText(tr("nicht verbunden"));
     stateLabel_->setStyleSheet(
         QStringLiteral("color: %1;").arg(theme::color::textMuted.name()));
+    theme::removeGlow(stateLabel_);
+    theme::pulseGlow(connectButton_, theme::color::accent);
     adapterLabel_->clear();
     dashboard_->onDisconnected();
     faults_->setConnected(false);

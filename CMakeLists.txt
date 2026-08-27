@@ -61,6 +61,7 @@ if(CARUSPEX_GUI)
     qt_standard_project_setup()
 
     qt_add_executable(caruspex
+        resources/resources.qrc
         src/app/main.cpp
         src/app/MainWindow.cpp
         src/app/MainWindow.h

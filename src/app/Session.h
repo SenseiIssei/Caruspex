@@ -83,7 +83,12 @@ public slots:
     void startBasicSetting(int group);
     void stopBasicSetting();
     // Alle bekannten Steuergeraete der Reihe nach anfunken.
-    void scanAllEcus(const QString& device);
+    // clearAttempts groesser null heisst: ueberall loeschen und nachpruefen,
+    // notfalls mehrfach.
+    void scanAllEcus(const QString& device, int clearAttempts);
+    // Hartnaeckiges Loeschen ueber EOBD: mehrfach loeschen, jedes Mal
+    // nachlesen, bei Bedarf die Verbindung neu aufbauen.
+    void bruteForceClear(int attempts);
     void readAdaptationChannel(int channel);
     void runActuatorTest();
 
@@ -111,6 +116,8 @@ signals:
     void scanProgress(const QString& ecuName, int index, int total);
     void scanEcuResult(const caruspex::EcuScanRow& row);
     void scanFinished(int present, int withFaults, bool cancelled);
+    void clearProgress(const QString& line);
+    void clearFinished(bool everythingGone, int remaining);
     void adaptationResult(int channel, int value, const QVector<caruspex::LiveRow>& shown);
     void actuatorResult(const QString& actuator);
 
@@ -164,7 +171,8 @@ signals:
     void closeKklRequested();
     void startBasicSettingRequested(int group);
     void stopBasicSettingRequested();
-    void scanAllRequested(const QString& device);
+    void scanAllRequested(const QString& device, int clearAttempts);
+    void bruteForceClearRequested(int attempts);
     void adaptationRequested(int channel);
     void actuatorTestRequested();
 

@@ -79,13 +79,16 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
     p.setPen(backPen);
     p.drawArc(box, static_cast<int>(kStartAngle * 16), static_cast<int>(kSweep * 16));
 
-    // Wertbogen
+    // Wertbogen. Solange nichts gemessen wird, bleibt er weg: bei Skalen, die
+    // im Minus anfangen, saehe sonst schon der Startwert nach einem Messwert aus.
     const double span = maximum_ - minimum_;
     const double fraction = span > 0 ? qBound(0.0, (display_ - minimum_) / span, 1.0) : 0.0;
-    QPen valuePen(arcColor(), thickness, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(valuePen);
-    p.drawArc(box, static_cast<int>(kStartAngle * 16),
-              static_cast<int>(kSweep * fraction * 16));
+    if (active_) {
+        QPen valuePen(arcColor(), thickness, Qt::SolidLine, Qt::RoundCap);
+        p.setPen(valuePen);
+        p.drawArc(box, static_cast<int>(kStartAngle * 16),
+                  static_cast<int>(kSweep * fraction * 16));
+    }
 
     // Zeigerpunkt am Bogenende
     if (active_) {
@@ -94,8 +97,14 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
         const double radius = box.width() / 2.0;
         const QPointF tip(centre.x() + std::cos(angle) * radius,
                           centre.y() - std::sin(angle) * radius);
+        // Leuchtpunkt am Bogenende: aussen ein weicher Hof, innen hell.
+        const QColor lit = arcColor();
+        QColor halo = lit;
+        halo.setAlpha(70);
         p.setPen(Qt::NoPen);
-        p.setBrush(arcColor());
+        p.setBrush(halo);
+        p.drawEllipse(tip, thickness * 0.95, thickness * 0.95);
+        p.setBrush(lit);
         p.drawEllipse(tip, thickness * 0.42, thickness * 0.42);
     }
 

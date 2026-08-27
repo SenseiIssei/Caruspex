@@ -171,7 +171,9 @@ void DashboardPage::updateHeadline() {
                                     "nicht leer."));
     }
 
-    headline_->setStyleSheet(QStringLiteral("color: %1;").arg(colour.name()));
+    headline_->setStyleSheet(QStringLiteral("color: %1; font-weight: 700;")
+                                 .arg(colour.name()));
+    theme::addGlow(headline_, colour, 1.0);
     card_->setStyleSheet(QStringLiteral("QFrame#Card { border: 1px solid %1; background: %2; }")
                              .arg(colour.darker(160).name(),
                                   QColor(colour.red() / 9 + 20, colour.green() / 9 + 22,
