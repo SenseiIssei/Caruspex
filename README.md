@@ -66,6 +66,7 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Sitzungsart und Nachfragetakt fuer die Grundeinstellung
 - Rohkommunikation mitschreiben, wahlweise zusaetzlich in eine Datei
 - Alles wird gespeichert und wirkt sofort, auch waehrend einer laufenden Messung
+![Einstellungen](docs/screenshot-einstellungen.png)
 
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
