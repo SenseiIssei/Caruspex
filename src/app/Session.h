@@ -19,6 +19,7 @@
 #include "core/Elm327.h"
 #include "core/KLineStream.h"
 #include "core/Kwp1281.h"
+#include "core/VagKLine.h"
 #include "core/Obd2.h"
 
 class QTimer;
@@ -91,6 +92,7 @@ public slots:
     void bruteForceClear(int attempts);
     void readAdaptationChannel(int channel);
     void runActuatorTest();
+    void setBasicSettingSession(int mode);
 
 public:
     // Bricht einen laufenden Suchlauf ab. Aus jedem Thread erlaubt.
@@ -120,6 +122,7 @@ signals:
     void clearFinished(bool everythingGone, int remaining);
     void adaptationResult(int channel, int value, const QVector<caruspex::LiveRow>& shown);
     void actuatorResult(const QString& actuator);
+    void kklProtocol(const QString& protocolName, bool isKwp2000);
 
 private slots:
     void pollTick();
@@ -139,7 +142,7 @@ private:
     std::atomic<bool> cancelScan_{false};
 
     KLineStream kline_;
-    std::unique_ptr<Kwp1281> kwp_;
+    std::unique_ptr<VagKLine> kwp_;
     QTimer* basicSettingTimer_ = nullptr;
     int basicSettingGroup_ = 60;
 };
@@ -175,6 +178,7 @@ signals:
     void bruteForceClearRequested(int attempts);
     void adaptationRequested(int channel);
     void actuatorTestRequested();
+    void basicSettingSessionRequested(int mode);
 
 private:
     QThread thread_;

@@ -166,6 +166,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::actuatorResult, kklTools_,
             &KklToolsPage::onActuatorResult);
     connect(worker, &Worker::kklConnected, throttle_, &ThrottlePage::setKklConnected);
+    connect(worker, &Worker::kklProtocol, throttle_, &ThrottlePage::setProtocol);
     connect(worker, &Worker::kklMessage, throttle_, &ThrottlePage::onKklMessage);
     connect(worker, &Worker::basicSettingValues, throttle_,
             &ThrottlePage::onBasicSettingValues);
@@ -197,6 +198,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             &Session::startBasicSettingRequested);
     connect(throttle_, &ThrottlePage::basicSettingStopRequested, &session_,
             &Session::stopBasicSettingRequested);
+    connect(throttle_, &ThrottlePage::basicSettingSessionChanged, &session_,
+            &Session::basicSettingSessionRequested);
     connect(scan_, &ScanPage::scanRequested, &session_, &Session::scanAllRequested);
     connect(scan_, &ScanPage::cancelRequested, &session_, &Session::cancelScan);
     connect(kklTools_, &KklToolsPage::connectRequested, &session_,

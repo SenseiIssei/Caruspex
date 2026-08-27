@@ -93,6 +93,10 @@ public:
 
     // Weckt das Steuergeraet und liest die Kennung aus.
     bool connect(Ecu ecu, std::string& error);
+    // Wie connect, aber das Wecken hat der Aufrufer schon erledigt. Wird
+    // gebraucht, wenn erst nach den Schluesselbytes feststeht, welches
+    // Protokoll das Steuergeraet spricht.
+    bool attach(std::string& error);
     void disconnect();
     bool connected() const { return connected_; }
 

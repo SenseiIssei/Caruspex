@@ -209,6 +209,20 @@ bool Kwp1281::connect(Ecu ecu, std::string& error) {
     return true;
 }
 
+// Das Wecken hat schon jemand anders erledigt, hier wird nur noch die Kennung
+// abgeholt. Wird gebraucht, wenn erst die Schluesselbytes verraten haben, dass
+// dieses Steuergeraet das alte Blockprotokoll spricht.
+bool Kwp1281::attach(std::string& error) {
+    identification_.clear();
+    counter_ = 0;
+    connected_ = true;
+    if (!drainIdentification(error)) {
+        connected_ = false;
+        return false;
+    }
+    return true;
+}
+
 // Direkt nach dem Verbinden schickt das Steuergeraet seine Kennung als
 // ASCII-Bloecke, bis es mit einer Quittung fertig meldet.
 bool Kwp1281::drainIdentification(std::string& error) {

@@ -31,6 +31,7 @@ public:
 public slots:
     void setEobdConnected(bool connected);
     void setKklConnected(bool connected, const QString& identification);
+    void setProtocol(const QString& protocolName, bool isKwp2000);
     void onLiveValue(const caruspex::LiveRow& row);
     void onBasicSettingValues(const QVector<caruspex::LiveRow>& values);
     void onKklMessage(const QString& message, bool isError);
@@ -40,6 +41,7 @@ signals:
     void kklDisconnectRequested();
     void basicSettingRequested(int group);
     void basicSettingStopRequested();
+    void basicSettingSessionChanged(int mode);
 
 private:
     void refreshPorts();
@@ -47,6 +49,8 @@ private:
 
     QComboBox* portBox_ = nullptr;
     QComboBox* groupBox_ = nullptr;
+    QComboBox* sessionBox_ = nullptr;
+    QLabel* sessionHint_ = nullptr;
     QPushButton* rescanButton_ = nullptr;
     QPushButton* connectButton_ = nullptr;
     QPushButton* runButton_ = nullptr;
@@ -61,6 +65,7 @@ private:
     QLabel* eobdHint_ = nullptr;
 
     bool kklConnected_ = false;
+    bool isKwp2000_ = false;
     bool eobdConnected_ = false;
     bool running_ = false;
 };

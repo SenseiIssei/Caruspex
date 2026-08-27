@@ -30,6 +30,8 @@ add_library(caruspex_core STATIC
     src/core/Elm327.cpp
     src/core/Obd2.cpp
     src/core/Kwp1281.cpp
+    src/core/Kwp2000.cpp
+    src/core/VagKLine.cpp
     src/core/KLineStream.cpp
     src/data/DtcDatabase.cpp
     src/data/DtcDatabase.gen.cpp
@@ -111,7 +113,9 @@ if(CARUSPEX_TESTS)
     add_executable(caruspex_tests
         tests/test_protocol.cpp
         tests/test_kwp1281.cpp
+        tests/test_kwp2000.cpp
         tests/FakeEcu.cpp
+        tests/FakeEcu2000.cpp
     )
     target_include_directories(caruspex_tests PRIVATE tests)
     target_link_libraries(caruspex_tests PRIVATE caruspex_core Catch2::Catch2WithMain)

@@ -60,13 +60,19 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     QVBoxLayout* body = nullptr;
     QFrame* intro = card(tr("Zwei Wege, je nach Adapter"), body);
     auto* explain = new QLabel(
-        tr("Die Grundeinstellung ist keine EOBD-Funktion. Ueber einen ELM327-Adapter kommt man "
-           "nicht daran, weil die alten Steuergeraete dafuer KWP1281 sprechen, ein "
-           "Blockprotokoll mit byteweiser Quittung, das die Firmware eines ELM327 nicht "
-           "abbilden kann.\n\n"
-           "Mit einem KKL-Kabel (VAG 409.1) geht es. Caruspex spricht KWP1281 selbst und "
-           "startet die Grundeinstellung im Messwertblock 060 oder 098. Welcher es ist, "
-           "haengt vom Motorsteuergeraet ab."));
+        tr("Die Grundeinstellung ist keine EOBD-Funktion. Ueber einen ELM327-Adapter kommt "
+           "man nicht daran. Mit einem KKL-Kabel (VAG 409.1) geht es, Caruspex spricht die "
+           "VAG-Protokolle selbst.\n\n"
+           "Welches Protokoll das Steuergeraet spricht, verraet es nach der Weckadresse "
+           "selbst, und Caruspex richtet sich danach:\n"
+           "  - KWP1281, das alte Blockprotokoll. Ueblich beim 1.4 mit "
+           "Saugrohreinspritzung. Dort gibt es einen eigenen Befehl fuer die "
+           "Grundeinstellung.\n"
+           "  - KWP2000, der Nachfolger. Ueblich beim 1.6 FSI mit Bosch MED. Dort wird "
+           "stattdessen eine andere Sitzungsart eroeffnet.\n\n"
+           "Der Messwertblock haengt am Motor: 060 bei Saugrohreinspritzung, 098 bei "
+           "Direkteinspritzung. Meldet das Steuergeraet, dass es den Block nicht kennt, "
+           "nimm den anderen."));
     explain->setObjectName("Subtle");
     explain->setWordWrap(true);
     body->addWidget(explain);
@@ -131,9 +137,9 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     QFrame* runCard = card(tr("Grundeinstellung starten"), body);
     auto* runRow = new QHBoxLayout;
     groupBox_ = new QComboBox;
-    groupBox_->addItem(tr("Messwertblock 060 (Bosch, die meisten Motoren)"), 60);
-    groupBox_->addItem(tr("Messwertblock 098 (Magneti Marelli und einige Bosch)"), 98);
-    groupBox_->addItem(tr("Messwertblock 001 (nur beobachten)"), 1);
+    groupBox_->addItem(tr("Messwertblock 060 (Saugrohreinspritzung, z.B. 1.4 MPI)"), 60);
+    groupBox_->addItem(tr("Messwertblock 098 (Direkteinspritzung, z.B. 1.6 FSI)"), 98);
+    groupBox_->addItem(tr("Messwertblock 001 (nur beobachten, veraendert nichts)"), 1);
     runButton_ = new QPushButton(tr("Grundeinstellung starten"));
     runButton_->setObjectName("Primary");
     runButton_->setMinimumHeight(40);
@@ -141,6 +147,33 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     runRow->addWidget(groupBox_, 1);
     runRow->addWidget(runButton_);
     body->addLayout(runRow);
+
+    // Nur bei KWP2000 sichtbar: dort gibt es keinen eigenen Dienst fuer die
+    // Grundeinstellung, sondern es wird eine andere Sitzungsart eroeffnet.
+    // Welche das Steuergeraet verlangt, ist nicht einheitlich.
+    auto* sessionRow = new QHBoxLayout;
+    sessionBox_ = new QComboBox;
+    sessionBox_->addItem(tr("Sitzung 0x85 (Anpassung, ueblich)"), 0x85);
+    sessionBox_->addItem(tr("Sitzung 0x86"), 0x86);
+    sessionBox_->addItem(tr("Sitzung 0x87"), 0x87);
+    sessionBox_->addItem(tr("Sitzung 0x89 (Diagnose, nur lesen)"), 0x89);
+    sessionRow->addWidget(new QLabel(tr("Sitzungsart:")));
+    sessionRow->addWidget(sessionBox_, 1);
+    sessionRow->addStretch();
+    body->addLayout(sessionRow);
+    connect(sessionBox_, &QComboBox::currentIndexChanged, this, [this](int) {
+        emit basicSettingSessionChanged(sessionBox_->currentData().toInt());
+    });
+
+    sessionHint_ = new QLabel(
+        tr("Steuergeraete mit KWP2000 kennen keinen eigenen Befehl fuer die "
+           "Grundeinstellung. Stattdessen wird eine andere Sitzungsart eroeffnet und "
+           "derselbe Messwertblock gelesen, das Steuergeraet regelt dann mit. Welche "
+           "Sitzungsart es verlangt, steht in keinem oeffentlichen Papier. Lehnt es die "
+           "erste ab, nimm die naechste."));
+    sessionHint_->setObjectName("Hint");
+    sessionHint_->setWordWrap(true);
+    body->addWidget(sessionHint_);
 
     activity_ = new QProgressBar;
     activity_->setRange(0, 0);
@@ -203,6 +236,8 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     outer->addWidget(scroll, 1);
 
     refreshPorts();
+    sessionBox_->setVisible(false);
+    sessionHint_->setVisible(false);
     updateAvailability();
 }
 
@@ -236,6 +271,14 @@ void ThrottlePage::setKklConnected(bool connected, const QString& identification
                                                 : theme::color::textMuted.name()));
     identification_->setText(identification);
     updateAvailability();
+}
+
+void ThrottlePage::setProtocol(const QString& protocolName, bool isKwp2000) {
+    isKwp2000_ = isKwp2000;
+    // Die Sitzungsart ist nur bei KWP2000 ein Thema.
+    sessionBox_->setVisible(isKwp2000);
+    sessionHint_->setVisible(isKwp2000);
+    identification_->setText(tr("%1\n%2").arg(protocolName, identification_->text()));
 }
 
 void ThrottlePage::updateAvailability() {

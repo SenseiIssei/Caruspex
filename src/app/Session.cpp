@@ -215,10 +215,10 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
         return;
     }
 
-    kwp_ = std::make_unique<Kwp1281>(kline_,
-                                     [this](const std::string& m) {
-                                         emit logLine(QString::fromStdString(m));
-                                     });
+    kwp_ = std::make_unique<VagKLine>(kline_,
+                                      [this](const std::string& m) {
+                                          emit logLine(QString::fromStdString(m));
+                                      });
     const Ecu ecu = static_cast<Ecu>(ecuAddress);
     if (!kwp_->connect(ecu, error)) {
         kwp_.reset();
@@ -235,8 +235,12 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
     }
     emit busy(false);
     emit kklConnected(true, identification.join(QStringLiteral("  |  ")));
-    emit kklMessage(QObject::tr("Verbunden mit %1. Vor dem Start die Punkte oben pruefen.")
-                        .arg(QString::fromStdString(ecuName(ecu))),
+    emit kklProtocol(QString::fromStdString(kwp_->protocolName()),
+                     kwp_->protocol() == KLineProtocol::Kwp2000);
+    emit kklMessage(QObject::tr("Verbunden mit %1 ueber %2. Vor dem Start die Punkte "
+                                "oben pruefen.")
+                        .arg(QString::fromStdString(ecuName(ecu)),
+                             QString::fromStdString(kwp_->protocolName())),
                     false);
     emit logLine(QStringLiteral("KWP1281 verbunden: ") + identification.join(" / "));
 }
@@ -343,7 +347,7 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
         row.name = QString::fromStdString(ecuName(ecu));
         emit scanProgress(row.name, index, total);
 
-        Kwp1281 probe(kline_);
+        VagKLine probe(kline_);
         std::string localError;
         if (!probe.connect(ecu, localError)) {
             row.present = false;
@@ -358,7 +362,9 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
         for (const std::string& line : probe.identification()) {
             identification << QString::fromStdString(line).trimmed();
         }
-        row.identification = identification.join(QStringLiteral("  |  "));
+        row.identification = QStringLiteral("[%1]  %2")
+                                 .arg(QString::fromStdString(probe.protocolName()),
+                                      identification.join(QStringLiteral("  |  ")));
 
         std::vector<Kwp1281Fault> faults;
         if (probe.readFaults(faults, localError)) {
@@ -474,6 +480,12 @@ void Worker::bruteForceClear(int attempts) {
     refreshStatusAndFaults();
 }
 
+void Worker::setBasicSettingSession(int mode) {
+    if (kwp_) kwp_->setBasicSettingSession(static_cast<std::uint8_t>(mode));
+    emit logLine(QStringLiteral("Sitzungsart fuer die Grundeinstellung: 0x%1")
+                     .arg(mode, 2, 16, QChar('0')).toUpper());
+}
+
 void Worker::readAdaptationChannel(int channel) {
     if (!kwp_ || !kwp_->connected()) {
         emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
@@ -561,6 +573,8 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,
             &Worker::runActuatorTest);
+    connect(this, &Session::basicSettingSessionRequested, worker_,
+            &Worker::setBasicSettingSession);
 
     connect(worker_, &Worker::connected, this,
             [this](const QString&, const QString&, const QString&) { connected_ = true; });
