@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QCloseEvent>
 #include <QComboBox>
 #include <QDateTime>
 #include <QFrame>
@@ -17,7 +18,9 @@
 #include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QSettings>
 #include <QSpinBox>
+#include <QTimer>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -32,6 +35,7 @@
 #include "app/pages/KklToolsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/MonitorPage.h"
+#include "app/pages/SettingsPage.h"
 #include "app/pages/LivePage.h"
 #include "app/pages/ScanPage.h"
 #include "app/pages/StatsPage.h"
@@ -120,6 +124,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     kklTools_ = new KklToolsPage;
     monitor_ = new MonitorPage;
     lexicon_ = new LexiconPage;
+    settingsPage_ = new SettingsPage;
     addNavigationEntry(tr("Uebersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
     addNavigationEntry(tr("Live-Werte"), live_);
@@ -130,9 +135,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     addNavigationEntry(tr("Alle Steuergeraete"), scan_);
     addNavigationEntry(tr("Anpassung und Stellglieder"), kklTools_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
+    addNavigationEntry(tr("Einstellungen"), settingsPage_);
     layout->addWidget(pages_, 1);
     frameLayout->addWidget(central, 1);
     setCentralWidget(frame_);
+
+    connect(settingsPage_, &SettingsPage::changed, this, &MainWindow::applySettings);
 
     Worker* worker = session_.worker();
 
@@ -222,7 +230,74 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     refreshPorts();
     onBrandChanged();
+
+    // Gespeicherte Einstellungen laden. showValues meldet die Werte selbst,
+    // dadurch laeuft alles ueber denselben Weg wie eine Aenderung von Hand.
+    settings_ = loadSettings();
+    settingsPage_->showValues(settings_);
+
+    if (settings_.rememberGeometry) {
+        QSettings store(QStringLiteral("Caruspex"), QStringLiteral("Caruspex"));
+        const QByteArray geometry =
+            store.value(QStringLiteral("fenster/geometrie")).toByteArray();
+        if (!geometry.isEmpty()) restoreGeometry(geometry);
+    }
+
     appendLog(tr("Caruspex bereit. Fahrzeug und Adapter waehlen, dann verbinden."));
+
+    if (settings_.autoConnect && !settings_.lastPort.isEmpty()) {
+        const int index = portBox_->findData(settings_.lastPort);
+        if (index >= 0) {
+            portBox_->setCurrentIndex(index);
+            appendLog(tr("Verbinde selbsttaetig mit %1, so eingestellt.")
+                          .arg(settings_.lastPort));
+            QTimer::singleShot(0, this, &MainWindow::toggleConnection);
+        } else {
+            appendLog(tr("Selbsttaetiges Verbinden: Anschluss %1 ist nicht da.")
+                          .arg(settings_.lastPort));
+        }
+    }
+}
+
+void MainWindow::applySettings(const AppSettings& values) {
+    settings_ = values;
+    saveSettings(settings_);
+
+    // An den Arbeitsthread: Takt, Zeitlimits, Rohprotokoll, Sitzungsart.
+    emit session_.settingsChanged(settings_);
+
+    // An die Seiten.
+    live_->setWindowSeconds(settings_.chartWindowSeconds);
+    faults_->setClearOptions(settings_.clearAttempts, settings_.confirmClear);
+    scan_->setClearAttempts(settings_.clearAttempts);
+
+    // Protokolldatei oeffnen oder schliessen.
+    const bool wantFile = settings_.logToFile && !settings_.logPath.isEmpty();
+    const bool pathChanged = logFile_.isOpen() && logFile_.fileName() != settings_.logPath;
+    if (logFile_.isOpen() && (!wantFile || pathChanged)) {
+        logStream_.flush();
+        logStream_.setDevice(nullptr);
+        logFile_.close();
+    }
+    if (wantFile && !logFile_.isOpen()) {
+        logFile_.setFileName(settings_.logPath);
+        if (logFile_.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+            logStream_.setDevice(&logFile_);
+            logStream_.setEncoding(QStringConverter::Utf8);
+            logStream_ << "\n=== Caruspex, "
+                       << QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm")
+                       << " ===\n";
+            logStream_.flush();
+            appendLog(tr("Protokoll wird zusaetzlich nach %1 geschrieben.")
+                          .arg(settings_.logPath));
+        } else {
+            // Das still zu schlucken waere die schlechteste Loesung: der
+            // Anwender glaubt sonst, es werde mitgeschrieben.
+            appendLog(tr("Protokolldatei %1 laesst sich nicht schreiben. Es wird nur "
+                         "hier im Fenster protokolliert.")
+                          .arg(settings_.logPath));
+        }
+    }
 }
 
 QWidget* MainWindow::buildSidebar() {
@@ -369,7 +444,13 @@ void MainWindow::onBrandChanged() {
 QString MainWindow::protocolOrderForSelection() const {
     const VehicleProfile* profile =
         findProfile(brandBox_->currentText().toStdString(), yearBox_->value());
-    return QString::fromStdString(profile ? profile->protocolOrder : kAutoProtocolOrder);
+    if (profile) return QString::fromStdString(profile->protocolOrder);
+    // Ohne passendes Fahrzeugprofil entscheidet die Einstellung, womit zuerst
+    // versucht wird. Das spart beim A2 die Sekunden, die das Durchprobieren
+    // der CAN-Protokolle kostet.
+    return QString::fromStdString(settings_.protocolOrder == QStringLiteral("can")
+                                      ? kProtocolOrderCanFirst
+                                      : kProtocolOrderKLineFirst);
 }
 
 void MainWindow::refreshPorts() {
@@ -409,7 +490,13 @@ void MainWindow::toggleConnection() {
             return;
         }
         appendLog(tr("Verbinde ueber %1 ...").arg(device));
-        emit session_.openSerialRequested(device, 0, order);
+        // Anschluss merken, damit selbsttaetiges Verbinden beim naechsten Mal
+        // weiss, wohin.
+        if (settings_.lastPort != device) {
+            settings_.lastPort = device;
+            saveSettings(settings_);
+        }
+        emit session_.openSerialRequested(device, settings_.baudOverride, order);
     }
     connectButton_->setEnabled(false);
     stateLabel_->setText(tr("verbinde ..."));
@@ -476,7 +563,13 @@ void MainWindow::onBusy(bool active) {
 }
 
 void MainWindow::appendLog(const QString& line) {
-    log_->appendPlainText(QDateTime::currentDateTime().toString("HH:mm:ss") + "  " + line);
+    const QString stamped =
+        QDateTime::currentDateTime().toString("HH:mm:ss") + "  " + line;
+    log_->appendPlainText(stamped);
+    if (logStream_.device()) {
+        logStream_ << stamped << '\n';
+        logStream_.flush();
+    }
 }
 
 // --- Rahmenloses Fenster ----------------------------------------------------
@@ -600,6 +693,19 @@ void MainWindow::changeEvent(QEvent* event) {
     // Bildschirmecken Luecken.
     // Der Typ steht fest, frame_ wird nur an einer Stelle gesetzt.
     if (frame_) static_cast<WindowFrame*>(frame_)->setRounded(!maximised);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+    if (settings_.rememberGeometry) {
+        QSettings store(QStringLiteral("Caruspex"), QStringLiteral("Caruspex"));
+        store.setValue(QStringLiteral("fenster/geometrie"), saveGeometry());
+    }
+    if (logFile_.isOpen()) {
+        logStream_.flush();
+        logStream_.setDevice(nullptr);
+        logFile_.close();
+    }
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::autoConnectTcp(const QString& address) {

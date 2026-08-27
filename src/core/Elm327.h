@@ -37,6 +37,12 @@ std::string protocolName(char id);
 class Elm327 {
 public:
     void setLog(LogFn log) { log_ = std::move(log); }
+    // Jedes Zeitlimit wird mit diesem Faktor multipliziert. Traege Klone
+    // brauchen mehr Zeit; die Abstufung zwischen kurzen und langen Wartezeiten
+    // bleibt dabei erhalten, weil nicht alles auf denselben Wert gesetzt wird.
+    void setTimeoutScale(double scale) { timeoutScale_ = scale > 0.0 ? scale : 1.0; }
+    // Jede gesendete Zeile samt Antwort mitschreiben.
+    void setVerbose(bool verbose) { verbose_ = verbose; }
 
     // uebernimmt den Transport
     bool connect(std::unique_ptr<ITransport> transport, const std::string& protocolOrder,
@@ -58,6 +64,8 @@ private:
 
     std::unique_ptr<ITransport> transport_;
     LogFn log_;
+    double timeoutScale_ = 1.0;
+    bool verbose_ = true;
     std::string version_ = "?";
     std::string protocolText_ = "unbekannt";
     bool connected_ = false;

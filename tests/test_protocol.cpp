@@ -121,6 +121,41 @@ TEST_CASE("VAG-Nummern werden in P-Codes uebersetzt", "[vag]") {
     REQUIRE(vagFaultCount() > 60);
 }
 
+TEST_CASE("Dieselbe VAG-Nummer heisst je Steuergeraet etwas anderes", "[vag]") {
+    // Das ist der Kern: 01276 ist im Motor der Bremslichtschalter, im ABS die
+    // Hydraulikpumpe. Ohne die Adresse waere eine der beiden Antworten falsch.
+    REQUIRE(describeVagFault(1276, 0x01).find("Bremslichtschalter") != std::string::npos);
+    REQUIRE(describeVagFault(1276, 0x03).find("Hydraulikpumpe") != std::string::npos);
+
+    // Und 01177: im Motor die Anpassung des Steuergeraets, in der
+    // Wegfahrsperre die fehlende Anpassung an den Motor.
+    REQUIRE(describeVagFault(1177, 0x01).find("Anpassung") != std::string::npos);
+    REQUIRE(describeVagFault(1177, 0x25).find("Motorsteuergeraet") != std::string::npos);
+
+    // Raddrehzahlfuehler gibt es nur im Bremsensteuergeraet.
+    REQUIRE(describeVagFault(283, 0x03).find("vorne links") != std::string::npos);
+    REQUIRE(describeVagFault(290, 0x03).find("hinten links") != std::string::npos);
+
+    // Airbagzuender ebenso nur dort.
+    REQUIRE(describeVagFault(588, 0x15).find("Fahrerairbag") != std::string::npos);
+    REQUIRE(describeVagFault(1221, 0x15).find("Crashsensor") != std::string::npos);
+
+    // Tuersteuergeraete zaehlen zum Komfortbereich, auch unter eigener Adresse.
+    REQUIRE(areaForEcuAddress(0x42) == FaultArea::Comfort);
+    REQUIRE(describeVagFault(1331, 0x42).find("Tuersteuergeraet") != std::string::npos);
+
+    // Spannungsversorgung gilt ueberall, egal welches Steuergeraet meldet.
+    REQUIRE(describeVagFault(532, 0x01).find("Klemme 30") != std::string::npos);
+    REQUIRE(describeVagFault(532, 0x15).find("Klemme 30") != std::string::npos);
+    REQUIRE(describeVagFault(65535, 0x46).find("Steuergeraetefehler") != std::string::npos);
+
+    // Ohne Adresse wird geraten, aber der Fund wird als Vermutung benannt.
+    REQUIRE(describeVagFault(283, -1).find("vermutlich") != std::string::npos);
+    // Motorcodes bleiben ohne Adresse trotzdem eindeutig, weil der
+    // Motorbereich zuerst durchsucht wird.
+    REQUIRE(describeVagFault(1249, -1).find("vermutlich") != std::string::npos);
+}
+
 TEST_CASE("Der Messwertsatz deckt den Standard ab", "[pids]") {
     REQUIRE(pidTable().size() >= 70);
     // Stichproben quer durch die Bereiche.

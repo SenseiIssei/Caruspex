@@ -97,6 +97,9 @@ public:
     // gebraucht, wenn erst nach den Schluesselbytes feststeht, welches
     // Protokoll das Steuergeraet spricht.
     bool attach(std::string& error);
+    // Adresse des Steuergeraets, damit Fehlernummern richtig gedeutet
+    // werden. Bei attach() muss der Aufrufer sie selbst setzen.
+    void setEcu(Ecu ecu) { ecu_ = ecu; }
     void disconnect();
     bool connected() const { return connected_; }
 
@@ -133,6 +136,7 @@ private:
     IByteStream& stream_;
     LogFn2 log_;
     std::vector<std::string> identification_;
+    Ecu ecu_ = Ecu::Engine;
     std::uint8_t counter_ = 0;
     bool connected_ = false;
 };

@@ -92,19 +92,19 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
         box.setText(tr("In jedem gefundenen Steuergeraet den Fehlerspeicher loeschen?"));
         box.setInformativeText(
             tr("Jedes Steuergeraet wird angefunkt, ausgelesen und geloescht. Klappt das "
-               "Loeschen nicht, wird es bis zu dreimal wiederholt und jedes Mal "
-               "nachgepruef"
-               "t.\n\n"
+               "Loeschen nicht, wird es bis zu %1-mal wiederholt und jedes Mal "
+               "nachgeprueft.\n\n"
                "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. "
                "Der steht sofort wieder drin. Loeschen ersetzt keine Reparatur.\n\n"
-               "Zuendung an, Motor aus. Der Durchlauf dauert einige Minuten."));
+               "Zuendung an, Motor aus. Der Durchlauf dauert einige Minuten.")
+                .arg(clearAttempts_));
         QPushButton* yes = box.addButton(tr("Ja, ueberall loeschen"), QMessageBox::AcceptRole);
         box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
         box.exec();
         if (box.clickedButton() == yes) {
             clearLog_->clear();
             clearLog_->setVisible(true);
-            emit scanRequested(device, 3);
+            emit scanRequested(device, clearAttempts_);
         }
     });
 

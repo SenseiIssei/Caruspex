@@ -167,7 +167,7 @@ void Worker::startLive(const QVector<int>& pids) {
         // Nicht schneller als 50 Abfragen je Sekunde. Auf der K-Line dauert eine
         // Abfrage ohnehin laenger, aber ein schneller CAN-Adapter oder der
         // Simulator wuerden die Oberflaeche sonst mit Signalen zuschuetten.
-        pollTimer_->setInterval(20);
+        pollTimer_->setInterval(settings_.pollIntervalMs);
         QObject::connect(pollTimer_, &QTimer::timeout, this, &Worker::pollTick);
     }
     pollTimer_->start();
@@ -219,6 +219,10 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
                                       [this](const std::string& m) {
                                           emit logLine(QString::fromStdString(m));
                                       });
+    // Die eingestellte Sitzungsart muss stehen, bevor eine Grundeinstellung
+    // gestartet werden kann.
+    kwp_->setBasicSettingSession(
+        static_cast<std::uint8_t>(settings_.basicSettingSession));
     const Ecu ecu = static_cast<Ecu>(ecuAddress);
     if (!kwp_->connect(ecu, error)) {
         kwp_.reset();
@@ -265,7 +269,7 @@ void Worker::startBasicSetting(int group) {
         basicSettingTimer_ = new QTimer(this);
         // Das Steuergeraet faellt aus der Grundeinstellung, wenn laenger als
         // etwa eine Sekunde nichts kommt. Wir fragen deutlich haeufiger nach.
-        basicSettingTimer_->setInterval(180);
+        basicSettingTimer_->setInterval(settings_.basicSettingIntervalMs);
         QObject::connect(basicSettingTimer_, &QTimer::timeout, this,
                          &Worker::basicSettingTick);
     }
@@ -480,6 +484,24 @@ void Worker::bruteForceClear(int attempts) {
     refreshStatusAndFaults();
 }
 
+void Worker::applySettings(const AppSettings& values) {
+    settings_ = values;
+
+    // Laufende Zeitgeber sofort nachziehen, sonst wirkt eine Aenderung erst
+    // nach dem naechsten Verbindungsaufbau.
+    if (pollTimer_) pollTimer_->setInterval(settings_.pollIntervalMs);
+    if (basicSettingTimer_) {
+        basicSettingTimer_->setInterval(settings_.basicSettingIntervalMs);
+    }
+
+    elm_.setTimeoutScale(static_cast<double>(settings_.timeoutPercent) / 100.0);
+    elm_.setVerbose(settings_.logRaw);
+    if (kwp_) {
+        kwp_->setBasicSettingSession(
+            static_cast<std::uint8_t>(settings_.basicSettingSession));
+    }
+}
+
 void Worker::setBasicSettingSession(int mode) {
     if (kwp_) kwp_->setBasicSettingSession(static_cast<std::uint8_t>(mode));
     emit logLine(QStringLiteral("Sitzungsart fuer die Grundeinstellung: 0x%1")
@@ -602,6 +624,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<OxygenRow>("caruspex::OxygenRow");
     qRegisterMetaType<QVector<OxygenRow>>("QVector<caruspex::OxygenRow>");
     qRegisterMetaType<QVector<int>>("QVector<int>");
+    qRegisterMetaType<AppSettings>("caruspex::AppSettings");
 
     worker_ = new Worker();
     worker_->moveToThread(&thread_);
@@ -623,6 +646,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::scanAllRequested, worker_, &Worker::scanAllEcus);
     connect(this, &Session::bruteForceClearRequested, worker_,
             &Worker::bruteForceClear);
+    connect(this, &Session::settingsChanged, worker_, &Worker::applySettings);
     connect(this, &Session::adaptationRequested, worker_,
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,

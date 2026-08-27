@@ -103,6 +103,9 @@ std::string negativeResponseText(std::uint8_t code);
 
 // Ein Fehlereintrag aus KWP2000 belegt drei Bytes: zwei fuer die Nummer, eines
 // fuer den Zustand.
-Kwp1281Fault decodeKwp2000Fault(std::uint8_t high, std::uint8_t low, std::uint8_t status);
+// ecuAddress ist die Adresse des meldenden Steuergeraets; sie entscheidet,
+// welche Bedeutung eine VAG-Nummer hat. -1 wenn unbekannt.
+Kwp1281Fault decodeKwp2000Fault(std::uint8_t high, std::uint8_t low, std::uint8_t status,
+                                int ecuAddress = -1);
 
 }  // namespace caruspex

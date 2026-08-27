@@ -98,6 +98,10 @@ if(CARUSPEX_GUI)
         src/app/pages/MonitorPage.h
         src/app/pages/LexiconPage.cpp
         src/app/pages/LexiconPage.h
+        src/app/pages/SettingsPage.cpp
+        src/app/pages/SettingsPage.h
+        src/app/Settings.cpp
+        src/app/Settings.h
     )
     target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts)
     set_target_properties(caruspex PROPERTIES
@@ -117,6 +121,7 @@ if(CARUSPEX_TESTS)
         tests/test_protocol.cpp
         tests/test_kwp1281.cpp
         tests/test_kwp2000.cpp
+        tests/test_settings.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

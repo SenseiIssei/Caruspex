@@ -164,8 +164,12 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
     transport_->flushInput();
     transport_->write(command + "\r");
 
+    // Der eingestellte Faktor greift hier, an der einzigen Stelle, an der
+    // tatsaechlich gewartet wird.
+    const int waitMs = static_cast<int>(static_cast<double>(timeoutMs) * timeoutScale_);
+
     std::string buffer;
-    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(timeoutMs);
+    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(waitMs);
     while (nowMs() < deadline) {
         const std::string chunk = transport_->read(120);
         if (!chunk.empty()) {
@@ -198,7 +202,7 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
             current += c;
         }
     }
-    if (log_) {
+    if (log_ && verbose_) {
         std::string joined;
         for (const std::string& l : result.lines) joined += l + " | ";
         log_("  > " + command + "   ->   " + joined);

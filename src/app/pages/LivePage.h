@@ -30,6 +30,8 @@ class LivePage : public QWidget {
     Q_OBJECT
 
 public:
+    // Zeitfenster der Kurven in Sekunden.
+    void setWindowSeconds(int seconds);
     explicit LivePage(QWidget* parent = nullptr);
 
 public slots:
@@ -44,6 +46,7 @@ signals:
     void stopRequested();
 
 private:
+    double windowSeconds_ = 90.0;
     void buildPidList();
     QVector<int> selectedPids() const;
     void toggleRun();

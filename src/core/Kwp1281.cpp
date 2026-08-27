@@ -168,6 +168,7 @@ bool Kwp1281::receiveBlock(std::uint8_t& title, std::vector<std::uint8_t>& paylo
 // --- Verbindung -------------------------------------------------------------
 
 bool Kwp1281::connect(Ecu ecu, std::string& error) {
+    ecu_ = ecu;
     identification_.clear();
     counter_ = 0;
     connected_ = false;
@@ -280,7 +281,7 @@ bool Kwp1281::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
                 fault.code = code;
                 fault.status = payload[i + 2];
                 fault.sporadic = (payload[i + 2] & 0x80) != 0;
-                fault.text = describeVagFault(code);
+                fault.text = describeVagFault(code, static_cast<int>(ecu_));
                 out.push_back(fault);
             }
             if (!sendBlock(block::kAck, {}, error)) return false;

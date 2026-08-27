@@ -124,13 +124,14 @@ std::string negativeResponseText(std::uint8_t code) {
     }
 }
 
-Kwp1281Fault decodeKwp2000Fault(std::uint8_t high, std::uint8_t low, std::uint8_t status) {
+Kwp1281Fault decodeKwp2000Fault(std::uint8_t high, std::uint8_t low, std::uint8_t status,
+                                int ecuAddress) {
     Kwp1281Fault fault;
     fault.code = (high << 8) | low;
     fault.status = status;
     // Bit 7 gesetzt heisst: der Fehler steht gerade an. Sonst ist er sporadisch.
     fault.sporadic = (status & 0x80) == 0;
-    fault.text = describeVagFault(fault.code);
+    fault.text = describeVagFault(fault.code, ecuAddress);
     return fault;
 }
 
@@ -341,7 +342,8 @@ bool Kwp2000::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
     for (int i = 0; i < count; ++i) {
         const size_t at = 2 + static_cast<size_t>(i) * 3;
         if (at + 2 >= reply.size()) break;
-        const Kwp1281Fault fault = decodeKwp2000Fault(reply[at], reply[at + 1], reply[at + 2]);
+        const Kwp1281Fault fault = decodeKwp2000Fault(reply[at], reply[at + 1], reply[at + 2],
+                                                      static_cast<int>(target_));
         if (fault.code != 0 && fault.code != 0xFFFF) out.push_back(fault);
     }
     return true;

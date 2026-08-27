@@ -31,12 +31,17 @@ public slots:
     void onEcuResult(const caruspex::EcuScanRow& row);
     void onScanFinished(int present, int withFaults, bool cancelled);
 
+public:
+    // Versuche beim Loeschen in allen Steuergeraeten.
+    void setClearAttempts(int attempts) { clearAttempts_ = attempts > 0 ? attempts : 1; }
+
 signals:
     void scanRequested(const QString& device, int clearAttempts);
     void cancelRequested();
     void reportRequested();
 
 private:
+    int clearAttempts_ = 3;
     void refreshPorts();
     void exportReport();
 

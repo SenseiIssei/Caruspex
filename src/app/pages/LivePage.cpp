@@ -26,7 +26,6 @@
 namespace caruspex {
 namespace {
 
-constexpr double kWindowSeconds = 90.0;
 
 const QColor kSeriesColours[] = {
     QColor("#4aa3ff"), QColor("#3ac47d"), QColor("#f2b13c"), QColor("#ef5350"),
@@ -80,7 +79,7 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
 
     axisX_ = new QValueAxis;
     axisX_->setTitleText(tr("Sekunden"));
-    axisX_->setRange(0, kWindowSeconds);
+    axisX_->setRange(0, windowSeconds_);
     axisY_ = new QValueAxis;
     axisY_->setRange(0, 100);
     for (QValueAxis* axis : {axisX_, axisY_}) {
@@ -211,11 +210,24 @@ void LivePage::resetChart() {
         delete s;
     }
     series_.clear();
-    axisX_->setRange(0, kWindowSeconds);
+    axisX_->setRange(0, windowSeconds_);
     axisY_->setRange(0, 100);
     yLow_ = std::numeric_limits<double>::max();
     yHigh_ = std::numeric_limits<double>::lowest();
     rescaleClock_.invalidate();
+}
+
+void LivePage::setWindowSeconds(int seconds) {
+    if (seconds < 5) seconds = 5;
+    windowSeconds_ = static_cast<double>(seconds);
+    // Die Achse sofort nachziehen, sonst wirkt die Aenderung erst beim
+    // naechsten Messwert.
+    const double now = clock_.isValid() ? clock_.elapsed() / 1000.0 : 0.0;
+    if (now > windowSeconds_) {
+        axisX_->setRange(now - windowSeconds_, now);
+    } else {
+        axisX_->setRange(0, windowSeconds_);
+    }
 }
 
 void LivePage::onLiveValue(const LiveRow& row) {
@@ -257,10 +269,10 @@ void LivePage::onLiveValue(const LiveRow& row) {
     line->append(seconds, row.value);
 
     // Punkte ausserhalb des Zeitfensters wegwerfen
-    while (line->count() > 2 && line->at(0).x() < seconds - kWindowSeconds) line->remove(0);
+    while (line->count() > 2 && line->at(0).x() < seconds - windowSeconds_) line->remove(0);
 
     // Achsen mitziehen
-    if (seconds > kWindowSeconds) axisX_->setRange(seconds - kWindowSeconds, seconds);
+    if (seconds > windowSeconds_) axisX_->setRange(seconds - windowSeconds_, seconds);
 
     // Laufend mitgefuehrte Grenzen. Ueber alle Punkte aller Kurven zu laufen
     // waere quadratisch und legt die Oberflaeche bei schnellen Adaptern lahm.

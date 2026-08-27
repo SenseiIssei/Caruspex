@@ -18,6 +18,7 @@ bool VagKLine::connect(Ecu ecu, std::string& error) {
 
     if (protocol_ == KLineProtocol::Kwp1281) {
         old_ = std::make_unique<Kwp1281>(stream_, log_);
+        old_->setEcu(ecu);
         if (!old_->attach(error)) {
             old_.reset();
             return false;

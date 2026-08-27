@@ -21,6 +21,7 @@
 #include "core/Kwp1281.h"
 #include "core/VagKLine.h"
 #include "core/Obd2.h"
+#include "app/Settings.h"
 
 class QTimer;
 
@@ -115,6 +116,9 @@ public slots:
     void runActuatorTest();
     void readMonitors();
     void setBasicSettingSession(int mode);
+    // Uebernimmt die Einstellungen. Wird beim Start und nach jeder Aenderung
+    // gerufen, wirkt auch waehrend einer laufenden Messung.
+    void applySettings(const caruspex::AppSettings& values);
 
 public:
     // Bricht einen laufenden Suchlauf ab. Aus jedem Thread erlaubt.
@@ -173,6 +177,7 @@ private:
     std::unique_ptr<VagKLine> kwp_;
     QTimer* basicSettingTimer_ = nullptr;
     int basicSettingGroup_ = 60;
+    AppSettings settings_;
 };
 
 // Besitzt den Thread und den Worker, wird von der Oberflaeche benutzt.
@@ -208,6 +213,7 @@ signals:
     void actuatorTestRequested();
     void basicSettingSessionRequested(int mode);
     void readMonitorsRequested();
+    void settingsChanged(const caruspex::AppSettings& values);
 
 private:
     QThread thread_;

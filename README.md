@@ -59,6 +59,14 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Prüfbericht als Textdatei
 ![Bauteilprüfung](docs/screenshot-bauteilpruefung.png)
 
+**Einstellungen**
+- Baudrate, Protokollreihenfolge und ein Faktor fuer alle Zeitlimits, falls der Adapter traege ist
+- Abfragetakt und Zeitfenster der Diagramme
+- Versuche beim hartnaeckigen Loeschen, Nachfrage vor dem Loeschen abschaltbar
+- Sitzungsart und Nachfragetakt fuer die Grundeinstellung
+- Rohkommunikation mitschreiben, wahlweise zusaetzlich in eine Datei
+- Alles wird gespeichert und wirkt sofort, auch waehrend einer laufenden Messung
+
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
 - Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit

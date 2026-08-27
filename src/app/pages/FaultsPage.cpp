@@ -192,7 +192,17 @@ void FaultsPage::setConnected(bool connected) {
     }
 }
 
+void FaultsPage::setClearOptions(int attempts, bool confirm) {
+    clearAttempts_ = attempts > 0 ? attempts : 1;
+    confirmClear_ = confirm;
+}
+
 void FaultsPage::askAndClear() {
+    if (!confirmClear_) {
+        emit clearRequested();
+        return;
+    }
+
     QMessageBox box(this);
     box.setWindowTitle(tr("Fehlerspeicher loeschen"));
     box.setIcon(QMessageBox::Warning);
@@ -208,26 +218,34 @@ void FaultsPage::askAndClear() {
 }
 
 void FaultsPage::askAndBruteForce() {
+    if (!confirmClear_) {
+        clearLog_->clear();
+        clearLog_->setVisible(true);
+        emit bruteForceRequested(clearAttempts_);
+        return;
+    }
+
     QMessageBox box(this);
     box.setWindowTitle(tr("Hartnaeckig loeschen"));
     box.setIcon(QMessageBox::Warning);
     box.setText(tr("Mehrfach loeschen und jedes Mal nachpruefen?"));
     box.setInformativeText(
-        tr("Es wird bis zu fuenfmal geloescht. Nach jedem Versuch wird nachgelesen, ob der "
+        tr("Es wird bis zu %1-mal geloescht. Nach jedem Versuch wird nachgelesen, ob der "
            "Speicher wirklich leer ist. Bleibt etwas stehen, wird zwischendurch die "
            "Verbindung neu aufgebaut, weil manche Steuergeraete den Loeschbefehl nur "
            "direkt nach dem Wecken annehmen.\n\n"
            "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. Der "
            "steht sofort wieder drin, egal wie oft geloescht wird. Loeschen ersetzt keine "
            "Reparatur.\n\n"
-           "Die Bereitschaftstests werden dabei ebenfalls zurueckgesetzt."));
+           "Die Bereitschaftstests werden dabei ebenfalls zurueckgesetzt.")
+            .arg(clearAttempts_));
     QPushButton* yes = box.addButton(tr("Ja, hartnaeckig loeschen"), QMessageBox::AcceptRole);
     box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
     box.exec();
     if (box.clickedButton() == yes) {
         clearLog_->clear();
         clearLog_->setVisible(true);
-        emit bruteForceRequested(5);
+        emit bruteForceRequested(clearAttempts_);
     }
 }
 

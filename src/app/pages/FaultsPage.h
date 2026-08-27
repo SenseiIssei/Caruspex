@@ -27,6 +27,10 @@ public slots:
     void onClearProgress(const QString& line);
     void onClearFinished(bool everythingGone, int remaining);
 
+public:
+    // Versuche beim hartnaeckigen Loeschen und ob vorher gefragt wird.
+    void setClearOptions(int attempts, bool confirm);
+
 signals:
     void readRequested();
     void clearRequested();
@@ -34,6 +38,8 @@ signals:
     void exportRequested();
 
 private:
+    int clearAttempts_ = 5;
+    bool confirmClear_ = true;
     void askAndClear();
     void askAndBruteForce();
     void exportCsv();

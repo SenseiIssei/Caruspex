@@ -3,7 +3,11 @@
 #include <QMainWindow>
 #include <QVector>
 
+#include <QFile>
+#include <QTextStream>
+
 #include "app/Session.h"
+#include "app/Settings.h"
 
 QT_BEGIN_NAMESPACE
 class QButtonGroup;
@@ -31,6 +35,7 @@ class StatsPage;
 class ScanPage;
 class KklToolsPage;
 class MonitorPage;
+class SettingsPage;
 class LexiconPage;
 
 class MainWindow : public QMainWindow {
@@ -47,6 +52,7 @@ protected:
     // anzubieten. Die Kinderwidgets bekommen die Ereignisse sonst zuerst.
     bool eventFilter(QObject* watched, QEvent* event) override;
     void changeEvent(QEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
 #ifdef Q_OS_WIN
     // Unter Windows uebernimmt das Betriebssystem die Groessenaenderung, wenn
     // man ihm bei WM_NCHITTEST sagt, wo die Raender liegen. Das gibt die
@@ -63,6 +69,9 @@ private slots:
     void onBusy(bool active);
     void appendLog(const QString& line);
     void onBrandChanged();
+    // Uebernimmt geaenderte Einstellungen: speichern, an den Arbeitsthread
+    // weiterreichen und die Seiten nachziehen.
+    void applySettings(const caruspex::AppSettings& values);
 
 private:
     QWidget* buildSidebar();
@@ -102,9 +111,14 @@ private:
     ScanPage* scan_ = nullptr;
     KklToolsPage* kklTools_ = nullptr;
     MonitorPage* monitor_ = nullptr;
+    SettingsPage* settingsPage_ = nullptr;
     LexiconPage* lexicon_ = nullptr;
 
     bool connected_ = false;
+
+    AppSettings settings_;
+    QFile logFile_;
+    QTextStream logStream_;
 };
 
 }  // namespace caruspex
