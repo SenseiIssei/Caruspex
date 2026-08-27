@@ -68,9 +68,15 @@ bool KLineStream::slowInit(std::uint8_t address) {
     bits[8] = (ones % 2) == 0;            // ungerade Paritaet
     bits[9] = true;                       // Stoppbit
 
+    // Jedes Bit bekommt einen festen Zielzeitpunkt, gerechnet vom Start der
+    // Weckadresse. So schleppt sich der Ueberhang des Betriebssystems nicht
+    // von Bit zu Bit weiter.
+    const std::uint64_t start = nowMs();
+    int index = 0;
     for (bool bit : bits) {
         port_.setBreak(!bit);             // Break aktiv zieht die Leitung auf Null
-        sleepMs(kBitMs);
+        ++index;
+        sleepUntilMs(start + static_cast<std::uint64_t>(index) * kBitMs);
     }
     port_.setBreak(false);
 

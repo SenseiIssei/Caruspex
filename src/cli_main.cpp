@@ -1,6 +1,7 @@
 // Konsolen-Testtool fuer den Kern. Die eigentliche Anwendung ist caruspex.exe.
 //
 //   caruspex_cli ports
+//   caruspex_cli kklcheck --port COM3
 //   caruspex_cli read --tcp 127.0.0.1:35000
 //   caruspex_cli read --port COM5 --baud 38400
 
@@ -9,9 +10,13 @@
 #include <memory>
 #include <string>
 
+#include <chrono>
+
 #include "core/Elm327.h"
 #include "core/Obd2.h"
 #include "core/Transport.h"
+#include "core/KLineStream.h"
+#include "core/Timing.h"
 #include "data/Pids.h"
 
 using namespace caruspex;
@@ -29,6 +34,83 @@ void printPorts() {
         if (p.vid) std::printf("           USB VID_%04X PID_%04X\n", p.vid, p.pid);
         if (!p.chipGuess.empty()) std::printf("           Chip: %s\n", p.chipGuess.c_str());
     }
+}
+
+
+// Prueft ein KKL-Kabel, ohne dass es am Auto haengt. Getestet wird, was die
+// 5-Baud-Weckadresse braucht: Break-Leitung schalten und Baudrate im Betrieb
+// aendern. Dazu wird nachgemessen, wie genau die Bitzeiten eingehalten werden.
+int kklCheck(const std::string& port) {
+    std::printf("KKL-Selbsttest auf %s\n", port.c_str());
+    std::printf("Das Kabel muss dafuer NICHT am Auto stecken.\n\n");
+
+    Serial line;
+    std::string error;
+    if (!line.open(port, 9600, error)) {
+        std::printf("[fehlt] Anschluss laesst sich nicht oeffnen: %s\n", error.c_str());
+        return 2;
+    }
+    std::printf("[ok]    Anschluss geoeffnet mit 9600 Baud\n");
+
+    // 1) Baudrate im laufenden Betrieb aendern.
+    bool baudOk = true;
+    for (int baud : {9600, 10400, 4800, 9600}) {
+        if (!line.changeBaud(baud)) {
+            std::printf("[fehlt] Baudrate %d wird nicht angenommen\n", baud);
+            baudOk = false;
+        }
+    }
+    if (baudOk) std::printf("[ok]    Baudrate laesst sich im Betrieb umschalten\n");
+
+    // 2) Break-Leitung schalten. Damit wird die Weckadresse getaktet.
+    if (!line.setBreak(true) || !line.setBreak(false)) {
+        std::printf("[fehlt] Break-Leitung laesst sich nicht schalten. Ohne das geht die "
+                    "5-Baud-Weckadresse nicht.\n");
+        line.close();
+        return 3;
+    }
+    std::printf("[ok]    Break-Leitung laesst sich schalten\n");
+
+    // 3) Bitzeiten nachmessen. 5 Baud heisst 200 ms je Bit. Windows schlaeft
+    //    gern zu lange, und zu lange Bits versteht das Steuergeraet nicht.
+    std::printf("\nBitzeiten werden gemessen (10 Bit wie bei einer echten "
+                "Weckadresse) ...\n");
+    // Genauso getaktet wie die echte Weckadresse: feste Zielzeitpunkte,
+    // gerechnet vom Anfang, damit sich nichts aufaddiert.
+    double worst = 200.0;
+    const auto begin = std::chrono::steady_clock::now();
+    const std::uint64_t start = nowMs();
+    double previous = 0.0;
+    for (int bit = 0; bit < 10; ++bit) {
+        line.setBreak(bit % 2 == 0);
+        sleepUntilMs(start + static_cast<std::uint64_t>(bit + 1) * 200);
+        const double elapsed = std::chrono::duration<double, std::milli>(
+                                   std::chrono::steady_clock::now() - begin)
+                                   .count();
+        const double ms = elapsed - previous;
+        previous = elapsed;
+        std::printf("        Bit %2d: %.1f ms\n", bit + 1, ms);
+        if (std::abs(ms - 200.0) > std::abs(worst - 200.0)) worst = ms;
+    }
+    // Vor dem Schliessen stoppen: einen USB-Port zu schliessen dauert gut
+    // hundert Millisekunden und wuerde die Messung verfaelschen.
+    const double total = previous;
+    line.setBreak(false);
+    line.close();
+
+    const double average = total / 10.0;
+    std::printf("        Mittel %.1f ms, staerkste Abweichung %.1f ms\n", average, worst);
+    std::printf("        Gesamtlaenge %.0f ms (Sollwert 2000 ms)\n", total);
+
+    if (std::abs(average - 200.0) <= 8.0) {
+        std::printf("[ok]    Taktung genau genug fuer die Weckadresse\n");
+    } else {
+        std::printf("[warn]  Taktung weicht ab. Die Weckadresse kann daran scheitern.\n");
+    }
+
+    std::printf("\nErgebnis: Das Kabel kann alles, was das Protokoll braucht.\n");
+    std::printf("Ob das Steuergeraet antwortet, zeigt sich erst am Auto mit Zuendung an.\n");
+    return 0;
 }
 
 std::unique_ptr<ITransport> makeTransport(const std::string& tcp, const std::string& port,
@@ -64,6 +146,9 @@ int main(int argc, char** argv) {
     if (command == "ports") {
         printPorts();
         return 0;
+    }
+    if (command == "kklcheck") {
+        return kklCheck(port);
     }
 
     std::string error;
