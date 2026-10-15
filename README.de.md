@@ -1,22 +1,24 @@
 # Caruspex
 
-Freie Fahrzeugdiagnose für Windows, Linux und macOS. Ein Kabel oder Dongle, eine Software, alles auf Deutsch.
+Freie Fahrzeugdiagnose für Windows, Linux und macOS. Ein Kabel oder Dongle, eine Software, auf Deutsch oder Englisch.
+
+[English version of this page](README.md)
 
 Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
 
-![Übersicht](docs/screenshot-uebersicht.png)
+![Übersicht](docs/de/screenshot-overview.png)
 
 ## Was es kann
 
 **Fehlerspeicher**
 - Gespeicherte, sporadische und dauerhafte Fehlercodes
-- Knapp 400 Codes in deutschem Klartext, generische EOBD-Codes plus die VAG-eigenen P1xxx
+- 462 Codes im Klartext (Deutsch und Englisch), generische EOBD-Codes plus die VAG-eigenen P1xxx
 - Unbekannte Codes fallen auf die Bedeutung ihrer Gruppe zurück statt leer zu bleiben
 - Löschen mit klarer Warnung und automatischer Gegenprobe
 - Export als CSV
 
 **Live-Werte**
-- Rund 30 Messwerte, in verständliche Einheiten umgerechnet
+- Rund 80 Messwerte, in verständliche Einheiten umgerechnet
 - Mitlaufendes Diagramm mit mehreren Kurven und rollendem 90-Sekunden-Fenster
 - Animierte Rundanzeigen für Drehzahl, Tempo, Kühlmittel, Last, Drosselklappe, Bordspannung
 - Aufzeichnung als CSV für die spätere Auswertung
@@ -30,14 +32,14 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 **Wo kommt der Fehler her**
 - Schematisches Fahrzeug, das die betroffene Baugruppe hervorhebt, je nach Fehlercode
 - Klartext dazu, wo man konkret nachsieht
-![Fehlerspeicher mit Fahrzeuganzeige](docs/screenshot-fehler.png)
+![Fehlerspeicher mit Fahrzeuganzeige](docs/de/screenshot-faults.png)
 
 **Drosselklappe anlernen (KWP1281 über KKL-Kabel)**
 - Echte Grundeinstellung im Messwertblock 060 oder 098
 - Verbindung zu jedem Steuergerät, nicht nur zum Motor: ABS, Airbag, Kombi, Komfort
 - Fehlerspeicher und Messwertblöcke der herstellereigenen Diagnose
 - Checkliste der Voraussetzungen, damit das Steuergerät nicht abbricht
-![Drosselklappe](docs/screenshot-drosselklappe.png)
+![Drosselklappe](docs/de/screenshot-throttle.png)
 
 **Alle Steuergeraete durchsuchen (KKL)**
 - Klappert der Reihe nach jedes bekannte Steuergeraet ab
@@ -49,7 +51,7 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Anpassungskanaele lesen: der eingestellte Wert plus die Anzeigefelder des Steuergeraets
 - Stellglieddiagnose: das Steuergeraet klappert seine Aktoren durch und nennt das laufende Bauteil
 - Bewusst nur lesend, ein falscher Wert im falschen Kanal legt den Motor lahm
-![Anpassung und Stellglieder](docs/screenshot-anpassung.png)
+![Anpassung und Stellglieder](docs/de/screenshot-adaptation.png)
 
 **Bauteilüberwachung (Modus 06 und 05)**
 - Der ausführlichste Teil von EOBD: zu jedem internen Selbsttest der Messwert samt erlaubter Unter- und Obergrenze
@@ -57,7 +59,7 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Lambdasondenprüfung mit Schwellspannungen und Umschaltzeiten
 - Kalibrierstand, Prüfsumme und Name des Steuergeräts aus Modus 09
 - Prüfbericht als Textdatei
-![Bauteilprüfung](docs/screenshot-bauteilpruefung.png)
+![Bauteilprüfung](docs/de/screenshot-monitoring.png)
 
 **Einstellungen**
 - Baudrate, Protokollreihenfolge und ein Faktor fuer alle Zeitlimits, falls der Adapter traege ist
@@ -65,15 +67,16 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Versuche beim hartnaeckigen Loeschen, Nachfrage vor dem Loeschen abschaltbar
 - Sitzungsart und Nachfragetakt fuer die Grundeinstellung
 - Rohkommunikation mitschreiben, wahlweise zusaetzlich in eine Datei
+- Sprache: wie das System, Deutsch oder Englisch (wirkt beim nächsten Start)
 - Alles wird gespeichert und wirkt sofort, auch waehrend einer laufenden Messung
-![Einstellungen](docs/screenshot-einstellungen.png)
+![Einstellungen](docs/de/screenshot-settings.png)
 
 **Statistik**
 - Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
 - Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit
 - Verbrauch aus der Luftmasse geschaetzt, Strecke aus dem Geschwindigkeitssignal
 - Export als CSV
-![Statistik](docs/screenshot-statistik.png)
+![Statistik](docs/de/screenshot-statistics.png)
 
 **Nachschlagen**
 - Durchsuchbares Fehlercode-Lexikon, funktioniert offline und ohne Auto
@@ -238,4 +241,4 @@ Modus 04 löscht Fehlerspeicher, Freeze Frame und die Bereitschaftstests. Direkt
 
 ## Lizenz
 
-MIT, siehe [LICENSE](LICENSE).
+MIT, siehe [LICENSE](LICENSE). Die mitgelieferte Schrift JetBrains Mono steht unter der SIL Open Font License 1.1 ([OFL.txt](resources/fonts/OFL.txt)).
