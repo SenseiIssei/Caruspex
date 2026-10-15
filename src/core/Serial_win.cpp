@@ -9,6 +9,8 @@
 #include <cctype>
 #include <cstdio>
 
+#include "core/Lang.h"
+
 namespace caruspex {
 namespace {
 
@@ -16,9 +18,10 @@ struct ChipHint {
     unsigned vid;
     unsigned pid;
     const char* name;
+    const char* nameEn = nullptr;   // only where the name contains German
 };
 
-// Chips, die in Diagnoseadaptern und KKL-Kabeln stecken.
+// Chips found in diagnostic adapters and KKL cables.
 constexpr std::array<ChipHint, 9> kChips{{
     {0x0403, 0x6001, "FTDI FT232R"},
     {0x0403, 0x6015, "FTDI FT231X"},
@@ -28,7 +31,7 @@ constexpr std::array<ChipHint, 9> kChips{{
     {0x1A86, 0x5523, "CH341"},
     {0x10C4, 0xEA60, "CP2102"},
     {0x067B, 0x2303, "PL2303"},
-    {0x2303, 0x0000, "PL2303 (Variante)"},
+    {0x2303, 0x0000, "PL2303 (Variante)", "PL2303 (variant)"},
 }};
 
 std::string toUpper(std::string s) {
@@ -91,7 +94,7 @@ std::vector<PortInfo> enumeratePorts() {
         parseUsbId(pi.hardwareId, pi.vid, pi.pid);
         for (const ChipHint& c : kChips) {
             if (c.vid == pi.vid && (c.pid == pi.pid || c.pid == 0)) {
-                pi.chipGuess = c.name;
+                pi.chipGuess = c.nameEn ? L(c.name, c.nameEn) : c.name;
                 break;
             }
         }
@@ -112,16 +115,19 @@ Serial::~Serial() { close(); }
 
 bool Serial::open(const std::string& device, int baud, std::string& error) {
     close();
-    // Ab COM10 braucht Windows die lange Schreibweise.
+    // From COM10 on, Windows needs the long form.
     const std::string path = "\\\\.\\" + device;
     HANDLE h = CreateFileA(path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
                            OPEN_EXISTING, 0, nullptr);
     if (h == INVALID_HANDLE_VALUE) {
         const DWORD err = GetLastError();
-        error = device + " laesst sich nicht oeffnen (Windows-Fehler " +
+        error = device + L(" laesst sich nicht oeffnen (Windows-Fehler ",
+                           " cannot be opened (Windows error ") +
                 std::to_string(err) + ")";
-        if (err == ERROR_ACCESS_DENIED) error += ": belegt ein anderes Programm den Port?";
-        if (err == ERROR_FILE_NOT_FOUND) error += ": Port existiert nicht.";
+        if (err == ERROR_ACCESS_DENIED)
+            error += L(": belegt ein anderes Programm den Port?",
+                       ": is another program using the port?");
+        if (err == ERROR_FILE_NOT_FOUND) error += L(": Port existiert nicht.", ": port does not exist.");
         return false;
     }
 
@@ -129,7 +135,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     dcb.DCBlength = sizeof(dcb);
     if (!GetCommState(h, &dcb)) {
         CloseHandle(h);
-        error = "GetCommState fehlgeschlagen";
+        error = L("GetCommState fehlgeschlagen", "GetCommState failed");
         return false;
     }
     dcb.BaudRate = static_cast<DWORD>(baud);
@@ -146,7 +152,8 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     dcb.fInX = FALSE;
     if (!SetCommState(h, &dcb)) {
         CloseHandle(h);
-        error = "Baudrate " + std::to_string(baud) + " wird nicht unterstuetzt";
+        error = L("Baudrate ", "Baud rate ") + std::to_string(baud) +
+                L(" wird nicht unterstuetzt", " is not supported");
         return false;
     }
 
@@ -192,7 +199,7 @@ std::string Serial::read(int timeoutMs) {
         if (!ReadFile(static_cast<HANDLE>(handle_), buffer, sizeof(buffer), &got, nullptr)) break;
         if (got > 0) {
             out.append(buffer, got);
-            break;  // Aufrufer entscheidet, ob er mehr braucht
+            break;  // the caller decides whether it needs more
         }
     } while (GetTickCount64() < deadline);
     return out;

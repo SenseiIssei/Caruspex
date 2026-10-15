@@ -18,6 +18,8 @@
 #include <cerrno>
 #include <cstring>
 
+#include "core/Lang.h"
+
 namespace caruspex {
 namespace {
 
@@ -78,7 +80,7 @@ bool SerialTransport::open(const std::string& device, int baud, std::string& err
 }
 
 std::string SerialTransport::name() const {
-    return port_.device() + " @ " + std::to_string(port_.baud()) + " Baud";
+    return port_.device() + " @ " + std::to_string(port_.baud()) + L(" Baud", " baud");
 }
 
 TcpTransport::~TcpTransport() {
@@ -87,7 +89,7 @@ TcpTransport::~TcpTransport() {
 
 bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     if (!ensureNetwork()) {
-        error = "Netzwerk laesst sich nicht starten";
+        error = L("Netzwerk laesst sich nicht starten", "Cannot start networking");
         return false;
     }
     addrinfo hints{};
@@ -96,7 +98,7 @@ bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     addrinfo* result = nullptr;
     const std::string service = std::to_string(port);
     if (::getaddrinfo(host.c_str(), service.c_str(), &hints, &result) != 0 || !result) {
-        error = "Adresse " + host + " nicht aufloesbar";
+        error = L("Adresse ", "Cannot resolve address ") + host + L(" nicht aufloesbar", "");
         return false;
     }
 
@@ -111,8 +113,9 @@ bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     ::freeaddrinfo(result);
 
     if (handle == kInvalid) {
-        error = "Keine Verbindung zu " + host + ":" + service +
-                " (ist das WLAN des Adapters verbunden?)";
+        error = L("Keine Verbindung zu ", "No connection to ") + host + ":" + service +
+                L(" (ist das WLAN des Adapters verbunden?)",
+                  " (are you connected to the adapter's Wi-Fi?)");
         return false;
     }
 
@@ -120,7 +123,7 @@ bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     ::setsockopt(handle, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&one),
                  sizeof(one));
     socket_ = static_cast<unsigned long long>(handle);
-    name_ = host + ":" + service + " (WLAN)";
+    name_ = host + ":" + service + L(" (WLAN)", " (Wi-Fi)");
     return true;
 }
 

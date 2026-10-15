@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 
+#include "core/Lang.h"
 #include "core/Timing.h"
 
 namespace caruspex {
@@ -15,6 +16,12 @@ namespace {
 const char* kErrors[] = {"UNABLE TO CONNECT", "BUS INIT: ERROR", "BUS INIT: ...ERROR",
                          "BUS ERROR", "CAN ERROR", "DATA ERROR", "BUS BUSY", "FB ERROR",
                          "LV RESET", "STOPPED", "ERR", "?"};
+
+// Two upper-case hex digits, for negative response codes.
+std::string hexByte(int value) {
+    static const char digits[] = "0123456789ABCDEF";
+    return {digits[(value >> 4) & 0xF], digits[value & 0xF]};
+}
 
 std::string trim(const std::string& s) {
     const size_t a = s.find_first_not_of(" \t\r\n");
@@ -56,14 +63,14 @@ std::string protocolName(char id) {
     switch (id) {
         case '1': return "SAE J1850 PWM";
         case '2': return "SAE J1850 VPW";
-        case '3': return "ISO 9141-2 (K-Line, 5-Baud-Init)";
-        case '4': return "ISO 14230-4 KWP (5-Baud-Init)";
-        case '5': return "ISO 14230-4 KWP (Fast-Init)";
-        case '6': return "ISO 15765-4 CAN (11 Bit, 500 kBaud)";
-        case '7': return "ISO 15765-4 CAN (29 Bit, 500 kBaud)";
-        case '8': return "ISO 15765-4 CAN (11 Bit, 250 kBaud)";
-        case '9': return "ISO 15765-4 CAN (29 Bit, 250 kBaud)";
-        default: return "unbekannt";
+        case '3': return L("ISO 9141-2 (K-Line, 5-Baud-Init)", "ISO 9141-2 (K-Line, 5-baud init)");
+        case '4': return L("ISO 14230-4 KWP (5-Baud-Init)", "ISO 14230-4 KWP (5-baud init)");
+        case '5': return L("ISO 14230-4 KWP (Fast-Init)", "ISO 14230-4 KWP (fast init)");
+        case '6': return L("ISO 15765-4 CAN (11 Bit, 500 kBaud)", "ISO 15765-4 CAN (11 bit, 500 kbaud)");
+        case '7': return L("ISO 15765-4 CAN (29 Bit, 500 kBaud)", "ISO 15765-4 CAN (29 bit, 500 kbaud)");
+        case '8': return L("ISO 15765-4 CAN (11 Bit, 250 kBaud)", "ISO 15765-4 CAN (11 bit, 250 kbaud)");
+        case '9': return L("ISO 15765-4 CAN (29 Bit, 250 kBaud)", "ISO 15765-4 CAN (29 bit, 250 kbaud)");
+        default: return L("unbekannt", "unknown");
     }
 }
 
@@ -89,22 +96,23 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         const std::string up = toUpper(line);
         if (startsWith(up, "NO DATA")) {
             result.status = ElmStatus::NoData;
-            result.message = "Steuergeraet unterstuetzt diese Anfrage nicht (NO DATA).";
+            result.message = L("Steuergeraet unterstuetzt diese Anfrage nicht (NO DATA).",
+                               "Control unit does not support this request (NO DATA).");
             return result;
         }
         for (const char* err : kErrors) {
             if (up == err || startsWith(up, std::string(err) + " ") ||
                 startsWith(up, std::string(err) + ":")) {
                 result.status = ElmStatus::BusError;
-                result.message = "Adapter meldet: " + line;
+                result.message = L("Adapter meldet: ", "Adapter reports: ") + line;
                 return result;
             }
         }
     }
 
-    // Mehrzeilige CAN-Antworten kommen nummeriert ("0:", "1:" ...), davor steht
-    // eine eigene Zeile mit der Gesamtlaenge. Die nummerierten Zeilen beginnen
-    // direkt mit dem Dienst-Byte, es darf also nichts abgeschnitten werden.
+    // Multi-line CAN responses arrive numbered ("0:", "1:" ...), preceded by a
+    // separate line holding the total length. The numbered lines start
+    // directly with the service byte, so nothing may be cut off.
     std::string indexed;
     std::vector<std::vector<int>> raw;
     for (const std::string& line : lines) {
@@ -117,8 +125,8 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         }
     }
     if (!indexed.empty()) {
-        // Die Laengenzeile ist dann nur Beiwerk und wuerde sonst als eigene
-        // Nachricht durchgehen.
+        // The length line is then just noise and would otherwise pass as a
+        // message of its own.
         raw.clear();
         std::vector<int> bytes = hexToBytes(indexed);
         if (!bytes.empty()) raw.push_back(std::move(bytes));
@@ -128,8 +136,9 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         if (msg.empty()) continue;
         if (msg[0] == 0x7F && msg.size() >= 3) {
             result.status = ElmStatus::Negative;
-            result.message = "Steuergeraet lehnt den Dienst ab (Code 0x" +
-                             std::to_string(msg[2]) + ")";
+            result.message = std::string(L("Steuergeraet lehnt den Dienst ab (Code 0x",
+                                           "Control unit rejects the service (code 0x")) +
+                             hexByte(msg[2]) + ")";
             return result;
         }
         if (msg[0] == expectedService + 0x40 || msg[0] == expectedService) {
@@ -138,15 +147,15 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
     }
     if (result.messages.empty()) {
         result.status = ElmStatus::NoData;
-        result.message = "Keine verwertbare Antwort erhalten.";
+        result.message = L("Keine verwertbare Antwort erhalten.", "No usable response received.");
     }
     return result;
 }
 
 void Elm327::drainGreeting() {
-    // WLAN- und Bluetooth-Adapter melden sich von sich aus. Wenn diese
-    // Begruessung stehen bleibt, beantwortet sie das erste Kommando und
-    // alle folgenden Antworten sind um eine Position verschoben.
+    // Wi-Fi and Bluetooth adapters announce themselves unprompted. If this
+    // greeting is left in the buffer, it answers the first command and all
+    // following responses are shifted by one position.
     sleepMs(300);
     transport_->flushInput();
     transport_->write("\r");
@@ -158,14 +167,14 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
     ElmResult result;
     if (!transport_) {
         result.status = ElmStatus::AdapterError;
-        result.message = "Kein Adapter verbunden.";
+        result.message = L("Kein Adapter verbunden.", "No adapter connected.");
         return result;
     }
     transport_->flushInput();
     transport_->write(command + "\r");
 
-    // Der eingestellte Faktor greift hier, an der einzigen Stelle, an der
-    // tatsaechlich gewartet wird.
+    // The configured factor applies here, at the only place where we
+    // actually wait.
     const int waitMs = static_cast<int>(static_cast<double>(timeoutMs) * timeoutScale_);
 
     std::string buffer;
@@ -179,8 +188,10 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
     }
     if (buffer.empty()) {
         result.status = ElmStatus::AdapterError;
-        result.message = "Keine Antwort des Adapters auf '" + command +
-                         "'. Falsche Baudrate, oder Kabel/Bluetooth weg?";
+        result.message = L("Keine Antwort des Adapters auf '", "No response from the adapter to '") +
+                         command +
+                         L("'. Falsche Baudrate, oder Kabel/Bluetooth weg?",
+                           "'. Wrong baud rate, or cable/Bluetooth disconnected?");
         return result;
     }
 
@@ -237,14 +248,16 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
     if (version_.empty()) version_ = "?";
     if (toUpper(version_).find("ELM") == std::string::npos &&
         toUpper(version_).find("OBD") == std::string::npos) {
-        if (log_) log_("  Hinweis: unerwartete Adapterkennung '" + version_ + "'");
+        if (log_)
+            log_(L("  Hinweis: unerwartete Adapterkennung '", "  Note: unexpected adapter ID '") +
+                 version_ + "'");
     }
 
     for (const char* cmd : {"E0", "L0", "S0", "H0", "AT1", "ST64"}) at(cmd);
 
     for (char proto : protocolOrder) {
         at(std::string("SP") + proto);
-        if (log_) log_("  Versuche Protokoll " + std::string(1, proto) + " (" +
+        if (log_) log_(L("  Versuche Protokoll ", "  Trying protocol ") + std::string(1, proto) + " (" +
                        protocolName(proto) + ") ...");
         const int timeout = (proto >= '3' && proto <= '5') ? 12000 : 8000;
         for (int attempt = 0; attempt < 2; ++attempt) {
@@ -263,11 +276,15 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
         }
     }
 
-    error =
+    error = L(
         "Kein Kontakt zum Steuergeraet.\n"
         "  - Zuendung an? (Motor darf aus sein)\n"
         "  - Stecker fest im OBD-Port?\n"
-        "  - Manche Adapter brauchen einen zweiten Anlauf: abziehen, 10 s warten, neu stecken.";
+        "  - Manche Adapter brauchen einen zweiten Anlauf: abziehen, 10 s warten, neu stecken.",
+        "No contact with the control unit.\n"
+        "  - Ignition on? (The engine may be off)\n"
+        "  - Plug firmly seated in the OBD port?\n"
+        "  - Some adapters need a second attempt: unplug, wait 10 s, plug back in.");
     return false;
 }
 
@@ -275,7 +292,7 @@ void Elm327::disconnect() {
     if (transport_ && connected_) at("PC", 2000);
     transport_.reset();
     connected_ = false;
-    protocolText_ = "unbekannt";
+    protocolText_ = L("unbekannt", "unknown");
 }
 
 }  // namespace caruspex

@@ -28,7 +28,7 @@ public slots:
     void onClearFinished(bool everythingGone, int remaining);
 
 public:
-    // Versuche beim hartnaeckigen Loeschen und ob vorher gefragt wird.
+    // Attempts for the persistent clear and whether to ask first.
     void setClearOptions(int attempts, bool confirm);
 
 signals:

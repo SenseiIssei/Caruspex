@@ -165,7 +165,7 @@ void MonitorPage::exportReport() {
     if (monitors_.isEmpty() && oxygen_.isEmpty()) return;
     const QString stamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm");
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Bericht speichern"), QStringLiteral("bauteilpruefung_%1.txt").arg(stamp),
+        this, tr("Bericht speichern"), tr("bauteilpruefung_%1.txt").arg(stamp),
         tr("Textdatei (*.txt)"));
     if (path.isEmpty()) return;
 
@@ -176,26 +176,31 @@ void MonitorPage::exportReport() {
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << "Bauteilueberwachung, ausgelesen mit Caruspex\n";
-    out << QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm") << "\n";
+    out << tr("Bauteilueberwachung, ausgelesen mit Caruspex") << "\n";
+    out << QDateTime::currentDateTime().toString(tr("dd.MM.yyyy HH:mm")) << "\n";
     out << identity_->text() << "\n";
     out << QString(78, '=') << "\n\n";
 
     if (!monitors_.isEmpty()) {
-        out << "Bauteilueberwachung (Modus 06)\n\n";
+        out << tr("Bauteilueberwachung (Modus 06)") << "\n\n";
         for (const MonitorRow& r : std::as_const(monitors_)) {
             out << (r.passed ? "  [ok]   " : "  [!!]   ") << r.name << "\n";
             out << "          " << r.component << "\n";
-            out << "          Messwert " << QString::number(r.value, 'f', 3) << " " << r.unit;
-            if (r.hasMinimum) out << ", Untergrenze " << QString::number(r.minimum, 'f', 3);
-            if (r.hasMaximum) out << ", Obergrenze " << QString::number(r.maximum, 'f', 3);
+            out << "          "
+                << tr("Messwert %1 %2").arg(QString::number(r.value, 'f', 3), r.unit);
+            if (r.hasMinimum) {
+                out << tr(", Untergrenze %1").arg(QString::number(r.minimum, 'f', 3));
+            }
+            if (r.hasMaximum) {
+                out << tr(", Obergrenze %1").arg(QString::number(r.maximum, 'f', 3));
+            }
             out << "\n\n";
         }
     }
     if (!oxygen_.isEmpty()) {
-        out << "Lambdasondenpruefung (Modus 05)\n\n";
+        out << tr("Lambdasondenpruefung (Modus 05)") << "\n\n";
         for (const OxygenRow& r : std::as_const(oxygen_)) {
-            out << "  Sonde " << r.sensor << "  " << r.name << ": "
+            out << "  " << tr("Sonde %1").arg(r.sensor) << "  " << r.name << ": "
                 << QString::number(r.value, 'f', 3) << " " << r.unit << "\n";
         }
     }

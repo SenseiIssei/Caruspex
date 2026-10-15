@@ -67,7 +67,7 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     connect(runButton_, &QPushButton::clicked, this, &LivePage::toggleRun);
     connect(exportButton_, &QPushButton::clicked, this, &LivePage::exportCsv);
 
-    // Diagramm
+    // Chart
     chart_ = new QChart;
     chart_->setBackgroundBrush(QBrush(theme::color::surface));
     chart_->setPlotAreaBackgroundBrush(QBrush(theme::color::surface));
@@ -95,7 +95,7 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     chartView_->setRenderHint(QPainter::Antialiasing);
     chartView_->setMinimumHeight(240);
 
-    // Werteliste und Auswahl
+    // Value list and selection
     table_ = new QTableWidget(0, 3);
     table_->setHorizontalHeaderLabels({tr("Messwert"), tr("Wert"), tr("Einheit")});
     table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -140,7 +140,7 @@ void LivePage::buildPidList() {
 
 void LivePage::onSupportedPids(const QVector<int>& pids) {
     if (pids.isEmpty()) return;
-    // Was das Fahrzeug nicht kann, wird ausgegraut und abgewaehlt.
+    // Whatever the vehicle does not support is greyed out and deselected.
     for (int i = 0; i < pidList_->count(); ++i) {
         QListWidgetItem* item = pidList_->item(i);
         const int pid = item->data(Qt::UserRole).toInt();
@@ -220,8 +220,8 @@ void LivePage::resetChart() {
 void LivePage::setWindowSeconds(int seconds) {
     if (seconds < 5) seconds = 5;
     windowSeconds_ = static_cast<double>(seconds);
-    // Die Achse sofort nachziehen, sonst wirkt die Aenderung erst beim
-    // naechsten Messwert.
+    // Adjust the axis right away, otherwise the change only takes effect with
+    // the next value.
     const double now = clock_.isValid() ? clock_.elapsed() / 1000.0 : 0.0;
     if (now > windowSeconds_) {
         axisX_->setRange(now - windowSeconds_, now);
@@ -231,7 +231,7 @@ void LivePage::setWindowSeconds(int seconds) {
 }
 
 void LivePage::onLiveValue(const LiveRow& row) {
-    // Tabelle
+    // Table
     if (!tableRow_.contains(row.pid)) {
         const int r = table_->rowCount();
         table_->insertRow(r);
@@ -245,7 +245,7 @@ void LivePage::onLiveValue(const LiveRow& row) {
     cell->setText(row.text.isEmpty() ? QString::number(row.value, 'f', 2) : row.text);
     cell->setForeground(row.warn ? theme::color::warn : theme::color::text);
 
-    if (!row.text.isEmpty()) return;   // Statuswerte gehoeren nicht ins Diagramm
+    if (!row.text.isEmpty()) return;   // status values do not belong in the chart
 
     const double seconds = clock_.isValid() ? clock_.elapsed() / 1000.0 : 0.0;
 
@@ -268,19 +268,19 @@ void LivePage::onLiveValue(const LiveRow& row) {
     }
     line->append(seconds, row.value);
 
-    // Punkte ausserhalb des Zeitfensters wegwerfen
+    // Drop points outside the time window
     while (line->count() > 2 && line->at(0).x() < seconds - windowSeconds_) line->remove(0);
 
-    // Achsen mitziehen
+    // Move the axes along
     if (seconds > windowSeconds_) axisX_->setRange(seconds - windowSeconds_, seconds);
 
-    // Laufend mitgefuehrte Grenzen. Ueber alle Punkte aller Kurven zu laufen
-    // waere quadratisch und legt die Oberflaeche bei schnellen Adaptern lahm.
+    // Running bounds. Iterating over all points of all curves would be
+    // quadratic and would bog down the UI with fast adapters.
     yLow_ = qMin(yLow_, row.value);
     yHigh_ = qMax(yHigh_, row.value);
 
-    // Alle zwei Sekunden einmal sauber nachrechnen, damit die Achse wieder
-    // enger wird, wenn alte Ausreisser aus dem Zeitfenster gelaufen sind.
+    // Recompute properly every two seconds so the axis narrows again once
+    // old outliers have left the time window.
     if (!rescaleClock_.isValid() || rescaleClock_.elapsed() > 2000) {
         rescaleClock_.restart();
         double lo = std::numeric_limits<double>::max();
@@ -306,7 +306,7 @@ void LivePage::onLiveValue(const LiveRow& row) {
 void LivePage::exportCsv() {
     if (recorded_.isEmpty()) return;
     const QString suggestion =
-        QStringLiteral("messung_%1.csv")
+        tr("messung_%1.csv")
             .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm"));
     const QString path =
         QFileDialog::getSaveFileName(this, tr("Aufzeichnung speichern"), suggestion,
@@ -320,7 +320,7 @@ void LivePage::exportCsv() {
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << "Sekunde;PID;Messwert;Wert;Einheit\n";
+    out << tr("Sekunde;PID;Messwert;Wert;Einheit") << '\n';
     for (const Sample& s : std::as_const(recorded_)) {
         out << QString::number(s.seconds, 'f', 2) << ';'
             << QStringLiteral("0x%1").arg(s.pid, 2, 16, QChar('0')).toUpper() << ';' << s.name

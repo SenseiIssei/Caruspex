@@ -12,7 +12,7 @@
 namespace caruspex {
 namespace {
 
-// Skala von unten links nach unten rechts, also 240 Grad Oeffnung.
+// Scale from bottom left to bottom right, i.e. a 240 degree opening.
 constexpr double kStartAngle = 210.0;
 constexpr double kSweep = -240.0;
 
@@ -74,13 +74,14 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
                      side - 24);
     const double thickness = qMax(7.0, side * 0.075);
 
-    // Hintergrundbogen
+    // Background arc
     QPen backPen(theme::color::border, thickness, Qt::SolidLine, Qt::RoundCap);
     p.setPen(backPen);
     p.drawArc(box, static_cast<int>(kStartAngle * 16), static_cast<int>(kSweep * 16));
 
-    // Wertbogen. Solange nichts gemessen wird, bleibt er weg: bei Skalen, die
-    // im Minus anfangen, saehe sonst schon der Startwert nach einem Messwert aus.
+    // Value arc. It stays hidden while nothing is measured: on scales that
+    // start below zero, the start value would otherwise already look like a
+    // reading.
     const double span = maximum_ - minimum_;
     const double fraction = span > 0 ? qBound(0.0, (display_ - minimum_) / span, 1.0) : 0.0;
     if (active_) {
@@ -90,14 +91,14 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
                   static_cast<int>(kSweep * fraction * 16));
     }
 
-    // Zeigerpunkt am Bogenende
+    // Needle dot at the end of the arc
     if (active_) {
         const double angle = qDegreesToRadians(kStartAngle + kSweep * fraction);
         const QPointF centre = box.center();
         const double radius = box.width() / 2.0;
         const QPointF tip(centre.x() + std::cos(angle) * radius,
                           centre.y() - std::sin(angle) * radius);
-        // Leuchtpunkt am Bogenende: aussen ein weicher Hof, innen hell.
+        // Glowing dot at the end of the arc: soft halo outside, bright inside.
         const QColor lit = arcColor();
         QColor halo = lit;
         halo.setAlpha(70);
@@ -108,8 +109,8 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
         p.drawEllipse(tip, thickness * 0.42, thickness * 0.42);
     }
 
-    // Zahl mittig, Einheit direkt darunter. Getrennte Rechtecke, damit sich
-    // beides nicht ueberlagert.
+    // Number centred, unit directly below. Separate rectangles so the two
+    // don't overlap.
     const QPointF centre = box.center();
     const double valueHeight = side * 0.26;
     const QRectF valueBox(box.left(), centre.y() - valueHeight * 0.78, box.width(),
@@ -130,7 +131,7 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
     p.setPen(theme::color::textMuted);
     p.drawText(unitBox, Qt::AlignHCenter | Qt::AlignTop, unit_);
 
-    // Titel
+    // Title
     QFont titleFont = font();
     titleFont.setPointSizeF(qMax(8.5, side * 0.072));
     p.setFont(titleFont);

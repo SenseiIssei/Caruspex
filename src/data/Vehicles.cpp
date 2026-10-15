@@ -3,10 +3,12 @@
 #include <algorithm>
 #include <set>
 
+#include "core/Lang.h"
+
 namespace caruspex {
 
-// Protokollreihenfolgen als ELM327-Nummern:
-//   1 J1850 PWM, 2 J1850 VPW, 3 ISO 9141-2, 4 KWP 5-Baud, 5 KWP Fast,
+// Protocol orders as ELM327 numbers:
+//   1 J1850 PWM, 2 J1850 VPW, 3 ISO 9141-2, 4 KWP 5-baud, 5 KWP fast,
 //   6 CAN 11/500, 7 CAN 29/500, 8 CAN 11/250, 9 CAN 29/250
 const char* const kAutoProtocolOrder = "6785439121";
 
@@ -18,112 +20,143 @@ constexpr const char* kMixed = "6543789";
 constexpr const char* kPwm = "1265439";
 constexpr const char* kVpw = "2165439";
 
-std::vector<VehicleProfile> build() {
+const Text kAutoDetect = {"Automatisch erkennen", "Auto-detect"};
+
+// Notes that occur many times.
+const Text kNoteCan = {"CAN.", "CAN."};
+const Text kNoteIso = {"ISO 9141-2.", "ISO 9141-2."};
+const Text kNoteKLineEra = {"K-Line-Zeit.", "K-Line era."};
+const Text kNoteNone = {"", ""};
+
+// Builds the profile list for one language. Only the notes and the
+// auto-detect entry differ between the languages.
+std::vector<VehicleProfile> build(Language lang) {
+    const bool en = lang == Language::English;
     std::vector<VehicleProfile> v;
-    auto add = [&v](const char* brand, const char* model, int from, int to, BusKind bus,
-                    const char* order, const char* note) {
-        v.push_back({brand, model, from, to, bus, order, note});
+    auto add = [&v, en](const char* brand, const char* model, int from, int to, BusKind bus,
+                        const char* order, const Text& note) {
+        v.push_back({brand, model, from, to, bus, order, en ? note.en : note.de});
     };
 
-    // --- Volkswagen-Konzern -------------------------------------------------
+    // --- Volkswagen Group ---------------------------------------------------
     add("Audi", "A2", 2000, 2005, BusKind::KLine, kKLine,
-        "K-Line. EOBD ueber das Motorsteuergeraet, alles Weitere braucht KKL.");
-    add("Audi", "", 1996, 2003, BusKind::KLine, kKLine, "K-Line-Zeit, KWP1281 oder KWP2000.");
-    add("Audi", "", 2004, 2030, BusKind::Can, kCan, "CAN, ab Werk EOBD-konform.");
-    add("Volkswagen", "", 1996, 2003, BusKind::KLine, kKLine, "K-Line-Zeit.");
-    add("Volkswagen", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Skoda", "", 1998, 2003, BusKind::KLine, kKLine, "K-Line-Zeit.");
-    add("Skoda", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Seat", "", 1998, 2003, BusKind::KLine, kKLine, "K-Line-Zeit.");
-    add("Seat", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Porsche", "", 1998, 2030, BusKind::Mixed, kMixed, "Ab 2003 durchgaengig CAN.");
+        {"K-Line. EOBD ueber das Motorsteuergeraet, alles Weitere braucht KKL.",
+         "K-Line. EOBD via the engine control unit, everything else needs a KKL cable."});
+    add("Audi", "", 1996, 2003, BusKind::KLine, kKLine,
+        {"K-Line-Zeit, KWP1281 oder KWP2000.", "K-Line era, KWP1281 or KWP2000."});
+    add("Audi", "", 2004, 2030, BusKind::Can, kCan,
+        {"CAN, ab Werk EOBD-konform.", "CAN, EOBD compliant from the factory."});
+    add("Volkswagen", "", 1996, 2003, BusKind::KLine, kKLine, kNoteKLineEra);
+    add("Volkswagen", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Skoda", "", 1998, 2003, BusKind::KLine, kKLine, kNoteKLineEra);
+    add("Skoda", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Seat", "", 1998, 2003, BusKind::KLine, kKLine, kNoteKLineEra);
+    add("Seat", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Porsche", "", 1998, 2030, BusKind::Mixed, kMixed,
+        {"Ab 2003 durchgaengig CAN.", "CAN throughout from 2003."});
 
-    // --- Deutsche Hersteller ------------------------------------------------
-    add("BMW", "", 1996, 2003, BusKind::KLine, kKLine, "ISO 9141-2, teils BMW-eigen.");
-    add("BMW", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Mini", "", 2001, 2030, BusKind::Mixed, kMixed, "Bis 2006 teils K-Line.");
-    add("Mercedes-Benz", "", 1996, 2003, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Mercedes-Benz", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Smart", "", 1998, 2030, BusKind::Mixed, kMixed, "Frueh K-Line, spaeter CAN.");
-    add("Opel", "", 1996, 2005, BusKind::Mixed, kMixed, "Teils ISO 9141-2, teils J1850 VPW.");
-    add("Opel", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
+    // --- German manufacturers -----------------------------------------------
+    add("BMW", "", 1996, 2003, BusKind::KLine, kKLine,
+        {"ISO 9141-2, teils BMW-eigen.", "ISO 9141-2, partly BMW-specific."});
+    add("BMW", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Mini", "", 2001, 2030, BusKind::Mixed, kMixed,
+        {"Bis 2006 teils K-Line.", "Partly K-Line until 2006."});
+    add("Mercedes-Benz", "", 1996, 2003, BusKind::KLine, kKLine, kNoteIso);
+    add("Mercedes-Benz", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Smart", "", 1998, 2030, BusKind::Mixed, kMixed,
+        {"Frueh K-Line, spaeter CAN.", "K-Line early on, CAN later."});
+    add("Opel", "", 1996, 2005, BusKind::Mixed, kMixed,
+        {"Teils ISO 9141-2, teils J1850 VPW.", "Partly ISO 9141-2, partly J1850 VPW."});
+    add("Opel", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
 
-    // --- Frankreich ---------------------------------------------------------
-    add("Renault", "", 1996, 2004, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Renault", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("Dacia", "", 2004, 2030, BusKind::Mixed, kMixed, "Technik von Renault.");
-    add("Peugeot", "", 1996, 2004, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Peugeot", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("Citroen", "", 1996, 2004, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Citroen", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("DS", "", 2014, 2030, BusKind::Can, kCan, "CAN.");
+    // --- France -------------------------------------------------------------
+    add("Renault", "", 1996, 2004, BusKind::KLine, kKLine, kNoteIso);
+    add("Renault", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Dacia", "", 2004, 2030, BusKind::Mixed, kMixed,
+        {"Technik von Renault.", "Renault technology."});
+    add("Peugeot", "", 1996, 2004, BusKind::KLine, kKLine, kNoteIso);
+    add("Peugeot", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Citroen", "", 1996, 2004, BusKind::KLine, kKLine, kNoteIso);
+    add("Citroen", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("DS", "", 2014, 2030, BusKind::Can, kCan, kNoteCan);
 
-    // --- Italien ------------------------------------------------------------
-    add("Fiat", "", 1996, 2005, BusKind::KLine, kKLine, "ISO 9141-2, teils KWP.");
-    add("Fiat", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Alfa Romeo", "", 1996, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Alfa Romeo", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Lancia", "", 1996, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Ferrari", "", 1998, 2030, BusKind::Mixed, kMixed, "");
-    add("Maserati", "", 2002, 2030, BusKind::Mixed, kMixed, "");
+    // --- Italy --------------------------------------------------------------
+    add("Fiat", "", 1996, 2005, BusKind::KLine, kKLine,
+        {"ISO 9141-2, teils KWP.", "ISO 9141-2, partly KWP."});
+    add("Fiat", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Alfa Romeo", "", 1996, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Alfa Romeo", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Lancia", "", 1996, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Ferrari", "", 1998, 2030, BusKind::Mixed, kMixed, kNoteNone);
+    add("Maserati", "", 2002, 2030, BusKind::Mixed, kMixed, kNoteNone);
 
-    // --- Schweden und Grossbritannien --------------------------------------
-    add("Volvo", "", 1996, 2004, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Volvo", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("Saab", "", 1996, 2011, BusKind::Mixed, kMixed, "Teils J1850 VPW wie GM.");
-    add("Jaguar", "", 1996, 2030, BusKind::Mixed, kMixed, "");
-    add("Land Rover", "", 1996, 2030, BusKind::Mixed, kMixed, "");
+    // --- Sweden and Great Britain -------------------------------------------
+    add("Volvo", "", 1996, 2004, BusKind::KLine, kKLine, kNoteIso);
+    add("Volvo", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Saab", "", 1996, 2011, BusKind::Mixed, kMixed,
+        {"Teils J1850 VPW wie GM.", "Partly J1850 VPW like GM."});
+    add("Jaguar", "", 1996, 2030, BusKind::Mixed, kMixed, kNoteNone);
+    add("Land Rover", "", 1996, 2030, BusKind::Mixed, kMixed, kNoteNone);
 
     // --- Japan --------------------------------------------------------------
-    add("Toyota", "", 1996, 2003, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Toyota", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Lexus", "", 1998, 2030, BusKind::Mixed, kMixed, "");
-    add("Honda", "", 1996, 2003, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Honda", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Nissan", "", 1996, 2004, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Nissan", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("Mazda", "", 1996, 2004, BusKind::Mixed, kMixed, "Teils J1850 PWM wie Ford.");
-    add("Mazda", "", 2005, 2030, BusKind::Can, kCan, "CAN.");
-    add("Mitsubishi", "", 1996, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Mitsubishi", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Subaru", "", 1996, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Subaru", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Suzuki", "", 1998, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Suzuki", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Daihatsu", "", 1998, 2030, BusKind::Mixed, kMixed, "");
+    add("Toyota", "", 1996, 2003, BusKind::KLine, kKLine, kNoteIso);
+    add("Toyota", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Lexus", "", 1998, 2030, BusKind::Mixed, kMixed, kNoteNone);
+    add("Honda", "", 1996, 2003, BusKind::KLine, kKLine, kNoteIso);
+    add("Honda", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Nissan", "", 1996, 2004, BusKind::KLine, kKLine, kNoteIso);
+    add("Nissan", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Mazda", "", 1996, 2004, BusKind::Mixed, kMixed,
+        {"Teils J1850 PWM wie Ford.", "Partly J1850 PWM like Ford."});
+    add("Mazda", "", 2005, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Mitsubishi", "", 1996, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Mitsubishi", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Subaru", "", 1996, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Subaru", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Suzuki", "", 1998, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Suzuki", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Daihatsu", "", 1998, 2030, BusKind::Mixed, kMixed, kNoteNone);
 
     // --- Korea --------------------------------------------------------------
-    add("Hyundai", "", 1998, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Hyundai", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Kia", "", 1998, 2005, BusKind::KLine, kKLine, "ISO 9141-2.");
-    add("Kia", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("SsangYong", "", 2000, 2030, BusKind::Mixed, kMixed, "");
+    add("Hyundai", "", 1998, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Hyundai", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Kia", "", 1998, 2005, BusKind::KLine, kKLine, kNoteIso);
+    add("Kia", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("SsangYong", "", 2000, 2030, BusKind::Mixed, kMixed, kNoteNone);
 
     // --- USA ----------------------------------------------------------------
-    add("Ford", "", 1996, 2003, BusKind::Pwm, kPwm, "SAE J1850 PWM.");
-    add("Ford", "", 2004, 2030, BusKind::Can, kCan, "CAN.");
-    add("Chevrolet", "", 1996, 2005, BusKind::Vpw, kVpw, "SAE J1850 VPW.");
-    add("Chevrolet", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Chrysler", "", 1996, 2005, BusKind::Mixed, kMixed, "");
-    add("Jeep", "", 1996, 2005, BusKind::Mixed, kMixed, "");
-    add("Jeep", "", 2006, 2030, BusKind::Can, kCan, "CAN.");
-    add("Dodge", "", 1996, 2030, BusKind::Mixed, kMixed, "");
-    add("Tesla", "", 2012, 2030, BusKind::Can, kCan, "CAN, EOBD nur eingeschraenkt.");
+    add("Ford", "", 1996, 2003, BusKind::Pwm, kPwm, {"SAE J1850 PWM.", "SAE J1850 PWM."});
+    add("Ford", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Chevrolet", "", 1996, 2005, BusKind::Vpw, kVpw, {"SAE J1850 VPW.", "SAE J1850 VPW."});
+    add("Chevrolet", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Chrysler", "", 1996, 2005, BusKind::Mixed, kMixed, kNoteNone);
+    add("Jeep", "", 1996, 2005, BusKind::Mixed, kMixed, kNoteNone);
+    add("Jeep", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
+    add("Dodge", "", 1996, 2030, BusKind::Mixed, kMixed, kNoteNone);
+    add("Tesla", "", 2012, 2030, BusKind::Can, kCan,
+        {"CAN, EOBD nur eingeschraenkt.", "CAN, EOBD only partly supported."});
 
-    // --- Sonstige -----------------------------------------------------------
-    add("Iveco", "", 2000, 2030, BusKind::Mixed, kMixed, "Nutzfahrzeug.");
-    add("MAN", "", 2000, 2030, BusKind::Can, kCan, "Nutzfahrzeug, teils J1939.");
-    add("Automatisch erkennen", "", 1996, 2030, BusKind::Mixed, kAutoProtocolOrder,
-        "Probiert alle Protokolle der Reihe nach durch. Funktioniert immer, "
-        "dauert nur ein paar Sekunden laenger.");
+    // --- Other --------------------------------------------------------------
+    add("Iveco", "", 2000, 2030, BusKind::Mixed, kMixed,
+        {"Nutzfahrzeug.", "Commercial vehicle."});
+    add("MAN", "", 2000, 2030, BusKind::Can, kCan,
+        {"Nutzfahrzeug, teils J1939.", "Commercial vehicle, partly J1939."});
+    add(en ? kAutoDetect.en : kAutoDetect.de, "", 1996, 2030, BusKind::Mixed, kAutoProtocolOrder,
+        {"Probiert alle Protokolle der Reihe nach durch. Funktioniert immer, "
+         "dauert nur ein paar Sekunden laenger.",
+         "Tries all protocols one after another. Always works, "
+         "it just takes a few seconds longer."});
     return v;
 }
 
 }  // namespace
 
+// One list per language, both built on first use. The active language
+// decides which one is handed out.
 const std::vector<VehicleProfile>& vehicleProfiles() {
-    static const std::vector<VehicleProfile> list = build();
-    return list;
+    static const std::vector<VehicleProfile> german = build(Language::German);
+    static const std::vector<VehicleProfile> english = build(Language::English);
+    return language() == Language::English ? english : german;
 }
 
 std::vector<std::string> vehicleBrands() {
@@ -150,15 +183,17 @@ const VehicleProfile* findProfile(const std::string& brand, int year) {
     return fallback;
 }
 
+const char* autoDetectBrand() { return kAutoDetect.get(); }
+
 std::string busName(BusKind bus) {
     switch (bus) {
         case BusKind::KLine: return "K-Line (ISO 9141-2 / KWP2000)";
         case BusKind::Can: return "CAN (ISO 15765-4)";
         case BusKind::Pwm: return "SAE J1850 PWM";
         case BusKind::Vpw: return "SAE J1850 VPW";
-        case BusKind::Mixed: return "gemischt, wird ermittelt";
+        case BusKind::Mixed: return L("gemischt, wird ermittelt", "mixed, will be detected");
     }
-    return "unbekannt";
+    return L("unbekannt", "unknown");
 }
 
 }  // namespace caruspex

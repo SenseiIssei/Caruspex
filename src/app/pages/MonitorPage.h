@@ -13,11 +13,12 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Modus 06 und 05: was das Steuergeraet laufend selbst prueft.
+// Modes 06 and 05: what the control unit continuously checks by itself.
 //
-// Das ist der ausfuehrlichste Teil von EOBD. Statt nur bestanden oder nicht
-// nennt das Steuergeraet den Messwert samt Grenzen. Man sieht also, wie knapp
-// ein Bauteil noch im Rahmen liegt, lange bevor die Fehlerlampe angeht.
+// This is the most detailed part of EOBD. Instead of just pass or fail, the
+// control unit reports the measured value along with its limits. So you can
+// see how close a component is to its limits long before the warning lamp
+// comes on.
 class MonitorPage : public QWidget {
     Q_OBJECT
 

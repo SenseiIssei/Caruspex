@@ -48,13 +48,13 @@ namespace caruspex {
 
 namespace {
 
-// Wie breit der Streifen an den Fensterkanten ist, in dem der Zeiger die
-// Groessenaenderung anbietet.
+// Width of the strip along the window edges in which the pointer offers
+// resizing.
 constexpr int kResizeMargin = 6;
 constexpr int kCornerRadius = 12;
 
-// Zeichnet den abgerundeten Fensterhintergrund. Ohne Fensterrahmen malt das
-// sonst niemand.
+// Paints the rounded window background. Without a window frame nobody else
+// would paint it.
 class WindowFrame : public QWidget {
 public:
     explicit WindowFrame(QWidget* parent = nullptr) : QWidget(parent) {
@@ -88,8 +88,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle(tr("Caruspex - Fahrzeugdiagnose"));
     resize(1360, 880);
 
-    // Rahmenlos mit eigener Titelleiste. Durchsichtiger Hintergrund, damit die
-    // abgerundeten Ecken wirklich rund sind und nicht eckig unterlegt.
+    // Frameless with a custom title bar. Translucent background so the rounded
+    // corners are really round and not backed by a square.
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     Worker* worker = session_.worker();
 
-    // Worker zur Oberflaeche
+    // Worker to UI
     connect(worker, &Worker::connected, this, &MainWindow::onConnected);
     connect(worker, &Worker::failed, this, &MainWindow::onFailed);
     connect(worker, &Worker::closed, this, &MainWindow::onClosed);
@@ -188,7 +188,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::kklMessage, this,
             [this](const QString& text, bool) { appendLog(text); });
 
-    // Oberflaeche zum Worker
+    // UI to worker
     connect(dashboard_, &DashboardPage::readRequested, &session_, &Session::readFaultsRequested);
     connect(dashboard_, &DashboardPage::detailsRequested, &session_,
             &Session::readDetailsRequested);
@@ -231,8 +231,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     refreshPorts();
     onBrandChanged();
 
-    // Gespeicherte Einstellungen laden. showValues meldet die Werte selbst,
-    // dadurch laeuft alles ueber denselben Weg wie eine Aenderung von Hand.
+    // Load the saved settings. showValues reports the values itself, so
+    // everything takes the same path as a manual change.
     settings_ = loadSettings();
     settingsPage_->showValues(settings_);
 
@@ -263,15 +263,15 @@ void MainWindow::applySettings(const AppSettings& values) {
     settings_ = values;
     saveSettings(settings_);
 
-    // An den Arbeitsthread: Takt, Zeitlimits, Rohprotokoll, Sitzungsart.
+    // To the worker thread: poll interval, timeouts, raw log, session type.
     emit session_.settingsChanged(settings_);
 
-    // An die Seiten.
+    // To the pages.
     live_->setWindowSeconds(settings_.chartWindowSeconds);
     faults_->setClearOptions(settings_.clearAttempts, settings_.confirmClear);
     scan_->setClearAttempts(settings_.clearAttempts);
 
-    // Protokolldatei oeffnen oder schliessen.
+    // Open or close the log file.
     const bool wantFile = settings_.logToFile && !settings_.logPath.isEmpty();
     const bool pathChanged = logFile_.isOpen() && logFile_.fileName() != settings_.logPath;
     if (logFile_.isOpen() && (!wantFile || pathChanged)) {
@@ -291,8 +291,8 @@ void MainWindow::applySettings(const AppSettings& values) {
             appendLog(tr("Protokoll wird zusaetzlich nach %1 geschrieben.")
                           .arg(settings_.logPath));
         } else {
-            // Das still zu schlucken waere die schlechteste Loesung: der
-            // Anwender glaubt sonst, es werde mitgeschrieben.
+            // Swallowing this silently would be the worst option: the user
+            // would otherwise believe the log is being written.
             appendLog(tr("Protokolldatei %1 laesst sich nicht schreiben. Es wird nur "
                          "hier im Fenster protokolliert.")
                           .arg(settings_.logPath));
@@ -331,13 +331,17 @@ QWidget* MainWindow::buildSidebar() {
     root->addSpacing(6);
     root->addWidget(separator);
 
-    // Fahrzeug
+    // Vehicle
     root->addWidget(new QLabel(tr("Fahrzeug (optional)")));
     brandBox_ = new QComboBox;
-    for (const std::string& b : vehicleBrands()) brandBox_->addItem(QString::fromStdString(b));
-    // Standardmaessig automatisch. Die Auswahl bestimmt nur, welches Protokoll
-    // zuerst probiert wird, sie ist eine Abkuerzung und keine Voraussetzung.
-    brandBox_->setCurrentText(QStringLiteral("Automatisch erkennen"));
+    // The brand names come from the vehicle profiles, already in the active
+    // language, and double as the lookup key for findProfile().
+    for (const std::string& b : vehicleBrands()) {
+        brandBox_->addItem(QString::fromStdString(b), QString::fromStdString(b));
+    }
+    // Automatic by default. The selection only decides which protocol is
+    // tried first; it is a shortcut, not a prerequisite.
+    brandBox_->setCurrentText(QString::fromUtf8(autoDetectBrand()));
     root->addWidget(brandBox_);
 
     auto* yearRow = new QHBoxLayout;
@@ -398,7 +402,7 @@ QWidget* MainWindow::buildSidebar() {
     root->addWidget(stateLabel_);
     root->addWidget(adapterLabel_);
 
-    // Protokoll
+    // Log
     root->addWidget(new QLabel(tr("Protokoll")));
     log_ = new QPlainTextEdit;
     log_->setReadOnly(true);
@@ -430,7 +434,7 @@ void MainWindow::addNavigationEntry(const QString& text, QWidget* page) {
 
 void MainWindow::onBrandChanged() {
     const VehicleProfile* profile =
-        findProfile(brandBox_->currentText().toStdString(), yearBox_->value());
+        findProfile(brandBox_->currentData().toString().toStdString(), yearBox_->value());
     if (!profile) {
         profileNote_->setText(tr("Kein Profil hinterlegt, alle Protokolle werden probiert."));
         return;
@@ -443,11 +447,11 @@ void MainWindow::onBrandChanged() {
 
 QString MainWindow::protocolOrderForSelection() const {
     const VehicleProfile* profile =
-        findProfile(brandBox_->currentText().toStdString(), yearBox_->value());
+        findProfile(brandBox_->currentData().toString().toStdString(), yearBox_->value());
     if (profile) return QString::fromStdString(profile->protocolOrder);
-    // Ohne passendes Fahrzeugprofil entscheidet die Einstellung, womit zuerst
-    // versucht wird. Das spart beim A2 die Sekunden, die das Durchprobieren
-    // der CAN-Protokolle kostet.
+    // Without a matching vehicle profile the setting decides what is tried
+    // first. On the A2 this saves the seconds it takes to try all the CAN
+    // protocols.
     return QString::fromStdString(settings_.protocolOrder == QStringLiteral("can")
                                       ? kProtocolOrderCanFirst
                                       : kProtocolOrderKLineFirst);
@@ -490,8 +494,7 @@ void MainWindow::toggleConnection() {
             return;
         }
         appendLog(tr("Verbinde ueber %1 ...").arg(device));
-        // Anschluss merken, damit selbsttaetiges Verbinden beim naechsten Mal
-        // weiss, wohin.
+        // Remember the port so auto-connect knows where to go next time.
         if (settings_.lastPort != device) {
             settings_.lastPort = device;
             saveSettings(settings_);
@@ -572,7 +575,7 @@ void MainWindow::appendLog(const QString& line) {
     }
 }
 
-// --- Rahmenloses Fenster ----------------------------------------------------
+// --- Frameless window -------------------------------------------------------
 
 Qt::Edges MainWindow::edgesAt(const QPoint& p) const {
     if (isMaximized() || isFullScreen()) return {};
@@ -584,9 +587,9 @@ Qt::Edges MainWindow::edgesAt(const QPoint& p) const {
     return edges;
 }
 
-// Unter Windows macht das WM_NCHITTEST weiter unten. Auf den anderen Systemen
-// wird der Randstreifen hier abgefangen, weil die Kinderwidgets die
-// Mausereignisse sonst zuerst bekommen.
+// On Windows, WM_NCHITTEST further down handles this. On the other systems the
+// edge strip is caught here, because otherwise the child widgets get the mouse
+// events first.
 bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 #ifdef Q_OS_WIN
     return QMainWindow::eventFilter(watched, event);
@@ -622,11 +625,11 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
     }
 
     if (edges && mouse->button() == Qt::LeftButton) {
-        // Die Groessenaenderung uebernimmt der Fenstermanager, damit sie sich
-        // genauso anfuehlt wie bei jedem anderen Fenster.
+        // The window manager does the resizing, so it feels exactly like
+        // any other window.
         if (QWindow* handle = windowHandle()) {
             handle->startSystemResize(edges);
-            return true;   // nicht an das darunterliegende Bedienelement geben
+            return true;   // don't pass it on to the control underneath
         }
     }
     return QMainWindow::eventFilter(watched, event);
@@ -634,10 +637,10 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 }
 
 #ifdef Q_OS_WIN
-// Windows fragt bei jeder Mausbewegung, welcher Teil des Fensters unter dem
-// Zeiger liegt. Meldet man hier einen Rand, erledigt das Betriebssystem die
-// Groessenaenderung selbst, samt passendem Zeiger und Andocken. Gerechnet wird
-// in echten Bildpunkten, damit die Bildschirmskalierung keine Rolle spielt.
+// On every mouse move Windows asks which part of the window is under the
+// pointer. Reporting an edge here makes the operating system do the resizing
+// itself, including the right cursor and snapping. The maths is done in
+// physical pixels so display scaling doesn't matter.
 bool MainWindow::nativeEvent(const QByteArray& type, void* message, qintptr* result) {
     auto* msg = static_cast<MSG*>(message);
     if (!msg || msg->message != WM_NCHITTEST || isMaximized() || isFullScreen()) {
@@ -689,9 +692,9 @@ void MainWindow::changeEvent(QEvent* event) {
     if (event->type() != QEvent::WindowStateChange) return;
     const bool maximised = isMaximized() || isFullScreen();
     if (titleBar_) titleBar_->updateMaximiseState(maximised);
-    // Maximiert muessen die Ecken eckig sein, sonst klaffen an den
-    // Bildschirmecken Luecken.
-    // Der Typ steht fest, frame_ wird nur an einer Stelle gesetzt.
+    // When maximised the corners must be square, otherwise gaps show at the
+    // screen corners.
+    // The type is fixed, frame_ is set in only one place.
     if (frame_) static_cast<WindowFrame*>(frame_)->setRounded(!maximised);
 }
 

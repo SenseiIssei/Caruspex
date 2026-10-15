@@ -63,7 +63,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     scroll->setWidget(content);
     outer->addWidget(scroll, 1);
 
-    // --- Verbindung ---------------------------------------------------------
+    // --- Connection ---------------------------------------------------------
     QFormLayout* form = nullptr;
     auto* connectionBox = makeGroup(tr("Verbindung"), form);
 
@@ -96,7 +96,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     form->addRow(autoConnect_);
     root->addWidget(connectionBox);
 
-    // --- Messwerte ----------------------------------------------------------
+    // --- Live values --------------------------------------------------------
     auto* liveBox = makeGroup(tr("Messwerte"), form);
 
     pollInterval_ = new QSpinBox;
@@ -114,7 +114,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     form->addRow(tr("Zeitfenster der Diagramme"), chartWindow_);
     root->addWidget(liveBox);
 
-    // --- Loeschen -----------------------------------------------------------
+    // --- Clearing -----------------------------------------------------------
     auto* clearBox = makeGroup(tr("Fehler loeschen"), form);
 
     clearAttempts_ = new QSpinBox;
@@ -169,7 +169,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
         "riskant, waehrend die Drosselklappe lernt.")));
     root->addWidget(kklBox);
 
-    // --- Protokoll ----------------------------------------------------------
+    // --- Log ----------------------------------------------------------------
     auto* logBox = makeGroup(tr("Protokoll"), form);
 
     logRaw_ = new QCheckBox(tr("Rohkommunikation mitschreiben (jede Zeile hin und "
@@ -191,13 +191,20 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     form->addRow(tr("Datei"), pathWidget);
     root->addWidget(logBox);
 
-    // --- Fenster ------------------------------------------------------------
-    auto* windowBox = makeGroup(tr("Fenster"), form);
+    // --- Window -------------------------------------------------------------
+    auto* windowBox = makeGroup(tr("Fenster und Sprache"), form);
     rememberGeometry_ = new QCheckBox(tr("Groesse und Position beim Beenden merken"));
     form->addRow(rememberGeometry_);
+
+    language_ = new QComboBox;
+    language_->addItem(tr("Wie das System"), QStringLiteral("auto"));
+    language_->addItem(QStringLiteral("Deutsch"), QStringLiteral("de"));
+    language_->addItem(QStringLiteral("English"), QStringLiteral("en"));
+    form->addRow(tr("Sprache"), language_);
+    form->addRow(makeNote(tr("Die Sprache wechselt beim naechsten Start.")));
     root->addWidget(windowBox);
 
-    // --- Fusszeile ----------------------------------------------------------
+    // --- Footer -------------------------------------------------------------
     auto* footer = new QHBoxLayout;
     auto* reset = new QPushButton(tr("Auf Vorgabe zuruecksetzen"));
     auto* openFolder = new QPushButton(tr("Ablageort oeffnen"));
@@ -209,7 +216,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
 
     theme::addGlow(connectionBox, theme::color::accent, 0.35);
 
-    // --- Verdrahtung --------------------------------------------------------
+    // --- Wiring -------------------------------------------------------------
     connect(reset, &QPushButton::clicked, this, &SettingsPage::resetToDefaults);
     connect(openFolder, &QPushButton::clicked, this, &SettingsPage::openConfigLocation);
     connect(logBrowse_, &QPushButton::clicked, this, &SettingsPage::chooseLogPath);
@@ -219,6 +226,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     connect(protocolOrder_, &QComboBox::currentIndexChanged, this, onCombo);
     connect(basicSession_, &QComboBox::currentIndexChanged, this, onCombo);
     connect(kklEcu_, &QComboBox::currentIndexChanged, this, onCombo);
+    connect(language_, &QComboBox::currentIndexChanged, this, onCombo);
 
     const auto onSpin = [this](int) { emitChange(); };
     connect(timeout_, &QSpinBox::valueChanged, this, onSpin);
@@ -265,6 +273,8 @@ void SettingsPage::showValues(const AppSettings& v) {
     logPath_->setText(v.logPath);
 
     rememberGeometry_->setChecked(v.rememberGeometry);
+    const int languageIndex = language_->findData(v.language);
+    language_->setCurrentIndex(languageIndex >= 0 ? languageIndex : 0);
 
     loading_ = false;
     emitChange();
@@ -292,11 +302,12 @@ AppSettings SettingsPage::values() const {
     v.logPath = logPath_->text().trimmed();
 
     v.rememberGeometry = rememberGeometry_->isChecked();
+    v.language = language_->currentData().toString();
     return v;
 }
 
 void SettingsPage::emitChange() {
-    // Der Hinweis zum Abfragetakt haengt am Wert, also hier mitfuehren.
+    // The hint about the polling interval depends on the value, so update it here.
     const int interval = pollInterval_->value();
     pollHint_->setText(
         interval == 0
@@ -307,7 +318,7 @@ void SettingsPage::emitChange() {
                  "stocken.")
                   .arg(1000 / interval));
 
-    // Der Dateipfad ist nur von Belang, wenn auch in eine Datei geschrieben wird.
+    // The file path only matters when logging to a file is enabled.
     logPath_->setEnabled(logToFile_->isChecked());
     logBrowse_->setEnabled(logToFile_->isChecked());
 

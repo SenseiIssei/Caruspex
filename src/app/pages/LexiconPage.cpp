@@ -26,9 +26,12 @@ const std::vector<Entry>& allEntries() {
     static const std::vector<Entry> entries = [] {
         std::vector<Entry> list;
         list.reserve(dtcDescriptions().size());
-        for (const auto& [code, text] : dtcDescriptions()) {
-            list.push_back({QString::fromStdString(code), QString::fromStdString(text),
-                            isThrottleDtc(code)});
+        // Only the codes come from the table. The text is fetched through
+        // describeDtc(), which returns it in the active language.
+        for (const auto& entry : dtcDescriptions()) {
+            const std::string& code = entry.first;
+            list.push_back({QString::fromStdString(code),
+                            QString::fromStdString(describeDtc(code)), isThrottleDtc(code)});
         }
         std::sort(list.begin(), list.end(),
                   [](const Entry& a, const Entry& b) { return a.code < b.code; });

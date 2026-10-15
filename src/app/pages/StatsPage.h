@@ -14,8 +14,8 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Zahlen ueber die laufende Messung: Kleinstwert, Mittel, Groesstwert je
-// Messgroesse, dazu abgeleitete Werte wie Verbrauch und Strecke.
+// Figures for the running measurement: minimum, average and maximum per
+// quantity, plus derived values such as fuel consumption and distance.
 class StatsPage : public QWidget {
     Q_OBJECT
 
@@ -56,7 +56,7 @@ private:
     QLabel* note_ = nullptr;
 
     QElapsedTimer clock_;
-    // Fuer Verbrauch und Strecke wird ueber die Zeit aufsummiert.
+    // Fuel consumption and distance are integrated over time.
     double fuelLitres_ = 0.0;
     double distanceKm_ = 0.0;
     double lastMaf_ = 0.0;

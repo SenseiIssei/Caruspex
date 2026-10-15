@@ -11,9 +11,9 @@
 namespace caruspex {
 namespace {
 
-// Der Wagen wird in einem gedachten Feld von 0 bis 1 aufgebaut und beim
-// Zeichnen auf die tatsaechliche Groesse gestreckt. So bleibt die Anordnung
-// bei jeder Fenstergroesse gleich.
+// The car is laid out in an imaginary field from 0 to 1 and stretched to the
+// actual size when painting. That keeps the layout the same at every window
+// size.
 constexpr double kBodyTop = 0.36;
 constexpr double kBodyBottom = 0.74;
 
@@ -36,23 +36,24 @@ void VehicleDiagram::setPulse(double value) {
 }
 
 const std::vector<VehicleDiagram::Hotspot>& VehicleDiagram::hotspots() const {
-    // Motorraum vorne links, Innenraum in der Mitte, Tank und Abgas hinten.
+    // Engine bay at the front left, cabin in the middle, tank and exhaust at
+    // the back. The labels are translated when painting.
     static const std::vector<Hotspot> spots = {
-        {CarZone::Intake,    {0.055, 0.30, 0.105, 0.115}, "Ansaug"},
-        {CarZone::Throttle,  {0.170, 0.30, 0.105, 0.115}, "Drosselklappe"},
-        {CarZone::Turbo,     {0.055, 0.575, 0.105, 0.11}, "Turbo"},
-        {CarZone::Cylinders, {0.170, 0.435, 0.105, 0.115}, "Motor"},
-        {CarZone::Ignition,  {0.170, 0.575, 0.105, 0.11}, "Zuendung"},
-        {CarZone::Injection, {0.055, 0.435, 0.105, 0.115}, "Einspritzung"},
-        {CarZone::Cooling,   {0.055, 0.70, 0.105, 0.10},  "Kuehlung"},
-        {CarZone::Ecu,       {0.295, 0.30, 0.100, 0.115}, "Steuergeraet"},
-        {CarZone::Electrics, {0.295, 0.435, 0.100, 0.115}, "Bordnetz"},
-        {CarZone::Network,   {0.295, 0.575, 0.100, 0.11},  "Datenbus"},
-        {CarZone::Cabin,     {0.420, 0.30, 0.150, 0.135},  "Innenraum"},
-        {CarZone::Gearbox,   {0.420, 0.455, 0.150, 0.115}, "Getriebe"},
-        {CarZone::FuelTank,  {0.595, 0.30, 0.130, 0.135},  "Tank"},
-        {CarZone::Exhaust,   {0.595, 0.455, 0.130, 0.115}, "Abgas"},
-        {CarZone::Wheels,    {0.755, 0.30, 0.130, 0.135},  "Raeder / ABS"},
+        {CarZone::Intake,    {0.055, 0.30, 0.105, 0.115}, QT_TR_NOOP("Ansaug")},
+        {CarZone::Throttle,  {0.170, 0.30, 0.105, 0.115}, QT_TR_NOOP("Drosselklappe")},
+        {CarZone::Turbo,     {0.055, 0.575, 0.105, 0.11}, QT_TR_NOOP("Turbo")},
+        {CarZone::Cylinders, {0.170, 0.435, 0.105, 0.115}, QT_TR_NOOP("Motor")},
+        {CarZone::Ignition,  {0.170, 0.575, 0.105, 0.11}, QT_TR_NOOP("Zuendung")},
+        {CarZone::Injection, {0.055, 0.435, 0.105, 0.115}, QT_TR_NOOP("Einspritzung")},
+        {CarZone::Cooling,   {0.055, 0.70, 0.105, 0.10},  QT_TR_NOOP("Kuehlung")},
+        {CarZone::Ecu,       {0.295, 0.30, 0.100, 0.115}, QT_TR_NOOP("Steuergeraet")},
+        {CarZone::Electrics, {0.295, 0.435, 0.100, 0.115}, QT_TR_NOOP("Bordnetz")},
+        {CarZone::Network,   {0.295, 0.575, 0.100, 0.11},  QT_TR_NOOP("Datenbus")},
+        {CarZone::Cabin,     {0.420, 0.30, 0.150, 0.135},  QT_TR_NOOP("Innenraum")},
+        {CarZone::Gearbox,   {0.420, 0.455, 0.150, 0.115}, QT_TR_NOOP("Getriebe")},
+        {CarZone::FuelTank,  {0.595, 0.30, 0.130, 0.135},  QT_TR_NOOP("Tank")},
+        {CarZone::Exhaust,   {0.595, 0.455, 0.130, 0.115}, QT_TR_NOOP("Abgas")},
+        {CarZone::Wheels,    {0.755, 0.30, 0.130, 0.135},  QT_TR_NOOP("Raeder / ABS")},
     };
     return spots;
 }
@@ -85,7 +86,7 @@ void VehicleDiagram::clear() {
     update();
 }
 
-// Seitenansicht: Karosserie, Fenster, zwei Raeder, Auspuff.
+// Side view: body, windows, two wheels, exhaust.
 void VehicleDiagram::drawCarBody(QPainter& painter) const {
     const double x = canvas_.left();
     const double y = canvas_.top();
@@ -111,7 +112,7 @@ void VehicleDiagram::drawCarBody(QPainter& painter) const {
     painter.setBrush(QColor(30, 35, 46));
     painter.drawPath(body);
 
-    // Fenster
+    // Windows
     QPainterPath glass;
     glass.moveTo(px(0.355), py(0.315));
     glass.lineTo(px(0.415), py(0.215));
@@ -121,7 +122,7 @@ void VehicleDiagram::drawCarBody(QPainter& painter) const {
     painter.setBrush(QColor(38, 46, 60));
     painter.drawPath(glass);
 
-    // Raeder
+    // Wheels
     painter.setBrush(QColor(22, 25, 32));
     const double wheelR = h * 0.115;
     painter.drawEllipse(QPointF(px(0.215), py(kBodyBottom)), wheelR, wheelR);
@@ -130,13 +131,13 @@ void VehicleDiagram::drawCarBody(QPainter& painter) const {
     painter.drawEllipse(QPointF(px(0.215), py(kBodyBottom)), wheelR * 0.45, wheelR * 0.45);
     painter.drawEllipse(QPointF(px(0.805), py(kBodyBottom)), wheelR * 0.45, wheelR * 0.45);
 
-    // Auspuff hinten
+    // Exhaust at the back
     painter.setBrush(QColor(60, 68, 82));
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(QRectF(px(0.955), py(kBodyBottom - 0.055), w * 0.04, h * 0.035),
                             3, 3);
 
-    // Front kennzeichnen, damit klar ist, wo vorne ist
+    // Mark the front so it is clear which end is the front
     painter.setPen(QPen(theme::color::textMuted, 1.0, Qt::DashLine));
     painter.drawLine(QPointF(px(0.03), py(0.86)), QPointF(px(0.20), py(0.86)));
     painter.setPen(theme::color::textMuted);
@@ -144,7 +145,7 @@ void VehicleDiagram::drawCarBody(QPainter& painter) const {
     small.setPointSizeF(8.0);
     painter.setFont(small);
     painter.drawText(QRectF(px(0.03), py(0.87), w * 0.20, h * 0.10), Qt::AlignLeft,
-                     QStringLiteral("vorne"));
+                     tr("vorne"));
 }
 
 void VehicleDiagram::paintEvent(QPaintEvent*) {
@@ -185,7 +186,7 @@ void VehicleDiagram::paintEvent(QPaintEvent*) {
         painter.drawRoundedRect(box, 7, 7);
 
         painter.setPen(text);
-        painter.drawText(box, Qt::AlignCenter | Qt::TextWordWrap, spot.label);
+        painter.drawText(box, Qt::AlignCenter | Qt::TextWordWrap, tr(spot.label));
     }
 }
 

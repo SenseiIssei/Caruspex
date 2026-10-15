@@ -1,4 +1,4 @@
-// KWP1281 ueber ein KKL-Kabel (VAG 409.1).
+// KWP1281 over a KKL cable (VAG 409.1).
 #pragma once
 
 #include <string>
@@ -8,14 +8,14 @@
 
 namespace caruspex {
 
-// Setzt die Bytestrom-Schnittstelle auf einer echten seriellen Leitung um.
-// Die 5-Baud-Weckadresse wird von Hand getaktet, weil kein UART so langsam
-// arbeitet: fuer jedes Bit wird die Sendeleitung 200 ms lang auf Null gezogen
-// oder losgelassen.
+// Implements the byte stream interface on a real serial line.
+// The 5-baud wake-up address is clocked out by hand because no UART runs that
+// slowly: for each bit the transmit line is pulled low or released for
+// 200 ms.
 class KLineStream : public IByteStream {
 public:
-    // Nach der Weckadresse laeuft die Leitung mit dieser Baudrate weiter.
-    // Fast alle VAG-Steuergeraete der K-Line-Zeit nutzen 9600.
+    // After the wake-up address the line continues at this baud rate.
+    // Almost all VAG control units of the K-line era use 9600.
     bool open(const std::string& device, int baudAfterInit, std::string& error);
     void close() { port_.close(); }
     bool isOpen() const { return port_.isOpen(); }

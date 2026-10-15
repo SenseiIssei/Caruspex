@@ -226,7 +226,7 @@ void ScanPage::exportReport() {
     if (results_.isEmpty()) return;
     const QString stamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm");
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Bericht speichern"), QStringLiteral("pruefbericht_%1.txt").arg(stamp),
+        this, tr("Bericht speichern"), tr("pruefbericht_%1.txt").arg(stamp),
         tr("Textdatei (*.txt)"));
     if (path.isEmpty()) return;
 
@@ -237,20 +237,24 @@ void ScanPage::exportReport() {
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << "Pruefbericht Caruspex\n";
-    out << "Erstellt am " << QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm") << "\n";
+    out << tr("Pruefbericht Caruspex") << "\n";
+    out << tr("Erstellt am %1")
+               .arg(QDateTime::currentDateTime().toString(tr("dd.MM.yyyy HH:mm")))
+        << "\n";
     out << QString(60, '=') << "\n\n";
 
     int totalFaults = 0;
     for (const EcuScanRow& row : std::as_const(results_)) {
         out << row.name << "\n";
         if (!row.present) {
-            out << "   nicht verbaut oder meldet sich nicht\n\n";
+            out << "   " << tr("nicht verbaut oder meldet sich nicht") << "\n\n";
             continue;
         }
-        if (!row.identification.isEmpty()) out << "   Kennung: " << row.identification << "\n";
+        if (!row.identification.isEmpty()) {
+            out << "   " << tr("Kennung: %1").arg(row.identification) << "\n";
+        }
         if (row.faults.isEmpty()) {
-            out << "   kein Eintrag im Fehlerspeicher\n";
+            out << "   " << tr("kein Eintrag im Fehlerspeicher") << "\n";
         } else {
             for (const FaultRow& fault : row.faults) {
                 out << "   " << fault.code << "  [" << fault.kind << "]  " << fault.text
@@ -261,7 +265,7 @@ void ScanPage::exportReport() {
         out << "\n";
     }
     out << QString(60, '-') << "\n";
-    out << "Insgesamt " << totalFaults << " Eintraege.\n";
+    out << tr("Insgesamt %1 Eintraege.").arg(totalFaults) << "\n";
 }
 
 }  // namespace caruspex

@@ -56,7 +56,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(14);
 
-    // --- Was geht womit -----------------------------------------------------
+    // --- What works with what ----------------------------------------------
     QVBoxLayout* body = nullptr;
     QFrame* intro = card(tr("Zwei Wege, je nach Adapter"), body);
     auto* explain = new QLabel(
@@ -78,7 +78,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     body->addWidget(explain);
     root->addWidget(intro);
 
-    // --- KKL-Verbindung -----------------------------------------------------
+    // --- KKL connection -----------------------------------------------------
     QFrame* kklCard = card(tr("KKL-Kabel verbinden"), body);
     auto* portRow = new QHBoxLayout;
     portBox_ = new QComboBox;
@@ -119,7 +119,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
         emit kklConnectRequested(port, static_cast<int>(Ecu::Engine));
     });
 
-    // --- Voraussetzungen ----------------------------------------------------
+    // --- Prerequisites ------------------------------------------------------
     QFrame* checks = card(tr("Vorher pruefen"), body);
     checklistHint_ = new QLabel(
         tr("Damit das Anlernen sauber durchlaeuft, muessen diese Punkte stimmen:\n"
@@ -133,7 +133,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     body->addWidget(checklistHint_);
     root->addWidget(checks);
 
-    // --- Grundeinstellung ---------------------------------------------------
+    // --- Basic settings -----------------------------------------------------
     QFrame* runCard = card(tr("Grundeinstellung starten"), body);
     auto* runRow = new QHBoxLayout;
     groupBox_ = new QComboBox;
@@ -148,11 +148,11 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     runRow->addWidget(runButton_);
     body->addLayout(runRow);
 
-    // Nur bei KWP2000 sichtbar: dort gibt es keinen eigenen Dienst fuer die
-    // Grundeinstellung, sondern es wird eine andere Sitzungsart eroeffnet.
-    // Welche das Steuergeraet verlangt, ist nicht einheitlich.
-    // Die ganze Zeile wird versteckt, nicht nur das Auswahlfeld, sonst bleibt
-    // die Beschriftung ohne Inhalt stehen.
+    // Only visible with KWP2000: there is no dedicated service for basic
+    // settings there; a different session type is opened instead.
+    // Which one the control unit expects is not consistent.
+    // The whole row is hidden, not just the combo box, otherwise the label
+    // would remain without content.
     auto* sessionWidget = new QWidget;
     auto* sessionRow = new QHBoxLayout(sessionWidget);
     sessionRow->setContentsMargins(0, 0, 0, 0);
@@ -219,7 +219,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
         emit basicSettingRequested(groupBox_->currentData().toInt());
     });
 
-    // --- Ohne Tester --------------------------------------------------------
+    // --- Without a scan tool ------------------------------------------------
     QFrame* manual = card(tr("Anlernversuch ohne Tester"), body);
     eobdHint_ = new QLabel(
         tr("Wenn kein KKL-Kabel da ist, klappt das bei vielen VAG-Motoren auch so. "
@@ -280,10 +280,10 @@ void ThrottlePage::setKklConnected(bool connected, const QString& identification
 
 void ThrottlePage::setProtocol(const QString& protocolName, bool isKwp2000) {
     isKwp2000_ = isKwp2000;
-    // Die Sitzungsart ist nur bei KWP2000 ein Thema.
+    // The session type only matters for KWP2000.
     sessionRow_->setVisible(isKwp2000);
     sessionHint_->setVisible(isKwp2000);
-    identification_->setText(tr("%1\n%2").arg(protocolName, identification_->text()));
+    identification_->setText(QStringLiteral("%1\n%2").arg(protocolName, identification_->text()));
 }
 
 void ThrottlePage::updateAvailability() {
@@ -299,8 +299,8 @@ void ThrottlePage::updateAvailability() {
 }
 
 void ThrottlePage::onLiveValue(const LiveRow& row) {
-    // Solange nur EOBD verbunden ist, laesst sich die Klappe wenigstens
-    // beobachten.
+    // As long as only EOBD is connected, the throttle can at least be
+    // observed.
     if (row.pid == 0x11 || row.pid == 0x45) angleGauge_->setValue(row.value);
     if (row.pid == 0x0C) rpmGauge_->setValue(row.value);
 }
@@ -317,7 +317,9 @@ void ThrottlePage::onBasicSettingValues(const QVector<LiveRow>& rows) {
         values_->setItem(i, 2, new QTableWidgetItem(v.unit));
 
         if (v.unit == QLatin1String("1/min")) rpmGauge_->setValue(v.value);
-        if (v.unit == QLatin1String("%") || v.unit == QLatin1String("Grad")) {
+        // The core may name the angle unit in either language.
+        if (v.unit == QLatin1String("%") || v.unit == QLatin1String("Grad") ||
+            v.unit == QLatin1String("deg") || v.unit == QStringLiteral("°")) {
             angleGauge_->setValue(v.value);
         }
     }

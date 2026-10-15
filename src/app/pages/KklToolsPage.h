@@ -16,8 +16,8 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Die beiden herstellereigenen Dienste, die kein ELM327 kann:
-// Anpassungskanaele lesen und Stellglieddiagnose.
+// The two manufacturer-specific services no ELM327 can do: reading adaptation
+// channels and the output test.
 class KklToolsPage : public QWidget {
     Q_OBJECT
 

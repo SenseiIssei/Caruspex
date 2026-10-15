@@ -30,7 +30,7 @@ class LivePage : public QWidget {
     Q_OBJECT
 
 public:
-    // Zeitfenster der Kurven in Sekunden.
+    // Time window of the curves in seconds.
     void setWindowSeconds(int seconds);
     explicit LivePage(QWidget* parent = nullptr);
 

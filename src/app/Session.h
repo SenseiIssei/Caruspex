@@ -1,8 +1,8 @@
-// Bindeglied zwischen Oberflaeche und Diagnosekern.
+// Link between the UI and the diagnostic core.
 //
-// Der Kern kennt kein Qt. Diese Klasse laeuft in einem eigenen Thread und
-// reicht Ergebnisse per Signal an die Oberflaeche weiter, damit das Fenster
-// waehrend der langsamen K-Line-Kommunikation bedienbar bleibt.
+// The core knows nothing about Qt. This class runs in its own thread and
+// passes results to the UI via signals, so the window stays usable during the
+// slow K-Line communication.
 #pragma once
 
 #include <QList>
@@ -32,18 +32,22 @@ struct FaultRow {
     QString kind;
     QString text;
     bool throttleRelated = false;
+    // Confirmed (stored) fault, as opposed to intermittent/pending or
+    // permanent. Kept separately because kind is display text and depends on
+    // the language.
+    bool stored = false;
 };
 
 struct LiveRow {
     int pid = 0;
     QString name;
     QString unit;
-    QString text;   // gesetzt bei Statuswerten
+    QString text;   // set for status values
     double value = 0.0;
     bool warn = false;
 };
 
-// Ergebnis fuer ein Steuergeraet beim Durchsuchen des ganzen Fahrzeugs.
+// Result for one control unit when scanning the whole vehicle.
 struct EcuScanRow {
     int address = 0;
     QString name;
@@ -53,8 +57,7 @@ struct EcuScanRow {
     QString note;
 };
 
-// Ein Testergebnis aus der Bauteilueberwachung, fuer die Oberflaeche
-// aufbereitet.
+// A test result from component monitoring, prepared for the UI.
 struct MonitorRow {
     QString name;
     QString component;
@@ -100,28 +103,28 @@ public slots:
     void stopLive();
     void sendRaw(const QString& command);
 
-    // KWP1281 ueber ein KKL-Kabel: die Wege, an die EOBD nicht herankommt.
+    // KWP1281 over a KKL cable: the functions EOBD cannot reach.
     void openKkl(const QString& device, int ecuAddress);
     void closeKkl();
     void startBasicSetting(int group);
     void stopBasicSetting();
-    // Alle bekannten Steuergeraete der Reihe nach anfunken.
-    // clearAttempts groesser null heisst: ueberall loeschen und nachpruefen,
-    // notfalls mehrfach.
+    // Contact all known control units one after another.
+    // clearAttempts greater than zero means: clear everywhere and verify,
+    // several times if necessary.
     void scanAllEcus(const QString& device, int clearAttempts);
-    // Hartnaeckiges Loeschen ueber EOBD: mehrfach loeschen, jedes Mal
-    // nachlesen, bei Bedarf die Verbindung neu aufbauen.
+    // Persistent clear over EOBD: clear several times, read back each time,
+    // re-establish the connection if needed.
     void bruteForceClear(int attempts);
     void readAdaptationChannel(int channel);
     void runActuatorTest();
     void readMonitors();
     void setBasicSettingSession(int mode);
-    // Uebernimmt die Einstellungen. Wird beim Start und nach jeder Aenderung
-    // gerufen, wirkt auch waehrend einer laufenden Messung.
+    // Applies the settings. Called at startup and after every change; also
+    // takes effect during a running measurement.
     void applySettings(const caruspex::AppSettings& values);
 
 public:
-    // Bricht einen laufenden Suchlauf ab. Aus jedem Thread erlaubt.
+    // Cancels a running scan. Allowed from any thread.
     void cancelScan() { cancelScan_ = true; }
 
 signals:
@@ -169,8 +172,8 @@ private:
     QVector<int> pollPids_;
     int pollIndex_ = 0;
 
-    // Wird aus dem Oberflaechen-Thread gesetzt, deshalb atomar. Der Suchlauf
-    // blockiert die Ereignisschleife des Workers, ein Signal kaeme nicht durch.
+    // Set from the UI thread, hence atomic. The scan blocks the worker's event
+    // loop, so a signal would not get through.
     std::atomic<bool> cancelScan_{false};
 
     KLineStream kline_;
@@ -180,7 +183,7 @@ private:
     AppSettings settings_;
 };
 
-// Besitzt den Thread und den Worker, wird von der Oberflaeche benutzt.
+// Owns the thread and the worker, used by the UI.
 class Session : public QObject {
     Q_OBJECT
 
@@ -189,7 +192,7 @@ public:
     ~Session() override;
 
     Worker* worker() const { return worker_; }
-    // Darf aus dem Oberflaechen-Thread aufgerufen werden.
+    // May be called from the UI thread.
     void cancelScan();
     bool isConnected() const { return connected_; }
 

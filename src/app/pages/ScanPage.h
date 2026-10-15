@@ -16,8 +16,8 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Klappert alle bekannten Steuergeraete ab und zeigt, welche das Fahrzeug hat
-// und wo etwas im Speicher steht. Braucht ein KKL-Kabel.
+// Polls every known control unit in turn and shows which ones the vehicle has
+// and where something is stored in fault memory. Needs a KKL cable.
 class ScanPage : public QWidget {
     Q_OBJECT
 
@@ -32,7 +32,7 @@ public slots:
     void onScanFinished(int present, int withFaults, bool cancelled);
 
 public:
-    // Versuche beim Loeschen in allen Steuergeraeten.
+    // Attempts when clearing all control units.
     void setClearAttempts(int attempts) { clearAttempts_ = attempts > 0 ? attempts : 1; }
 
 signals:

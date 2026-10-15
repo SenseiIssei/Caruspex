@@ -23,7 +23,7 @@ QString loadFonts() {
         const QStringList families = QFontDatabase::applicationFontFamilies(id);
         if (!families.isEmpty() && family.isEmpty()) family = families.front();
     }
-    // Faellt auf das zurueck, was da ist, falls die Schrift fehlt.
+    // Falls back to what is available if the font is missing.
     return family.isEmpty() ? QStringLiteral("Consolas") : family;
 }
 
@@ -250,7 +250,7 @@ void apply(QApplication& app) {
 void addGlow(QWidget* widget, const QColor& colour, double strength) {
     if (!widget) return;
     auto* glow = new QGraphicsDropShadowEffect(widget);
-    glow->setOffset(0, 0);                       // ohne Versatz wirkt es wie Leuchten
+    glow->setOffset(0, 0);                       // without an offset it looks like a glow
     glow->setBlurRadius(24.0 * strength);
     QColor lit = colour;
     lit.setAlphaF(static_cast<float>(qBound(0.0, 0.55 * strength, 1.0)));

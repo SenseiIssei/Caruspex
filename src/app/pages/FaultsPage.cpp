@@ -84,7 +84,7 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     connect(table_, &QTableWidget::currentCellChanged, this,
             [this](int row, int, int, int) { showSelected(row); });
 
-    // Rechts daneben das Fahrzeug, das zeigt, wo der Fehler herkommt.
+    // To the right, the car that shows where the fault comes from.
     auto* right = new QWidget;
     auto* rightLayout = new QVBoxLayout(right);
     rightLayout->setContentsMargins(0, 0, 0, 0);
@@ -131,8 +131,7 @@ void FaultsPage::onFaults(const QVector<FaultRow>& rows) {
         QFont bold = code->font();
         bold.setBold(true);
         code->setFont(bold);
-        code->setForeground(f.kind == QLatin1String("gespeichert") ? theme::color::bad
-                                                                   : theme::color::warn);
+        code->setForeground(f.stored ? theme::color::bad : theme::color::warn);
         table_->setItem(i, 0, code);
         table_->setItem(i, 1, new QTableWidgetItem(f.kind));
         table_->setItem(i, 2, new QTableWidgetItem(f.text));
@@ -150,7 +149,7 @@ void FaultsPage::onFaults(const QVector<FaultRow>& rows) {
     }
     exportButton_->setEnabled(!rows.isEmpty());
 
-    // Alle betroffenen Stellen am Fahrzeug markieren.
+    // Mark all affected spots on the car.
     QSet<int> zones;
     for (const FaultRow& f : rows) {
         const ZoneInfo info = locateDtc(f.code.toStdString());
@@ -268,7 +267,7 @@ void FaultsPage::onClearFinished(bool everythingGone, int remaining) {
 void FaultsPage::exportCsv() {
     if (rows_.isEmpty()) return;
     const QString suggestion =
-        QStringLiteral("fehlerspeicher_%1.csv")
+        tr("fehlerspeicher_%1.csv")
             .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm"));
     const QString path =
         QFileDialog::getSaveFileName(this, tr("Speichern"), suggestion, tr("CSV (*.csv)"));
@@ -281,7 +280,7 @@ void FaultsPage::exportCsv() {
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << "Code;Art;Bedeutung\n";
+    out << tr("Code;Art;Bedeutung") << '\n';
     for (const FaultRow& f : std::as_const(rows_)) {
         QString text = f.text;
         out << f.code << ';' << f.kind << ';' << text.replace(';', ',') << '\n';

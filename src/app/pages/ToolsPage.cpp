@@ -74,7 +74,7 @@ ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(14);
 
-    // Bereitschaftstests
+    // Readiness monitors
     QVBoxLayout* body = nullptr;
     QFrame* readinessCard = card(tr("Bereitschaftstests (Abgasuntersuchung)"), body);
     readinessSummary_ = new QLabel(tr("Noch nichts gelesen."));
@@ -86,7 +86,7 @@ ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     body->addWidget(readiness_);
     root->addWidget(readinessCard);
 
-    // Fahrzeugkennung und Umgebungsdaten
+    // Vehicle identification and freeze frame data
     QFrame* infoCard = card(tr("Fahrzeug und Umgebungsdaten beim Fehler"), body);
     vin_ = new QLabel(tr("Fahrgestellnummer: noch nicht gelesen"));
     body->addWidget(vin_);
@@ -98,7 +98,7 @@ ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     body->addWidget(freeze_);
     root->addWidget(infoCard);
 
-    // Rohbefehle
+    // Raw commands
     QFrame* rawCard = card(tr("Adapter direkt ansprechen"), body);
     auto* hint = new QLabel(
         tr("Fuer Fortgeschrittene: ELM327-Befehle wie ATI, ATDP oder 0100 direkt senden."));

@@ -10,7 +10,7 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Offline-Nachschlagewerk fuer Fehlercodes, funktioniert ohne Auto.
+// Offline reference for trouble codes, works without a car.
 class LexiconPage : public QWidget {
     Q_OBJECT
 

@@ -44,19 +44,19 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
 
-    // Startparameter --tcp host:port
+    // Command-line option --tcp host:port
     void autoConnectTcp(const QString& address);
 
 protected:
-    // Faengt Mausbewegungen ab, um an den Fensterkanten die Groessenaenderung
-    // anzubieten. Die Kinderwidgets bekommen die Ereignisse sonst zuerst.
+    // Intercepts mouse moves to offer resizing at the window edges. Otherwise
+    // the child widgets get the events first.
     bool eventFilter(QObject* watched, QEvent* event) override;
     void changeEvent(QEvent* event) override;
     void closeEvent(QCloseEvent* event) override;
 #ifdef Q_OS_WIN
-    // Unter Windows uebernimmt das Betriebssystem die Groessenaenderung, wenn
-    // man ihm bei WM_NCHITTEST sagt, wo die Raender liegen. Das gibt die
-    // richtigen Zeiger, das Andocken und das Ziehen ueber Bildschirmgrenzen.
+    // On Windows the operating system handles resizing if WM_NCHITTEST tells
+    // it where the edges are. That gives the right cursors, snapping and
+    // dragging across screen boundaries.
     bool nativeEvent(const QByteArray& type, void* message, qintptr* result) override;
 #endif
 
@@ -69,13 +69,13 @@ private slots:
     void onBusy(bool active);
     void appendLog(const QString& line);
     void onBrandChanged();
-    // Uebernimmt geaenderte Einstellungen: speichern, an den Arbeitsthread
-    // weiterreichen und die Seiten nachziehen.
+    // Applies changed settings: save them, pass them on to the worker thread
+    // and update the pages.
     void applySettings(const caruspex::AppSettings& values);
 
 private:
     QWidget* buildSidebar();
-    // Liefert die Kanten, an denen der Zeiger gerade steht, sonst leer.
+    // Returns the edges the pointer is currently on, otherwise empty.
     Qt::Edges edgesAt(const QPoint& windowPosition) const;
     void toggleMaximise();
     void addNavigationEntry(const QString& text, QWidget* page);

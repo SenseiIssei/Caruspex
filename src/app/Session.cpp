@@ -20,6 +20,12 @@ LiveRow toRow(const LiveValue& v) {
     return row;
 }
 
+// The core reports the kind of a fault as display text in the active language.
+// "stored" is the English wording the core uses for "gespeichert".
+bool isStoredKind(const std::string& kind) {
+    return kind == "gespeichert" || kind == "stored";
+}
+
 }  // namespace
 
 // --- Worker -----------------------------------------------------------------
@@ -38,14 +44,14 @@ void Worker::openSerial(const QString& device, int baud, const QString& protocol
 
     std::string error;
     std::unique_ptr<ITransport> transport;
-    // Ohne Vorgabe die ueblichen Baudraten durchprobieren, Klone sind da eigen.
+    // Without a preset, try the usual baud rates; clones are picky about this.
     const QVector<int> bauds = baud > 0 ? QVector<int>{baud}
                                         : QVector<int>{38400, 9600, 115200, 500000};
     for (int b : bauds) {
         auto candidate = std::make_unique<SerialTransport>();
         if (candidate->open(device.toStdString(), b, error)) {
             transport = std::move(candidate);
-            emit logLine(QStringLiteral("Anschluss %1 offen bei %2 Baud").arg(device).arg(b));
+            emit logLine(tr("Anschluss %1 offen bei %2 Baud").arg(device).arg(b));
             break;
         }
     }
@@ -118,12 +124,13 @@ void Worker::refreshStatusAndFaults() {
     QVector<FaultRow> rows;
     for (const Fault& f : obd_->readFaults(error)) {
         rows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
-                        QString::fromStdString(f.text), f.throttleRelated});
+                        QString::fromStdString(f.text), f.throttleRelated,
+                        isStoredKind(f.kind)});
     }
     emit faults(rows);
     emit logLine(rows.isEmpty()
-                     ? QStringLiteral("Fehlerspeicher gelesen: kein Eintrag.")
-                     : QStringLiteral("Fehlerspeicher gelesen: %1 Eintraege.").arg(rows.size()));
+                     ? tr("Fehlerspeicher gelesen: kein Eintrag.")
+                     : tr("Fehlerspeicher gelesen: %1 Eintraege.").arg(rows.size()));
 
     QVector<int> supported;
     for (int pid : obd_->supportedPids()) supported.push_back(pid);
@@ -140,8 +147,8 @@ void Worker::clearFaults() {
     emit busy(true);
     std::string error;
     const bool ok = obd_->clearFaults(error);
-    emit logLine(ok ? QStringLiteral("Fehlerspeicher geloescht.")
-                    : QStringLiteral("Loeschen fehlgeschlagen: %1")
+    emit logLine(ok ? tr("Fehlerspeicher geloescht.")
+                    : tr("Loeschen fehlgeschlagen: %1")
                           .arg(QString::fromStdString(error)));
     emit busy(false);
     refreshStatusAndFaults();
@@ -164,25 +171,25 @@ void Worker::startLive(const QVector<int>& pids) {
     pollIndex_ = 0;
     if (!pollTimer_) {
         pollTimer_ = new QTimer(this);
-        // Nicht schneller als 50 Abfragen je Sekunde. Auf der K-Line dauert eine
-        // Abfrage ohnehin laenger, aber ein schneller CAN-Adapter oder der
-        // Simulator wuerden die Oberflaeche sonst mit Signalen zuschuetten.
+        // No faster than 50 requests per second. On the K-Line a request takes
+        // longer anyway, but a fast CAN adapter or the simulator would
+        // otherwise flood the UI with signals.
         pollTimer_->setInterval(settings_.pollIntervalMs);
         QObject::connect(pollTimer_, &QTimer::timeout, this, &Worker::pollTick);
     }
     pollTimer_->start();
-    emit logLine(QStringLiteral("Messung gestartet, %1 Werte im Umlauf.").arg(pids.size()));
+    emit logLine(tr("Messung gestartet, %1 Werte im Umlauf.").arg(pids.size()));
 }
 
 void Worker::stopLive() {
     if (pollTimer_ && pollTimer_->isActive()) {
         pollTimer_->stop();
-        emit logLine(QStringLiteral("Messung gestoppt."));
+        emit logLine(tr("Messung gestoppt."));
     }
 }
 
-// Ein Messwert pro Durchlauf. So bleibt die Ereignisschleife frei und
-// Stopp-Anforderungen der Oberflaeche kommen sofort durch.
+// One value per tick. That keeps the event loop free and stop requests from
+// the UI get through immediately.
 void Worker::pollTick() {
     if (!obd_ || pollPids_.isEmpty()) return;
     const int pid = pollPids_[pollIndex_ % pollPids_.size()];
@@ -196,17 +203,17 @@ void Worker::sendRaw(const QString& command) {
     ElmResult result = elm_.send(command.toStdString(), 8000);
     QStringList lines;
     for (const std::string& line : result.lines) lines << QString::fromStdString(line);
-    if (lines.isEmpty()) lines << QStringLiteral("(keine Antwort)");
+    if (lines.isEmpty()) lines << tr("(keine Antwort)");
     emit rawReply(lines.join('\n'));
 }
 
-// --- KWP1281 ueber KKL ------------------------------------------------------
+// --- KWP1281 over KKL -------------------------------------------------------
 
 void Worker::openKkl(const QString& device, int ecuAddress) {
     closeKkl();
     emit busy(true);
-    emit kklMessage(QObject::tr("Wecke das Steuergeraet mit der 5-Baud-Adresse, "
-                                "das dauert etwa drei Sekunden ..."), false);
+    emit kklMessage(tr("Wecke das Steuergeraet mit der 5-Baud-Adresse, "
+                       "das dauert etwa drei Sekunden ..."), false);
 
     std::string error;
     if (!kline_.open(device.toStdString(), 9600, error)) {
@@ -219,8 +226,8 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
                                       [this](const std::string& m) {
                                           emit logLine(QString::fromStdString(m));
                                       });
-    // Die eingestellte Sitzungsart muss stehen, bevor eine Grundeinstellung
-    // gestartet werden kann.
+    // The configured session type must be set before basic settings can be
+    // started.
     kwp_->setBasicSettingSession(
         static_cast<std::uint8_t>(settings_.basicSettingSession));
     const Ecu ecu = static_cast<Ecu>(ecuAddress);
@@ -241,12 +248,12 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
     emit kklConnected(true, identification.join(QStringLiteral("  |  ")));
     emit kklProtocol(QString::fromStdString(kwp_->protocolName()),
                      kwp_->protocol() == KLineProtocol::Kwp2000);
-    emit kklMessage(QObject::tr("Verbunden mit %1 ueber %2. Vor dem Start die Punkte "
-                                "oben pruefen.")
+    emit kklMessage(tr("Verbunden mit %1 ueber %2. Vor dem Start die Punkte "
+                       "oben pruefen.")
                         .arg(QString::fromStdString(ecuName(ecu)),
                              QString::fromStdString(kwp_->protocolName())),
                     false);
-    emit logLine(QStringLiteral("KWP1281 verbunden: ") + identification.join(" / "));
+    emit logLine(tr("KWP1281 verbunden: %1").arg(identification.join(QStringLiteral(" / "))));
 }
 
 void Worker::closeKkl() {
@@ -261,31 +268,31 @@ void Worker::closeKkl() {
 
 void Worker::startBasicSetting(int group) {
     if (!kwp_ || !kwp_->connected()) {
-        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        emit kklMessage(tr("Erst das KKL-Kabel verbinden."), true);
         return;
     }
     basicSettingGroup_ = group;
     if (!basicSettingTimer_) {
         basicSettingTimer_ = new QTimer(this);
-        // Das Steuergeraet faellt aus der Grundeinstellung, wenn laenger als
-        // etwa eine Sekunde nichts kommt. Wir fragen deutlich haeufiger nach.
+        // The control unit drops out of basic settings if nothing arrives for
+        // about a second. We ask considerably more often.
         basicSettingTimer_->setInterval(settings_.basicSettingIntervalMs);
         QObject::connect(basicSettingTimer_, &QTimer::timeout, this,
                          &Worker::basicSettingTick);
     }
     basicSettingTimer_->start();
-    emit kklMessage(QObject::tr("Grundeinstellung im Messwertblock %1 laeuft. Gaspedal "
-                                "nicht antippen.")
+    emit kklMessage(tr("Grundeinstellung im Messwertblock %1 laeuft. Gaspedal "
+                       "nicht antippen.")
                         .arg(group),
                     false);
-    emit logLine(QStringLiteral("Grundeinstellung Block %1 gestartet").arg(group));
+    emit logLine(tr("Grundeinstellung Block %1 gestartet").arg(group));
 }
 
 void Worker::stopBasicSetting() {
     if (basicSettingTimer_ && basicSettingTimer_->isActive()) {
         basicSettingTimer_->stop();
-        emit kklMessage(QObject::tr("Grundeinstellung beendet."), false);
-        emit logLine(QStringLiteral("Grundeinstellung beendet"));
+        emit kklMessage(tr("Grundeinstellung beendet."), false);
+        emit logLine(tr("Grundeinstellung beendet"));
     }
 }
 
@@ -311,7 +318,7 @@ void Worker::basicSettingTick() {
         }
         LiveRow row;
         row.pid = index;
-        row.name = QObject::tr("Feld %1: %2").arg(index).arg(QString::fromStdString(m.label));
+        row.name = tr("Feld %1: %2").arg(index).arg(QString::fromStdString(m.label));
         row.unit = QString::fromStdString(m.unit);
         row.value = m.value;
         rows.push_back(row);
@@ -320,9 +327,9 @@ void Worker::basicSettingTick() {
     emit basicSettingValues(rows);
 }
 
-// Sucht der Reihe nach alle bekannten Steuergeraete. Jeder Versuch braucht
-// wegen der 5-Baud-Weckadresse ein paar Sekunden, bei nicht vorhandenen
-// Steuergeraeten kommt die Wartezeit auf die Antwort dazu.
+// Searches all known control units one after another. Each attempt takes a few
+// seconds because of the 5-baud wake-up address; for control units that are not
+// fitted, the time spent waiting for a reply comes on top.
 void Worker::scanAllEcus(const QString& device, int clearAttempts) {
     closeKkl();
     cancelScan_ = false;
@@ -355,7 +362,7 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
         std::string localError;
         if (!probe.connect(ecu, localError)) {
             row.present = false;
-            row.note = QObject::tr("meldet sich nicht, vermutlich nicht verbaut");
+            row.note = tr("meldet sich nicht, vermutlich nicht verbaut");
             emit scanEcuResult(row);
             continue;
         }
@@ -375,27 +382,27 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
             for (const Kwp1281Fault& f : faults) {
                 FaultRow fault;
                 fault.code = QStringLiteral("%1").arg(f.code, 5, 10, QChar('0'));
-                fault.kind = f.sporadic ? QObject::tr("sporadisch")
-                                        : QObject::tr("gespeichert");
+                fault.kind = f.sporadic ? tr("sporadisch") : tr("gespeichert");
+                fault.stored = !f.sporadic;
                 fault.text = QString::fromStdString(f.text);
                 row.faults.push_back(fault);
             }
             if (!row.faults.isEmpty()) ++withFaults;
             row.note = row.faults.isEmpty()
-                           ? QObject::tr("kein Eintrag")
-                           : QObject::tr("%1 Eintraege").arg(row.faults.size());
+                           ? tr("kein Eintrag")
+                           : tr("%1 Eintraege").arg(row.faults.size());
 
-            // Hartnaeckig loeschen: nach jedem Versuch nachlesen. Manche
-            // Steuergeraete nehmen den Loeschbefehl erst im zweiten Anlauf an.
+            // Persistent clear: read back after every attempt. Some control
+            // units only accept the clear command on the second try.
             if (clearAttempts > 0 && !faults.empty()) {
                 bool cleared = false;
                 for (int attempt = 1; attempt <= clearAttempts && !cleared; ++attempt) {
-                    emit clearProgress(QObject::tr("%1: loesche, Versuch %2 von %3")
+                    emit clearProgress(tr("%1: loesche, Versuch %2 von %3")
                                            .arg(row.name)
                                            .arg(attempt)
                                            .arg(clearAttempts));
                     if (!probe.clearFaults(localError)) {
-                        emit clearProgress(QObject::tr("   abgelehnt: %1")
+                        emit clearProgress(tr("   abgelehnt: %1")
                                                .arg(QString::fromStdString(localError)));
                         sleepMs(300);
                         continue;
@@ -406,14 +413,14 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
                 }
                 if (cleared) {
                     row.faults.clear();
-                    row.note = QObject::tr("geloescht");
+                    row.note = tr("geloescht");
                     --withFaults;
-                    emit clearProgress(QObject::tr("   %1: leer").arg(row.name));
+                    emit clearProgress(tr("   %1: leer").arg(row.name));
                 } else {
-                    row.note = QObject::tr("%1 Eintraege, Loeschen ohne Wirkung")
+                    row.note = tr("%1 Eintraege, Loeschen ohne Wirkung")
                                    .arg(row.faults.size());
                     emit clearProgress(
-                        QObject::tr("   %1: bleibt bestehen, die Ursache ist noch da")
+                        tr("   %1: bleibt bestehen, die Ursache ist noch da")
                             .arg(row.name));
                 }
             }
@@ -429,12 +436,12 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
     emit scanFinished(present, withFaults, cancelScan_.load());
 }
 
-// Hartnaeckiges Loeschen ueber EOBD. Manche Steuergeraete nehmen den Befehl
-// nur direkt nach dem Verbindungsaufbau an, andere brauchen mehrere Anlaeufe.
-// Deshalb wird zwischendurch die Verbindung neu aufgebaut.
+// Persistent clear over EOBD. Some control units only accept the command right
+// after the connection is established, others need several attempts. That is
+// why the connection is re-established in between.
 void Worker::bruteForceClear(int attempts) {
     if (!obd_) {
-        emit clearProgress(QObject::tr("Nicht verbunden."));
+        emit clearProgress(tr("Nicht verbunden."));
         emit clearFinished(false, 0);
         return;
     }
@@ -442,12 +449,12 @@ void Worker::bruteForceClear(int attempts) {
 
     int remaining = 0;
     for (int attempt = 1; attempt <= attempts; ++attempt) {
-        emit clearProgress(QObject::tr("Versuch %1 von %2 ...").arg(attempt).arg(attempts));
+        emit clearProgress(tr("Versuch %1 von %2 ...").arg(attempt).arg(attempts));
 
         std::string error;
         const bool acknowledged = obd_->clearFaults(error);
         if (!acknowledged) {
-            emit clearProgress(QObject::tr("   Steuergeraet quittiert nicht: %1")
+            emit clearProgress(tr("   Steuergeraet quittiert nicht: %1")
                                    .arg(QString::fromStdString(error)));
         }
         sleepMs(600);
@@ -455,18 +462,18 @@ void Worker::bruteForceClear(int attempts) {
         const std::vector<Fault> left = obd_->readFaults(error);
         remaining = static_cast<int>(left.size());
         if (left.empty()) {
-            emit clearProgress(QObject::tr("   Speicher ist leer."));
+            emit clearProgress(tr("   Speicher ist leer."));
             emit busy(false);
             emit clearFinished(true, 0);
             refreshStatusAndFaults();
             return;
         }
-        emit clearProgress(QObject::tr("   noch %1 Eintraege").arg(remaining));
+        emit clearProgress(tr("   noch %1 Eintraege").arg(remaining));
 
-        // Ab dem zweiten Fehlschlag die Verbindung neu aufbauen. Einige
-        // Steuergeraete oeffnen das Loeschfenster nur direkt nach dem Wecken.
+        // From the second failure on, re-establish the connection. Some control
+        // units only open the clear window right after waking up.
         if (attempt >= 2 && attempt < attempts) {
-            emit clearProgress(QObject::tr("   Verbindung wird neu aufgebaut ..."));
+            emit clearProgress(tr("   Verbindung wird neu aufgebaut ..."));
             ElmResult reset = elm_.send("ATZ", 6000);
             Q_UNUSED(reset);
             sleepMs(400);
@@ -487,8 +494,8 @@ void Worker::bruteForceClear(int attempts) {
 void Worker::applySettings(const AppSettings& values) {
     settings_ = values;
 
-    // Laufende Zeitgeber sofort nachziehen, sonst wirkt eine Aenderung erst
-    // nach dem naechsten Verbindungsaufbau.
+    // Update running timers right away, otherwise a change would only take
+    // effect after the next connection.
     if (pollTimer_) pollTimer_->setInterval(settings_.pollIntervalMs);
     if (basicSettingTimer_) {
         basicSettingTimer_->setInterval(settings_.basicSettingIntervalMs);
@@ -504,13 +511,13 @@ void Worker::applySettings(const AppSettings& values) {
 
 void Worker::setBasicSettingSession(int mode) {
     if (kwp_) kwp_->setBasicSettingSession(static_cast<std::uint8_t>(mode));
-    emit logLine(QStringLiteral("Sitzungsart fuer die Grundeinstellung: 0x%1")
-                     .arg(mode, 2, 16, QChar('0')).toUpper());
+    emit logLine(tr("Sitzungsart fuer die Grundeinstellung: 0x%1")
+                     .arg(QStringLiteral("%1").arg(mode, 2, 16, QChar('0')).toUpper()));
 }
 
 void Worker::readAdaptationChannel(int channel) {
     if (!kwp_ || !kwp_->connected()) {
-        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        emit kklMessage(tr("Erst das KKL-Kabel verbinden."), true);
         return;
     }
     emit busy(true);
@@ -529,8 +536,7 @@ void Worker::readAdaptationChannel(int channel) {
         if (m.valid) {
             LiveRow row;
             row.pid = index;
-            row.name = QObject::tr("Feld %1: %2").arg(index).arg(
-                QString::fromStdString(m.label));
+            row.name = tr("Feld %1: %2").arg(index).arg(QString::fromStdString(m.label));
             row.unit = QString::fromStdString(m.unit);
             row.value = m.value;
             rows.push_back(row);
@@ -539,13 +545,13 @@ void Worker::readAdaptationChannel(int channel) {
     }
     emit busy(false);
     emit adaptationResult(channel, value, rows);
-    emit kklMessage(QObject::tr("Anpassungskanal %1 steht auf %2.").arg(channel).arg(value),
+    emit kklMessage(tr("Anpassungskanal %1 steht auf %2.").arg(channel).arg(value),
                     false);
 }
 
 void Worker::runActuatorTest() {
     if (!kwp_ || !kwp_->connected()) {
-        emit kklMessage(QObject::tr("Erst das KKL-Kabel verbinden."), true);
+        emit kklMessage(tr("Erst das KKL-Kabel verbinden."), true);
         return;
     }
     emit busy(true);
@@ -560,11 +566,11 @@ void Worker::runActuatorTest() {
     emit actuatorResult(QString::fromStdString(actuator));
 }
 
-// Modus 06, 05 und 09 auf einmal: alles, was das Steuergeraet ueber sich und
-// seine laufenden Selbsttests hergibt.
+// Modes 06, 05 and 09 in one go: everything the control unit reveals about
+// itself and its running self-tests.
 void Worker::readMonitors() {
     if (!obd_) {
-        emit monitorResults({}, QObject::tr("Nicht verbunden."));
+        emit monitorResults({}, tr("Nicht verbunden."));
         return;
     }
     emit busy(true);
@@ -605,7 +611,7 @@ void Worker::readMonitors() {
     emit oxygenTests(oxygenRows, QString::fromStdString(oxygenNote));
 
     emit busy(false);
-    emit logLine(QStringLiteral("Bauteilueberwachung gelesen: %1 Tests, %2 Sondenpruefungen.")
+    emit logLine(tr("Bauteilueberwachung gelesen: %1 Tests, %2 Sondenpruefungen.")
                      .arg(rows.size())
                      .arg(oxygenRows.size()));
 }

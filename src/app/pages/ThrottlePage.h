@@ -17,11 +17,11 @@ namespace caruspex {
 
 class GaugeWidget;
 
-// Drosselklappe anlernen.
+// Throttle body adaptation.
 //
-// Zwei Wege, je nachdem was fuer ein Adapter steckt:
-//  - KKL-Kabel: echte Grundeinstellung ueber KWP1281, Messwertblock 060 bzw. 098
-//  - ELM327: nur beobachten plus der Anlernversuch ohne Tester
+// Two ways, depending on which adapter is plugged in:
+//  - KKL cable: real basic settings via KWP1281, measuring block 060 or 098
+//  - ELM327: observe only, plus the adaptation attempt without a scan tool
 class ThrottlePage : public QWidget {
     Q_OBJECT
 

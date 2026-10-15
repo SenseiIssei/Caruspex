@@ -18,7 +18,7 @@
 namespace caruspex {
 namespace {
 
-// Benzin: Luftverhaeltnis 14,7 zu 1, Dichte etwa 745 Gramm je Liter.
+// Petrol: air-fuel ratio 14.7 to 1, density about 745 grams per litre.
 constexpr double kAirFuelRatio = 14.7;
 constexpr double kFuelDensityGramPerLitre = 745.0;
 
@@ -76,7 +76,7 @@ StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
     connect(resetButton_, &QPushButton::clicked, this, &StatsPage::reset);
     connect(exportButton_, &QPushButton::clicked, this, &StatsPage::exportCsv);
 
-    // Kennzahlen als Karten
+    // Key figures as cards
     auto* cards = new QGridLayout;
     cards->setSpacing(12);
     cards->addWidget(statCard(tr("Messdauer"), durationValue_), 0, 0);
@@ -111,7 +111,7 @@ StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
 }
 
 void StatsPage::onLiveValue(const LiveRow& row) {
-    if (!row.text.isEmpty()) return;   // Statuswerte lassen sich nicht mitteln
+    if (!row.text.isEmpty()) return;   // status values cannot be averaged
     if (!clock_.isValid()) clock_.start();
 
     Series& s = series_[row.pid];
@@ -142,7 +142,7 @@ void StatsPage::onLiveValue(const LiveRow& row) {
 
     const qint64 now = clock_.elapsed();
 
-    // Luftmasse aufsummieren ergibt die verbrannte Kraftstoffmenge.
+    // Integrating the air mass gives the amount of fuel burned.
     if (row.pid == 0x10) {
         sawMaf_ = true;
         if (lastMafMs_ >= 0) {
@@ -153,7 +153,7 @@ void StatsPage::onLiveValue(const LiveRow& row) {
         lastMaf_ = row.value;
         lastMafMs_ = now;
     }
-    // Geschwindigkeit aufsummieren ergibt die Strecke.
+    // Integrating the speed gives the distance.
     if (row.pid == 0x0D) {
         if (lastSpeedMs_ >= 0) {
             const double hours = (now - lastSpeedMs_) / 3600000.0;
@@ -193,7 +193,7 @@ void StatsPage::refreshCards() {
         consumptionValue_->setText(
             QStringLiteral("%1 l/100km").arg(fuelLitres_ / distanceKm_ * 100.0, 0, 'f', 1));
     } else {
-        // Im Stand gibt es keine Strecke, dann ist der Durchsatz die Aussage.
+        // When stationary there is no distance, so the flow rate is what matters.
         const double hours = clock_.elapsed() / 3600000.0;
         consumptionValue_->setText(hours > 0.0
                                        ? QStringLiteral("%1 l/h").arg(fuelLitres_ / hours, 0,
@@ -227,7 +227,7 @@ void StatsPage::reset() {
 void StatsPage::exportCsv() {
     if (series_.isEmpty()) return;
     const QString suggestion =
-        QStringLiteral("statistik_%1.csv")
+        tr("statistik_%1.csv")
             .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm"));
     const QString path =
         QFileDialog::getSaveFileName(this, tr("Speichern"), suggestion, tr("CSV (*.csv)"));
@@ -240,7 +240,7 @@ void StatsPage::exportCsv() {
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << "Messwert;Kleinster;Mittel;Groesster;Aktuell;Einheit;Messpunkte\n";
+    out << tr("Messwert;Kleinster;Mittel;Groesster;Aktuell;Einheit;Messpunkte") << '\n';
     for (const Series& s : std::as_const(series_)) {
         out << s.name << ';' << QString::number(s.minimum, 'f', 3) << ';'
             << QString::number(s.sum / static_cast<double>(s.count), 'f', 3) << ';'

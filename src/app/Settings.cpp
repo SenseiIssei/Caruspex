@@ -1,5 +1,6 @@
 #include "app/Settings.h"
 
+#include <QLocale>
 #include <QSettings>
 
 namespace caruspex {
@@ -50,8 +51,13 @@ AppSettings loadSettings() {
     v.rememberGeometry = s.value(QStringLiteral("merken"), v.rememberGeometry).toBool();
     s.endGroup();
 
-    // Werte aus einer aelteren oder von Hand bearbeiteten Datei koennten
-    // unsinnig sein. Lieber begrenzen als spaeter mit einer Null teilen.
+    v.language = s.value(QStringLiteral("sprache"), v.language).toString();
+    if (v.language != QStringLiteral("de") && v.language != QStringLiteral("en")) {
+        v.language = QStringLiteral("auto");
+    }
+
+    // Values from an older or hand-edited file could be nonsense. Better to
+    // clamp them than to divide by zero later.
     if (v.timeoutPercent < 25) v.timeoutPercent = 25;
     if (v.timeoutPercent > 500) v.timeoutPercent = 500;
     if (v.pollIntervalMs < 0) v.pollIntervalMs = 0;
@@ -102,7 +108,17 @@ void saveSettings(const AppSettings& v) {
     s.setValue(QStringLiteral("merken"), v.rememberGeometry);
     s.endGroup();
 
+    s.setValue(QStringLiteral("sprache"), v.language);
+
     s.sync();
+}
+
+QString effectiveLanguage(const AppSettings& v) {
+    if (v.language == QStringLiteral("de") || v.language == QStringLiteral("en")) {
+        return v.language;
+    }
+    return QLocale::system().language() == QLocale::German ? QStringLiteral("de")
+                                                           : QStringLiteral("en");
 }
 
 }  // namespace caruspex

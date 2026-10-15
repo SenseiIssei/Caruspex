@@ -1,8 +1,7 @@
-// Nachgebautes KWP2000-Steuergeraet fuer die Tests.
+// Simulated KWP2000 control unit for the tests.
 //
-// Antwortet mit Schluesselbytes, die auf KWP2000 zeigen, und beantwortet
-// Nachrichten mit Kopf und Pruefsumme, so wie es ein Bosch MED im Audi A2
-// 1.6 FSI tut.
+// Answers with key bytes that point to KWP2000 and responds to messages with
+// header and checksum, just like a Bosch MED in the Audi A2 1.6 FSI does.
 #pragma once
 
 #include <cstdint>
@@ -16,7 +15,7 @@ namespace caruspex::test {
 
 class FakeEcu2000 : public IByteStream {
 public:
-    // Fehler als Dreiergruppen: zwei Bytes Nummer, ein Byte Zustand.
+    // Faults as groups of three: two bytes number, one byte status.
     std::vector<std::uint8_t> faults{0x40, 0x66, 0xE0, 0x02, 0x31, 0x60};
     std::vector<std::uint8_t> groupPayload{0x01, 0x40, 0x64, 0x05, 0x28, 0x8C,
                                            0x21, 0x00, 0x50, 0x00, 0x00, 0x00};
@@ -26,7 +25,7 @@ public:
     int lastSession = -1;
     int sessionCount = 0;
     bool stopped = false;
-    // Wenn gesetzt, lehnt das Steuergeraet diese Sitzungsart ab.
+    // If set, the control unit rejects this session type.
     int refuseSession = -1;
 
     bool writeByte(std::uint8_t value) override;

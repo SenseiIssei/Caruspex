@@ -1,5 +1,5 @@
-// Prueft die KWP1281-Zustandsmaschine gegen ein nachgebautes Steuergeraet.
-// Damit ist der Weg zur Drosselklappen-Grundeinstellung ohne Auto getestet.
+// Checks the KWP1281 state machine against a simulated control unit.
+// This tests the path to the throttle body basic settings without a car.
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -11,7 +11,7 @@ using namespace caruspex;
 using caruspex::test::FakeEcu;
 using Catch::Approx;
 
-TEST_CASE("Verbindungsaufbau weckt das richtige Steuergeraet", "[kwp1281]") {
+TEST_CASE("Connecting wakes the right control unit", "[kwp1281]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -22,7 +22,7 @@ TEST_CASE("Verbindungsaufbau weckt das richtige Steuergeraet", "[kwp1281]") {
     REQUIRE(protocol.connected());
 }
 
-TEST_CASE("Die Kennung des Steuergeraets wird eingelesen", "[kwp1281]") {
+TEST_CASE("The control unit identification is read", "[kwp1281]") {
     FakeEcu ecu({"1C0906032AA ", "SIMOS 1.0 ", "Code 12345 "});
     Kwp1281 protocol(ecu);
     std::string error;
@@ -33,7 +33,7 @@ TEST_CASE("Die Kennung des Steuergeraets wird eingelesen", "[kwp1281]") {
     REQUIRE(protocol.identification()[1] == "SIMOS 1.0 ");
 }
 
-TEST_CASE("Andere Steuergeraete lassen sich adressieren", "[kwp1281]") {
+TEST_CASE("Other control units can be addressed", "[kwp1281]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -42,9 +42,9 @@ TEST_CASE("Andere Steuergeraete lassen sich adressieren", "[kwp1281]") {
     REQUIRE(ecu.wokenAddress() == 0x03);
 }
 
-TEST_CASE("Fehlerspeicher lesen und loeschen", "[kwp1281]") {
+TEST_CASE("Read and clear the fault memory", "[kwp1281]") {
     FakeEcu ecu;
-    // Zwei Fehler: 0x111B (4379) und 0x2400 wird als 9216 gelesen.
+    // Two faults: 0x111B (4379) and 0x111C, the second one intermittent.
     ecu.faultPayload = {0x11, 0x1B, 0x24, 0x11, 0x1C, 0xA4};
     Kwp1281 protocol(ecu);
     std::string error;
@@ -55,7 +55,7 @@ TEST_CASE("Fehlerspeicher lesen und loeschen", "[kwp1281]") {
     REQUIRE(faults.size() == 2);
     REQUIRE(faults[0].code == 0x111B);
     REQUIRE(faults[1].code == 0x111C);
-    // Bit 7 im Statusbyte heisst sporadisch.
+    // Bit 7 in the status byte means intermittent.
     REQUIRE(faults[1].sporadic);
     REQUIRE_FALSE(faults[0].sporadic);
 
@@ -67,7 +67,7 @@ TEST_CASE("Fehlerspeicher lesen und loeschen", "[kwp1281]") {
     REQUIRE(afterwards.empty());
 }
 
-TEST_CASE("Messwertblock lesen", "[kwp1281]") {
+TEST_CASE("Read a measuring block", "[kwp1281]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -77,12 +77,12 @@ TEST_CASE("Messwertblock lesen", "[kwp1281]") {
     REQUIRE(protocol.readGroup(1, values, error));
     REQUIRE(ecu.lastGroupRequested == 1);
     REQUIRE(values.size() == 4);
-    // Formel 0x01 ist die Drehzahl: 0,2 mal A mal B.
+    // Formula 0x01 is engine speed: 0.2 times A times B.
     REQUIRE(values[0].unit == "1/min");
     REQUIRE(values[0].value == Approx(0.2 * 0x40 * 0x64));
 }
 
-TEST_CASE("Grundeinstellung ist ein eigener Dienst", "[kwp1281][drosselklappe]") {
+TEST_CASE("Basic settings is a separate service", "[kwp1281][throttle]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -91,11 +91,11 @@ TEST_CASE("Grundeinstellung ist ein eigener Dienst", "[kwp1281][drosselklappe]")
     std::vector<MeasuringValue> values;
     REQUIRE(protocol.basicSetting(60, values, error));
     REQUIRE(ecu.lastBasicSettingGroup == 60);
-    REQUIRE(ecu.lastGroupRequested == -1);   // nicht mit dem Lesen verwechselt
+    REQUIRE(ecu.lastGroupRequested == -1);   // not confused with reading
     REQUIRE_FALSE(values.empty());
 }
 
-TEST_CASE("Steuergeraete ohne Grundeinstellung melden das sauber", "[kwp1281]") {
+TEST_CASE("Control units without basic settings report it cleanly", "[kwp1281]") {
     FakeEcu ecu;
     ecu.supportsBasicSetting = false;
     Kwp1281 protocol(ecu);
@@ -108,7 +108,7 @@ TEST_CASE("Steuergeraete ohne Grundeinstellung melden das sauber", "[kwp1281]") 
     REQUIRE(values.empty());
 }
 
-TEST_CASE("Mehrere Anfragen hintereinander halten den Takt", "[kwp1281]") {
+TEST_CASE("Several requests in a row keep the rhythm", "[kwp1281]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -121,7 +121,7 @@ TEST_CASE("Mehrere Anfragen hintereinander halten den Takt", "[kwp1281]") {
     }
 }
 
-TEST_CASE("Trennen meldet sich beim Steuergeraet ab", "[kwp1281]") {
+TEST_CASE("Disconnecting signs off from the control unit", "[kwp1281]") {
     FakeEcu ecu;
     Kwp1281 protocol(ecu);
     std::string error;
@@ -131,38 +131,38 @@ TEST_CASE("Trennen meldet sich beim Steuergeraet ab", "[kwp1281]") {
     REQUIRE(ecu.endOutputCount == 1);
 }
 
-TEST_CASE("Messwertformeln rechnen richtig", "[kwp1281]") {
-    // Drehzahl
+TEST_CASE("Measuring value formulas compute correctly", "[kwp1281]") {
+    // Engine speed
     const MeasuringValue rpm = decodeMeasurement(0x01, 0x40, 0x64);
     REQUIRE(rpm.unit == "1/min");
     REQUIRE(rpm.value == Approx(1280.0));
 
-    // Temperatur: A mal (B minus 100) mal 0,1
+    // Temperature: A times (B minus 100) times 0.1
     const MeasuringValue temp = decodeMeasurement(0x05, 0x01, 0xE2);
     REQUIRE(temp.unit == "Grad C");
     REQUIRE(temp.value == Approx(0.1 * 1 * (226 - 100)));
 
-    // Spannung
+    // Voltage
     const MeasuringValue volt = decodeMeasurement(0x06, 0x0A, 0x8C);
     REQUIRE(volt.unit == "V");
     REQUIRE(volt.value == Approx(0.001 * 10 * 140));
 
-    // Leeres Feld
+    // Empty field
     REQUIRE_FALSE(decodeMeasurement(0x00, 0x00, 0x00).valid);
 
-    // Unbekannte Formel faellt nicht um, sondern liefert die Rohzahl.
+    // An unknown formula does not fall over but returns the raw number.
     const MeasuringValue unknown = decodeMeasurement(0xEE, 0x12, 0x34);
     REQUIRE(unknown.valid);
     REQUIRE(unknown.value == Approx(0x12 * 256 + 0x34));
 }
 
-TEST_CASE("Steuergeraetenamen sind hinterlegt", "[kwp1281]") {
+TEST_CASE("Control unit names are known", "[kwp1281]") {
     REQUIRE(ecuName(Ecu::Engine) == "01 Motor");
     REQUIRE(ecuName(Ecu::Abs) == "03 Bremsenelektronik (ABS)");
     REQUIRE(knownEcus().size() >= 10);
 }
 
-TEST_CASE("Anpassungskanal lesen", "[kwp1281]") {
+TEST_CASE("Read an adaptation channel", "[kwp1281]") {
     FakeEcu ecu;
     ecu.adaptationValue = 132;
     Kwp1281 protocol(ecu);
@@ -177,7 +177,7 @@ TEST_CASE("Anpassungskanal lesen", "[kwp1281]") {
     REQUIRE(shown.size() == 4);
 }
 
-TEST_CASE("Steuergeraete ohne Anpassung melden das sauber", "[kwp1281]") {
+TEST_CASE("Control units without adaptation report it cleanly", "[kwp1281]") {
     FakeEcu ecu;
     ecu.supportsAdaptation = false;
     Kwp1281 protocol(ecu);
@@ -190,7 +190,7 @@ TEST_CASE("Steuergeraete ohne Anpassung melden das sauber", "[kwp1281]") {
     REQUIRE_FALSE(error.empty());
 }
 
-TEST_CASE("Stellglieddiagnose nennt das laufende Bauteil", "[kwp1281]") {
+TEST_CASE("Output test names the active component", "[kwp1281]") {
     FakeEcu ecu;
     ecu.actuatorName = "Tankentlueftungsventil N80";
     Kwp1281 protocol(ecu);
@@ -203,9 +203,9 @@ TEST_CASE("Stellglieddiagnose nennt das laufende Bauteil", "[kwp1281]") {
     REQUIRE(ecu.actuatorTestCount == 1);
 }
 
-TEST_CASE("VAG-Fehlernummern bekommen Klartext", "[kwp1281][vag]") {
+TEST_CASE("VAG fault numbers get plain text", "[kwp1281][vag]") {
     FakeEcu ecu;
-    // 16486 entspricht P0102, 561 ist eine alte VAG-eigene Nummer.
+    // 16486 corresponds to P0102, 561 is an old VAG-specific number.
     ecu.faultPayload = {0x40, 0x66, 0x24, 0x02, 0x31, 0x24};
     Kwp1281 protocol(ecu);
     std::string error;

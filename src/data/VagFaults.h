@@ -1,16 +1,18 @@
-// VAG-Fehlernummern in Klartext.
+// VAG fault numbers in plain text.
 //
-// Die herstellereigene Diagnose liefert fuenfstellige Zahlen statt P-Codes.
-// Ab 16384 sind das umgerechnete EOBD-Codes: Nummer minus 16384 ergibt die
-// Ziffernfolge des P-Codes. Damit laesst sich die vorhandene Fehlerdatenbank
-// weiterbenutzen. Darunter liegen die alten VAG-eigenen Nummern.
+// The manufacturer-specific diagnostics deliver five-digit numbers instead of
+// P-codes. From 16384 upwards these are converted EOBD codes: the number minus
+// 16384 gives the digits of the P-code. That way the existing fault database
+// can be reused. Below that lie the old VAG-specific numbers.
 //
-// Wichtig: diese alten Nummern gelten je Steuergeraet. Die 01276 heisst im
-// Motorsteuergeraet "Bremslichtschalter", im ABS-Steuergeraet dagegen
-// "Hydraulikpumpe". Eine einzige flache Liste waere also schlicht falsch.
-// Deshalb wird der Klartext immer zusammen mit der Steuergeraeteadresse
-// gesucht. Ist die Adresse nicht bekannt, wird das Motorsteuergeraet
-// angenommen und ein Treffer aus einem anderen Bereich als solcher benannt.
+// Important: these old numbers are defined per control unit. 01276 means
+// "brake light switch" in the engine control unit, but "hydraulic pump" in
+// the ABS control unit. A single flat list would therefore simply be wrong.
+// That is why the plain text is always looked up together with the control
+// unit address. If the address is unknown, the engine control unit is
+// assumed and a match from another area is labelled as such.
+//
+// The texts come out in the active language (see core/Lang.h).
 #pragma once
 
 #include <cstddef>
@@ -19,8 +21,8 @@
 
 namespace caruspex {
 
-// Fachbereich eines Steuergeraets. Mehrere Adressen koennen sich einen
-// Bereich teilen, etwa alle Tuersteuergeraete das Komfortsystem.
+// Functional area of a control unit. Several addresses can share an area,
+// for example all door control units belong to the comfort system.
 enum class FaultArea {
     Engine,
     Transmission,
@@ -33,17 +35,17 @@ enum class FaultArea {
     Unknown,
 };
 
-// Adresse (0x01 Motor, 0x03 ABS, ...) zum Fachbereich.
+// Address (0x01 engine, 0x03 ABS, ...) to functional area.
 FaultArea areaForEcuAddress(int address);
 
-// Umrechnung in den P-Code, leer wenn die Nummer zu klein dafuer ist.
+// Conversion to the P-code, empty if the number is too small for that.
 std::string vagCodeToPCode(int vagCode);
 
-// Klartext zu einer VAG-Fehlernummer. ecuAddress ist die Adresse des
-// Steuergeraets, das den Fehler gemeldet hat; -1 wenn unbekannt.
+// Plain text for a VAG fault number. ecuAddress is the address of the
+// control unit that reported the fault; -1 if unknown.
 std::string describeVagFault(int vagCode, int ecuAddress = -1);
 
-// Wie viele alte VAG-Nummern insgesamt hinterlegt sind.
+// How many old VAG numbers are stored in total.
 std::size_t vagFaultCount();
 
 }  // namespace caruspex

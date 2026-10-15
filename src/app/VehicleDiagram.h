@@ -1,4 +1,4 @@
-// Schematisches Fahrzeug von der Seite, das zeigt, wo ein Fehler herkommt.
+// Schematic side view of a car that shows where a fault comes from.
 #pragma once
 
 #include <QHash>
@@ -18,9 +18,9 @@ class VehicleDiagram : public QWidget {
 public:
     explicit VehicleDiagram(QWidget* parent = nullptr);
 
-    // Alle Zonen, in denen etwas gefunden wurde.
+    // All zones in which something was found.
     void setAffected(const QSet<int>& zones);
-    // Die gerade ausgewaehlte Zone wird hervorgehoben und pulsiert.
+    // The currently selected zone is highlighted and pulses.
     void setFocus(CarZone zone);
     void clear();
 
@@ -40,8 +40,8 @@ protected:
 private:
     struct Hotspot {
         CarZone zone;
-        QRectF box;      // in Einheiten von 0 bis 1, wird auf die Flaeche skaliert
-        QString label;
+        QRectF box;      // in units from 0 to 1, scaled to the widget area
+        const char* label;   // untranslated source text, see QT_TR_NOOP
     };
 
     const std::vector<Hotspot>& hotspots() const;

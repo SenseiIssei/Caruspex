@@ -48,7 +48,7 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent) {
     title_->setStyleSheet(QStringLiteral("color: %1; font-weight: 700; "
                                          "letter-spacing: 2px; font-size: 12px;")
                               .arg(theme::color::accent.name()));
-    auto* subtitle = new QLabel(tr("  Fahrzeugdiagnose"));
+    auto* subtitle = new QLabel(QStringLiteral("  ") + tr("Fahrzeugdiagnose"));
     subtitle->setStyleSheet(
         QStringLiteral("color: %1; font-size: 12px;").arg(theme::color::textFaint.name()));
 
@@ -77,8 +77,8 @@ void TitleBar::updateMaximiseState(bool maximised) {
 
 void TitleBar::mousePressEvent(QMouseEvent* event) {
     if (event->button() != Qt::LeftButton) return;
-    // Das Verschieben uebernimmt der Fenstermanager. Nur so bleiben Aero Snap
-    // und das Andocken an den Bildschirmrand erhalten.
+    // The window manager does the moving. Only that way do Aero Snap and
+    // snapping to the screen edge keep working.
     if (QWindow* handle = window()->windowHandle()) handle->startSystemMove();
 }
 
@@ -90,7 +90,7 @@ void TitleBar::paintEvent(QPaintEvent*) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     p.fillRect(rect(), theme::color::surface);
-    // Feine Trennlinie nach unten, wie in Odysync.
+    // Thin separator line at the bottom, as in Odysync.
     p.setPen(theme::color::border);
     p.drawLine(0, height() - 1, width(), height() - 1);
 }

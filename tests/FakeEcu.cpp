@@ -13,8 +13,8 @@ bool FakeEcu::slowInit(std::uint8_t address) {
     expectedLength_ = -1;
     awaitingAck_ = false;
 
-    // Synchronbyte und die beiden Schluesselbytes eines typischen
-    // VAG-Motorsteuergeraets.
+    // Sync byte and the two key bytes of a typical VAG engine control
+    // unit.
     queue(0x55);
     queue(0x01);
     queue(0x8A);
@@ -32,11 +32,11 @@ bool FakeEcu::readByte(std::uint8_t& value, int) {
 bool FakeEcu::writeByte(std::uint8_t value) {
     if (!awake_) return false;
 
-    // Auf der Eindrahtleitung hoert der Tester sich immer selbst.
+    // On the single-wire line the tester always hears itself.
     queue(value);
 
-    // Antwort auf die Schluesselbytes: nur schlucken, dann stellt sich das
-    // Steuergeraet mit seinen Kennungsbloecken vor.
+    // Reply to the key bytes: just swallow it, then the control unit
+    // introduces itself with its identification blocks.
     if (handshakePending_) {
         handshakePending_ = false;
         if (identificationIndex_ < identification_.size()) {
@@ -49,7 +49,7 @@ bool FakeEcu::writeByte(std::uint8_t value) {
         return true;
     }
 
-    // Quittung auf ein Byte, das wir gesendet haben.
+    // Acknowledgement of a byte we have sent.
     if (awaitingAck_) {
         if (value != static_cast<std::uint8_t>(~lastSent_)) return false;
         awaitingAck_ = false;
@@ -57,7 +57,7 @@ bool FakeEcu::writeByte(std::uint8_t value) {
         return true;
     }
 
-    // Ab hier sind es Datenbytes des Testers.
+    // From here on these are the tester's data bytes.
     incoming_.push_back(value);
     if (incoming_.size() == 1) {
         expectedLength_ = value;
@@ -65,7 +65,7 @@ bool FakeEcu::writeByte(std::uint8_t value) {
         return true;
     }
     if (static_cast<int>(incoming_.size()) == expectedLength_ + 1) {
-        // Das Blockende wird nicht quittiert.
+        // The block end is not acknowledged.
         handleCompleteBlock();
         incoming_.clear();
         expectedLength_ = -1;
@@ -92,7 +92,7 @@ void FakeEcu::pumpOut() {
     pendingBlock_.pop_front();
     queue(next);
     lastSent_ = next;
-    // Auf das Blockende folgt keine Quittung.
+    // No acknowledgement follows the block end.
     awaitingAck_ = (next != 0x03) || !pendingBlock_.empty();
 }
 
@@ -104,7 +104,7 @@ void FakeEcu::handleCompleteBlock() {
 
     switch (title) {
         case block::kAck:
-            // Waehrend der Vorstellung: naechster Kennungsblock, sonst fertig.
+            // During the introduction: next identification block, otherwise done.
             if (identificationIndex_ < identification_.size()) {
                 const std::string& text = identification_[identificationIndex_++];
                 beginBlock(block::kAsciiData,

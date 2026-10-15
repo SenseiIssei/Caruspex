@@ -1,4 +1,4 @@
-// Serielle Schnittstelle unter Windows (USB-Adapter, Bluetooth-SPP, KKL-Kabel).
+// Serial port under Windows (USB adapters, Bluetooth SPP, KKL cable).
 #pragma once
 
 #include <string>
@@ -16,7 +16,7 @@ struct PortInfo {
     std::string chipGuess;    // "CH340", "FTDI FT232R", ...
 };
 
-// Alle COM-Ports mit Beschreibung und USB-Kennung.
+// All COM ports with description and USB ID.
 std::vector<PortInfo> enumeratePorts();
 
 class Serial {
@@ -31,21 +31,21 @@ public:
     bool isOpen() const { return handle_ != nullptr; }
 
     bool write(const std::string& data);
-    // Liest, was innerhalb von timeoutMs anliegt. Leerer String = nichts da.
+    // Reads whatever arrives within timeoutMs. Empty string = nothing there.
     std::string read(int timeoutMs = 100);
     void flushInput();
 
-    // Zieht die Sendeleitung dauerhaft auf Null. Wird fuer die 5-Baud-
-    // Weckadresse von KWP1281 gebraucht, die von Hand getaktet wird.
+    // Pulls the transmit line permanently low. Needed for the 5-baud
+    // wake-up address of KWP1281, which is clocked out by hand.
     bool setBreak(bool active);
-    // Baudrate im laufenden Betrieb aendern, ohne den Port zu schliessen.
+    // Change the baud rate on the fly without closing the port.
     bool changeBaud(int baud);
 
     const std::string& device() const { return device_; }
     int baud() const { return baud_; }
 
 private:
-    void* handle_ = nullptr;   // HANDLE, ohne windows.h im Header
+    void* handle_ = nullptr;   // HANDLE, without windows.h in the header
     std::string device_;
     int baud_ = 0;
 };

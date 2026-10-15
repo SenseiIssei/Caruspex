@@ -1,4 +1,4 @@
-// Gemeinsame Schnittstelle fuer serielle Adapter und WLAN-Adapter.
+// Common interface for serial adapters and Wi-Fi adapters.
 #pragma once
 
 #include <memory>
@@ -29,8 +29,8 @@ private:
     Serial port_;
 };
 
-// WLAN-Dongle, typisch 192.168.0.10:35000. Auch praktisch zum Testen
-// gegen den mitgelieferten Simulator auf 127.0.0.1.
+// Wi-Fi dongle, typically 192.168.0.10:35000. Also handy for testing
+// against the bundled simulator on 127.0.0.1.
 class TcpTransport : public ITransport {
 public:
     ~TcpTransport() override;
@@ -41,7 +41,7 @@ public:
     std::string name() const override { return name_; }
 
 private:
-    unsigned long long socket_ = ~0ull;  // SOCKET, ohne winsock2.h im Header
+    unsigned long long socket_ = ~0ull;  // SOCKET, without winsock2.h in the header
     std::string name_;
 };
 

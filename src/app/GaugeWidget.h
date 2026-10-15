@@ -1,4 +1,4 @@
-// Runde Messuhr mit weich nachlaufendem Zeiger.
+// Round gauge with a smoothly trailing needle.
 #pragma once
 
 #include <QColor>
@@ -18,9 +18,9 @@ public:
 
     void configure(const QString& title, const QString& unit, double minimum, double maximum,
                    int decimals = 0);
-    void setWarnRange(double from, double to);   // ausserhalb faerbt sich der Bogen
-    void setValue(double value);                 // animiert
-    void setActive(bool active);                 // grau, solange nichts gemessen wird
+    void setWarnRange(double from, double to);   // outside of it the arc changes colour
+    void setValue(double value);                 // animated
+    void setActive(bool active);                 // grey while nothing is being measured
 
     double displayValue() const { return display_; }
     void setDisplayValue(double value);

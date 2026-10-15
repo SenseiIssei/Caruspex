@@ -1,15 +1,15 @@
-// KWP2000 auf der K-Leitung, der Nachfolger von KWP1281 bei VAG.
+// KWP2000 on the K-line, VAG's successor to KWP1281.
 //
-// Ab etwa 2001 haben die Steuergeraete umgestellt. Der Audi A2 liegt genau auf
-// der Grenze: der 1.4 mit Saugrohreinspritzung spricht meist noch KWP1281, der
-// 1.6 FSI mit seinem Bosch MED meist schon KWP2000.
+// Control units switched over from about 2001. The Audi A2 sits right on the
+// boundary: the 1.4 with port injection mostly still speaks KWP1281, the
+// 1.6 FSI with its Bosch MED mostly already KWP2000.
 //
-// Anders als KWP1281 ist das kein Blockprotokoll mit Quittung je Byte, sondern
-// es werden ganze Nachrichten mit Kopf und Pruefsumme geschickt:
+// Unlike KWP1281 this is not a block protocol with an acknowledgement per
+// byte; whole messages with header and checksum are sent instead:
 //
-//     [Format] [Ziel] [Quelle] [Daten ...] [Pruefsumme]
+//     [Format] [Target] [Source] [Data ...] [Checksum]
 //
-// Das Formatbyte traegt die Laenge der Daten in den unteren sechs Bit.
+// The format byte carries the data length in its lower six bits.
 #pragma once
 
 #include <cstdint>
@@ -20,8 +20,8 @@
 
 namespace caruspex {
 
-// Die beiden Schluesselbytes nach der Weckadresse sagen, was das Steuergeraet
-// spricht.
+// The two key bytes after the wake-up address tell which protocol the
+// control unit speaks.
 enum class KLineProtocol {
     Unknown,
     Kwp1281,
@@ -31,13 +31,13 @@ enum class KLineProtocol {
 KLineProtocol protocolFromKeyBytes(std::uint8_t key1, std::uint8_t key2);
 std::string protocolLabel(KLineProtocol protocol);
 
-// Weckt ein Steuergeraet mit der 5-Baud-Adresse und liest die Schluesselbytes.
-// Danach steht fest, welches Protokoll gefahren wird. Beide Protokolle teilen
-// sich diesen Anfang, deshalb liegt er hier zentral.
+// Wakes a control unit with the 5-baud address and reads the key bytes.
+// Afterwards it is clear which protocol is used. Both protocols share this
+// start, which is why it lives here in one place.
 bool wakeUpKLine(IByteStream& stream, Ecu ecu, std::uint8_t& key1, std::uint8_t& key2,
                  KLineProtocol& protocol, std::string& error, const LogFn2& log = {});
 
-// Dienste, die VAG-Steuergeraete auf KWP2000 anbieten.
+// Services that VAG control units offer over KWP2000.
 namespace service {
 constexpr std::uint8_t kStartDiagnosticSession = 0x10;
 constexpr std::uint8_t kClearDiagnosticInformation = 0x14;
@@ -52,7 +52,7 @@ constexpr std::uint8_t kStopCommunication = 0x82;
 constexpr std::uint8_t kNegative = 0x7F;
 }  // namespace service
 
-// Sitzungsarten. 0x89 ist die uebliche Diagnosesitzung bei VAG.
+// Session types. 0x89 is the usual diagnostic session at VAG.
 namespace session {
 constexpr std::uint8_t kDefault = 0x81;
 constexpr std::uint8_t kDiagnostics = 0x89;
@@ -63,8 +63,8 @@ class Kwp2000 {
 public:
     explicit Kwp2000(IByteStream& stream, LogFn2 log = {});
 
-    // Die Weckadresse und die Schluesselbytes hat der Aufrufer schon erledigt,
-    // hier wird nur noch die Sitzung eroeffnet.
+    // The caller has already handled the wake-up address and key bytes;
+    // this only opens the session.
     bool start(Ecu ecu, std::uint8_t key1, std::uint8_t key2, std::string& error);
     void stop();
     bool started() const { return started_; }
@@ -74,14 +74,14 @@ public:
     bool readFaults(std::vector<Kwp1281Fault>& out, std::string& error);
     bool clearFaults(std::string& error);
     bool readGroup(int group, std::vector<MeasuringValue>& out, std::string& error);
-    // Grundeinstellung. Welcher Weg das Steuergeraet dafuer verlangt, ist bei
-    // KWP2000 nicht einheitlich. Deshalb laesst sich die Sitzungsart vorgeben.
+    // Basic settings. Which route the control unit requires for this is not
+    // uniform with KWP2000, so the session type can be specified.
     bool basicSetting(int group, std::vector<MeasuringValue>& out, std::string& error,
                       std::uint8_t sessionMode = session::kAdaptation);
-    // Ohne Verkehr faellt die Verbindung nach etwa fuenf Sekunden.
+    // Without traffic the connection drops after about five seconds.
     bool testerPresent(std::string& error);
 
-    // Rohdienst fuer alles, was hier nicht abgebildet ist.
+    // Raw service for everything not covered here.
     bool request(const std::vector<std::uint8_t>& payload, std::vector<std::uint8_t>& reply,
                  std::string& error);
 
@@ -98,13 +98,13 @@ private:
     bool started_ = false;
 };
 
-// Klartext zu einer abgelehnten Anfrage.
+// Plain-text reason for a rejected request.
 std::string negativeResponseText(std::uint8_t code);
 
-// Ein Fehlereintrag aus KWP2000 belegt drei Bytes: zwei fuer die Nummer, eines
-// fuer den Zustand.
-// ecuAddress ist die Adresse des meldenden Steuergeraets; sie entscheidet,
-// welche Bedeutung eine VAG-Nummer hat. -1 wenn unbekannt.
+// A KWP2000 fault entry takes three bytes: two for the number, one for the
+// status.
+// ecuAddress is the address of the reporting control unit; it decides what a
+// VAG number means. -1 if unknown.
 Kwp1281Fault decodeKwp2000Fault(std::uint8_t high, std::uint8_t low, std::uint8_t status,
                                 int ecuAddress = -1);
 

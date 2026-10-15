@@ -1,5 +1,7 @@
 #include "core/VagKLine.h"
 
+#include "core/Lang.h"
+
 namespace caruspex {
 
 VagKLine::VagKLine(IByteStream& stream, LogFn2 log)
@@ -61,21 +63,21 @@ std::vector<std::string> VagKLine::identification() const {
 bool VagKLine::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
     if (old_) return old_->readFaults(out, error);
     if (modern_) return modern_->readFaults(out, error);
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
 bool VagKLine::clearFaults(std::string& error) {
     if (old_) return old_->clearFaults(error);
     if (modern_) return modern_->clearFaults(error);
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
 bool VagKLine::readGroup(int group, std::vector<MeasuringValue>& out, std::string& error) {
     if (old_) return old_->readGroup(group, out, error);
     if (modern_) return modern_->readGroup(group, out, error);
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
@@ -83,14 +85,14 @@ bool VagKLine::basicSetting(int group, std::vector<MeasuringValue>& out,
                             std::string& error) {
     if (old_) return old_->basicSetting(group, out, error);
     if (modern_) return modern_->basicSetting(group, out, error, basicSettingSession_);
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
 bool VagKLine::keepAlive(std::string& error) {
     if (old_) return old_->keepAlive(error);
     if (modern_) return modern_->testerPresent(error);
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
@@ -98,24 +100,28 @@ bool VagKLine::readAdaptation(int channel, int& value, std::vector<MeasuringValu
                               std::string& error) {
     if (old_) return old_->readAdaptation(channel, value, out, error);
     if (modern_) {
-        error =
+        error = L(
             "Anpassungskanaele lesen ist bisher nur fuer KWP1281 umgesetzt. Dieses "
-            "Steuergeraet spricht KWP2000.";
+            "Steuergeraet spricht KWP2000.",
+            "Reading adaptation channels is only implemented for KWP1281 so far. This "
+            "control unit speaks KWP2000.");
         return false;
     }
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 
 bool VagKLine::actuatorTest(std::string& activeActuator, std::string& error) {
     if (old_) return old_->actuatorTest(activeActuator, error);
     if (modern_) {
-        error =
+        error = L(
             "Die Stellglieddiagnose ist bisher nur fuer KWP1281 umgesetzt. Dieses "
-            "Steuergeraet spricht KWP2000.";
+            "Steuergeraet spricht KWP2000.",
+            "The output test is only implemented for KWP1281 so far. This "
+            "control unit speaks KWP2000.");
         return false;
     }
-    error = "Nicht verbunden";
+    error = L("Nicht verbunden", "Not connected");
     return false;
 }
 

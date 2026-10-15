@@ -1,9 +1,10 @@
-"""Simulierter ELM327 mit einem simulierten A2-Motorsteuergeraet (K-Line/KWP).
+"""Simulated ELM327 with a simulated A2 engine control unit (K-Line/KWP).
 
-Nur zum Testen der Software ohne Auto:
+Only for testing the software without a car:
 
-    python tools/mock_elm327.py            # lauscht auf 127.0.0.1:35000
-    python -m a2obd --tcp 127.0.0.1:35000 read
+    python tools/mock_elm327.py                 # listens on 127.0.0.1:35000
+    caruspex_cli read --tcp 127.0.0.1:35000     # console tool
+    caruspex --tcp 127.0.0.1:35000              # GUI, connects automatically
 """
 
 from __future__ import annotations
@@ -12,14 +13,35 @@ import argparse
 import socket
 import threading
 
-# Simulierter Fehlerspeicher (Drosselklappen-Szenario).
+# Simulated fault memory (throttle body scenario).
 STORED = ["0507", "1559"]      # P0507, P1559
 PENDING = ["0121"]             # P0121
 STATE = {"stored": list(STORED), "pending": list(PENDING)}
 
+# Mode 06 without CAN: test ID -> (component, value, lower limit, upper limit),
+# raw 16-bit values. Tests 01-05 are O2 sensor tests at 0.005 V / 0.004 s per
+# bit; the evaporative leak check is deliberately out of limits.
+MONITOR = {
+    0x01: (0x01, 150, 80, 200),     # lean-to-rich threshold 0.750 V
+    0x02: (0x01, 120, 50, 180),     # rich-to-lean threshold 0.600 V
+    0x05: (0x01, 50, 0, 100),       # switch time 0.200 s
+    0x21: (0x21, 194, 0, 200),      # catalyst efficiency
+    0x31: (0x31, 320, 0, 256),      # evaporative system leak check: fails
+}
+
+# Mode 05, O2 sensor test: (test ID, sensor) -> raw byte.
+OXYGEN = {
+    (0x01, 1): 140, (0x01, 2): 145, (0x02, 1): 120,
+    (0x03, 1): 10, (0x04, 1): 180, (0x05, 1): 25,
+}
+
+# Mode 09 identification. The VIN (0902) stays unanswered, like on the real
+# 2001 A2; calibration ID and ECU name are there.
+IDENTITY = {"04": "036906032G 0001", "0A": "ECM-EngineControl"}
+
 PID_VALUES = {
     "00": "BE1FA813",
-    "01": "8107E100",          # MIL an, 7 Fehler
+    "01": "8107E100",          # MIL on, 7 faults
     "20": "A007B011",
     "03": "0200",
     "04": "45",
@@ -32,7 +54,8 @@ PID_VALUES = {
     "0F": "37",
     "10": "0113",
     "11": "1F",
-    "42": "36B0",              # 14,0 V
+    "40": "40000000",          # supports PID 42 (battery voltage)
+    "42": "36B0",              # 14.0 V
 }
 
 
@@ -81,8 +104,22 @@ def handle_command(cmd: str) -> str:
         if pid in PID_VALUES:
             return "42" + pid + "00" + PID_VALUES[pid]
         return "NO DATA"
+    if c.startswith("06") and len(c) == 4:
+        test = int(c[2:4], 16)
+        if test in MONITOR:
+            comp, value, low, high = MONITOR[test]
+            return f"46{test:02X}{comp:02X}{value:04X}{low:04X}{high:04X}"
+        return "NO DATA"
+    if c.startswith("05") and len(c) == 6:
+        key = (int(c[2:4], 16), int(c[4:6], 16))
+        if key in OXYGEN:
+            return f"45{key[0]:02X}{key[1]:02X}{OXYGEN[key]:02X}"
+        return "NO DATA"
     if c.startswith("09"):
-        return "NO DATA"          # wie beim echten A2 von 2001
+        item = c[2:4]
+        if item in IDENTITY:
+            return "49" + item + "01" + IDENTITY[item].encode().hex().upper()
+        return "NO DATA"
     return "NO DATA"
 
 
@@ -116,7 +153,7 @@ def main() -> None:
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     srv.bind((a.host, a.port))
     srv.listen(2)
-    print(f"Mock-ELM327 laeuft auf {a.host}:{a.port} (Strg+C beendet)")
+    print(f"Mock ELM327 running on {a.host}:{a.port} (Ctrl+C to quit)")
     while True:
         conn, _ = srv.accept()
         threading.Thread(target=serve_client, args=(conn,), daemon=True).start()

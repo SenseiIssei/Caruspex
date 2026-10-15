@@ -1,7 +1,7 @@
-// Einstellungen.
+// Settings.
 //
-// Jede Stellschraube hier wirkt tatsaechlich. Was nur nach Auswahl aussieht,
-// aber nirgends ankommt, gehoert nicht in diese Maske.
+// Every knob here actually has an effect. Anything that only looks like a
+// choice but doesn't reach anything does not belong on this page.
 #pragma once
 
 #include <QWidget>
@@ -23,14 +23,12 @@ class SettingsPage : public QWidget {
 public:
     explicit SettingsPage(QWidget* parent = nullptr);
 
-    // Setzt die Maske auf die uebergebenen Werte, ohne dabei Aenderungen zu
-    // melden.
+    // Sets the page to the given values without reporting any changes.
     void showValues(const AppSettings& values);
     AppSettings values() const;
 
 signals:
-    // Wird bei jeder Aenderung gesendet, damit nichts erst auf einen
-    // Speichern-Knopf wartet.
+    // Emitted on every change, so nothing has to wait for a save button.
     void changed(const caruspex::AppSettings& values);
 
 private:
@@ -63,6 +61,7 @@ private:
     QPushButton* logBrowse_ = nullptr;
 
     QCheckBox* rememberGeometry_ = nullptr;
+    QComboBox* language_ = nullptr;
 };
 
 }  // namespace caruspex

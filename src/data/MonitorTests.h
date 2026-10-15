@@ -1,22 +1,23 @@
-// Klartext und Umrechnung fuer die Bauteilueberwachung, Modus 05 und 06.
+// Plain text and conversion for on-board monitoring, modes 05 and 06.
+// Names and units come out in the active language (see core/Lang.h).
 #pragma once
 
 #include <string>
 
 namespace caruspex {
 
-// Modus 06 auf der K-Line: die Testnummern sind herstellerspezifisch, ein paar
-// Bereiche sind aber genormt.
+// Mode 06 on the K-Line: the test numbers are manufacturer-specific, but a few
+// ranges are standardized.
 std::string monitorTestName(int testId);
 
-// Modus 06 auf CAN: genormte Kennungen fuer die ueberwachte Baugruppe.
+// Mode 06 on CAN: standardized identifiers for the monitored component.
 std::string monitorComponentName(int componentId);
 
-// Rechnet den Rohwert eines CAN-Tests in Zahl und Einheit um. Die Kennung
-// bestimmt die Formel.
+// Converts the raw value of a CAN test into a number and unit. The identifier
+// determines the formula.
 double monitorScale(int unitAndScaling, int raw, std::string& unit);
 
-// Modus 05: die genormten Testnummern der Lambdasondenpruefung.
+// Mode 05: the standardized test numbers of the oxygen sensor test.
 std::string oxygenTestName(int testId);
 double oxygenScale(int testId, int raw, std::string& unit);
 

@@ -1,10 +1,10 @@
-// Ein Zugang zu beiden VAG-Protokollen auf der K-Leitung.
+// A single entry point to both VAG protocols on the K-line.
 //
-// Nach der Weckadresse verraten die Schluesselbytes, ob das Steuergeraet das
-// alte Blockprotokoll KWP1281 oder das neuere KWP2000 spricht. Der Audi A2
-// liegt genau auf dieser Grenze: der 1.4 mit Saugrohreinspritzung meist noch
-// KWP1281, der 1.6 FSI mit seinem Bosch MED meist schon KWP2000. Wer die
-// Software bedient, soll das nicht wissen muessen.
+// After the wake-up address, the key bytes reveal whether the control unit
+// speaks the old block protocol KWP1281 or the newer KWP2000. The Audi A2 sits
+// right on this boundary: the 1.4 with port injection mostly still KWP1281,
+// the 1.6 FSI with its Bosch MED mostly already KWP2000. Whoever operates the
+// software should not have to know this.
 #pragma once
 
 #include <memory>
@@ -29,20 +29,20 @@ public:
     std::string protocolName() const { return protocolLabel(protocol_); }
     std::vector<std::string> identification() const;
 
-    // Von beiden Protokollen unterstuetzt.
+    // Supported by both protocols.
     bool readFaults(std::vector<Kwp1281Fault>& out, std::string& error);
     bool clearFaults(std::string& error);
     bool readGroup(int group, std::vector<MeasuringValue>& out, std::string& error);
     bool basicSetting(int group, std::vector<MeasuringValue>& out, std::string& error);
     bool keepAlive(std::string& error);
 
-    // Nur KWP1281 kennt diese beiden. Bei KWP2000 melden sie das sauber zurueck.
+    // Only KWP1281 knows these two. With KWP2000 they report that cleanly.
     bool readAdaptation(int channel, int& value, std::vector<MeasuringValue>& out,
                         std::string& error);
     bool actuatorTest(std::string& activeActuator, std::string& error);
 
-    // Nur KWP2000: Sitzungsart fuer die Grundeinstellung. Welche das jeweilige
-    // Steuergeraet verlangt, ist nicht einheitlich.
+    // KWP2000 only: session type for basic settings. Which one a given
+    // control unit requires is not uniform.
     void setBasicSettingSession(std::uint8_t mode) { basicSettingSession_ = mode; }
     std::uint8_t basicSettingSession() const { return basicSettingSession_; }
 

@@ -1,4 +1,4 @@
-// Serielle Schnittstelle unter Linux und macOS.
+// Serial port under Linux and macOS.
 #include "core/Serial.h"
 
 #include <dirent.h>
@@ -17,6 +17,7 @@
 #include <fstream>
 #include <string>
 
+#include "core/Lang.h"
 #include "core/Timing.h"
 
 namespace caruspex {
@@ -35,7 +36,7 @@ const ChipHint kChips[] = {
     {0x10C4, 0xEA60, "CP2102"},        {0x067B, 0x2303, "PL2303"},
 };
 
-// Namen, unter denen USB-Adapter und Bluetooth-Ports auftauchen.
+// Names under which USB adapters and Bluetooth ports appear.
 bool interestingName(const std::string& name) {
     static const char* kPrefixes[] = {"ttyUSB", "ttyACM", "rfcomm",
                                       "cu.usbserial", "cu.usbmodem", "cu.SLAB",
@@ -46,7 +47,7 @@ bool interestingName(const std::string& name) {
     return false;
 }
 
-// Unter Linux liegen VID und PID im sysfs neben dem Geraet.
+// On Linux, VID and PID live in sysfs next to the device.
 bool readUsbIds(const std::string& name, unsigned& vid, unsigned& pid) {
     const std::string base = "/sys/class/tty/" + name + "/device/../";
     auto readHex = [](const std::string& path, unsigned& value) {
@@ -107,7 +108,7 @@ std::vector<PortInfo> enumeratePorts() {
                 }
             }
         }
-        info.likelyAdapter = true;   // nach dem Namensfilter bleibt nur Passendes uebrig
+        info.likelyAdapter = true;   // after the name filter only suitable ports remain
         out.push_back(std::move(info));
     }
     ::closedir(dir);
@@ -123,9 +124,11 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     close();
     const int fd = ::open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
-        error = device + " laesst sich nicht oeffnen: " + std::strerror(errno);
+        error = device + L(" laesst sich nicht oeffnen: ", " cannot be opened: ") +
+                std::strerror(errno);
         if (errno == EACCES) {
-            error += " (fehlt die Gruppe dialout? sudo usermod -aG dialout $USER)";
+            error += L(" (fehlt die Gruppe dialout? sudo usermod -aG dialout $USER)",
+                       " (missing the dialout group? sudo usermod -aG dialout $USER)");
         }
         return false;
     }
@@ -133,7 +136,8 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     termios settings{};
     if (::tcgetattr(fd, &settings) != 0) {
         ::close(fd);
-        error = "tcgetattr fehlgeschlagen: " + std::string(std::strerror(errno));
+        error = L("tcgetattr fehlgeschlagen: ", "tcgetattr failed: ") +
+                std::string(std::strerror(errno));
         return false;
     }
 
@@ -143,12 +147,13 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     settings.c_cflag &= ~static_cast<tcflag_t>(CSTOPB);
     settings.c_cflag &= ~static_cast<tcflag_t>(PARENB);
     settings.c_cc[VMIN] = 0;
-    settings.c_cc[VTIME] = 1;   // Zehntelsekunden
+    settings.c_cc[VTIME] = 1;   // tenths of a second
 
     const speed_t speed = toSpeed(baud);
     if (speed == 0) {
         ::close(fd);
-        error = "Baudrate " + std::to_string(baud) + " wird nicht unterstuetzt";
+        error = L("Baudrate ", "Baud rate ") + std::to_string(baud) +
+                L(" wird nicht unterstuetzt", " is not supported");
         return false;
     }
     ::cfsetispeed(&settings, speed);
@@ -156,18 +161,19 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
 
     if (::tcsetattr(fd, TCSANOW, &settings) != 0) {
         ::close(fd);
-        error = "Schnittstelle laesst sich nicht einstellen: " +
+        error = L("Schnittstelle laesst sich nicht einstellen: ",
+                  "Cannot configure the port: ") +
                 std::string(std::strerror(errno));
         return false;
     }
     ::tcflush(fd, TCIOFLUSH);
 
-    // Der Deskriptor wird als Zeiger abgelegt, damit der Header
-    // betriebssystemfrei bleibt. Plus eins, damit fd 0 nicht wie leer aussieht.
+    // The descriptor is stored as a pointer so the header stays free of OS
+    // specifics. Plus one so that fd 0 does not look empty.
     handle_ = reinterpret_cast<void*>(static_cast<intptr_t>(fd) + 1);
     device_ = device;
     baud_ = baud;
-    sleepMs(150);   // manche Adapter brauchen einen Moment nach dem Oeffnen
+    sleepMs(150);   // some adapters need a moment after opening
     return true;
 }
 

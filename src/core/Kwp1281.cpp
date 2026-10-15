@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdio>
 
+#include "core/Lang.h"
 #include "core/Timing.h"
 #include "data/VagFaults.h"
 
@@ -23,19 +24,19 @@ std::string hex(std::uint8_t value) {
 
 std::string ecuName(Ecu ecu) {
     switch (ecu) {
-        case Ecu::Engine: return "01 Motor";
-        case Ecu::Gearbox: return "02 Getriebe";
-        case Ecu::Abs: return "03 Bremsenelektronik (ABS)";
-        case Ecu::AirConditioning: return "08 Klimaanlage";
-        case Ecu::CentralElectrics: return "09 Zentralelektrik";
-        case Ecu::Airbag: return "15 Airbag";
-        case Ecu::SteeringWheel: return "16 Lenkradelektronik";
-        case Ecu::InstrumentCluster: return "17 Kombiinstrument";
-        case Ecu::Immobilizer: return "25 Wegfahrsperre";
-        case Ecu::ComfortSystem: return "46 Komfortsystem";
+        case Ecu::Engine: return L("01 Motor", "01 Engine");
+        case Ecu::Gearbox: return L("02 Getriebe", "02 Transmission");
+        case Ecu::Abs: return L("03 Bremsenelektronik (ABS)", "03 Brake electronics (ABS)");
+        case Ecu::AirConditioning: return L("08 Klimaanlage", "08 Air conditioning");
+        case Ecu::CentralElectrics: return L("09 Zentralelektrik", "09 Central electrics");
+        case Ecu::Airbag: return L("15 Airbag", "15 Airbags");
+        case Ecu::SteeringWheel: return L("16 Lenkradelektronik", "16 Steering wheel electronics");
+        case Ecu::InstrumentCluster: return L("17 Kombiinstrument", "17 Instrument cluster");
+        case Ecu::Immobilizer: return L("25 Wegfahrsperre", "25 Immobilizer");
+        case Ecu::ComfortSystem: return L("46 Komfortsystem", "46 Comfort system");
         case Ecu::Radio: return "56 Radio";
     }
-    return "unbekannt";
+    return L("unbekannt", "unknown");
 }
 
 const std::vector<Ecu>& knownEcus() {
@@ -48,50 +49,54 @@ const std::vector<Ecu>& knownEcus() {
 
 Kwp1281::Kwp1281(IByteStream& stream, LogFn2 log) : stream_(stream), log_(std::move(log)) {}
 
-// --- Byteweiser Takt --------------------------------------------------------
+// --- Byte-by-byte rhythm ----------------------------------------------------
 
-// Auf der Eindrahtleitung hoert man sich selbst. Das Echo muss weg, sonst
-// haelt man es fuer die Antwort der Gegenstelle.
+// On the single-wire line you hear yourself. The echo has to be removed,
+// otherwise it would be mistaken for the other side's answer.
 bool Kwp1281::readEcho(std::uint8_t expected, std::string& error) {
     if (!stream_.echoesOwnBytes()) return true;
     std::uint8_t echo = 0;
     if (!stream_.readByte(echo, kAckTimeoutMs)) {
-        error = "Kein Echo auf " + hex(expected) + ", haengt das Kabel richtig?";
+        error = L("Kein Echo auf ", "No echo for ") + hex(expected) +
+                L(", haengt das Kabel richtig?", ", is the cable connected properly?");
         return false;
     }
     if (echo != expected) {
-        error = "Echo passt nicht: erwartet " + hex(expected) + ", bekommen " + hex(echo);
+        error = L("Echo passt nicht: erwartet ", "Echo mismatch: expected ") + hex(expected) +
+                L(", bekommen ", ", got ") + hex(echo);
         return false;
     }
     return true;
 }
 
-// Byte senden, Echo abraeumen, dann auf das Komplement der Gegenstelle warten.
+// Send a byte, discard the echo, then wait for the other side's complement.
 bool Kwp1281::sendByteAcked(std::uint8_t value, std::string& error) {
-    sleepMs(2);   // das Steuergeraet braucht eine kurze Pause zwischen den Bytes
+    sleepMs(2);   // the control unit needs a short pause between bytes
     if (!stream_.writeByte(value)) {
-        error = "Senden fehlgeschlagen";
+        error = L("Senden fehlgeschlagen", "Send failed");
         return false;
     }
     if (!readEcho(value, error)) return false;
 
     std::uint8_t ack = 0;
     if (!stream_.readByte(ack, kByteTimeoutMs)) {
-        error = "Steuergeraet quittiert " + hex(value) + " nicht";
+        error = L("Steuergeraet quittiert ", "Control unit does not acknowledge ") + hex(value) +
+                L(" nicht", "");
         return false;
     }
     const std::uint8_t expected = static_cast<std::uint8_t>(~value);
     if (ack != expected) {
-        error = "Falsche Quittung: erwartet " + hex(expected) + ", bekommen " + hex(ack);
+        error = L("Falsche Quittung: erwartet ", "Wrong acknowledgement: expected ") + hex(expected) +
+                L(", bekommen ", ", got ") + hex(ack);
         return false;
     }
     return true;
 }
 
-// Byte empfangen und mit dem Komplement quittieren.
+// Receive a byte and acknowledge it with its complement.
 bool Kwp1281::receiveByteAcked(std::uint8_t& value, bool sendAck, std::string& error) {
     if (!stream_.readByte(value, kByteTimeoutMs)) {
-        error = "Steuergeraet antwortet nicht mehr";
+        error = L("Steuergeraet antwortet nicht mehr", "Control unit stopped responding");
         return false;
     }
     if (!sendAck) return true;
@@ -99,22 +104,22 @@ bool Kwp1281::receiveByteAcked(std::uint8_t& value, bool sendAck, std::string& e
     const std::uint8_t ack = static_cast<std::uint8_t>(~value);
     sleepMs(2);
     if (!stream_.writeByte(ack)) {
-        error = "Quittung laesst sich nicht senden";
+        error = L("Quittung laesst sich nicht senden", "Cannot send acknowledgement");
         return false;
     }
     return readEcho(ack, error);
 }
 
-// --- Bloecke ----------------------------------------------------------------
+// --- Blocks ----------------------------------------------------------------
 
-// Aufbau: Laenge, Zaehler, Titel, Nutzdaten, 0x03. Die Laenge zaehlt alles
-// ausser sich selbst. Das abschliessende 0x03 wird nicht quittiert.
+// Layout: length, counter, title, payload, 0x03. The length counts
+// everything except itself. The final 0x03 is not acknowledged.
 bool Kwp1281::sendBlock(std::uint8_t title, const std::vector<std::uint8_t>& payload,
                         std::string& error) {
     const std::uint8_t length = static_cast<std::uint8_t>(payload.size() + 3);
     counter_ = static_cast<std::uint8_t>(counter_ + 1);
 
-    if (log_) log_("   -> Block " + hex(title) + " (Zaehler " + hex(counter_) + ")");
+    if (log_) log_("   -> Block " + hex(title) + L(" (Zaehler ", " (counter ") + hex(counter_) + ")");
 
     if (!sendByteAcked(length, error)) return false;
     if (!sendByteAcked(counter_, error)) return false;
@@ -125,7 +130,7 @@ bool Kwp1281::sendBlock(std::uint8_t title, const std::vector<std::uint8_t>& pay
 
     sleepMs(2);
     if (!stream_.writeByte(kBlockEnd)) {
-        error = "Blockende laesst sich nicht senden";
+        error = L("Blockende laesst sich nicht senden", "Cannot send block end");
         return false;
     }
     return readEcho(kBlockEnd, error);
@@ -138,7 +143,7 @@ bool Kwp1281::receiveBlock(std::uint8_t& title, std::vector<std::uint8_t>& paylo
     std::uint8_t length = 0;
     if (!receiveByteAcked(length, true, error)) return false;
     if (length < 3) {
-        error = "Unsinnige Blocklaenge " + hex(length);
+        error = L("Unsinnige Blocklaenge ", "Implausible block length ") + hex(length);
         return false;
     }
 
@@ -158,14 +163,14 @@ bool Kwp1281::receiveBlock(std::uint8_t& title, std::vector<std::uint8_t>& paylo
     std::uint8_t end = 0;
     if (!receiveByteAcked(end, false, error)) return false;
     if (end != kBlockEnd) {
-        error = "Blockende fehlt, stattdessen " + hex(end);
+        error = L("Blockende fehlt, stattdessen ", "Block end missing, got ") + hex(end);
         return false;
     }
-    if (log_) log_("   <- Block " + hex(title) + ", " + std::to_string(dataBytes) + " Bytes");
+    if (log_) log_("   <- Block " + hex(title) + ", " + std::to_string(dataBytes) + L(" Bytes", " bytes"));
     return true;
 }
 
-// --- Verbindung -------------------------------------------------------------
+// --- Connection -------------------------------------------------------------
 
 bool Kwp1281::connect(Ecu ecu, std::string& error) {
     ecu_ = ecu;
@@ -174,30 +179,37 @@ bool Kwp1281::connect(Ecu ecu, std::string& error) {
     connected_ = false;
 
     if (!stream_.slowInit(static_cast<std::uint8_t>(ecu))) {
-        error = "Steuergeraet " + ecuName(ecu) +
-                " meldet sich nicht.\n"
-                "  - Zuendung an?\n"
-                "  - Hat das Fahrzeug dieses Steuergeraet ueberhaupt?\n"
-                "  - Bei neueren Fahrzeugen laeuft die Diagnose ueber CAN, nicht ueber K-Line.";
+        error = L("Steuergeraet ", "Control unit ") + ecuName(ecu) +
+                L(" meldet sich nicht.\n"
+                  "  - Zuendung an?\n"
+                  "  - Hat das Fahrzeug dieses Steuergeraet ueberhaupt?\n"
+                  "  - Bei neueren Fahrzeugen laeuft die Diagnose ueber CAN, nicht ueber K-Line.",
+                  " does not respond.\n"
+                  "  - Ignition on?\n"
+                  "  - Does the vehicle have this control unit at all?\n"
+                  "  - Newer vehicles are diagnosed over CAN, not over K-Line.");
         return false;
     }
 
-    // Nach der Weckadresse kommen Synchronbyte und zwei Schluesselbytes.
+    // After the wake-up address come the sync byte and two key bytes.
     std::uint8_t sync = 0, key1 = 0, key2 = 0;
     if (!stream_.readByte(sync, 2000) || sync != 0x55) {
-        error = "Kein Synchronbyte 0x55 vom Steuergeraet (bekommen " + hex(sync) + ")";
+        error = L("Kein Synchronbyte 0x55 vom Steuergeraet (bekommen ",
+                  "No sync byte 0x55 from the control unit (got ") +
+                hex(sync) + ")";
         return false;
     }
     if (!stream_.readByte(key1, 1000) || !stream_.readByte(key2, 1000)) {
-        error = "Schluesselbytes fehlen";
+        error = L("Schluesselbytes fehlen", "Key bytes missing");
         return false;
     }
-    if (log_) log_("   Schluesselbytes " + hex(key1) + " " + hex(key2));
+    if (log_) log_(L("   Schluesselbytes ", "   Key bytes ") + hex(key1) + " " + hex(key2));
 
-    // Das zweite Schluesselbyte wird invertiert zurueckgegeben.
+    // The second key byte is sent back inverted.
     sleepMs(30);
     if (!stream_.writeByte(static_cast<std::uint8_t>(~key2))) {
-        error = "Antwort auf die Schluesselbytes laesst sich nicht senden";
+        error = L("Antwort auf die Schluesselbytes laesst sich nicht senden",
+                  "Cannot send the reply to the key bytes");
         return false;
     }
     if (!readEcho(static_cast<std::uint8_t>(~key2), error)) return false;
@@ -210,9 +222,9 @@ bool Kwp1281::connect(Ecu ecu, std::string& error) {
     return true;
 }
 
-// Das Wecken hat schon jemand anders erledigt, hier wird nur noch die Kennung
-// abgeholt. Wird gebraucht, wenn erst die Schluesselbytes verraten haben, dass
-// dieses Steuergeraet das alte Blockprotokoll spricht.
+// Someone else has already done the wake-up; here we only fetch the
+// identification. Needed when the key bytes revealed that this control unit
+// speaks the old block protocol.
 bool Kwp1281::attach(std::string& error) {
     identification_.clear();
     counter_ = 0;
@@ -224,8 +236,8 @@ bool Kwp1281::attach(std::string& error) {
     return true;
 }
 
-// Direkt nach dem Verbinden schickt das Steuergeraet seine Kennung als
-// ASCII-Bloecke, bis es mit einer Quittung fertig meldet.
+// Right after connecting, the control unit sends its identification as
+// ASCII blocks until it signals completion with an acknowledgement.
 bool Kwp1281::drainIdentification(std::string& error) {
     for (int guard = 0; guard < 20; ++guard) {
         std::uint8_t title = 0;
@@ -242,10 +254,11 @@ bool Kwp1281::drainIdentification(std::string& error) {
             continue;
         }
         if (title == block::kAck) return true;
-        // Etwas Unerwartetes: trotzdem quittieren und weitermachen.
+        // Something unexpected: acknowledge anyway and carry on.
         if (!sendBlock(block::kAck, {}, error)) return false;
     }
-    error = "Das Steuergeraet hoert nicht auf, sich vorzustellen";
+    error = L("Das Steuergeraet hoert nicht auf, sich vorzustellen",
+              "The control unit keeps sending identification blocks");
     return false;
 }
 
@@ -257,12 +270,12 @@ void Kwp1281::disconnect() {
     counter_ = 0;
 }
 
-// --- Dienste ----------------------------------------------------------------
+// --- Services ---------------------------------------------------------------
 
 bool Kwp1281::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
     out.clear();
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kReadFaults, {}, error)) return false;
@@ -273,7 +286,7 @@ bool Kwp1281::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
         if (!receiveBlock(title, payload, error)) return false;
 
         if (title == block::kFaultList) {
-            // Je Fehler drei Bytes: zwei fuer die Nummer, eines fuer den Status.
+            // Three bytes per fault: two for the number, one for the status.
             for (size_t i = 0; i + 2 < payload.size(); i += 3) {
                 const int code = (payload[i] << 8) | payload[i + 1];
                 if (code == 0xFFFF || code == 0) continue;
@@ -289,18 +302,20 @@ bool Kwp1281::readFaults(std::vector<Kwp1281Fault>& out, std::string& error) {
         }
         if (title == block::kAck) return true;
         if (title == block::kNotSupported) {
-            error = "Dieses Steuergeraet kennt den Dienst nicht";
+            error = L("Dieses Steuergeraet kennt den Dienst nicht",
+                      "This control unit does not support the service");
             return false;
         }
         if (!sendBlock(block::kAck, {}, error)) return false;
     }
-    error = "Zu viele Bloecke beim Lesen des Fehlerspeichers";
+    error = L("Zu viele Bloecke beim Lesen des Fehlerspeichers",
+              "Too many blocks while reading the fault memory");
     return false;
 }
 
 bool Kwp1281::clearFaults(std::string& error) {
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kClearFaults, {}, error)) return false;
@@ -310,17 +325,18 @@ bool Kwp1281::clearFaults(std::string& error) {
     if (!receiveBlock(title, payload, error)) return false;
     if (title == block::kAck) return true;
     if (title == block::kFaultList) {
-        // Manche Steuergeraete schicken die geleerte Liste zurueck.
+        // Some control units send back the emptied list.
         return sendBlock(block::kAck, {}, error);
     }
-    error = "Unerwartete Antwort " + hex(title) + " auf das Loeschen";
+    error = L("Unerwartete Antwort ", "Unexpected response ") + hex(title) +
+            L(" auf das Loeschen", " to the clear request");
     return false;
 }
 
 bool Kwp1281::readGroup(int group, std::vector<MeasuringValue>& out, std::string& error) {
     out.clear();
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kReadGroup, {static_cast<std::uint8_t>(group)}, error)) return false;
@@ -330,27 +346,29 @@ bool Kwp1281::readGroup(int group, std::vector<MeasuringValue>& out, std::string
     if (!receiveBlock(title, payload, error)) return false;
 
     if (title == block::kNotSupported) {
-        error = "Messwertblock " + std::to_string(group) + " gibt es hier nicht";
+        error = L("Messwertblock ", "Measuring block ") + std::to_string(group) +
+                L(" gibt es hier nicht", " does not exist here");
         return false;
     }
     if (title != block::kGroupReading) {
-        error = "Unerwartete Antwort " + hex(title) + " auf den Messwertblock";
+        error = L("Unerwartete Antwort ", "Unexpected response ") + hex(title) +
+                L(" auf den Messwertblock", " to the measuring block");
         return false;
     }
-    // Je Anzeigefeld drei Bytes: Formel, Wert A, Wert B.
+    // Three bytes per display field: formula, value A, value B.
     for (size_t i = 0; i + 2 < payload.size(); i += 3) {
         out.push_back(decodeMeasurement(payload[i], payload[i + 1], payload[i + 2]));
     }
     return true;
 }
 
-// Grundeinstellung. Aufbau wie beim Messwertblock, aber das Steuergeraet
-// regelt dabei aktiv: bei Block 060 beziehungsweise 098 faehrt es die
-// Drosselklappe an ihre Anschlaege und uebernimmt die Werte.
+// Basic settings. Same layout as the measuring block, but the control unit
+// actively regulates: with block 060 or 098 it drives the throttle body to
+// its end stops and stores the values.
 bool Kwp1281::basicSetting(int group, std::vector<MeasuringValue>& out, std::string& error) {
     out.clear();
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kBasicSetting, {static_cast<std::uint8_t>(group)}, error)) {
@@ -362,12 +380,13 @@ bool Kwp1281::basicSetting(int group, std::vector<MeasuringValue>& out, std::str
     if (!receiveBlock(title, payload, error)) return false;
 
     if (title == block::kNotSupported) {
-        error = "Grundeinstellung " + std::to_string(group) +
-                " kennt dieses Steuergeraet nicht";
+        error = L("Grundeinstellung ", "Basic settings ") + std::to_string(group) +
+                L(" kennt dieses Steuergeraet nicht", " are not supported by this control unit");
         return false;
     }
     if (title != block::kGroupReading) {
-        error = "Unerwartete Antwort " + hex(title) + " auf die Grundeinstellung";
+        error = L("Unerwartete Antwort ", "Unexpected response ") + hex(title) +
+                L(" auf die Grundeinstellung", " to the basic settings");
         return false;
     }
     for (size_t i = 0; i + 2 < payload.size(); i += 3) {
@@ -381,7 +400,7 @@ bool Kwp1281::readAdaptation(int channel, int& value, std::vector<MeasuringValue
     out.clear();
     value = 0;
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kReadAdaptation, {static_cast<std::uint8_t>(channel)}, error)) {
@@ -393,14 +412,16 @@ bool Kwp1281::readAdaptation(int channel, int& value, std::vector<MeasuringValue
     if (!receiveBlock(title, payload, error)) return false;
 
     if (title == block::kNotSupported) {
-        error = "Anpassungskanal " + std::to_string(channel) + " gibt es hier nicht";
+        error = L("Anpassungskanal ", "Adaptation channel ") + std::to_string(channel) +
+                L(" gibt es hier nicht", " does not exist here");
         return false;
     }
     if (title != block::kAdaptationValue && title != block::kGroupReading) {
-        error = "Unerwartete Antwort " + hex(title) + " auf den Anpassungskanal";
+        error = L("Unerwartete Antwort ", "Unexpected response ") + hex(title) +
+                L(" auf den Anpassungskanal", " to the adaptation channel");
         return false;
     }
-    // Zuerst die vier Anzeigefelder, danach zwei Bytes mit dem Kanalwert.
+    // First the four display fields, then two bytes with the channel value.
     size_t i = 0;
     for (; i + 2 < payload.size() && out.size() < 4; i += 3) {
         out.push_back(decodeMeasurement(payload[i], payload[i + 1], payload[i + 2]));
@@ -412,7 +433,7 @@ bool Kwp1281::readAdaptation(int channel, int& value, std::vector<MeasuringValue
 bool Kwp1281::actuatorTest(std::string& activeActuator, std::string& error) {
     activeActuator.clear();
     if (!connected_) {
-        error = "Nicht verbunden";
+        error = L("Nicht verbunden", "Not connected");
         return false;
     }
     if (!sendBlock(block::kActuatorTest, {}, error)) return false;
@@ -422,29 +443,30 @@ bool Kwp1281::actuatorTest(std::string& activeActuator, std::string& error) {
     if (!receiveBlock(title, payload, error)) return false;
 
     if (title == block::kNotSupported) {
-        error = "Stellglieddiagnose kennt dieses Steuergeraet nicht";
+        error = L("Stellglieddiagnose kennt dieses Steuergeraet nicht",
+                  "This control unit does not support the output test");
         return false;
     }
     if (title == block::kAck) {
-        activeActuator = "Ende der Stellglieddiagnose";
+        activeActuator = L("Ende der Stellglieddiagnose", "End of output test");
         return true;
     }
-    // Das Steuergeraet nennt das laufende Stellglied entweder als Text
-    // oder als zweistellige Nummer.
+    // The control unit names the active actuator either as text or as a
+    // two-byte number.
     if (title == block::kAsciiData) {
         for (std::uint8_t byte : payload) activeActuator += static_cast<char>(byte & 0x7F);
         return true;
     }
     if (payload.size() >= 2) {
         const int number = (payload[0] << 8) | payload[1];
-        activeActuator = "Stellglied " + std::to_string(number);
+        activeActuator = L("Stellglied ", "Actuator ") + std::to_string(number);
         return true;
     }
-    activeActuator = "unbekanntes Stellglied";
+    activeActuator = L("unbekanntes Stellglied", "unknown actuator");
     return true;
 }
 
-// Ohne regelmaessigen Verkehr faellt die Verbindung nach etwa einer Sekunde.
+// Without regular traffic the connection drops after about one second.
 bool Kwp1281::keepAlive(std::string& error) {
     if (!connected_) return false;
     if (!sendBlock(block::kAck, {}, error)) return false;
@@ -453,10 +475,10 @@ bool Kwp1281::keepAlive(std::string& error) {
     return receiveBlock(title, payload, error);
 }
 
-// --- Messwertformeln --------------------------------------------------------
+// --- Measuring value formulas---------------------------------------------------
 
-// VAG kodiert jeden Wert mit einer Formelnummer und zwei Bytes. Das hier sind
-// die Formeln, die an Motorsteuergeraeten tatsaechlich vorkommen.
+// VAG encodes every value with a formula number and two bytes. These are the
+// formulas that actually occur on engine control units.
 MeasuringValue decodeMeasurement(std::uint8_t formula, std::uint8_t a, std::uint8_t b) {
     MeasuringValue m;
     m.valid = true;
@@ -464,50 +486,50 @@ MeasuringValue decodeMeasurement(std::uint8_t formula, std::uint8_t a, std::uint
     const double db = b;
 
     switch (formula) {
-        case 0x00: m.valid = false; m.label = "leer"; break;
-        case 0x01: m.value = 0.2 * da * db;          m.unit = "1/min";  m.label = "Drehzahl"; break;
-        case 0x02: m.value = da * 0.002 * db;        m.unit = "%";      m.label = "Anteil"; break;
-        case 0x03: m.value = 0.002 * da * db;        m.unit = "Grad";   m.label = "Winkel"; break;
-        case 0x04: m.value = std::fabs(db - 127.0) * 0.01 * da; m.unit = "Grad v.OT"; m.label = "Zuendwinkel"; break;
-        case 0x05: m.value = da * (db - 100.0) * 0.1; m.unit = "Grad C"; m.label = "Temperatur"; break;
-        case 0x06: m.value = 0.001 * da * db;        m.unit = "V";      m.label = "Spannung"; break;
-        case 0x07: m.value = 0.01 * da * db;         m.unit = "km/h";   m.label = "Geschwindigkeit"; break;
-        case 0x08: m.value = 0.1 * da * db;          m.unit = "";       m.label = "Wert"; break;
-        case 0x09: m.value = (db - 127.0) * 0.02 * da; m.unit = "Grad"; m.label = "Winkel"; break;
+        case 0x00: m.valid = false; m.label = L("leer", "empty"); break;
+        case 0x01: m.value = 0.2 * da * db;          m.unit = "1/min";  m.label = L("Drehzahl", "Engine speed"); break;
+        case 0x02: m.value = da * 0.002 * db;        m.unit = "%";      m.label = L("Anteil", "Ratio"); break;
+        case 0x03: m.value = 0.002 * da * db;        m.unit = L("Grad", "deg");   m.label = L("Winkel", "Angle"); break;
+        case 0x04: m.value = std::fabs(db - 127.0) * 0.01 * da; m.unit = L("Grad v.OT", "deg BTDC"); m.label = L("Zuendwinkel", "Ignition timing"); break;
+        case 0x05: m.value = da * (db - 100.0) * 0.1; m.unit = L("Grad C", "deg C"); m.label = L("Temperatur", "Temperature"); break;
+        case 0x06: m.value = 0.001 * da * db;        m.unit = "V";      m.label = L("Spannung", "Voltage"); break;
+        case 0x07: m.value = 0.01 * da * db;         m.unit = "km/h";   m.label = L("Geschwindigkeit", "Speed"); break;
+        case 0x08: m.value = 0.1 * da * db;          m.unit = "";       m.label = L("Wert", "Value"); break;
+        case 0x09: m.value = (db - 127.0) * 0.02 * da; m.unit = L("Grad", "deg"); m.label = L("Winkel", "Angle"); break;
         case 0x0A: m.value = db;                     m.unit = "";
-                   m.label = (b == 0) ? "kalt" : "warm"; break;
-        case 0x0B: m.value = (db - 128.0) * 0.0001 * da + 1.0; m.unit = ""; m.label = "Faktor"; break;
-        case 0x0C: m.value = 0.001 * da * db;        m.unit = "Ohm";    m.label = "Widerstand"; break;
-        case 0x0D: m.value = (db - 127.0) * 0.001 * da; m.unit = "mm";  m.label = "Weg"; break;
-        case 0x0E: m.value = 0.005 * da * db;        m.unit = "bar";    m.label = "Druck"; break;
-        case 0x0F: m.value = 0.01 * da * db;         m.unit = "ms";     m.label = "Zeit"; break;
-        case 0x12: m.value = 0.04 * da * db;         m.unit = "mbar";   m.label = "Druck"; break;
-        case 0x13: m.value = 0.01 * da * db;         m.unit = "l";      m.label = "Menge"; break;
-        case 0x14: m.value = da * (db - 128.0) / 128.0; m.unit = "%";   m.label = "Anpassung"; break;
-        case 0x15: m.value = 0.001 * da * db;        m.unit = "V";      m.label = "Spannung"; break;
-        case 0x16: m.value = 0.001 * da * db;        m.unit = "ms";     m.label = "Zeit"; break;
-        case 0x17: m.value = db / 256.0 * da;        m.unit = "%";      m.label = "Anteil"; break;
-        case 0x19: m.value = da * 1.421 + db / 182.0; m.unit = "g/s";   m.label = "Luftmasse"; break;
-        case 0x1A: m.value = db - da;                m.unit = "Grad C"; m.label = "Temperaturdifferenz"; break;
-        case 0x1B: m.value = std::fabs(db - 128.0) * 0.01 * da; m.unit = "Grad v.OT"; m.label = "Winkel"; break;
-        case 0x1C: m.value = db - da;                m.unit = "";       m.label = "Differenz"; break;
-        case 0x1E: m.value = da * db / 12.0;         m.unit = "km/h";   m.label = "Geschwindigkeit"; break;
-        case 0x1F: m.value = da * db / 2560.0;       m.unit = "";       m.label = "Wert"; break;
+                   m.label = (b == 0) ? L("kalt", "cold") : L("warm", "warm"); break;
+        case 0x0B: m.value = (db - 128.0) * 0.0001 * da + 1.0; m.unit = ""; m.label = L("Faktor", "Factor"); break;
+        case 0x0C: m.value = 0.001 * da * db;        m.unit = "Ohm";    m.label = L("Widerstand", "Resistance"); break;
+        case 0x0D: m.value = (db - 127.0) * 0.001 * da; m.unit = "mm";  m.label = L("Weg", "Travel"); break;
+        case 0x0E: m.value = 0.005 * da * db;        m.unit = "bar";    m.label = L("Druck", "Pressure"); break;
+        case 0x0F: m.value = 0.01 * da * db;         m.unit = "ms";     m.label = L("Zeit", "Time"); break;
+        case 0x12: m.value = 0.04 * da * db;         m.unit = "mbar";   m.label = L("Druck", "Pressure"); break;
+        case 0x13: m.value = 0.01 * da * db;         m.unit = "l";      m.label = L("Menge", "Quantity"); break;
+        case 0x14: m.value = da * (db - 128.0) / 128.0; m.unit = "%";   m.label = L("Anpassung", "Adaptation"); break;
+        case 0x15: m.value = 0.001 * da * db;        m.unit = "V";      m.label = L("Spannung", "Voltage"); break;
+        case 0x16: m.value = 0.001 * da * db;        m.unit = "ms";     m.label = L("Zeit", "Time"); break;
+        case 0x17: m.value = db / 256.0 * da;        m.unit = "%";      m.label = L("Anteil", "Ratio"); break;
+        case 0x19: m.value = da * 1.421 + db / 182.0; m.unit = "g/s";   m.label = L("Luftmasse", "Air mass"); break;
+        case 0x1A: m.value = db - da;                m.unit = L("Grad C", "deg C"); m.label = L("Temperaturdifferenz", "Temperature difference"); break;
+        case 0x1B: m.value = std::fabs(db - 128.0) * 0.01 * da; m.unit = L("Grad v.OT", "deg BTDC"); m.label = L("Winkel", "Angle"); break;
+        case 0x1C: m.value = db - da;                m.unit = "";       m.label = L("Differenz", "Difference"); break;
+        case 0x1E: m.value = da * db / 12.0;         m.unit = "km/h";   m.label = L("Geschwindigkeit", "Speed"); break;
+        case 0x1F: m.value = da * db / 2560.0;       m.unit = "";       m.label = L("Wert", "Value"); break;
         case 0x21: m.value = (a == 0) ? (100.0 * db / 255.0) : (100.0 * db / da);
-                   m.unit = "%"; m.label = "Anteil"; break;
-        case 0x22: m.value = (da * db) / 100.0 - 400.0; m.unit = "kW";  m.label = "Leistung"; break;
-        case 0x23: m.value = da * db / 100.0;        m.unit = "l/h";    m.label = "Verbrauch"; break;
-        case 0x24: m.value = da * 2560.0 + db * 10.0; m.unit = "km";    m.label = "Strecke"; break;
-        case 0x25: m.value = db;                     m.unit = "";       m.label = "Bitmuster"; break;
-        case 0x27: m.value = db / da;                m.unit = "mg/H";   m.label = "Einspritzmenge"; break;
-        case 0x31: m.value = db / 40.0 * da;         m.unit = "mg/h";   m.label = "Menge"; break;
-        case 0x33: m.value = (db - 128.0) * da / 255.0; m.unit = "mg/H"; m.label = "Menge"; break;
-        case 0x36: m.value = da * 256.0 + db;        m.unit = "";       m.label = "Zaehler"; break;
-        case 0x37: m.value = da * db / 200.0;        m.unit = "s";      m.label = "Zeit"; break;
+                   m.unit = "%"; m.label = L("Anteil", "Ratio"); break;
+        case 0x22: m.value = (da * db) / 100.0 - 400.0; m.unit = "kW";  m.label = L("Leistung", "Power"); break;
+        case 0x23: m.value = da * db / 100.0;        m.unit = "l/h";    m.label = L("Verbrauch", "Consumption"); break;
+        case 0x24: m.value = da * 2560.0 + db * 10.0; m.unit = "km";    m.label = L("Strecke", "Distance"); break;
+        case 0x25: m.value = db;                     m.unit = "";       m.label = L("Bitmuster", "Bit pattern"); break;
+        case 0x27: m.value = db / da;                m.unit = "mg/H";   m.label = L("Einspritzmenge", "Injection quantity"); break;
+        case 0x31: m.value = db / 40.0 * da;         m.unit = "mg/h";   m.label = L("Menge", "Quantity"); break;
+        case 0x33: m.value = (db - 128.0) * da / 255.0; m.unit = "mg/H"; m.label = L("Menge", "Quantity"); break;
+        case 0x36: m.value = da * 256.0 + db;        m.unit = "";       m.label = L("Zaehler", "Counter"); break;
+        case 0x37: m.value = da * db / 200.0;        m.unit = "s";      m.label = L("Zeit", "Time"); break;
         default:
             m.value = da * 256.0 + db;
             m.unit = "";
-            m.label = "Formel " + hex(formula);
+            m.label = L("Formel ", "Formula ") + hex(formula);
             break;
     }
     return m;

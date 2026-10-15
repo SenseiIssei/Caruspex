@@ -4,199 +4,212 @@
 #include <unordered_map>
 #include <vector>
 
+#include "core/Lang.h"
 #include "data/DtcDatabase.h"
 
 namespace caruspex {
 namespace {
 
-// Ab dieser Nummer sind es umgerechnete EOBD-Codes.
+// From this number on they are converted EOBD codes.
 constexpr int kPCodeOffset = 16384;
 
-using Table = std::unordered_map<int, const char*>;
+// Texts are stored in both languages and resolved only at lookup time.
+using Table = std::unordered_map<int, Text>;
 
-// Nummern, die in jedem Steuergeraet dasselbe bedeuten: Spannungsversorgung,
-// Codierung und die Meldungen ueber ausgefallene Gespraechspartner am Bus.
+// Numbers that mean the same in every control unit: power supply, coding and
+// the messages about bus partners that have dropped out.
 const Table kShared = {
-    {532, "Spannungsversorgung Klemme 30"},
-    {668, "Bordspannung Klemme 30: Spannung zu klein"},
-    {1044, "Steuergeraet falsch codiert"},
-    {1312, "Datenbus Antrieb: gestoert"},
-    {1314, "Motorsteuergeraet: keine Verbindung"},
-    {1316, "Bremsensteuergeraet: keine Verbindung"},
-    {1317, "Kombiinstrument: keine Verbindung"},
-    {1321, "Airbag-Steuergeraet: keine Verbindung"},
-    {1304, "Radio: keine Verbindung"},
-    {4096, "Steuergeraet defekt"},
-    {8213, "Steuergeraet falsch codiert"},
-    {65535, "Interner Steuergeraetefehler"},
+    {532, {"Spannungsversorgung Klemme 30", "Power supply terminal 30"}},
+    {668, {"Bordspannung Klemme 30: Spannung zu klein",
+           "Battery voltage terminal 30: voltage too low"}},
+    {1044, {"Steuergeraet falsch codiert", "Control unit incorrectly coded"}},
+    {1312, {"Datenbus Antrieb: gestoert", "Drivetrain data bus: malfunction"}},
+    {1314, {"Motorsteuergeraet: keine Verbindung", "Engine control unit: no communication"}},
+    {1316, {"Bremsensteuergeraet: keine Verbindung", "Brake control unit: no communication"}},
+    {1317, {"Kombiinstrument: keine Verbindung", "Instrument cluster: no communication"}},
+    {1321, {"Airbag-Steuergeraet: keine Verbindung", "Airbag control unit: no communication"}},
+    {1304, {"Radio: keine Verbindung", "Radio: no communication"}},
+    {4096, {"Steuergeraet defekt", "Control unit faulty"}},
+    {8213, {"Steuergeraet falsch codiert", "Control unit incorrectly coded"}},
+    {65535, {"Interner Steuergeraetefehler", "Internal control unit fault"}},
 };
 
-// --- Adresse 01, Motor -------------------------------------------------------
-// Das ist der Bereich, der bei den beiden A2 am meisten hergibt: der 1.4 MPI
-// wie auch der 1.6 FSI melden hierueber ihre Geber und Stellglieder.
+// --- Address 01, engine ------------------------------------------------------
+// This is the area that yields the most on both A2 variants: the 1.4 MPI as
+// well as the 1.6 FSI report their sensors and actuators through it.
 const Table kEngine = {
-    {281, "Geber fuer Geschwindigkeit G22"},
-    {513, "Motordrehzahlgeber G28"},
-    {514, "Nockenwellengeber G40"},
-    {515, "Hallgeber G40"},
-    {516, "Leerlaufschalter F60"},
-    {517, "Vollastschalter F81"},
-    {518, "Drosselklappenpotentiometer G69"},
-    {519, "Saugrohrdruckgeber"},
-    {522, "Kuehlmitteltemperaturgeber G62"},
-    {523, "Ansauglufttemperaturgeber G72"},
-    {524, "Klopfsensor 1 G61"},
-    {525, "Lambdasonde G39"},
-    {526, "Bremslichtschalter F"},
-    {527, "Ansauglufttemperaturgeber G42"},
-    {528, "Hoehengeber F96"},
-    {530, "Drosselklappenpotentiometer G88"},
-    {531, "Saugrohrdruck: Steuergeraet defekt"},
-    {533, "Leerlaufregelung: Regelgrenze erreicht"},
-    {535, "Klopfsensor 2 G66"},
-    {537, "Lambdaregelung: Regelgrenze erreicht"},
-    {539, "Kraftstoffdruckgeber"},
-    {540, "Klimakompressor abgeschaltet"},
-    {543, "Hoechstzulaessige Motordrehzahl ueberschritten"},
-    {545, "Kupplungsschalter"},
-    {546, "Datenbus Antrieb: keine Botschaft"},
-    {549, "Kraftstoffverbrauchssignal"},
-    {550, "Motorlastsignal"},
-    {552, "Luftmassenmesser G70: Signal zu klein"},
-    {553, "Luftmassenmesser G70"},
-    {555, "Lambdaregelung: Regelgrenze unterschritten"},
-    {558, "Einspritzventile: Regelabweichung"},
-    {560, "Lambdasonde: Steuerung"},
-    {561, "Gemischadaption: Regelgrenze ueberschritten"},
-    {575, "Saugrohrdruck: Regelgrenze"},
-    {577, "Klopfregelung Zylinder 1"},
-    {578, "Klopfregelung Zylinder 2"},
-    {579, "Klopfregelung Zylinder 3"},
-    {580, "Klopfregelung Zylinder 4"},
-    {585, "AGR-Temperaturgeber"},
-    {586, "Abgasrueckfuehrung"},
-    {587, "Magnetventil fuer Abgasrueckfuehrung N18"},
-    {609, "Zuendsignal: Endstufe"},
-    {624, "Klimaanlage: Signal"},
-    {625, "Geschwindigkeitssignal"},
-    {635, "Lambdasondenheizung Z19"},
-    {640, "Drosselklappenpotentiometer: Signal unplausibel"},
-    {652, "Lambdasonde nach Katalysator G130"},
-    {660, "Ventil fuer Nockenwellenverstellung N205"},
-    {670, "Leerlaufsteller: Regelgrenze"},
-    {750, "Fehlerlampe K83"},
-    {1165, "Drosselklappensteuerung: Regelbereich"},
-    {1177, "Steuergeraet: Anpassung"},
-    {1247, "Magnetventil fuer Aktivkohlebehaelter N80"},
-    {1249, "Einspritzventil Zylinder 1 N30"},
-    {1250, "Einspritzventil Zylinder 2 N31"},
-    {1251, "Einspritzventil Zylinder 3 N32"},
-    {1252, "Einspritzventil Zylinder 4 N33"},
-    {1253, "Einspritzventil Zylinder 5 N83"},
-    {1254, "Einspritzventil Zylinder 6 N84"},
-    {1262, "Magnetventil fuer Ladedruckbegrenzung N75"},
-    {1265, "Ventil fuer Abgasrueckfuehrung N18"},
-    {1266, "Ventil fuer Saugrohrumschaltung N156"},
-    {1268, "Mengensteller"},
-    {1271, "Drosselklappensteuereinheit J338"},
-    {1276, "Bremslichtschalter F"},
-    {1289, "Wegfahrsperre: keine Freigabe"},
-    {1393, "Steuergeraet: Endstufe defekt"},
-    {1500, "Kraftstoffpumpenrelais J17"},
-    {2142, "Kombiinstrument: Datenbus"},
-    {2564, "Klimasteuergeraet: keine Verbindung"},
+    {281, {"Geber fuer Geschwindigkeit G22", "Vehicle speed sensor G22"}},
+    {513, {"Motordrehzahlgeber G28", "Engine speed sensor G28"}},
+    {514, {"Nockenwellengeber G40", "Camshaft position sensor G40"}},
+    {515, {"Hallgeber G40", "Hall sensor G40"}},
+    {516, {"Leerlaufschalter F60", "Idle switch F60"}},
+    {517, {"Vollastschalter F81", "Full throttle switch F81"}},
+    {518, {"Drosselklappenpotentiometer G69", "Throttle position sensor G69"}},
+    {519, {"Saugrohrdruckgeber", "Intake manifold pressure sensor"}},
+    {522, {"Kuehlmitteltemperaturgeber G62", "Coolant temperature sensor G62"}},
+    {523, {"Ansauglufttemperaturgeber G72", "Intake air temperature sensor G72"}},
+    {524, {"Klopfsensor 1 G61", "Knock sensor 1 G61"}},
+    {525, {"Lambdasonde G39", "Oxygen sensor G39"}},
+    {526, {"Bremslichtschalter F", "Brake light switch F"}},
+    {527, {"Ansauglufttemperaturgeber G42", "Intake air temperature sensor G42"}},
+    {528, {"Hoehengeber F96", "Altitude sensor F96"}},
+    {530, {"Drosselklappenpotentiometer G88", "Throttle position sensor G88"}},
+    {531, {"Saugrohrdruck: Steuergeraet defekt", "Intake manifold pressure: control unit faulty"}},
+    {533, {"Leerlaufregelung: Regelgrenze erreicht", "Idle speed control: limit reached"}},
+    {535, {"Klopfsensor 2 G66", "Knock sensor 2 G66"}},
+    {537, {"Lambdaregelung: Regelgrenze erreicht", "Oxygen sensor control: limit reached"}},
+    {539, {"Kraftstoffdruckgeber", "Fuel pressure sensor"}},
+    {540, {"Klimakompressor abgeschaltet", "A/C compressor switched off"}},
+    {543, {"Hoechstzulaessige Motordrehzahl ueberschritten",
+           "Maximum permissible engine speed exceeded"}},
+    {545, {"Kupplungsschalter", "Clutch switch"}},
+    {546, {"Datenbus Antrieb: keine Botschaft", "Drivetrain data bus: no message"}},
+    {549, {"Kraftstoffverbrauchssignal", "Fuel consumption signal"}},
+    {550, {"Motorlastsignal", "Engine load signal"}},
+    {552, {"Luftmassenmesser G70: Signal zu klein", "Mass air flow sensor G70: signal too low"}},
+    {553, {"Luftmassenmesser G70", "Mass air flow sensor G70"}},
+    {555, {"Lambdaregelung: Regelgrenze unterschritten",
+           "Oxygen sensor control: below lower limit"}},
+    {558, {"Einspritzventile: Regelabweichung", "Injectors: control deviation"}},
+    {560, {"Lambdasonde: Steuerung", "Oxygen sensor: control"}},
+    {561, {"Gemischadaption: Regelgrenze ueberschritten", "Mixture adaptation: limit exceeded"}},
+    {575, {"Saugrohrdruck: Regelgrenze", "Intake manifold pressure: control limit"}},
+    {577, {"Klopfregelung Zylinder 1", "Knock control cylinder 1"}},
+    {578, {"Klopfregelung Zylinder 2", "Knock control cylinder 2"}},
+    {579, {"Klopfregelung Zylinder 3", "Knock control cylinder 3"}},
+    {580, {"Klopfregelung Zylinder 4", "Knock control cylinder 4"}},
+    {585, {"AGR-Temperaturgeber", "EGR temperature sensor"}},
+    {586, {"Abgasrueckfuehrung", "Exhaust gas recirculation"}},
+    {587, {"Magnetventil fuer Abgasrueckfuehrung N18", "EGR solenoid valve N18"}},
+    {609, {"Zuendsignal: Endstufe", "Ignition signal: output stage"}},
+    {624, {"Klimaanlage: Signal", "Air conditioning: signal"}},
+    {625, {"Geschwindigkeitssignal", "Vehicle speed signal"}},
+    {635, {"Lambdasondenheizung Z19", "Oxygen sensor heater Z19"}},
+    {640, {"Drosselklappenpotentiometer: Signal unplausibel",
+           "Throttle position sensor: implausible signal"}},
+    {652, {"Lambdasonde nach Katalysator G130", "Oxygen sensor after catalytic converter G130"}},
+    {660, {"Ventil fuer Nockenwellenverstellung N205", "Camshaft adjustment valve N205"}},
+    {670, {"Leerlaufsteller: Regelgrenze", "Idle actuator: control limit"}},
+    {750, {"Fehlerlampe K83", "Malfunction indicator lamp K83"}},
+    {1165, {"Drosselklappensteuerung: Regelbereich", "Throttle body control: control range"}},
+    {1177, {"Steuergeraet: Anpassung", "Control unit: adaptation"}},
+    {1247, {"Magnetventil fuer Aktivkohlebehaelter N80", "EVAP canister purge valve N80"}},
+    {1249, {"Einspritzventil Zylinder 1 N30", "Injector cylinder 1 N30"}},
+    {1250, {"Einspritzventil Zylinder 2 N31", "Injector cylinder 2 N31"}},
+    {1251, {"Einspritzventil Zylinder 3 N32", "Injector cylinder 3 N32"}},
+    {1252, {"Einspritzventil Zylinder 4 N33", "Injector cylinder 4 N33"}},
+    {1253, {"Einspritzventil Zylinder 5 N83", "Injector cylinder 5 N83"}},
+    {1254, {"Einspritzventil Zylinder 6 N84", "Injector cylinder 6 N84"}},
+    {1262, {"Magnetventil fuer Ladedruckbegrenzung N75", "Boost pressure control valve N75"}},
+    {1265, {"Ventil fuer Abgasrueckfuehrung N18", "EGR valve N18"}},
+    {1266, {"Ventil fuer Saugrohrumschaltung N156", "Intake manifold change-over valve N156"}},
+    {1268, {"Mengensteller", "Fuel quantity adjuster"}},
+    {1271, {"Drosselklappensteuereinheit J338", "Throttle body J338"}},
+    {1276, {"Bremslichtschalter F", "Brake light switch F"}},
+    {1289, {"Wegfahrsperre: keine Freigabe", "Immobilizer: not enabled"}},
+    {1393, {"Steuergeraet: Endstufe defekt", "Control unit: output stage faulty"}},
+    {1500, {"Kraftstoffpumpenrelais J17", "Fuel pump relay J17"}},
+    {2142, {"Kombiinstrument: Datenbus", "Instrument cluster: data bus"}},
+    {2564, {"Klimasteuergeraet: keine Verbindung", "Climate control unit: no communication"}},
 };
 
-// --- Adresse 03, Bremsenelektronik -------------------------------------------
-// Fuer den A2 der wichtigste Bereich neben dem Motor, weil ABS-Fehler dort als
-// VAG-Nummer und nicht als C-Code herauskommen.
+// --- Address 03, brake electronics -------------------------------------------
+// For the A2 the most important area besides the engine, because ABS faults
+// come out there as VAG numbers and not as C-codes.
 const Table kBrakes = {
-    {283, "Raddrehzahlfuehler vorne links G47"},
-    {285, "Raddrehzahlfuehler vorne rechts G45"},
-    {287, "Raddrehzahlfuehler hinten rechts G44"},
-    {290, "Raddrehzahlfuehler hinten links G46"},
-    {778, "Lenkwinkelgeber G85"},
-    {1130, "ABS-Betrieb: Regelung dauerhaft aktiv"},
-    {1201, "Hydraulikpumpe fuer ABS V64"},
-    {1202, "Magnetventile fuer ABS"},
-    {1203, "Einlassventil vorne links N101"},
-    {1204, "Auslassventil vorne links N102"},
-    {1205, "Einlassventil vorne rechts N99"},
-    {1206, "Auslassventil vorne rechts N100"},
-    {1276, "Hydraulikpumpe fuer ABS V64: Stromkreis"},
-    {1279, "Laengsbeschleunigungsgeber G251"},
-    {1423, "Querbeschleunigungsgeber G200"},
-    {1435, "Bremsdruckgeber 1 G201"},
+    {283, {"Raddrehzahlfuehler vorne links G47", "Wheel speed sensor front left G47"}},
+    {285, {"Raddrehzahlfuehler vorne rechts G45", "Wheel speed sensor front right G45"}},
+    {287, {"Raddrehzahlfuehler hinten rechts G44", "Wheel speed sensor rear right G44"}},
+    {290, {"Raddrehzahlfuehler hinten links G46", "Wheel speed sensor rear left G46"}},
+    {778, {"Lenkwinkelgeber G85", "Steering angle sensor G85"}},
+    {1130, {"ABS-Betrieb: Regelung dauerhaft aktiv", "ABS operation: control permanently active"}},
+    {1201, {"Hydraulikpumpe fuer ABS V64", "ABS hydraulic pump V64"}},
+    {1202, {"Magnetventile fuer ABS", "ABS solenoid valves"}},
+    {1203, {"Einlassventil vorne links N101", "Inlet valve front left N101"}},
+    {1204, {"Auslassventil vorne links N102", "Outlet valve front left N102"}},
+    {1205, {"Einlassventil vorne rechts N99", "Inlet valve front right N99"}},
+    {1206, {"Auslassventil vorne rechts N100", "Outlet valve front right N100"}},
+    {1276, {"Hydraulikpumpe fuer ABS V64: Stromkreis", "ABS hydraulic pump V64: circuit"}},
+    {1279, {"Laengsbeschleunigungsgeber G251", "Longitudinal acceleration sensor G251"}},
+    {1423, {"Querbeschleunigungsgeber G200", "Lateral acceleration sensor G200"}},
+    {1435, {"Bremsdruckgeber 1 G201", "Brake pressure sensor 1 G201"}},
 };
 
-// --- Adresse 15, Airbag ------------------------------------------------------
+// --- Address 15, airbag ------------------------------------------------------
 const Table kAirbag = {
-    {588, "Zuender fuer Fahrerairbag N95"},
-    {589, "Zuender fuer Beifahrerairbag N131"},
-    {591, "Zuender fuer Gurtstraffer Fahrerseite N153"},
-    {592, "Zuender fuer Gurtstraffer Beifahrerseite N154"},
-    {595, "Seitenairbag Fahrerseite N199"},
-    {596, "Seitenairbag Beifahrerseite N200"},
-    {1217, "Seitenairbag Fahrerseite: Widerstand"},
-    {1218, "Seitenairbag Beifahrerseite: Widerstand"},
-    {1219, "Abschaltung Beifahrerairbag: Schalter"},
-    {1221, "Crashsensor Fahrerseite G179"},
-    {1222, "Crashsensor Beifahrerseite G180"},
-    {1223, "Sitzbelegungserkennung Beifahrer"},
-    {1225, "Kopfairbag Fahrerseite"},
-    {1226, "Kopfairbag Beifahrerseite"},
+    {588, {"Zuender fuer Fahrerairbag N95", "Driver airbag igniter N95"}},
+    {589, {"Zuender fuer Beifahrerairbag N131", "Passenger airbag igniter N131"}},
+    {591, {"Zuender fuer Gurtstraffer Fahrerseite N153", "Belt tensioner igniter, driver side N153"}},
+    {592, {"Zuender fuer Gurtstraffer Beifahrerseite N154",
+           "Belt tensioner igniter, passenger side N154"}},
+    {595, {"Seitenairbag Fahrerseite N199", "Side airbag, driver side N199"}},
+    {596, {"Seitenairbag Beifahrerseite N200", "Side airbag, passenger side N200"}},
+    {1217, {"Seitenairbag Fahrerseite: Widerstand", "Side airbag, driver side: resistance"}},
+    {1218, {"Seitenairbag Beifahrerseite: Widerstand", "Side airbag, passenger side: resistance"}},
+    {1219, {"Abschaltung Beifahrerairbag: Schalter", "Passenger airbag deactivation: switch"}},
+    {1221, {"Crashsensor Fahrerseite G179", "Crash sensor, driver side G179"}},
+    {1222, {"Crashsensor Beifahrerseite G180", "Crash sensor, passenger side G180"}},
+    {1223, {"Sitzbelegungserkennung Beifahrer", "Passenger seat occupancy detection"}},
+    {1225, {"Kopfairbag Fahrerseite", "Head airbag, driver side"}},
+    {1226, {"Kopfairbag Beifahrerseite", "Head airbag, passenger side"}},
 };
 
-// --- Adresse 17, Kombiinstrument ---------------------------------------------
+// --- Address 17, instrument cluster ------------------------------------------
 const Table kCluster = {
-    {771, "Geber fuer Kraftstoffvorrat G"},
-    {281, "Geber fuer Geschwindigkeit G22"},
+    {771, {"Geber fuer Kraftstoffvorrat G", "Fuel level sensor G"}},
+    {281, {"Geber fuer Geschwindigkeit G22", "Vehicle speed sensor G22"}},
 };
 
-// --- Adresse 46, Komfortsystem -----------------------------------------------
+// --- Address 46, comfort system ----------------------------------------------
 const Table kComfort = {
-    {928, "Zentralverriegelung Fahrertuer"},
-    {929, "Zentralverriegelung Beifahrertuer"},
-    {1331, "Tuersteuergeraet Fahrerseite: keine Verbindung"},
-    {1332, "Tuersteuergeraet Beifahrerseite: keine Verbindung"},
-    {1333, "Tuersteuergeraet hinten links: keine Verbindung"},
-    {1334, "Tuersteuergeraet hinten rechts: keine Verbindung"},
+    {928, {"Zentralverriegelung Fahrertuer", "Central locking, driver door"}},
+    {929, {"Zentralverriegelung Beifahrertuer", "Central locking, passenger door"}},
+    {1331, {"Tuersteuergeraet Fahrerseite: keine Verbindung",
+            "Door control unit, driver side: no communication"}},
+    {1332, {"Tuersteuergeraet Beifahrerseite: keine Verbindung",
+            "Door control unit, passenger side: no communication"}},
+    {1333, {"Tuersteuergeraet hinten links: keine Verbindung",
+            "Door control unit, rear left: no communication"}},
+    {1334, {"Tuersteuergeraet hinten rechts: keine Verbindung",
+            "Door control unit, rear right: no communication"}},
 };
 
-// --- Adresse 25, Wegfahrsperre -----------------------------------------------
+// --- Address 25, immobilizer -------------------------------------------------
 const Table kImmobilizer = {
-    {1176, "Schluessel: Signal fehlt oder Schluessel nicht angelernt"},
-    {1177, "Motorsteuergeraet: Anpassung fehlt oder stimmt nicht"},
-    {1179, "Schluesselanpassung unvollstaendig"},
+    {1176, {"Schluessel: Signal fehlt oder Schluessel nicht angelernt",
+            "Key: no signal or key not adapted"}},
+    {1177, {"Motorsteuergeraet: Anpassung fehlt oder stimmt nicht",
+            "Engine control unit: adaptation missing or incorrect"}},
+    {1179, {"Schluesselanpassung unvollstaendig", "Key adaptation incomplete"}},
 };
 
-// --- Adresse 16, Lenkradelektronik -------------------------------------------
+// --- Address 16, steering wheel electronics ----------------------------------
 const Table kSteering = {
-    {778, "Lenkwinkelgeber G85"},
+    {778, {"Lenkwinkelgeber G85", "Steering angle sensor G85"}},
 };
 
-// --- Adresse 02, Getriebe ----------------------------------------------------
+// --- Address 02, transmission ------------------------------------------------
 const Table kTransmission = {
-    {281, "Geber fuer Geschwindigkeit G22"},
-    {525, "Getriebeoeltemperatur"},
+    {281, {"Geber fuer Geschwindigkeit G22", "Vehicle speed sensor G22"}},
+    {525, {"Getriebeoeltemperatur", "Transmission fluid temperature"}},
 };
 
 struct AreaEntry {
     FaultArea area;
     const Table* table;
-    const char* label;
+    Text label;
 };
 
 const std::vector<AreaEntry>& areaTables() {
     static const std::vector<AreaEntry> tables = {
-        {FaultArea::Engine, &kEngine, "Motor"},
-        {FaultArea::Transmission, &kTransmission, "Getriebe"},
-        {FaultArea::Brakes, &kBrakes, "Bremsen"},
-        {FaultArea::Airbag, &kAirbag, "Airbag"},
-        {FaultArea::Cluster, &kCluster, "Kombiinstrument"},
-        {FaultArea::Comfort, &kComfort, "Komfort"},
-        {FaultArea::Immobilizer, &kImmobilizer, "Wegfahrsperre"},
-        {FaultArea::Steering, &kSteering, "Lenkung"},
+        {FaultArea::Engine, &kEngine, {"Motor", "engine"}},
+        {FaultArea::Transmission, &kTransmission, {"Getriebe", "transmission"}},
+        {FaultArea::Brakes, &kBrakes, {"Bremsen", "brakes"}},
+        {FaultArea::Airbag, &kAirbag, {"Airbag", "airbag"}},
+        {FaultArea::Cluster, &kCluster, {"Kombiinstrument", "instrument cluster"}},
+        {FaultArea::Comfort, &kComfort, {"Komfort", "comfort"}},
+        {FaultArea::Immobilizer, &kImmobilizer, {"Wegfahrsperre", "immobilizer"}},
+        {FaultArea::Steering, &kSteering, {"Lenkung", "steering"}},
     };
     return tables;
 }
@@ -213,13 +226,13 @@ const Table* tableFor(FaultArea area) {
 FaultArea areaForEcuAddress(int address) {
     switch (address) {
         case 0x01:
-        case 0x11:  // Motor 2 bei Achtzylindern
+        case 0x11:  // engine 2 on eight-cylinder engines
             return FaultArea::Engine;
         case 0x02:
         case 0x12:
             return FaultArea::Transmission;
         case 0x03:
-        case 0x13:  // Abstandsregelung haengt am Bremsenbereich
+        case 0x13:  // distance control belongs to the brake area
             return FaultArea::Brakes;
         case 0x15:
             return FaultArea::Airbag;
@@ -230,10 +243,10 @@ FaultArea areaForEcuAddress(int address) {
         case 0x25:
             return FaultArea::Immobilizer;
         case 0x46:
-        case 0x42:  // Tuer Fahrerseite
-        case 0x52:  // Tuer Beifahrerseite
-        case 0x62:  // Tuer hinten links
-        case 0x72:  // Tuer hinten rechts
+        case 0x42:  // driver door
+        case 0x52:  // passenger door
+        case 0x62:  // rear left door
+        case 0x72:  // rear right door
             return FaultArea::Comfort;
         default:
             return FaultArea::Unknown;
@@ -255,28 +268,29 @@ std::string describeVagFault(int vagCode, int ecuAddress) {
 
     const FaultArea area = areaForEcuAddress(ecuAddress);
 
-    // Der Bereich des meldenden Steuergeraets hat Vorrang, denn dieselbe
-    // Nummer heisst dort etwas anderes als anderswo.
+    // The area of the reporting control unit takes precedence, because the
+    // same number means something different there than elsewhere.
     if (const Table* table = tableFor(area)) {
         const auto it = table->find(vagCode);
-        if (it != table->end()) return it->second;
+        if (it != table->end()) return it->second.get();
     }
 
     const auto shared = kShared.find(vagCode);
-    if (shared != kShared.end()) return shared->second;
+    if (shared != kShared.end()) return shared->second.get();
 
-    // Adresse unbekannt: in allen Bereichen nachsehen und den Fund benennen,
-    // damit klar bleibt, dass die Zuordnung nur wahrscheinlich ist.
+    // Address unknown: search all areas and name the match, so it stays clear
+    // that the assignment is only probable.
     if (area == FaultArea::Unknown) {
         for (const AreaEntry& entry : areaTables()) {
             const auto it = entry.table->find(vagCode);
             if (it != entry.table->end()) {
-                return std::string(it->second) + " (vermutlich, Bereich " + entry.label + ")";
+                return std::string(it->second.get()) + L(" (vermutlich, Bereich ", " (probably, area ") +
+                       entry.label.get() + ")";
             }
         }
     }
 
-    return "kein Klartext hinterlegt";
+    return L("kein Klartext hinterlegt", "no description available");
 }
 
 std::size_t vagFaultCount() {

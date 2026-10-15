@@ -15,6 +15,8 @@
 namespace caruspex {
 namespace {
 
+// Titles and units are untranslated source texts (QT_TRANSLATE_NOOP) and get
+// translated when the gauges are built.
 struct GaugeSpec {
     int pid;
     const char* title;
@@ -28,12 +30,18 @@ struct GaugeSpec {
 };
 
 const GaugeSpec kGauges[] = {
-    {0x0C, "Drehzahl", "1/min", 0, 7000, 0, false, 0, 0},
-    {0x0D, "Geschwindigkeit", "km/h", 0, 220, 0, false, 0, 0},
-    {0x05, "Kuehlmittel", "Grad C", -40, 130, 0, true, 70, 105},
-    {0x04, "Motorlast", "%", 0, 100, 0, false, 0, 0},
-    {0x11, "Drosselklappe", "%", 0, 100, 0, false, 0, 0},
-    {0x42, "Bordspannung", "V", 8, 16, 1, true, 11.8, 15.0},
+    {0x0C, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Drehzahl"),
+     QT_TRANSLATE_NOOP("caruspex::DashboardPage", "1/min"), 0, 7000, 0, false, 0, 0},
+    {0x0D, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Geschwindigkeit"), "km/h", 0, 220, 0,
+     false, 0, 0},
+    {0x05, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Kuehlmittel"),
+     QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Grad C"), -40, 130, 0, true, 70, 105},
+    {0x04, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Motorlast"), "%", 0, 100, 0, false, 0,
+     0},
+    {0x11, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Drosselklappe"), "%", 0, 100, 0, false,
+     0, 0},
+    {0x42, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Bordspannung"), "V", 8, 16, 1, true,
+     11.8, 15.0},
 };
 
 QFrame* makeCard() {
@@ -53,7 +61,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     title->setObjectName("PageTitle");
     root->addWidget(title);
 
-    // Statuskarte
+    // Status card
     card_ = makeCard();
     auto* cardLayout = new QVBoxLayout(card_);
     cardLayout->setContentsMargins(22, 18, 22, 18);
@@ -70,7 +78,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     cardLayout->addWidget(connectionInfo_);
     root->addWidget(card_);
 
-    // Knopfleiste
+    // Button row
     auto* buttons = new QHBoxLayout;
     buttons->setSpacing(10);
     readButton_ = new QPushButton(tr("Fehler auslesen"));
@@ -91,7 +99,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     connect(detailsButton_, &QPushButton::clicked, this, &DashboardPage::detailsRequested);
     connect(liveButton_, &QPushButton::clicked, this, &DashboardPage::liveRequested);
 
-    // Messuhren
+    // Gauges
     auto* gaugeCard = makeCard();
     auto* grid = new QGridLayout(gaugeCard);
     grid->setContentsMargins(18, 18, 18, 18);
@@ -99,7 +107,8 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     int column = 0;
     for (const GaugeSpec& spec : kGauges) {
         auto* g = new GaugeWidget;
-        g->configure(tr(spec.title), tr(spec.unit), spec.minimum, spec.maximum, spec.decimals);
+        g->configure(tr(spec.title), tr(spec.unit), spec.minimum, spec.maximum,
+                     spec.decimals);
         if (spec.hasWarn) g->setWarnRange(spec.warnFrom, spec.warnTo);
         grid->addWidget(g, 0, column++);
         gauges_.insert(spec.pid, g);
@@ -180,7 +189,7 @@ void DashboardPage::updateHeadline() {
                                          colour.blue() / 9 + 28)
                                       .name()));
 
-    // Kurzes Aufblenden, damit ein Wechsel auffaellt.
+    // Short fade-in so a change gets noticed.
     auto* effect = new QGraphicsOpacityEffect(card_);
     card_->setGraphicsEffect(effect);
     auto* fade = new QPropertyAnimation(effect, "opacity", card_);

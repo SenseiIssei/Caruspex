@@ -14,7 +14,7 @@ QT_END_NAMESPACE
 
 namespace caruspex {
 
-// Bereitschaftstests, Umgebungsdaten, Fahrzeugkennung und Rohbefehle.
+// Readiness monitors, freeze frame data, vehicle identification and raw commands.
 class ToolsPage : public QWidget {
     Q_OBJECT
 

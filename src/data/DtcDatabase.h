@@ -1,22 +1,30 @@
-// Fehlercodes dekodieren und in Klartext uebersetzen.
+// Decode trouble codes and translate them into plain language.
 #pragma once
 
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 
+#include "core/Lang.h"
+
 namespace caruspex {
 
-// Rohbytes -> Code wie "P0301". Leerer String bei 0x00 0x00 (kein Fehler).
+// Raw bytes -> code like "P0301". Empty string for 0x00 0x00 (no fault).
 std::string decodeDtc(int byteA, int byteB);
 
-// Klartext, faellt auf die Gruppenbedeutung zurueck.
+// Plain-language text in the active language, falls back to the meaning of
+// the code's group.
 std::string describeDtc(const std::string& code);
 
-// Betrifft der Code die Drosselklappe?
+// Does the code concern the throttle body?
 bool isThrottleDtc(const std::string& code);
 
+// All known codes with their description in the active language.
 const std::unordered_map<std::string, std::string>& dtcDescriptions();
+
+// All known codes with their description in both languages.
+const std::unordered_map<std::string, Text>& dtcTexts();
+
 const std::unordered_set<std::string>& dtcThrottleCodes();
 
 }  // namespace caruspex

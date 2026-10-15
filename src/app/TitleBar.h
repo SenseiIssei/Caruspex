@@ -1,4 +1,4 @@
-// Eigene Titelleiste fuer das rahmenlose Fenster.
+// Custom title bar for the frameless window.
 #pragma once
 
 #include <QWidget>
@@ -17,8 +17,8 @@ public:
     explicit TitleBar(QWidget* parent = nullptr);
 
     void setTitle(const QString& title);
-    // Wird gerufen, wenn das Fenster maximiert oder wiederhergestellt wurde,
-    // damit der mittlere Knopf sein Zeichen wechselt.
+    // Called when the window was maximised or restored, so the middle button
+    // switches its symbol.
     void updateMaximiseState(bool maximised);
 
 signals:
@@ -27,8 +27,8 @@ signals:
     void closeRequested();
 
 protected:
-    // Ziehen und Doppelklick uebernimmt der Fenstermanager, damit Andocken
-    // und Aero Snap weiter funktionieren.
+    // Dragging and double-click are left to the window manager so snapping
+    // and Aero Snap keep working.
     void mousePressEvent(QMouseEvent* event) override;
     void mouseDoubleClickEvent(QMouseEvent* event) override;
     void paintEvent(QPaintEvent* event) override;

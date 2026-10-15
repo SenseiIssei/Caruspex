@@ -56,7 +56,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(14);
 
-    // --- Verbindung ---------------------------------------------------------
+    // --- Connection ---------------------------------------------------------
     QVBoxLayout* body = nullptr;
     QFrame* connectCard = card(tr("Steuergeraet verbinden (KKL-Kabel)"), body);
     auto* row = new QHBoxLayout;
@@ -103,7 +103,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
         emit connectRequested(port, ecuBox_->currentData().toInt());
     });
 
-    // --- Anpassungskanaele --------------------------------------------------
+    // --- Adaptation channels ------------------------------------------------
     QFrame* adaptCard = card(tr("Anpassungskanal lesen"), body);
     auto* adaptHint = new QLabel(
         tr("Anpassungskanaele sind die Stellschrauben des Steuergeraets, etwa der "
@@ -146,7 +146,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     connect(readChannelButton_, &QPushButton::clicked, this,
             [this] { emit adaptationRequested(channelBox_->value()); });
 
-    // --- Stellglieddiagnose -------------------------------------------------
+    // --- Output test ---------------------------------------------------------
     QFrame* actuatorCard = card(tr("Stellglieddiagnose"), body);
     auto* actuatorHint = new QLabel(
         tr("Das Steuergeraet klappert seine Aktoren der Reihe nach durch und nennt jeweils "
@@ -162,7 +162,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     actuatorButton_ = new QPushButton(tr("Naechstes Stellglied"));
     actuatorButton_->setMinimumHeight(38);
     actuatorButton_->setEnabled(false);
-    actuatorLabel_ = new QLabel(tr("--"));
+    actuatorLabel_ = new QLabel(QStringLiteral("--"));
     QFont bigActuator = actuatorLabel_->font();
     bigActuator.setPointSizeF(bigActuator.pointSizeF() + 3.0);
     bigActuator.setBold(true);

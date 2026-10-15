@@ -10,9 +10,9 @@ bool FakeEcu2000::slowInit(std::uint8_t address) {
     incoming_.clear();
     expectedLength_ = -1;
 
-    // Synchronbyte und Schluesselbytes eines KWP2000-Steuergeraets.
+    // Sync byte and key bytes of a KWP2000 control unit.
     queue(0x55);
-    queue(0xEF);   // 0x6F mit Paritaetsbit, unten maskiert zu 0x6F
+    queue(0xEF);   // 0x6F with parity bit, masked to 0x6F further down
     queue(0x8F);
     handshakePending_ = true;
     return true;
@@ -28,23 +28,23 @@ bool FakeEcu2000::readByte(std::uint8_t& value, int) {
 bool FakeEcu2000::writeByte(std::uint8_t value) {
     if (!awake_) return false;
 
-    // Eindrahtleitung: der Tester hoert sich selbst.
+    // Single-wire line: the tester hears itself.
     queue(value);
 
     if (handshakePending_) {
         handshakePending_ = false;
-        // Nach der Antwort auf die Schluesselbytes kommt die invertierte Adresse.
+        // After the reply to the key bytes comes the inverted address.
         queue(static_cast<std::uint8_t>(~address_));
         return true;
     }
 
     incoming_.push_back(value);
     if (incoming_.size() == 1) {
-        // Formatbyte: untere sechs Bit sind die Nutzlaenge.
+        // Format byte: the lower six bits are the payload length.
         expectedLength_ = value & 0x3F;
         return true;
     }
-    // Kopf ist drei Bytes, dazu die Nutzlast und ein Byte Pruefsumme.
+    // Header is three bytes, plus the payload and one checksum byte.
     const size_t complete = 3 + static_cast<size_t>(expectedLength_) + 1;
     if (incoming_.size() < complete) return true;
 
@@ -58,8 +58,8 @@ bool FakeEcu2000::writeByte(std::uint8_t value) {
 void FakeEcu2000::reply(const std::vector<std::uint8_t>& payload) {
     std::vector<std::uint8_t> frame;
     frame.push_back(static_cast<std::uint8_t>(0x80 | payload.size()));
-    frame.push_back(0xF1);       // Ziel ist der Tester
-    frame.push_back(address_);   // Quelle ist das Steuergeraet
+    frame.push_back(0xF1);       // target is the tester
+    frame.push_back(address_);   // source is the control unit
     frame.insert(frame.end(), payload.begin(), payload.end());
     std::uint8_t checksum = 0;
     for (std::uint8_t byte : frame) checksum = static_cast<std::uint8_t>(checksum + byte);

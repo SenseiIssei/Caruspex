@@ -1,9 +1,9 @@
-// Einstellungen, die dauerhaft gespeichert werden.
+// Settings that are stored permanently.
 //
-// Absichtlich ein schlichter Wertetyp statt vieler Einzelabfragen: die
-// Oberflaeche laedt ihn einmal, reicht ihn an den Arbeitsthread weiter und
-// speichert ihn beim Aendern. Damit gibt es keine Stelle, an der eine
-// Einstellung zwar in der Maske steht, aber nirgends wirkt.
+// Deliberately a plain value type instead of many individual queries: the UI
+// loads it once, passes it on to the worker thread and saves it on change. That
+// way there is no place where a setting shows up in the form but has no effect
+// anywhere.
 #pragma once
 
 #include <QMetaType>
@@ -12,50 +12,59 @@
 namespace caruspex {
 
 struct AppSettings {
-    // --- Verbindung ----------------------------------------------------------
-    // 0 heisst: die ueblichen Baudraten durchprobieren.
+    // --- Connection ----------------------------------------------------------
+    // 0 means: try the usual baud rates.
     int baudOverride = 0;
-    // Reihenfolge, in der die Protokolle versucht werden.
-    // "kline" passt zum A2, "can" zum A4 B7.
+    // Order in which the protocols are tried.
+    // "kline" suits the A2, "can" the A4 B7.
     QString protocolOrder = QStringLiteral("kline");
-    // Alle Zeitlimits werden mit diesem Faktor multipliziert. Traege Klone
-    // brauchen mehr Zeit, ein gutes Kabel kommt mit weniger aus.
+    // All timeouts are multiplied by this factor. Sluggish clones need more
+    // time, a good cable gets by with less.
     int timeoutPercent = 100;
-    // Zuletzt benutzter Anschluss, damit die Auswahl nicht jedes Mal neu ist.
+    // Last used port, so the selection doesn't start from scratch every time.
     QString lastPort;
     bool autoConnect = false;
 
-    // --- Messwerte -----------------------------------------------------------
-    // Abstand zwischen zwei Abfragen. Null heisst: so schnell es geht.
+    // --- Live values ---------------------------------------------------------
+    // Interval between two requests. Zero means: as fast as possible.
     int pollIntervalMs = 20;
-    // Wie weit die Diagramme zurueckreichen.
+    // How far back the charts reach.
     int chartWindowSeconds = 60;
 
-    // --- Loeschen ------------------------------------------------------------
+    // --- Clearing ------------------------------------------------------------
     int clearAttempts = 5;
     bool confirmClear = true;
 
     // --- K-Line --------------------------------------------------------------
-    // Sitzungsart fuer die Grundeinstellung bei KWP2000. Nicht oeffentlich
-    // dokumentiert, deshalb waehlbar.
+    // Session type for basic settings on KWP2000. Not publicly documented,
+    // hence selectable.
     int basicSettingSession = 0x85;
     int basicSettingIntervalMs = 180;
     int kklEcuAddress = 0x01;
 
-    // --- Protokoll -----------------------------------------------------------
+    // --- Log -----------------------------------------------------------------
     bool logRaw = true;
     bool logToFile = false;
     QString logPath;
 
-    // --- Fenster -------------------------------------------------------------
+    // --- Window --------------------------------------------------------------
     bool rememberGeometry = true;
+
+    // --- Language ------------------------------------------------------------
+    // "auto" follows the system language, otherwise "de" or "en".
+    // Takes effect at the next start.
+    QString language = QStringLiteral("auto");
 };
 
-// Aus der Registrierung beziehungsweise der Konfigurationsdatei lesen.
+// Read from the registry or the configuration file, respectively.
 AppSettings loadSettings();
 void saveSettings(const AppSettings& values);
 
-// Der Vorgabezustand, fuer den Knopf "Alles zuruecksetzen".
+// Resolves "auto" against the system locale: German on a German system,
+// English everywhere else. Returns "de" or "en".
+QString effectiveLanguage(const AppSettings& values);
+
+// The default state, for the "reset everything" button.
 inline AppSettings defaultSettings() { return AppSettings{}; }
 
 }  // namespace caruspex

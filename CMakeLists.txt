@@ -12,11 +12,11 @@ else()
     add_compile_options(-Wall -Wextra -Wno-unused-parameter)
 endif()
 
-option(CARUSPEX_GUI   "Die grafische Anwendung mitbauen (braucht Qt 6)" ON)
-option(CARUSPEX_TESTS "Tests mitbauen (braucht Catch2 ueber Conan)"     OFF)
+option(CARUSPEX_GUI   "Build the graphical application (needs Qt 6)" ON)
+option(CARUSPEX_TESTS "Build the tests (needs Catch2 via Conan)"       OFF)
 
 # ---------------------------------------------------------------------------
-# Kern: Transport, Adaptertreiber, Diagnosedienste, Datenbanken. Kein Qt.
+# Core: transport, adapter drivers, diagnostic services, databases. No Qt.
 # ---------------------------------------------------------------------------
 if(WIN32)
     set(CARUSPEX_SERIAL src/core/Serial_win.cpp)
@@ -26,6 +26,7 @@ endif()
 
 add_library(caruspex_core STATIC
     ${CARUSPEX_SERIAL}
+    src/core/Lang.cpp
     src/core/Transport.cpp
     src/core/Elm327.cpp
     src/core/Obd2.cpp
@@ -51,16 +52,16 @@ find_package(Threads REQUIRED)
 target_link_libraries(caruspex_core PUBLIC Threads::Threads)
 
 # ---------------------------------------------------------------------------
-# Konsolenwerkzeug, benutzt denselben Kern und laesst sich skripten.
+# Command-line tool on the same core, scriptable.
 # ---------------------------------------------------------------------------
 add_executable(caruspex_cli src/cli_main.cpp)
 target_link_libraries(caruspex_cli PRIVATE caruspex_core)
 
 # ---------------------------------------------------------------------------
-# Grafische Anwendung (Qt 6 Widgets und Charts)
+# Graphical application (Qt 6 Widgets and Charts)
 # ---------------------------------------------------------------------------
 if(CARUSPEX_GUI)
-    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts)
+    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts LinguistTools)
     qt_standard_project_setup()
 
     qt_add_executable(caruspex
@@ -104,10 +105,19 @@ if(CARUSPEX_GUI)
         src/app/Settings.h
     )
     target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts)
+
+    # The source strings are German; the English translation is compiled into
+    # the binary as :/i18n/caruspex_en.qm. Refresh the .ts file after changing
+    # UI strings with: cmake --build build --target update_translations
+    qt_add_translations(caruspex
+        TS_FILES translations/caruspex_en.ts
+        RESOURCE_PREFIX /i18n
+        LUPDATE_OPTIONS -no-obsolete -locations none -source-language de -target-language en
+    )
     set_target_properties(caruspex PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-        WIN32_EXECUTABLE ON      # unter Windows kein Konsolenfenster daneben
-        MACOSX_BUNDLE ON         # unter macOS ein richtiges Caruspex.app
+        WIN32_EXECUTABLE ON      # no console window next to it on Windows
+        MACOSX_BUNDLE ON         # a proper caruspex.app bundle on macOS
     )
 endif()
 
