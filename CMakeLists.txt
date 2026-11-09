@@ -32,6 +32,7 @@ add_library(caruspex_core STATIC
     src/core/EcuAddress.cpp
     src/core/Obd2.cpp
     src/core/Uds.cpp
+    src/core/CustomPids.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
     src/core/Recording.cpp
@@ -54,6 +55,8 @@ add_library(caruspex_core STATIC
     src/data/MonitorTests.cpp
     src/data/EcuAddresses.cpp
     src/data/EcuAddresses.gen.cpp
+    src/data/PidPacks.cpp
+    src/data/PidPacks.gen.cpp
     src/data/FailureTypes.cpp
     src/core/analysis/Common.cpp
     src/core/analysis/Readiness.cpp
@@ -210,6 +213,7 @@ if(CARUSPEX_TESTS)
         tests/test_vehicles.cpp
         tests/test_ecus.cpp
         tests/test_uds.cpp
+        tests/test_custom_pids.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

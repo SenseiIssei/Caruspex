@@ -1,0 +1,69 @@
+# Hyundai Ioniq Electric with the 28 kWh battery, model years 2016 to 2019.
+#
+# The battery management (BMS) listens on 7E4 and answers on 7EC. Unlike the
+# Kona it is asked with service 21 (2101 and 2105); the byte layout of the
+# answers is the same as the Kona's 220101 and 220105. A is the first byte
+# after the echoed 61 01 or 61 05. The facelift with 38 kWh (2020 on) uses
+# service 22 and is not covered here.
+#
+# Every value below is backed by at least two of these sources, which agree
+# byte for byte:
+#   JejuSoul   github.com/JejuSoul/OBD-PIDs-for-HKMC-EVs,
+#              "Ioniq EV - 28kWh/extendedpids/Hyundai_Ioniq_EV_BMS_data.csv"
+#   OBDb       github.com/OBDb/Hyundai-IONIQ-Electric, signalsets/v3/default.json
+#              (2105 verified there for 2017 to 2019)
+#   EVNotify   github.com/EVNotify/EVNotify, app/www/components/cars/IONIQ_BEV.vue
+#              (counts bytes per CAN frame; frame 1 byte 0 is E here)
+# The sign of the current follows the Kona (positive while driving), see
+# hyundai-kona-niro-ev.csv.
+#
+#@ id: hyundai-ioniq-28
+#@ title_de: Hyundai Ioniq Elektro 28 kWh (2016 bis 2019)
+#@ title_en: Hyundai Ioniq Electric 28 kWh (2016 to 2019)
+#@ category: hybrid
+Name,ShortName,ModeAndPID,Equation,Min Value,Max Value,Units,Header,Response,Name DE,ShortName DE
+# Source: JejuSoul Ioniq BMS (State of Charge BMS), OBDb IONIQEV_ST_CHG_BMS, EVNotify SOC_BMS
+State of charge (BMS),SOC BMS,2101,E/2,0,100,%,7E4,7EC,Ladestand (BMS),SOC BMS
+# Source: JejuSoul Ioniq BMS (State of Charge Display), OBDb IONIQPHEV_HVBAT_SOC_DISP in 2105, EVNotify SOC_DISPLAY
+State of charge (display),SOC display,2105,AF/2,0,100,%,7E4,7EC,Ladestand (Anzeige),SOC Anzeige
+# Source: JejuSoul Ioniq BMS (State of Health), OBDb IONIQPHEV_HVBAT_SOH in 2105, EVNotify SOH
+State of health,SOH,2105,((Z<8)+AA)/10,0,100,%,7E4,7EC,Akkugesundheit (SOH),SOH
+# Source: JejuSoul Ioniq BMS (Minimum Deterioration), OBDb IONIQEV_HVBAT_DET_MIN
+Minimum cell deterioration,Min det,2105,((AC<8)+AD)/10,0,100,%,7E4,7EC,Schwächste Zelle (Gesundheit),Min. Zelle
+# Source: JejuSoul Ioniq BMS (Battery Current), OBDb IONIQEV_BAT_CURRENT_7E4, EVNotify DC_BATTERY_CURRENT
+Battery current (positive = discharge),Batt A,2101,((Signed(K)*256)+L)/10,-300,300,A,7E4,7EC,Batteriestrom (positiv = Entladen),Strom
+# Source: JejuSoul Ioniq BMS (Battery DC Voltage), OBDb IONIQEV_BAT_DC_V, EVNotify DC_BATTERY_VOLTAGE
+Battery voltage,Batt V,2101,((M<8)+N)/10,250,380,V,7E4,7EC,Batteriespannung,Spannung
+# Source: product of current and voltage above, as JejuSoul Ioniq BMS (Battery Power) and EVNotify DC_BATTERY_POWER
+Battery power (positive = discharge),Batt kW,2101,((Signed(K)*256)+L)/10*((M<8)+N)/10/1000,-80,120,kW,7E4,7EC,Batterieleistung (positiv = Entladen),Leistung
+# Source: JejuSoul Ioniq BMS (Available Charge Power, Available Discharge Power), OBDb IONIQEV_AVAILABLE_CHG_POWER, IONIQEV_AVAILABLE_DCHG_POWER
+Available charge power,Max charge,2101,((F<8)+G)/100,0,100,kW,7E4,7EC,Mögliche Ladeleistung,Max. Laden
+Available discharge power,Max power,2101,((H<8)+I)/100,0,150,kW,7E4,7EC,Mögliche Entladeleistung,Max. Leistung
+# Source: JejuSoul Ioniq BMS (Maximum and Minimum Cell Voltage with No.), OBDb IONIQEV_MAX_CELL_V, MAX_CELL_V_NO, MIN_CELL_V, MIN_CELL_V_NO
+Maximum cell voltage,Cell V max,2101,X/50,2.5,4.3,V,7E4,7EC,Höchste Zellspannung,Zelle max
+Cell with the highest voltage,Cell no max,2101,Y,0,96,,7E4,7EC,Zelle mit der höchsten Spannung,Nr. max
+Minimum cell voltage,Cell V min,2101,Z/50,2.5,4.3,V,7E4,7EC,Niedrigste Zellspannung,Zelle min
+Cell with the lowest voltage,Cell no min,2101,AA,0,96,,7E4,7EC,Zelle mit der niedrigsten Spannung,Nr. min
+# Source: JejuSoul Ioniq BMS (Battery Cell Voltage Deviation), OBDb IONIQEV_HVBAT_C_DEV_V
+Cell voltage spread,Cell V diff,2105,U/50,0,0.5,V,7E4,7EC,Spreizung der Zellspannungen,Spreizung
+# Source: JejuSoul Ioniq BMS (Battery Max and Min Temperature, Module 01 to 05), OBDb IONIQEV_BAT_MAX_T, BAT_MIN_T, BAT_MODULE_01_T to 05_T, EVNotify for maximum and minimum
+Battery temperature maximum,Batt T max,2101,Signed(O),-20,60,°C,7E4,7EC,Akkutemperatur höchste,Temp. max
+Battery temperature minimum,Batt T min,2101,Signed(P),-20,60,°C,7E4,7EC,Akkutemperatur niedrigste,Temp. min
+Battery module 1 temperature,Mod 1 T,2101,Signed(Q),-20,60,°C,7E4,7EC,Akkumodul 1 Temperatur,Modul 1
+Battery module 2 temperature,Mod 2 T,2101,Signed(R),-20,60,°C,7E4,7EC,Akkumodul 2 Temperatur,Modul 2
+Battery module 3 temperature,Mod 3 T,2101,Signed(S),-20,60,°C,7E4,7EC,Akkumodul 3 Temperatur,Modul 3
+Battery module 4 temperature,Mod 4 T,2101,Signed(T),-20,60,°C,7E4,7EC,Akkumodul 4 Temperatur,Modul 4
+Battery module 5 temperature,Mod 5 T,2101,Signed(U),-20,60,°C,7E4,7EC,Akkumodul 5 Temperatur,Modul 5
+# Source: JejuSoul Ioniq BMS (Battery Inlet Temperature), OBDb IONIQEV_BAT_INLET_T, EVNotify BATTERY_INLET_TEMPERATURE
+Battery inlet temperature,Batt inlet T,2101,Signed(W),-20,60,°C,7E4,7EC,Akkutemperatur Kühlmittelzulauf,Zulauf
+# Source: JejuSoul Ioniq BMS (Auxillary Battery Voltage), OBDb IONIQEV_AUXILIARY_BAT_V, EVNotify AUX_BATTERY_VOLTAGE
+12 V battery voltage,12V,2101,AD/10,10,16,V,7E4,7EC,Spannung der 12-V-Batterie,12 V
+# Source: JejuSoul Ioniq BMS (HV_Charging, Rapid and Normal Charge Port), OBDb IONIQEV_HV_CHG, RAPID_CHG_PORT, NORMAL_CHG_PORT, EVNotify CHARGING and the charge port bits
+Charging (1 = yes),Charging,2101,{J:7},0,1,,7E4,7EC,Lädt (1 = ja),Lädt
+Fast charging plug connected (1 = yes),DC plug,2101,{J:6},0,1,,7E4,7EC,Schnellladestecker steckt (1 = ja),DC-Stecker
+AC charging plug connected (1 = yes),AC plug,2101,{J:5},0,1,,7E4,7EC,Wechselstromstecker steckt (1 = ja),AC-Stecker
+# Source: JejuSoul Ioniq BMS (Cumulative Energy Charged and Discharged), OBDb IONIQEV_CUM_ENERGY_CHARGED, IONIQEV_CUM_ENERGY, EVNotify CUMULATIVE_ENERGY_CHARGED and DISCHARGED
+Total energy charged,Charged kWh,2101,((AM<24)+(AN<16)+(AO<8)+AP)/10,0,1000000,kWh,7E4,7EC,Geladene Energie gesamt,Geladen kWh
+Total energy discharged,Discharged kWh,2101,((AQ<24)+(AR<16)+(AS<8)+AT)/10,0,1000000,kWh,7E4,7EC,Entnommene Energie gesamt,Entnommen kWh
+# Source: JejuSoul Ioniq BMS (Operating Seconds, Int32 of AU to AX), OBDb IONIQEV_OP_TIME
+Operating time,Op time,2101,((AU<24)+(AV<16)+(AW<8)+AX)/3600,0,100000,h,7E4,7EC,Betriebszeit,Betriebszeit

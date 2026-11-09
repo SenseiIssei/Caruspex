@@ -1056,6 +1056,7 @@ const char* pidCategoryName(PidCategory category) {
         case PidCategory::Vehicle: return L("Fahrzeug", "Vehicle");
         case PidCategory::HybridEv: return L("Hybrid und Elektro", "Hybrid and EV");
         case PidCategory::Diagnostics: return L("Diagnose", "Diagnostics");
+        case PidCategory::Custom: return L("Hersteller und eigene Werte", "Manufacturer and custom values");
     }
     return "";
 }
@@ -1065,7 +1066,7 @@ const std::vector<PidCategory>& pidCategories() {
         PidCategory::Engine,  PidCategory::Fuel,         PidCategory::Air,
         PidCategory::Exhaust, PidCategory::Emissions,    PidCategory::Temperatures,
         PidCategory::Electrical, PidCategory::Vehicle,   PidCategory::HybridEv,
-        PidCategory::Diagnostics};
+        PidCategory::Diagnostics, PidCategory::Custom};
     return all;
 }
 

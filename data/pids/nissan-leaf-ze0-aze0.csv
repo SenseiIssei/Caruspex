@@ -1,0 +1,39 @@
+# Nissan Leaf of the first generation (ZE0 and AZE0, 24 and 30 kWh), model
+# years 2011 to 2017.
+#
+# The battery controller (LBC) listens on 79B and answers on 7BB, the
+# alliance scheme (request plus 0x20), with service 21. A is the first byte
+# after the echoed 61 xx. The Leaf from 2018 on (ZE1) lays out group 01
+# differently and is not covered here.
+#
+# Sources:
+#   OVMS       Open Vehicle Monitoring System 3, vehicle_nissanleaf,
+#              vehicle_nissanleaf.cpp (PollReply_Battery, PollReply_BMS_Temp,
+#              PollReply_BMS_SOH); the reply data there starts after 61 xx
+#              too, so its indexes are the letters here
+#   OBDb       github.com/OBDb/Nissan-Leaf, signalsets/v3/default.json
+#              (the _PRE18 signals of 2101 are filtered to 2017 and earlier)
+# Where OBDb is the only definition, the raw example answers quoted in the
+# OVMS source give plausible results with it (state of charge 97.1 and
+# 56.3 %, pack voltage 395.6 and 368.1 V), and OBDb's own recordings of a
+# 2013 Leaf do too.
+# Not listed: the highest and lowest cell voltage of group 03. OBDb has them
+# verified only for the Leaf from 2018 on.
+#
+#@ id: nissan-leaf-ze0-aze0
+#@ title_de: Nissan Leaf erste Generation (2011 bis 2017)
+#@ title_en: Nissan Leaf first generation (2011 to 2017)
+#@ category: hybrid
+Name,ShortName,ModeAndPID,Equation,Min Value,Max Value,Units,Header,Response,Name DE,ShortName DE
+# Source: OBDb LEAF_HVBAT_SOC_PRE18 (2101 bit 232, 24 bits, div 10000), checked against the OVMS PollReply_Battery example answers
+State of charge (battery controller),SOC,2101,((AD<16)+(AE<8)+AF)/10000,0,100,%,79B,7BB,Ladestand (Batteriesteuerung),SOC
+# Source: OVMS PollReply_BMS_SOH (bytes 2-3 / 100), OBDb LEAF_HVBAT_SOH (2161 bit 16, div 100)
+State of health,SOH,2161,((C<8)+D)/100,0,100,%,79B,7BB,Akkugesundheit (SOH),SOH
+# Source: OVMS PollReply_Battery (ah10000 from bytes 33-35 / 10000), OBDb LEAF_HVBAT_CAP_PRE18 (bit 264, div 10000)
+Battery capacity,Capacity,2101,((AH<16)+(AI<8)+AJ)/10000,0,100,Ah,79B,7BB,Akkukapazität,Kapazität
+# Source: OBDb LEAF_HVBAT_VOLT_PRE18 (bit 144, 16 bits, div 100), checked against the OVMS PollReply_Battery example answers
+Battery voltage,Batt V,2101,((S<8)+T)/100,250,410,V,79B,7BB,Batteriespannung,Spannung
+# Source: OVMS PollReply_BMS_Temp (bytes 2, 5 and 11 in deg C; byte 8 belongs to an unused third sensor), OBDb LEAF_HVBAT_PACK_1_T, PACK_2_T, PACK_4_T (signed)
+Battery temperature sensor 1,Batt T1,2104,Signed(C),-20,60,°C,79B,7BB,Akkutemperatur Fühler 1,Fühler 1
+Battery temperature sensor 2,Batt T2,2104,Signed(F),-20,60,°C,79B,7BB,Akkutemperatur Fühler 2,Fühler 2
+Battery temperature sensor 4,Batt T4,2104,Signed(L),-20,60,°C,79B,7BB,Akkutemperatur Fühler 4,Fühler 4

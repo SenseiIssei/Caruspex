@@ -1012,6 +1012,50 @@ struct DemoTransport::Impl {
         return out;
     }
 
+    // Maker values of the engine (service 22), the kind a custom value or a
+    // pack reads (core/CustomPids.h). The identifiers are made up for the
+    // demo; data/pids/caruspex-demo.csv describes them:
+    //   1001  oil level, percent of the dipstick range, one byte
+    //   1002  oil temperature in tenths of a degree, signed 16 bit
+    //   1003  number of engine starts, 32 bit
+    //   1004  status bits, bit 0 = engine running
+    //   1010  operating data, 16 bytes and so a multi-frame answer: total
+    //         engine run time in seconds (32 bit), four reserved bytes,
+    //         supply voltage in millivolts (16 bit), six reserved bytes
+    std::optional<Bytes> engineDid(int id, double t) const {
+        const Sample s = simulate(t, options.engineStartSeconds);
+        const bool running = s.runTime > 0.0;
+        Bytes out = {0x62, static_cast<std::uint8_t>(id >> 8), static_cast<std::uint8_t>(id & 0xFF)};
+        auto put = [&out](std::uint32_t value, int bytes) {
+            for (int i = bytes - 1; i >= 0; --i) out.push_back(static_cast<std::uint8_t>(value >> (8 * i)));
+        };
+        switch (id) {
+            case 0x1001: {
+                // The oil drains back into the sump when the engine stops,
+                // so the level reads higher at rest.
+                const double level = running ? 66.0 + 2.0 * std::sin(t * 0.3) : 74.0;
+                put(static_cast<std::uint32_t>(std::lround(level)), 1);
+                return out;
+            }
+            case 0x1002: {
+                const long tenths = std::lround(s.oil * 10.0);
+                put(static_cast<std::uint32_t>(static_cast<std::uint16_t>(static_cast<std::int16_t>(tenths))), 2);
+                return out;
+            }
+            case 0x1003: put(1834u + (t >= options.engineStartSeconds ? 1u : 0u), 4); return out;
+            case 0x1004: put(running ? 0x01u : 0x00u, 1); return out;
+            case 0x1010: {
+                put(2456000u + static_cast<std::uint32_t>(s.runTime), 4);
+                put(0u, 4);
+                put(static_cast<std::uint32_t>(std::lround(s.battery * 1000.0)), 2);
+                put(0u, 4);
+                put(0u, 2);
+                return out;
+            }
+            default: return std::nullopt;
+        }
+    }
+
     // Answers of one unit to a physical request: none, one, or two when it
     // first reports "response pending" (7F xx 78).
     std::vector<Bytes> udsService(UdsUnit& unit, const Bytes& request, double t) {
@@ -1026,6 +1070,9 @@ struct DemoTransport::Impl {
             case 0x22: {   // read data by identifier
                 if (request.size() != 3) return {negative(0x13)};
                 const int id = request[1] << 8 | request[2];
+                if (unit.request == 0x7E0) {
+                    if (auto value = engineDid(id, t)) return {*value};
+                }
                 for (const UdsDid& did : unit.dids) {
                     if (did.id != id) continue;
                     Bytes out = {0x62, request[1], request[2]};

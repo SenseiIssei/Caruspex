@@ -9,6 +9,7 @@
 //   caruspex_cli uds --demo --ids 760,737      (UDS: identification and faults per ECU)
 //   caruspex_cli read --port COM5 --record car.jsonl   (record the session)
 //   caruspex_cli read --replay car.jsonl               (play it back without a car)
+//   caruspex_cli custom --port COM5 --pack hyundai-kona-niro-ev   (maker values)
 //
 // `caruspex_cli help` lists every command and option.
 
@@ -17,13 +18,16 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <fstream>
 #include <memory>
 #include <set>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "core/AdapterProbe.h"
+#include "core/CustomPids.h"
 #include "core/DemoTransport.h"
 #include "core/Elm327.h"
 #include "core/JsonWriter.h"
@@ -36,6 +40,7 @@
 #include "core/Uds.h"
 #include "core/analysis/HealthCheck.h"
 #include "data/DtcDatabase.h"
+#include "data/PidPacks.h"
 #include "data/Pids.h"
 #include "data/VehicleCatalog.h"
 #include "data/Vin.h"
@@ -60,6 +65,7 @@ const char* const kUsage =
     "  probe       adapter test: what the ELM327 really is and can do\n"
     "  ecus        everything per control unit (headers on)\n"
     "  uds         UDS on CAN: identification and fault memory of every control unit\n"
+    "  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once\n"
     "  help        this text\n"
     "\n"
     "Connection (one of them):\n"
@@ -70,7 +76,8 @@ const char* const kUsage =
     "  --replay FILE       play back a recording instead of talking to an adapter\n"
     "\n"
     "Options:\n"
-    "  --json              machine-readable output for read, vin, health, probe, freeze, uds\n"
+    "  --json              machine-readable output for read, vin, health, probe, freeze, uds,\n"
+    "                      custom\n"
     "  --seconds N         length of the live series of health, 15 if left out\n"
     "  --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit\n"
     "                      ids like 18DA28F1 answer on 18DAF128); the demo car's six\n"
@@ -79,6 +86,10 @@ const char* const kUsage =
     "                      (JSON Lines, replayable with --replay)\n"
     "  --fast-timing       aggressive adaptive timing (ATAT2), back to ATAT1 if the\n"
     "                      adapter refuses it or answers go missing\n"
+    "  --pack NAME         built-in pack for custom (the demo car's pack with --demo if\n"
+    "                      left out); an unknown name lists the packs\n"
+    "  --csv FILE          Torque CSV for custom (Name,ShortName,ModeAndPID,Equation,\n"
+    "                      Min Value,Max Value,Units,Header), instead of a pack\n"
     "  -v                  log every command sent to the adapter\n";
 
 void printPorts() {
@@ -890,6 +901,117 @@ int commandUds(Elm327& elm, const std::vector<EcuDefinition>& list, bool asJson)
     return 0;
 }
 
+// The values for `custom`: a built-in pack or a Torque CSV file. Done before
+// connecting, so a typo costs no adapter time.
+bool loadCustomPids(const std::string& pack, const std::string& csvPath, bool demo,
+                    std::vector<CustomPid>& out, std::string& title, std::string& error,
+                    std::vector<std::string>& warnings) {
+    auto packList = [] {
+        std::string names;
+        for (const std::string& n : packNames()) names += "\n  " + n + "  (" + packTitle(n) + ")";
+        return names;
+    };
+    if (!csvPath.empty()) {
+        std::ifstream file(csvPath, std::ios::binary);
+        if (!file) {
+            error = "Cannot open " + csvPath;
+            return false;
+        }
+        std::ostringstream text;
+        text << file.rdbuf();
+        out = parseTorqueCsv(text.str(), warnings);
+        title = csvPath;
+        if (out.empty()) {
+            error = "No usable values in " + csvPath;
+            return false;
+        }
+        return true;
+    }
+    std::string name = pack;
+    if (name.empty()) {
+        if (!demo) {
+            error = "Give --pack NAME or --csv FILE. Built-in packs:" + packList();
+            return false;
+        }
+        name = "caruspex-demo";
+    }
+    out = packPids(name);
+    if (out.empty()) {
+        error = "Unknown pack: " + name + ". Built-in packs:" + packList();
+        return false;
+    }
+    title = packTitle(name);
+    return true;
+}
+
+// Up to three decimals, without trailing zeros: 36.5, 3.6, 5614.8, 12.
+std::string valueText(double v) {
+    char buffer[40];
+    std::snprintf(buffer, sizeof(buffer), "%.3f", v);
+    std::string s = buffer;
+    while (!s.empty() && s.back() == '0') s.pop_back();
+    if (!s.empty() && s.back() == '.') s.pop_back();
+    return s == "-0" ? "0" : s;
+}
+
+int commandCustom(Elm327& elm, const std::vector<CustomPid>& pids, const std::string& title,
+                  const std::vector<std::string>& warnings, bool asJson) {
+    const std::uint64_t started = nowMs();
+    std::vector<CustomReading> readings;
+    {
+        CustomPidReader reader(elm);
+        readings = reader.readAll(pids);
+    }
+    const double seconds = static_cast<double>(nowMs() - started) / 1000.0;
+    int good = 0;
+    for (const CustomReading& r : readings) good += r.ok ? 1 : 0;
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject()
+            .field("title", title)
+            .field("seconds", seconds)
+            .field("read", good)
+            .field("failed", static_cast<int>(readings.size()) - good)
+            .stringList("importErrors", warnings)
+            .key("values")
+            .beginArray();
+        for (size_t i = 0; i < pids.size(); ++i) {
+            const CustomPid& p = pids[i];
+            const CustomReading& r = readings[i];
+            json.beginObject()
+                .field("name", p.name)
+                .field("shortName", p.shortName)
+                .field("key", p.key)
+                .field("request", p.request)
+                .field("header", p.header)
+                .field("response", r.value.ecuSource)
+                .field("ok", r.ok);
+            json.key("value");
+            if (r.ok) json.value(r.value.value);
+            else json.null();
+            json.field("unit", p.unit).field("error", r.error).field("source", p.source).endObject();
+        }
+        json.endArray().endObject();
+        std::fputs(json.text().c_str(), stdout);
+    } else {
+        for (const std::string& w : warnings) std::printf("Skipped: %s\n", w.c_str());
+        std::printf("%s\n", title.c_str());
+        for (size_t i = 0; i < pids.size(); ++i) {
+            const CustomReading& r = readings[i];
+            if (r.ok) {
+                std::printf("  %-48s %12s %s\n", pids[i].name.c_str(), valueText(r.value.value).c_str(),
+                            pids[i].unit.c_str());
+            } else {
+                std::printf("  %-48s %12s (%s)\n", pids[i].name.c_str(), "-", r.error.c_str());
+            }
+        }
+        std::printf("\n%d of %d values read, %.1f s.\n", good, static_cast<int>(readings.size()),
+                    seconds);
+    }
+    return good > 0 ? 0 : 4;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -905,6 +1027,7 @@ int main(int argc, char** argv) {
     bool asJson = false;
     bool fastTiming = false;
     std::string udsIds, recordPath, replayPath;
+    std::string pack, csvPath;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
         try {
@@ -916,6 +1039,8 @@ int main(int argc, char** argv) {
             else if (arg == "--record" && i + 1 < argc) recordPath = argv[++i];
             else if (arg == "--replay" && i + 1 < argc) replayPath = argv[++i];
             else if (arg == "--fast-timing") fastTiming = true;
+            else if (arg == "--pack" && i + 1 < argc) pack = argv[++i];
+            else if (arg == "--csv" && i + 1 < argc) csvPath = argv[++i];
             else if (arg == "--demo") demo = true;
             else if (arg == "--json") asJson = true;
             else if (arg == "-v") verbose = true;
@@ -942,7 +1067,8 @@ int main(int argc, char** argv) {
         return kklCheck(port);
     }
     static const char* const known[] = {"read", "clear", "live", "info", "vin",
-                                        "freeze", "health", "probe", "ecus", "uds"};
+                                        "freeze", "health", "probe", "ecus", "uds",
+                                        "custom"};
     bool isKnown = false;
     for (const char* k : known) isKnown = isKnown || command == k;
     if (!isKnown) {
@@ -955,6 +1081,14 @@ int main(int argc, char** argv) {
     if (command == "uds") {
         if (udsIds.empty()) udsList = defaultUdsList();
         else if (!parseUdsIds(udsIds, udsList, error)) return fail(asJson, error, 1);
+    }
+    std::vector<CustomPid> customPids;
+    std::string customTitle;
+    std::vector<std::string> customWarnings;
+    if (command == "custom" &&
+        !loadCustomPids(pack, csvPath, demo, customPids, customTitle, error, customWarnings)) {
+        for (const std::string& w : customWarnings) std::fprintf(stderr, "%s\n", w.c_str());
+        return fail(asJson, error, 1);
     }
 
     std::unique_ptr<ITransport> transport;
@@ -1037,6 +1171,8 @@ int main(int argc, char** argv) {
         for (const LiveValue& v : frame) printValue(v);
     } else if (command == "uds") {
         result = commandUds(elm, udsList, asJson);
+    } else if (command == "custom") {
+        result = commandCustom(elm, customPids, customTitle, customWarnings, asJson);
     } else if (command == "ecus") {
         // Everything per control unit: headers on, so every answer keeps
         // its sender.
