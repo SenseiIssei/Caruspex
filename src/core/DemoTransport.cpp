@@ -618,19 +618,35 @@ struct DemoTransport::Impl {
     // removes them, which is the whole point of mode 0A.
     std::vector<const char*> permanentCodes(double) const { return {"P0171", "P0420"}; }
 
-    // The freeze frame belongs to the first fault after clearing. Before the
-    // demo is cleared it shows an older moment from a warm cruise.
-    bool freezeFrame(double t, Sample& sample, const char*& code) const {
+    // Freeze frame 0 belongs to the first fault after clearing. Before the
+    // demo is cleared it shows an older moment from a warm cruise. Frame 1
+    // holds the next fault, the way control units with several frames do:
+    // the pending misfire before clearing, the lean mixture after it.
+    bool freezeFrame(double t, int frame, Sample& sample, const char*& code) const {
         const double start = options.engineStartSeconds;
+        if (frame < 0 || frame > 1) return false;
         if (!cleared) {
-            sample = simulate(start + kCrankSeconds + 1300.0, start);
-            sample.stft = 7.0;
-            code = "P0171";
+            if (frame == 0) {
+                sample = simulate(start + kCrankSeconds + 1300.0, start);
+                sample.stft = 7.0;
+                code = "P0171";
+            } else {
+                sample = simulate(start + kCrankSeconds + 1520.0, start);
+                code = "P0300";
+            }
             return true;
         }
-        if (runSinceClear(t) < kMisfireBack) return false;
-        sample = simulate(start + kCrankSeconds + clearRun + kMisfireBack, start);
-        code = "P0300";
+        const double r = runSinceClear(t);
+        if (frame == 0) {
+            if (r < kMisfireBack) return false;
+            sample = simulate(start + kCrankSeconds + clearRun + kMisfireBack, start);
+            code = "P0300";
+            return true;
+        }
+        if (r < kLeanPending) return false;
+        sample = simulate(start + kCrankSeconds + clearRun + kLeanPending, start);
+        sample.stft = 7.0;
+        code = "P0171";
         return true;
     }
 
@@ -894,11 +910,12 @@ struct DemoTransport::Impl {
                 if (request.size() < 2) return std::nullopt;
                 const int pid = request[1];
                 const int frame = request.size() > 2 ? request[2] : 0;
-                if (frame != 0) return std::nullopt;
                 Sample frozen;
                 const char* code = nullptr;
-                const bool present = freezeFrame(t, frozen, code);
-                Bytes out = {0x42, static_cast<std::uint8_t>(pid), 0x00};
+                const bool present = freezeFrame(t, frame, frozen, code);
+                Bytes out = {0x42, static_cast<std::uint8_t>(pid), static_cast<std::uint8_t>(frame)};
+                // An empty frame only answers the question which fault
+                // stored it, with 00 00.
                 if (!present) {
                     if (pid != 0x02) return std::nullopt;
                     out.push_back(0x00);
