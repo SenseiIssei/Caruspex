@@ -36,6 +36,9 @@ public:
         QString meta;
     };
     void setHealth(int score, const QString& caption, const QVector<Finding>& findings);
+    int score() const { return score_; }
+    QString scoreCaption() const { return caption_; }
+    const QVector<Finding>& findings() const { return findings_; }
 
 public slots:
     void onConnected(const QString& adapter, const QString& transport, const QString& protocol);
@@ -52,9 +55,13 @@ signals:
     void liveRequested();
     void connectRequested();
     void faultsRequested();
+    void reportRequested();
+    void scoreChanged(int score);
 
 private:
     void rebuildFindings();
+    void showFindings(int score, const QString& caption, const QString& subcaption,
+                      const QVector<Finding>& findings, bool clickableFaults);
     void updateHero();
     GaugeWidget* gauge(int pid);
 
@@ -65,6 +72,7 @@ private:
     QLabel* stateLine_ = nullptr;
     QPushButton* primary_ = nullptr;
     QPushButton* secondary_ = nullptr;
+    QPushButton* report_ = nullptr;
 
     ScoreRing* ring_ = nullptr;
     QLabel* findingsTitle_ = nullptr;
@@ -86,6 +94,9 @@ private:
     QVector<FaultRow> faults_;
     bool externalHealth_ = false;
     QString vehicleName_;
+    int score_ = -1;
+    QString caption_;
+    QVector<Finding> findings_;
 };
 
 }  // namespace caruspex

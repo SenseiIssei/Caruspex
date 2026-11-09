@@ -75,8 +75,14 @@ if(CARUSPEX_GUI)
         src/app/Theme.h
         src/app/GaugeWidget.cpp
         src/app/GaugeWidget.h
+        src/app/Garage.cpp
+        src/app/Garage.h
         src/app/Icons.cpp
         src/app/Icons.h
+        src/app/Report.cpp
+        src/app/Report.h
+        src/app/VehicleState.cpp
+        src/app/VehicleState.h
         src/app/Widgets.cpp
         src/app/Widgets.h
         src/app/TitleBar.cpp
@@ -88,6 +94,8 @@ if(CARUSPEX_GUI)
         src/app/pages/DashboardPage.cpp
         src/app/pages/DashboardPage.h
         src/app/pages/FaultsPage.cpp
+        src/app/pages/GaragePage.cpp
+        src/app/pages/GaragePage.h
         src/app/pages/FaultsPage.h
         src/app/pages/LivePage.cpp
         src/app/pages/LivePage.h

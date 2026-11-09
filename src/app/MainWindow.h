@@ -35,6 +35,9 @@ class KklToolsPage;
 class MonitorPage;
 class SettingsPage;
 class LexiconPage;
+class GaragePage;
+class Garage;
+class VehicleState;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -85,6 +88,9 @@ private:
     NavButton* addEntry(const QString& icon, const QString& text, QWidget* page,
                         QVBoxLayout* target = nullptr);
     void navigateTo(QWidget* page);
+    // Stores the current check in the garage, once VIN and faults are known.
+    void recordCheck();
+    void showReport();
 
     Session session_;
 
@@ -117,7 +123,10 @@ private:
     MonitorPage* monitor_ = nullptr;
     SettingsPage* settingsPage_ = nullptr;
     LexiconPage* lexicon_ = nullptr;
+    GaragePage* garagePage_ = nullptr;
     NavButton* faultsButton_ = nullptr;
+    VehicleState* state_ = nullptr;
+    Garage* garage_ = nullptr;
 
     bool connected_ = false;
     QString adapterText_;

@@ -101,8 +101,11 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     buttons->setSpacing(10);
     primary_ = makeButton(tr("Verbinden"), QStringLiteral("plug"), true);
     secondary_ = makeButton(tr("Live-Werte"), QStringLiteral("activity"), false);
+    report_ = makeButton(tr("Prüfbericht"), QStringLiteral("file"), false);
+    report_->setToolTip(tr("Alles Gelesene als PDF speichern oder drucken"));
     buttons->addWidget(primary_);
     buttons->addWidget(secondary_);
+    buttons->addWidget(report_);
     buttons->addStretch();
     text->addLayout(buttons);
     text->addStretch();
@@ -122,6 +125,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
         emit detailsRequested();
     });
     connect(secondary_, &QPushButton::clicked, this, &DashboardPage::liveRequested);
+    connect(report_, &QPushButton::clicked, this, &DashboardPage::reportRequested);
 
     // --- Health and tiles --------------------------------------------------------
     auto* middle = new QHBoxLayout;
@@ -294,7 +298,15 @@ void DashboardPage::onLiveValue(const LiveRow& row) {
 
 void DashboardPage::setHealth(int score, const QString& caption, const QVector<Finding>& findings) {
     externalHealth_ = true;
-    ring_->setScore(score, caption, tr("Gesundheit"));
+    showFindings(score, caption, tr("Gesundheit"), findings, false);
+}
+
+void DashboardPage::showFindings(int score, const QString& caption, const QString& subcaption,
+                                 const QVector<Finding>& findings, bool clickableFaults) {
+    score_ = score;
+    caption_ = caption;
+    findings_ = findings;
+    ring_->setScore(score, caption, subcaption);
     while (QLayoutItem* item = findingsList_->takeAt(0)) {
         if (item->widget()) item->widget()->deleteLater();
         delete item;
@@ -302,10 +314,15 @@ void DashboardPage::setHealth(int score, const QString& caption, const QVector<F
     int delay = 0;
     for (const Finding& f : findings) {
         auto* row = new FindingRow(f.icon, f.tint, f.title, f.text, f.meta);
+        if (clickableFaults && f.icon == QStringLiteral("alert")) {
+            row->setClickable(true);
+            connect(row, &FindingRow::clicked, this, &DashboardPage::faultsRequested);
+        }
         findingsList_->addWidget(row);
         fadeIn(row, delay);
         delay += 60;
     }
+    if (score >= 0) emit scoreChanged(score);
 }
 
 void DashboardPage::updateHero() {
@@ -318,6 +335,7 @@ void DashboardPage::updateHero() {
         primary_->setText(tr("Verbinden"));
         primary_->setIcon(icons::icon(QStringLiteral("plug"), Qt::white, Qt::white, 18));
         secondary_->setEnabled(false);
+        report_->setEnabled(false);
         return;
     }
     eyebrow_->setText(tr("DEIN FAHRZEUG"));
@@ -325,6 +343,7 @@ void DashboardPage::updateHero() {
     primary_->setText(tr("Auto prüfen"));
     primary_->setIcon(icons::icon(QStringLiteral("sparkles"), Qt::white, Qt::white, 18));
     secondary_->setEnabled(true);
+    report_->setEnabled(true);
 
     QColor tone = color::accent;
     QString text = tr("Verbunden. Auto prüfen liest Fehler, Bereitschaft und Fahrzeugdaten.");
@@ -348,79 +367,66 @@ void DashboardPage::updateHero() {
 
 void DashboardPage::rebuildFindings() {
     if (externalHealth_) return;
-    while (QLayoutItem* item = findingsList_->takeAt(0)) {
-        if (item->widget()) item->widget()->deleteLater();
-        delete item;
-    }
 
     if (!connected_) {
-        ring_->setScore(-1, tr("Noch offen"), tr("Gesundheit"));
-        findingsList_->addWidget(new FindingRow(
-            QStringLiteral("info"), color::info, tr("Noch nichts geprüft"),
-            tr("Nach dem Verbinden steht hier, was mit dem Auto los ist, in einfachen Worten.")));
+        showFindings(-1, tr("Noch offen"), tr("Gesundheit"),
+                     {{QStringLiteral("info"), color::info, tr("Noch nichts geprüft"),
+                       tr("Nach dem Verbinden steht hier, was mit dem Auto los ist, in einfachen "
+                          "Worten."),
+                       QString()}},
+                     false);
         return;
     }
     if (!haveRead_) {
-        ring_->setScore(-1, tr("Bereit"), tr("Auto prüfen drücken"));
-        findingsList_->addWidget(new FindingRow(
-            QStringLiteral("sparkles"), color::accent, tr("Bereit zur Prüfung"),
-            tr("Auto prüfen liest den Fehlerspeicher, die Bereitschaftstests und die "
-               "Fahrzeugdaten.")));
+        showFindings(-1, tr("Bereit"), tr("Auto prüfen drücken"),
+                     {{QStringLiteral("sparkles"), color::accent, tr("Bereit zur Prüfung"),
+                       tr("Auto prüfen liest den Fehlerspeicher, die Bereitschaftstests und die "
+                          "Fahrzeugdaten."),
+                       QString()}},
+                     false);
         return;
     }
 
     // Simple rating until the full health check reports: what is stored
     // weighs most, then the lamp, then the open readiness tests.
     int score = 100;
-    QVector<FindingRow*> rows;
+    QVector<Finding> findings;
     for (const FaultRow& f : faults_) {
         const int minus = f.stored ? 18 : 8;
         score -= minus;
         const ZoneInfo where = locateDtc(f.code.toStdString());
-        auto* row = new FindingRow(
-            QStringLiteral("alert"), f.stored ? color::bad : color::warn,
-            QStringLiteral("%1  %2").arg(f.code, f.text),
-            QStringLiteral("%1 · %2").arg(f.kind, QString::fromStdString(where.name)),
-            QStringLiteral("−%1").arg(minus));
-        row->setClickable(true);
-        connect(row, &FindingRow::clicked, this, &DashboardPage::faultsRequested);
-        rows.push_back(row);
+        findings.push_back({QStringLiteral("alert"), f.stored ? color::bad : color::warn,
+                            QStringLiteral("%1  %2").arg(f.code, f.text),
+                            QStringLiteral("%1 · %2").arg(f.kind, QString::fromStdString(where.name)),
+                            QStringLiteral("−%1").arg(minus)});
     }
     if (haveStatus_ && mil_) {
         score -= 12;
-        rows.push_back(new FindingRow(QStringLiteral("engine"), color::bad,
-                                      tr("Motorkontrollleuchte an"),
-                                      tr("Das Steuergerät meldet einen abgasrelevanten Fehler. "
-                                         "Bald in die Werkstatt oder selbst nachsehen."),
-                                      QStringLiteral("−12")));
+        findings.push_back({QStringLiteral("engine"), color::bad, tr("Motorkontrollleuchte an"),
+                            tr("Das Steuergerät meldet einen abgasrelevanten Fehler. Bald in die "
+                               "Werkstatt oder selbst nachsehen."),
+                            QStringLiteral("−12")});
     }
     if (haveStatus_ && incompleteMonitors_ > 0) {
         const int minus = qMin(9, incompleteMonitors_ * 3);
         score -= minus;
-        rows.push_back(new FindingRow(
-            QStringLiteral("clock"), color::info,
-            incompleteMonitors_ == 1 ? tr("1 Bereitschaftstest noch offen")
-                                     : tr("%1 Bereitschaftstests noch offen").arg(incompleteMonitors_),
-            tr("Nach dem Löschen oder einem Batteriewechsel normal. Für die AU sollten sie "
-               "abgeschlossen sein."),
-            QStringLiteral("−%1").arg(minus)));
+        findings.push_back(
+            {QStringLiteral("clock"), color::info,
+             incompleteMonitors_ == 1 ? tr("1 Bereitschaftstest noch offen")
+                                      : tr("%1 Bereitschaftstests noch offen").arg(incompleteMonitors_),
+             tr("Nach dem Löschen oder einem Batteriewechsel normal. Für die AU sollten sie "
+                "abgeschlossen sein."),
+             QStringLiteral("−%1").arg(minus)});
     }
-    if (rows.isEmpty()) {
-        rows.push_back(new FindingRow(QStringLiteral("check-circle"), color::good,
-                                      tr("Alles in Ordnung"),
-                                      tr("Kein Fehler gespeichert, die Lampe ist aus.")));
+    if (findings.isEmpty()) {
+        findings.push_back({QStringLiteral("check-circle"), color::good, tr("Alles in Ordnung"),
+                            tr("Kein Fehler gespeichert, die Lampe ist aus."), QString()});
     }
     score = qBound(0, score, 100);
     const QString caption = score >= 85   ? tr("Gut in Schuss")
                             : score >= 60 ? tr("Braucht Pflege")
                                           : tr("Bitte ansehen");
-    ring_->setScore(score, caption, tr("Gesundheit"));
-    int delay = 0;
-    for (FindingRow* row : rows) {
-        findingsList_->addWidget(row);
-        fadeIn(row, delay);
-        delay += 60;
-    }
+    showFindings(score, caption, tr("Gesundheit"), findings, true);
 }
 
 }  // namespace caruspex

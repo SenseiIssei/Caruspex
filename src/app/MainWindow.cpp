@@ -24,13 +24,17 @@
 #include <QVBoxLayout>
 #include <QWindow>
 
+#include "app/Garage.h"
 #include "app/Icons.h"
+#include "app/Report.h"
+#include "app/VehicleState.h"
 #include "app/Theme.h"
 #include "app/TitleBar.h"
 #include "app/Widgets.h"
 #include "app/pages/ConnectPage.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
+#include "app/pages/GaragePage.h"
 #include "app/pages/KklToolsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
@@ -133,6 +137,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     monitor_ = new MonitorPage;
     lexicon_ = new LexiconPage;
     settingsPage_ = new SettingsPage;
+    state_ = new VehicleState(this);
+    garage_ = new Garage(this);
+    garage_->load();
+    garagePage_ = new GaragePage(garage_);
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -207,6 +215,19 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         saveSettings(settings_);
         toast::show(this, tr("Adapter an %1 gefunden.").arg(device), toast::Kind::Success);
     });
+
+    // The shared picture of the connected car. Attached after the pages, so
+    // the start page has rated the faults before the garage stores them.
+    state_->attach(worker);
+    connect(dashboard_, &DashboardPage::scoreChanged, state_, &VehicleState::setScore);
+    connect(state_, &VehicleState::vinChanged, this, [this](const QString& vin) {
+        garage_->touch(vin, state_->displayName(), state_->description(), state_->bodyStyle());
+        garagePage_->setCurrentVin(vin);
+        recordCheck();
+    });
+    connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
+    connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
+    connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
 
     // UI to worker
     connect(connect_, &ConnectPage::serialRequested, this,
@@ -387,6 +408,7 @@ QWidget* MainWindow::buildSidebar() {
     bottomNavigation_ = new QVBoxLayout;
     bottomNavigation_->setSpacing(2);
     root->addLayout(bottomNavigation_);
+    addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
     addEntry(QStringLiteral("settings"), tr("Einstellungen"), settingsPage_, bottomNavigation_);
 
     buttonForPage_.value(dashboard_)->setChecked(true);
@@ -490,6 +512,7 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("stats"), stats_},     {QStringLiteral("scan"), scan_},
         {QStringLiteral("throttle"), throttle_}, {QStringLiteral("kkl"), kklTools_},
         {QStringLiteral("lexicon"), lexicon_}, {QStringLiteral("settings"), settingsPage_},
+        {QStringLiteral("garage"), garagePage_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
     if (name == QStringLiteral("log") && !logOpen_) toggleLog();
@@ -513,8 +536,10 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     stats_->setConnected(true);
     toast::show(this, tr("Verbunden über %1. Protokoll: %2").arg(transport, protocol),
                 toast::Kind::Success);
-    // After connecting the start page is the natural place to go.
+    // After connecting the start page is the natural place to go. The VIN
+    // comes right after, so the garage recognises the car.
     navigateTo(dashboard_);
+    QTimer::singleShot(0, this, [this] { emit session_.readDetailsRequested(); });
 }
 
 void MainWindow::onFailed(const QString& error) {
@@ -529,6 +554,7 @@ void MainWindow::onClosed() {
     connected_ = false;
     titleBar_->setConnection(TitleBar::Link::Offline, tr("Nicht verbunden"));
     faultsButton_->setBadge(QString());
+    garagePage_->setCurrentVin(QString());
     dashboard_->onDisconnected();
     faults_->setConnected(false);
     live_->setConnected(false);
@@ -540,6 +566,40 @@ void MainWindow::onClosed() {
 }
 
 void MainWindow::onBusy(bool active) { Q_UNUSED(active); }
+
+void MainWindow::recordCheck() {
+    if (state_->vin().isEmpty() || !state_->haveFaults()) return;
+    GarageCheck check;
+    check.when = QDateTime::currentDateTime();
+    check.score = state_->score();
+    check.mil = state_->mil();
+    for (const ReadinessRow& r : state_->readiness()) {
+        if (!r.ready) ++check.openMonitors;
+    }
+    check.odometerKm = state_->hasLive(0xA6) ? state_->liveValue(0xA6) : -1.0;
+    for (const FaultRow& f : state_->faults()) {
+        check.codes << f.code;
+        check.texts << f.text;
+    }
+    garage_->addCheck(state_->vin(), check);
+}
+
+void MainWindow::showReport() {
+    ReportExtras extras;
+    extras.score = dashboard_->score();
+    extras.scoreCaption = dashboard_->scoreCaption();
+    for (const DashboardPage::Finding& f : dashboard_->findings()) {
+        QString level = tr("Hinweis");
+        if (f.tint == color::bad) level = tr("Hoch");
+        else if (f.tint == color::warn) level = tr("Mittel");
+        else if (f.tint == color::good) level = tr("In Ordnung");
+        extras.findings.push_back({level, f.title, f.text});
+    }
+    const QString path = saveReportPdf(this, *state_, extras);
+    if (!path.isEmpty()) {
+        toast::show(this, tr("Prüfbericht gespeichert: %1").arg(path), toast::Kind::Success);
+    }
+}
 
 void MainWindow::appendLog(const QString& line) {
     const QString stamped = QDateTime::currentDateTime().toString("HH:mm:ss") + "  " + line;
