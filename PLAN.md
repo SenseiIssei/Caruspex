@@ -69,12 +69,13 @@ Stand 09.11.2026, nach 0.3.0. Größen: klein heißt ein paar Stunden, mittel ei
 
 ## Phase 5: Schneller und runder (kleine Schritte, sofort spürbar)
 
-- [ ] Mehrere PIDs pro Anfrage auf CAN (bis zu sechs), damit die Live-Werte drei- bis fünfmal so oft kommen. Das Demo-Auto kann es schon. Mittel
-- [ ] Diagramm: jede Kurve auf ihren eigenen Messbereich, der echte Wert im Tooltip. Heute drückt die Drehzahl alles andere flach. Klein
-- [ ] Freeze Frame je Fehler (Frame-Nummer aus Modus 02), nicht nur der erste. Klein
-- [ ] Rundanzeigen auf der Startseite selbst wählen. Klein
-- [ ] Hellmodus wie in Odysync, umschaltbar oder nach System. Mittel
-- [ ] Kommandozeile: `health`, `report` (PDF und JSON), `vin`, `probe`, `--demo`, JSON-Ausgabe für Skripte. Mittel
+- [x] Mehrere PIDs pro Anfrage auf CAN (bis zu sechs), damit die Live-Werte drei- bis fünfmal so oft kommen. Das Demo-Auto kann es schon. Mittel
+- [x] Diagramm: jede Kurve auf ihren eigenen Messbereich, der echte Wert im Tooltip. Heute drückt die Drehzahl alles andere flach. Klein
+- [x] Freeze Frame je Fehler (Frame-Nummer aus Modus 02), nicht nur der erste. Klein
+- [x] Rundanzeigen auf der Startseite selbst wählen. Klein
+- [x] Hellmodus wie in Odysync, umschaltbar oder nach System. Mittel
+- [x] Kommandozeile: `health`, `vin`, `probe`, `freeze`, `--demo` und `--json` für Skripte. Mittel
+- [ ] Bericht als PDF auch aus der Kommandozeile. Die kommt heute ohne Qt aus, für PDF bräuchte sie QtGui oder einen eigenen kleinen PDF-Schreiber. Klein
 
 ## Phase 6: Alle Steuergeräte über CAN mit dem ELM327 (größter Mehrwert)
 
