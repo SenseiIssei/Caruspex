@@ -80,6 +80,17 @@ if(CARUSPEX_GUI)
     find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts Svg PrintSupport LinguistTools)
     qt_standard_project_setup()
 
+    # The prebuilt Qt 6.8 still links the AGL framework on macOS, which the
+    # macOS 15 SDK no longer has. Nothing here uses it, so drop the reference.
+    if(APPLE AND TARGET WrapOpenGL::WrapOpenGL)
+        get_target_property(_gl_libs WrapOpenGL::WrapOpenGL INTERFACE_LINK_LIBRARIES)
+        if(_gl_libs)
+            list(FILTER _gl_libs EXCLUDE REGEX "AGL")
+            set_target_properties(WrapOpenGL::WrapOpenGL PROPERTIES
+                INTERFACE_LINK_LIBRARIES "${_gl_libs}")
+        endif()
+    endif()
+
     qt_add_executable(caruspex
         resources/resources.qrc
         src/app/main.cpp
