@@ -31,6 +31,7 @@ add_library(caruspex_core STATIC
     src/core/Elm327.cpp
     src/core/Obd2.cpp
     src/core/DemoTransport.cpp
+    src/core/AdapterProbe.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
     src/core/VagKLine.cpp
@@ -134,6 +135,7 @@ if(CARUSPEX_TESTS)
         tests/test_kwp2000.cpp
         tests/test_settings.cpp
         tests/test_demo.cpp
+        tests/test_probe.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
