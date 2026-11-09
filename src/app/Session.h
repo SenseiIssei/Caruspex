@@ -56,6 +56,9 @@ struct LiveRow {
     // Seconds since the program started, taken in the worker right after the
     // reply. The trip computer and the stopwatch rely on it.
     double time = 0.0;
+    // Sensible scale for charts and gauges, 0/0 when the table has none.
+    double displayMin = 0.0;
+    double displayMax = 0.0;
 };
 
 // Result of the health check, prepared for the UI.

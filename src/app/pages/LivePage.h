@@ -70,9 +70,21 @@ private:
 
     QHash<int, int> tableRow_;
     QElapsedTimer clock_;
-    QElapsedTimer rescaleClock_;
-    double yLow_ = std::numeric_limits<double>::max();
-    double yHigh_ = std::numeric_limits<double>::lowest();
+    // Every curve is drawn as a share of its own range, so a value in the
+    // thousands does not flatten everything else. The real values are kept
+    // for the tooltip and to redraw when a range has to grow.
+    struct Track {
+        double low = 0.0;
+        double high = 0.0;
+        bool fixed = false;      // range from the PID table
+        bool seen = false;
+        QString name;
+        QString unit;
+        QVector<double> raw;     // same order as the points of the series
+    };
+    QHash<int, Track> tracks_;
+    void renormalise(int key);
+    double share(const Track& track, double value) const;
     bool running_ = false;
     bool connected_ = false;
 

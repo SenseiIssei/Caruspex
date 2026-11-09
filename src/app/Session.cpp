@@ -42,6 +42,8 @@ LiveRow toRow(const LiveValue& v) {
     row.value = v.value;
     row.warn = v.warn;
     row.time = appSeconds();
+    row.displayMin = v.displayMin;
+    row.displayMax = v.displayMax;
     return row;
 }
 
