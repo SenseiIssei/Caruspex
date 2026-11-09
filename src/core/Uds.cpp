@@ -101,7 +101,153 @@ struct Exchange {
     std::string error;
 };
 
-Exchange exchange(Elm327& elm, const std::vector<int>& bytes, int timeoutMs) {
+// Hex bytes of one raw adapter line, the 11-bit id dropped when headers
+// are on. Spaces may be on or off.
+std::vector<int> rawLineBytes(const std::string& line, bool headers) {
+    std::string hex;
+    for (char c : line) {
+        if (std::isxdigit(static_cast<unsigned char>(c))) hex += c;
+        else if (c != ' ') return {};   // "NO DATA", "CAN ERROR", "0:" ...
+    }
+    if (headers) {
+        if (hex.size() < 3) return {};
+        hex = hex.substr(3);
+    }
+    if (hex.size() % 2 != 0) return {};
+    std::vector<int> out;
+    for (size_t i = 0; i + 1 < hex.size(); i += 2) out.push_back(std::stoi(hex.substr(i, 2), nullptr, 16));
+    return out;
+}
+
+std::string rawFrame(const std::vector<int>& bytes) {
+    std::string command;
+    for (size_t i = 0; i < 8; ++i)
+        command += hexId(static_cast<std::uint32_t>(i < bytes.size() ? (bytes[i] & 0xFF) : 0x00), 2);
+    return command;
+}
+
+}  // namespace
+
+ExtendedReply extendedRequest(Elm327& elm, int target, int tester, const std::vector<int>& bytes,
+                              int timeoutMs) {
+    ExtendedReply reply;
+    if (bytes.empty() || bytes.size() > 6) {
+        reply.error = L("Anfrage zu lang (höchstens 6 Bytes mit erweiterter Adresse).",
+                        "Request too long (at most 6 bytes with extended addressing).");
+        return reply;
+    }
+    const bool headers = elm.headerFormat() == HeaderFormat::Can11;
+    std::vector<int> frame = {target & 0xFF, static_cast<int>(bytes.size())};
+    frame.insert(frame.end(), bytes.begin(), bytes.end());
+    const ElmResult raw = elm.send(rawFrame(frame), timeoutMs);
+    if (raw.status == ElmStatus::AdapterError) {
+        reply.error = raw.message;
+        return reply;
+    }
+
+    std::vector<int> payload;
+    size_t expected = 0;
+    int nextIndex = 1;
+    bool firstFrameSeen = false;
+    // Every frame of the unit starts with the tester address, then the PCI.
+    auto take = [&](const std::vector<std::string>& lines) {
+        for (const std::string& line : lines) {
+            const std::vector<int> b = rawLineBytes(line, headers);
+            if (b.size() < 2 || b[0] != (tester & 0xFF)) continue;
+            const int pci = b[1];
+            const int type = pci >> 4;
+            if (type == 0 && !firstFrameSeen) {
+                const size_t length = static_cast<size_t>(pci & 0x0F);
+                if (length == 0 || b.size() < 2 + length) continue;
+                // A pending answer (7F xx 78) may come before the real one;
+                // the last single frame wins.
+                payload.assign(b.begin() + 2, b.begin() + 2 + static_cast<long>(length));
+                expected = length;
+                reply.answered = true;
+            } else if (type == 1 && b.size() >= 3) {
+                expected = (static_cast<size_t>(pci & 0x0F) << 8) | static_cast<size_t>(b[2]);
+                payload.assign(b.begin() + 3, b.end());
+                firstFrameSeen = true;
+                nextIndex = 1;
+                reply.answered = true;
+            } else if (type == 2 && firstFrameSeen) {
+                if ((pci & 0x0F) != (nextIndex & 0x0F)) continue;   // repeated or out of order
+                ++nextIndex;
+                payload.insert(payload.end(), b.begin() + 2, b.end());
+            }
+        }
+    };
+    take(raw.lines);
+
+    if (firstFrameSeen) {
+        // Flow control from the tester: send everything, no pause. The
+        // consecutive frames come back as the answer to this frame.
+        for (int round = 0; round < 4 && payload.size() < expected; ++round) {
+            const ElmResult more = elm.send(rawFrame({target & 0xFF, 0x30, 0x00, 0x00}), timeoutMs);
+            if (more.status == ElmStatus::AdapterError) break;
+            const size_t before = payload.size();
+            take(more.lines);
+            if (payload.size() == before) break;
+        }
+        if (payload.size() < expected) {
+            reply.error = L("Lange Antwort kam nicht vollständig an.", "A long answer did not arrive completely.");
+            reply.payload.clear();
+            return reply;
+        }
+    }
+    if (payload.size() > expected) payload.resize(expected);
+    reply.payload = std::move(payload);
+    if (!reply.answered) {
+        reply.error = L("Keine Antwort vom Steuergerät (NO DATA).", "No answer from the control unit (NO DATA).");
+    }
+    return reply;
+}
+
+namespace {
+
+// The same rounds as exchange(), for BMW style extended addressing.
+Exchange exchangeExtended(Elm327& elm, int target, const std::vector<int>& bytes, int timeoutMs) {
+    Exchange ex;
+    const int sid = bytes.empty() ? 0 : bytes[0] & 0xFF;
+    const std::uint64_t start = nowMs();
+    for (int round = 0; round < kMaxRounds; ++round) {
+        ExtendedReply r = extendedRequest(elm, target, 0xF1, bytes, timeoutMs);
+        if (!r.answered || r.payload.empty()) {
+            ex.error = r.error;
+            return ex;
+        }
+        const std::vector<int>& b = r.payload;
+        ex.answered = true;
+        if (b[0] == sid + 0x40) {
+            ex.positive = true;
+            ex.data.assign(b.begin() + 1, b.end());
+            return ex;
+        }
+        if (b[0] == 0x7F && b.size() >= 3 && b[1] == sid) {
+            if (b[2] == 0x78 || b[2] == 0x21) {
+                if (nowMs() - start > static_cast<std::uint64_t>(kPendingLimitMs)) {
+                    ex.nrc = b[2];
+                    ex.error = L("Steuergerät bleibt beschäftigt und liefert keine Antwort.",
+                                 "Control unit stays busy and never delivers the answer.");
+                    return ex;
+                }
+                sleepMs(b[2] == 0x21 ? 100 : 20);
+                continue;
+            }
+            ex.nrc = b[2];
+            ex.error = nrcText(b[2]);
+            return ex;
+        }
+        ex.error = L("Keine verwertbare Antwort erhalten.", "No usable response received.");
+        return ex;
+    }
+    ex.error = L("Steuergerät bleibt beschäftigt und liefert keine Antwort.",
+                 "Control unit stays busy and never delivers the answer.");
+    return ex;
+}
+
+Exchange exchange(Elm327& elm, const std::vector<int>& bytes, int timeoutMs, int extended = -1) {
+    if (extended >= 0) return exchangeExtended(elm, extended, bytes, timeoutMs);
     Exchange ex;
     if (bytes.empty() || bytes.size() > 7) {
         // The ELM327 only sends single frames: at most seven data bytes.
@@ -208,6 +354,23 @@ UdsDtc decodeUdsDtc(int b1, int b2, int b3, int status) {
     return dtc;
 }
 
+UdsDtc decodeBmwDtc(int b1, int b2, int b3, int status) {
+    UdsDtc dtc;
+    char code[8];
+    std::snprintf(code, sizeof(code), "%02X%02X%02X", b1 & 0xFF, b2 & 0xFF, b3 & 0xFF);
+    dtc.code = code;
+    dtc.status = status & 0xFF;
+    dtc.testFailed = (dtc.status & 0x01) != 0;
+    dtc.pending = (dtc.status & 0x04) != 0;
+    dtc.confirmed = (dtc.status & 0x08) != 0;
+    dtc.warningLamp = (dtc.status & 0x80) != 0;
+    dtc.text = L("BMW-Fehlercode. Die genaue Beschreibung steht in der Werkstattsoftware (ISTA); "
+                 "mit dem Code findet man sie auch in Foren und Fehlerlisten.",
+                 "BMW fault code. The exact description is in the workshop software (ISTA); "
+                 "forums and fault lists find it by the code as well.");
+    return dtc;
+}
+
 Uds::Uds(Elm327& elm) : elm_(elm) {}
 
 Uds::~Uds() {
@@ -237,7 +400,28 @@ bool Uds::select(const EcuDefinition& ecu, std::string& error) {
     // From here on the adapter is changed, so the destructor puts it back
     // even if a step fails halfway.
     addressed_ = true;
+    extended_ = -1;
     bool ok = true;
+    if (ecu.extendedAddress >= 0) {
+        if (ecu.extended29) {
+            error = L("Erweiterte Adressierung gibt es hier nur mit 11-Bit-Adressen.",
+                      "Extended addressing is only supported with 11-bit ids.");
+            restoreDefault();
+            return false;
+        }
+        // Raw frames: the adapter neither adds the PCI byte nor sends flow
+        // control, Caruspex does both (see extendedRequest).
+        ok = atOk(elm_, "ATSH" + hexId(ecu.request & 0x7FF, 3)) &&
+             atOk(elm_, "ATCRA" + hexId(ecu.response & 0x7FF, 3)) && atOk(elm_, "ATCAF0");
+        if (!ok) {
+            error = L("Der Adapter nimmt die Adresse nicht an (ATSH/ATCRA/ATCAF0).",
+                      "The adapter does not accept the address (ATSH/ATCRA/ATCAF0).");
+            restoreDefault();
+            return false;
+        }
+        extended_ = ecu.extendedAddress;
+        return true;
+    }
     if (ecu.extended29) {
         // ATSH takes the lower three bytes, ATCP the priority byte on top.
         ok = atOk(elm_, "ATCP" + hexId((ecu.request >> 24) & 0x1F, 2)) &&
@@ -271,6 +455,8 @@ bool Uds::select(const EcuDefinition& ecu, std::string& error) {
 void Uds::restoreDefault() {
     addressed_ = false;
     if (!elm_.connected() || !elm_.isCan()) return;
+    if (extended_ >= 0) atOk(elm_, "ATCAF1");
+    extended_ = -1;
     atOk(elm_, "ATFCSM0");
     if (bus29(elm_)) {
         atOk(elm_, "ATCP18");
@@ -286,7 +472,7 @@ void Uds::restoreDefault() {
 bool Uds::request(const std::vector<int>& bytes, std::vector<int>& response, std::string& error,
                   int timeoutMs) {
     response.clear();
-    Exchange ex = exchange(elm_, bytes, timeoutMs);
+    Exchange ex = exchange(elm_, bytes, timeoutMs, extended_);
     error = ex.error;
     if (!ex.positive) return false;
     response = std::move(ex.data);
@@ -296,7 +482,7 @@ bool Uds::request(const std::vector<int>& bytes, std::vector<int>& response, std
 bool Uds::testerPresent() {
     // Any answer counts, a refusal too: then the ECU is there but does not
     // like the service in its current session.
-    return exchange(elm_, {0x3E, 0x00}, kShortRequestMs).answered;
+    return exchange(elm_, {0x3E, 0x00}, kShortRequestMs, extended_).answered;
 }
 
 std::vector<UdsDtc> Uds::readDtcs(std::string& error, int statusMask) {
@@ -310,7 +496,11 @@ std::vector<UdsDtc> Uds::readDtcs(std::string& error, int statusMask) {
     }
     for (size_t i = 2; i + 3 < response.size(); i += 4) {
         if (response[i] == 0 && response[i + 1] == 0 && response[i + 2] == 0) continue;
-        out.push_back(decodeUdsDtc(response[i], response[i + 1], response[i + 2], response[i + 3]));
+        if (extended_ >= 0) {
+            out.push_back(decodeBmwDtc(response[i], response[i + 1], response[i + 2], response[i + 3]));
+        } else {
+            out.push_back(decodeUdsDtc(response[i], response[i + 1], response[i + 2], response[i + 3]));
+        }
     }
     return out;
 }

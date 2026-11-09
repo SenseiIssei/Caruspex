@@ -71,7 +71,14 @@ TEST_CASE("Every family list is complete and consistent", "[ecus]") {
             REQUIRE(idFits(e.request, e.extended29));
             REQUIRE(idFits(e.response, e.extended29));
             if (!e.extended29) REQUIRE(e.request != 0x7DF);
-            REQUIRE(requests.insert({e.extended29, e.request}).second);
+            // With BMW style extended addressing all units share the request
+            // id; there the target byte has to be unique (it is the low byte
+            // of the response id, checked below).
+            if (e.extendedAddress < 0) {
+                REQUIRE(requests.insert({e.extended29, e.request}).second);
+            } else {
+                REQUIRE(e.response == 0x600u + static_cast<std::uint32_t>(e.extendedAddress));
+            }
             REQUIRE(responses.insert({e.extended29, e.response}).second);
             // Scan order: engine first, safety relevant units next.
             if (i > 0) REQUIRE(static_cast<int>(list[i - 1].kind) <= static_cast<int>(e.kind));

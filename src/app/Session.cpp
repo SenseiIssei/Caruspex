@@ -302,9 +302,10 @@ void Worker::scanUds(const QString& family) {
     cancelScan_ = false;
     emit busy(true);
 
-    std::vector<EcuDefinition> list = family.isEmpty()
-                                          ? genericEcuSweep()
-                                          : ecuDefinitions(family.toStdString());
+    // "BMW*" is the full sweep of the BMW diagnostic addresses.
+    std::vector<EcuDefinition> list = family.isEmpty()                    ? genericEcuSweep()
+                                      : family == QStringLiteral("BMW*") ? bmwAddressSweep()
+                                                                          : ecuDefinitions(family.toStdString());
     const bool generic = family.isEmpty() || list.empty();
     if (list.empty()) list = genericEcuSweep();
     const int total = static_cast<int>(list.size());
@@ -331,11 +332,7 @@ void Worker::clearUdsEcu(quint32 request, quint32 response, bool extended29, con
     if (!obd_) return;
     stopLive();
     emit busy(true);
-    EcuDefinition def;
-    def.request = request;
-    def.response = response;
-    def.extended29 = extended29;
-    def.name = name.toStdString();
+    const EcuDefinition def = ecuFromIds(request, response, extended29, name.toStdString());
     std::string error;
     bool ok = false;
     {

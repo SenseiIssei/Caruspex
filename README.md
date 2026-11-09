@@ -97,7 +97,8 @@ the settings, or forced per run with `--language en` / `--language de`. [Deutsch
 ### All control units over CAN (UDS)
 - With a plain ELM327, Caruspex asks every control unit one by one: engine, gearbox, ABS, airbag, instrument cluster, climate and more, on most cars from about 2008.
 - Fault memory per unit with the failure type (short circuit, open circuit, implausible ...), part number, software and hardware version.
-- Address lists for VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault and PSA; for everything else a sweep over the usual addresses.
+- Address lists for VAG, BMW and Mini, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault and PSA; for everything else a sweep over the usual addresses.
+- BMW and Mini from the F series on with BMW's own extended addressing over 6F1, plus a sweep over all 128 diagnostic addresses; fault codes in BMW's format as ISTA shows them (e.g. 480A10).
 - Clearing per unit, with a warning.
 
 ### VW and Audi over a KKL cable (KWP1281 and KWP2000)

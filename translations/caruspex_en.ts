@@ -291,10 +291,6 @@
         <translation>Adapter</translation>
     </message>
     <message>
-        <source>USB oder Bluetooth</source>
-        <translation>USB or Bluetooth</translation>
-    </message>
-    <message>
         <source>WLAN</source>
         <translation>Wi-Fi</translation>
     </message>
@@ -411,32 +407,12 @@ Protocol: %3</translation>
         <translation>Choose a recording first.</translation>
     </message>
     <message>
-        <source>Bluetooth LE</source>
-        <translation>Bluetooth LE</translation>
-    </message>
-    <message>
-        <source>Nach Bluetooth-LE-Geräten suchen</source>
-        <translation>Search for Bluetooth LE devices</translation>
-    </message>
-    <message>
-        <source>Für Adapter mit Bluetooth LE, zum Beispiel Vgate iCar Pro BLE, vLinker, OBDLink CX oder Veepeak BLE. Sie werden nicht gekoppelt, Caruspex verbindet sich direkt. Klassische Bluetooth-Adapter laufen über USB oder Bluetooth.</source>
-        <translation>For adapters with Bluetooth LE, for example Vgate iCar Pro BLE, vLinker, OBDLink CX or Veepeak BLE. They are not paired; Caruspex connects to them directly. Classic Bluetooth adapters work through USB or Bluetooth.</translation>
-    </message>
-    <message>
-        <source>Suche Bluetooth-LE-Geräte, das dauert ein paar Sekunden ...</source>
-        <translation>Searching for Bluetooth LE devices, this takes a few seconds ...</translation>
-    </message>
-    <message>
         <source>Unbenanntes Gerät (%1)</source>
         <translation>Unnamed device (%1)</translation>
     </message>
     <message>
         <source>OBD-Adapter</source>
         <translation>OBD adapter</translation>
-    </message>
-    <message>
-        <source>Kein Bluetooth-LE-Gerät gefunden. Steckt der Adapter im Auto, und ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach einem Druck auf ihren Knopf wieder auf.</source>
-        <translation>No Bluetooth LE device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.</translation>
     </message>
     <message>
         <source>Ein Gerät gefunden</source>
@@ -453,6 +429,42 @@ Protocol: %3</translation>
     <message>
         <source>%1, davon %2 als OBD-Adapter erkannt.</source>
         <translation>%1, %2 of them recognised as OBD adapters.</translation>
+    </message>
+    <message>
+        <source>USB oder COM-Port</source>
+        <translation>USB or COM port</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Nach Bluetooth-Geräten suchen</source>
+        <translation>Search for Bluetooth devices</translation>
+    </message>
+    <message>
+        <source>Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN ist meist 1234 oder 0000, danach stehen sie hier in der Liste.</source>
+        <translation>Caruspex finds adapters with Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE) directly, without pairing. Pair classic Bluetooth adapters once in the system settings, the PIN is usually 1234 or 0000; after that they show up in this list.</translation>
+    </message>
+    <message>
+        <source>Suche Bluetooth-Geräte, das dauert bis zu einer halben Minute ...</source>
+        <translation>Searching for Bluetooth devices, this takes up to half a minute ...</translation>
+    </message>
+    <message>
+        <source>klassisch</source>
+        <translation>classic</translation>
+    </message>
+    <message>
+        <source>LE und klassisch</source>
+        <translation>LE and classic</translation>
+    </message>
+    <message>
+        <source>LE</source>
+        <translation>LE</translation>
+    </message>
+    <message>
+        <source>Kein Bluetooth-Gerät gefunden. Steckt der Adapter im Auto, und ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach einem Druck auf ihren Knopf wieder auf.</source>
+        <translation>No Bluetooth device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.</translation>
     </message>
 </context>
 <context>
@@ -774,6 +786,10 @@ Protocol: %3</translation>
     <message>
         <source>Kein Steuergerät hat geantwortet. Manche Autos lassen über die Buchse nur das Motorsteuergerät antworten, dann hilft nur die Werkstatt.</source>
         <translation>No control unit answered. Some cars only let the engine unit answer through the socket; then only a workshop tool helps.</translation>
+    </message>
+    <message>
+        <source>BMW und Mini: alle 128 Adressen (langsamer, findet alles)</source>
+        <translation>BMW and Mini: all 128 addresses (slower, finds everything)</translation>
     </message>
 </context>
 <context>
@@ -2263,12 +2279,20 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <translation>Caruspex recording (*.jsonl)</translation>
     </message>
     <message>
-        <source>Suche einen Bluetooth-LE-Adapter ...</source>
-        <translation>Searching for a Bluetooth LE adapter ...</translation>
+        <source>Suche einen Bluetooth-Adapter ...</source>
+        <translation>Searching for a Bluetooth adapter ...</translation>
     </message>
     <message>
-        <source>Verbinde über Bluetooth LE mit %1 ...</source>
-        <translation>Connecting to %1 over Bluetooth LE ...</translation>
+        <source>Verbinde über Bluetooth mit %1 ...</source>
+        <translation>Connecting to %1 over Bluetooth ...</translation>
+    </message>
+    <message>
+        <source>Prüfbericht ließ sich nicht schreiben: %1</source>
+        <translation>The diagnostic report could not be written: %1</translation>
+    </message>
+    <message>
+        <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
+        <translation>No connection after two minutes, cancelled.</translation>
     </message>
 </context>
 <context>
@@ -2746,6 +2770,17 @@ A catalytic converter whose efficiency is scraping the limit shows up here, whil
     <message>
         <source>Erstellt mit Caruspex aus der Garage auf diesem Rechner.</source>
         <translation>Made with Caruspex from the garage on this computer.</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::RfcommTransport</name>
+    <message>
+        <source>Klassisches Bluetooth braucht die Adresse des Geräts.</source>
+        <translation>Classic Bluetooth needs the address of the device.</translation>
+    </message>
+    <message>
+        <source>Verbindung zu %1 kam nicht zustande. Ist der Adapter im System gekoppelt (PIN meist 1234 oder 0000)?</source>
+        <translation>Could not connect to %1. Is the adapter paired in the system (PIN usually 1234 or 0000)?</translation>
     </message>
 </context>
 <context>
@@ -4150,20 +4185,24 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <translation>The file cannot be opened: %1</translation>
     </message>
     <message>
-        <source>Suche Bluetooth-LE-Adapter ...</source>
-        <translation>Searching for Bluetooth LE adapters ...</translation>
-    </message>
-    <message>
-        <source>Kein Bluetooth-LE-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?</source>
-        <translation>No Bluetooth LE adapter found nearby. Is it plugged into the car, and is the ignition on?</translation>
-    </message>
-    <message>
         <source>Verbinde mit %1 über Bluetooth LE ...</source>
         <translation>Connecting to %1 over Bluetooth LE ...</translation>
     </message>
     <message>
         <source>Kanal gefunden (%1)</source>
         <translation>Channel found (%1)</translation>
+    </message>
+    <message>
+        <source>Suche Bluetooth-Adapter ...</source>
+        <translation>Searching for Bluetooth adapters ...</translation>
+    </message>
+    <message>
+        <source>Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?</source>
+        <translation>No Bluetooth adapter found nearby. Is it plugged into the car, and is the ignition on?</translation>
+    </message>
+    <message>
+        <source>Verbinde mit %1 über klassisches Bluetooth ...</source>
+        <translation>Connecting to %1 over classic Bluetooth ...</translation>
     </message>
 </context>
 <context>
@@ -4207,6 +4246,22 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Eine aufgezeichnete Sitzung abspielen</source>
         <translation>Play back a recorded session</translation>
+    </message>
+    <message>
+        <source>Adapter am seriellen Anschluss verbinden, z.B. COM3 oder /dev/ttyUSB0, auto sucht an allen</source>
+        <translation>Connect an adapter on a serial port, e.g. COM3 or /dev/ttyUSB0, auto searches all of them</translation>
+    </message>
+    <message>
+        <source>Bluetooth-Adapter verbinden, über die Adresse oder auto für die Suche</source>
+        <translation>Connect a Bluetooth adapter by its address, or auto to search</translation>
+    </message>
+    <message>
+        <source>Nach dem Verbinden einen Prüfbericht schreiben (PDF, oder HTML bei .html) und beenden</source>
+        <translation>After connecting, write a diagnostic report (PDF, or HTML for .html) and quit</translation>
+    </message>
+    <message>
+        <source>--report braucht eine Verbindung: --demo, --port, --tcp, --bluetooth oder --replay</source>
+        <translation>--report needs a connection: --demo, --port, --tcp, --bluetooth or --replay</translation>
     </message>
 </context>
 </TS>

@@ -60,7 +60,8 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 **Alle Steuergeräte über CAN (UDS)**
 - Mit einem normalen ELM327 fragt Caruspex jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr, bei den meisten Autos ab etwa 2008
 - Fehlerspeicher je Steuergerät mit Fehlerart (Kurzschluss, Unterbrechung, unplausibel ...), Teilenummer, Software- und Hardwarestand
-- Adresslisten für VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA, für alle anderen ein Suchlauf über die üblichen Adressen
+- Adresslisten für VAG, BMW und Mini, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA, für alle anderen ein Suchlauf über die üblichen Adressen
+- BMW und Mini ab der F-Baureihe mit der BMW-eigenen Adressierung über 6F1, dazu ein Suchlauf über alle 128 Diagnoseadressen; Fehlercodes im BMW-Format wie in ISTA (z.B. 480A10)
 - Löschen je Steuergerät mit Warnung
 
 **VW und Audi über KKL-Kabel (KWP1281 und KWP2000)**
