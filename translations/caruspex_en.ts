@@ -528,6 +528,145 @@ Protocol: %3</translation>
     </message>
 </context>
 <context>
+    <name>caruspex::EcuPage</name>
+    <message>
+        <source>Werkstatt</source>
+        <translation>Workshop</translation>
+    </message>
+    <message>
+        <source>Alle Steuergeräte</source>
+        <translation>All control units</translation>
+    </message>
+    <message>
+        <source>Fragt über CAN jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr. Mit einem normalen ELM327, bei den meisten Autos ab etwa 2008. Ältere VW und Audi gehen über das KKL-Kabel.</source>
+        <translation>Asks every control unit one by one over CAN: engine, gearbox, ABS, airbag, instrument cluster, climate and more. With a plain ELM327, on most cars from about 2008. Older VW and Audi go through the KKL cable.</translation>
+    </message>
+    <message>
+        <source>Alle üblichen Adressen durchsuchen (langsamer)</source>
+        <translation>Search all usual addresses (slower)</translation>
+    </message>
+    <message>
+        <source>Adressliste %1</source>
+        <translation>Address list %1</translation>
+    </message>
+    <message>
+        <source>Steuergeräte suchen</source>
+        <translation>Find control units</translation>
+    </message>
+    <message>
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher</source>
+        <translation>Fault memory</translation>
+    </message>
+    <message>
+        <source>Fehler dieses Steuergeräts löschen</source>
+        <translation>Clear this unit&apos;s faults</translation>
+    </message>
+    <message>
+        <source>Fehler löschen</source>
+        <translation>Clear faults</translation>
+    </message>
+    <message>
+        <source>Den Fehlerspeicher von %1 löschen? Ein Fehler, dessen Ursache noch besteht, kommt wieder. Bei Airbag und ABS erst die Ursache beheben.</source>
+        <translation>Clear the fault memory of %1? A fault whose cause is still there comes back. For airbag and ABS, fix the cause first.</translation>
+    </message>
+    <message>
+        <source>Noch nicht gesucht. Verbinden, dann auf Steuergeräte suchen.</source>
+        <translation>Not searched yet. Connect, then press Find control units.</translation>
+    </message>
+    <message>
+        <source>Suche läuft ...</source>
+        <translation>Searching ...</translation>
+    </message>
+    <message>
+        <source>Durchsucht %1 Adressen. Das dauert ein, zwei Minuten.</source>
+        <translation>Searching %1 addresses. This takes a minute or two.</translation>
+    </message>
+    <message>
+        <source>Fragt %1 bekannte Steuergeräte.</source>
+        <translation>Asking %1 known control units.</translation>
+    </message>
+    <message>
+        <source>Frage %1 (%2 von %3)</source>
+        <translation>Asking %1 (%2 of %3)</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Fehler</source>
+        <translation><numerusform>%n fault</numerusform><numerusform>%n faults</numerusform></translation>
+    </message>
+    <message>
+        <source>in Ordnung</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Anfrage %1, Antwort %2</source>
+        <translation>Request %1, response %2</translation>
+    </message>
+    <message>
+        <source>Bezeichnung</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Teilenummer</source>
+        <translation>Part number</translation>
+    </message>
+    <message>
+        <source>Software</source>
+        <translation>Software</translation>
+    </message>
+    <message>
+        <source>Hardware</source>
+        <translation>Hardware</translation>
+    </message>
+    <message>
+        <source>Seriennummer</source>
+        <translation>Serial number</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher nicht lesbar</source>
+        <translation>Fault memory not readable</translation>
+    </message>
+    <message>
+        <source>Das Steuergerät hat geantwortet, gibt seinen Fehlerspeicher aber nicht heraus.</source>
+        <translation>The control unit answered but does not hand out its fault memory.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert</source>
+        <translation>No fault stored</translation>
+    </message>
+    <message>
+        <source>gerade aktiv</source>
+        <translation>active right now</translation>
+    </message>
+    <message>
+        <source>gespeichert</source>
+        <translation>stored</translation>
+    </message>
+    <message>
+        <source>vorläufig</source>
+        <translation>pending</translation>
+    </message>
+    <message>
+        <source>Warnlampe an</source>
+        <translation>warning lamp on</translation>
+    </message>
+    <message>
+        <source>%1 Steuergeräte gefunden, %2 davon mit Fehlern.</source>
+        <translation>%1 control units found, %2 of them with faults.</translation>
+    </message>
+    <message>
+        <source>Abgebrochen.</source>
+        <translation>Cancelled.</translation>
+    </message>
+    <message>
+        <source>Kein Steuergerät hat geantwortet. Manche Autos lassen über die Buchse nur das Motorsteuergerät antworten, dann hilft nur die Werkstatt.</source>
+        <translation>No control unit answered. Some cars only let the engine unit answer through the socket; then only a workshop tool helps.</translation>
+    </message>
+</context>
+<context>
     <name>caruspex::FaultsPage</name>
     <message>
         <source>Fehlerspeicher</source>
@@ -1448,6 +1587,10 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <source>Prüfbericht gespeichert: %1</source>
         <translation>Diagnostic report saved: %1</translation>
     </message>
+    <message>
+        <source>Steuergeräte über KKL</source>
+        <translation>Control units via KKL</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -1836,6 +1979,22 @@ A catalytic converter whose efficiency is scraping the limit shows up here, whil
     <message>
         <source>PDF-Dokument (*.pdf)</source>
         <translation>PDF document (*.pdf)</translation>
+    </message>
+    <message>
+        <source>Alle Steuergeräte</source>
+        <translation>All control units</translation>
+    </message>
+    <message>
+        <source>Teilenummer</source>
+        <translation>Part number</translation>
+    </message>
+    <message>
+        <source>Fehler</source>
+        <translation>Faults</translation>
+    </message>
+    <message>
+        <source>keine</source>
+        <translation>none</translation>
     </message>
 </context>
 <context>
@@ -3194,6 +3353,22 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Fertig</source>
         <translation>Done</translation>
+    </message>
+    <message>
+        <source>Erst verbinden.</source>
+        <translation>Connect first.</translation>
+    </message>
+    <message>
+        <source>Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel.</source>
+        <translation>This car does not speak CAN. UDS only exists on CAN cars; on older VW and Audi the control units go through the KKL cable.</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher von %1 gelöscht.</source>
+        <translation>Fault memory of %1 cleared.</translation>
+    </message>
+    <message>
+        <source>Löschen bei %1 hat nicht geklappt: %2</source>
+        <translation>Clearing %1 did not work: %2</translation>
     </message>
 </context>
 <context>

@@ -60,6 +60,13 @@ QWidget* fact(const QString& key, const QString& value) {
     return row;
 }
 
+// The name from the address list, or, for the generic sweep where the list
+// only knows the address, the name the unit reports itself (DID F197).
+QString displayName(const UdsEcuRow& r) {
+    if (r.kind == static_cast<int>(EcuKind::Other) && !r.systemName.isEmpty()) return r.systemName;
+    return r.name;
+}
+
 void clearLayout(QVBoxLayout* layout) {
     while (QLayoutItem* item = layout->takeAt(0)) {
         if (item->widget()) item->widget()->deleteLater();
@@ -256,7 +263,7 @@ void EcuPage::refreshList() {
         const QString state = count > 0 ? tr("%n Fehler", nullptr, count) : tr("in Ordnung");
         auto* item = new QListWidgetItem(icons::icon(kindIcon(r.kind), tone, tone, 18),
                                          QStringLiteral("%1\n%2  ·  %3")
-                                             .arg(r.name, hexId(r.request, r.extended29), state));
+                                             .arg(displayName(r), hexId(r.request, r.extended29), state));
         item->setData(Qt::UserRole, r.request);
         list_->addItem(item);
         if (id == keep) list_->setCurrentItem(item);
@@ -270,7 +277,7 @@ void EcuPage::showEcu(quint32 request) {
     const UdsEcuRow& r = *it;
     detail_->setVisible(true);
     empty_->setVisible(false);
-    name_->setText(r.name);
+    name_->setText(displayName(r));
     address_->setText(tr("Anfrage %1, Antwort %2").arg(hexId(r.request, r.extended29),
                                                         hexId(r.response, r.extended29)));
     clearLayout(facts_);

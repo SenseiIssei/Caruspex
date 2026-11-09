@@ -57,6 +57,12 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Schreibt nichts in den Adapter
 ![Adaptertest](docs/de/screenshot-adapter.png)
 
+**Alle Steuergeräte über CAN (UDS)**
+- Mit einem normalen ELM327 fragt Caruspex jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr, bei den meisten Autos ab etwa 2008
+- Fehlerspeicher je Steuergerät mit Fehlerart (Kurzschluss, Unterbrechung, unplausibel ...), Teilenummer, Software- und Hardwarestand
+- Adresslisten für VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA, für alle anderen ein Suchlauf über die üblichen Adressen
+- Löschen je Steuergerät mit Warnung
+
 **VW und Audi über KKL-Kabel (KWP1281 und KWP2000)**
 - Drosselklappe anlernen: echte Grundeinstellung im Messwertblock 060 oder 098
 - Alle Steuergeräte durchsuchen, auch ABS, Airbag, Kombi und Komfort, mit Prüfbericht

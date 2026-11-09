@@ -81,15 +81,16 @@ Stand 09.11.2026, nach 0.3.0. Größen: klein heißt ein paar Stunden, mittel ei
 
 Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast alle Autos ab etwa 2008 sprechen aber UDS (ISO 14229), und das geht lesend auch über einen ELM327.
 
-- [ ] UDS-Grundlage: Steuergerät per Kopfzeile ansprechen (ATSH, ATCRA), Sitzung, Antwort "busy" (7F 78) abwarten, ISO-TP in beide Richtungen. Mittel
-- [ ] Fehler je Steuergerät lesen (19 02), samt Fehlerart nach SAE J2012 (das dritte Byte: Kurzschluss, Unterbrechung, unplausibel ...). Mittel
-- [ ] Kennung je Steuergerät: Teilenummer, Hardware, Software, VIN (22 F187, F189, F191, F190). Klein
-- [ ] Alle Steuergeräte durchsuchen jetzt auch für CAN-Autos, mit demselben Prüfbericht wie über KKL. Mittel
-- [ ] Adresslisten je Marke als CSV wie der Katalog (VAG, BMW, Mercedes, Ford, GM, Toyota, Hyundai/Kia, Stellantis), dazu ein ehrlicher Suchlauf über den üblichen Bereich, wenn die Marke unbekannt ist. Mittel
-- [ ] Löschen je Steuergerät (14 FF FF FF) mit derselben Warnung wie heute. Klein
-- [ ] Airbag- und ABS-Codes (B und C) mit Klartext; Herstellerbedeutungen nur mit Quelle. Mittel
-- [ ] Demo-Auto bekommt ABS, Airbag und Klima, Tests mit einem nachgebauten UDS-Steuergerät. Mittel
+- [x] UDS-Grundlage: Steuergerät per Kopfzeile ansprechen (ATSH, ATCRA), Sitzung, Antwort "busy" (7F 78) abwarten, ISO-TP in beide Richtungen. Mittel
+- [x] Fehler je Steuergerät lesen (19 02), samt Fehlerart nach SAE J2012 (das dritte Byte: Kurzschluss, Unterbrechung, unplausibel ...). Mittel
+- [x] Kennung je Steuergerät: Teilenummer, Hardware, Software, VIN (22 F187, F189, F191, F190). Klein
+- [x] Alle Steuergeräte durchsuchen jetzt auch für CAN-Autos, mit demselben Prüfbericht wie über KKL. Mittel
+- [x] Adresslisten je Marke als CSV wie der Katalog (VAG, BMW, Mercedes, Ford, GM, Toyota, Hyundai/Kia, Stellantis), dazu ein ehrlicher Suchlauf über den üblichen Bereich, wenn die Marke unbekannt ist. Mittel
+- [x] Löschen je Steuergerät (14 FF FF FF) mit derselben Warnung wie heute. Klein
+- [~] Airbag- und ABS-Codes (B und C) mit Klartext: die Normcodes und die Fehlerart sind da, Herstellerbedeutungen fehlen noch (nur mit Quelle). Mittel
+- [x] Demo-Auto bekommt ABS, Airbag und Klima, Tests mit einem nachgebauten UDS-Steuergerät. Mittel
 - Ehrlich bleibt: VAG mit TP 2.0 (etwa 2004 bis 2012) kann ein ELM327 kaum sauber. Dort bleibt es bei OBD-II und, wo vorhanden, KKL
+- Stand: Adresslisten für VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA (77 Steuergeräte). BMW (Adressierung über 6F1) und Mercedes (eigene und 29-Bit-Schemata) fehlen, dort hilft der allgemeine Suchlauf nur teilweise. Ford-Karosseriegeräte auf MS-CAN erreicht ein normaler ELM327 nicht. Alle Adressen sind noch nicht am echten Auto geprüft
 
 ## Phase 7: Herstellerwerte (Modus 22) und eigene PIDs
 
