@@ -187,7 +187,7 @@ void TitleBar::paintEvent(QPaintEvent*) {
     shape.quadTo(box.right(), box.top(), box.right(), box.top() + r);
     shape.lineTo(box.right(), box.bottom());
     shape.closeSubpath();
-    p.fillPath(shape, QColor("#0d1016"));
+    p.fillPath(shape, color::sidebar);
     p.setPen(color::border);
     p.drawLine(0, height() - 1, width(), height() - 1);
 }

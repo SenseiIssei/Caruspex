@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
+#include <QLocale>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPlainTextEdit>
@@ -60,7 +61,7 @@ public:
         const QColor tone = severityColour(index.data(SeverityRole).toInt());
 
         QColor fill = selected ? rgbaColour(color::accent, 0.12)
-                               : hover ? QColor(255, 255, 255, 8) : QColor(0, 0, 0, 0);
+                               : hover ? rgbaColour(color::text, 0.04) : QColor(0, 0, 0, 0);
         p->setPen(selected ? QPen(rgbaColour(color::accent, 0.5), 1.0) : Qt::NoPen);
         p->setBrush(fill);
         p->drawRoundedRect(r, 12, 12);
@@ -236,6 +237,9 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     detailLayout->addWidget(causesBox_);
     checksBox_ = titled(tr("Selbst nachsehen"), &checks_);
     detailLayout->addWidget(checksBox_);
+    frameBox_ = titled(tr("Was im Moment des Fehlers los war"), &frame_);
+    detailLayout->addWidget(frameBox_);
+    frameBox_->setVisible(false);
     cost_ = makeLabel(QString(), "Hint", true);
     detailLayout->addWidget(cost_);
     detailLayout->addStretch();
@@ -269,6 +273,11 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     // The scroll area is what shows or hides, not the card inside it.
     detail_ = detailScroll;
     detailScroll->setVisible(false);
+}
+
+void FaultsPage::onFreezeFrames(const QVector<FreezeFrameRow>& frames) {
+    frames_ = frames;
+    if (list_->currentRow() >= 0) showSelected(list_->currentRow());
 }
 
 void FaultsPage::setBrand(const QString& brand) {
@@ -391,6 +400,33 @@ void FaultsPage::showSelected(int row) {
     }
     checksBox_->setVisible(!info.checks.empty());
 
+    // The freeze frame the control unit stored together with this code.
+    clearLayout(frame_);
+    const FreezeFrameRow* match = nullptr;
+    for (const FreezeFrameRow& f : std::as_const(frames_)) {
+        if (f.dtc == fault.code) {
+            match = &f;
+            break;
+        }
+    }
+    if (match) {
+        for (const LiveRow& v : match->values) {
+            if (v.pid == 0x02) continue;   // the code itself
+            const QString value = v.text.isEmpty()
+                                      ? QStringLiteral("%1 %2").arg(QLocale().toString(v.value, 'f', 1), v.unit)
+                                      : v.text;
+            auto* row = new QWidget;
+            auto* h = new QHBoxLayout(row);
+            h->setContentsMargins(0, 0, 0, 0);
+            h->addWidget(makeLabel(v.name, "Subtle"), 1);
+            auto* number = makeLabel(value);
+            number->setStyleSheet(QStringLiteral("font-weight: 600;"));
+            h->addWidget(number);
+            frame_->addWidget(row);
+        }
+    }
+    frameBox_->setVisible(match != nullptr && !match->values.isEmpty());
+
     cost_->setVisible(info.costClass != CostClass::Unknown);
     if (info.costClass != CostClass::Unknown) {
         cost_->setText(tr("Kosten in der Werkstatt: %1. %2")
@@ -406,6 +442,7 @@ void FaultsPage::setConnected(bool connected) {
     if (!connected) {
         list_->clear();
         rows_.clear();
+        frames_.clear();
         summary_->clear();
         throttleHint_->setVisible(false);
         exportButton_->setEnabled(false);

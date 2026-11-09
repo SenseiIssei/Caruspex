@@ -355,32 +355,8 @@ Protocol: %3</translation>
         <translation>All good</translation>
     </message>
     <message>
-        <source>Drehzahl</source>
-        <translation>Engine speed</translation>
-    </message>
-    <message>
-        <source>1/min</source>
-        <translation>rpm</translation>
-    </message>
-    <message>
-        <source>Geschwindigkeit</source>
-        <translation>Speed</translation>
-    </message>
-    <message>
         <source>Kühlmittel</source>
         <translation>Coolant</translation>
-    </message>
-    <message>
-        <source>Motorlast</source>
-        <translation>Engine load</translation>
-    </message>
-    <message>
-        <source>Drosselklappe</source>
-        <translation>Throttle body</translation>
-    </message>
-    <message>
-        <source>Bordspannung</source>
-        <translation>Battery voltage</translation>
     </message>
     <message>
         <source>DEIN FAHRZEUG</source>
@@ -425,10 +401,6 @@ Protocol: %3</translation>
     <message>
         <source>Live</source>
         <translation>Live</translation>
-    </message>
-    <message>
-        <source>läuft, sobald eine Messung gestartet ist</source>
-        <translation>runs once a measurement has started</translation>
     </message>
     <message>
         <source>%1 über %2, Protokoll %3</source>
@@ -541,6 +513,18 @@ Protocol: %3</translation>
     <message>
         <source>Bitte ansehen</source>
         <translation>Needs attention</translation>
+    </message>
+    <message>
+        <source>Live starten</source>
+        <translation>Start live</translation>
+    </message>
+    <message>
+        <source>Anzeigen wählen</source>
+        <translation>Choose gauges</translation>
+    </message>
+    <message>
+        <source>Live anhalten</source>
+        <translation>Pause live</translation>
     </message>
 </context>
 <context>
@@ -703,6 +687,10 @@ The readiness monitors are reset as well.</translation>
     <message>
         <source>Kosten in der Werkstatt: %1. %2</source>
         <translation>Workshop cost: %1. %2</translation>
+    </message>
+    <message>
+        <source>Was im Moment des Fehlers los war</source>
+        <translation>What was going on when the fault was stored</translation>
     </message>
 </context>
 <context>
@@ -1229,6 +1217,10 @@ Ignition on, engine off. With the engine running, most control units refuse the 
             <numerusform>%n value</numerusform>
             <numerusform>%n values</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>% Bereich</source>
+        <translation>% of range</translation>
     </message>
 </context>
 <context>
@@ -2228,10 +2220,6 @@ Ignition on, engine off. The run takes a few minutes.</translation>
         <translation>Language</translation>
     </message>
     <message>
-        <source>Die Sprache wechselt beim nächsten Start.</source>
-        <translation>The language changes on the next start.</translation>
-    </message>
-    <message>
         <source>Auf Vorgabe zurücksetzen</source>
         <translation>Reset to defaults</translation>
     </message>
@@ -2258,6 +2246,22 @@ Ignition on, engine off. The run takes a few minutes.</translation>
     <message>
         <source>PROGRAMM</source>
         <translation>APP</translation>
+    </message>
+    <message>
+        <source>Dunkel</source>
+        <translation>Dark</translation>
+    </message>
+    <message>
+        <source>Hell</source>
+        <translation>Light</translation>
+    </message>
+    <message>
+        <source>Erscheinungsbild</source>
+        <translation>Appearance</translation>
+    </message>
+    <message>
+        <source>Sprache und Erscheinungsbild wechseln beim nächsten Start.</source>
+        <translation>Language and appearance change on the next start.</translation>
     </message>
 </context>
 <context>
@@ -3225,6 +3229,10 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Fenstergröße, z.B. 1440x920</source>
         <translation>Window size, e.g. 1440x920</translation>
+    </message>
+    <message>
+        <source>Erscheinungsbild für diesen Start: dark oder light</source>
+        <translation>Appearance for this run: dark or light</translation>
     </message>
 </context>
 </TS>

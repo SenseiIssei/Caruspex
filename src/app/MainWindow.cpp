@@ -190,6 +190,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::liveValue, dashboard_, &DashboardPage::onLiveValue);
     connect(worker, &Worker::busy, dashboard_, &DashboardPage::onBusy);
     connect(worker, &Worker::faults, faults_, &FaultsPage::onFaults);
+    connect(worker, &Worker::freezeFrames, faults_, &FaultsPage::onFreezeFrames);
     connect(worker, &Worker::faults, this, [this](const QVector<FaultRow>& rows) {
         faultsButton_->setBadge(rows.isEmpty() ? QString() : QString::number(rows.size()),
                                 color::bad);
@@ -249,6 +250,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     });
     connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
     connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
+    connect(dashboard_, &DashboardPage::gaugesLiveRequested, &session_, &Session::startLiveRequested);
+    connect(dashboard_, &DashboardPage::gaugesLiveStopRequested, &session_, &Session::stopLiveRequested);
     connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
 
     // New pages
@@ -598,6 +601,10 @@ void MainWindow::showPageByName(const QString& name) {
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);
         emit session_.probeAdapterRequested();
+    }
+    if (name == QStringLiteral("start-live")) {
+        navigateTo(dashboard_);
+        dashboard_->startGaugesLive();
     }
     if (name == QStringLiteral("live-run")) {
         navigateTo(live_);

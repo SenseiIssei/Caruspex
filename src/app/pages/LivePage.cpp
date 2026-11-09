@@ -17,6 +17,8 @@
 #include <QTableWidget>
 #include <QTextStream>
 #include <QVBoxLayout>
+#include <QCursor>
+#include <QToolTip>
 #include <QValueAxis>
 
 #include <limits>
@@ -83,7 +85,10 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     axisX_->setTitleText(tr("Sekunden"));
     axisX_->setRange(0, windowSeconds_);
     axisY_ = new QValueAxis;
-    axisY_->setRange(0, 100);
+    axisY_->setRange(-4, 104);
+    axisY_->setTickCount(6);
+    axisY_->setLabelFormat(QStringLiteral("%.0f"));
+    axisY_->setTitleText(tr("% Bereich"));
     for (QValueAxis* axis : {axisX_, axisY_}) {
         axis->setLabelsColor(theme::color::textMuted);
         axis->setTitleBrush(QBrush(theme::color::textMuted));
@@ -253,11 +258,30 @@ void LivePage::resetChart() {
         delete s;
     }
     series_.clear();
+    tracks_.clear();
     axisX_->setRange(0, windowSeconds_);
-    axisY_->setRange(0, 100);
-    yLow_ = std::numeric_limits<double>::max();
-    yHigh_ = std::numeric_limits<double>::lowest();
-    rescaleClock_.invalidate();
+}
+
+double LivePage::share(const Track& track, double value) const {
+    const double span = track.high - track.low;
+    if (span <= 0.0) return 50.0;
+    return qBound(-4.0, (value - track.low) / span * 100.0, 104.0);
+}
+
+void LivePage::renormalise(int key) {
+    QLineSeries* line = series_.value(key, nullptr);
+    if (!line) return;
+    const Track& track = tracks_[key];
+    QList<QPointF> points = line->points();
+    for (int i = 0; i < points.size() && i < track.raw.size(); ++i) {
+        points[i].setY(share(track, track.raw[i]));
+    }
+    line->replace(points);
+    line->setName(QStringLiteral("%1 [%2 bis %3 %4]")
+                      .arg(track.name)
+                      .arg(track.low, 0, 'g', 4)
+                      .arg(track.high, 0, 'g', 4)
+                      .arg(track.unit));
 }
 
 void LivePage::setWindowSeconds(int seconds) {
@@ -297,10 +321,35 @@ void LivePage::onLiveValue(const LiveRow& row) {
         exportButton_->setEnabled(true);
     }
 
+    Track& track = tracks_[row.pid];
+    bool rangeChanged = false;
+    if (!track.seen) {
+        track.seen = true;
+        track.name = row.name;
+        track.unit = row.unit;
+        if (row.displayMax > row.displayMin) {
+            track.low = row.displayMin;
+            track.high = row.displayMax;
+            track.fixed = true;
+        } else {
+            // No range in the table: start around the first value and grow.
+            const double pad = qMax(1.0, qAbs(row.value) * 0.1);
+            track.low = row.value - pad;
+            track.high = row.value + pad;
+        }
+        rangeChanged = true;
+    } else if (row.value < track.low || row.value > track.high) {
+        // A reading outside the range: widen it with a little headroom so
+        // it does not happen on every sample.
+        const double span = qMax(1.0, track.high - track.low);
+        if (row.value < track.low) track.low = row.value - span * 0.1;
+        if (row.value > track.high) track.high = row.value + span * 0.1;
+        rangeChanged = true;
+    }
+
     QLineSeries* line = series_.value(row.pid, nullptr);
     if (!line) {
         line = new QLineSeries;
-        line->setName(QStringLiteral("%1 [%2]").arg(row.name, row.unit));
         QPen pen(kSeriesColours[series_.size() % 8]);
         pen.setWidthF(2.2);
         line->setPen(pen);
@@ -308,42 +357,31 @@ void LivePage::onLiveValue(const LiveRow& row) {
         line->attachAxis(axisX_);
         line->attachAxis(axisY_);
         series_.insert(row.pid, line);
-    }
-    line->append(seconds, row.value);
-
-    // Drop points outside the time window
-    while (line->count() > 2 && line->at(0).x() < seconds - windowSeconds_) line->remove(0);
-
-    // Move the axes along
-    if (seconds > windowSeconds_) axisX_->setRange(seconds - windowSeconds_, seconds);
-
-    // Running bounds. Iterating over all points of all curves would be
-    // quadratic and would bog down the UI with fast adapters.
-    yLow_ = qMin(yLow_, row.value);
-    yHigh_ = qMax(yHigh_, row.value);
-
-    // Recompute properly every two seconds so the axis narrows again once
-    // old outliers have left the time window.
-    if (!rescaleClock_.isValid() || rescaleClock_.elapsed() > 2000) {
-        rescaleClock_.restart();
-        double lo = std::numeric_limits<double>::max();
-        double hi = std::numeric_limits<double>::lowest();
-        for (QLineSeries* line : std::as_const(series_)) {
-            for (const QPointF& point : line->points()) {
-                lo = qMin(lo, point.y());
-                hi = qMax(hi, point.y());
+        const int key = row.pid;
+        // Hovering a curve shows the real value, not the share.
+        connect(line, &QLineSeries::hovered, this, [this, key](const QPointF& point, bool state) {
+            if (!state) {
+                QToolTip::hideText();
+                return;
             }
-        }
-        if (lo <= hi) {
-            yLow_ = lo;
-            yHigh_ = hi;
-        }
+            const Track& t = tracks_[key];
+            const double value = t.low + point.y() / 100.0 * (t.high - t.low);
+            QToolTip::showText(QCursor::pos(),
+                               QStringLiteral("%1: %2 %3").arg(t.name).arg(value, 0, 'f', 2).arg(t.unit));
+        });
+    }
+    track.raw.push_back(row.value);
+    line->append(seconds, share(track, row.value));
+    if (rangeChanged) renormalise(row.pid);
+
+    // Drop points outside the time window, and their raw values with them.
+    while (line->count() > 2 && line->at(0).x() < seconds - windowSeconds_) {
+        line->remove(0);
+        if (!track.raw.isEmpty()) track.raw.removeFirst();
     }
 
-    if (yLow_ <= yHigh_) {
-        const double pad = qMax(1.0, (yHigh_ - yLow_) * 0.12);
-        axisY_->setRange(yLow_ - pad, yHigh_ + pad);
-    }
+    // Move the time axis along.
+    if (seconds > windowSeconds_) axisX_->setRange(seconds - windowSeconds_, seconds);
 }
 
 void LivePage::exportCsv() {

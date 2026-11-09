@@ -93,7 +93,7 @@ void GaugeWidget::paintEvent(QPaintEvent*) {
     }
 
     // Track
-    p.setPen(QPen(QColor("#1d2230"), thickness, Qt::SolidLine, Qt::RoundCap));
+    p.setPen(QPen(color::track, thickness, Qt::SolidLine, Qt::RoundCap));
     p.drawArc(box, static_cast<int>(kStartAngle * 16), static_cast<int>(kSweep * 16));
 
     // Value arc. It stays hidden while nothing is measured: on scales that

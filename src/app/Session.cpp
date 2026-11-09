@@ -42,6 +42,8 @@ LiveRow toRow(const LiveValue& v) {
     row.value = v.value;
     row.warn = v.warn;
     row.time = appSeconds();
+    row.displayMin = v.displayMin;
+    row.displayMax = v.displayMax;
     return row;
 }
 
@@ -254,10 +256,20 @@ void Worker::readDetails() {
     if (!obd_) return;
     emit busy(true);
     const QString vin = QString::fromStdString(obd_->readVin());
-    std::string code;
-    QVector<LiveRow> frame;
-    for (const LiveValue& v : obd_->readFreezeFrame(code)) frame.push_back(toRow(v));
-    emit vehicleInfo(vin, QString::fromStdString(code), frame);
+    // All freeze frames; the first one also goes out the old way for the
+    // pages that only know a single frame.
+    QVector<FreezeFrameRow> frames;
+    for (const FreezeFrame& f : obd_->readFreezeFrames()) {
+        FreezeFrameRow row;
+        row.frame = f.frame;
+        row.dtc = QString::fromStdString(f.dtc);
+        row.ecu = QString::fromStdString(f.ecu);
+        for (const LiveValue& v : f.values) row.values.push_back(toRow(v));
+        frames.push_back(row);
+    }
+    emit vehicleInfo(vin, frames.isEmpty() ? QString() : frames.front().dtc,
+                     frames.isEmpty() ? QVector<LiveRow>() : frames.front().values);
+    emit freezeFrames(frames);
 
     // One reading of the values the start page shows as tiles, so they are
     // not empty until a measurement runs.
@@ -297,10 +309,15 @@ void Worker::stopLive() {
 // the UI get through immediately.
 void Worker::pollTick() {
     if (!obd_ || pollPids_.isEmpty()) return;
-    const int pid = pollPids_[pollIndex_ % pollPids_.size()];
-    pollIndex_ = (pollIndex_ + 1) % pollPids_.size();
-
-    for (const LiveValue& value : obd_->readLiveAll(pid)) emit liveValue(toRow(value));
+    // Up to six PIDs per tick: on CAN they go out as one request, elsewhere
+    // the core reads them one by one. Either way the event loop gets back
+    // control after each slice, so a stop request is not delayed.
+    std::vector<int> slice;
+    for (int i = 0; i < 6 && i < pollPids_.size(); ++i) {
+        slice.push_back(pollPids_[pollIndex_ % pollPids_.size()]);
+        pollIndex_ = (pollIndex_ + 1) % pollPids_.size();
+    }
+    for (const LiveValue& value : obd_->readLiveBatch(slice)) emit liveValue(toRow(value));
 }
 
 void Worker::sendRaw(const QString& command) {
@@ -724,33 +741,20 @@ void Worker::runHealthCheck(int seconds) {
     input.monitorResultsRead = true;
 
     LiveValue fuelType;
-    if (obd_->readLive(0x51, fuelType)) {
-        const int code = static_cast<int>(fuelType.value);
-        input.fuel = (code == 4 || code == 23)               ? FuelType::Diesel
-                     : (code == 1 || code == 9 || code == 17) ? FuelType::Petrol
-                                                               : FuelType::Unknown;
-    }
+    if (obd_->readLive(0x51, fuelType)) input.fuel = fuelTypeFromObd(static_cast<int>(fuelType.value));
 
     // Live series: only what the car offers.
     const std::set<int> supported = obd_->supportedPids();
-    const int wanted[] = {0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0C, 0x0D, 0x0F, 0x10,
-                          0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1F, 0x21, 0x30, 0x31, 0x3C,
-                          0x42, 0x5C};
     std::vector<int> pids;
-    for (int pid : wanted) {
+    for (int pid : healthLivePids()) {
         if (supported.empty() || supported.count(pid)) pids.push_back(pid);
     }
     const double start = appSeconds();
     const int total = std::max(1, seconds);
     while (!pids.empty() && appSeconds() - start < seconds && !cancelScan_) {
-        for (int pid : pids) {
-            LiveValue value;
-            if (obd_->readLive(pid, value)) {
-                input.addValue(pid, value.value, appSeconds() - start);
-                emit liveValue(toRow(value));
-            }
-            if (cancelScan_) break;
-        }
+        const std::vector<LiveValue> values = obd_->readLiveBatch(pids);
+        input.addSnapshot(values, appSeconds() - start);
+        for (const LiveValue& value : values) emit liveValue(toRow(value));
         const double elapsed = appSeconds() - start;
         const int left = std::max(0, seconds - static_cast<int>(elapsed));
         const int percent = 25 + static_cast<int>(70.0 * elapsed / total);
@@ -885,6 +889,8 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<AppSettings>("caruspex::AppSettings");
     qRegisterMetaType<HealthRow>("caruspex::HealthRow");
     qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
+    qRegisterMetaType<FreezeFrameRow>("caruspex::FreezeFrameRow");
+    qRegisterMetaType<QVector<FreezeFrameRow>>("QVector<caruspex::FreezeFrameRow>");
 
     worker_ = new Worker();
     worker_->moveToThread(&thread_);

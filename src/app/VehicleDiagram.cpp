@@ -731,7 +731,8 @@ void VehicleDiagram::drawLabels(QPainter& p, const QTransform& toWidget) const {
         p.drawEllipse(to, 3.2, 3.2);
 
         QRectF box(c.x, chipY, c.w, chipH);
-        QColor bg = QColor(20, 23, 32, 235);
+        QColor bg = color::surface;
+        bg.setAlpha(240);
         p.setBrush(bg);
         QColor border = tone;
         border.setAlphaF(focused ? 1.0f : 0.6f);

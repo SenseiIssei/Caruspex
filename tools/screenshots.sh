@@ -20,7 +20,7 @@ export CARUSPEX_GARAGE="$(mktemp -d)/garage.json"
 size="1440x920"
 
 shot() {   # name page delay
-    "$app" --language "$lang" --demo --page "$2" --shot "$out/screenshot-$1.png" \
+    "$app" --theme dark --language "$lang" --demo --page "$2" --shot "$out/screenshot-$1.png" \
         --shot-delay "$3" --size "$size"
 }
 
@@ -30,7 +30,7 @@ shot live live-run 16000 &
 wait
 shot health health-run 22000 &
 shot adapter adapter-run 20000 &
-"$app" --language "$lang" --page vehicles:WVWZZZ1JZ3W386752 --shot "$out/screenshot-vehicles.png" \
+"$app" --theme dark --language "$lang" --page vehicles:WVWZZZ1JZ3W386752 --shot "$out/screenshot-vehicles.png" \
     --shot-delay 2500 --size "$size" &
 wait
 echo "Screenshots in $out"

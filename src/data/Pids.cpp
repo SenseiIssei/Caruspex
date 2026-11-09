@@ -431,7 +431,7 @@ std::vector<PidSpec> buildTable(bool english) {
              {.name = {"Motorlast berechnet", "Calculated engine load"}, .unit = "%",
               .field = percent(0), .min = 0, .max = 100});
     t.single(0x05, 1, C::Temperatures,
-             {.name = {"Kühlmitteltemperatur", "Coolant temperature"}, .unit = "C",
+             {.name = {"Kühlmitteltemperatur", "Coolant temperature"}, .unit = "°C",
               .field = temp8(0), .min = -40, .max = 130, .warnLow = -10, .warnHigh = 110});
     const Text trims[4] = {{"Kurzzeit-Gemischkorrektur Bank 1", "Short-term fuel trim bank 1"},
                            {"Langzeit-Gemischkorrektur Bank 1", "Long-term fuel trim bank 1"},
@@ -459,7 +459,7 @@ std::vector<PidSpec> buildTable(bool english) {
              {.name = {"Zündzeitpunkt", "Ignition timing advance"}, .unit = "Grad v.OT",
               .field = scaled(0, 1, 1, 2, -64), .min = -20, .max = 60, .unitEn = "deg BTDC"});
     t.single(0x0F, 1, C::Temperatures,
-             {.name = {"Ansauglufttemperatur", "Intake air temperature"}, .unit = "C",
+             {.name = {"Ansauglufttemperatur", "Intake air temperature"}, .unit = "°C",
               .field = temp8(0), .min = -40, .max = 100});
     t.single(0x10, 2, C::Air,
              {.name = {"Luftmasse (LMM)", "Mass air flow (MAF)"}, .unit = "g/s",
@@ -563,7 +563,7 @@ std::vector<PidSpec> buildTable(bool english) {
                           {"Katalysatortemperatur Bank 2 Sonde 2", "Catalyst temperature bank 2 sensor 2"}};
     for (int i = 0; i < 4; ++i) {
         t.single(0x3C + i, 2, C::Exhaust,
-                 {.name = cats[i], .unit = "C", .field = temp16(0), .min = 0, .max = 1000,
+                 {.name = cats[i], .unit = "°C", .field = temp16(0), .min = 0, .max = 1000,
                   .warnLow = -50, .warnHigh = 900});
     }
 
@@ -582,7 +582,7 @@ std::vector<PidSpec> buildTable(bool english) {
              {.name = {"Relative Drosselklappenstellung", "Relative throttle position"},
               .unit = "%", .field = percent(0), .min = 0, .max = 100});
     t.single(0x46, 1, C::Temperatures,
-             {.name = {"Umgebungstemperatur", "Ambient air temperature"}, .unit = "C",
+             {.name = {"Umgebungstemperatur", "Ambient air temperature"}, .unit = "°C",
               .field = temp8(0), .min = -40, .max = 60});
     const Text positions[6] = {{"Drosselklappe absolut B", "Absolute throttle position B"},
                                {"Drosselklappe absolut C", "Absolute throttle position C"},
@@ -650,7 +650,7 @@ std::vector<PidSpec> buildTable(bool english) {
              {.name = {"Restkapazität Hybridbatterie", "Hybrid battery remaining life"},
               .unit = "%", .field = percent(0), .min = 0, .max = 100});
     t.single(0x5C, 1, C::Temperatures,
-             {.name = {"Öltemperatur", "Engine oil temperature"}, .unit = "C", .field = temp8(0),
+             {.name = {"Öltemperatur", "Engine oil temperature"}, .unit = "°C", .field = temp8(0),
               .min = -40, .max = 150, .warnLow = -10, .warnHigh = 130});
     t.single(0x5D, 2, C::Fuel,
              {.name = {"Einspritzbeginn", "Fuel injection timing"}, .unit = "Grad v.OT",
@@ -698,9 +698,9 @@ std::vector<PidSpec> buildTable(bool english) {
            {.name = {"Luftmasse Sensor B", "Mass air flow sensor B"}, .unit = "g/s",
             .field = scaled(3, 2, 1, 32), .bit = 1, .min = 0, .max = 300}});
     t.add(0x67, 3, C::Temperatures, {"Kühlmitteltemperatur (Sensoren)", "Coolant temperature sensors"},
-          {{.name = {"Kühlmitteltemperatur Sensor 1", "Coolant temperature sensor 1"}, .unit = "C",
+          {{.name = {"Kühlmitteltemperatur Sensor 1", "Coolant temperature sensor 1"}, .unit = "°C",
             .field = temp8(1), .bit = 0, .min = -40, .max = 130, .warnLow = -10, .warnHigh = 110},
-           {.name = {"Kühlmitteltemperatur Sensor 2", "Coolant temperature sensor 2"}, .unit = "C",
+           {.name = {"Kühlmitteltemperatur Sensor 2", "Coolant temperature sensor 2"}, .unit = "°C",
             .field = temp8(2), .bit = 1, .min = -40, .max = 130, .warnLow = -10,
             .warnHigh = 110}});
     // Older control units send three bytes (two sensors), newer ones seven.
@@ -713,7 +713,7 @@ std::vector<PidSpec> buildTable(bool english) {
         for (int i = 0; i < 6; ++i) {
             defs.push_back({.name = keepText(std::string("Ansauglufttemperatur ") + posDe[i],
                                              std::string("Intake air temperature ") + posEn[i]),
-                            .unit = "C", .field = temp8(1 + i), .bit = i, .min = -40, .max = 100});
+                            .unit = "°C", .field = temp8(1 + i), .bit = i, .min = -40, .max = 100});
         }
         t.add(0x68, 7, C::Temperatures,
               {"Ansauglufttemperatur (Sensoren)", "Intake air temperature sensors"}, std::move(defs));
@@ -743,13 +743,13 @@ std::vector<PidSpec> buildTable(bool english) {
             .field = percent(4), .bit = 3, .min = 0, .max = 100}});
     t.add(0x6B, 5, C::Emissions, {"Temperatur Abgasrückführung", "EGR temperature"},
           {{.name = {"Temperatur Abgasrückführung Bank 1 Sensor 1", "EGR temperature bank 1 sensor 1"},
-            .unit = "C", .field = temp8Wide(1, 4), .bit = 0, .min = -40, .max = 600},
+            .unit = "°C", .field = temp8Wide(1, 4), .bit = 0, .min = -40, .max = 600},
            {.name = {"Temperatur Abgasrückführung Bank 1 Sensor 2", "EGR temperature bank 1 sensor 2"},
-            .unit = "C", .field = temp8Wide(2, 5), .bit = 1, .min = -40, .max = 600},
+            .unit = "°C", .field = temp8Wide(2, 5), .bit = 1, .min = -40, .max = 600},
            {.name = {"Temperatur Abgasrückführung Bank 2 Sensor 1", "EGR temperature bank 2 sensor 1"},
-            .unit = "C", .field = temp8Wide(3, 6), .bit = 2, .min = -40, .max = 600},
+            .unit = "°C", .field = temp8Wide(3, 6), .bit = 2, .min = -40, .max = 600},
            {.name = {"Temperatur Abgasrückführung Bank 2 Sensor 2", "EGR temperature bank 2 sensor 2"},
-            .unit = "C", .field = temp8Wide(4, 7), .bit = 3, .min = -40, .max = 600}});
+            .unit = "°C", .field = temp8Wide(4, 7), .bit = 3, .min = -40, .max = 600}});
     t.add(0x6C, 5, C::Air, {"Drosselklappen-Ansteuerung A und B", "Throttle actuator A and B"},
           {{.name = {"Drosselklappe A angefordert", "Commanded throttle actuator A"}, .unit = "%",
             .field = percent(1), .bit = 0, .min = 0, .max = 100},
@@ -764,13 +764,13 @@ std::vector<PidSpec> buildTable(bool english) {
             .field = scaled(1, 2, 10, 1), .bit = 0, .min = 0, .max = 250000},
            {.name = {"Raildruck A", "Fuel rail pressure A"}, .unit = "kPa",
             .field = scaled(3, 2, 10, 1), .bit = 1, .min = 0, .max = 250000},
-           {.name = {"Kraftstofftemperatur A", "Fuel temperature A"}, .unit = "C",
+           {.name = {"Kraftstofftemperatur A", "Fuel temperature A"}, .unit = "°C",
             .field = temp8(5), .bit = 2, .min = -40, .max = 120},
            {.name = {"Raildruck B angefordert", "Commanded fuel rail pressure B"}, .unit = "kPa",
             .field = scaled(6, 2, 10, 1), .bit = 3, .min = 0, .max = 250000},
            {.name = {"Raildruck B", "Fuel rail pressure B"}, .unit = "kPa",
             .field = scaled(8, 2, 10, 1), .bit = 4, .min = 0, .max = 250000},
-           {.name = {"Kraftstofftemperatur B", "Fuel temperature B"}, .unit = "C",
+           {.name = {"Kraftstofftemperatur B", "Fuel temperature B"}, .unit = "°C",
             .field = temp8(10), .bit = 5, .min = -40, .max = 120}});
     t.add(0x6E, 9, C::Fuel, {"Einspritzdruckregelung", "Injection pressure control system"},
           {{.name = {"Einspritzdruck A angefordert", "Commanded injection control pressure A"},
@@ -837,27 +837,27 @@ std::vector<PidSpec> buildTable(bool english) {
               keepText("Turboladertemperaturen " + tc, "Turbocharger " + tc + " temperatures"),
               {{.name = keepText("Turbolader " + tc + ", Luft vor Verdichter",
                                  "Turbocharger " + tc + " compressor inlet temperature"),
-                .unit = "C", .field = temp8(1), .bit = 0, .min = -40, .max = 100},
+                .unit = "°C", .field = temp8(1), .bit = 0, .min = -40, .max = 100},
                {.name = keepText("Turbolader " + tc + ", Luft nach Verdichter",
                                  "Turbocharger " + tc + " compressor outlet temperature"),
-                .unit = "C", .field = temp8(2), .bit = 1, .min = -40, .max = 250},
+                .unit = "°C", .field = temp8(2), .bit = 1, .min = -40, .max = 250},
                {.name = keepText("Turbolader " + tc + ", Abgas vor Turbine",
                                  "Turbocharger " + tc + " turbine inlet temperature"),
-                .unit = "C", .field = temp16(3), .bit = 2, .min = 0, .max = 1000,
+                .unit = "°C", .field = temp16(3), .bit = 2, .min = 0, .max = 1000,
                 .warnLow = -50, .warnHigh = 950},
                {.name = keepText("Turbolader " + tc + ", Abgas nach Turbine",
                                  "Turbocharger " + tc + " turbine outlet temperature"),
-                .unit = "C", .field = temp16(5), .bit = 3, .min = 0, .max = 1000}});
+                .unit = "°C", .field = temp16(5), .bit = 3, .min = 0, .max = 1000}});
     }
     t.add(0x77, 5, C::Temperatures, {"Ladeluftkühler", "Charge air cooler temperature"},
           {{.name = {"Ladelufttemperatur Bank 1 Sensor 1", "Charge air temperature bank 1 sensor 1"},
-            .unit = "C", .field = temp8Wide(1, 4), .bit = 0, .min = -40, .max = 150},
+            .unit = "°C", .field = temp8Wide(1, 4), .bit = 0, .min = -40, .max = 150},
            {.name = {"Ladelufttemperatur Bank 1 Sensor 2", "Charge air temperature bank 1 sensor 2"},
-            .unit = "C", .field = temp8Wide(2, 5), .bit = 1, .min = -40, .max = 150},
+            .unit = "°C", .field = temp8Wide(2, 5), .bit = 1, .min = -40, .max = 150},
            {.name = {"Ladelufttemperatur Bank 2 Sensor 1", "Charge air temperature bank 2 sensor 1"},
-            .unit = "C", .field = temp8Wide(3, 6), .bit = 2, .min = -40, .max = 150},
+            .unit = "°C", .field = temp8Wide(3, 6), .bit = 2, .min = -40, .max = 150},
            {.name = {"Ladelufttemperatur Bank 2 Sensor 2", "Charge air temperature bank 2 sensor 2"},
-            .unit = "C", .field = temp8Wide(4, 7), .bit = 3, .min = -40, .max = 150}});
+            .unit = "°C", .field = temp8Wide(4, 7), .bit = 3, .min = -40, .max = 150}});
     // Exhaust gas temperatures: 0x78/0x79 sensors 1 to 4, 0x98/0x99 sensors
     // 5 to 8, each with 0.1 C per bit and four support bits in byte A.
     auto addEgt = [&t](int pid, int bank, int firstSensor) {
@@ -868,7 +868,7 @@ std::vector<PidSpec> buildTable(bool english) {
                                       std::to_string(firstSensor + s),
                                   "Exhaust gas temperature bank " + std::to_string(bank) +
                                       " sensor " + std::to_string(firstSensor + s)),
-                 .unit = "C", .field = temp16(1 + 2 * s), .bit = s, .min = 0, .max = 1000,
+                 .unit = "°C", .field = temp16(1 + 2 * s), .bit = s, .min = 0, .max = 1000,
                  .warnLow = -50, .warnHigh = 950});
         }
         t.add(pid, 9, C::Exhaust,
@@ -896,13 +896,13 @@ std::vector<PidSpec> buildTable(bool english) {
     }
     t.add(0x7C, 9, C::Emissions, {"Partikelfilter, Temperaturen", "Particulate filter temperatures"},
           {{.name = {"Partikelfilter Bank 1, Temperatur davor", "Particulate filter bank 1 inlet temperature"},
-            .unit = "C", .field = temp16(1), .bit = 0, .min = 0, .max = 1000},
+            .unit = "°C", .field = temp16(1), .bit = 0, .min = 0, .max = 1000},
            {.name = {"Partikelfilter Bank 1, Temperatur danach", "Particulate filter bank 1 outlet temperature"},
-            .unit = "C", .field = temp16(3), .bit = 1, .min = 0, .max = 1000},
+            .unit = "°C", .field = temp16(3), .bit = 1, .min = 0, .max = 1000},
            {.name = {"Partikelfilter Bank 2, Temperatur davor", "Particulate filter bank 2 inlet temperature"},
-            .unit = "C", .field = temp16(5), .bit = 2, .min = 0, .max = 1000},
+            .unit = "°C", .field = temp16(5), .bit = 2, .min = 0, .max = 1000},
            {.name = {"Partikelfilter Bank 2, Temperatur danach", "Particulate filter bank 2 outlet temperature"},
-            .unit = "C", .field = temp16(7), .bit = 3, .min = 0, .max = 1000}});
+            .unit = "°C", .field = temp16(7), .bit = 3, .min = 0, .max = 1000}});
     t.single(0x7D, 1, C::Emissions,
              {.name = {"Stickoxid-Kontrollbereich (NTE)", "NOx NTE control area status"},
               .field = raw8(0), .text = nteText});
@@ -958,7 +958,7 @@ std::vector<PidSpec> buildTable(bool english) {
     addNox(0x83, false);
     t.single(0x84, 1, C::Temperatures,
              {.name = {"Oberflächentemperatur Krümmer", "Manifold surface temperature"},
-              .unit = "C", .field = temp8(0), .min = -40, .max = 215});
+              .unit = "°C", .field = temp8(0), .min = -40, .max = 215});
     t.add(0x85, 10, C::Emissions, {"AdBlue-System", "NOx reagent system (AdBlue)"},
           {{.name = {"AdBlue-Verbrauch im Schnitt", "Average reagent consumption"}, .unit = "l/h",
             .field = scaled(1, 2, 5, 1000), .bit = 0, .min = 0, .max = 5},

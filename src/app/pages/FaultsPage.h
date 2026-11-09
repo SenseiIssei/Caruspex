@@ -32,6 +32,7 @@ public:
 
 public slots:
     void onFaults(const QVector<caruspex::FaultRow>& rows);
+    void onFreezeFrames(const QVector<caruspex::FreezeFrameRow>& frames);
     void setConnected(bool connected);
     void onClearProgress(const QString& line);
     void onClearFinished(bool everythingGone, int remaining);
@@ -80,6 +81,9 @@ private:
     QLabel* cost_ = nullptr;
     QWidget* causesBox_ = nullptr;
     QWidget* checksBox_ = nullptr;
+    QWidget* frameBox_ = nullptr;
+    QVBoxLayout* frame_ = nullptr;
+    QVector<FreezeFrameRow> frames_;
     QVector<FaultRow> rows_;
 };
 

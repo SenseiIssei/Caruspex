@@ -178,7 +178,7 @@ TEST_CASE("The live value set covers the standard", "[pids]") {
 TEST_CASE("The newer live values compute correctly", "[pids]") {
     // Catalyst temperature: (256A+B)/10 - 40
     const PidSpec* cat = findPid(0x3C);
-    REQUIRE(cat->unit == std::string("C"));
+    REQUIRE(cat->unit == std::string("°C"));
     REQUIRE(cat->calc({0x13, 0x88}) == Catch::Approx(5000 / 10.0 - 40.0));
 
     // Wideband O2 sensor: lambda = (256A+B) * 2 / 65536

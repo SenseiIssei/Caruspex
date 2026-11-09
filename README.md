@@ -250,7 +250,7 @@ Then log out and back in.
 | Output | Description |
 |---|---|
 | `caruspex` / `caruspex.exe` / `caruspex.app` | GUI application |
-| `caruspex_cli` / `caruspex_cli.exe` | Scriptable command-line tool on the same core (`ports`, `read`, `clear`, `live`, `info`, `kklcheck`) |
+| `caruspex_cli` / `caruspex_cli.exe` | Scriptable command-line tool on the same core, see [Command-line tool](#command-line-tool) |
 
 ## Tests
 
@@ -294,6 +294,26 @@ The command-line tool works against the simulator as well:
 
 ```bash
 build/bin/Release/caruspex_cli.exe read --tcp 127.0.0.1:35000
+```
+
+### Command-line tool
+
+`caruspex_cli <command>` with `--demo`, `--tcp HOST[:PORT]` or `--port NAME [--baud N]`:
+
+| Command | What it does |
+|---|---|
+| `read` | Warning lamp, readiness and fault codes, with the meaning for the make when the VIN gives it away |
+| `vin` | VIN, what it says (maker, country, model year, check digit) and the matching car from the catalog |
+| `freeze` | Every freeze frame, one per stored fault |
+| `health` | Health check: faults, readiness, mode 06 and a live series (`--seconds N`, 15 by default) |
+| `probe` | Adapter test: what the ELM327 really is, which commands it knows, round trip times |
+| `live`, `info`, `clear`, `ecus`, `ports`, `kklcheck` | Live values, VIN and first freeze frame, clearing, all per control unit, serial ports, KKL cable self-test |
+
+`--json` prints `read`, `vin`, `health`, `probe` and `freeze` as JSON for scripts, `-v` logs every adapter
+command (to stderr together with `--json`). `caruspex_cli help` lists everything.
+
+```bash
+build/bin/Release/caruspex_cli.exe health --demo --json > health.json
 ```
 
 The screenshots on this page come from the demo car, taken by the app itself:

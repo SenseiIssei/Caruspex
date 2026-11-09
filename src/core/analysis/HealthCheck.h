@@ -105,6 +105,14 @@ struct HealthReport {
 
 HealthReport runHealthCheck(const HealthInput& input);
 
+// Mode 01 PIDs the rules look at, for collecting the live series. Ask only
+// those the car supports (Obd2::supportedPids).
+const std::vector<int>& healthLivePids();
+
+// Fuel type from the value of PID 0x51 (SAE J1979 fuel type coding).
+// Only the codes whose rules are clear are mapped; the rest is Unknown.
+FuelType fuelTypeFromObd(int code);
+
 // Thresholds used by the rules, exposed so the UI can show them and tests
 // can refer to them.
 namespace limits {

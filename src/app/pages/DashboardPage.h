@@ -13,6 +13,7 @@ class QLabel;
 class QPushButton;
 class QFrame;
 class QVBoxLayout;
+class QGridLayout;
 
 namespace caruspex {
 
@@ -39,6 +40,8 @@ public:
     int score() const { return score_; }
     // Brand of the connected car, for brand-specific fault meanings.
     void setBrand(const QString& brand);
+    // Starts the gauges as if the button was pressed (used by --page start-live).
+    void startGaugesLive();
     QString scoreCaption() const { return caption_; }
     const QVector<Finding>& findings() const { return findings_; }
 
@@ -58,6 +61,9 @@ signals:
     void connectRequested();
     void faultsRequested();
     void reportRequested();
+    // Poll exactly the PIDs on the gauges, without leaving the start page.
+    void gaugesLiveRequested(const QVector<int>& pids);
+    void gaugesLiveStopRequested();
     void scoreChanged(int score);
 
 private:
@@ -66,6 +72,7 @@ private:
                       const QVector<Finding>& findings, bool clickableFaults);
     void updateHero();
     GaugeWidget* gauge(int pid);
+    void rebuildGauges();
 
     VehicleDiagram* car_ = nullptr;
     QLabel* eyebrow_ = nullptr;
@@ -86,6 +93,10 @@ private:
     StatTile* odometer_ = nullptr;
     StatTile* fuel_ = nullptr;
     QHash<int, GaugeWidget*> gauges_;
+    QVector<int> gaugePids_;
+    QGridLayout* gaugeGrid_ = nullptr;
+    QPushButton* gaugeLive_ = nullptr;
+    bool gaugesRunning_ = false;
 
     bool connected_ = false;
     bool busy_ = false;

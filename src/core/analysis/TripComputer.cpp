@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <set>
 
 namespace caruspex::analysis {
 
@@ -61,7 +62,12 @@ double TripComputer::airFlowFromSpeedDensity(double mapKpa, double intakeC, doub
 void TripComputer::reset() { *this = TripComputer(config_); }
 
 void TripComputer::addSnapshot(const std::vector<LiveValue>& values, double tSeconds) {
-    for (const LiveValue& v : values) addSample(v.pid, v.value, tSeconds);
+    // Only the first value of each PID: the primary one, see
+    // HealthInput::addSnapshot.
+    std::set<int> seen;
+    for (const LiveValue& v : values) {
+        if (seen.insert(v.pid).second) addSample(v.pid, v.value, tSeconds);
+    }
 }
 
 const TripComputer::Held* TripComputer::fresh(int pid, double t) const {

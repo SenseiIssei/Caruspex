@@ -212,7 +212,7 @@ LiveValue Obd2::makeValue(const PidSpec& spec, const PidReading& reading,
     return out;
 }
 
-std::vector<LiveValue> Obd2::readLiveAll(int pid) {
+std::vector<LiveValue> Obd2::readPid(int pid, bool everyEcu) {
     std::vector<LiveValue> out;
     const PidSpec* spec = findPid(pid);
     if (!spec) return out;
@@ -228,10 +228,12 @@ std::vector<LiveValue> Obd2::readLiveAll(int pid) {
         for (const PidReading& reading : decodePid(*spec, data)) {
             out.push_back(makeValue(*spec, reading, sourceAt(result, i)));
         }
-        if (!out.empty()) break;
+        if (!out.empty() && !everyEcu) break;
     }
     return out;
 }
+
+std::vector<LiveValue> Obd2::readLiveAll(int pid) { return readPid(pid, false); }
 
 bool Obd2::readLive(int pid, LiveValue& out) {
     std::vector<LiveValue> all = readLiveAll(pid);
@@ -241,10 +243,157 @@ bool Obd2::readLive(int pid, LiveValue& out) {
 }
 
 std::vector<LiveValue> Obd2::readLive(const std::vector<int>& pids) {
+    // readLive(int) keeps the first value of a PID, which is the primary
+    // value whenever the control unit reports it. The same here.
+    const std::vector<LiveValue> all = readLiveBatch(pids);
     std::vector<LiveValue> out;
     for (int pid : pids) {
-        LiveValue value;
-        if (readLive(pid, value)) out.push_back(std::move(value));
+        const auto it = std::find_if(all.begin(), all.end(),
+                                     [pid](const LiveValue& v) { return v.pid == pid; });
+        if (it != all.end()) out.push_back(*it);
+    }
+    return out;
+}
+
+// ---------------------------------------------------------------------------
+// Several PIDs per request (CAN only)
+// ---------------------------------------------------------------------------
+
+bool batchablePid(int pid) {
+    if (pid <= 0 || pid > 0xFF || pid % 0x20 == 0) return false;
+    // PID 0x68 (intake air temperature sensors) is three bytes on older
+    // control units and seven on newer ones. Inside a combined answer a
+    // wrong length would shift every PID after it, so it is asked alone.
+    if (pid == 0x68) return false;
+    const PidSpec* spec = findPid(pid);
+    return spec && spec->bytes >= 1;
+}
+
+bool splitMultiPidAnswer(const std::vector<int>& data, const std::vector<int>& requested,
+                         std::vector<std::pair<int, std::vector<int>>>& blocks) {
+    blocks.clear();
+    std::set<int> seen;
+    size_t pos = 0;
+    while (pos < data.size()) {
+        const int pid = data[pos];
+        const bool wanted = std::find(requested.begin(), requested.end(), pid) != requested.end() &&
+                            seen.count(pid) == 0;
+        if (!wanted) {
+            // Some control units fill the rest of the frame. Bytes that can
+            // only be padding are fine after at least one complete block.
+            const bool padding =
+                !blocks.empty() && std::all_of(data.begin() + static_cast<std::ptrdiff_t>(pos),
+                                               data.end(), [](int b) {
+                                                   return b == 0x00 || b == 0x55 || b == 0xAA ||
+                                                          b == 0xCC;
+                                               });
+            return padding;
+        }
+        const PidSpec* spec = findPid(pid);
+        if (!spec || spec->bytes < 1) return false;
+        const size_t length = static_cast<size_t>(spec->bytes);
+        if (pos + 1 + length > data.size()) return false;
+        blocks.push_back({pid, std::vector<int>(data.begin() + static_cast<std::ptrdiff_t>(pos + 1),
+                                                data.begin() + static_cast<std::ptrdiff_t>(pos + 1 + length))});
+        seen.insert(pid);
+        pos += 1 + length;
+    }
+    return !blocks.empty();
+}
+
+bool Obd2::readGroup(const std::vector<int>& group, bool everyEcu,
+                     std::map<int, std::vector<LiveValue>>& values, std::vector<int>& missing) {
+    std::string command = "01";
+    for (int pid : group) command += hexCommand("%02X", pid);
+    const ElmResult result = elm_.request(command, 0x01, 4000);
+    if (!result.ok() || result.messages.empty()) return false;
+
+    // Decode everything first: one answer that does not add up spoils the
+    // group, and nothing of it may land in values then.
+    std::map<int, std::vector<LiveValue>> found;
+    std::set<int> answered;   // present in an answer, even if no value was usable
+    for (size_t i = 0; i < result.messages.size(); ++i) {
+        std::vector<std::pair<int, std::vector<int>>> blocks;
+        if (!splitMultiPidAnswer(result.messages[i], group, blocks)) return false;
+        for (const auto& [pid, data] : blocks) {
+            answered.insert(pid);
+            // As in readLiveAll: the first control unit that answers a PID
+            // with something usable keeps it, unless every one is wanted.
+            if (!everyEcu && found.count(pid)) continue;
+            const PidSpec* spec = findPid(pid);
+            for (const PidReading& reading : decodePid(*spec, data)) {
+                found[pid].push_back(makeValue(*spec, reading, sourceAt(result, i)));
+            }
+        }
+    }
+    for (auto& [pid, list] : found) {
+        std::vector<LiveValue>& target = values[pid];
+        target.insert(target.end(), list.begin(), list.end());
+    }
+    missing.clear();
+    for (int pid : group) {
+        if (!answered.count(pid)) missing.push_back(pid);
+    }
+    return true;
+}
+
+std::vector<LiveValue> Obd2::readLiveBatch(const std::vector<int>& pids, bool everyEcu) {
+    // Every PID once, in the order asked; unknown PIDs are dropped like in
+    // readLiveAll.
+    std::vector<int> order;
+    for (int pid : pids) {
+        if (findPid(pid) && std::find(order.begin(), order.end(), pid) == order.end())
+            order.push_back(pid);
+    }
+
+    std::map<int, std::vector<LiveValue>> values;
+    std::vector<int> single;
+    if (elm_.isCan()) {
+        std::vector<int> grouped;
+        for (int pid : order) {
+            if (batchablePid(pid) && !batchRefused_.count(pid)) grouped.push_back(pid);
+            else single.push_back(pid);
+        }
+        constexpr size_t kMaxPerRequest = 6;   // SAE J1979 on ISO 15765-4
+        for (size_t start = 0; start < grouped.size(); start += kMaxPerRequest) {
+            const size_t end = std::min(grouped.size(), start + kMaxPerRequest);
+            const std::vector<int> group(grouped.begin() + static_cast<std::ptrdiff_t>(start),
+                                         grouped.begin() + static_cast<std::ptrdiff_t>(end));
+            if (group.size() == 1) {
+                single.push_back(group.front());
+                continue;
+            }
+            std::vector<int> missing;
+            if (!readGroup(group, everyEcu, values, missing)) missing = group;
+            // Left out or spoilt: from now on these are asked one by one.
+            // That also catches control units that only answer the first PID
+            // of a combined request.
+            for (int pid : missing) {
+                batchRefused_.insert(pid);
+                single.push_back(pid);
+            }
+        }
+        // Single requests go out in the order asked, which keeps a log of
+        // the traffic easy to follow.
+        const auto position = [&order](int pid) {
+            return std::find(order.begin(), order.end(), pid) - order.begin();
+        };
+        std::stable_sort(single.begin(), single.end(),
+                         [&position](int a, int b) { return position(a) < position(b); });
+    } else {
+        single = order;
+    }
+
+    for (int pid : single) {
+        std::vector<LiveValue> list = readPid(pid, everyEcu);
+        std::vector<LiveValue>& target = values[pid];
+        target.insert(target.end(), list.begin(), list.end());
+    }
+
+    std::vector<LiveValue> out;
+    for (int pid : order) {
+        const auto it = values.find(pid);
+        if (it != values.end()) out.insert(out.end(), it->second.begin(), it->second.end());
     }
     return out;
 }
@@ -720,6 +869,96 @@ std::vector<LiveValue> Obd2::readFreezeFrame(std::string& triggerCode) {
         rows.push_back(makeValue(*spec, readings.front(), sourceAt(result, 0)));
     }
     return rows;
+}
+
+std::vector<int> Obd2::freezeFramePids(int frame) {
+    // The same masks as for mode 01, but with the frame number after the
+    // PID: request "0200 01" for frame 1, answer "42 00 01 BE 1F ...".
+    std::set<int> found;
+    for (int base = 0x00; base <= 0xC0; base += 0x20) {
+        char command[16];
+        std::snprintf(command, sizeof(command), "02%02X%02X", base, frame & 0xFF);
+        const ElmResult result = elm_.request(command, 0x02, 4000);
+        if (!result.ok()) break;
+        bool next = false;
+        for (const std::vector<int>& msg : result.messages) {
+            if (msg.size() < 6 || msg[0] != base || msg[1] != frame) continue;
+            const unsigned mask = (static_cast<unsigned>(msg[2]) << 24) |
+                                  (static_cast<unsigned>(msg[3]) << 16) |
+                                  (static_cast<unsigned>(msg[4]) << 8) |
+                                  static_cast<unsigned>(msg[5]);
+            for (int i = 0; i < 32; ++i) {
+                if (mask & (1u << (31 - i))) found.insert(base + i + 1);
+            }
+            if (mask & 1u) next = true;
+        }
+        if (!next) break;
+    }
+    std::vector<int> pids;
+    for (int pid : found) {
+        // PID 02 is the fault code itself, the markers are no values.
+        if (pid == 0x02 || pid % 0x20 == 0 || !findPid(pid)) continue;
+        pids.push_back(pid);
+    }
+    if (pids.empty()) pids = {0x03, 0x04, 0x05, 0x06, 0x07, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11};
+    return pids;
+}
+
+std::vector<FreezeFrame> Obd2::readFreezeFrames(int maxFrames) {
+    std::vector<FreezeFrame> out;
+    for (int frame = 0; frame < maxFrames && frame <= 0xFF; ++frame) {
+        // PID 02 of the frame: which fault stored it. 00 00 means the frame
+        // is empty, and so are all after it.
+        char command[16];
+        std::snprintf(command, sizeof(command), "0202%02X", frame);
+        const ElmResult trigger = elm_.request(command, 0x02, 4000);
+        if (!trigger.ok()) break;
+
+        std::vector<FreezeFrame> found;
+        for (size_t i = 0; i < trigger.messages.size(); ++i) {
+            const std::vector<int>& msg = trigger.messages[i];
+            // A control unit that ignores the frame number would hand out
+            // frame 0 again and again; only an answer for this frame counts.
+            if (msg.size() < 4 || msg[0] != 0x02 || msg[1] != frame) continue;
+            const std::string code = decodeDtc(msg[2], msg[3]);
+            if (code.empty()) continue;
+            FreezeFrame f;
+            f.frame = frame;
+            f.dtc = code;
+            f.ecuSource = sourceAt(trigger, i);
+            f.ecu = ecuDisplayName(f.ecuSource);
+            found.push_back(std::move(f));
+        }
+        if (found.empty()) break;
+
+        std::vector<std::set<int>> filled(found.size());
+        for (int pid : freezeFramePids(frame)) {
+            const PidSpec* spec = findPid(pid);
+            if (!spec) continue;
+            std::snprintf(command, sizeof(command), "02%02X%02X", pid, frame);
+            const ElmResult result = elm_.request(command, 0x02, 4000);
+            if (!result.ok()) continue;
+            for (size_t i = 0; i < result.messages.size(); ++i) {
+                std::vector<int> data = result.messages[i];
+                // Mode 02 answers with PID and frame number in front of the data.
+                if (data.size() < 3 || data[0] != pid || data[1] != frame) continue;
+                data.erase(data.begin(), data.begin() + 2);
+                // The frame of the control unit that sent it. Without headers
+                // every source is empty and the answers go in order.
+                const std::string& source = sourceAt(result, i);
+                for (size_t k = 0; k < found.size(); ++k) {
+                    if (found[k].ecuSource != source || filled[k].count(pid)) continue;
+                    filled[k].insert(pid);
+                    for (const PidReading& reading : decodePid(*spec, data)) {
+                        found[k].values.push_back(makeValue(*spec, reading, source));
+                    }
+                    break;
+                }
+            }
+        }
+        out.insert(out.end(), found.begin(), found.end());
+    }
+    return out;
 }
 
 }  // namespace caruspex

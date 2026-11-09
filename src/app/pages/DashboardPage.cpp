@@ -5,6 +5,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLocale>
+#include <QMenu>
+#include <QSettings>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
@@ -16,6 +18,7 @@
 #include "app/pages/FaultsPage.h"
 #include "data/DtcDatabase.h"
 #include "data/DtcLocation.h"
+#include "data/Pids.h"
 
 namespace caruspex {
 
@@ -23,34 +26,11 @@ using namespace theme;
 
 namespace {
 
-// Titles and units are untranslated source texts (QT_TRANSLATE_NOOP) and get
-// translated when the gauges are built.
-struct GaugeSpec {
-    int pid;
-    const char* title;
-    const char* unit;
-    double minimum;
-    double maximum;
-    int decimals;
-    bool hasWarn;
-    double warnFrom;
-    double warnTo;
-};
-
-const GaugeSpec kGauges[] = {
-    {0x0C, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Drehzahl"),
-     QT_TRANSLATE_NOOP("caruspex::DashboardPage", "1/min"), 0, 7000, 0, false, 0, 0},
-    {0x0D, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Geschwindigkeit"), "km/h", 0, 220, 0,
-     false, 0, 0},
-    {0x05, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Kühlmittel"), "°C", -40, 130, 0, true,
-     70, 105},
-    {0x04, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Motorlast"), "%", 0, 100, 0, false, 0,
-     0},
-    {0x11, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Drosselklappe"), "%", 0, 100, 0, false,
-     0, 0},
-    {0x42, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Bordspannung"), "V", 8, 16, 1, true,
-     11.8, 15.0},
-};
+// What can be put on a gauge, in menu order. Names, units and ranges come
+// from the PID table, so they follow the language and the standard.
+const int kGaugeChoices[] = {0x0C, 0x0D, 0x05, 0x04, 0x11, 0x42, 0x0F, 0x10, 0x0B, 0x2F,
+                             0x5C, 0x5E, 0x0E, 0x06, 0x07, 0x3C, 0x46, 0x49, 0x70, 0xA4};
+const QVector<int> kDefaultGauges = {0x0C, 0x0D, 0x05, 0x04, 0x11, 0x42};
 
 QPushButton* makeButton(const QString& text, const QString& iconName, bool primary) {
     auto* b = new QPushButton(text);
@@ -174,22 +154,63 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     QVBoxLayout* gaugeLayout = nullptr;
     QFrame* gaugeCard = makeCard(&gaugeLayout, 22);
     auto* gaugeHead = new QHBoxLayout;
+    gaugeHead->setSpacing(8);
     gaugeHead->addWidget(makeLabel(tr("Live"), "SectionTitle"));
     gaugeHead->addStretch();
-    auto* gaugeHint = makeLabel(tr("läuft, sobald eine Messung gestartet ist"), "Hint");
-    gaugeHead->addWidget(gaugeHint);
+    gaugeLive_ = new QPushButton(tr("Live starten"));
+    gaugeLive_->setObjectName("Ghost");
+    gaugeLive_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    gaugeLive_->setEnabled(false);
+    auto* choose = new QPushButton(tr("Anzeigen wählen"));
+    choose->setObjectName("Ghost");
+    choose->setIcon(icons::icon(QStringLiteral("sliders"), color::textMuted, color::text, 14));
+    gaugeHead->addWidget(gaugeLive_);
+    gaugeHead->addWidget(choose);
     gaugeLayout->addLayout(gaugeHead);
-    auto* grid = new QGridLayout;
-    grid->setSpacing(10);
-    int column = 0;
-    for (const GaugeSpec& spec : kGauges) {
-        auto* g = new GaugeWidget;
-        g->configure(tr(spec.title), tr(spec.unit), spec.minimum, spec.maximum, spec.decimals);
-        if (spec.hasWarn) g->setWarnRange(spec.warnFrom, spec.warnTo);
-        grid->addWidget(g, 0, column++);
-        gauges_.insert(spec.pid, g);
-    }
-    gaugeLayout->addLayout(grid);
+    gaugeGrid_ = new QGridLayout;
+    gaugeGrid_->setSpacing(10);
+    gaugeLayout->addLayout(gaugeGrid_);
+    rebuildGauges();
+
+    connect(choose, &QPushButton::clicked, this, [this, choose] {
+        QMenu menu(this);
+        const QVector<int> current = gaugePids_;
+        for (int pid : kGaugeChoices) {
+            const PidSpec* spec = findPid(pid);
+            if (!spec) continue;
+            QAction* action = menu.addAction(QString::fromUtf8(spec->name));
+            action->setCheckable(true);
+            action->setChecked(current.contains(pid));
+            action->setData(pid);
+            // At most eight, so the gauges stay readable.
+            action->setEnabled(current.contains(pid) || current.size() < 8);
+        }
+        QAction* picked = menu.exec(choose->mapToGlobal(QPoint(0, choose->height())));
+        if (!picked) return;
+        const int pid = picked->data().toInt();
+        if (picked->isChecked()) {
+            if (!gaugePids_.contains(pid)) gaugePids_.push_back(pid);
+        } else if (gaugePids_.size() > 1) {
+            gaugePids_.removeAll(pid);
+        }
+        QStringList stored;
+        for (int p : std::as_const(gaugePids_)) stored << QString::number(p);
+        QSettings(QStringLiteral("Caruspex"), QStringLiteral("Caruspex"))
+            .setValue(QStringLiteral("start/anzeigen"), stored);
+        rebuildGauges();
+        if (gaugesRunning_) emit gaugesLiveRequested(gaugePids_);
+    });
+    connect(gaugeLive_, &QPushButton::clicked, this, [this] {
+        gaugesRunning_ = !gaugesRunning_;
+        if (gaugesRunning_) {
+            emit gaugesLiveRequested(gaugePids_);
+        } else {
+            emit gaugesLiveStopRequested();
+        }
+        gaugeLive_->setText(gaugesRunning_ ? tr("Live anhalten") : tr("Live starten"));
+        gaugeLive_->setIcon(icons::icon(gaugesRunning_ ? QStringLiteral("pause") : QStringLiteral("play"),
+                                        color::textMuted, color::text, 14));
+    });
     root->addWidget(gaugeCard);
     root->addStretch();
 
@@ -199,6 +220,46 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     fuel_->clear();
     updateHero();
     rebuildFindings();
+}
+
+void DashboardPage::startGaugesLive() {
+    if (connected_ && !gaugesRunning_) gaugeLive_->click();
+}
+
+void DashboardPage::rebuildGauges() {
+    if (gaugePids_.isEmpty()) {
+        const QStringList stored = QSettings(QStringLiteral("Caruspex"), QStringLiteral("Caruspex"))
+                                       .value(QStringLiteral("start/anzeigen"))
+                                       .toStringList();
+        for (const QString& p : stored) {
+            if (findPid(p.toInt())) gaugePids_.push_back(p.toInt());
+        }
+        if (gaugePids_.isEmpty()) gaugePids_ = kDefaultGauges;
+    }
+    while (QLayoutItem* item = gaugeGrid_->takeAt(0)) {
+        if (item->widget()) item->widget()->deleteLater();
+        delete item;
+    }
+    gauges_.clear();
+    const int perRow = gaugePids_.size() > 6 ? 4 : qMax(1, int(gaugePids_.size()));
+    int index = 0;
+    for (int pid : std::as_const(gaugePids_)) {
+        const PidSpec* spec = findPid(pid);
+        if (!spec) continue;
+        auto* g = new GaugeWidget;
+        double low = spec->displayMin;
+        double high = spec->displayMax;
+        if (high <= low) {
+            low = 0.0;
+            high = 100.0;
+        }
+        const int decimals = (high - low) <= 20.0 ? 1 : 0;
+        g->configure(QString::fromUtf8(spec->name), QString::fromUtf8(spec->unit), low, high, decimals);
+        if (spec->warnLow != 0.0 || spec->warnHigh != 0.0) g->setWarnRange(spec->warnLow, spec->warnHigh);
+        gaugeGrid_->addWidget(g, index / perRow, index % perRow);
+        gauges_.insert(pid, g);
+        ++index;
+    }
 }
 
 GaugeWidget* DashboardPage::gauge(int pid) {
@@ -221,6 +282,7 @@ void DashboardPage::setVehicle(const QString& title, const QString& subtitle, Bo
 void DashboardPage::onConnected(const QString& adapter, const QString& transport,
                                 const QString& protocol) {
     connected_ = true;
+    gaugeLive_->setEnabled(true);
     if (vehicleName_.isEmpty()) {
         vehicleSub_->setText(tr("%1 über %2, Protokoll %3").arg(adapter, transport, protocol));
     }
@@ -240,6 +302,10 @@ void DashboardPage::onDisconnected() {
     vehicleSub_->clear();
     car_->setBodyStyle(BodyStyle::Hatchback);
     for (GaugeWidget* g : std::as_const(gauges_)) g->setActive(false);
+    gaugesRunning_ = false;
+    gaugeLive_->setText(tr("Live starten"));
+    gaugeLive_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    gaugeLive_->setEnabled(false);
     battery_->clear();
     coolant_->clear();
     odometer_->clear();
