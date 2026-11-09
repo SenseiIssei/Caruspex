@@ -29,6 +29,7 @@ add_library(caruspex_core STATIC
     src/core/Lang.cpp
     src/core/Transport.cpp
     src/core/Elm327.cpp
+    src/core/EcuAddress.cpp
     src/core/Obd2.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
@@ -163,6 +164,7 @@ if(CARUSPEX_TESTS)
     enable_testing()
     add_executable(caruspex_tests
         tests/test_protocol.cpp
+        tests/test_obd_extended.cpp
         tests/test_kwp1281.cpp
         tests/test_kwp2000.cpp
         tests/test_settings.cpp

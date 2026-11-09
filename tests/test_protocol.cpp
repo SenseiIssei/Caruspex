@@ -215,14 +215,18 @@ TEST_CASE("Component monitoring converts correctly", "[monitor]") {
     // ID 0x0B: voltage in millivolts.
     REQUIRE(monitorScale(0x0B, 1000, unit) == Catch::Approx(1.0));
     REQUIRE(unit == "V");
-    // ID 0x24: temperature, a tenth of a degree with offset.
-    REQUIRE(monitorScale(0x24, 800, unit) == Catch::Approx(40.0));
+    // ID 0x16: temperature, a tenth of a degree with offset (SAE J1979).
+    REQUIRE(monitorScale(0x16, 800, unit) == Catch::Approx(40.0));
     REQUIRE(unit == "Grad C");
-    // ID 0x1E: engine speed in quarters.
-    REQUIRE(monitorScale(0x1E, 4000, unit) == Catch::Approx(1000.0));
+    // ID 0x07: engine speed in quarters.
+    REQUIRE(monitorScale(0x07, 4000, unit) == Catch::Approx(1000.0));
     REQUIRE(unit == "1/min");
+    // ID 0x24: plain counts, as the misfire monitors use them.
+    REQUIRE(monitorScale(0x24, 17, unit) == Catch::Approx(17.0));
+    // Signed IDs read the two bytes as two's complement.
+    REQUIRE(monitorScale(0x96, 0xFFF6, unit) == Catch::Approx(-1.0));
     // An unknown ID returns the raw value instead of nonsense.
-    REQUIRE(monitorScale(0xFE, 1234, unit) == Catch::Approx(1234.0));
+    REQUIRE(monitorScale(0x7E, 1234, unit) == Catch::Approx(1234.0));
 
     REQUIRE_FALSE(monitorTestName(0x21).empty());
     REQUIRE(monitorComponentName(0x21).find("Katalysator") != std::string::npos);

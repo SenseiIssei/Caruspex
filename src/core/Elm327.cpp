@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
+#include <cstdio>
 
 #include "core/Lang.h"
 #include "core/Timing.h"
@@ -88,7 +90,181 @@ std::vector<int> hexToBytes(const std::string& text) {
     return out;
 }
 
-ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedService) {
+HeaderFormat headerFormatFor(char protocolId) {
+    switch (protocolId) {
+        case '1':
+        case '2': return HeaderFormat::J1850;
+        case '3':
+        case '4':
+        case '5': return HeaderFormat::KLine;
+        case '6':
+        case '8': return HeaderFormat::Can11;
+        case '7':
+        case '9': return HeaderFormat::Can29;
+        default: return HeaderFormat::None;
+    }
+}
+
+namespace {
+
+// One complete message (service byte first) and who sent it.
+struct RawMessage {
+    std::string source;
+    std::vector<int> bytes;
+};
+
+bool isIndexedLine(const std::string& line) {
+    return line.size() > 2 && line[1] == ':' && std::isxdigit(static_cast<unsigned char>(line[0]));
+}
+
+// Headers off. Single-frame responses are one line each, so several control
+// units simply give several lines. Multi-frame CAN responses arrive numbered
+// ("0:", "1:" ...), preceded by a line with the total length in three hex
+// digits. The numbered lines start directly with the service byte, so
+// nothing may be cut off. A new length line, or a "0:" once the announced
+// length is complete, starts the next message: that is how the responses of
+// two control units are kept apart. The index wraps from F to 0 on long
+// messages, which is why "0:" alone is not enough.
+std::vector<RawMessage> splitWithoutHeaders(const std::vector<std::string>& lines) {
+    std::vector<RawMessage> out;
+    std::vector<int> collected;
+    int announced = -1;
+    bool collecting = false;
+
+    auto flush = [&]() {
+        if (collecting && !collected.empty()) {
+            if (announced > 0 && static_cast<int>(collected.size()) > announced)
+                collected.resize(static_cast<size_t>(announced));
+            out.push_back({std::string(), collected});
+        }
+        collected.clear();
+        collecting = false;
+        announced = -1;
+    };
+
+    for (const std::string& line : lines) {
+        if (isIndexedLine(line)) {
+            const bool first = line[0] == '0';
+            const bool complete = announced > 0 && static_cast<int>(collected.size()) >= announced;
+            if (first && collecting && !collected.empty() && (announced < 0 || complete)) flush();
+            collecting = true;
+            const std::vector<int> bytes = hexToBytes(line.substr(2));
+            collected.insert(collected.end(), bytes.begin(), bytes.end());
+        } else if (isHexLine(line)) {
+            const std::string digits = stripSpaces(line);
+            // Exactly three digits: a real message always has whole bytes.
+            if (digits.size() == 3) {
+                // Length line of the next multi-frame message.
+                flush();
+                announced = std::stoi(digits, nullptr, 16);
+                collecting = true;
+                continue;
+            }
+            flush();
+            std::vector<int> bytes = hexToBytes(line);
+            if (!bytes.empty()) out.push_back({std::string(), std::move(bytes)});
+        }
+    }
+    flush();
+    return out;
+}
+
+// Headers on. Every line is one frame with the sender in front.
+std::vector<RawMessage> splitWithHeaders(const std::vector<std::string>& lines,
+                                         HeaderFormat format) {
+    std::vector<RawMessage> out;
+
+    // ISO-TP reassembly per sender for CAN.
+    struct Pending {
+        std::string source;
+        int total = 0;
+        std::vector<int> data;
+    };
+    std::vector<Pending> pending;
+    auto findPending = [&pending](const std::string& source) -> Pending* {
+        for (Pending& p : pending) {
+            if (p.source == source) return &p;
+        }
+        return nullptr;
+    };
+    auto finish = [&](const std::string& source) {
+        for (size_t i = 0; i < pending.size(); ++i) {
+            if (pending[i].source != source) continue;
+            Pending done = std::move(pending[i]);
+            pending.erase(pending.begin() + static_cast<std::ptrdiff_t>(i));
+            if (static_cast<int>(done.data.size()) > done.total)
+                done.data.resize(static_cast<size_t>(done.total));
+            out.push_back({done.source, std::move(done.data)});
+            return;
+        }
+    };
+
+    for (const std::string& line : lines) {
+        if (!isHexLine(line)) continue;
+        const std::string digits = stripSpaces(toUpper(line));
+
+        if (format == HeaderFormat::Can11 || format == HeaderFormat::Can29) {
+            const size_t idLength = format == HeaderFormat::Can11 ? 3 : 8;
+            if (digits.size() < idLength + 2) continue;
+            const std::string source = digits.substr(0, idLength);
+            const std::vector<int> frame = hexToBytes(digits.substr(idLength));
+            if (frame.empty()) continue;
+            const int type = frame[0] >> 4;
+            if (type == 0) {
+                // Single frame: the low nibble is the length. Anything after
+                // it is padding.
+                int length = frame[0] & 0x0F;
+                size_t start = 1;
+                if (length == 0 && frame.size() > 1) {  // CAN FD escape
+                    length = frame[1];
+                    start = 2;
+                }
+                const size_t end = std::min(frame.size(), start + static_cast<size_t>(length));
+                out.push_back({source, std::vector<int>(frame.begin() + static_cast<std::ptrdiff_t>(start),
+                                                        frame.begin() + static_cast<std::ptrdiff_t>(end))});
+            } else if (type == 1 && frame.size() >= 2) {
+                // First frame: twelve bits of total length, then data.
+                finish(source);  // an unfinished older message from the same sender
+                Pending p;
+                p.source = source;
+                p.total = ((frame[0] & 0x0F) << 8) | frame[1];
+                p.data.assign(frame.begin() + 2, frame.end());
+                pending.push_back(std::move(p));
+                if (static_cast<int>(pending.back().data.size()) >= pending.back().total) finish(source);
+            } else if (type == 2) {
+                // Consecutive frame.
+                Pending* p = findPending(source);
+                if (!p) continue;
+                p->data.insert(p->data.end(), frame.begin() + 1, frame.end());
+                if (static_cast<int>(p->data.size()) >= p->total) finish(source);
+            }
+            // Type 3 is flow control, sent by the adapter itself.
+            continue;
+        }
+
+        // K-line and J1850: header bytes, data, then one checksum byte.
+        const std::vector<int> bytes = hexToBytes(digits);
+        size_t header = 3;
+        if (format == HeaderFormat::KLine && !bytes.empty() && (bytes[0] & 0xC0) != 0 &&
+            (bytes[0] & 0x3F) == 0) {
+            header = 4;  // ISO 14230 with a separate length byte
+        }
+        if (bytes.size() < header + 2) continue;
+        char source[8];
+        std::snprintf(source, sizeof(source), "%02X", bytes[2] & 0xFF);
+        out.push_back({source, std::vector<int>(bytes.begin() + static_cast<std::ptrdiff_t>(header),
+                                                bytes.end() - 1)});
+    }
+
+    // Whatever is still incomplete is handed out as far as it got.
+    while (!pending.empty()) finish(pending.front().source);
+    return out;
+}
+
+}  // namespace
+
+ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedService,
+                         HeaderFormat headers) {
     ElmResult result;
     result.lines = lines;
 
@@ -110,40 +286,30 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         }
     }
 
-    // Multi-line CAN responses arrive numbered ("0:", "1:" ...), preceded by a
-    // separate line holding the total length. The numbered lines start
-    // directly with the service byte, so nothing may be cut off.
-    std::string indexed;
-    std::vector<std::vector<int>> raw;
-    for (const std::string& line : lines) {
-        if (line.size() > 2 && line[1] == ':' &&
-            std::isxdigit(static_cast<unsigned char>(line[0]))) {
-            indexed += line.substr(2);
-        } else if (isHexLine(line)) {
-            std::vector<int> bytes = hexToBytes(line);
-            if (!bytes.empty()) raw.push_back(std::move(bytes));
-        }
-    }
-    if (!indexed.empty()) {
-        // The length line is then just noise and would otherwise pass as a
-        // message of its own.
-        raw.clear();
-        std::vector<int> bytes = hexToBytes(indexed);
-        if (!bytes.empty()) raw.push_back(std::move(bytes));
-    }
+    const std::vector<RawMessage> raw =
+        headers == HeaderFormat::None ? splitWithoutHeaders(lines) : splitWithHeaders(lines, headers);
 
-    for (std::vector<int>& msg : raw) {
-        if (msg.empty()) continue;
-        if (msg[0] == 0x7F && msg.size() >= 3) {
-            result.status = ElmStatus::Negative;
-            result.message = std::string(L("Steuergerät lehnt den Dienst ab (Code 0x",
-                                           "Control unit rejects the service (code 0x")) +
-                             hexByte(msg[2]) + ")";
-            return result;
+    // With several control units on the bus one of them may refuse while
+    // another answers. Only if nobody answers is the refusal the result.
+    int refusal = -1;
+    for (const RawMessage& msg : raw) {
+        const std::vector<int>& bytes = msg.bytes;
+        if (bytes.empty()) continue;
+        if (bytes[0] == 0x7F && bytes.size() >= 3) {
+            if (refusal < 0) refusal = bytes[2];
+            continue;
         }
-        if (msg[0] == expectedService + 0x40 || msg[0] == expectedService) {
-            result.messages.emplace_back(msg.begin() + 1, msg.end());
+        if (bytes[0] == expectedService + 0x40 || bytes[0] == expectedService) {
+            result.messages.emplace_back(bytes.begin() + 1, bytes.end());
+            result.sources.push_back(msg.source);
         }
+    }
+    if (result.messages.empty() && refusal >= 0) {
+        result.status = ElmStatus::Negative;
+        result.message = std::string(L("Steuergerät lehnt den Dienst ab (Code 0x",
+                                       "Control unit rejects the service (code 0x")) +
+                         hexByte(refusal) + ")";
+        return result;
     }
     if (result.messages.empty()) {
         result.status = ElmStatus::NoData;
@@ -213,6 +379,13 @@ ElmResult Elm327::send(const std::string& command, int timeoutMs) {
             current += c;
         }
     }
+    // Keep track of the header setting even when someone sends the AT
+    // commands by hand (the raw console, the KKL reset). A reset switches
+    // headers off again.
+    const std::string sent = toUpper(stripSpaces(command));
+    if (sent == "ATH1") headers_ = true;
+    if (sent == "ATH0" || sent == "ATZ" || sent == "ATD" || sent == "ATWS") headers_ = false;
+
     if (log_ && verbose_) {
         std::string joined;
         for (const std::string& l : result.lines) joined += l + " | ";
@@ -228,7 +401,20 @@ ElmResult Elm327::at(const std::string& command, int timeoutMs) {
 ElmResult Elm327::request(const std::string& command, int expectedService, int timeoutMs) {
     ElmResult raw = send(command, timeoutMs);
     if (raw.status == ElmStatus::AdapterError) return raw;
-    return decodeMessages(raw.lines, expectedService);
+    return decodeMessages(raw.lines, expectedService, headerFormat());
+}
+
+bool Elm327::setHeaders(bool on) {
+    ElmResult r = at(on ? "H1" : "H0", 3000);
+    if (r.status == ElmStatus::AdapterError) return false;
+    for (const std::string& line : r.lines) {
+        if (toUpper(line).find("OK") != std::string::npos) {
+            headers_ = on;
+            return true;
+        }
+    }
+    if (on) headers_ = false;
+    return false;
 }
 
 bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& protocolOrder,
@@ -265,6 +451,7 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
             if (probe.ok()) {
                 ElmResult dp = at("DP");
                 protocolText_ = dp.lines.empty() ? protocolName(proto) : dp.lines.front();
+                protocolId_ = proto;
                 connected_ = true;
                 return true;
             }
@@ -292,6 +479,8 @@ void Elm327::disconnect() {
     if (transport_ && connected_) at("PC", 2000);
     transport_.reset();
     connected_ = false;
+    headers_ = false;
+    protocolId_ = '0';
     protocolText_ = L("unbekannt", "unknown");
 }
 

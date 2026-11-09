@@ -10,8 +10,12 @@ namespace caruspex {
 // ranges are standardized.
 std::string monitorTestName(int testId);
 
-// Mode 06 on CAN: standardized identifiers for the monitored component.
+// Mode 06 on CAN: standardized identifiers for the monitored component
+// (OBDMID), e.g. 0x21 catalyst bank 1, 0xA2 misfire cylinder 1.
 std::string monitorComponentName(int componentId);
+
+// Mode 06 on CAN: name of a test (TID) within a monitor (OBDMID).
+std::string monitorTestNameCan(int monitorId, int testId);
 
 // Converts the raw value of a CAN test into a number and unit. The identifier
 // determines the formula.
