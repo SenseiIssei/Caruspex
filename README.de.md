@@ -10,88 +10,79 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 
 ## Was es kann
 
+**Das Auto erkennen**
+- Nach dem Verbinden liest Caruspex die Fahrgestellnummer und sagt, welches Auto da hängt: Marke, Modell, Generation, Baujahr
+- Katalog mit über 2.100 Modellgenerationen von 94 Marken, von 1980 bis heute, auch die, die es nicht mehr gibt
+- Zu jeder Generation: welcher Diagnosestecker, wo er sitzt, welches Protokoll, und ob OBD-II, KKL oder nur die Herstellerdiagnose geht
+- VIN-Prüfer für jede Fahrgestellnummer: Hersteller, Land, Modelljahr, Prüfziffer, Modellcode
+- Garage: jedes Auto wird an seiner VIN wiedererkannt, mit Verlauf aller Prüfungen und Kilometerstände
+![Fahrzeuge](docs/de/screenshot-vehicles.png)
+
+**Gesundheitscheck mit einem Knopf**
+- Liest Fehlerspeicher, Bereitschaftstests und Bauteilprüfung, beobachtet dann eine halbe Minute lang Gemisch, Temperatur, Lambdasonden und Ladespannung
+- Punktzahl von 0 bis 100, jeder Abzug wird in einfachen Worten erklärt, mit dem nächsten Schritt
+- Bereit für die AU? Welcher Test noch offen ist und wie man ihn fährt
+- Prüfbericht als PDF zum Ausdrucken oder für die Werkstatt
+![Gesundheitscheck](docs/de/screenshot-health.png)
+
 **Fehlerspeicher**
-- Gespeicherte, sporadische und dauerhafte Fehlercodes
-- Rund 1.400 generische SAE-Codes (P, C, B, U) plus Herstellercodes für VAG, Ford, GM, Toyota, Honda, Nissan,
-  Hyundai/Kia, Subaru und weitere, auf Deutsch und Englisch; die Bedeutung eines P1-Codes richtet sich nach der Marke
-- Für die häufigen Fehler: darf ich weiterfahren, typische Ursachen, einfache Prüfungen und eine grobe Kostenklasse
-- Unbekannte Codes fallen auf die Bedeutung ihrer Gruppe zurück statt leer zu bleiben
-- Löschen mit klarer Warnung und automatischer Gegenprobe
-- Export als CSV
+- Gespeicherte, sporadische und dauerhafte Fehlercodes, bei mehreren Steuergeräten mit Absender (Motor, Getriebe)
+- Rund 1.400 Normcodes (P, C, B, U) plus Herstellercodes für VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru und weitere; die Bedeutung eines P1-Codes richtet sich nach der erkannten Marke
+- Je Code eine Ampel und die Frage, die alle zuerst haben: darf ich weiterfahren?
+- Typische Ursachen, was man selbst prüfen kann, grobe Kostenklasse
+- Das Auto in Durchsicht zeigt, wo das betroffene Bauteil sitzt
+- Löschen mit klarer Warnung und automatischer Gegenprobe, Export als CSV
+![Fehlerspeicher](docs/de/screenshot-faults.png)
 
 **Live-Werte**
-- Rund 80 Messwerte, in verständliche Einheiten umgerechnet
-- Mitlaufendes Diagramm mit mehreren Kurven und rollendem 90-Sekunden-Fenster
-- Animierte Rundanzeigen für Drehzahl, Tempo, Kühlmittel, Last, Drosselklappe, Bordspannung
-- Aufzeichnung als CSV für die spätere Auswertung
+- Alle Messwerte nach SAE J1979 bis PID C4, 145 PIDs mit über 300 Einzelwerten, nach Bereichen sortiert und durchsuchbar
+- Darunter Kilometerstand, Gang, Öltemperatur, Kraftstoffdurchfluss, Drehmoment, Ladedruck, Abgastemperatur, Partikelfilter, AdBlue, NOx und Hybridakku, soweit das Auto sie liefert
+- Mitlaufendes Diagramm, Aufzeichnung als CSV
+![Live-Werte](docs/de/screenshot-live.png)
+
+**Messen**
+- Bordcomputer: Verbrauch live und im Schnitt, Kosten, CO₂, Strecke und eine sanfte Bewertung des Fahrstils, auch bei Autos ohne eigenen Bordcomputer
+- Leistung: 0 bis 100, 80 bis 120, Viertelmeile und Bremsweg aus dem Tachosignal (nur auf abgesperrter Strecke)
+- Batterie und Lichtmaschine: Ruhespannung, Einbruch beim Anlassen, Ladespannung mit und ohne Last, geführt in vier Schritten
 
 **Prüfen**
-- Bereitschaftstests mit Klartext, ob es für die Abgasuntersuchung reicht
-- Freeze Frame: die Umgebungsdaten aus dem Moment, in dem der Fehler auftrat
-- Fahrgestellnummer
+- Bereitschaftstests mit Klartext, Freeze Frame, Fahrgestellnummer
+- Bauteilprüfung aus Modus 06 mit Messwert und Grenzen, Zündaussetzer je Zylinder
+- Steuergerätenamen, Kalibrierung und Prüfsummen aus Modus 09 je Steuergerät
 - Adapter direkt ansprechen für ELM327-Rohbefehle
 
-**Wo kommt der Fehler her**
-- Schematisches Fahrzeug, das die betroffene Baugruppe hervorhebt, je nach Fehlercode
-- Klartext dazu, wo man konkret nachsieht
-![Fehlerspeicher mit Fahrzeuganzeige](docs/de/screenshot-faults.png)
+**Adaptertest**
+- Echter ELM327 oder Nachbau? Fragt die Befehle der einzelnen Versionen ab, misst die Antwortzeit und sagt ehrlich, was daraus folgt
+- Erkennt OBDLink und andere STN-Adapter
+- Schreibt nichts in den Adapter
+![Adaptertest](docs/de/screenshot-adapter.png)
 
-**Drosselklappe anlernen (KWP1281 über KKL-Kabel)**
-- Echte Grundeinstellung im Messwertblock 060 oder 098
-- Verbindung zu jedem Steuergerät, nicht nur zum Motor: ABS, Airbag, Kombi, Komfort
-- Fehlerspeicher und Messwertblöcke der herstellereigenen Diagnose
-- Checkliste der Voraussetzungen, damit das Steuergerät nicht abbricht
-![Drosselklappe](docs/de/screenshot-throttle.png)
+**VW und Audi über KKL-Kabel (KWP1281 und KWP2000)**
+- Drosselklappe anlernen: echte Grundeinstellung im Messwertblock 060 oder 098
+- Alle Steuergeräte durchsuchen, auch ABS, Airbag, Kombi und Komfort, mit Prüfbericht
+- Anpassungskanäle lesen und Stellglieddiagnose, bewusst nur lesend
 
-**Alle Steuergeraete durchsuchen (KKL)**
-- Klappert der Reihe nach jedes bekannte Steuergeraet ab
-- Zeigt, welche das Fahrzeug hat, welche fehlen und wo etwas im Speicher steht
-- Fehler mit Klartext, aufklappbar je Steuergeraet
-- Prüfbericht als Textdatei zum Ausdrucken
+**Ohne Auto und ohne Adapter**
+- Eingebautes Demo-Auto: es fährt, wärmt sich auf, hat ein paar Fehler gespeichert und spricht wie ein echter ELM327 über CAN
+- Fehlercode-Lexikon mit allen Codes, filterbar nach Marke
 
-**Anpassung und Stellglieder (KKL)**
-- Anpassungskanaele lesen: der eingestellte Wert plus die Anzeigefelder des Steuergeraets
-- Stellglieddiagnose: das Steuergeraet klappert seine Aktoren durch und nennt das laufende Bauteil
-- Bewusst nur lesend, ein falscher Wert im falschen Kanal legt den Motor lahm
-![Anpassung und Stellglieder](docs/de/screenshot-adaptation.png)
-
-**Bauteilüberwachung (Modus 06 und 05)**
-- Der ausführlichste Teil von EOBD: zu jedem internen Selbsttest der Messwert samt erlaubter Unter- und Obergrenze
-- Damit sieht man, wie knapp ein Bauteil noch im Rahmen liegt, lange bevor die Fehlerlampe angeht
-- Lambdasondenprüfung mit Schwellspannungen und Umschaltzeiten
-- Kalibrierstand, Prüfsumme und Name des Steuergeräts aus Modus 09
-- Prüfbericht als Textdatei
-![Bauteilprüfung](docs/de/screenshot-monitoring.png)
-
-**Einstellungen**
-- Baudrate, Protokollreihenfolge und ein Faktor fuer alle Zeitlimits, falls der Adapter traege ist
-- Abfragetakt und Zeitfenster der Diagramme
-- Versuche beim hartnaeckigen Loeschen, Nachfrage vor dem Loeschen abschaltbar
-- Sitzungsart und Nachfragetakt fuer die Grundeinstellung
-- Rohkommunikation mitschreiben, wahlweise zusaetzlich in eine Datei
-- Sprache: wie das System, Deutsch oder Englisch (wirkt beim nächsten Start)
-- Alles wird gespeichert und wirkt sofort, auch waehrend einer laufenden Messung
-![Einstellungen](docs/de/screenshot-settings.png)
-
-**Statistik**
-- Kleinster, mittlerer, groesster und aktueller Wert je Messgroesse
-- Messdauer, Anzahl Messpunkte, Hoechstdrehzahl, Hoechstgeschwindigkeit
-- Verbrauch aus der Luftmasse geschaetzt, Strecke aus dem Geschwindigkeitssignal
-- Export als CSV
-![Statistik](docs/de/screenshot-statistics.png)
-
-**Nachschlagen**
-- Durchsuchbares Fehlercode-Lexikon, funktioniert offline und ohne Auto
+**Bedienung**
+- Neue Oberfläche im Stil von Odysync: ruhig, dunkel, mit weichen Übergängen
+- Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse
+- Deutsch und Englisch, Einstellungen wirken sofort
 
 ## Welche Autos
 
-Jedes Fahrzeug mit EOBD, in Europa also Benziner ab Baujahr 2001 und Diesel ab 2004, in den USA ab 1996. Für über 40 Marken sind Profile hinterlegt, damit das richtige Protokoll zuerst probiert wird statt sich durch alle neun durchzutasten.
+Jedes Fahrzeug mit OBD-II oder EOBD, in Europa also Benziner ab Baujahr 2001 und Diesel ab 2004, in den USA ab 1996. Dazu ältere VW, Audi, Seat und Skoda ab etwa 1990 über das KKL-Kabel. Welcher Weg bei einem bestimmten Auto geht, steht auf der Seite Fahrzeuge.
 
 | Epoche | Bus | Beispiele |
 |---|---|---|
-| 1996 bis etwa 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, alte Golf, Toyota, Renault |
-| ab etwa 2004 | CAN (ISO 15765-4) | Audi A4 B7, Golf 5, moderne Japaner |
+| bis etwa 1995 | herstellereigen | VAG mit KKL über die 2x2-Stecker, sonst nur Werkstattgeräte |
+| 1996 bis etwa 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, Golf IV, Toyota, Renault |
+| ab etwa 2004 | CAN (ISO 15765-4) | Audi A4 B7, Golf V, moderne Japaner |
 | USA bis etwa 2005 | J1850 PWM und VPW | Ford, Chevrolet |
+
+Reine Elektroautos müssen kein OBD-II für die Abgasüberwachung anbieten. Manche antworten trotzdem teilweise, Tesla gar nicht über den Standardweg. Caruspex sagt das, statt es zu versuchen.
 
 ## Welcher Adapter kann was
 
@@ -207,26 +198,35 @@ Geprüft werden Antwort-Parser, Fehlercode-Dekodierung, Messwert-Umrechnung und 
 
 ## Ohne Auto ausprobieren
 
-Der mitgelieferte Simulator spielt ein Steuergerät mit Drosselklappenfehlern nach:
+Am einfachsten über das eingebaute Demo-Auto: auf der Seite Verbinden "Demo-Auto" wählen, oder gleich so starten:
 
 ```bash
-python tools/mock_elm327.py
+build/bin/Release/caruspex.exe --demo
+```
+
+Der Python-Simulator spielt wahlweise den Audi A2 auf der K-Line oder ein CAN-Auto mit Motor und Getriebe:
+
+```bash
+python tools/mock_elm327.py --can
 ```
 
 ```bash
 build/bin/Release/caruspex.exe --tcp 127.0.0.1:35000
 ```
 
+Für Bildschirmfotos und Dokumentation: `--page faults --shot bild.png --size 1440x920` öffnet eine Seite, macht nach ein paar Sekunden ein Bild des Fensters und beendet sich.
+
 ## Aufbau
 
 ```
-src/core/     Transport, ELM327-Treiber, EOBD-Dienste, KWP1281. Kein Qt, gut testbar.
-              Serial_win.cpp und Serial_posix.cpp, CMake wählt die passende.
-src/data/     Fehlercodes, Messwerte, Fahrzeugprofile, Zuordnung Code zu Bauteil
-src/app/      Oberfläche (Qt 6 Widgets und Charts)
-src/cli_main.cpp  Konsolenwerkzeug auf demselben Kern
-tools/        Fehlercode-Generator und Simulator
-tests/        Catch2-Tests
+src/core/            Transport, ELM327-Treiber, EOBD-Dienste, KWP1281/2000, Demo-Auto, Adaptertest. Kein Qt.
+src/core/analysis/   Gesundheitscheck, Fahrzyklus-Hilfe, Bordcomputer, Leistung, Batterie
+src/data/            Fehlercodes, Messwerte, VIN-Decoder, Fahrzeugkatalog, Zuordnung Code zu Bauteil
+src/app/             Oberfläche (Qt 6 Widgets, Charts, Svg, PrintSupport)
+src/cli_main.cpp     Konsolenwerkzeug auf demselben Kern
+data/vehicles/       Fahrzeugkatalog als CSV, von Hand gepflegt
+tools/               Generatoren für Fehlercodes und Katalog, Simulator
+tests/               Catch2-Tests
 ```
 
 Betriebssystemabhängig ist nur die serielle Schnittstelle. Alles darüber, also Protokoll, Parser und Dienste, ist reines C++20 mit `std::chrono` statt Plattform-APIs.
@@ -237,10 +237,16 @@ Die Fehlercode-Datenbank wird erzeugt, nicht abgetippt. Viele EOBD-Codes folgen 
 python tools/gen_dtc.py
 ```
 
+Genauso der Fahrzeugkatalog: die CSV-Dateien in `data/vehicles/` bearbeiten, dann
+
+```bash
+python tools/gen_vehicles.py
+```
+
 ## Löschen: was dabei passiert
 
 Modus 04 löscht Fehlerspeicher, Freeze Frame und die Bereitschaftstests. Direkt danach fällt eine Abgasuntersuchung durch, bis das Auto wieder ein paar vollständige Fahrzyklen gelaufen ist. Ein Code, dessen Ursache noch da ist, steht nach kurzer Fahrt wieder drin. Löschen ersetzt keine Reparatur.
 
 ## Lizenz
 
-MIT, siehe [LICENSE](LICENSE). Die mitgelieferte Schrift JetBrains Mono steht unter der SIL Open Font License 1.1 ([OFL.txt](resources/fonts/OFL.txt)).
+MIT, siehe [LICENSE](LICENSE). Die mitgelieferten Schriften stehen unter der SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) und Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

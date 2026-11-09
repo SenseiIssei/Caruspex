@@ -33,84 +33,93 @@ the settings, or forced per run with `--language en` / `--language de`. [Deutsch
   byte-by-byte handshake, plus a Python ELM327 simulator for end-to-end runs of the GUI.
 - **Bilingual without Qt in the core**: the GUI uses Qt Linguist (`translations/caruspex_en.ts`), while the
   Qt-free core resolves its texts (trouble codes, PID names, protocol messages) through a tiny `L(de, en)` helper.
+- **Recognises every car**: a VIN decoder with 365 manufacturer codes and a catalog of more than 2,100
+  model generations since 1980 tell which car is connected and what works with it.
+- **Built-in demo car**: an in-process ELM327 with an engine and a gearbox on CAN, so everything can be tried
+  without hardware.
 - **Generated data, not hand-typed**: about 1,700 trouble codes, many of them computed from regular code families
   (per cylinder, per bank, per oxygen sensor) by `tools/gen_dtc.py`.
 
 ## Features
 
-### Fault memory
-- Stored, pending and permanent trouble codes (OBD modes 03, 07, 0A)
-- About 1,400 generic SAE codes (P, C, B, U) plus manufacturer codes for VAG, Ford, GM, Toyota, Honda, Nissan,
-  Hyundai/Kia, Subaru and others, in English and German; the meaning of a P1 code follows the brand
-- For the common faults: may I keep driving, likely causes, simple checks and a rough cost class
-- Unknown codes fall back to the meaning of their code group instead of showing nothing
-- Clearing with an explicit warning, automatic re-read and an optional "persistent clear" with retries
-- CSV export
-- A schematic vehicle that highlights the affected assembly for each code, with a hint where to look
+### Knows the car
+- After connecting, Caruspex reads the VIN and tells you which car it is: make, model, generation, model year.
+- A catalog of more than 2,100 model generations from 94 brands, 1980 to today, including brands that no longer exist.
+- For every generation: which diagnostic connector, where it sits, which protocol, and whether OBD-II, a KKL cable or only the maker's own tools will work.
+- A VIN checker for any VIN: manufacturer, country, model year, check digit, model code.
+- A garage that recognises every car by its VIN and keeps the history of its checks and odometer readings.
 
-![Fault memory with vehicle diagram](docs/screenshot-faults.png)
+![Vehicles](docs/screenshot-vehicles.png)
+
+### One-button health check
+- Reads the fault memory, readiness monitors and component tests, then watches mixture, temperatures, oxygen sensors and charging voltage for half a minute.
+- A score from 0 to 100 where every point lost is explained in plain words, with the next step.
+- Ready for the emissions test? Which monitor is still open and how to drive to finish it.
+- An inspection report as PDF, for printing or for the workshop.
+
+![Health check](docs/screenshot-health.png)
+
+### Fault memory
+- Stored, pending and permanent codes; with several control units, each code shows who reported it (engine, gearbox).
+- About 1,400 standard codes (P, C, B, U) plus manufacturer codes for VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru and more. A P1 code is read the way the detected brand means it.
+- A traffic light per code and the question everyone asks first: may I keep driving?
+- Usual causes, things you can check yourself, and a rough cost class.
+- The car in see-through view shows where the affected part sits.
+- Clearing with a clear warning and an automatic re-read; CSV export.
+
+![Fault memory](docs/screenshot-faults.png)
 
 ### Live data
-- Around 80 OBD parameters (PIDs) converted to readable units
-- Rolling multi-series chart and animated gauges for RPM, speed, coolant, load, throttle and battery voltage
-- CSV recording for later analysis
+- Every mode 01 value of SAE J1979 up to PID C4: 145 PIDs with more than 300 readings, grouped and searchable.
+- Odometer, gear, oil temperature, fuel rate, torque, boost, exhaust temperatures, particulate filter, AdBlue, NOx and hybrid battery, as far as the car reports them.
+- Rolling chart and CSV recording.
 
-![Live values](docs/screenshot-live.png)
+![Live data](docs/screenshot-live.png)
 
-- Statistics per signal (min / mean / max / current), session duration, peak RPM and speed,
-  fuel consumption estimated from mass air flow, distance from the speed signal
-
-![Statistics](docs/screenshot-statistics.png)
+### Measuring
+- Trip computer: consumption live and on average, cost, CO2, distance and a gentle driving style score, even for cars without a trip computer of their own.
+- Performance: 0 to 100 km/h, 80 to 120, quarter mile and braking distance from the speed signal (closed roads only).
+- Battery and alternator: resting voltage, cranking dip, charging voltage with and without load, guided in four steps.
 
 ### Inspection
-- Readiness monitors, with a plain answer whether the car is ready for an emissions test
-- Freeze frame: the conditions at the moment a fault was recorded
-- On-board monitoring results (modes 06 and 05): each internal self-test with its measured value and
-  allowed limits, showing how close a component is to failing long before the warning light comes on
-- Vehicle information (mode 09): VIN, calibration IDs, checksums and ECU name
-- Raw ELM327 terminal for direct adapter commands
+- Readiness monitors in plain words, freeze frame, VIN.
+- Mode 06 component monitoring with value and limits, misfire counts per cylinder.
+- ECU names, calibration IDs and checksums from mode 09, per control unit.
+- Raw ELM327 terminal.
 
-![Readiness monitors and freeze frame](docs/screenshot-tools.png)
-![Component monitoring](docs/screenshot-monitoring.png)
+### Adapter check
+- Genuine ELM327 or clone? It asks for the commands of each version, measures the response time and says honestly what follows from that.
+- Recognises OBDLink and other STN adapters.
+- Never writes anything to the adapter.
 
-### VW/Audi manufacturer diagnostics (KKL cable)
-- Throttle body adaptation (basic settings, measuring block 060 or 098)
-- Connects to every control unit, not just the engine: ABS, airbag, instrument cluster, comfort
-- Full scan of all known control units: which are present, which are missing, which have faults,
-  with a printable report
-- Manufacturer fault codes decoded per control unit, and measuring blocks
-- Adaptation channels (read-only on purpose: a wrong value in the wrong channel can disable the engine)
-  and output test diagnostics that step through the actuators
+![Adapter check](docs/screenshot-adapter.png)
 
-![Throttle body adaptation](docs/screenshot-throttle.png)
-![Control unit scan](docs/screenshot-scan.png)
-![Adaptation channels and output tests](docs/screenshot-adaptation.png)
+### VW and Audi over a KKL cable (KWP1281 and KWP2000)
+- Throttle body adaptation: the real basic setting in measuring block 060 or 098.
+- Scan every control unit, including ABS, airbag, instrument cluster and comfort, with a printable report.
+- Adaptation channels and output tests, deliberately read-only.
 
-### Settings
-- Baud rate, protocol order and a global timeout factor for slow adapters
-- Polling rate and chart window, retry count for persistent clearing
-- Raw communication log, optionally written to a file
-- Language: system default, English or German
-- All settings persist and apply immediately, even during a running measurement
+### Without a car or adapter
+- A built-in demo car: it drives, warms up, has a few faults stored and talks like a real ELM327 over CAN.
+- An offline lexicon of all codes, filterable by brand.
 
-![Settings](docs/screenshot-settings.png)
-
-### Offline lookup
-- Searchable trouble-code lexicon that works without a car
-
-![Trouble code lexicon](docs/screenshot-lexicon.png)
+### Look and feel
+- A new interface in the style of Odysync: calm, dark, with smooth transitions.
+- Step-by-step connecting with an automatic search over all ports.
+- English and German; settings apply immediately.
 
 ## Supported vehicles
 
-Any vehicle with OBD-II/EOBD: in Europe petrol cars from 2001 and diesels from 2004, in the US from 1996.
-71 vehicle profiles across 45 brands make sure the most likely protocol is tried first
-instead of cycling through all nine.
+Any vehicle with OBD-II or EOBD: in Europe petrol cars from 2001 and diesels from 2004, in the US from 1996. Older VW, Audi, Seat and Skoda from about 1990 work over the KKL cable. The Vehicles page tells you which way works for a given car.
 
 | Era | Bus | Examples |
 |---|---|---|
-| 1996 to about 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, older VW Golf, Toyota, Renault |
-| from about 2004 | CAN (ISO 15765-4) | Audi A4 B7, VW Golf 5, modern Japanese cars |
+| until about 1995 | manufacturer specific | VAG with KKL through the 2x2 plugs, otherwise workshop tools only |
+| 1996 to about 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, VW Golf IV, Toyota, Renault |
+| from about 2004 | CAN (ISO 15765-4) | Audi A4 B7, VW Golf V, modern Japanese cars |
 | US until about 2005 | SAE J1850 PWM and VPW | Ford, Chevrolet |
+
+Pure electric cars do not have to offer OBD-II emissions data. Some answer partly anyway, Tesla not at all through the standard route. Caruspex says so instead of trying.
 
 ## Supported adapters
 
@@ -262,11 +271,17 @@ settings, and full KWP1281/KWP2000 sessions against simulated control units. No 
 
 ## Try it without a car
 
-The bundled simulator emulates an ELM327 on a K-Line engine control unit with throttle-body faults,
-live data, freeze frame, readiness monitors, on-board monitoring results (modes 05 and 06) and ECU identification:
+The quickest way is the built-in demo car: pick "Demo car" on the Connect page, or start with
 
 ```bash
-python tools/mock_elm327.py
+build/bin/Release/caruspex.exe --demo --language en
+```
+
+The Python simulator plays either the Audi A2 engine on the K-Line or, with `--can`, a CAN car with engine
+and gearbox (headers, ISO-TP, modes 06 and 09 per control unit):
+
+```bash
+python tools/mock_elm327.py --can
 ```
 
 Then connect the GUI (Windows path shown; on Linux and macOS the binary is in `build/bin/`):
@@ -281,19 +296,22 @@ The command-line tool works against the simulator as well:
 build/bin/Release/caruspex_cli.exe read --tcp 127.0.0.1:35000
 ```
 
-The screenshots on this page were taken exactly this way.
+The screenshots on this page come from the demo car, taken by the app itself:
+`--demo --page faults --shot shot.png --size 1440x920` opens a page, saves a picture of the window after a
+few seconds and quits.
 
 ## Project structure
 
 ```
-src/core/         Transport, ELM327 driver, OBD services, KWP1281, KWP2000. No Qt, unit-testable.
-                  Serial_win.cpp and Serial_posix.cpp; CMake picks the right one.
-src/data/         Trouble codes, PIDs, vehicle profiles, code-to-component mapping, monitor tests
-src/app/          Qt 6 user interface (Widgets and Charts)
-src/cli_main.cpp  Command-line tool on the same core
-translations/     Qt Linguist translation of the GUI (German source, English target)
-tools/            Trouble-code generator and ELM327 simulator
-tests/            Catch2 tests and simulated ECUs
+src/core/           Transport, ELM327 driver, OBD services, KWP1281, KWP2000, demo car, adapter check. No Qt.
+src/core/analysis/  Health check, drive cycle guide, trip computer, performance timer, battery test
+src/data/           Trouble codes, PIDs, VIN decoder, vehicle catalog, code-to-component mapping
+src/app/            Qt 6 user interface (Widgets, Charts, Svg, PrintSupport)
+src/cli_main.cpp    Command-line tool on the same core
+data/vehicles/      The vehicle catalog as hand-maintained CSV
+translations/       Qt Linguist translation of the GUI (German source, English target)
+tools/              Generators for trouble codes and the catalog, ELM327 simulator
+tests/              Catch2 tests and simulated ECUs
 ```
 
 The trouble-code database is generated: `tools/gen_dtc.py` expands the regular EOBD code families and the
@@ -301,6 +319,12 @@ curated lists in `tools/dtc/` into `src/data/*.gen.cpp`. Re-run it after changin
 
 ```bash
 python tools/gen_dtc.py
+```
+
+The vehicle catalog works the same way: edit the CSV files in `data/vehicles/`, then run
+
+```bash
+python tools/gen_vehicles.py
 ```
 
 After changing GUI strings, refresh the translation file and fill in the new entries (e.g. with Qt Linguist):
@@ -323,5 +347,6 @@ respective owners; Caruspex is not affiliated with or endorsed by any vehicle ma
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled JetBrains Mono fonts are licensed under the SIL Open Font License 1.1
-([OFL.txt](resources/fonts/OFL.txt)).
+MIT, see [LICENSE](LICENSE). The bundled fonts are licensed under the SIL Open Font License 1.1:
+JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) and
+Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

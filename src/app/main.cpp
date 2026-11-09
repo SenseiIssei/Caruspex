@@ -38,7 +38,7 @@ QString languageFromArguments(const QStringList& args) {
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Caruspex"));
-    QApplication::setApplicationVersion(QStringLiteral("0.2.0"));
+    QApplication::setApplicationVersion(QStringLiteral("0.3.0"));
     QApplication::setOrganizationName(QStringLiteral("Caruspex"));
 
     // Language first, so every widget is built with the right texts. The UI
