@@ -9,7 +9,10 @@
 #include <QButtonGroup>
 #include <QCloseEvent>
 #include <QDateTime>
+#include <QDir>
+#include <QFileDialog>
 #include <QFrame>
+#include <QStandardPaths>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
@@ -347,7 +350,28 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
         emit session_.openDemoRequested(order);
     });
+    connect(connect_, &ConnectPage::replayRequested, this,
+            [this](const QString& path, bool realTime, const QString& order) {
+                appendLog(tr("Spiele die Aufnahme %1 ab ...").arg(path));
+                titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+                emit session_.openReplayRequested(path, realTime, order);
+            });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
+    connect(worker, &Worker::recordingState, this,
+            [this](bool active, const QString& path, int exchanges, const QString& error) {
+                recording_ = active;
+                recordButton_->setText(active ? tr("Aufzeichnung beenden") : tr("Aufzeichnen"));
+                recordButton_->setIcon(icons::icon(active ? QStringLiteral("stop") : QStringLiteral("play"),
+                                                   active ? color::bad : color::textMuted, color::text, 14));
+                if (!error.isEmpty()) {
+                    toast::show(this, error, toast::Kind::Error);
+                } else if (active) {
+                    toast::show(this, tr("Zeichne auf nach %1").arg(path), toast::Kind::Info);
+                } else if (!path.isEmpty()) {
+                    toast::show(this, tr("Aufzeichnung gespeichert: %1 (%n Anfragen)", nullptr, exchanges).arg(path),
+                                toast::Kind::Success);
+                }
+            });
 
     connect(dashboard_, &DashboardPage::readRequested, &session_, &Session::readFaultsRequested);
     connect(dashboard_, &DashboardPage::detailsRequested, &session_,
@@ -536,6 +560,28 @@ QWidget* MainWindow::buildLogDrawer() {
     head->addWidget(icon);
     head->addWidget(makeLabel(tr("Protokoll"), nullptr));
     head->addStretch();
+    recordButton_ = new QPushButton(tr("Aufzeichnen"));
+    recordButton_->setObjectName("Ghost");
+    recordButton_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    recordButton_->setToolTip(tr("Die laufende Sitzung in eine Datei aufzeichnen, zum späteren Abspielen"));
+    head->addWidget(recordButton_);
+    connect(recordButton_, &QPushButton::clicked, this, [this] {
+        if (recording_) {
+            emit session_.stopRecordingRequested();
+            return;
+        }
+        if (!connected_) {
+            toast::show(this, tr("Erst verbinden, dann aufzeichnen."), toast::Kind::Info);
+            return;
+        }
+        const QString path = QFileDialog::getSaveFileName(
+            this, tr("Aufzeichnung speichern"),
+            QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
+                .filePath(QStringLiteral("caruspex-%1.jsonl")
+                              .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd_HH-mm")))),
+            tr("Caruspex-Aufnahme (*.jsonl)"));
+        if (!path.isEmpty()) emit session_.startRecordingRequested(path);
+    });
     auto* clear = new QPushButton(tr("Leeren"));
     clear->setObjectName("Ghost");
     auto* close = new QPushButton;
@@ -692,6 +738,11 @@ void MainWindow::onFailed(const QString& error) {
 
 void MainWindow::onClosed() {
     connected_ = false;
+    if (recording_) {
+        recording_ = false;
+        recordButton_->setText(tr("Aufzeichnen"));
+        recordButton_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    }
     titleBar_->setConnection(TitleBar::Link::Offline, tr("Nicht verbunden"));
     faultsButton_->setBadge(QString());
     garagePage_->setCurrentVin(QString());
@@ -922,6 +973,12 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 void MainWindow::autoConnectTcp(const QString& address) {
     connect_->setMode(ConnectPage::Mode::Wifi);
     connect_->setWifiAddress(address);
+    connect_->startConnect();
+}
+
+void MainWindow::autoConnectReplay(const QString& path) {
+    connect_->setMode(ConnectPage::Mode::Replay);
+    connect_->setReplayPath(path);
     connect_->startConnect();
 }
 

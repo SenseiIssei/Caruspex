@@ -14,6 +14,7 @@ class QButtonGroup;
 class QFrame;
 class QLabel;
 class QPlainTextEdit;
+class QPushButton;
 class QPropertyAnimation;
 class QVBoxLayout;
 QT_END_NAMESPACE
@@ -56,6 +57,8 @@ public:
     void autoConnectTcp(const QString& address);
     // Command-line option --demo
     void autoConnectDemo();
+    // Command-line option --replay file
+    void autoConnectReplay(const QString& path);
     // Command-line option --page: start, connect, faults, tools, monitor, live,
     // stats, scan, throttle, kkl, lexicon, settings, plus the newer pages.
     void showPageByName(const QString& name);
@@ -119,6 +122,8 @@ private:
     QPropertyAnimation* logAnimation_ = nullptr;
     bool logOpen_ = false;
     QPlainTextEdit* log_ = nullptr;
+    QPushButton* recordButton_ = nullptr;
+    bool recording_ = false;
 
     ConnectPage* connect_ = nullptr;
     DashboardPage* dashboard_ = nullptr;

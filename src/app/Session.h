@@ -203,6 +203,11 @@ public slots:
     void openTcp(const QString& host, int port, const QString& protocolOrder);
     // The built-in demo car, no adapter needed.
     void openDemo(const QString& protocolOrder);
+    // Plays a recorded session back as if the car were there.
+    void openReplay(const QString& path, bool realTime, const QString& protocolOrder);
+    // Records the running session into a file, and stops it again.
+    void startRecording(const QString& path);
+    void stopRecording();
     void closeAdapter();
     void readFaults();
     void clearFaults();
@@ -285,6 +290,7 @@ signals:
     void healthResult(const caruspex::HealthRow& row);
     void adapterVoltage(double volts, double time);
     void adapterReport(const caruspex::AdapterRow& row);
+    void recordingState(bool active, const QString& path, int exchanges, const QString& error);
     void freezeFrames(const QVector<caruspex::FreezeFrameRow>& frames);
     void udsScanStarted(int total, bool generic);
     void udsScanProgress(const QString& name, int index, int total);
@@ -337,6 +343,9 @@ signals:
     void openSerialRequested(const QString& device, int baud, const QString& protocolOrder);
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
     void openDemoRequested(const QString& protocolOrder);
+    void openReplayRequested(const QString& path, bool realTime, const QString& protocolOrder);
+    void startRecordingRequested(const QString& path);
+    void stopRecordingRequested();
     void closeRequested();
     void readFaultsRequested();
     void clearFaultsRequested();

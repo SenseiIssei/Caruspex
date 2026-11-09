@@ -79,6 +79,11 @@ int main(int argc, char** argv) {
         QStringList() << QStringLiteral("demo"),
         QCoreApplication::translate("main", "Gleich mit dem eingebauten Demo-Auto verbinden"));
     parser.addOption(demoOption);
+    QCommandLineOption replayOption(
+        QStringList() << QStringLiteral("replay"),
+        QCoreApplication::translate("main", "Eine aufgezeichnete Sitzung abspielen"),
+        QStringLiteral("file.jsonl"));
+    parser.addOption(replayOption);
     QCommandLineOption pageOption(
         QStringList() << QStringLiteral("page"),
         QCoreApplication::translate("main", "Mit dieser Seite starten, z.B. faults oder live"),
@@ -164,10 +169,11 @@ int main(int argc, char** argv) {
     window.show();
     if (parser.isSet(tcpOption)) window.autoConnectTcp(parser.value(tcpOption));
     if (parser.isSet(demoOption)) window.autoConnectDemo();
+    if (parser.isSet(replayOption)) window.autoConnectReplay(parser.value(replayOption));
     if (parser.isSet(pageOption)) {
         const QString page = parser.value(pageOption);
         // Give a connection a moment, it jumps to the start page when done.
-        QTimer::singleShot(parser.isSet(tcpOption) || parser.isSet(demoOption) ? 2600 : 0, &window,
+        QTimer::singleShot(parser.isSet(tcpOption) || parser.isSet(demoOption) || parser.isSet(replayOption) ? 2600 : 0, &window,
                            [&window, page] { window.showPageByName(page); });
     }
     if (parser.isSet(shotOption)) {

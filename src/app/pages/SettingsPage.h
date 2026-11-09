@@ -62,6 +62,7 @@ private:
 
     QCheckBox* rememberGeometry_ = nullptr;
     QComboBox* language_ = nullptr;
+    QComboBox* timing_ = nullptr;
     QComboBox* appearance_ = nullptr;
 };
 

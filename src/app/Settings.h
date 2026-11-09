@@ -21,6 +21,8 @@ struct AppSettings {
     // All timeouts are multiplied by this factor. Sluggish clones need more
     // time, a good cable gets by with less.
     int timeoutPercent = 100;
+    // 0 standard (ATAT1), 1 faster on STN adapters only, 2 always ATAT2.
+    int adaptiveTiming = 0;
     // Last used port, so the selection doesn't start from scratch every time.
     QString lastPort;
     bool autoConnect = false;

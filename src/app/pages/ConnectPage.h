@@ -9,6 +9,7 @@
 #include "data/VehicleCatalog.h"
 
 class QButtonGroup;
+class QCheckBox;
 class QComboBox;
 class QCompleter;
 class QStringListModel;
@@ -27,7 +28,7 @@ class ConnectPage : public QWidget {
     Q_OBJECT
 
 public:
-    enum class Mode { Cable, Wifi, Demo };
+    enum class Mode { Cable, Wifi, Demo, Replay };
 
     explicit ConnectPage(QWidget* parent = nullptr);
 
@@ -37,6 +38,7 @@ public:
     // Tries to preselect a port, true if it is there.
     bool selectPort(const QString& device);
     void setWifiAddress(const QString& address);
+    void setReplayPath(const QString& path);
     void setMode(Mode mode);
 
     // The protocol order to try first, from the vehicle choice or the settings.
@@ -60,6 +62,7 @@ signals:
     void serialRequested(const QString& device, const QString& protocolOrder);
     void tcpRequested(const QString& host, int port, const QString& protocolOrder);
     void demoRequested(const QString& protocolOrder);
+    void replayRequested(const QString& path, bool realTime, const QString& protocolOrder);
     void disconnectRequested();
     void vehicleChoiceChanged();
 
@@ -77,6 +80,8 @@ private:
     QStackedWidget* modeStack_ = nullptr;
     QComboBox* portBox_ = nullptr;
     QLineEdit* addressEdit_ = nullptr;
+    QLineEdit* replayPath_ = nullptr;
+    QCheckBox* replayRealTime_ = nullptr;
     QLineEdit* vehicleEdit_ = nullptr;
     QCompleter* completer_ = nullptr;
     QStringListModel* suggestions_ = nullptr;

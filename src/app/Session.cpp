@@ -10,6 +10,7 @@
 #include "core/AdapterProbe.h"
 #include "core/Uds.h"
 #include "core/DemoTransport.h"
+#include "core/Recording.h"
 #include "core/analysis/DriveCycleGuide.h"
 #include "core/analysis/HealthCheck.h"
 
@@ -263,6 +264,44 @@ void Worker::clearUdsEcu(quint32 request, quint32 response, bool extended29, con
         emit udsEcuResult(row);
     }
     emit busy(false);
+}
+
+void Worker::openReplay(const QString& path, bool realTime, const QString& protocolOrder) {
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    auto replay = std::make_unique<ReplayTransport>(path.toStdString(),
+                                                    realTime ? ReplayPacing::RealTime : ReplayPacing::Fast);
+    if (!replay->isOpen()) {
+        emit busy(false);
+        emit failed(tr("Aufnahme lässt sich nicht öffnen: %1").arg(QString::fromStdString(replay->error())));
+        return;
+    }
+    emit logLine(QString::fromStdString(recordingSummary(replay->info())));
+    const QString order = QString::fromStdString(replay->protocolOrder(protocolOrder.toStdString()));
+    const bool ok = finishConnect(std::move(replay), order, true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::startRecording(const QString& path) {
+    if (!elm_.connected()) {
+        emit recordingState(false, path, 0, tr("Erst verbinden, dann aufzeichnen."));
+        return;
+    }
+    std::string error;
+    if (!caruspex::startRecording(elm_, path.toStdString(), error)) {
+        emit recordingState(false, path, 0, QString::fromStdString(error));
+        return;
+    }
+    emit recordingState(true, path, 0, QString());
+}
+
+void Worker::stopRecording() {
+    RecordingTransport* active = activeRecording(elm_);
+    const int exchanges = active ? active->exchanges() : 0;
+    const QString path = active ? QString::fromStdString(active->path()) : QString();
+    caruspex::stopRecording(elm_);
+    emit recordingState(false, path, exchanges, QString());
 }
 
 void Worker::probeAdapter() {
@@ -727,6 +766,9 @@ void Worker::applySettings(const AppSettings& values) {
     }
 
     elm_.setTimeoutScale(static_cast<double>(settings_.timeoutPercent) / 100.0);
+    elm_.setAdaptiveTiming(settings_.adaptiveTiming == 2   ? AdaptiveTiming::Aggressive
+                           : settings_.adaptiveTiming == 1 ? AdaptiveTiming::Auto
+                                                           : AdaptiveTiming::Standard);
     elm_.setVerbose(settings_.logRaw);
     if (kwp_) {
         kwp_->setBasicSettingSession(
@@ -1004,6 +1046,9 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
+    connect(this, &Session::openReplayRequested, worker_, &Worker::openReplay);
+    connect(this, &Session::startRecordingRequested, worker_, &Worker::startRecording);
+    connect(this, &Session::stopRecordingRequested, worker_, &Worker::stopRecording);
     connect(this, &Session::closeRequested, worker_, &Worker::closeAdapter);
     connect(this, &Session::readFaultsRequested, worker_, &Worker::readFaults);
     connect(this, &Session::clearFaultsRequested, worker_, &Worker::clearFaults);
