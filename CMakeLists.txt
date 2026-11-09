@@ -187,6 +187,7 @@ if(CARUSPEX_TESTS)
         tests/test_protocol.cpp
         tests/test_obd_extended.cpp
         tests/test_obd_batch.cpp
+        tests/test_json.cpp
         tests/test_kwp1281.cpp
         tests/test_kwp2000.cpp
         tests/test_settings.cpp

@@ -1,29 +1,71 @@
-// Console test tool for the core. The actual application is caruspex.exe.
+// Console tool for the core. The actual application is caruspex.exe.
 //
 //   caruspex_cli ports
 //   caruspex_cli kklcheck --port COM3
 //   caruspex_cli read --tcp 127.0.0.1:35000
 //   caruspex_cli read --port COM5 --baud 38400
+//   caruspex_cli health --demo --json
 //   caruspex_cli ecus --tcp 127.0.0.1:35000   (per control unit, all live values)
+//
+// `caruspex_cli help` lists every command and option.
 
+#include <chrono>
+#include <cmath>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <memory>
+#include <set>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
-#include <chrono>
-
+#include "core/AdapterProbe.h"
+#include "core/DemoTransport.h"
 #include "core/Elm327.h"
+#include "core/JsonWriter.h"
+#include "core/KLineStream.h"
 #include "core/Lang.h"
 #include "core/Obd2.h"
-#include "core/Transport.h"
-#include "core/KLineStream.h"
 #include "core/Timing.h"
+#include "core/Transport.h"
+#include "core/analysis/HealthCheck.h"
+#include "data/DtcDatabase.h"
 #include "data/Pids.h"
+#include "data/VehicleCatalog.h"
+#include "data/Vin.h"
 
 using namespace caruspex;
 
 namespace {
+
+const char* const kUsage =
+    "Usage: caruspex_cli <command> [options]\n"
+    "\n"
+    "Commands:\n"
+    "  ports       list the serial ports\n"
+    "  kklcheck    self-test of a KKL cable (needs --port, not plugged into the car)\n"
+    "  read        warning lamp, readiness and fault codes\n"
+    "  clear       clear the fault memory\n"
+    "  live        one snapshot of the usual live values\n"
+    "  info        VIN and the first freeze frame\n"
+    "  vin         VIN, what it says, and the matching car from the catalog\n"
+    "  freeze      every freeze frame, one per stored fault\n"
+    "  health      health check: faults, readiness, mode 06 and a live series\n"
+    "  probe       adapter test: what the ELM327 really is and can do\n"
+    "  ecus        everything per control unit (headers on)\n"
+    "  help        this text\n"
+    "\n"
+    "Connection (one of them):\n"
+    "  --demo              built-in demo car, warm and on the road\n"
+    "  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out\n"
+    "  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)\n"
+    "  --baud N            baud rate of the serial port, 38400 if left out\n"
+    "\n"
+    "Options:\n"
+    "  --json              machine-readable output for read, vin, health, probe, freeze\n"
+    "  --seconds N         length of the live series of health, 15 if left out\n"
+    "  -v                  log every command sent to the adapter\n";
 
 void printPorts() {
     const std::vector<PortInfo> ports = enumeratePorts();
@@ -130,6 +172,531 @@ std::unique_ptr<ITransport> makeTransport(const std::string& tcp, const std::str
     return t;
 }
 
+// ---------------------------------------------------------------------------
+// Output helpers
+// ---------------------------------------------------------------------------
+
+void printValue(const LiveValue& v) {
+    if (!v.text.empty()) {
+        std::printf("  %-40s %s\n", v.name.c_str(), v.text.c_str());
+    } else {
+        std::printf("  %-40s %10.2f %s\n", v.name.c_str(), v.value, v.unit.c_str());
+    }
+}
+
+void jsonValue(JsonWriter& json, const LiveValue& v) {
+    json.beginObject()
+        .field("pid", v.pid)
+        .field("key", v.key)
+        .field("sub", v.sub)
+        .field("name", v.name)
+        .field("value", v.value)
+        .field("unit", v.unit);
+    if (!v.text.empty()) json.field("text", v.text);
+    if (!v.ecuSource.empty()) json.field("ecu", v.ecu).field("ecuSource", v.ecuSource);
+    json.endObject();
+}
+
+void jsonAdapter(JsonWriter& json, Elm327& elm) {
+    json.key("adapter")
+        .beginObject()
+        .field("version", elm.version())
+        .field("connection", elm.transportName())
+        .field("protocol", elm.protocolText())
+        .field("can", elm.isCan())
+        .endObject();
+}
+
+// The brand behind the VIN, for manufacturer-specific code texts. Empty if
+// the car gives no VIN or the VIN names no single brand.
+struct VinContext {
+    std::string vin;
+    VinInfo info;
+    CatalogMatch match;
+    std::string brand;
+};
+
+VinContext readVinContext(Obd2& obd) {
+    VinContext c;
+    c.vin = obd.readVin();
+    if (c.vin.empty()) return c;
+    c.info = decodeVin(c.vin);
+    c.match = catalog::matchVin(c.info);
+    c.brand = !c.match.brand.empty() ? c.match.brand : c.info.brand;
+    return c;
+}
+
+// The fault text, with the meaning for the brand where it differs.
+std::string faultText(const std::string& code, const std::string& brand) {
+    return lookupDtc(code, brand).text;
+}
+
+bool isStored(const Fault& f) { return f.kind == L("gespeichert", "stored"); }
+
+void jsonFaults(JsonWriter& json, const std::vector<Fault>& faults, const std::string& brand) {
+    json.key("faults").beginArray();
+    for (const Fault& f : faults) {
+        const DtcInfo info = lookupDtc(f.code, brand);
+        json.beginObject()
+            .field("code", f.code)
+            .field("kind", f.kind)
+            .field("text", info.text)
+            .field("severity", severityLabel(info.severity))
+            .field("system", info.systemName);
+        if (!f.ecuSource.empty()) json.field("ecu", f.ecu).field("ecuSource", f.ecuSource);
+        json.endObject();
+    }
+    json.endArray();
+}
+
+void jsonStatus(JsonWriter& json, const VehicleStatus& status) {
+    json.key("status");
+    if (!status.valid) {
+        json.null();
+        return;
+    }
+    json.beginObject()
+        .field("milOn", status.milOn)
+        .field("faultCount", status.faultCount)
+        .field("diesel", status.compressionIgnition)
+        .key("readiness")
+        .beginArray();
+    for (const ReadinessItem& r : status.readiness) {
+        json.beginObject().field("name", r.name).field("ready", r.ready).endObject();
+    }
+    json.endArray().endObject();
+}
+
+// ---------------------------------------------------------------------------
+// Commands
+// ---------------------------------------------------------------------------
+
+int commandRead(Elm327& elm, Obd2& obd, bool asJson) {
+    const VehicleStatus status = obd.readStatus();
+    std::string err;
+    const std::vector<Fault> faults = obd.readFaults(err);
+    const VinContext vin = readVinContext(obd);
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject();
+        jsonAdapter(json, elm);
+        json.key("vin");
+        if (vin.vin.empty()) json.null();
+        else json.value(vin.vin);
+        json.field("brand", vin.brand);
+        jsonStatus(json, status);
+        jsonFaults(json, faults, vin.brand);
+        if (!err.empty()) json.field("error", err);
+        json.endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return 0;
+    }
+
+    if (!vin.vin.empty()) {
+        std::printf("VIN: %s%s%s\n", vin.vin.c_str(), vin.brand.empty() ? "" : "  (",
+                    vin.brand.empty() ? "" : (vin.brand + ")").c_str());
+    }
+    if (status.valid) {
+        std::printf("MIL: %s   reported faults: %d\n", status.milOn ? "ON" : "off", status.faultCount);
+        for (const ReadinessItem& r : status.readiness) {
+            std::printf("   %-26s %s\n", r.name.c_str(), r.ready ? "ready" : "not ready");
+        }
+    }
+    std::printf("\n");
+    if (faults.empty()) {
+        std::printf("No faults stored.\n");
+    } else {
+        std::printf("%zu fault(s) found:\n", faults.size());
+        for (const Fault& f : faults) {
+            std::printf("  %s [%s]%s%s\n      %s\n", f.code.c_str(), f.kind.c_str(),
+                        f.ecu.empty() ? "" : " ", f.ecu.c_str(), faultText(f.code, vin.brand).c_str());
+        }
+    }
+    if (!err.empty()) std::printf("%s\n", err.c_str());
+    return 0;
+}
+
+int commandVin(Elm327& elm, Obd2& obd, bool asJson) {
+    const VinContext c = readVinContext(obd);
+    const VinInfo& info = c.info;
+    const CatalogMatch& match = c.match;
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject();
+        jsonAdapter(json, elm);
+        json.key("vin");
+        if (c.vin.empty()) {
+            json.null();
+            json.field("error", "The car does not report a VIN (mode 09, InfoType 02).");
+            json.endObject();
+            std::fputs(json.text().c_str(), stdout);
+            return 4;
+        }
+        json.value(c.vin)
+            .field("valid", info.valid)
+            .field("wmi", info.wmi)
+            .field("manufacturer", info.manufacturer)
+            .field("brand", info.brand)
+            .stringList("brandCandidates", info.brandCandidates)
+            .field("country", info.country)
+            .field("region", info.region)
+            .key("modelYear");
+        if (info.modelYear > 0) json.value(info.modelYear);
+        else json.null();
+        json.field("modelYearCertain", info.modelYearCertain).key("modelYears").beginArray();
+        for (int year : info.modelYears) json.value(year);
+        json.endArray()
+            .field("checkDigitApplies", info.checkDigitApplies)
+            .field("checkDigitOk", info.checkDigitOk)
+            .field("serial", info.serial)
+            .field("modelCode", info.modelCode)
+            .stringList("problems", info.problems)
+            .stringList("notes", info.notes)
+            .key("catalog")
+            .beginObject()
+            .field("brand", match.brand)
+            .field("confidence", match.confidence)
+            .field("reason", match.reason)
+            .key("year");
+        if (match.year > 0) json.value(match.year);
+        else json.null();
+        json.key("generation");
+        if (match.generation) {
+            const VehicleGeneration& g = *match.generation;
+            json.beginObject()
+                .field("name", catalog::displayName(g))
+                .field("brand", g.brand)
+                .field("model", g.model)
+                .field("generation", g.generation)
+                .field("yearFrom", g.yearFrom)
+                .key("yearTo");
+            if (g.yearTo > 0) json.value(g.yearTo);
+            else json.null();
+            json.field("diagnosis", catalog::diagnosisText(g, match.year)).endObject();
+        } else {
+            json.null();
+        }
+        json.key("alternatives").beginArray();
+        for (const VehicleGeneration* g : match.alternatives) json.value(catalog::displayName(*g));
+        json.endArray().endObject().endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return 0;
+    }
+
+    if (c.vin.empty()) {
+        std::printf("The car does not report a VIN (mode 09, InfoType 02).\n");
+        return 4;
+    }
+    std::printf("VIN          : %s%s\n", c.vin.c_str(), info.valid ? "" : "  (not a valid VIN)");
+    std::printf("Manufacturer : %s\n", info.manufacturer.empty() ? "unknown" : info.manufacturer.c_str());
+    if (!info.country.empty()) std::printf("Country      : %s, %s\n", info.country.c_str(), info.region.c_str());
+    if (info.modelYear > 0) {
+        std::printf("Model year   : %d%s\n", info.modelYear, info.modelYearCertain ? "" : " (not certain)");
+    }
+    if (info.checkDigitApplies) {
+        std::printf("Check digit  : %s\n", info.checkDigitOk ? "correct" : "WRONG");
+    }
+    if (!info.serial.empty()) std::printf("Serial       : %s\n", info.serial.c_str());
+    for (const std::string& p : info.problems) std::printf("Problem      : %s\n", p.c_str());
+    for (const std::string& n : info.notes) std::printf("Note         : %s\n", n.c_str());
+    std::printf("\n");
+    if (match.generation) {
+        std::printf("Catalog      : %s, %d %% sure\n", catalog::displayName(*match.generation).c_str(),
+                    match.confidence);
+        if (!match.reason.empty()) std::printf("               %s\n", match.reason.c_str());
+        std::printf("Diagnosis    : %s\n",
+                    catalog::diagnosisText(*match.generation, match.year).c_str());
+        for (const VehicleGeneration* g : match.alternatives) {
+            std::printf("Also possible: %s\n", catalog::displayName(*g).c_str());
+        }
+    } else if (!match.brand.empty()) {
+        std::printf("Catalog      : %s, model not recognised\n", match.brand.c_str());
+    } else {
+        std::printf("Catalog      : no match\n");
+    }
+    return 0;
+}
+
+int commandFreeze(Elm327& elm, Obd2& obd, bool asJson) {
+    const std::vector<FreezeFrame> frames = obd.readFreezeFrames();
+    const std::string brand = frames.empty() ? std::string() : readVinContext(obd).brand;
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject();
+        jsonAdapter(json, elm);
+        json.field("brand", brand).key("frames").beginArray();
+        for (const FreezeFrame& f : frames) {
+            json.beginObject()
+                .field("frame", f.frame)
+                .field("dtc", f.dtc)
+                .field("text", faultText(f.dtc, brand));
+            if (!f.ecuSource.empty()) json.field("ecu", f.ecu).field("ecuSource", f.ecuSource);
+            json.key("values").beginArray();
+            for (const LiveValue& v : f.values) jsonValue(json, v);
+            json.endArray().endObject();
+        }
+        json.endArray().endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return 0;
+    }
+
+    if (frames.empty()) {
+        std::printf("No freeze frame stored.\n");
+        return 0;
+    }
+    for (const FreezeFrame& f : frames) {
+        std::printf("Freeze frame %d: %s %s%s%s\n", f.frame, f.dtc.c_str(), faultText(f.dtc, brand).c_str(),
+                    f.ecu.empty() ? "" : "  ", f.ecu.c_str());
+        for (const LiveValue& v : f.values) printValue(v);
+        std::printf("\n");
+    }
+    return 0;
+}
+
+const char* gradeKey(analysis::TrafficLight grade) {
+    switch (grade) {
+        case analysis::TrafficLight::Green: return "green";
+        case analysis::TrafficLight::Yellow: return "yellow";
+        case analysis::TrafficLight::Red: return "red";
+    }
+    return "?";
+}
+
+const char* areaKey(analysis::Area area) {
+    using analysis::Area;
+    switch (area) {
+        case Area::Faults: return "faults";
+        case Area::Readiness: return "readiness";
+        case Area::Mixture: return "mixture";
+        case Area::OxygenSensors: return "oxygen_sensors";
+        case Area::Catalyst: return "catalyst";
+        case Area::Misfire: return "misfire";
+        case Area::Cooling: return "cooling";
+        case Area::Charging: return "charging";
+        case Area::Sensors: return "sensors";
+        case Area::Monitoring: return "monitoring";
+        case Area::History: return "history";
+    }
+    return "?";
+}
+
+const char* fuelKey(analysis::FuelType fuel) {
+    switch (fuel) {
+        case analysis::FuelType::Petrol: return "petrol";
+        case analysis::FuelType::Diesel: return "diesel";
+        case analysis::FuelType::Unknown: return "unknown";
+    }
+    return "?";
+}
+
+int commandHealth(Elm327& elm, Obd2& obd, bool asJson, int seconds) {
+    using namespace analysis;
+    auto progress = [asJson](const char* text) {
+        if (!asJson) {
+            std::printf("%s\n", text);
+            std::fflush(stdout);
+        }
+    };
+
+    HealthInput input;
+    progress("Reading readiness and warning lamp ...");
+    const VehicleStatus status = obd.readStatus();
+    input.setStatus(status);
+
+    progress("Reading the fault memory ...");
+    std::string error;
+    input.faults = obd.readFaults(error);
+    input.faultsRead = error.empty();
+    const VinContext vin = readVinContext(obd);
+    const std::string brand = vin.brand;
+    input.faultLevel = [brand](const Fault& f) {
+        // As in the application: the database knows how urgent a code is,
+        // pending codes count one step lower since they may still go away.
+        const Severity severity = lookupDtc(f.code, brand).severity;
+        Level level = Level::Info;
+        if (severity == Severity::Critical) level = Level::Critical;
+        else if (severity == Severity::High || severity == Severity::Medium) level = Level::Warning;
+        if (!isStored(f) && level == Level::Warning) level = Level::Info;
+        return level;
+    };
+
+    progress("Reading component monitoring (mode 06) ...");
+    std::string monitorNote;
+    input.monitorResults = obd.readMonitorResults(monitorNote);
+    input.monitorResultsRead = true;
+
+    LiveValue fuelType;
+    if (obd.readLive(0x51, fuelType)) input.fuel = fuelTypeFromObd(static_cast<int>(fuelType.value));
+
+    // Live series: only what the car offers.
+    const std::set<int> supported = obd.supportedPids();
+    std::vector<int> pids;
+    for (int pid : healthLivePids()) {
+        if (supported.empty() || supported.count(pid)) pids.push_back(pid);
+    }
+    if (!asJson) {
+        std::printf("Collecting %zu live values for %d s ...\n", pids.size(), seconds);
+        std::fflush(stdout);
+    }
+    int snapshots = 0;
+    const std::uint64_t start = nowMs();
+    while (!pids.empty() && nowMs() - start < static_cast<std::uint64_t>(seconds) * 1000u) {
+        const std::vector<LiveValue> values = obd.readLiveBatch(pids);
+        if (values.empty()) break;
+        input.addSnapshot(values, static_cast<double>(nowMs() - start) / 1000.0);
+        ++snapshots;
+    }
+
+    const HealthReport report = runHealthCheck(input);
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject();
+        jsonAdapter(json, elm);
+        json.field("score", report.score)
+            .field("grade", gradeKey(report.grade))
+            .field("summary", report.summary.text())
+            .field("checksRun", report.checksRun)
+            .field("fuel", fuelKey(input.fuel))
+            .field("brand", brand)
+            .key("liveSeries")
+            .beginObject()
+            .field("seconds", seconds)
+            .field("snapshots", snapshots)
+            .key("pids")
+            .beginArray();
+        for (int pid : pids) json.value(pid);
+        json.endArray().endObject().key("findings").beginArray();
+        for (const Finding& f : report.findings) {
+            json.beginObject()
+                .field("id", f.id)
+                .field("level", levelKey(f.level))
+                .field("area", areaKey(f.area))
+                .field("title", f.title.text())
+                .field("explanation", f.explanation.text())
+                .field("advice", f.advice.text())
+                .endObject();
+        }
+        json.endArray().key("notChecked").beginArray();
+        for (const SkippedCheck& s : report.notChecked) {
+            json.beginObject()
+                .field("id", s.id)
+                .field("title", s.title.text())
+                .field("reason", s.reason.text())
+                .endObject();
+        }
+        json.endArray();
+        jsonStatus(json, status);
+        jsonFaults(json, input.faults, brand);
+        json.endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return 0;
+    }
+
+    std::printf("%d snapshots of %zu values.\n\n", snapshots, pids.size());
+    std::printf("Score %d/100 (%s), %d checks run\n", report.score, gradeKey(report.grade),
+                report.checksRun);
+    std::printf("%s\n", report.summary.text().c_str());
+    if (!report.findings.empty()) std::printf("\nFindings:\n");
+    for (const Finding& f : report.findings) {
+        std::printf("  [%s] %s\n", levelKey(f.level), f.title.text().c_str());
+        if (!f.explanation.empty()) std::printf("      %s\n", f.explanation.text().c_str());
+        if (!f.advice.empty()) std::printf("      Advice: %s\n", f.advice.text().c_str());
+    }
+    if (!report.notChecked.empty()) std::printf("\nNot checked:\n");
+    for (const SkippedCheck& s : report.notChecked) {
+        std::printf("  %s: %s\n", s.title.text().c_str(), s.reason.text().c_str());
+    }
+    return 0;
+}
+
+int commandProbe(Elm327& elm, bool asJson) {
+    const AdapterReport r = probeAdapter(elm);
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject();
+        jsonAdapter(json, elm);
+        json.field("reachable", r.reachable)
+            .field("versionText", r.versionText)
+            .field("description", r.description)
+            .key("claimedVersion");
+        if (r.claimedLevel > 0) json.value(versionText(r.claimedLevel));
+        else json.null();
+        json.field("claimedVersionExists", r.claimedVersionExists).key("behavesLike");
+        if (r.behavesLikeLevel > 0) json.value(versionText(r.behavesLikeLevel));
+        else json.null();
+        json.field("acceptsUnknownCommands", r.acceptsUnknownCommands).field("stn", r.isStn);
+        if (r.isStn) json.field("stnId", r.stnId).field("stnDevice", r.stnDevice);
+        json.key("voltage");
+        if (r.hasVoltage) json.value(r.voltage);
+        else json.null();
+        json.key("roundTripMs");
+        if (r.roundTripSamples > 0) json.value(r.roundTripMs);
+        else json.null();
+        json.key("roundTripWithCountHintMs");
+        if (r.responseCountHint) json.value(r.roundTripWithHintMs);
+        else json.null();
+        json.key("checks").beginArray();
+        for (const CommandCheck& c : r.checks) {
+            json.beginObject()
+                .field("command", c.command)
+                .field("introducedIn", versionText(c.introducedIn))
+                .field("supported", c.supported)
+                .field("response", c.response)
+                .field("purpose", c.purpose.get())
+                .endObject();
+        }
+        json.endArray().key("facts").beginArray();
+        for (const BilingualText& t : r.facts) json.value(t.get());
+        json.endArray().key("speedTips").beginArray();
+        for (const BilingualText& t : r.speedTips) json.value(t.get());
+        json.endArray().field("verdict", r.verdict.get()).endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return r.reachable ? 0 : 3;
+    }
+
+    if (!r.reachable) {
+        std::printf("The adapter does not answer.\n");
+        return 3;
+    }
+    std::printf("Claims       : %s\n", r.versionText.c_str());
+    if (!r.description.empty()) std::printf("Description  : %s\n", r.description.c_str());
+    if (r.behavesLikeLevel > 0)
+        std::printf("Behaves like : ELM327 %s\n", versionText(r.behavesLikeLevel).c_str());
+    if (r.isStn) std::printf("STN chip     : %s %s\n", r.stnId.c_str(), r.stnDevice.c_str());
+    if (r.hasVoltage) std::printf("Voltage      : %.1f V\n", r.voltage);
+    if (r.roundTripSamples > 0) std::printf("Round trip   : %.0f ms\n", r.roundTripMs);
+    if (r.responseCountHint)
+        std::printf("With hint    : %.0f ms (expected answer count appended)\n", r.roundTripWithHintMs);
+    std::printf("\nCommands:\n");
+    for (const CommandCheck& c : r.checks) {
+        std::printf("  %-4s %-10s %-6s %s\n", c.supported ? "ok" : "--", c.command.c_str(),
+                    versionText(c.introducedIn).c_str(), c.purpose.get().c_str());
+    }
+    if (!r.facts.empty()) std::printf("\nObserved:\n");
+    for (const BilingualText& t : r.facts) std::printf("  %s\n", t.get().c_str());
+    if (!r.speedTips.empty()) std::printf("\nFor more speed:\n");
+    for (const BilingualText& t : r.speedTips) std::printf("  %s\n", t.get().c_str());
+    std::printf("\nVerdict: %s\n", r.verdict.get().c_str());
+    return 0;
+}
+
+// Prints an error as text, or as {"error": ...} with --json.
+int fail(bool asJson, const std::string& message, int code) {
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject().field("error", message).endObject();
+        std::fputs(json.text().c_str(), stdout);
+    } else {
+        std::printf("%s\n", message.c_str());
+    }
+    return code;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -139,15 +706,35 @@ int main(int argc, char** argv) {
     std::string command = argc > 1 ? argv[1] : "ports";
     std::string tcp, port = "COM3";
     int baud = 38400;
+    int seconds = 15;
     bool verbose = false;
+    bool demo = false;
+    bool asJson = false;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
-        if (arg == "--tcp" && i + 1 < argc) tcp = argv[++i];
-        else if (arg == "--port" && i + 1 < argc) port = argv[++i];
-        else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
-        else if (arg == "-v") verbose = true;
+        try {
+            if (arg == "--tcp" && i + 1 < argc) tcp = argv[++i];
+            else if (arg == "--port" && i + 1 < argc) port = argv[++i];
+            else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
+            else if (arg == "--seconds" && i + 1 < argc) seconds = std::stoi(argv[++i]);
+            else if (arg == "--demo") demo = true;
+            else if (arg == "--json") asJson = true;
+            else if (arg == "-v") verbose = true;
+            else {
+                std::printf("Unknown option: %s\n\n%s", arg.c_str(), kUsage);
+                return 1;
+            }
+        } catch (const std::exception&) {
+            std::printf("Not a number after %s\n", arg.c_str());
+            return 1;
+        }
     }
+    if (seconds < 0) seconds = 0;
 
+    if (command == "help" || command == "--help" || command == "-h") {
+        std::fputs(kUsage, stdout);
+        return 0;
+    }
     if (command == "ports") {
         printPorts();
         return 0;
@@ -155,73 +742,71 @@ int main(int argc, char** argv) {
     if (command == "kklcheck") {
         return kklCheck(port);
     }
+    static const char* const known[] = {"read", "clear", "live", "info", "vin",
+                                        "freeze", "health", "probe", "ecus"};
+    bool isKnown = false;
+    for (const char* k : known) isKnown = isKnown || command == k;
+    if (!isKnown) {
+        std::printf("Unknown command: %s\n\n%s", command.c_str(), kUsage);
+        return 1;
+    }
 
     std::string error;
-    std::unique_ptr<ITransport> transport = makeTransport(tcp, port, baud, error);
-    if (!transport) {
-        std::printf("Connection failed: %s\n", error.c_str());
-        return 2;
+    std::unique_ptr<ITransport> transport;
+    if (demo) {
+        // Ten minutes after ignition on: the engine is warm and the demo car
+        // is out on its drive cycle, so the live values say something.
+        DemoOptions options;
+        const auto origin = std::chrono::steady_clock::now();
+        options.clock = [origin] {
+            return 600.0 + std::chrono::duration<double>(std::chrono::steady_clock::now() - origin).count();
+        };
+        transport = std::make_unique<DemoTransport>(options);
+    } else {
+        transport = makeTransport(tcp, port, baud, error);
     }
+    if (!transport) return fail(asJson, "Connection failed: " + error, 2);
 
     Elm327 elm;
-    if (verbose) elm.setLog([](const std::string& m) { std::printf("%s\n", m.c_str()); });
-    if (!elm.connect(std::move(transport), kProtocolOrderKLineFirst, error)) {
-        std::printf("%s\n", error.c_str());
-        return 3;
+    if (verbose) {
+        // With --json the log goes to stderr so stdout stays parseable.
+        elm.setLog([asJson](const std::string& m) { std::fprintf(asJson ? stderr : stdout, "%s\n", m.c_str()); });
     }
-    std::printf("Adapter    : %s\n", elm.version().c_str());
-    std::printf("Connection : %s\n", elm.transportName().c_str());
-    std::printf("Protocol   : %s\n\n", elm.protocolText().c_str());
+    if (!elm.connect(std::move(transport), demo ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst, error)) {
+        return fail(asJson, error, 3);
+    }
+    if (!asJson) {
+        std::printf("Adapter    : %s\n", elm.version().c_str());
+        std::printf("Connection : %s\n", elm.transportName().c_str());
+        std::printf("Protocol   : %s\n\n", elm.protocolText().c_str());
+    }
 
     Obd2 obd(elm);
+    int result = 0;
 
     if (command == "read") {
-        const VehicleStatus status = obd.readStatus();
-        if (status.valid) {
-            std::printf("MIL: %s   reported faults: %d\n",
-                        status.milOn ? "ON" : "off", status.faultCount);
-            for (const ReadinessItem& r : status.readiness) {
-                std::printf("   %-26s %s\n", r.name.c_str(), r.ready ? "ready" : "not ready");
-            }
-        }
-        std::string err;
-        const std::vector<Fault> faults = obd.readFaults(err);
-        std::printf("\n");
-        if (faults.empty()) {
-            std::printf("No faults stored.\n");
-        } else {
-            std::printf("%zu fault(s) found:\n", faults.size());
-            for (const Fault& f : faults) {
-                std::printf("  %s [%s]\n      %s\n", f.code.c_str(), f.kind.c_str(),
-                            f.text.c_str());
-            }
-        }
+        result = commandRead(elm, obd, asJson);
+    } else if (command == "vin") {
+        result = commandVin(elm, obd, asJson);
+    } else if (command == "freeze") {
+        result = commandFreeze(elm, obd, asJson);
+    } else if (command == "health") {
+        result = commandHealth(elm, obd, asJson, seconds);
+    } else if (command == "probe") {
+        result = commandProbe(elm, asJson);
     } else if (command == "clear") {
         std::string err;
-        std::printf(obd.clearFaults(err) ? "Fault memory cleared.\n"
-                                         : "Clearing failed.\n");
+        std::printf(obd.clearFaults(err) ? "Fault memory cleared.\n" : "Clearing failed.\n");
         if (!err.empty()) std::printf("%s\n", err.c_str());
     } else if (command == "live") {
-        for (const LiveValue& v : obd.readLive(defaultLivePids())) {
-            if (!v.text.empty()) {
-                std::printf("  %-32s %s\n", v.name.c_str(), v.text.c_str());
-            } else {
-                std::printf("  %-32s %10.2f %s\n", v.name.c_str(), v.value, v.unit.c_str());
-            }
-        }
+        for (const LiveValue& v : obd.readLive(defaultLivePids())) printValue(v);
     } else if (command == "info") {
         const std::string vin = obd.readVin();
         std::printf("VIN: %s\n", vin.empty() ? "(not provided)" : vin.c_str());
         std::string trigger;
         const std::vector<LiveValue> frame = obd.readFreezeFrame(trigger);
         if (!trigger.empty()) std::printf("Freeze frame for code %s:\n", trigger.c_str());
-        for (const LiveValue& v : frame) {
-            if (!v.text.empty()) {
-                std::printf("  %-32s %s\n", v.name.c_str(), v.text.c_str());
-            } else {
-                std::printf("  %-32s %10.2f %s\n", v.name.c_str(), v.value, v.unit.c_str());
-            }
-        }
+        for (const LiveValue& v : frame) printValue(v);
     } else if (command == "ecus") {
         // Everything per control unit: headers on, so every answer keeps
         // its sender.
@@ -248,20 +833,16 @@ int main(int argc, char** argv) {
             std::printf("  %s\n", m.text.c_str());
         }
         std::printf("\n");
-        for (int pid : obd.supportedPids()) {
-            for (const LiveValue& v : obd.readLiveAll(pid)) {
-                if (!v.text.empty()) {
-                    std::printf("  %03X %-50s %s\n", v.key, v.name.c_str(), v.text.c_str());
-                } else {
-                    std::printf("  %03X %-50s %10.2f %s\n", v.key, v.name.c_str(), v.value,
-                                v.unit.c_str());
-                }
+        const std::set<int> supported = obd.supportedPids();
+        for (const LiveValue& v : obd.readLiveBatch(std::vector<int>(supported.begin(), supported.end()))) {
+            if (!v.text.empty()) {
+                std::printf("  %03X %-50s %s\n", v.key, v.name.c_str(), v.text.c_str());
+            } else {
+                std::printf("  %03X %-50s %10.2f %s\n", v.key, v.name.c_str(), v.value, v.unit.c_str());
             }
         }
-    } else {
-        std::printf("Unknown command: %s\n", command.c_str());
     }
 
     elm.disconnect();
-    return 0;
+    return result;
 }
