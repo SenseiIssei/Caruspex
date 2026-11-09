@@ -130,6 +130,18 @@ Getestet ist das gegen ein nachgebautes Steuergerät in `tests/FakeEcu.cpp`, das
 
 Noch nicht gebaut: herstellerspezifische Diagnose über CAN mit TP 2.0 für Fahrzeuge ab etwa 2004.
 
+## Herunterladen
+
+Fertige Pakete liegen auf der [Release-Seite](https://github.com/SenseiIssei/Caruspex/releases):
+
+| System | Datei | Hinweis |
+|---|---|---|
+| Windows 10 und 11, 64 Bit | `Caruspex-<version>-windows-x64-setup.exe` | Installiert ohne Administratorrechte und kann `caruspex_cli` in den Suchpfad legen. Daneben liegt ein `.zip` zum Entpacken ohne Installation |
+| macOS ab 13, Apple Silicon | `Caruspex-<version>-macos.dmg` | App in den Programme-Ordner ziehen, `caruspex_cli` liegt daneben |
+| Linux, x86_64 | `Caruspex-<version>-linux-x86_64.AppImage` | `chmod +x` und starten. Das Konsolenwerkzeug allein steckt in `caruspex_cli-<version>-linux-x86_64.tar.gz` |
+
+Die Pakete sind noch nicht signiert. Windows SmartScreen fragt beim ersten Start nach („Weitere Informationen“, „Trotzdem ausführen“), unter macOS die App beim ersten Mal mit Rechtsklick und „Öffnen“ starten.
+
 ## Was gebaut wird
 
 Aus derselben Quelle entstehen auf jedem System zwei Programme:
@@ -155,6 +167,14 @@ Mit `--json` geben `read`, `vin`, `health`, `probe` und `freeze` JSON für Skrip
 ```bash
 build/bin/Release/caruspex_cli.exe health --demo --json > health.json
 ```
+
+## Pakete und Releases
+
+Nach einem Release-Build schreibt `bash tools/package.sh` die Pakete des eigenen Systems nach `dist/`: unter Windows Installer und Zip (der Installer braucht [Inno Setup 6](https://jrsoftware.org/isinfo.php)), unter macOS das dmg, unter Linux das AppImage. `bash tools/smoke_test.sh` installiert sie danach wie ein Nutzer, startet beide Programme und entfernt sie wieder. Die CI macht beides bei jedem Lauf.
+
+Ein Release entsteht aus einem Tag: Version in `CMakeLists.txt` setzen, `changelog/<version>.md` auf Deutsch und Englisch schreiben, `v<version>` taggen und den Tag pushen. Die CI baut alle drei Systeme und veröffentlicht das Release mit den Paketen und der Änderungsliste.
+
+Das Programmsymbol wird im Code gezeichnet (`src/app/AppIcon.cpp`). Nach einer Änderung erneuern `caruspex --render-icon build/icon` und `python tools/gen_icons.py build/icon` die Dateien in `resources/icons/`.
 
 ## Selbst bauen
 

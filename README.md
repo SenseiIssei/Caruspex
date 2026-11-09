@@ -178,6 +178,19 @@ Not yet implemented: manufacturer diagnostics over CAN with VW TP 2.0 (vehicles 
 | Tooling | Python 3 (code generator, ELM327 simulator) |
 | Platforms | Windows (MSVC 2022), Linux (GCC 12+), macOS (Clang 15+) |
 
+## Download
+
+Ready-made packages are on the [releases page](https://github.com/SenseiIssei/Caruspex/releases):
+
+| System | File | Notes |
+|---|---|---|
+| Windows 10 and 11, 64-bit | `Caruspex-<version>-windows-x64-setup.exe` | Installs without admin rights and can put `caruspex_cli` on the search path. A portable `.zip` is there as well |
+| macOS 13 and newer, Apple Silicon | `Caruspex-<version>-macos.dmg` | Drag the app to Applications, `caruspex_cli` is next to it |
+| Linux, x86_64 | `Caruspex-<version>-linux-x86_64.AppImage` | `chmod +x` and start it. The command-line tool alone is in `caruspex_cli-<version>-linux-x86_64.tar.gz` |
+
+The packages are not signed yet. Windows SmartScreen asks on the first start ("More info", "Run anyway"); on macOS
+open the app the first time with right click and "Open".
+
 ## Building
 
 Requirements: a C++20 compiler (MSVC 2022, GCC 12 or Clang 15 and newer), CMake 3.21+, Python 3,
@@ -264,6 +277,20 @@ Then log out and back in.
 |---|---|
 | `caruspex` / `caruspex.exe` / `caruspex.app` | GUI application |
 | `caruspex_cli` / `caruspex_cli.exe` | Scriptable command-line tool on the same core, see [Command-line tool](#command-line-tool) |
+
+### Packages and releases
+
+After a Release build, `bash tools/package.sh` writes the packages of the current system into `dist/`: the installer
+and a zip on Windows (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php) for the installer), the dmg on macOS,
+the AppImage on Linux. `bash tools/smoke_test.sh` then installs them like a user would, starts both programs and
+removes them again. The CI does both on every run.
+
+A release comes from a tag: set the version in `CMakeLists.txt`, write `changelog/<version>.md` (German and
+English), tag `v<version>` and push the tag. The CI builds all three systems and publishes the release with the
+packages and the change list.
+
+The app icon is drawn in code (`src/app/AppIcon.cpp`). After changing it, `caruspex --render-icon build/icon` and
+`python tools/gen_icons.py build/icon` refresh the files in `resources/icons/`.
 
 ## Tests
 

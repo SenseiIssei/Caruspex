@@ -7,10 +7,12 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QDir>
 #include <QPainter>
 #include <QTimer>
 #include <QTranslator>
 
+#include "app/AppIcon.h"
 #include "app/Garage.h"
 #include "app/MainWindow.h"
 #include "app/Report.h"
@@ -40,8 +42,9 @@ QString languageFromArguments(const QStringList& args) {
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Caruspex"));
-    QApplication::setApplicationVersion(QStringLiteral("0.3.0"));
+    QApplication::setApplicationVersion(QStringLiteral(CARUSPEX_VERSION));
     QApplication::setOrganizationName(QStringLiteral("Caruspex"));
+    QApplication::setWindowIcon(caruspex::appIcon());
 
     // Language first, so every widget is built with the right texts. The UI
     // strings go through Qt's translator, the core picks its own via L().
@@ -117,6 +120,11 @@ int main(int argc, char** argv) {
                                QStringLiteral("file.pdf"));
     aktePdf.setFlags(QCommandLineOption::HiddenFromHelp);
     parser.addOption(aktePdf);
+    QCommandLineOption iconOption(QStringList() << QStringLiteral("render-icon"),
+                                  QStringLiteral("Developer aid: write the app icon in all sizes as PNG into a folder and quit"),
+                                  QStringLiteral("folder"));
+    iconOption.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(iconOption);
 
     QCommandLineOption themeOption(
         QStringList() << QStringLiteral("theme"),
@@ -129,6 +137,16 @@ int main(int argc, char** argv) {
     caruspex::theme::setLight(caruspex::effectiveLight(startup));
     caruspex::theme::apply(app);
 
+    if (parser.isSet(iconOption)) {
+        // tools/gen_icons.py packs these into the .ico, .icns and .png files.
+        const QDir dir(parser.value(iconOption));
+        if (!dir.mkpath(QStringLiteral("."))) return 1;
+        for (int size : {16, 20, 24, 32, 40, 48, 64, 128, 256, 512, 1024}) {
+            const QString file = dir.filePath(QStringLiteral("icon-%1.png").arg(size));
+            if (!caruspex::renderAppIcon(size).save(file)) return 1;
+        }
+        return 0;
+    }
     if (parser.isSet(aktePdf)) {
         caruspex::Garage garage;
         garage.load();

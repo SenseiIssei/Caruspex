@@ -3,6 +3,8 @@ name: Build
 on:
   push:
     branches: [main]
+    # A version tag (v0.4.0) also publishes a release with the packages.
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -24,8 +26,10 @@ jobs:
             os: windows-latest
             qt_arch: win64_msvc2022_64
             artifact: caruspex-windows-x64
+          # 22.04 on purpose: the AppImage then also runs on older systems,
+          # it needs at least the glibc of the machine that built it.
           - name: Linux
-            os: ubuntu-latest
+            os: ubuntu-22.04
             qt_arch: linux_gcc_64
             artifact: caruspex-linux-x64
           # macos-15: GitHub retired the macos-14 image. Its SDK no longer
@@ -96,36 +100,75 @@ jobs:
       - name: Tests
         run: ctest --test-dir build -C Release --output-on-failure
 
-      # --- Collect the results ----------------------------------------------
-      - name: Package (Windows)
+      # --- Packages ------------------------------------------------------------
+      - name: Inno Setup (Windows only)
         if: runner.os == 'Windows'
         run: |
-          mkdir -p package
-          cp build/bin/Release/caruspex.exe package/
-          cp build/bin/Release/caruspex_cli.exe package/
-          cp LICENSE package/
-          "$QT_ROOT_DIR/bin/windeployqt.exe" --release --no-translations package/caruspex.exe
+          if ! command -v iscc >/dev/null && [ ! -f "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" ]; then
+            choco install innosetup -y --no-progress
+          fi
 
-      - name: Package (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          mkdir -p package
-          cp build/bin/caruspex package/
-          cp build/bin/caruspex_cli package/
-          cp LICENSE package/
+      - name: Package
+        env:
+          REQUIRE_INSTALLER: "1"
+        run: bash tools/package.sh build
 
-      - name: Package (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          mkdir -p package
-          cp -R build/bin/caruspex.app package/
-          cp build/bin/caruspex_cli package/
-          cp LICENSE package/
-          "$QT_ROOT_DIR/bin/macdeployqt" package/caruspex.app
+      # Install the package like a user, start both programs, uninstall.
+      - name: Smoke test
+        run: bash tools/smoke_test.sh smoke
 
-      - name: Upload artifact
+      - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: package/
+          path: dist/
           if-no-files-found: error
+
+      - name: Upload smoke test screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-smoke
+          path: smoke/
+          if-no-files-found: ignore
+
+  # Only for version tags: one release with all packages and the change list
+  # from changelog/<version>.md.
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag matches the project version
+        id: version
+        run: |
+          version=$(sed -n 's/^project(Caruspex VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match version $version in CMakeLists.txt" >&2
+            exit 1
+          fi
+          test -f "changelog/$version.md" || { echo "changelog/$version.md is missing" >&2; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: caruspex-*
+          path: artifacts
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p upload
+          find artifacts -path '*-smoke*' -prune -o -type f -print -exec cp {} upload/ \;
+          ls -l upload
+          gh release create "$GITHUB_REF_NAME" upload/* \
+            --title "Caruspex ${{ steps.version.outputs.version }}" \
+            --notes-file "changelog/${{ steps.version.outputs.version }}.md" \
+            --verify-tag

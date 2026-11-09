@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
-project(Caruspex VERSION 0.3.0 LANGUAGES CXX)
+# Without this the app would need the macOS version of the build machine.
+set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Oldest macOS the app runs on")
+project(Caruspex VERSION 0.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -80,6 +82,7 @@ target_link_libraries(caruspex_core PUBLIC Threads::Threads)
 # ---------------------------------------------------------------------------
 add_executable(caruspex_cli src/cli_main.cpp)
 target_link_libraries(caruspex_cli PRIVATE caruspex_core)
+target_compile_definitions(caruspex_cli PRIVATE CARUSPEX_VERSION="${PROJECT_VERSION}")
 
 # ---------------------------------------------------------------------------
 # Graphical application (Qt 6 Widgets and Charts)
@@ -99,9 +102,28 @@ if(CARUSPEX_GUI)
         endif()
     endif()
 
+    # Icons for the installers and the file managers. resources/icons is
+    # generated: caruspex --render-icon DIR, then tools/gen_icons.py DIR.
+    set(CARUSPEX_ICON_ICO  ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/caruspex.ico)
+    set(CARUSPEX_ICON_ICNS ${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/caruspex.icns)
+    set(CARUSPEX_PLATFORM_FILES)
+    if(NOT EXISTS ${CARUSPEX_ICON_ICO})
+        message(STATUS "No app icon yet, building without one")
+    elseif(WIN32)
+        configure_file(packaging/windows/caruspex.rc.in ${CMAKE_BINARY_DIR}/caruspex.rc @ONLY)
+        list(APPEND CARUSPEX_PLATFORM_FILES ${CMAKE_BINARY_DIR}/caruspex.rc)
+    elseif(APPLE)
+        set_source_files_properties(${CARUSPEX_ICON_ICNS} PROPERTIES
+            MACOSX_PACKAGE_LOCATION Resources)
+        list(APPEND CARUSPEX_PLATFORM_FILES ${CARUSPEX_ICON_ICNS})
+    endif()
+
     qt_add_executable(caruspex
+        ${CARUSPEX_PLATFORM_FILES}
         resources/resources.qrc
         src/app/main.cpp
+        src/app/AppIcon.cpp
+        src/app/AppIcon.h
         src/app/MainWindow.cpp
         src/app/MainWindow.h
         src/app/Session.cpp
@@ -182,11 +204,36 @@ if(CARUSPEX_GUI)
         RESOURCE_PREFIX /i18n
         LUPDATE_OPTIONS -no-obsolete -locations none -source-language de -target-language en
     )
+    target_compile_definitions(caruspex PRIVATE CARUSPEX_VERSION="${PROJECT_VERSION}")
     set_target_properties(caruspex PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
         WIN32_EXECUTABLE ON      # no console window next to it on Windows
         MACOSX_BUNDLE ON         # a proper caruspex.app bundle on macOS
+        MACOSX_BUNDLE_BUNDLE_NAME Caruspex
+        MACOSX_BUNDLE_GUI_IDENTIFIER dev.senseiissei.caruspex
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+        MACOSX_BUNDLE_ICON_FILE caruspex.icns
+        MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2026 SenseiIssei, MIT License"
     )
+endif()
+
+# ---------------------------------------------------------------------------
+# Install layout, used by the Linux AppImage (tools/package.sh). Windows and
+# macOS are packaged from the build folder with windeployqt and macdeployqt.
+# ---------------------------------------------------------------------------
+include(GNUInstallDirs)
+install(TARGETS caruspex_cli RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(CARUSPEX_GUI)
+    install(TARGETS caruspex
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION .)
+    if(UNIX AND NOT APPLE)
+        install(FILES packaging/linux/caruspex.desktop
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+        install(FILES resources/icons/caruspex.png
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps)
+    endif()
 endif()
 
 # ---------------------------------------------------------------------------
