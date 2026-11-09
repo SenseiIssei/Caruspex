@@ -1,6 +1,14 @@
 #include "app/Session.h"
 
+#include <QElapsedTimer>
+#include <QThread>
 #include <QTimer>
+
+#include <algorithm>
+#include <cmath>
+
+#include "core/analysis/DriveCycleGuide.h"
+#include "core/analysis/HealthCheck.h"
 
 #include "core/Serial.h"
 #include "core/Timing.h"
@@ -8,6 +16,16 @@
 #include "data/Pids.h"
 
 namespace caruspex {
+
+double appSeconds() {
+    static QElapsedTimer clock = [] {
+        QElapsedTimer t;
+        t.start();
+        return t;
+    }();
+    return clock.nsecsElapsed() / 1e9;
+}
+
 namespace {
 
 LiveRow toRow(const LiveValue& v) {
@@ -18,6 +36,7 @@ LiveRow toRow(const LiveValue& v) {
     row.text = QString::fromStdString(v.text);
     row.value = v.value;
     row.warn = v.warn;
+    row.time = appSeconds();
     return row;
 }
 
@@ -597,6 +616,148 @@ void Worker::runActuatorTest() {
 
 // Modes 06, 05 and 09 in one go: everything the control unit reveals about
 // itself and its running self-tests.
+void Worker::runHealthCheck(int seconds) {
+    using namespace analysis;
+    if (!obd_) {
+        emit failed(tr("Für den Gesundheitscheck erst verbinden."));
+        return;
+    }
+    stopLive();
+    cancelScan_ = false;
+    emit busy(true);
+    HealthInput input;
+
+    emit healthProgress(tr("Bereitschaft und Fehlerlampe"), 4);
+    const VehicleStatus st = obd_->readStatus();
+    input.setStatus(st);
+    StatusRow statusRow;
+    statusRow.valid = st.valid;
+    statusRow.mil = st.milOn;
+    statusRow.faultCount = st.faultCount;
+    for (const ReadinessItem& item : st.readiness) {
+        statusRow.monitorNames << QString::fromStdString(item.name);
+        statusRow.monitorReady << item.ready;
+    }
+    emit status(statusRow);
+
+    emit healthProgress(tr("Fehlerspeicher"), 10);
+    std::string error;
+    input.faults = obd_->readFaults(error);
+    input.faultsRead = error.empty();
+    QVector<FaultRow> faultRows;
+    for (const Fault& f : input.faults) {
+        faultRows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
+                             QString::fromStdString(f.text), f.throttleRelated,
+                             isStoredKind(f.kind)});
+    }
+    emit faults(faultRows);
+    input.faultLevel = [](const Fault& f) {
+        // Confirmed codes weigh more than pending ones.
+        return isStoredKind(f.kind) ? Level::Warning : Level::Info;
+    };
+
+    emit healthProgress(tr("Bauteilprüfung (Modus 06)"), 18);
+    std::string monitorNote;
+    input.monitorResults = obd_->readMonitorResults(monitorNote);
+    input.monitorResultsRead = true;
+
+    LiveValue fuelType;
+    if (obd_->readLive(0x51, fuelType)) {
+        const int code = static_cast<int>(fuelType.value);
+        input.fuel = (code == 4 || code == 23)               ? FuelType::Diesel
+                     : (code == 1 || code == 9 || code == 17) ? FuelType::Petrol
+                                                               : FuelType::Unknown;
+    }
+
+    // Live series: only what the car offers.
+    const std::set<int> supported = obd_->supportedPids();
+    const int wanted[] = {0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0C, 0x0D, 0x0F, 0x10,
+                          0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1F, 0x21, 0x30, 0x31, 0x3C,
+                          0x42, 0x5C};
+    std::vector<int> pids;
+    for (int pid : wanted) {
+        if (supported.empty() || supported.count(pid)) pids.push_back(pid);
+    }
+    const double start = appSeconds();
+    const int total = std::max(1, seconds);
+    while (!pids.empty() && appSeconds() - start < seconds && !cancelScan_) {
+        for (int pid : pids) {
+            LiveValue value;
+            if (obd_->readLive(pid, value)) {
+                input.addValue(pid, value.value, appSeconds() - start);
+                emit liveValue(toRow(value));
+            }
+            if (cancelScan_) break;
+        }
+        const double elapsed = appSeconds() - start;
+        const int left = std::max(0, seconds - static_cast<int>(elapsed));
+        const int percent = 25 + static_cast<int>(70.0 * elapsed / total);
+        emit healthProgress(tr("Messwerte sammeln, noch %1 s").arg(left), std::min(95, percent));
+    }
+
+    const HealthReport report = analysis::runHealthCheck(input);
+    HealthRow row;
+    row.score = report.score;
+    row.grade = static_cast<int>(report.grade);
+    row.summary = QString::fromStdString(report.summary.text());
+    row.checksRun = report.checksRun;
+    row.diesel = input.fuel == FuelType::Diesel;
+    for (const Finding& f : report.findings) {
+        HealthFindingRow fr;
+        fr.level = static_cast<int>(f.level);
+        fr.title = QString::fromStdString(f.title.text());
+        fr.explanation = QString::fromStdString(f.explanation.text());
+        fr.advice = QString::fromStdString(f.advice.text());
+        row.findings.push_back(fr);
+    }
+    for (const SkippedCheck& skipped : report.notChecked) {
+        row.notChecked << QStringLiteral("%1: %2").arg(QString::fromStdString(skipped.title.text()),
+                                                       QString::fromStdString(skipped.reason.text()));
+    }
+    for (const MonitorState& m : input.readiness) {
+        if (!m.supported) continue;
+        const MonitorGuide& guide = driveCycleGuide(m.monitor);
+        MonitorGuideRow g;
+        g.name = QString::fromUtf8(guide.name.get());
+        g.complete = m.complete;
+        g.explanation = QString::fromUtf8(guide.explanation.get());
+        g.drivePattern = QString::fromUtf8(guide.drivePattern.get());
+        g.typicalTime = QString::fromUtf8(guide.typicalTime.get());
+        g.coldStart = guide.needsColdStart;
+        row.monitors.push_back(g);
+    }
+    emit healthProgress(tr("Fertig"), 100);
+    emit healthResult(row);
+    emit busy(false);
+}
+
+void Worker::startVoltagePoll(int intervalMs) {
+    if (!elm_.connected()) return;
+    stopLive();
+    if (!voltageTimer_) {
+        voltageTimer_ = new QTimer(this);
+        connect(voltageTimer_, &QTimer::timeout, this, [this] {
+            const ElmResult r = elm_.send("ATRV", 1000);
+            for (const std::string& line : r.lines) {
+                QString text = QString::fromStdString(line).trimmed();
+                text.remove(QLatin1Char('V'));
+                bool ok = false;
+                const double volts = text.toDouble(&ok);
+                if (ok && volts > 3.0 && volts < 32.0) {
+                    emit adapterVoltage(volts, appSeconds());
+                    break;
+                }
+            }
+        });
+    }
+    voltageTimer_->setInterval(std::max(20, intervalMs));
+    voltageTimer_->start();
+}
+
+void Worker::stopVoltagePoll() {
+    if (voltageTimer_) voltageTimer_->stop();
+}
+
 void Worker::readMonitors() {
     if (!obd_) {
         emit monitorResults({}, tr("Nicht verbunden."));
@@ -660,6 +821,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<QVector<OxygenRow>>("QVector<caruspex::OxygenRow>");
     qRegisterMetaType<QVector<int>>("QVector<int>");
     qRegisterMetaType<AppSettings>("caruspex::AppSettings");
+    qRegisterMetaType<HealthRow>("caruspex::HealthRow");
 
     worker_ = new Worker();
     worker_->moveToThread(&thread_);
@@ -687,6 +849,9 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,
             &Worker::runActuatorTest);
+    connect(this, &Session::healthCheckRequested, worker_, &Worker::runHealthCheck);
+    connect(this, &Session::voltagePollRequested, worker_, &Worker::startVoltagePoll);
+    connect(this, &Session::voltagePollStopRequested, worker_, &Worker::stopVoltagePoll);
     connect(this, &Session::readMonitorsRequested, worker_,
             &Worker::readMonitors);
     connect(this, &Session::basicSettingSessionRequested, worker_,

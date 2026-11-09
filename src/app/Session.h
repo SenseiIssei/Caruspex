@@ -26,6 +26,11 @@
 class QTimer;
 
 namespace caruspex {
+// Seconds since the program started, monotonic.
+double appSeconds();
+}
+
+namespace caruspex {
 
 struct FaultRow {
     QString code;
@@ -45,6 +50,38 @@ struct LiveRow {
     QString text;   // set for status values
     double value = 0.0;
     bool warn = false;
+    // Seconds since the program started, taken in the worker right after the
+    // reply. The trip computer and the stopwatch rely on it.
+    double time = 0.0;
+};
+
+// Result of the health check, prepared for the UI.
+struct HealthFindingRow {
+    int level = 0;          // analysis::Level: 0 good, 1 info, 2 warning, 3 critical
+    QString area;
+    QString title;
+    QString explanation;
+    QString advice;
+};
+
+struct MonitorGuideRow {
+    QString name;
+    bool complete = false;
+    QString explanation;
+    QString drivePattern;
+    QString typicalTime;
+    bool coldStart = false;
+};
+
+struct HealthRow {
+    int score = -1;
+    int grade = 0;          // analysis::TrafficLight: 0 green, 1 yellow, 2 red
+    QString summary;
+    QVector<HealthFindingRow> findings;
+    QStringList notChecked;         // "title: reason"
+    QVector<MonitorGuideRow> monitors;
+    int checksRun = 0;
+    bool diesel = false;
 };
 
 // Result for one control unit when scanning the whole vehicle.
@@ -121,6 +158,12 @@ public slots:
     void runActuatorTest();
     void readMonitors();
     void setBasicSettingSession(int mode);
+    // Full health check: faults, readiness, component monitoring and a
+    // series of live values over the given number of seconds.
+    void runHealthCheck(int seconds);
+    // Adapter voltage (ATRV) in a fast loop, for the battery test.
+    void startVoltagePoll(int intervalMs);
+    void stopVoltagePoll();
     // Applies the settings. Called at startup and after every change; also
     // takes effect during a running measurement.
     void applySettings(const caruspex::AppSettings& values);
@@ -162,6 +205,9 @@ signals:
                      const QString& note);
     void identity(const QString& vin, const QString& calibration,
                   const QString& checksum, const QString& ecuName);
+    void healthProgress(const QString& step, int percent);
+    void healthResult(const caruspex::HealthRow& row);
+    void adapterVoltage(double volts, double time);
 
 private slots:
     void pollTick();
@@ -186,6 +232,7 @@ private:
     KLineStream kline_;
     std::unique_ptr<VagKLine> kwp_;
     QTimer* basicSettingTimer_ = nullptr;
+    QTimer* voltageTimer_ = nullptr;
     int basicSettingGroup_ = 60;
     AppSettings settings_;
 };
@@ -224,6 +271,9 @@ signals:
     void actuatorTestRequested();
     void basicSettingSessionRequested(int mode);
     void readMonitorsRequested();
+    void healthCheckRequested(int seconds);
+    void voltagePollRequested(int intervalMs);
+    void voltagePollStopRequested();
     void settingsChanged(const caruspex::AppSettings& values);
 
 private:
@@ -240,3 +290,4 @@ Q_DECLARE_METATYPE(caruspex::StatusRow)
 Q_DECLARE_METATYPE(caruspex::EcuScanRow)
 Q_DECLARE_METATYPE(caruspex::MonitorRow)
 Q_DECLARE_METATYPE(caruspex::OxygenRow)
+Q_DECLARE_METATYPE(caruspex::HealthRow)
