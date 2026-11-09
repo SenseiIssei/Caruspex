@@ -9,4 +9,3 @@ CMakeSettings.json
 __pycache__/
 *.pyc
 conan.lock
-.claude/
