@@ -41,6 +41,13 @@ add_library(caruspex_core STATIC
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
     src/data/MonitorTests.cpp
+    src/core/analysis/Common.cpp
+    src/core/analysis/Readiness.cpp
+    src/core/analysis/DriveCycleGuide.cpp
+    src/core/analysis/HealthCheck.cpp
+    src/core/analysis/TripComputer.cpp
+    src/core/analysis/PerformanceTimer.cpp
+    src/core/analysis/BatteryTest.cpp
 )
 target_include_directories(caruspex_core PUBLIC src)
 
@@ -132,6 +139,11 @@ if(CARUSPEX_TESTS)
         tests/test_kwp1281.cpp
         tests/test_kwp2000.cpp
         tests/test_settings.cpp
+        tests/test_analysis_health.cpp
+        tests/test_analysis_drivecycle.cpp
+        tests/test_analysis_trip.cpp
+        tests/test_analysis_performance.cpp
+        tests/test_analysis_battery.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
