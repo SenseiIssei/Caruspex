@@ -34,6 +34,7 @@ add_library(caruspex_core STATIC
     src/core/Uds.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
+    src/core/Recording.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
     src/core/VagKLine.cpp
@@ -204,6 +205,7 @@ if(CARUSPEX_TESTS)
         tests/test_analysis_battery.cpp
         tests/test_demo.cpp
         tests/test_probe.cpp
+        tests/test_recording.cpp
         tests/test_dtc.cpp
         tests/test_vehicles.cpp
         tests/test_ecus.cpp
