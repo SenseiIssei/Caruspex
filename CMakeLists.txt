@@ -29,6 +29,7 @@ add_library(caruspex_core STATIC
     src/core/Lang.cpp
     src/core/Transport.cpp
     src/core/Elm327.cpp
+    src/core/EcuAddress.cpp
     src/core/Obd2.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
