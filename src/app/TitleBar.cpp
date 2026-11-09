@@ -58,7 +58,7 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent) {
 
     minimise_ = makeButton(QStringLiteral("–"), theme::color::accent, tr("Minimieren"));
     maximise_ = makeButton(QStringLiteral("□"), theme::color::accent, tr("Maximieren"));
-    close_ = makeButton(QStringLiteral("✕"), theme::color::bad, tr("Schliessen"));
+    close_ = makeButton(QStringLiteral("✕"), theme::color::bad, tr("Schließen"));
     layout->addWidget(minimise_);
     layout->addWidget(maximise_);
     layout->addWidget(close_);

@@ -34,7 +34,7 @@ const GaugeSpec kGauges[] = {
      QT_TRANSLATE_NOOP("caruspex::DashboardPage", "1/min"), 0, 7000, 0, false, 0, 0},
     {0x0D, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Geschwindigkeit"), "km/h", 0, 220, 0,
      false, 0, 0},
-    {0x05, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Kuehlmittel"),
+    {0x05, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Kühlmittel"),
      QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Grad C"), -40, 130, 0, true, 70, 105},
     {0x04, QT_TRANSLATE_NOOP("caruspex::DashboardPage", "Motorlast"), "%", 0, 100, 0, false, 0,
      0},
@@ -57,7 +57,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(24, 20, 24, 20);
     root->setSpacing(18);
 
-    auto* title = new QLabel(tr("Uebersicht"));
+    auto* title = new QLabel(tr("Übersicht"));
     title->setObjectName("PageTitle");
     root->addWidget(title);
 
@@ -68,7 +68,7 @@ DashboardPage::DashboardPage(QWidget* parent) : QWidget(parent) {
     cardLayout->setSpacing(6);
     headline_ = new QLabel(tr("Nicht verbunden"));
     headline_->setObjectName("Headline");
-    subline_ = new QLabel(tr("Links Fahrzeug und Adapter waehlen, dann auf Verbinden druecken."));
+    subline_ = new QLabel(tr("Links Fahrzeug und Adapter wählen, dann auf Verbinden drücken."));
     subline_->setObjectName("Subtle");
     subline_->setWordWrap(true);
     connectionInfo_ = new QLabel();
@@ -163,10 +163,10 @@ void DashboardPage::updateHeadline() {
     if (!connected_) {
         headline_->setText(tr("Nicht verbunden"));
         subline_->setText(
-            tr("Links Fahrzeug und Adapter waehlen, dann auf Verbinden druecken."));
+            tr("Links Fahrzeug und Adapter wählen, dann auf Verbinden drücken."));
     } else if (!haveRead_) {
         headline_->setText(tr("Verbunden"));
-        subline_->setText(tr("Auf Fehler auslesen druecken."));
+        subline_->setText(tr("Auf Fehler auslesen drücken."));
     } else if (faultCount_ == 0 && !mil_) {
         colour = theme::color::good;
         headline_->setText(tr("Alles in Ordnung"));

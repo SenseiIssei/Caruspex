@@ -89,7 +89,7 @@ TcpTransport::~TcpTransport() {
 
 bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     if (!ensureNetwork()) {
-        error = L("Netzwerk laesst sich nicht starten", "Cannot start networking");
+        error = L("Netzwerk lässt sich nicht starten", "Cannot start networking");
         return false;
     }
     addrinfo hints{};
@@ -98,7 +98,7 @@ bool TcpTransport::open(const std::string& host, int port, std::string& error) {
     addrinfo* result = nullptr;
     const std::string service = std::to_string(port);
     if (::getaddrinfo(host.c_str(), service.c_str(), &hints, &result) != 0 || !result) {
-        error = L("Adresse ", "Cannot resolve address ") + host + L(" nicht aufloesbar", "");
+        error = L("Adresse ", "Cannot resolve address ") + host + L(" nicht auflösbar", "");
         return false;
     }
 

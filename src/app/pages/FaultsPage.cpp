@@ -33,10 +33,10 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     readButton_ = new QPushButton(tr("Neu einlesen"));
     readButton_->setObjectName("Primary");
     readButton_->setMinimumHeight(40);
-    clearButton_ = new QPushButton(tr("Fehler loeschen"));
+    clearButton_ = new QPushButton(tr("Fehler löschen"));
     clearButton_->setObjectName("Danger");
     clearButton_->setMinimumHeight(40);
-    bruteButton_ = new QPushButton(tr("Hartnaeckig loeschen"));
+    bruteButton_ = new QPushButton(tr("Hartnäckig löschen"));
     bruteButton_->setObjectName("Danger");
     bruteButton_->setMinimumHeight(40);
     exportButton_ = new QPushButton(tr("Als CSV speichern"));
@@ -111,10 +111,10 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     root->addWidget(split, 1);
 
     auto* note = new QLabel(
-        tr("Loeschen setzt auch die Bereitschaftstests zurueck. Direkt danach faellt eine "
-           "Abgasuntersuchung durch, bis das Auto wieder ein paar vollstaendige Fahrzyklen "
+        tr("Löschen setzt auch die Bereitschaftstests zurück. Direkt danach fällt eine "
+           "Abgasuntersuchung durch, bis das Auto wieder ein paar vollständige Fahrzyklen "
            "gelaufen ist. Ein Fehler, dessen Ursache noch da ist, kommt nach kurzer Fahrt "
-           "zurueck."));
+           "zurück."));
     note->setObjectName("Hint");
     note->setWordWrap(true);
     root->addWidget(note);
@@ -140,12 +140,12 @@ void FaultsPage::onFaults(const QVector<FaultRow>& rows) {
     table_->resizeRowsToContents();
 
     summary_->setText(rows.isEmpty() ? tr("Kein Eintrag im Speicher")
-                                     : tr("%1 Eintraege").arg(rows.size()));
+                                     : tr("%1 Einträge").arg(rows.size()));
     throttleHint_->setVisible(throttle);
     if (throttle) {
         throttleHint_->setText(
-            tr("Mindestens ein Code betrifft die Drosselklappe. Loeschen allein reicht da "
-               "erfahrungsgemaess nicht, die Klappe muss angelernt werden."));
+            tr("Mindestens ein Code betrifft die Drosselklappe. Löschen allein reicht da "
+               "erfahrungsgemäß nicht, die Klappe muss angelernt werden."));
     }
     exportButton_->setEnabled(!rows.isEmpty());
 
@@ -203,14 +203,14 @@ void FaultsPage::askAndClear() {
     }
 
     QMessageBox box(this);
-    box.setWindowTitle(tr("Fehlerspeicher loeschen"));
+    box.setWindowTitle(tr("Fehlerspeicher löschen"));
     box.setIcon(QMessageBox::Warning);
-    box.setText(tr("Fehlerspeicher wirklich loeschen?"));
+    box.setText(tr("Fehlerspeicher wirklich löschen?"));
     box.setInformativeText(
-        tr("Die Fehlerlampe geht aus und die Bereitschaftstests werden zurueckgesetzt. "
-           "Eine Abgasuntersuchung faellt direkt danach durch, bis das Auto wieder ein paar "
-           "Fahrzyklen gelaufen ist.\n\nLoeschen ersetzt keine Reparatur."));
-    QPushButton* yes = box.addButton(tr("Ja, loeschen"), QMessageBox::AcceptRole);
+        tr("Die Fehlerlampe geht aus und die Bereitschaftstests werden zurückgesetzt. "
+           "Eine Abgasuntersuchung fällt direkt danach durch, bis das Auto wieder ein paar "
+           "Fahrzyklen gelaufen ist.\n\nLöschen ersetzt keine Reparatur."));
+    QPushButton* yes = box.addButton(tr("Ja, löschen"), QMessageBox::AcceptRole);
     box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
     box.exec();
     if (box.clickedButton() == yes) emit clearRequested();
@@ -225,20 +225,20 @@ void FaultsPage::askAndBruteForce() {
     }
 
     QMessageBox box(this);
-    box.setWindowTitle(tr("Hartnaeckig loeschen"));
+    box.setWindowTitle(tr("Hartnäckig löschen"));
     box.setIcon(QMessageBox::Warning);
-    box.setText(tr("Mehrfach loeschen und jedes Mal nachpruefen?"));
+    box.setText(tr("Mehrfach löschen und jedes Mal nachprüfen?"));
     box.setInformativeText(
-        tr("Es wird bis zu %1-mal geloescht. Nach jedem Versuch wird nachgelesen, ob der "
+        tr("Es wird bis zu %1-mal gelöscht. Nach jedem Versuch wird nachgelesen, ob der "
            "Speicher wirklich leer ist. Bleibt etwas stehen, wird zwischendurch die "
-           "Verbindung neu aufgebaut, weil manche Steuergeraete den Loeschbefehl nur "
+           "Verbindung neu aufgebaut, weil manche Steuergeräte den Löschbefehl nur "
            "direkt nach dem Wecken annehmen.\n\n"
            "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. Der "
-           "steht sofort wieder drin, egal wie oft geloescht wird. Loeschen ersetzt keine "
+           "steht sofort wieder drin, egal wie oft gelöscht wird. Löschen ersetzt keine "
            "Reparatur.\n\n"
-           "Die Bereitschaftstests werden dabei ebenfalls zurueckgesetzt.")
+           "Die Bereitschaftstests werden dabei ebenfalls zurückgesetzt.")
             .arg(clearAttempts_));
-    QPushButton* yes = box.addButton(tr("Ja, hartnaeckig loeschen"), QMessageBox::AcceptRole);
+    QPushButton* yes = box.addButton(tr("Ja, hartnäckig löschen"), QMessageBox::AcceptRole);
     box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
     box.exec();
     if (box.clickedButton() == yes) {
@@ -259,7 +259,7 @@ void FaultsPage::onClearFinished(bool everythingGone, int remaining) {
         return;
     }
     clearLog_->appendPlainText(
-        tr("Fertig: %1 Eintraege bleiben stehen. Das heisst, die Ursache besteht noch. "
+        tr("Fertig: %1 Einträge bleiben stehen. Das heißt, die Ursache besteht noch. "
            "Der Reiter Fehlerspeicher zeigt oben rechts am Fahrzeug, wo zu suchen ist.")
             .arg(remaining));
 }
@@ -275,7 +275,7 @@ void FaultsPage::exportCsv() {
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Fehler"), tr("Datei laesst sich nicht schreiben."));
+        QMessageBox::warning(this, tr("Fehler"), tr("Datei lässt sich nicht schreiben."));
         return;
     }
     QTextStream out(&file);

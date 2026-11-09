@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     QCommandLineParser parser;
     parser.setApplicationDescription(
         QCoreApplication::translate("main",
-                                    "Fahrzeugdiagnose ueber EOBD mit ELM327-kompatiblen "
+                                    "Fahrzeugdiagnose über EOBD mit ELM327-kompatiblen "
                                     "Adaptern"));
     parser.addHelpOption();
     parser.addVersionOption();
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     QCommandLineOption languageOption(
         QStringList() << QStringLiteral("language"),
         QCoreApplication::translate("main",
-                                    "Sprache fuer diesen Start: de oder en"),
+                                    "Sprache für diesen Start: de oder en"),
         QStringLiteral("de|en"));
     parser.addOption(languageOption);
     parser.process(app);

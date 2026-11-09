@@ -40,7 +40,7 @@ std::vector<VehicleProfile> build(Language lang) {
 
     // --- Volkswagen Group ---------------------------------------------------
     add("Audi", "A2", 2000, 2005, BusKind::KLine, kKLine,
-        {"K-Line. EOBD ueber das Motorsteuergeraet, alles Weitere braucht KKL.",
+        {"K-Line. EOBD über das Motorsteuergerät, alles Weitere braucht KKL.",
          "K-Line. EOBD via the engine control unit, everything else needs a KKL cable."});
     add("Audi", "", 1996, 2003, BusKind::KLine, kKLine,
         {"K-Line-Zeit, KWP1281 oder KWP2000.", "K-Line era, KWP1281 or KWP2000."});
@@ -53,7 +53,7 @@ std::vector<VehicleProfile> build(Language lang) {
     add("Seat", "", 1998, 2003, BusKind::KLine, kKLine, kNoteKLineEra);
     add("Seat", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
     add("Porsche", "", 1998, 2030, BusKind::Mixed, kMixed,
-        {"Ab 2003 durchgaengig CAN.", "CAN throughout from 2003."});
+        {"Ab 2003 durchgängig CAN.", "CAN throughout from 2003."});
 
     // --- German manufacturers -----------------------------------------------
     add("BMW", "", 1996, 2003, BusKind::KLine, kKLine,
@@ -64,7 +64,7 @@ std::vector<VehicleProfile> build(Language lang) {
     add("Mercedes-Benz", "", 1996, 2003, BusKind::KLine, kKLine, kNoteIso);
     add("Mercedes-Benz", "", 2004, 2030, BusKind::Can, kCan, kNoteCan);
     add("Smart", "", 1998, 2030, BusKind::Mixed, kMixed,
-        {"Frueh K-Line, spaeter CAN.", "K-Line early on, CAN later."});
+        {"Früh K-Line, später CAN.", "K-Line early on, CAN later."});
     add("Opel", "", 1996, 2005, BusKind::Mixed, kMixed,
         {"Teils ISO 9141-2, teils J1850 VPW.", "Partly ISO 9141-2, partly J1850 VPW."});
     add("Opel", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
@@ -134,7 +134,7 @@ std::vector<VehicleProfile> build(Language lang) {
     add("Jeep", "", 2006, 2030, BusKind::Can, kCan, kNoteCan);
     add("Dodge", "", 1996, 2030, BusKind::Mixed, kMixed, kNoteNone);
     add("Tesla", "", 2012, 2030, BusKind::Can, kCan,
-        {"CAN, EOBD nur eingeschraenkt.", "CAN, EOBD only partly supported."});
+        {"CAN, EOBD nur eingeschränkt.", "CAN, EOBD only partly supported."});
 
     // --- Other --------------------------------------------------------------
     add("Iveco", "", 2000, 2030, BusKind::Mixed, kMixed,
@@ -143,7 +143,7 @@ std::vector<VehicleProfile> build(Language lang) {
         {"Nutzfahrzeug, teils J1939.", "Commercial vehicle, partly J1939."});
     add(en ? kAutoDetect.en : kAutoDetect.de, "", 1996, 2030, BusKind::Mixed, kAutoProtocolOrder,
         {"Probiert alle Protokolle der Reihe nach durch. Funktioniert immer, "
-         "dauert nur ein paar Sekunden laenger.",
+         "dauert nur ein paar Sekunden länger.",
          "Tries all protocols one after another. Always works, "
          "it just takes a few seconds longer."});
     return v;

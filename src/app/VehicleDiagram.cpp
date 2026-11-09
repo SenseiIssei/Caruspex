@@ -43,17 +43,17 @@ const std::vector<VehicleDiagram::Hotspot>& VehicleDiagram::hotspots() const {
         {CarZone::Throttle,  {0.170, 0.30, 0.105, 0.115}, QT_TR_NOOP("Drosselklappe")},
         {CarZone::Turbo,     {0.055, 0.575, 0.105, 0.11}, QT_TR_NOOP("Turbo")},
         {CarZone::Cylinders, {0.170, 0.435, 0.105, 0.115}, QT_TR_NOOP("Motor")},
-        {CarZone::Ignition,  {0.170, 0.575, 0.105, 0.11}, QT_TR_NOOP("Zuendung")},
+        {CarZone::Ignition,  {0.170, 0.575, 0.105, 0.11}, QT_TR_NOOP("Zündung")},
         {CarZone::Injection, {0.055, 0.435, 0.105, 0.115}, QT_TR_NOOP("Einspritzung")},
-        {CarZone::Cooling,   {0.055, 0.70, 0.105, 0.10},  QT_TR_NOOP("Kuehlung")},
-        {CarZone::Ecu,       {0.295, 0.30, 0.100, 0.115}, QT_TR_NOOP("Steuergeraet")},
+        {CarZone::Cooling,   {0.055, 0.70, 0.105, 0.10},  QT_TR_NOOP("Kühlung")},
+        {CarZone::Ecu,       {0.295, 0.30, 0.100, 0.115}, QT_TR_NOOP("Steuergerät")},
         {CarZone::Electrics, {0.295, 0.435, 0.100, 0.115}, QT_TR_NOOP("Bordnetz")},
         {CarZone::Network,   {0.295, 0.575, 0.100, 0.11},  QT_TR_NOOP("Datenbus")},
         {CarZone::Cabin,     {0.420, 0.30, 0.150, 0.135},  QT_TR_NOOP("Innenraum")},
         {CarZone::Gearbox,   {0.420, 0.455, 0.150, 0.115}, QT_TR_NOOP("Getriebe")},
         {CarZone::FuelTank,  {0.595, 0.30, 0.130, 0.135},  QT_TR_NOOP("Tank")},
         {CarZone::Exhaust,   {0.595, 0.455, 0.130, 0.115}, QT_TR_NOOP("Abgas")},
-        {CarZone::Wheels,    {0.755, 0.30, 0.130, 0.135},  QT_TR_NOOP("Raeder / ABS")},
+        {CarZone::Wheels,    {0.755, 0.30, 0.130, 0.135},  QT_TR_NOOP("Räder / ABS")},
     };
     return spots;
 }

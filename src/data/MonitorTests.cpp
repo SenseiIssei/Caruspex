@@ -29,7 +29,7 @@ std::string monitorTestName(int testId) {
                 "O2 sensor bank 1 sensor 1, rich-to-lean threshold voltage"}},
         {0x03, {"Lambdasonde Bank 1 Sonde 1, tiefste Spannung",
                 "O2 sensor bank 1 sensor 1, minimum voltage"}},
-        {0x04, {"Lambdasonde Bank 1 Sonde 1, hoechste Spannung",
+        {0x04, {"Lambdasonde Bank 1 Sonde 1, höchste Spannung",
                 "O2 sensor bank 1 sensor 1, maximum voltage"}},
         {0x05, {"Lambdasonde Bank 1 Sonde 1, Umschaltzeit",
                 "O2 sensor bank 1 sensor 1, switch time"}},
@@ -41,20 +41,20 @@ std::string monitorTestName(int testId) {
                 "O2 sensor bank 1 sensor 2, rich-to-lean threshold voltage"}},
         {0x09, {"Lambdasonde Bank 1 Sonde 2, tiefste Spannung",
                 "O2 sensor bank 1 sensor 2, minimum voltage"}},
-        {0x0A, {"Lambdasonde Bank 1 Sonde 2, hoechste Spannung",
+        {0x0A, {"Lambdasonde Bank 1 Sonde 2, höchste Spannung",
                 "O2 sensor bank 1 sensor 2, maximum voltage"}},
         {0x21, {"Katalysator Bank 1, Wirkungsgrad", "Catalyst bank 1, efficiency"}},
         {0x22, {"Katalysator Bank 2, Wirkungsgrad", "Catalyst bank 2, efficiency"}},
-        {0x31, {"Tankentlueftung, Leckpruefung", "Evaporative system, leak check"}},
-        {0x32, {"Tankentlueftung, Durchfluss", "Evaporative system, flow"}},
-        {0x39, {"Abgasrueckfuehrung, Durchfluss", "EGR, flow"}},
-        {0x3A, {"Sekundaerluft, Durchfluss", "Secondary air, flow"}},
+        {0x31, {"Tankentlüftung, Leckprüfung", "Evaporative system, leak check"}},
+        {0x32, {"Tankentlüftung, Durchfluss", "Evaporative system, flow"}},
+        {0x39, {"Abgasrückführung, Durchfluss", "EGR, flow"}},
+        {0x3A, {"Sekundärluft, Durchfluss", "Secondary air, flow"}},
         {0x41, {"Lambdasondenheizung Bank 1 Sonde 1", "O2 sensor heater bank 1 sensor 1"}},
         {0x42, {"Lambdasondenheizung Bank 1 Sonde 2", "O2 sensor heater bank 1 sensor 2"}},
-        {0x81, {"Verbrennungsaussetzer, Zaehler Zylinder 1", "Misfire, counter cylinder 1"}},
-        {0x82, {"Verbrennungsaussetzer, Zaehler Zylinder 2", "Misfire, counter cylinder 2"}},
-        {0x83, {"Verbrennungsaussetzer, Zaehler Zylinder 3", "Misfire, counter cylinder 3"}},
-        {0x84, {"Verbrennungsaussetzer, Zaehler Zylinder 4", "Misfire, counter cylinder 4"}},
+        {0x81, {"Verbrennungsaussetzer, Zähler Zylinder 1", "Misfire, counter cylinder 1"}},
+        {0x82, {"Verbrennungsaussetzer, Zähler Zylinder 2", "Misfire, counter cylinder 2"}},
+        {0x83, {"Verbrennungsaussetzer, Zähler Zylinder 3", "Misfire, counter cylinder 3"}},
+        {0x84, {"Verbrennungsaussetzer, Zähler Zylinder 4", "Misfire, counter cylinder 4"}},
     };
     const auto it = known.find(testId);
     if (it != known.end()) return it->second.get();
@@ -73,12 +73,12 @@ std::string monitorComponentName(int componentId) {
         {0x08, {"Lambdasonde Bank 2 Sonde 4", "O2 sensor bank 2 sensor 4"}},
         {0x21, {"Katalysator Bank 1", "Catalyst bank 1"}},
         {0x22, {"Katalysator Bank 2", "Catalyst bank 2"}},
-        {0x31, {"Tankentlueftung, 0,04 Zoll", "Evaporative system, 0.040 inch"}},
-        {0x32, {"Tankentlueftung, 0,02 Zoll", "Evaporative system, 0.020 inch"}},
-        {0x33, {"Tankentlueftung, Spuelventil", "Evaporative system, purge valve"}},
-        {0x35, {"Tankentlueftung, Belueftungsventil", "Evaporative system, vent valve"}},
-        {0x39, {"Abgasrueckfuehrung", "EGR"}},
-        {0x3A, {"Sekundaerluft", "Secondary air"}},
+        {0x31, {"Tankentlüftung, 0,04 Zoll", "Evaporative system, 0.040 inch"}},
+        {0x32, {"Tankentlüftung, 0,02 Zoll", "Evaporative system, 0.020 inch"}},
+        {0x33, {"Tankentlüftung, Spülventil", "Evaporative system, purge valve"}},
+        {0x35, {"Tankentlüftung, Belüftungsventil", "Evaporative system, vent valve"}},
+        {0x39, {"Abgasrückführung", "EGR"}},
+        {0x3A, {"Sekundärluft", "Secondary air"}},
         {0x41, {"Lambdasondenheizung Bank 1 Sonde 1", "O2 sensor heater bank 1 sensor 1"}},
         {0x42, {"Lambdasondenheizung Bank 1 Sonde 2", "O2 sensor heater bank 1 sensor 2"}},
         {0xA1, {"Verbrennungsaussetzer, allgemein", "Misfire, general"}},
@@ -135,11 +135,11 @@ std::string oxygenTestName(int testId) {
         case 0x01: return L("Spannungsschwelle mager nach fett", "Lean-to-rich threshold voltage");
         case 0x02: return L("Spannungsschwelle fett nach mager", "Rich-to-lean threshold voltage");
         case 0x03: return L("tiefste Spannung im Regelbetrieb", "Minimum voltage in closed loop");
-        case 0x04: return L("hoechste Spannung im Regelbetrieb", "Maximum voltage in closed loop");
+        case 0x04: return L("höchste Spannung im Regelbetrieb", "Maximum voltage in closed loop");
         case 0x05: return L("Umschaltzeit mager nach fett", "Lean-to-rich switch time");
         case 0x06: return L("Umschaltzeit fett nach mager", "Rich-to-lean switch time");
         case 0x07: return L("tiefste Sondenspannung", "Minimum sensor voltage");
-        case 0x08: return L("hoechste Sondenspannung", "Maximum sensor voltage");
+        case 0x08: return L("höchste Sondenspannung", "Maximum sensor voltage");
         case 0x09: return L("Zeit zwischen den Umschaltungen", "Time between transitions");
         case 0x0A: return L("Periodendauer der Regelung", "Control period");
         default: return "Test " + number(testId);

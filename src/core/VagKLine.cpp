@@ -101,8 +101,8 @@ bool VagKLine::readAdaptation(int channel, int& value, std::vector<MeasuringValu
     if (old_) return old_->readAdaptation(channel, value, out, error);
     if (modern_) {
         error = L(
-            "Anpassungskanaele lesen ist bisher nur fuer KWP1281 umgesetzt. Dieses "
-            "Steuergeraet spricht KWP2000.",
+            "Anpassungskanäle lesen ist bisher nur für KWP1281 umgesetzt. Dieses "
+            "Steuergerät spricht KWP2000.",
             "Reading adaptation channels is only implemented for KWP1281 so far. This "
             "control unit speaks KWP2000.");
         return false;
@@ -115,8 +115,8 @@ bool VagKLine::actuatorTest(std::string& activeActuator, std::string& error) {
     if (old_) return old_->actuatorTest(activeActuator, error);
     if (modern_) {
         error = L(
-            "Die Stellglieddiagnose ist bisher nur fuer KWP1281 umgesetzt. Dieses "
-            "Steuergeraet spricht KWP2000.",
+            "Die Stellglieddiagnose ist bisher nur für KWP1281 umgesetzt. Dieses "
+            "Steuergerät spricht KWP2000.",
             "The output test is only implemented for KWP1281 so far. This "
             "control unit speaks KWP2000.");
         return false;

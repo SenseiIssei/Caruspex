@@ -88,7 +88,7 @@ bool KLineStream::slowInit(std::uint8_t address) {
     buffer_.clear();
 
     if (!port_.changeBaud(baudAfterInit_)) {
-        lastError_ = L("Baudrate laesst sich nach der Weckadresse nicht setzen",
+        lastError_ = L("Baudrate lässt sich nach der Weckadresse nicht setzen",
                        "Cannot set the baud rate after the wake-up address");
         return false;
     }

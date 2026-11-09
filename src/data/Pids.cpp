@@ -26,7 +26,7 @@ std::string fuelStatusText(double value) {
         case 4: return L("offener Regelkreis (Volllast oder Schub)",
                          "open loop (full load or overrun)");
         case 8: return L("offener Regelkreis (Systemfehler)", "open loop (system fault)");
-        case 16: return L("geschlossen, aber eine Lambdasonde faellt aus",
+        case 16: return L("geschlossen, aber eine Lambdasonde fällt aus",
                           "closed loop, but an oxygen sensor has failed");
         default: return L("Status ", "status ") + std::to_string(static_cast<int>(value));
     }
@@ -36,7 +36,7 @@ std::string secondaryAirText(double value) {
     switch (static_cast<int>(value)) {
         case 1: return L("vor dem Katalysator", "upstream of the catalytic converter");
         case 2: return L("hinter dem Katalysator", "downstream of the catalytic converter");
-        case 4: return L("in die Aussenluft", "to the outside air");
+        case 4: return L("in die Außenluft", "to the outside air");
         case 8: return L("abgeschaltet", "off");
         default: return L("Status ", "status ") + std::to_string(static_cast<int>(value));
     }
@@ -123,7 +123,7 @@ std::vector<PidSpec> buildTable(Language lang) {
     // --- Basic values -------------------------------------------------------
     addText(0x03, T("Gemischregelung", "Fuel system status"), 2, a, fuelStatusText);
     add(0x04, T("Motorlast berechnet", "Calculated engine load"), "%", 1, percent);
-    add(0x05, T("Kuehlmitteltemperatur", "Coolant temperature"), "C", 1, celsius, -10, 110);
+    add(0x05, T("Kühlmitteltemperatur", "Coolant temperature"), "C", 1, celsius, -10, 110);
     add(0x06, T("Kurzzeit-Gemischkorrektur Bank 1", "Short-term fuel trim bank 1"), "%", 1, trim,
         -20, 20);
     add(0x07, T("Langzeit-Gemischkorrektur Bank 1", "Long-term fuel trim bank 1"), "%", 1, trim,
@@ -138,13 +138,13 @@ std::vector<PidSpec> buildTable(Language lang) {
     add(0x0C, T("Motordrehzahl", "Engine speed"), "1/min", 2,
         [](const std::vector<int>& d) { return ab(d) / 4.0; }, 0, 6500);
     add(0x0D, T("Geschwindigkeit", "Vehicle speed"), "km/h", 1, a);
-    add(0x0E, T("Zuendzeitpunkt", "Ignition timing advance"), degBtdc, 1,
+    add(0x0E, T("Zündzeitpunkt", "Ignition timing advance"), degBtdc, 1,
         [](const std::vector<int>& d) { return a(d) / 2.0 - 64.0; });
     add(0x0F, T("Ansauglufttemperatur", "Intake air temperature"), "C", 1, celsius);
     add(0x10, T("Luftmasse (LMM)", "Mass air flow (MAF)"), "g/s", 2,
         [](const std::vector<int>& d) { return ab(d) / 100.0; });
     add(0x11, T("Drosselklappenstellung", "Throttle position"), "%", 1, percent);
-    addText(0x12, T("Sekundaerluft", "Secondary air status"), 1, a, secondaryAirText);
+    addText(0x12, T("Sekundärluft", "Secondary air status"), 1, a, secondaryAirText);
 
     // --- Narrow-band oxygen sensors (voltage) -------------------------------
     struct Narrow {
@@ -166,7 +166,7 @@ std::vector<PidSpec> buildTable(Language lang) {
         add(n.pid, T(n.de, n.en), "V", 2, [](const std::vector<int>& d) { return a(d) / 200.0; });
     }
 
-    addText(0x1C, T("Abgasnorm des Steuergeraets", "OBD standard of the ECU"), 1, a,
+    addText(0x1C, T("Abgasnorm des Steuergeräts", "OBD standard of the ECU"), 1, a,
             obdStandardText);
     add(0x1F, T("Laufzeit seit Motorstart", "Run time since engine start"), "s", 2, ab);
 
@@ -193,12 +193,12 @@ std::vector<PidSpec> buildTable(Language lang) {
             [](const std::vector<int>& d) { return ab(d) * 2.0 / 65536.0; });
     }
 
-    add(0x2C, T("Abgasrueckfuehrung angefordert", "Commanded EGR"), "%", 1, percent);
-    add(0x2D, T("Abgasrueckfuehrung Regelabweichung", "EGR error"), "%", 1, trim, -20, 20);
-    add(0x2E, T("Tankentlueftung angefordert", "Commanded evaporative purge"), "%", 1, percent);
-    add(0x2F, T("Tankfuellstand", "Fuel tank level"), "%", 1, percent);
-    add(0x30, T("Warmlaeufe seit Loeschen", "Warm-ups since codes cleared"), "", 1, a);
-    add(0x31, T("Strecke seit Loeschen", "Distance since codes cleared"), "km", 2, ab);
+    add(0x2C, T("Abgasrückführung angefordert", "Commanded EGR"), "%", 1, percent);
+    add(0x2D, T("Abgasrückführung Regelabweichung", "EGR error"), "%", 1, trim, -20, 20);
+    add(0x2E, T("Tankentlüftung angefordert", "Commanded evaporative purge"), "%", 1, percent);
+    add(0x2F, T("Tankfüllstand", "Fuel tank level"), "%", 1, percent);
+    add(0x30, T("Warmläufe seit Löschen", "Warm-ups since codes cleared"), "", 1, a);
+    add(0x31, T("Strecke seit Löschen", "Distance since codes cleared"), "km", 2, ab);
     add(0x32, T("Tankdruck", "Fuel tank vapor pressure"), "Pa", 2,
         [](const std::vector<int>& d) { return (ab(d) - 32768.0) / 4.0; });
     add(0x33, T("Luftdruck (barometrisch)", "Barometric pressure"), "kPa", 1, a);
@@ -215,7 +215,7 @@ std::vector<PidSpec> buildTable(Language lang) {
     }
 
     // --- Electrical system and load ------------------------------------------
-    add(0x42, T("Spannung Steuergeraet", "Control unit voltage"), "V", 2,
+    add(0x42, T("Spannung Steuergerät", "Control unit voltage"), "V", 2,
         [](const std::vector<int>& d) { return ab(d) / 1000.0; }, 11.5, 15.0);
     add(0x43, T("Absolute Last", "Absolute load"), "%", 2,
         [](const std::vector<int>& d) { return ab(d) * 100.0 / 255.0; });
@@ -230,7 +230,7 @@ std::vector<PidSpec> buildTable(Language lang) {
     add(0x4B, T("Fahrpedalstellung F", "Accelerator pedal position F"), "%", 1, percent);
     add(0x4C, T("Drosselklappen-Ansteuerung", "Commanded throttle actuator"), "%", 1, percent);
     add(0x4D, T("Laufzeit mit Fehlerlampe an", "Run time with MIL on"), "min", 2, ab);
-    add(0x4E, T("Zeit seit dem Loeschen", "Time since codes cleared"), "min", 2, ab);
+    add(0x4E, T("Zeit seit dem Löschen", "Time since codes cleared"), "min", 2, ab);
 
     // --- Fuel and miscellaneous ---------------------------------------------
     addText(0x51, T("Kraftstoffart", "Fuel type"), 1, a, fuelTypeText);
@@ -243,8 +243,8 @@ std::vector<PidSpec> buildTable(Language lang) {
         [](const std::vector<int>& d) { return ab(d) * 10.0; });
     add(0x5A, T("Fahrpedalstellung relativ", "Relative accelerator pedal position"), "%", 1,
         percent);
-    add(0x5B, T("Restkapazitaet Hybridbatterie", "Hybrid battery remaining life"), "%", 1, percent);
-    add(0x5C, T("Oeltemperatur", "Engine oil temperature"), "C", 1, celsius, -10, 130);
+    add(0x5B, T("Restkapazität Hybridbatterie", "Hybrid battery remaining life"), "%", 1, percent);
+    add(0x5C, T("Öltemperatur", "Engine oil temperature"), "C", 1, celsius, -10, 130);
     add(0x5D, T("Einspritzbeginn", "Fuel injection timing"), degBtdc, 2,
         [](const std::vector<int>& d) { return (ab(d) - 26880.0) / 128.0; });
     add(0x5E, T("Kraftstoffdurchsatz", "Engine fuel rate"), "l/h", 2,
@@ -253,7 +253,7 @@ std::vector<PidSpec> buildTable(Language lang) {
     // --- Torque --------------------------------------------------------------
     add(0x61, T("Drehmoment angefordert", "Driver's demand engine torque"), "%", 1,
         [](const std::vector<int>& d) { return a(d) - 125.0; });
-    add(0x62, T("Drehmoment tatsaechlich", "Actual engine torque"), "%", 1,
+    add(0x62, T("Drehmoment tatsächlich", "Actual engine torque"), "%", 1,
         [](const std::vector<int>& d) { return a(d) - 125.0; });
     add(0x63, T("Bezugsdrehmoment des Motors", "Engine reference torque"), "Nm", 2, ab);
 
@@ -296,7 +296,7 @@ const std::vector<int>& defaultLivePids() {
 const std::vector<MonitorBit>& monitorsB() {
     static const std::vector<MonitorBit> german = {{0x01, "Verbrennungsaussetzer"},
                                                    {0x02, "Kraftstoffsystem"},
-                                                   {0x04, "Bauteilueberwachung"}};
+                                                   {0x04, "Bauteilüberwachung"}};
     static const std::vector<MonitorBit> english = {{0x01, "Misfire"},
                                                     {0x02, "Fuel system"},
                                                     {0x04, "Comprehensive components"}};
@@ -306,9 +306,9 @@ const std::vector<MonitorBit>& monitorsB() {
 const std::vector<MonitorBit>& monitorsC() {
     static const std::vector<MonitorBit> german = {
         {0x01, "Katalysator"},         {0x02, "Katalysatorheizung"},
-        {0x04, "Tankentlueftung"},     {0x08, "Sekundaerluft"},
+        {0x04, "Tankentlüftung"},     {0x08, "Sekundärluft"},
         {0x10, "Klimaanlage"},         {0x20, "Lambdasonde"},
-        {0x40, "Lambdasondenheizung"}, {0x80, "Abgasrueckfuehrung"}};
+        {0x40, "Lambdasondenheizung"}, {0x80, "Abgasrückführung"}};
     static const std::vector<MonitorBit> english = {
         {0x01, "Catalyst"},              {0x02, "Heated catalyst"},
         {0x04, "Evaporative system"},    {0x08, "Secondary air system"},

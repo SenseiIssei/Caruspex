@@ -52,7 +52,7 @@ LexiconPage::LexiconPage(QWidget* parent) : QWidget(parent) {
     root->addWidget(title);
 
     auto* hint = new QLabel(
-        tr("Nachschlagewerk fuer unterwegs, funktioniert auch ohne Auto. Suche nach Code "
+        tr("Nachschlagewerk für unterwegs, funktioniert auch ohne Auto. Suche nach Code "
            "oder nach Stichwort, zum Beispiel Drosselklappe oder Lambdasonde."));
     hint->setObjectName("Hint");
     hint->setWordWrap(true);

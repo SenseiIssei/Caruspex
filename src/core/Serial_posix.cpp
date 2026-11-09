@@ -124,7 +124,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     close();
     const int fd = ::open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
-        error = device + L(" laesst sich nicht oeffnen: ", " cannot be opened: ") +
+        error = device + L(" lässt sich nicht öffnen: ", " cannot be opened: ") +
                 std::strerror(errno);
         if (errno == EACCES) {
             error += L(" (fehlt die Gruppe dialout? sudo usermod -aG dialout $USER)",
@@ -153,7 +153,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     if (speed == 0) {
         ::close(fd);
         error = L("Baudrate ", "Baud rate ") + std::to_string(baud) +
-                L(" wird nicht unterstuetzt", " is not supported");
+                L(" wird nicht unterstützt", " is not supported");
         return false;
     }
     ::cfsetispeed(&settings, speed);
@@ -161,7 +161,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
 
     if (::tcsetattr(fd, TCSANOW, &settings) != 0) {
         ::close(fd);
-        error = L("Schnittstelle laesst sich nicht einstellen: ",
+        error = L("Schnittstelle lässt sich nicht einstellen: ",
                   "Cannot configure the port: ") +
                 std::string(std::strerror(errno));
         return false;

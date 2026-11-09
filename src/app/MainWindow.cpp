@@ -125,14 +125,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     monitor_ = new MonitorPage;
     lexicon_ = new LexiconPage;
     settingsPage_ = new SettingsPage;
-    addNavigationEntry(tr("Uebersicht"), dashboard_);
+    addNavigationEntry(tr("Übersicht"), dashboard_);
     addNavigationEntry(tr("Fehlerspeicher"), faults_);
     addNavigationEntry(tr("Live-Werte"), live_);
-    addNavigationEntry(tr("Pruefen und Werkzeuge"), tools_);
-    addNavigationEntry(tr("Bauteilueberwachung"), monitor_);
+    addNavigationEntry(tr("Prüfen und Werkzeuge"), tools_);
+    addNavigationEntry(tr("Bauteilüberwachung"), monitor_);
     addNavigationEntry(tr("Drosselklappe"), throttle_);
     addNavigationEntry(tr("Statistik"), stats_);
-    addNavigationEntry(tr("Alle Steuergeraete"), scan_);
+    addNavigationEntry(tr("Alle Steuergeräte"), scan_);
     addNavigationEntry(tr("Anpassung und Stellglieder"), kklTools_);
     addNavigationEntry(tr("Fehlercode-Lexikon"), lexicon_);
     addNavigationEntry(tr("Einstellungen"), settingsPage_);
@@ -243,17 +243,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         if (!geometry.isEmpty()) restoreGeometry(geometry);
     }
 
-    appendLog(tr("Caruspex bereit. Fahrzeug und Adapter waehlen, dann verbinden."));
+    appendLog(tr("Caruspex bereit. Fahrzeug und Adapter wählen, dann verbinden."));
 
     if (settings_.autoConnect && !settings_.lastPort.isEmpty()) {
         const int index = portBox_->findData(settings_.lastPort);
         if (index >= 0) {
             portBox_->setCurrentIndex(index);
-            appendLog(tr("Verbinde selbsttaetig mit %1, so eingestellt.")
+            appendLog(tr("Verbinde selbsttätig mit %1, so eingestellt.")
                           .arg(settings_.lastPort));
             QTimer::singleShot(0, this, &MainWindow::toggleConnection);
         } else {
-            appendLog(tr("Selbsttaetiges Verbinden: Anschluss %1 ist nicht da.")
+            appendLog(tr("Selbsttätiges Verbinden: Anschluss %1 ist nicht da.")
                           .arg(settings_.lastPort));
         }
     }
@@ -288,12 +288,12 @@ void MainWindow::applySettings(const AppSettings& values) {
                        << QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm")
                        << " ===\n";
             logStream_.flush();
-            appendLog(tr("Protokoll wird zusaetzlich nach %1 geschrieben.")
+            appendLog(tr("Protokoll wird zusätzlich nach %1 geschrieben.")
                           .arg(settings_.logPath));
         } else {
             // Swallowing this silently would be the worst option: the user
             // would otherwise believe the log is being written.
-            appendLog(tr("Protokolldatei %1 laesst sich nicht schreiben. Es wird nur "
+            appendLog(tr("Protokolldatei %1 lässt sich nicht schreiben. Es wird nur "
                          "hier im Fenster protokolliert.")
                           .arg(settings_.logPath));
         }
@@ -368,7 +368,7 @@ QWidget* MainWindow::buildSidebar() {
 
     portBox_ = new QComboBox;
     root->addWidget(portBox_);
-    rescanButton_ = new QPushButton(tr("Anschluesse neu suchen"));
+    rescanButton_ = new QPushButton(tr("Anschlüsse neu suchen"));
     root->addWidget(rescanButton_);
     addressEdit_ = new QLineEdit(QStringLiteral("192.168.0.10:35000"));
     addressEdit_->setVisible(false);
@@ -413,7 +413,7 @@ QWidget* MainWindow::buildSidebar() {
     log_->setFont(mono);
     root->addWidget(log_, 1);
 
-    auto* note = new QLabel(tr("Zuendung an, Motor darf aus sein."));
+    auto* note = new QLabel(tr("Zündung an, Motor darf aus sein."));
     note->setObjectName("Hint");
     root->addWidget(note);
     return frame;
@@ -470,7 +470,7 @@ void MainWindow::refreshPorts() {
         portBox_->addItem(tr("kein Anschluss gefunden"), QString());
         appendLog(tr("Kein COM-Anschluss gefunden. Steckt der Adapter am Rechner?"));
     } else {
-        appendLog(tr("%1 Anschluss/Anschluesse gefunden.").arg(ports.size()));
+        appendLog(tr("%1 Anschluss/Anschlüsse gefunden.").arg(ports.size()));
     }
 }
 
@@ -490,10 +490,10 @@ void MainWindow::toggleConnection() {
     } else {
         const QString device = portBox_->currentData().toString();
         if (device.isEmpty()) {
-            appendLog(tr("Kein Anschluss ausgewaehlt."));
+            appendLog(tr("Kein Anschluss ausgewählt."));
             return;
         }
-        appendLog(tr("Verbinde ueber %1 ...").arg(device));
+        appendLog(tr("Verbinde über %1 ...").arg(device));
         // Remember the port so auto-connect knows where to go next time.
         if (settings_.lastPort != device) {
             settings_.lastPort = device;

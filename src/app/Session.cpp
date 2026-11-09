@@ -130,7 +130,7 @@ void Worker::refreshStatusAndFaults() {
     emit faults(rows);
     emit logLine(rows.isEmpty()
                      ? tr("Fehlerspeicher gelesen: kein Eintrag.")
-                     : tr("Fehlerspeicher gelesen: %1 Eintraege.").arg(rows.size()));
+                     : tr("Fehlerspeicher gelesen: %1 Einträge.").arg(rows.size()));
 
     QVector<int> supported;
     for (int pid : obd_->supportedPids()) supported.push_back(pid);
@@ -147,8 +147,8 @@ void Worker::clearFaults() {
     emit busy(true);
     std::string error;
     const bool ok = obd_->clearFaults(error);
-    emit logLine(ok ? tr("Fehlerspeicher geloescht.")
-                    : tr("Loeschen fehlgeschlagen: %1")
+    emit logLine(ok ? tr("Fehlerspeicher gelöscht.")
+                    : tr("Löschen fehlgeschlagen: %1")
                           .arg(QString::fromStdString(error)));
     emit busy(false);
     refreshStatusAndFaults();
@@ -212,7 +212,7 @@ void Worker::sendRaw(const QString& command) {
 void Worker::openKkl(const QString& device, int ecuAddress) {
     closeKkl();
     emit busy(true);
-    emit kklMessage(tr("Wecke das Steuergeraet mit der 5-Baud-Adresse, "
+    emit kklMessage(tr("Wecke das Steuergerät mit der 5-Baud-Adresse, "
                        "das dauert etwa drei Sekunden ..."), false);
 
     std::string error;
@@ -248,8 +248,8 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
     emit kklConnected(true, identification.join(QStringLiteral("  |  ")));
     emit kklProtocol(QString::fromStdString(kwp_->protocolName()),
                      kwp_->protocol() == KLineProtocol::Kwp2000);
-    emit kklMessage(tr("Verbunden mit %1 ueber %2. Vor dem Start die Punkte "
-                       "oben pruefen.")
+    emit kklMessage(tr("Verbunden mit %1 über %2. Vor dem Start die Punkte "
+                       "oben prüfen.")
                         .arg(QString::fromStdString(ecuName(ecu)),
                              QString::fromStdString(kwp_->protocolName())),
                     false);
@@ -281,7 +281,7 @@ void Worker::startBasicSetting(int group) {
                          &Worker::basicSettingTick);
     }
     basicSettingTimer_->start();
-    emit kklMessage(tr("Grundeinstellung im Messwertblock %1 laeuft. Gaspedal "
+    emit kklMessage(tr("Grundeinstellung im Messwertblock %1 läuft. Gaspedal "
                        "nicht antippen.")
                         .arg(group),
                     false);
@@ -390,14 +390,14 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
             if (!row.faults.isEmpty()) ++withFaults;
             row.note = row.faults.isEmpty()
                            ? tr("kein Eintrag")
-                           : tr("%1 Eintraege").arg(row.faults.size());
+                           : tr("%1 Einträge").arg(row.faults.size());
 
             // Persistent clear: read back after every attempt. Some control
             // units only accept the clear command on the second try.
             if (clearAttempts > 0 && !faults.empty()) {
                 bool cleared = false;
                 for (int attempt = 1; attempt <= clearAttempts && !cleared; ++attempt) {
-                    emit clearProgress(tr("%1: loesche, Versuch %2 von %3")
+                    emit clearProgress(tr("%1: lösche, Versuch %2 von %3")
                                            .arg(row.name)
                                            .arg(attempt)
                                            .arg(clearAttempts));
@@ -413,11 +413,11 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
                 }
                 if (cleared) {
                     row.faults.clear();
-                    row.note = tr("geloescht");
+                    row.note = tr("gelöscht");
                     --withFaults;
                     emit clearProgress(tr("   %1: leer").arg(row.name));
                 } else {
-                    row.note = tr("%1 Eintraege, Loeschen ohne Wirkung")
+                    row.note = tr("%1 Einträge, Löschen ohne Wirkung")
                                    .arg(row.faults.size());
                     emit clearProgress(
                         tr("   %1: bleibt bestehen, die Ursache ist noch da")
@@ -454,7 +454,7 @@ void Worker::bruteForceClear(int attempts) {
         std::string error;
         const bool acknowledged = obd_->clearFaults(error);
         if (!acknowledged) {
-            emit clearProgress(tr("   Steuergeraet quittiert nicht: %1")
+            emit clearProgress(tr("   Steuergerät quittiert nicht: %1")
                                    .arg(QString::fromStdString(error)));
         }
         sleepMs(600);
@@ -468,7 +468,7 @@ void Worker::bruteForceClear(int attempts) {
             refreshStatusAndFaults();
             return;
         }
-        emit clearProgress(tr("   noch %1 Eintraege").arg(remaining));
+        emit clearProgress(tr("   noch %1 Einträge").arg(remaining));
 
         // From the second failure on, re-establish the connection. Some control
         // units only open the clear window right after waking up.
@@ -511,7 +511,7 @@ void Worker::applySettings(const AppSettings& values) {
 
 void Worker::setBasicSettingSession(int mode) {
     if (kwp_) kwp_->setBasicSettingSession(static_cast<std::uint8_t>(mode));
-    emit logLine(tr("Sitzungsart fuer die Grundeinstellung: 0x%1")
+    emit logLine(tr("Sitzungsart für die Grundeinstellung: 0x%1")
                      .arg(QStringLiteral("%1").arg(mode, 2, 16, QChar('0')).toUpper()));
 }
 
@@ -611,7 +611,7 @@ void Worker::readMonitors() {
     emit oxygenTests(oxygenRows, QString::fromStdString(oxygenNote));
 
     emit busy(false);
-    emit logLine(tr("Bauteilueberwachung gelesen: %1 Tests, %2 Sondenpruefungen.")
+    emit logLine(tr("Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.")
                      .arg(rows.size())
                      .arg(oxygenRows.size()));
 }

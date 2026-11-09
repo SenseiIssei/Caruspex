@@ -284,7 +284,7 @@ std::vector<MonitorResult> Obd2::readMonitorResults(std::string& error) {
 
     if (out.empty()) {
         error = L(
-            "Das Steuergeraet liefert keine Bauteilueberwachung. Bei Fahrzeugen vor etwa "
+            "Das Steuergerät liefert keine Bauteilüberwachung. Bei Fahrzeugen vor etwa "
             "2003 ist das normal.",
             "The control unit provides no component monitoring results. This is normal "
             "for vehicles from before about 2003.");
@@ -322,9 +322,9 @@ std::vector<OxygenSensorTest> Obd2::readOxygenSensorTests(std::string& error) {
 
     if (out.empty()) {
         error = L(
-            "Das Steuergeraet liefert keine Lambdasondenpruefung. Bei Fahrzeugen mit CAN "
+            "Das Steuergerät liefert keine Lambdasondenprüfung. Bei Fahrzeugen mit CAN "
             "ist dieser Dienst abgeschafft, die Werte stecken dort in der "
-            "Bauteilueberwachung.",
+            "Bauteilüberwachung.",
             "The control unit provides no oxygen sensor test results. Vehicles with CAN "
             "no longer have this service; the values are part of component "
             "monitoring there.");

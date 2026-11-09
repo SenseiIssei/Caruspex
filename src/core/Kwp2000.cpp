@@ -57,11 +57,11 @@ bool wakeUpKLine(IByteStream& stream, Ecu ecu, std::uint8_t& key1, std::uint8_t&
     protocol = KLineProtocol::Unknown;
 
     if (!stream.slowInit(static_cast<std::uint8_t>(ecu))) {
-        error = L("Steuergeraet ", "Control unit ") + ecuName(ecu) +
+        error = L("Steuergerät ", "Control unit ") + ecuName(ecu) +
                 L(" meldet sich nicht.\n"
-                  "  - Zuendung an?\n"
-                  "  - Hat das Fahrzeug dieses Steuergeraet ueberhaupt?\n"
-                  "  - Bei neueren Fahrzeugen laeuft die Diagnose ueber CAN, nicht K-Line.",
+                  "  - Zündung an?\n"
+                  "  - Hat das Fahrzeug dieses Steuergerät überhaupt?\n"
+                  "  - Bei neueren Fahrzeugen läuft die Diagnose über CAN, nicht K-Line.",
                   " does not respond.\n"
                   "  - Ignition on?\n"
                   "  - Does the vehicle have this control unit at all?\n"
@@ -71,26 +71,26 @@ bool wakeUpKLine(IByteStream& stream, Ecu ecu, std::uint8_t& key1, std::uint8_t&
 
     std::uint8_t sync = 0;
     if (!stream.readByte(sync, 2000) || sync != 0x55) {
-        error = L("Kein Synchronbyte 0x55 vom Steuergeraet (bekommen ",
+        error = L("Kein Synchronbyte 0x55 vom Steuergerät (bekommen ",
                   "No sync byte 0x55 from the control unit (got ") +
                 hex2(sync) + ")";
         return false;
     }
     if (!stream.readByte(key1, 1000) || !stream.readByte(key2, 1000)) {
-        error = L("Schluesselbytes fehlen", "Key bytes missing");
+        error = L("Schlüsselbytes fehlen", "Key bytes missing");
         return false;
     }
 
     protocol = protocolFromKeyBytes(key1, key2);
     if (log) {
-        log(L("   Schluesselbytes ", "   Key bytes ") + hex2(key1) + " " + hex2(key2) + " -> " +
+        log(L("   Schlüsselbytes ", "   Key bytes ") + hex2(key1) + " " + hex2(key2) + " -> " +
             protocolLabel(protocol));
     }
 
     sleepMs(30);
     const std::uint8_t answer = static_cast<std::uint8_t>(~key2);
     if (!stream.writeByte(answer)) {
-        error = L("Antwort auf die Schluesselbytes laesst sich nicht senden",
+        error = L("Antwort auf die Schlüsselbytes lässt sich nicht senden",
                   "Cannot send the reply to the key bytes");
         return false;
     }
@@ -110,9 +110,9 @@ bool wakeUpKLine(IByteStream& stream, Ecu ecu, std::uint8_t& key1, std::uint8_t&
     }
 
     if (protocol == KLineProtocol::Unknown) {
-        error = L("Unbekannte Schluesselbytes ", "Unknown key bytes ") + hex2(key1) + " " +
+        error = L("Unbekannte Schlüsselbytes ", "Unknown key bytes ") + hex2(key1) + " " +
                 hex2(key2) +
-                L(". Das Steuergeraet spricht weder KWP1281 noch KWP2000 so, wie erwartet.",
+                L(". Das Steuergerät spricht weder KWP1281 noch KWP2000 so, wie erwartet.",
                   ". The control unit speaks neither KWP1281 nor KWP2000 as expected.");
         return false;
     }
@@ -122,18 +122,18 @@ bool wakeUpKLine(IByteStream& stream, Ecu ecu, std::uint8_t& key1, std::uint8_t&
 std::string negativeResponseText(std::uint8_t code) {
     switch (code) {
         case 0x10: return L("Dienst abgelehnt", "Service rejected");
-        case 0x11: return L("Dienst wird nicht unterstuetzt", "Service not supported");
-        case 0x12: return L("Unterfunktion wird nicht unterstuetzt", "Sub-function not supported");
-        case 0x21: return L("Steuergeraet beschaeftigt, spaeter erneut versuchen",
+        case 0x11: return L("Dienst wird nicht unterstützt", "Service not supported");
+        case 0x12: return L("Unterfunktion wird nicht unterstützt", "Sub-function not supported");
+        case 0x21: return L("Steuergerät beschäftigt, später erneut versuchen",
                             "Control unit busy, try again later");
-        case 0x22: return L("Bedingungen stimmen nicht (Motor laeuft? Zuendung aus?)",
+        case 0x22: return L("Bedingungen stimmen nicht (Motor läuft? Zündung aus?)",
                             "Conditions not correct (engine running? ignition off?)");
-        case 0x31: return L("Angefragter Wert liegt ausserhalb des Bereichs",
+        case 0x31: return L("Angefragter Wert liegt außerhalb des Bereichs",
                             "Requested value is out of range");
-        case 0x33: return L("Zugriff verweigert, Freischaltcode noetig",
+        case 0x33: return L("Zugriff verweigert, Freischaltcode nötig",
                             "Access denied, security code required");
-        case 0x35: return L("Ungueltiger Schluessel", "Invalid key");
-        case 0x78: return L("Antwort dauert laenger, Steuergeraet arbeitet noch",
+        case 0x35: return L("Ungültiger Schlüssel", "Invalid key");
+        case 0x78: return L("Antwort dauert länger, Steuergerät arbeitet noch",
                             "Response pending, control unit still working");
         default: return L("Ablehnungsgrund 0x", "Rejection reason 0x") + hex2(code);
     }
@@ -156,7 +156,7 @@ Kwp2000::Kwp2000(IByteStream& stream, LogFn2 log) : stream_(stream), log_(std::m
 
 bool Kwp2000::sendMessage(const std::vector<std::uint8_t>& payload, std::string& error) {
     if (payload.empty() || payload.size() > 63) {
-        error = L("Nachricht hat eine unmoegliche Laenge", "Message has an impossible length");
+        error = L("Nachricht hat eine unmögliche Länge", "Message has an impossible length");
         return false;
     }
 
@@ -186,7 +186,7 @@ bool Kwp2000::sendMessage(const std::vector<std::uint8_t>& payload, std::string&
             std::uint8_t echo = 0;
             if (!stream_.readByte(echo, kEchoTimeoutMs)) {
                 error = L("Kein Echo auf ", "No echo for ") + hex2(byte) +
-                        L(", haengt das Kabel richtig?", ", is the cable connected properly?");
+                        L(", hängt das Kabel richtig?", ", is the cable connected properly?");
                 return false;
             }
             if (echo != byte) {
@@ -205,7 +205,7 @@ bool Kwp2000::receiveMessage(std::vector<std::uint8_t>& payload, std::string& er
 
     std::uint8_t format = 0;
     if (!stream_.readByte(format, kByteTimeoutMs)) {
-        error = L("Steuergeraet antwortet nicht", "Control unit does not respond");
+        error = L("Steuergerät antwortet nicht", "Control unit does not respond");
         return false;
     }
     if ((format & 0xC0) != 0x80) {
@@ -225,7 +225,7 @@ bool Kwp2000::receiveMessage(std::vector<std::uint8_t>& payload, std::string& er
         // The length is in a separate byte after the addresses.
         std::uint8_t extra = 0;
         if (!stream_.readByte(extra, kByteTimeoutMs)) {
-            error = L("Laengenbyte fehlt", "Length byte missing");
+            error = L("Längenbyte fehlt", "Length byte missing");
             return false;
         }
         length = extra;
@@ -245,11 +245,11 @@ bool Kwp2000::receiveMessage(std::vector<std::uint8_t>& payload, std::string& er
 
     std::uint8_t received = 0;
     if (!stream_.readByte(received, kByteTimeoutMs)) {
-        error = L("Pruefsumme fehlt", "Checksum missing");
+        error = L("Prüfsumme fehlt", "Checksum missing");
         return false;
     }
     if (received != checksum) {
-        error = L("Pruefsumme stimmt nicht: erwartet ", "Checksum mismatch: expected ") +
+        error = L("Prüfsumme stimmt nicht: erwartet ", "Checksum mismatch: expected ") +
                 hex2(checksum) + L(", bekommen ", ", got ") + hex2(received);
         return false;
     }
@@ -281,7 +281,7 @@ bool Kwp2000::request(const std::vector<std::uint8_t>& payload,
         if (!reply.empty() && reply[0] == payload[0] + 0x40) return true;
         // Something unexpected: listen once more.
     }
-    error = L("Steuergeraet antwortet nicht sinnvoll", "Control unit does not respond meaningfully");
+    error = L("Steuergerät antwortet nicht sinnvoll", "Control unit does not respond meaningfully");
     return false;
 }
 
@@ -293,7 +293,7 @@ bool Kwp2000::start(Ecu ecu, std::uint8_t key1, std::uint8_t key2, std::string& 
     started_ = false;
 
     if (protocolFromKeyBytes(key1, key2) != KLineProtocol::Kwp2000) {
-        error = L("Dieses Steuergeraet spricht kein KWP2000 (Schluesselbytes ",
+        error = L("Dieses Steuergerät spricht kein KWP2000 (Schlüsselbytes ",
                   "This control unit does not speak KWP2000 (key bytes ") +
                 hex2(key1) + " " + hex2(key2) + ")";
         return false;

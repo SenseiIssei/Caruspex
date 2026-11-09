@@ -163,7 +163,7 @@ TEST_CASE("What KWP2000 cannot do is reported instead of failing silently", "[kw
 }
 
 TEST_CASE("Rejected services come back in plain text", "[kwp2000]") {
-    REQUIRE(negativeResponseText(0x11).find("nicht unterstuetzt") != std::string::npos);
+    REQUIRE(negativeResponseText(0x11).find("nicht unterstützt") != std::string::npos);
     REQUIRE(negativeResponseText(0x22).find("Bedingungen") != std::string::npos);
     REQUIRE(negativeResponseText(0x33).find("Freischaltcode") != std::string::npos);
     REQUIRE_FALSE(negativeResponseText(0xAB).empty());

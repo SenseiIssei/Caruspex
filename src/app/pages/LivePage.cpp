@@ -58,8 +58,8 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     bar->addWidget(exportButton_);
     bar->addWidget(recordBox_);
     bar->addStretch();
-    hint_ = new QLabel(tr("Die Werte laufen einzeln ueber den Bus, daher aktualisiert es "
-                          "auf der K-Line gemaechlich."));
+    hint_ = new QLabel(tr("Die Werte laufen einzeln über den Bus, daher aktualisiert es "
+                          "auf der K-Line gemächlich."));
     hint_->setObjectName("Hint");
     bar->addWidget(hint_);
     root->addLayout(bar);
@@ -193,7 +193,7 @@ void LivePage::toggleRun() {
     }
     const QVector<int> pids = selectedPids();
     if (pids.isEmpty()) {
-        QMessageBox::information(this, tr("Nichts ausgewaehlt"),
+        QMessageBox::information(this, tr("Nichts ausgewählt"),
                                  tr("Links mindestens einen Messwert ankreuzen."));
         return;
     }
@@ -315,7 +315,7 @@ void LivePage::exportCsv() {
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Fehler"), tr("Datei laesst sich nicht schreiben."));
+        QMessageBox::warning(this, tr("Fehler"), tr("Datei lässt sich nicht schreiben."));
         return;
     }
     QTextStream out(&file);

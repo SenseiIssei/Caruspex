@@ -96,7 +96,7 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         const std::string up = toUpper(line);
         if (startsWith(up, "NO DATA")) {
             result.status = ElmStatus::NoData;
-            result.message = L("Steuergeraet unterstuetzt diese Anfrage nicht (NO DATA).",
+            result.message = L("Steuergerät unterstützt diese Anfrage nicht (NO DATA).",
                                "Control unit does not support this request (NO DATA).");
             return result;
         }
@@ -136,7 +136,7 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         if (msg.empty()) continue;
         if (msg[0] == 0x7F && msg.size() >= 3) {
             result.status = ElmStatus::Negative;
-            result.message = std::string(L("Steuergeraet lehnt den Dienst ab (Code 0x",
+            result.message = std::string(L("Steuergerät lehnt den Dienst ab (Code 0x",
                                            "Control unit rejects the service (code 0x")) +
                              hexByte(msg[2]) + ")";
             return result;
@@ -277,8 +277,8 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
     }
 
     error = L(
-        "Kein Kontakt zum Steuergeraet.\n"
-        "  - Zuendung an? (Motor darf aus sein)\n"
+        "Kein Kontakt zum Steuergerät.\n"
+        "  - Zündung an? (Motor darf aus sein)\n"
         "  - Stecker fest im OBD-Port?\n"
         "  - Manche Adapter brauchen einen zweiten Anlauf: abziehen, 10 s warten, neu stecken.",
         "No contact with the control unit.\n"

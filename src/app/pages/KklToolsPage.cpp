@@ -58,7 +58,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
 
     // --- Connection ---------------------------------------------------------
     QVBoxLayout* body = nullptr;
-    QFrame* connectCard = card(tr("Steuergeraet verbinden (KKL-Kabel)"), body);
+    QFrame* connectCard = card(tr("Steuergerät verbinden (KKL-Kabel)"), body);
     auto* row = new QHBoxLayout;
     ecuBox_ = new QComboBox;
     for (Ecu ecu : knownEcus()) {
@@ -70,7 +70,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     connectButton_ = new QPushButton(tr("Verbinden"));
     connectButton_->setObjectName("Primary");
     connectButton_->setMinimumHeight(38);
-    row->addWidget(new QLabel(tr("Steuergeraet:")));
+    row->addWidget(new QLabel(tr("Steuergerät:")));
     row->addWidget(ecuBox_, 1);
     row->addWidget(new QLabel(tr("Anschluss:")));
     row->addWidget(portBox_, 1);
@@ -97,7 +97,7 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
         if (port.isEmpty()) {
             QMessageBox::information(this, tr("Kein Anschluss"),
                                      tr("Erst ein KKL-Kabel anstecken und auf Suchen "
-                                        "druecken."));
+                                        "drücken."));
             return;
         }
         emit connectRequested(port, ecuBox_->currentData().toInt());
@@ -106,10 +106,10 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     // --- Adaptation channels ------------------------------------------------
     QFrame* adaptCard = card(tr("Anpassungskanal lesen"), body);
     auto* adaptHint = new QLabel(
-        tr("Anpassungskanaele sind die Stellschrauben des Steuergeraets, etwa der "
+        tr("Anpassungskanäle sind die Stellschrauben des Steuergeräts, etwa der "
            "Leerlauf oder die Startmenge. Caruspex liest sie hier aus. Verstellt wird "
            "bewusst nichts: ein falscher Wert im falschen Kanal legt den Motor lahm, und "
-           "manche Kanaele brauchen zusaetzlich einen Zugriffscode."));
+           "manche Kanäle brauchen zusätzlich einen Zugriffscode."));
     adaptHint->setObjectName("Subtle");
     adaptHint->setWordWrap(true);
     body->addWidget(adaptHint);
@@ -149,17 +149,17 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     // --- Output test ---------------------------------------------------------
     QFrame* actuatorCard = card(tr("Stellglieddiagnose"), body);
     auto* actuatorHint = new QLabel(
-        tr("Das Steuergeraet klappert seine Aktoren der Reihe nach durch und nennt jeweils "
-           "das laufende Bauteil. Man hoert und sieht dann, ob es wirklich anspricht. Jeder "
-           "Druck auf den Knopf schaltet zum naechsten Stellglied weiter.\n\n"
-           "Zuendung an, Motor aus. Beim laufenden Motor verweigern die meisten "
-           "Steuergeraete den Dienst."));
+        tr("Das Steuergerät klappert seine Aktoren der Reihe nach durch und nennt jeweils "
+           "das laufende Bauteil. Man hört und sieht dann, ob es wirklich anspricht. Jeder "
+           "Druck auf den Knopf schaltet zum nächsten Stellglied weiter.\n\n"
+           "Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten "
+           "Steuergeräte den Dienst."));
     actuatorHint->setObjectName("Subtle");
     actuatorHint->setWordWrap(true);
     body->addWidget(actuatorHint);
 
     auto* actuatorRow = new QHBoxLayout;
-    actuatorButton_ = new QPushButton(tr("Naechstes Stellglied"));
+    actuatorButton_ = new QPushButton(tr("Nächstes Stellglied"));
     actuatorButton_->setMinimumHeight(38);
     actuatorButton_->setEnabled(false);
     actuatorLabel_ = new QLabel(QStringLiteral("--"));
@@ -222,8 +222,8 @@ void KklToolsPage::updateAvailability() {
     actuatorButton_->setEnabled(connected_);
     ecuBox_->setEnabled(!connected_);
     if (!connected_) {
-        message_->setText(tr("Beides sind herstellereigene Dienste. Ueber einen "
-                             "ELM327-Adapter sind sie nicht erreichbar, dafuer wird das "
+        message_->setText(tr("Beides sind herstellereigene Dienste. Über einen "
+                             "ELM327-Adapter sind sie nicht erreichbar, dafür wird das "
                              "KKL-Kabel gebraucht."));
     }
 }
