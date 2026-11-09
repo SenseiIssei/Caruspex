@@ -32,6 +32,12 @@ QString reportHtml(const VehicleState& state, const ReportExtras& extras);
 // cancelled or writing failed.
 QString saveReportPdf(QWidget* parent, const VehicleState& state, const ReportExtras& extras);
 
+// The file of one garage car: checks, service plan, trips and fuel log.
+// Works without a connection.
+QString garageHtml(const struct GarageCar& car);
+QString saveGaragePdf(QWidget* parent, const struct GarageCar& car);
+bool writeGaragePdf(const struct GarageCar& car, const QString& path);
+
 // Opens the print dialog.
 void printReport(QWidget* parent, const VehicleState& state, const ReportExtras& extras);
 

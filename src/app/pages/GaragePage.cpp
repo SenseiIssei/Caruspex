@@ -30,6 +30,7 @@
 
 #include "app/Garage.h"
 #include "app/Icons.h"
+#include "app/Report.h"
 #include "app/Theme.h"
 #include "app/VehicleDiagram.h"
 #include "app/Widgets.h"
@@ -190,6 +191,16 @@ GaragePage::GaragePage(Garage* garage, QWidget* parent) : QWidget(parent), garag
     remove_->setObjectName("Ghost");
     remove_->setIcon(icons::icon(QStringLiteral("trash"), color::textMuted, color::bad, 16));
     actions->addWidget(report_);
+    auto* file = new QPushButton(tr("Akte als PDF"));
+    file->setIcon(icons::icon(QStringLiteral("printer"), color::textMuted, color::text, 16));
+    file->setToolTip(tr("Prüfungen, Wartung, Fahrten und Tankbuch, auch ohne verbundenes Auto"));
+    actions->addWidget(file);
+    connect(file, &QPushButton::clicked, this, [this] {
+        const GarageCar* car = garage_->find(selected_);
+        if (!car) return;
+        const QString path = saveGaragePdf(this, *car);
+        if (!path.isEmpty()) toast::show(this, tr("Akte gespeichert: %1").arg(path), toast::Kind::Success);
+    });
     actions->addWidget(remove_);
     actions->addStretch();
     headText->addSpacing(6);

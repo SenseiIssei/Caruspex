@@ -111,7 +111,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [x] Wartung: Ölwechsel, HU und AU, Zahnriemen nach Kilometer oder Datum, Erinnerung beim Verbinden. Mittel
 - [x] Kilometerstand je Prüfung vergleichen und einen Rücksprung melden, als Hinweis beim Gebrauchtwagenkauf. Klein
 - [x] Export und Import der Garage. Klein
-- [ ] Bericht über alle Prüfungen eines Autos (Verlauf als PDF). Klein
+- [x] Fahrzeugakte als PDF: Prüfungen, Wartung, Fahrten, Tankbuch, auch ohne verbundenes Auto. Klein
 
 ## Phase 10: Verteilen
 
