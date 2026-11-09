@@ -506,7 +506,7 @@ StatTile::StatTile(const QString& iconName, const QString& caption, QWidget* par
     auto* valueRow = new QHBoxLayout;
     valueRow->setSpacing(6);
     value_ = new QLabel(QStringLiteral("--"));
-    value_->setFont(display(24, 700));
+    styleFont(value_, Family::Display, 24, 700);
     unit_ = new QLabel;
     unit_->setStyleSheet(QStringLiteral("color: %1; font-size: 13px;").arg(color::textFaint.name()));
     valueRow->addWidget(value_, 0, Qt::AlignBottom);

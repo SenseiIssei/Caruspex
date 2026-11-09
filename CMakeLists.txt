@@ -136,6 +136,8 @@ if(CARUSPEX_GUI)
         src/app/pages/BatteryPage.h
         src/app/pages/EcuPage.cpp
         src/app/pages/EcuPage.h
+        src/app/pages/EvPage.cpp
+        src/app/pages/EvPage.h
         src/app/pages/FaultsPage.cpp
         src/app/pages/GaragePage.cpp
         src/app/pages/GaragePage.h

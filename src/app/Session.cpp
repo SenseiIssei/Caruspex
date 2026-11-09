@@ -11,6 +11,9 @@
 #include "core/Uds.h"
 #include "core/DemoTransport.h"
 #include "core/Recording.h"
+#include "data/PidPacks.h"
+
+#include <QFile>
 #include "core/analysis/DriveCycleGuide.h"
 #include "core/analysis/HealthCheck.h"
 
@@ -304,6 +307,89 @@ void Worker::stopRecording() {
     emit recordingState(false, path, exchanges, QString());
 }
 
+const CustomPid* Worker::findCustom(int key) const {
+    for (const CustomPid& p : builtInPacks()) {
+        if (p.key == key) return &p;
+    }
+    for (const CustomPid& p : userPids_) {
+        if (p.key == key) return &p;
+    }
+    return nullptr;
+}
+
+int Worker::readCustomNow(const QVector<int>& keys, int* failed, QString* firstError) {
+    std::vector<CustomPid> list;
+    for (int key : keys) {
+        if (const CustomPid* p = findCustom(key)) list.push_back(*p);
+    }
+    int ok = 0;
+    int bad = 0;
+    {
+        // The reader restores the normal OBD addressing when it goes out of
+        // scope, so the next OBD request works as before.
+        CustomPidReader reader(elm_);
+        for (const CustomReading& r : reader.readAll(list)) {
+            if (r.ok) {
+                ++ok;
+                emit liveValue(toRow(r.value));
+            } else {
+                ++bad;
+                if (firstError && firstError->isEmpty()) *firstError = QString::fromStdString(r.error);
+            }
+        }
+    }
+    if (failed) *failed = bad;
+    return ok;
+}
+
+void Worker::readCustom(const QVector<int>& keys) {
+    if (!obd_) {
+        emit customRead(0, keys.size(), tr("Erst verbinden."));
+        return;
+    }
+    emit busy(true);
+    int failed = 0;
+    QString error;
+    const int ok = readCustomNow(keys, &failed, &error);
+    emit customRead(ok, failed, error);
+    emit busy(false);
+}
+
+void Worker::startCustomPoll(const QVector<int>& keys) {
+    if (!obd_) return;
+    customPollKeys_ = keys;
+    if (!pollTimer_) {
+        pollTimer_ = new QTimer(this);
+        pollTimer_->setInterval(settings_.pollIntervalMs);
+        QObject::connect(pollTimer_, &QTimer::timeout, this, &Worker::pollTick);
+    }
+    if (!customPollKeys_.isEmpty() && !pollTimer_->isActive()) pollTimer_->start();
+}
+
+void Worker::importCustomCsv(const QString& path) {
+    QFile file(path);
+    QStringList errors;
+    QVector<CustomRow> rows;
+    if (!file.open(QIODevice::ReadOnly)) {
+        errors << tr("Datei lässt sich nicht öffnen: %1").arg(file.errorString());
+        emit customImported(rows, errors);
+        return;
+    }
+    std::vector<std::string> problems;
+    // New imports get keys after the ones already loaded.
+    const int base = kUserKeyBase + static_cast<int>(userPids_.size());
+    std::vector<CustomPid> parsed = parseTorqueCsv(file.readAll().toStdString(), problems, base);
+    for (const std::string& p : problems) errors << QString::fromStdString(p);
+    for (CustomPid& p : parsed) {
+        p.pack.clear();
+        userPids_.push_back(p);
+        rows.push_back({p.key, QString::fromStdString(p.name), QString::fromStdString(p.shortName),
+                        QString::fromStdString(p.unit), QString(), QString::fromStdString(p.source),
+                        QString::fromStdString(p.request), QString::fromStdString(p.header)});
+    }
+    emit customImported(rows, errors);
+}
+
 void Worker::probeAdapter() {
     if (!elm_.connected()) {
         emit failed(tr("Für den Adaptertest erst verbinden."));
@@ -426,8 +512,8 @@ void Worker::readDetails() {
 }
 
 void Worker::startLive(const QVector<int>& pids) {
-    if (!obd_ || pids.isEmpty()) return;
     pollPids_ = pids;
+    if (!obd_ || pids.isEmpty()) return;
     pollIndex_ = 0;
     if (!pollTimer_) {
         pollTimer_ = new QTimer(this);
@@ -442,6 +528,7 @@ void Worker::startLive(const QVector<int>& pids) {
 }
 
 void Worker::stopLive() {
+    customPollKeys_.clear();
     if (pollTimer_ && pollTimer_->isActive()) {
         pollTimer_->stop();
         emit logLine(tr("Messung gestoppt."));
@@ -451,7 +538,17 @@ void Worker::stopLive() {
 // One value per tick. That keeps the event loop free and stop requests from
 // the UI get through immediately.
 void Worker::pollTick() {
-    if (!obd_ || pollPids_.isEmpty()) return;
+    if (!obd_) return;
+    // Every other tick belongs to the manufacturer values when some are
+    // selected. They change slowly and cost an addressing round each time.
+    if (!customPollKeys_.isEmpty()) {
+        customTurn_ = !customTurn_;
+        if (customTurn_ || pollPids_.isEmpty()) {
+            readCustomNow(customPollKeys_, nullptr, nullptr);
+            return;
+        }
+    }
+    if (pollPids_.isEmpty()) return;
     // Up to six PIDs per tick: on CAN they go out as one request, elsewhere
     // the core reads them one by one. Either way the event loop gets back
     // control after each slice, so a stop request is not delayed.
@@ -1037,6 +1134,8 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
     qRegisterMetaType<FreezeFrameRow>("caruspex::FreezeFrameRow");
     qRegisterMetaType<UdsEcuRow>("caruspex::UdsEcuRow");
+    qRegisterMetaType<CustomRow>("caruspex::CustomRow");
+    qRegisterMetaType<QVector<CustomRow>>("QVector<caruspex::CustomRow>");
     qRegisterMetaType<QVector<FreezeFrameRow>>("QVector<caruspex::FreezeFrameRow>");
 
     worker_ = new Worker();
@@ -1048,6 +1147,9 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
     connect(this, &Session::openReplayRequested, worker_, &Worker::openReplay);
     connect(this, &Session::startRecordingRequested, worker_, &Worker::startRecording);
+    connect(this, &Session::customReadRequested, worker_, &Worker::readCustom);
+    connect(this, &Session::customPollRequested, worker_, &Worker::startCustomPoll);
+    connect(this, &Session::customImportRequested, worker_, &Worker::importCustomCsv);
     connect(this, &Session::stopRecordingRequested, worker_, &Worker::stopRecording);
     connect(this, &Session::closeRequested, worker_, &Worker::closeAdapter);
     connect(this, &Session::readFaultsRequested, worker_, &Worker::readFaults);

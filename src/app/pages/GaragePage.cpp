@@ -67,7 +67,7 @@ public:
         name->setStyleSheet(QStringLiteral("font-weight: 700; font-size: 14px;"));
         texts->addWidget(name);
         auto* vin = new QLabel(car.vin);
-        vin->setFont(mono(12));
+        styleFont(vin, Family::Mono, 12);
         vin->setStyleSheet(QStringLiteral("color: %1;").arg(color::textFaint.name()));
         texts->addWidget(vin);
         int faults = car.checks.isEmpty() ? 0 : car.checks.back().codes.size();

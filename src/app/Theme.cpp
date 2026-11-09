@@ -550,6 +550,18 @@ void pulseGlow(QWidget* widget, const QColor& colour) {
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
+void styleFont(QWidget* widget, Family family, int px, int weight) {
+    if (!widget) return;
+    const QString name = family == Family::Display ? families().display
+                         : family == Family::Mono  ? families().mono
+                                                   : families().sans;
+    widget->setStyleSheet(widget->styleSheet() +
+                          QStringLiteral(" font-family: \"%1\"; font-size: %2px; font-weight: %3;")
+                              .arg(name)
+                              .arg(px)
+                              .arg(weight));
+}
+
 void repolish(QWidget* widget) {
     if (!widget) return;
     widget->style()->unpolish(widget);

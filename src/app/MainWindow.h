@@ -44,6 +44,7 @@ class BatteryPage;
 class AdapterPage;
 class VehiclesPage;
 class EcuPage;
+class EvPage;
 class Garage;
 class VehicleState;
 
@@ -145,6 +146,7 @@ private:
     AdapterPage* adapter_ = nullptr;
     VehiclesPage* vehicles_ = nullptr;
     EcuPage* ecus_ = nullptr;
+    EvPage* ev_ = nullptr;
     NavButton* faultsButton_ = nullptr;
     NavButton* garageButton_ = nullptr;
     VehicleState* state_ = nullptr;

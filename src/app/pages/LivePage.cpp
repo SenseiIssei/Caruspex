@@ -25,10 +25,13 @@
 
 #include "app/Theme.h"
 #include "app/Widgets.h"
+#include "data/PidPacks.h"
 #include "data/Pids.h"
 
 namespace caruspex {
 namespace {
+
+constexpr int kCustomRole = Qt::UserRole + 1;
 
 
 const QColor kSeriesColours[] = {
@@ -59,6 +62,15 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     recordBox_ = new QCheckBox(tr("mitschreiben"));
     recordBox_->setChecked(true);
     bar->addWidget(runButton_);
+    auto* import = new QPushButton(tr("Eigene Werte laden"));
+    import->setToolTip(tr("Messwerte aus einer Torque-CSV-Datei hinzufügen"));
+    import->setMinimumHeight(40);
+    connect(import, &QPushButton::clicked, this, [this] {
+        const QString path = QFileDialog::getOpenFileName(this, tr("Eigene Werte laden"), QString(),
+                                                          tr("Torque-CSV (*.csv);;Alle Dateien (*)"));
+        if (!path.isEmpty()) emit importRequested(path);
+    });
+    bar->addWidget(import);
     bar->addWidget(exportButton_);
     bar->addWidget(recordBox_);
     bar->addStretch();
@@ -149,6 +161,17 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     root->addWidget(split, 1);
 }
 
+void LivePage::addSection(const QString& title) {
+    auto* head = new QListWidgetItem(title.toUpper());
+    head->setFlags(Qt::NoItemFlags);
+    head->setData(Qt::UserRole, -1);
+    head->setForeground(theme::color::accent);
+    QFont f = theme::sans(11, 700);
+    f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
+    head->setFont(f);
+    pidList_->addItem(head);
+}
+
 void LivePage::buildPidList() {
     pidList_->clear();
     for (PidCategory category : pidCategories()) {
@@ -181,6 +204,41 @@ void LivePage::buildPidList() {
         pidList_->addItem(item);
       }
     }
+    // Manufacturer values from the built-in packs, one section per car.
+    for (const std::string& pack : packNames()) {
+        addSection(QString::fromStdString(packTitle(pack)));
+        for (const CustomPid& p : packPids(pack)) {
+            auto* item = new QListWidgetItem(QString::fromStdString(p.name));
+            item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+            item->setData(Qt::UserRole, p.key);
+            item->setData(kCustomRole, true);
+            item->setCheckState(Qt::Unchecked);
+            if (!p.source.empty()) item->setToolTip(tr("Quelle: %1").arg(QString::fromStdString(p.source)));
+            pidList_->addItem(item);
+        }
+    }
+}
+
+void LivePage::onCustomImported(const QVector<CustomRow>& rows, const QStringList& errors) {
+    if (!rows.isEmpty()) {
+        addSection(tr("Eigene Werte"));
+        for (const CustomRow& r : rows) {
+            auto* item = new QListWidgetItem(r.name);
+            item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+            item->setData(Qt::UserRole, r.key);
+            item->setData(kCustomRole, true);
+            item->setCheckState(Qt::Checked);
+            item->setToolTip(QStringLiteral("%1  %2").arg(r.header, r.request).trimmed());
+            pidList_->addItem(item);
+        }
+        pidList_->scrollToBottom();
+    }
+    QString text = tr("%n Wert(e) geladen.", nullptr, rows.size());
+    if (!errors.isEmpty()) {
+        text += QStringLiteral(" ") + tr("%n Zeile(n) übersprungen: %1", nullptr, errors.size())
+                                          .arg(errors.mid(0, 3).join(QStringLiteral("; ")));
+    }
+    toast::show(this, text, errors.isEmpty() ? toast::Kind::Success : toast::Kind::Warning, 7000);
 }
 
 void LivePage::onSupportedPids(const QVector<int>& pids) {
@@ -189,7 +247,7 @@ void LivePage::onSupportedPids(const QVector<int>& pids) {
     for (int i = 0; i < pidList_->count(); ++i) {
         QListWidgetItem* item = pidList_->item(i);
         const int pid = item->data(Qt::UserRole).toInt();
-        if (pid < 0) continue;
+        if (pid < 0 || item->data(kCustomRole).toBool()) continue;
         const bool supported = pids.contains(pid);
         item->setForeground(supported ? theme::color::text : theme::color::textMuted);
         if (!supported) {
@@ -204,11 +262,23 @@ QVector<int> LivePage::selectedPids() const {
     QVector<int> pids;
     for (int i = 0; i < pidList_->count(); ++i) {
         const QListWidgetItem* item = pidList_->item(i);
-        if (item->data(Qt::UserRole).toInt() >= 0 && item->checkState() == Qt::Checked) {
+        if (item->data(Qt::UserRole).toInt() >= 0 && !item->data(kCustomRole).toBool() &&
+            item->checkState() == Qt::Checked) {
             pids.push_back(item->data(Qt::UserRole).toInt());
         }
     }
     return pids;
+}
+
+QVector<int> LivePage::selectedCustom() const {
+    QVector<int> keys;
+    for (int i = 0; i < pidList_->count(); ++i) {
+        const QListWidgetItem* item = pidList_->item(i);
+        if (item->data(kCustomRole).toBool() && item->checkState() == Qt::Checked) {
+            keys.push_back(item->data(Qt::UserRole).toInt());
+        }
+    }
+    return keys;
 }
 
 void LivePage::setConnected(bool connected) {
@@ -240,7 +310,8 @@ void LivePage::toggleRun() {
         return;
     }
     const QVector<int> pids = selectedPids();
-    if (pids.isEmpty()) {
+    const QVector<int> custom = selectedCustom();
+    if (pids.isEmpty() && custom.isEmpty()) {
         QMessageBox::information(this, tr("Nichts ausgewählt"),
                                  tr("Links mindestens einen Messwert ankreuzen."));
         return;
@@ -249,6 +320,7 @@ void LivePage::toggleRun() {
     clock_.restart();
     recorded_.clear();
     emit startRequested(pids);
+    if (!custom.isEmpty()) emit customStartRequested(custom);
     setRunning(true);
 }
 

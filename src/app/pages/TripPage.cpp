@@ -60,7 +60,7 @@ TripPage::TripPage(QWidget* parent) : QWidget(parent) {
     auto* valueRow = new QHBoxLayout;
     valueRow->setSpacing(10);
     liveValue_ = new QLabel(QStringLiteral("--"));
-    liveValue_->setFont(display(64, 800));
+    styleFont(liveValue_, Family::Display, 64, 800);
     liveUnit_ = new QLabel(QStringLiteral("l/100 km"));
     liveUnit_->setStyleSheet(QStringLiteral("color: %1; font-size: 18px; font-weight: 600;")
                                  .arg(color::textMuted.name()));

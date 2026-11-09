@@ -39,6 +39,7 @@
 #include "app/pages/BatteryPage.h"
 #include "app/pages/ConnectPage.h"
 #include "app/pages/EcuPage.h"
+#include "app/pages/EvPage.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
 #include "app/pages/GaragePage.h"
@@ -159,6 +160,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     adapter_ = new AdapterPage;
     vehicles_ = new VehiclesPage;
     ecus_ = new EcuPage;
+    ev_ = new EvPage;
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -247,6 +249,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         dashboard_->setBrand(car.brand);
         faults_->setBrand(car.brand);
         ecus_->setBrand(car.brand);
+        ev_->setVehicle(car.brand, car.title);
         if (car.known) {
             toast::show(this, tr("Erkannt: %1").arg(car.title), toast::Kind::Success);
         }
@@ -391,6 +394,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(monitor_, &MonitorPage::readRequested, &session_, &Session::readMonitorsRequested);
     connect(live_, &LivePage::startRequested, &session_, &Session::startLiveRequested);
     connect(live_, &LivePage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(live_, &LivePage::customStartRequested, &session_, &Session::customPollRequested);
+    connect(worker, &Worker::liveValue, ev_, &EvPage::onLiveValue);
+    connect(worker, &Worker::customRead, ev_, &EvPage::onCustomRead);
+    connect(ev_, &EvPage::readRequested, &session_, &Session::customReadRequested);
+    connect(ev_, &EvPage::pollRequested, this, [this](const QVector<int>& keys) {
+        emit session_.startLiveRequested({});
+        emit session_.customPollRequested(keys);
+    });
+    connect(ev_, &EvPage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(live_, &LivePage::importRequested, &session_, &Session::customImportRequested);
+    connect(worker, &Worker::customImported, live_, &LivePage::onCustomImported);
     connect(throttle_, &ThrottlePage::kklConnectRequested, &session_, &Session::openKklRequested);
     connect(throttle_, &ThrottlePage::kklDisconnectRequested, &session_,
             &Session::closeKklRequested);
@@ -513,6 +527,7 @@ QWidget* MainWindow::buildSidebar() {
     addEntry(QStringLiteral("fuel"), tr("Bordcomputer"), trip_);
     addEntry(QStringLiteral("timer"), tr("Leistung"), performance_);
     addEntry(QStringLiteral("battery"), tr("Batterie"), battery_);
+    addEntry(QStringLiteral("bolt-circle"), tr("E-Auto-Akku"), ev_);
     addEntry(QStringLiteral("chart"), tr("Statistik"), stats_);
     addSection(tr("Werkstatt"));
     addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), ecus_);
@@ -592,7 +607,7 @@ QWidget* MainWindow::buildLogDrawer() {
     layout->addLayout(head);
     log_ = new QPlainTextEdit;
     log_->setReadOnly(true);
-    log_->setFont(mono(12));
+    styleFont(log_, Family::Mono, 12);
     log_->setMaximumBlockCount(5000);
     layout->addWidget(log_, 1);
     connect(clear, &QPushButton::clicked, log_, &QPlainTextEdit::clear);
@@ -663,6 +678,7 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("trip"), trip_},          {QStringLiteral("performance"), performance_},
         {QStringLiteral("battery"), battery_},    {QStringLiteral("adapter"), adapter_},
         {QStringLiteral("vehicles"), vehicles_},  {QStringLiteral("ecus"), ecus_},
+        {QStringLiteral("ev"), ev_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
     // Developer aids for screenshots: open a page and start what it does.
@@ -686,6 +702,10 @@ void MainWindow::showPageByName(const QString& name) {
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);
         emit session_.probeAdapterRequested();
+    }
+    if (name == QStringLiteral("ev-run")) {
+        navigateTo(ev_);
+        ev_->readNow();
     }
     if (name == QStringLiteral("start-live")) {
         navigateTo(dashboard_);
@@ -720,6 +740,7 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     battery_->setConnected(true);
     adapter_->setConnected(true);
     ecus_->setConnected(true);
+    ev_->setConnected(true);
     toast::show(this, tr("Verbunden über %1. Protokoll: %2").arg(transport, protocol),
                 toast::Kind::Success);
     // After connecting the start page is the natural place to go. The VIN
@@ -759,6 +780,7 @@ void MainWindow::onClosed() {
     battery_->setConnected(false);
     adapter_->setConnected(false);
     ecus_->setConnected(false);
+    ev_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 

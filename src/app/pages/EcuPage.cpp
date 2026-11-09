@@ -53,7 +53,7 @@ QWidget* fact(const QString& key, const QString& value) {
     auto* k = makeLabel(key, "Hint");
     k->setFixedWidth(130);
     auto* v = makeLabel(value, nullptr, true);
-    v->setFont(mono(13, 500));
+    styleFont(v, Family::Mono, 13, 500);
     v->setTextInteractionFlags(Qt::TextSelectableByMouse);
     h->addWidget(k);
     h->addWidget(v, 1);

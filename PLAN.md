@@ -94,16 +94,17 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 
 ## Phase 7: Herstellerwerte (Modus 22) und eigene PIDs
 
-- [ ] Eigene Messwerte importieren im verbreiteten Torque-CSV-Format, damit jeder seinem Auto Werte hinzufügen kann. Mittel
-- [ ] Mitgelieferte Pakete nur mit belegter Quelle, zuerst E-Autos: Akkugesundheit (SOH), Zellspannungen und Temperaturen bei Hyundai/Kia, Renault Zoe, Nissan Leaf. Mittel je Paket
-- [ ] Danach VAG-Diesel: Rußbeladung und Regeneration des Partikelfilters, Ölstand. Mittel
-- [ ] Seite für E-Autos und Hybride: Akkugesundheit, Zellspreizung, Laden. Mittel
+- [x] Eigene Messwerte importieren im verbreiteten Torque-CSV-Format, damit jeder seinem Auto Werte hinzufügen kann. Mittel
+- [x] Mitgelieferte Pakete nur mit belegter Quelle, zuerst E-Autos: Akkugesundheit (SOH), Zellspannungen und Temperaturen bei Hyundai/Kia, Renault Zoe, Nissan Leaf. Mittel je Paket
+- [ ] Danach VAG-Diesel: Rußbeladung und Regeneration des Partikelfilters, Ölstand. Offen, weil sich keine verlässliche Quelle fand und die Kennungen je Motor verschieden sind. Mittel
+- [x] Seite für E-Autos und Hybride: Akkugesundheit, Zellspreizung, Laden. Mittel
+- Stand: Pakete für Hyundai Kona und Kia e-Niro (33 Werte), Hyundai Ioniq 28 kWh (29), Renault Zoe Phase 1 (24) und Nissan Leaf ZE0/AZE0 (7), jeder Wert mit Quelle (OVMS, CanZE, OBDb, JejuSoul, EVNotify), geprüft gegen aufgezeichnete Antworten echter Autos
 
 ## Phase 8: Adapter und Anschluss
 
 - [ ] Bluetooth Low Energy (vLinker, OBDLink CX, Veepeak BLE) über Qt Bluetooth. Braucht das Modul qtconnectivity, auch in der CI. Groß
-- [ ] STN-Adapter wie OBDLink schneller fahren (größere Puffer, STPX), adaptive Taktung (ATAT2) für alle. Klein
-- [ ] Sitzung aufzeichnen und wieder abspielen, als Transport wie das Demo-Auto. Hilft bei Fehlersuche und wenn jemand eine Aufnahme schickt. Mittel
+- [x] Adaptive Taktung ATAT2 mit Rückfall, wahlweise nur auf STN-Adaptern; STN wird erkannt. STPX und STBR bewusst weggelassen, weil nicht nachprüfbar oder dauerhaft speichernd. Klein
+- [x] Sitzung aufzeichnen und wieder abspielen, als Transport wie das Demo-Auto. Hilft bei Fehlersuche und wenn jemand eine Aufnahme schickt. Mittel
 
 ## Phase 9: Die Garage wird zur Fahrzeugakte
 

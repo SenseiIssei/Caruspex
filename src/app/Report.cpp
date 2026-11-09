@@ -224,7 +224,6 @@ QString saveReportPdf(QWidget* parent, const VehicleState& state, const ReportEx
 }
 
 QString garageHtml(const GarageCar& car) {
-    auto T = [](const char* text) { return QCoreApplication::translate("caruspex::Report", text); };
     const QLocale locale;
     QString h = QStringLiteral(
         "<html><head><style>"
@@ -236,7 +235,7 @@ QString garageHtml(const GarageCar& car) {
         "td { padding: 5px 6px; border-bottom: 1px solid #e2e5ee; vertical-align: top; }"
         "</style></head><body>");
     h += QStringLiteral("<div style='color:#5a54f0; font-weight:bold; letter-spacing:2px; font-size:9pt'>CARUSPEX</div>");
-    h += QStringLiteral("<h1>%1</h1>").arg(esc(T("Fahrzeugakte")));
+    h += QStringLiteral("<h1>%1</h1>").arg(esc(QCoreApplication::translate("caruspex::Report", "Fahrzeugakte")));
     h += QStringLiteral("<p><b>%1</b><br/><span class='muted'>%2<br/>VIN %3</span></p>")
              .arg(esc(car.name), esc(car.description), esc(car.vin));
 
@@ -246,7 +245,7 @@ QString garageHtml(const GarageCar& car) {
     const QVector<ServiceStatus> services = Garage::serviceStatus(car, km, QDate::currentDate());
     if (!services.isEmpty()) {
         h += QStringLiteral("<h2>%1</h2><table><tr><th>%2</th><th>%3</th><th>%4</th></tr>")
-                 .arg(esc(T("Wartung")), esc(T("Was")), esc(T("Zuletzt")), esc(T("Stand")));
+                 .arg(esc(QCoreApplication::translate("caruspex::Report", "Wartung")), esc(QCoreApplication::translate("caruspex::Report", "Was")), esc(QCoreApplication::translate("caruspex::Report", "Zuletzt")), esc(QCoreApplication::translate("caruspex::Report", "Stand")));
         for (const ServiceStatus& st : services) {
             QStringList last;
             if (st.service->lastDate.isValid()) last << locale.toString(st.service->lastDate, QLocale::ShortFormat);
@@ -266,15 +265,15 @@ QString garageHtml(const GarageCar& car) {
                                         locale.toString(j.laterKm, 'f', 0),
                                         locale.toString(j.later.date(), QLocale::ShortFormat));
         h += QStringLiteral("<p style='color:#c93636'><b>%1</b> %2</p>")
-                 .arg(esc(T("Kilometerstand gesunken:")), esc(detail));
+                 .arg(esc(QCoreApplication::translate("caruspex::Report", "Kilometerstand gesunken:")), esc(detail));
     }
 
-    h += QStringLiteral("<h2>%1</h2>").arg(esc(T("Prüfungen")));
+    h += QStringLiteral("<h2>%1</h2>").arg(esc(QCoreApplication::translate("caruspex::Report", "Prüfungen")));
     if (car.checks.isEmpty()) {
-        h += QStringLiteral("<p class='muted'>%1</p>").arg(esc(T("Noch keine.")));
+        h += QStringLiteral("<p class='muted'>%1</p>").arg(esc(QCoreApplication::translate("caruspex::Report", "Noch keine.")));
     } else {
         h += QStringLiteral("<table><tr><th>%1</th><th>%2</th><th>%3</th><th>%4</th></tr>")
-                 .arg(esc(T("Datum")), esc(T("Kilometer")), esc(T("Punkte")), esc(T("Fehler")));
+                 .arg(esc(QCoreApplication::translate("caruspex::Report", "Datum")), esc(QCoreApplication::translate("caruspex::Report", "Kilometer")), esc(QCoreApplication::translate("caruspex::Report", "Punkte")), esc(QCoreApplication::translate("caruspex::Report", "Fehler")));
         for (int i = car.checks.size() - 1; i >= 0; --i) {
             const GarageCheck& c = car.checks[i];
             QStringList codes;
@@ -286,7 +285,7 @@ QString garageHtml(const GarageCar& car) {
                      .arg(esc(locale.toString(c.when, QLocale::ShortFormat)),
                           c.odometerKm >= 0 ? locale.toString(c.odometerKm, 'f', 0) : QStringLiteral("-"),
                           c.score >= 0 ? QString::number(c.score) : QStringLiteral("-"),
-                          codes.isEmpty() ? esc(T("keine")) : codes.join(QStringLiteral("<br/>")));
+                          codes.isEmpty() ? esc(QCoreApplication::translate("caruspex::Report", "keine")) : codes.join(QStringLiteral("<br/>")));
         }
         h += QStringLiteral("</table>");
     }
@@ -300,29 +299,29 @@ QString garageHtml(const GarageCar& car) {
             fuel += t.fuelLitres;
             cost += t.cost;
         }
-        const QString summary = T("%1 Fahrten, %2 km, im Schnitt %3 l/100 km, %4 €")
+        const QString summary = QCoreApplication::translate("caruspex::Report", "%1 Fahrten, %2 km, im Schnitt %3 l/100 km, %4 €")
                                     .arg(car.trips.size())
                                     .arg(locale.toString(distance, 'f', 0))
                                     .arg(distance > 1 ? locale.toString(fuel / distance * 100, 'f', 1)
                                                       : QStringLiteral("-"))
                                     .arg(locale.toString(cost, 'f', 2));
-        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(T("Fahrten")), esc(summary));
+        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(QCoreApplication::translate("caruspex::Report", "Fahrten")), esc(summary));
     }
     if (!car.fuel.isEmpty()) {
         const double logged = Garage::fuelLogConsumption(car);
-        const QString summary = logged > 0 ? T("%1 Tankfüllungen, Verbrauch %2 l/100 km")
+        const QString summary = logged > 0 ? QCoreApplication::translate("caruspex::Report", "%1 Tankfüllungen, Verbrauch %2 l/100 km")
                                                  .arg(car.fuel.size())
                                                  .arg(locale.toString(logged, 'f', 1))
-                                           : T("%1 Tankfüllungen").arg(car.fuel.size());
-        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(T("Tankbuch")), esc(summary));
+                                           : QCoreApplication::translate("caruspex::Report", "%1 Tankfüllungen").arg(car.fuel.size());
+        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(QCoreApplication::translate("caruspex::Report", "Tankbuch")), esc(summary));
     }
     if (!car.note.isEmpty()) {
         QString note = esc(car.note);
         note.replace(QLatin1Char('\n'), QStringLiteral("<br/>"));
-        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(T("Notiz")), note);
+        h += QStringLiteral("<h2>%1</h2><p>%2</p>").arg(esc(QCoreApplication::translate("caruspex::Report", "Notiz")), note);
     }
     h += QStringLiteral("<p class='muted' style='margin-top:22px; font-size:8.5pt'>%1</p>")
-             .arg(esc(T("Erstellt mit Caruspex aus der Garage auf diesem Rechner.")));
+             .arg(esc(QCoreApplication::translate("caruspex::Report", "Erstellt mit Caruspex aus der Garage auf diesem Rechner.")));
     h += QStringLiteral("</body></html>");
     return h;
 }

@@ -95,6 +95,11 @@ void removeGlow(QWidget* widget);
 // Makes the halo breathe, 2.4 seconds per cycle.
 void pulseGlow(QWidget* widget, const QColor& colour);
 
+// Sets a font on a widget in a way the application style sheet does not
+// override (it sets the base font for every widget, which beats setFont()).
+enum class Family { Sans, Display, Mono };
+void styleFont(QWidget* widget, Family family, int px, int weight = 400);
+
 // Re-applies the style sheet after an objectName change.
 void repolish(QWidget* widget);
 

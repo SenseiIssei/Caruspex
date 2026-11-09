@@ -68,6 +68,13 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Alle Steuergeräte durchsuchen, auch ABS, Airbag, Kombi und Komfort, mit Prüfbericht
 - Anpassungskanäle lesen und Stellglieddiagnose, bewusst nur lesend
 
+**Herstellerwerte und eigene Werte**
+- Akku von E-Autos: Akkugesundheit, Ladestand, Zellspannungen mit Spreizung, Temperaturen, für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf; jeder Wert mit belegter Quelle
+- Eigene Messwerte im verbreiteten Torque-CSV-Format laden, mit vollständigem Rechner für die Torque-Gleichungen
+
+**Aufzeichnen und Abspielen**
+- Eine Sitzung mit dem Auto in eine Datei aufzeichnen und später ohne Auto abspielen, hilfreich bei der Fehlersuche
+
 **Ohne Auto und ohne Adapter**
 - Eingebautes Demo-Auto: es fährt, wärmt sich auf, hat ein paar Fehler gespeichert und spricht wie ein echter ELM327 über CAN
 - Fehlercode-Lexikon mit allen Codes, filterbar nach Marke

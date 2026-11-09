@@ -62,7 +62,7 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent) {
     left->addWidget(makeLabel(tr("TEMPO"), "Eyebrow"));
     auto* speedRow = new QHBoxLayout;
     speed_ = new QLabel(QStringLiteral("--"));
-    speed_->setFont(display(84, 800));
+    styleFont(speed_, Family::Display, 84, 800);
     auto* unit = new QLabel(QStringLiteral("km/h"));
     unit->setStyleSheet(QStringLiteral("color: %1; font-size: 20px; font-weight: 600;")
                             .arg(color::textMuted.name()));
