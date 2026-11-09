@@ -37,6 +37,7 @@ enum class PidCategory {
     Vehicle,       // road speed, gear, odometer, run time
     HybridEv,      // traction battery
     Diagnostics,   // counters since clearing, OBD standard, scaling limits
+    Custom,        // manufacturer and user defined values (core/CustomPids.h)
 };
 
 // Display name of a category in the active language.

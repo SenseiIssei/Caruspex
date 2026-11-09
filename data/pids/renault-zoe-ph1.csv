@@ -1,0 +1,60 @@
+# Renault Zoe phase 1 (22 kWh and ZE40 with 41 kWh), model years 2013 to
+# 2019.
+#
+# Two control units are asked. The vehicle controller (EVC) listens on 7E4
+# and answers on 7EC, service 22. The battery controller (LBC) listens on
+# 79B and answers on 7BB, the alliance scheme (request plus 0x20), with
+# service 21. A is the first byte after the echo: 62 xx xx for the EVC,
+# 61 xx for the LBC.
+# The Zoe phase 2 (2019 on) uses 29-bit addresses and other identifiers and
+# is not covered here.
+#
+# Sources:
+#   CanZE      github.com/fesch/CanZE, app/src/main/assets/ZOE/_Fields.csv,
+#              _FieldsAlt.csv (the definitions CanZE uses with an ELM327)
+#              and LBC_Fields.csv (the LBC diagnostic definitions). CanZE
+#              counts start bits from the service byte, so bit 16 of an
+#              LBC answer and bit 24 of an EVC answer are byte A here.
+#   OBDb       github.com/OBDb/Renault-ZOE, signalsets/v3/default.json
+#
+#@ id: renault-zoe-ph1
+#@ title_de: Renault Zoe Phase 1 (2013 bis 2019)
+#@ title_en: Renault Zoe phase 1 (2013 to 2019)
+#@ category: hybrid
+Name,ShortName,ModeAndPID,Equation,Min Value,Max Value,Units,Header,Response,Name DE,ShortName DE
+# Source: CanZE _Fields.csv and _FieldsAlt.csv (7ec 222002 bits 24-39 x 0.02), OBDb ZOE_SOC_EVC (div 50)
+State of charge (EVC),SOC,222002,((A<8)+B)/50,0,100,%,7E4,7EC,Ladestand (EVC),SOC
+# Source: CanZE _Fields.csv, _FieldsAlt.csv and LBC_Fields.csv (7bb 2103 bits 192-207 x 0.01)
+State of charge (battery controller),SOC LBC,2103,((W<8)+X)/100,0,100,%,79B,7BB,Ladestand (Batteriesteuerung),SOC LBC
+# Source: CanZE _Fields.csv (7ec 223206 bits 24-31, State Of Health HV battery)
+State of health (EVC),SOH,223206,A,0,100,%,7E4,7EC,Akkugesundheit (EVC),SOH
+# Source: CanZE _FieldsAlt.csv (Battery Health, 7bb 2161 bits 72-79 x 0.5) and LBC_Fields.csv (21_61 #10 Battery State of Health average)
+State of health (battery controller),SOH LBC,2161,H/2,0,100,%,79B,7BB,Akkugesundheit (Batteriesteuerung),SOH LBC
+# Source: CanZE _Fields.csv (7ec 223203 bits 24-39 x 0.5), OBDb ZOE_HV_V_PEB (div 2, verified 2017)
+Battery voltage,Batt V,223203,((A<8)+B)/2,250,420,V,7E4,7EC,Batteriespannung,Spannung
+# Source: CanZE _Fields.csv (7ec 223204 bits 24-39 x 0.25 offset 32768), OBDb ZOE_HV_A_PEB (div 4 add -8192, verified 2017)
+Battery current,Batt A,223204,((A<8)+B-32768)/4,-300,300,A,7E4,7EC,Batteriestrom,Strom
+# Source: CanZE _Fields.csv (Maximum battery input power) and LBC_Fields.csv (21_01 #43 Acceptable Max Charge Power), 7bb 2101 bits 336-351 x 0.01
+Maximum charge power,Max charge,2101,((AO<8)+AP)/100,0,50,kW,79B,7BB,Höchste Ladeleistung,Max. Laden
+# Source: CanZE LBC_Fields.csv (21_03 #13 Maximum_Cell_voltage and #15 Minimum_Cell_voltage, bits 96-127 x 0.01)
+Maximum cell voltage,Cell V max,2103,((K<8)+L)/100,2.5,4.3,V,79B,7BB,Höchste Zellspannung,Zelle max
+Minimum cell voltage,Cell V min,2103,((M<8)+N)/100,2.5,4.3,V,79B,7BB,Niedrigste Zellspannung,Zelle min
+# Source: CanZE _FieldsAlt.csv (HV Battery Temp, 7ec 222001 bits 24-31 offset 40)
+Battery temperature (EVC),Batt T,222001,A-40,-20,60,°C,7E4,7EC,Akkutemperatur (EVC),Akku Temp.
+# Source: CanZE _Fields.csv (21_04 #76 Average_Battery_Temperature, 7bb 2104 bits 600-607 offset 40)
+Battery temperature average (battery controller),Batt T avg,2104,BV-40,-20,60,°C,79B,7BB,Akkutemperatur Mittel (Batteriesteuerung),Temp. Mittel
+# Source: CanZE _Fields.csv (Cell 1 to 12 Temperature, 7bb 2104 every 24 bits from bit 32, offset 40), OBDb ZOE_MOD_T1 to T12 (add -40)
+Battery module 1 temperature,Mod 1 T,2104,C-40,-20,60,°C,79B,7BB,Akkumodul 1 Temperatur,Modul 1
+Battery module 2 temperature,Mod 2 T,2104,F-40,-20,60,°C,79B,7BB,Akkumodul 2 Temperatur,Modul 2
+Battery module 3 temperature,Mod 3 T,2104,I-40,-20,60,°C,79B,7BB,Akkumodul 3 Temperatur,Modul 3
+Battery module 4 temperature,Mod 4 T,2104,L-40,-20,60,°C,79B,7BB,Akkumodul 4 Temperatur,Modul 4
+Battery module 5 temperature,Mod 5 T,2104,O-40,-20,60,°C,79B,7BB,Akkumodul 5 Temperatur,Modul 5
+Battery module 6 temperature,Mod 6 T,2104,R-40,-20,60,°C,79B,7BB,Akkumodul 6 Temperatur,Modul 6
+Battery module 7 temperature,Mod 7 T,2104,U-40,-20,60,°C,79B,7BB,Akkumodul 7 Temperatur,Modul 7
+Battery module 8 temperature,Mod 8 T,2104,X-40,-20,60,°C,79B,7BB,Akkumodul 8 Temperatur,Modul 8
+Battery module 9 temperature,Mod 9 T,2104,AA-40,-20,60,°C,79B,7BB,Akkumodul 9 Temperatur,Modul 9
+Battery module 10 temperature,Mod 10 T,2104,AD-40,-20,60,°C,79B,7BB,Akkumodul 10 Temperatur,Modul 10
+Battery module 11 temperature,Mod 11 T,2104,AG-40,-20,60,°C,79B,7BB,Akkumodul 11 Temperatur,Modul 11
+Battery module 12 temperature,Mod 12 T,2104,AJ-40,-20,60,°C,79B,7BB,Akkumodul 12 Temperatur,Modul 12
+# Source: CanZE _Fields.csv (7ec 222005 Battery voltage 14v, bits 24-39 x 0.01), OBDb ZOE_12V_V (div 100)
+12 V battery voltage,12V,222005,((A<8)+B)/100,10,16,V,7E4,7EC,Spannung der 12-V-Batterie,12 V
