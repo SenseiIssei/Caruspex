@@ -248,11 +248,29 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             toast::show(this, tr("Erkannt: %1").arg(car.title), toast::Kind::Success);
         }
         garage_->touch(vin, state_->displayName(), state_->description(), state_->bodyStyle());
+        QTimer::singleShot(1500, this, [this] { remindServices(true); });
         garagePage_->setCurrentVin(vin);
         recordCheck();
     });
     connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
     connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
+    connect(trip_, &TripPage::tripCompleted, this, [this](const GarageTrip& trip) {
+        if (state_->vin().isEmpty()) return;
+        garage_->addTrip(state_->vin(), trip);
+        toast::show(this, tr("Fahrt in der Garage gespeichert."), toast::Kind::Success);
+    });
+    connect(garage_, &Garage::changed, this, [this] { remindServices(false); });
+    connect(worker, &Worker::liveValue, this, [this](const LiveRow& row) {
+        if (row.pid != 0xA6) return;
+        garagePage_->setCurrentOdometer(row.value);
+        // The odometer often arrives after the faults: store it with the
+        // check of this session (it replaces the one from a minute ago).
+        const GarageCar* car = garage_->find(state_->vin());
+        if (car && !car->checks.isEmpty() && car->checks.back().odometerKm < 0 &&
+            car->checks.back().when.secsTo(QDateTime::currentDateTime()) < 15 * 60) {
+            recordCheck();
+        }
+    });
     connect(dashboard_, &DashboardPage::gaugesLiveRequested, &session_, &Session::startLiveRequested);
     connect(dashboard_, &DashboardPage::gaugesLiveStopRequested, &session_, &Session::stopLiveRequested);
     connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
@@ -490,7 +508,7 @@ QWidget* MainWindow::buildSidebar() {
     bottomNavigation_ = new QVBoxLayout;
     bottomNavigation_->setSpacing(2);
     root->addLayout(bottomNavigation_);
-    addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
+    garageButton_ = addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
     addEntry(QStringLiteral("cable"), tr("Adapter"), adapter_, bottomNavigation_);
     addEntry(QStringLiteral("settings"), tr("Einstellungen"), settingsPage_, bottomNavigation_);
 
@@ -607,6 +625,10 @@ void MainWindow::showPageByName(const QString& name) {
         health_->onProgress(tr("Starte ..."), 0);
         emit session_.healthCheckRequested(12);
     }
+    if (name.startsWith(QStringLiteral("garage:"))) {
+        navigateTo(garagePage_);
+        garagePage_->showTab(name.mid(7).toInt());
+    }
     if (name.startsWith(QStringLiteral("vehicles:"))) {
         navigateTo(vehicles_);
         vehicles_->showVin(name.mid(9));
@@ -706,6 +728,29 @@ void MainWindow::recordCheck() {
         check.texts << f.text;
     }
     garage_->addCheck(state_->vin(), check);
+}
+
+void MainWindow::remindServices(bool withToast) {
+    const QString vin = state_->vin();
+    const GarageCar* car = vin.isEmpty() ? nullptr : garage_->find(vin);
+    if (!car) {
+        garageButton_->setBadge(QString());
+        return;
+    }
+    const double km = state_->hasLive(0xA6) ? state_->liveValue(0xA6) : garage_->latestOdometer(vin);
+    int due = 0;
+    QStringList lines;
+    for (const ServiceStatus& st : Garage::serviceStatus(*car, km, QDate::currentDate())) {
+        if (st.state == ServiceStatus::State::Due || st.state == ServiceStatus::State::Soon) {
+            ++due;
+            lines << QStringLiteral("%1: %2").arg(st.service->title, st.text);
+        }
+    }
+    garageButton_->setBadge(due > 0 ? QString::number(due) : QString(), color::warn);
+    if (withToast && due > 0) {
+        toast::show(this, tr("Wartung: %1").arg(lines.join(QStringLiteral(", "))),
+                    toast::Kind::Warning, 8000);
+    }
 }
 
 void MainWindow::showReport() {

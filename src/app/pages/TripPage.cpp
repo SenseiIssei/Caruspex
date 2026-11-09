@@ -175,7 +175,27 @@ void TripPage::rebuildComputer() {
     trip_ = std::make_unique<analysis::TripComputer>(config);
 }
 
+void TripPage::handOverTrip() {
+    if (!trip_) return;
+    const analysis::TripSummary s = trip_->summary();
+    // Short hops are not worth a line in the garage.
+    if (s.distanceKm < 0.3) return;
+    GarageTrip t;
+    t.start = tripStart_.isValid() ? tripStart_ : QDateTime::currentDateTime();
+    t.end = QDateTime::currentDateTime();
+    t.distanceKm = s.distanceKm;
+    t.fuelLitres = s.fuelLitres;
+    t.averageL100 = s.averageLitresPer100Km;
+    t.cost = s.cost;
+    t.co2Kg = s.co2Kg;
+    t.maxSpeedKmh = s.maxSpeedKmh;
+    t.ecoScore = s.distanceKm > 0.3 ? s.eco.total : -1;
+    emit tripCompleted(t);
+    tripStart_ = QDateTime();
+}
+
 void TripPage::setConnected(bool connected) {
+    if (!connected && connected_) handOverTrip();
     connected_ = connected;
     if (!connected && running_) {
         running_ = false;
@@ -193,6 +213,7 @@ void TripPage::onSupportedPids(const QVector<int>& pids) {
 void TripPage::toggle() {
     running_ = !running_;
     if (running_) {
+        if (!tripStart_.isValid()) tripStart_ = QDateTime::currentDateTime();
         QVector<int> pids;
         for (int pid : kTripPids) {
             if (supported_.isEmpty() || supported_.contains(pid)) pids << pid;
@@ -213,6 +234,7 @@ void TripPage::toggle() {
 }
 
 void TripPage::resetTrip() {
+    handOverTrip();
     rebuildComputer();
     fuelType_->setEnabled(true);
     displacement_->setEnabled(true);

@@ -3,11 +3,13 @@
 // the air mass, or a speed-density estimate, whichever the car offers.
 #pragma once
 
+#include <QDateTime>
 #include <QSet>
 #include <QWidget>
 
 #include <memory>
 
+#include "app/Garage.h"
 #include "app/Session.h"
 
 class QComboBox;
@@ -39,15 +41,19 @@ public slots:
 signals:
     void startRequested(const QVector<int>& pids);
     void stopRequested();
+    // A trip worth keeping has ended (reset or disconnect).
+    void tripCompleted(const caruspex::GarageTrip& trip);
 
 private:
     void toggle();
     void resetTrip();
     void refresh();
     void rebuildComputer();
+    void handOverTrip();
 
     bool connected_ = false;
     bool running_ = false;
+    QDateTime tripStart_;
     QSet<int> supported_;
     std::unique_ptr<analysis::TripComputer> trip_;
 

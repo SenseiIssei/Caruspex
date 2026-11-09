@@ -107,10 +107,11 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 
 ## Phase 9: Die Garage wird zur Fahrzeugakte
 
-- [ ] Fahrten aus dem Bordcomputer speichern, Verbrauch über Wochen und Monate, Tankbuch. Mittel
-- [ ] Wartung: Ölwechsel, HU und AU, Zahnriemen nach Kilometer oder Datum, Erinnerung beim Verbinden. Mittel
-- [ ] Kilometerstand je Prüfung vergleichen und einen Rücksprung melden, als Hinweis beim Gebrauchtwagenkauf. Klein
-- [ ] Export und Import der Garage, Bericht über alle Prüfungen eines Autos. Klein
+- [x] Fahrten aus dem Bordcomputer speichern, Verbrauch über Wochen und Monate, Tankbuch. Mittel
+- [x] Wartung: Ölwechsel, HU und AU, Zahnriemen nach Kilometer oder Datum, Erinnerung beim Verbinden. Mittel
+- [x] Kilometerstand je Prüfung vergleichen und einen Rücksprung melden, als Hinweis beim Gebrauchtwagenkauf. Klein
+- [x] Export und Import der Garage. Klein
+- [ ] Bericht über alle Prüfungen eines Autos (Verlauf als PDF). Klein
 
 ## Phase 10: Verteilen
 

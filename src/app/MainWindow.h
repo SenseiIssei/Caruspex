@@ -98,6 +98,8 @@ private:
     // Stores the current check in the garage, once VIN and faults are known.
     void recordCheck();
     void showReport();
+    // Due and nearly due service items of the connected car: badge and toast.
+    void remindServices(bool toast);
 
     Session session_;
 
@@ -139,6 +141,7 @@ private:
     VehiclesPage* vehicles_ = nullptr;
     EcuPage* ecus_ = nullptr;
     NavButton* faultsButton_ = nullptr;
+    NavButton* garageButton_ = nullptr;
     VehicleState* state_ = nullptr;
     Garage* garage_ = nullptr;
 

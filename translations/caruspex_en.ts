@@ -595,7 +595,10 @@ Protocol: %3</translation>
     </message>
     <message numerus="yes">
         <source>%n Fehler</source>
-        <translation><numerusform>%n fault</numerusform><numerusform>%n faults</numerusform></translation>
+        <translation>
+            <numerusform>%n fault</numerusform>
+            <numerusform>%n faults</numerusform>
+        </translation>
     </message>
     <message>
         <source>in Ordnung</source>
@@ -833,6 +836,77 @@ The readiness monitors are reset as well.</translation>
     </message>
 </context>
 <context>
+    <name>caruspex::Garage</name>
+    <message>
+        <source>Ölwechsel</source>
+        <translation>Oil change</translation>
+    </message>
+    <message>
+        <source>Hauptuntersuchung (HU/AU)</source>
+        <translation>Roadworthiness and emissions test</translation>
+    </message>
+    <message>
+        <source>Kilometerstand unbekannt, beim nächsten Verbinden berechnet</source>
+        <translation>Odometer unknown, worked out on the next connection</translation>
+    </message>
+    <message>
+        <source>Noch nicht eingetragen, wann es zuletzt gemacht wurde</source>
+        <translation>When it was last done is not entered yet</translation>
+    </message>
+    <message>
+        <source>noch %1 km</source>
+        <translation>%1 km left</translation>
+    </message>
+    <message>
+        <source>seit %1 km überfällig</source>
+        <translation>overdue by %1 km</translation>
+    </message>
+    <message numerus="yes">
+        <source>noch %n Tag(e)</source>
+        <translation><numerusform>%n day left</numerusform><numerusform>%n days left</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>seit %n Tag(en) überfällig</source>
+        <translation><numerusform>overdue by %n day</numerusform><numerusform>overdue by %n days</numerusform></translation>
+    </message>
+    <message>
+        <source>Inspektion</source>
+        <translation>Service inspection</translation>
+    </message>
+    <message>
+        <source>Zahnriemen</source>
+        <translation>Timing belt</translation>
+    </message>
+    <message>
+        <source>Bremsflüssigkeit</source>
+        <translation>Brake fluid</translation>
+    </message>
+    <message>
+        <source>Innenraumfilter</source>
+        <translation>Cabin filter</translation>
+    </message>
+    <message>
+        <source>Luftfilter</source>
+        <translation>Air filter</translation>
+    </message>
+    <message>
+        <source>Zündkerzen</source>
+        <translation>Spark plugs</translation>
+    </message>
+    <message>
+        <source>Kühlmittel</source>
+        <translation>Coolant</translation>
+    </message>
+    <message>
+        <source>Reifen wechseln (Sommer/Winter)</source>
+        <translation>Tyre change (summer/winter)</translation>
+    </message>
+    <message numerus="yes">
+        <source>noch etwa %n Monat(e)</source>
+        <translation><numerusform>about %n month left</numerusform><numerusform>about %n months left</numerusform></translation>
+    </message>
+</context>
+<context>
     <name>caruspex::GaragePage</name>
     <message>
         <source>Garage</source>
@@ -924,6 +998,230 @@ The readiness monitors are reset as well.</translation>
     <message>
         <source>%1 Punkte</source>
         <translation>%1 points</translation>
+    </message>
+    <message>
+        <source>Garage sichern</source>
+        <translation>Back up garage</translation>
+    </message>
+    <message>
+        <source>Sicherung laden</source>
+        <translation>Load backup</translation>
+    </message>
+    <message>
+        <source>Garage (*.json)</source>
+        <translation>Garage (*.json)</translation>
+    </message>
+    <message>
+        <source>Garage gesichert: %1</source>
+        <translation>Garage backed up: %1</translation>
+    </message>
+    <message>
+        <source>Sichern hat nicht geklappt.</source>
+        <translation>The backup did not work.</translation>
+    </message>
+    <message>
+        <source>Laden hat nicht geklappt: %1</source>
+        <translation>Loading did not work: %1</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Auto(s) übernommen, nichts wurde gelöscht.</source>
+        <translation><numerusform>%n car taken over, nothing was deleted.</numerusform><numerusform>%n cars taken over, nothing was deleted.</numerusform></translation>
+    </message>
+    <message>
+        <source>Was wann fällig ist, nach Kilometer oder Zeit, je nachdem was zuerst kommt.</source>
+        <translation>What is due when, by distance or time, whichever comes first.</translation>
+    </message>
+    <message>
+        <source>Wartung hinzufügen</source>
+        <translation>Add service item</translation>
+    </message>
+    <message>
+        <source>Wartung</source>
+        <translation>Service</translation>
+    </message>
+    <message>
+        <source>Strecke gesamt</source>
+        <translation>Total distance</translation>
+    </message>
+    <message>
+        <source>Verbrauch im Schnitt</source>
+        <translation>Average consumption</translation>
+    </message>
+    <message>
+        <source>Kosten gesamt</source>
+        <translation>Total cost</translation>
+    </message>
+    <message>
+        <source>Fahrten</source>
+        <translation>Trips</translation>
+    </message>
+    <message>
+        <source>Verbrauch laut Tankbuch</source>
+        <translation>Consumption from the fuel log</translation>
+    </message>
+    <message>
+        <source>Getankt gesamt</source>
+        <translation>Fuel bought in total</translation>
+    </message>
+    <message>
+        <source>Tankfüllung eintragen</source>
+        <translation>Add a fill-up</translation>
+    </message>
+    <message>
+        <source>Tankbuch</source>
+        <translation>Fuel log</translation>
+    </message>
+    <message>
+        <source>Kilometerstand ist gesunken</source>
+        <translation>The odometer went down</translation>
+    </message>
+    <message>
+        <source>Am %1 waren es %2 km, am %3 nur noch %4 km. Das kann ein getauschtes Kombiinstrument sein, aber auch ein zurückgedrehter Tacho. Beim Gebrauchtwagenkauf nachfragen.</source>
+        <translation>On %1 it read %2 km, on %3 only %4 km. That can be a replaced instrument cluster, but also a rolled-back odometer. Ask about it when buying a used car.</translation>
+    </message>
+    <message>
+        <source>alle %1 km</source>
+        <translation>every %1 km</translation>
+    </message>
+    <message numerus="yes">
+        <source>alle %n Monat(e)</source>
+        <translation><numerusform>every month</numerusform><numerusform>every %n months</numerusform></translation>
+    </message>
+    <message>
+        <source> oder </source>
+        <translation> or </translation>
+    </message>
+    <message>
+        <source>Zuletzt: %1</source>
+        <translation>Last done: %1</translation>
+    </message>
+    <message>
+        <source>Erledigt</source>
+        <translation>Done</translation>
+    </message>
+    <message>
+        <source>%1 erledigt</source>
+        <translation>%1 done</translation>
+    </message>
+    <message>
+        <source>Datum</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <source>Kilometerstand</source>
+        <translation>Odometer</translation>
+    </message>
+    <message>
+        <source>Noch keine Wartung eingetragen</source>
+        <translation>No service items yet</translation>
+    </message>
+    <message>
+        <source>Ölwechsel, Inspektion, HU und mehr: einmal eintragen, Caruspex erinnert beim Verbinden.</source>
+        <translation>Oil change, inspection, roadworthiness test and more: enter them once and Caruspex reminds you when you connect.</translation>
+    </message>
+    <message>
+        <source>%1 km, %2 l/100 km</source>
+        <translation>%1 km, %2 l/100 km</translation>
+    </message>
+    <message>
+        <source>, %1 €</source>
+        <translation>, %1 €</translation>
+    </message>
+    <message>
+        <source>, höchstens %1 km/h</source>
+        <translation>, top speed %1 km/h</translation>
+    </message>
+    <message>
+        <source>Fahrstil %1</source>
+        <translation>Driving style %1</translation>
+    </message>
+    <message>
+        <source>Noch keine Fahrt gespeichert</source>
+        <translation>No trip saved yet</translation>
+    </message>
+    <message>
+        <source>Der Bordcomputer legt hier jede Fahrt ab, sobald sie zurückgesetzt oder die Verbindung getrennt wird.</source>
+        <translation>The trip computer files every trip here as soon as it is reset or the connection ends.</translation>
+    </message>
+    <message>
+        <source>%1 l zu %2 €/l</source>
+        <translation>%1 l at %2 €/l</translation>
+    </message>
+    <message>
+        <source>, bei %1 km</source>
+        <translation>, at %1 km</translation>
+    </message>
+    <message>
+        <source>, nicht voll getankt</source>
+        <translation>, not filled up</translation>
+    </message>
+    <message>
+        <source>Noch nichts eingetragen</source>
+        <translation>Nothing entered yet</translation>
+    </message>
+    <message>
+        <source>Mit zwei vollen Tankfüllungen samt Kilometerstand rechnet Caruspex den echten Verbrauch aus.</source>
+        <translation>With two full fill-ups and their odometer readings, Caruspex works out the real consumption.</translation>
+    </message>
+    <message>
+        <source>braucht zwei volle Tankfüllungen</source>
+        <translation>needs two full fill-ups</translation>
+    </message>
+    <message>
+        <source>Eigener Eintrag</source>
+        <translation>Custom item</translation>
+    </message>
+    <message>
+        <source>nicht nach km</source>
+        <translation>not by distance</translation>
+    </message>
+    <message>
+        <source> Monate</source>
+        <translation> months</translation>
+    </message>
+    <message>
+        <source>nicht nach Zeit</source>
+        <translation>not by time</translation>
+    </message>
+    <message>
+        <source>Zuletzt erledigt am</source>
+        <translation>Last done on</translation>
+    </message>
+    <message>
+        <source>unbekannt</source>
+        <translation>unknown</translation>
+    </message>
+    <message>
+        <source>Art</source>
+        <translation>Kind</translation>
+    </message>
+    <message>
+        <source>Bezeichnung</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Alle</source>
+        <translation>Every</translation>
+    </message>
+    <message>
+        <source>oder alle</source>
+        <translation>or every</translation>
+    </message>
+    <message>
+        <source>bei Kilometerstand</source>
+        <translation>at odometer</translation>
+    </message>
+    <message>
+        <source>voll getankt</source>
+        <translation>filled up</translation>
+    </message>
+    <message>
+        <source>Menge</source>
+        <translation>Amount</translation>
+    </message>
+    <message>
+        <source>Preis</source>
+        <translation>Price</translation>
     </message>
 </context>
 <context>
@@ -1590,6 +1888,14 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>Steuergeräte über KKL</source>
         <translation>Control units via KKL</translation>
+    </message>
+    <message>
+        <source>Fahrt in der Garage gespeichert.</source>
+        <translation>Trip saved in the garage.</translation>
+    </message>
+    <message>
+        <source>Wartung: %1</source>
+        <translation>Service: %1</translation>
     </message>
 </context>
 <context>
