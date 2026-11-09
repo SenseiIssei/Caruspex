@@ -118,7 +118,9 @@ TEST_CASE("The demo adapter talks like an ELM327", "[demo]") {
     REQUIRE(ask("ATD0") == "OK\r\r>");
     REQUIRE(ask("ATSH7E1") == "OK\r\r>");
     REQUIRE(ask("0902") == "NO DATA\r\r>");   // the gearbox has no VIN
-    REQUIRE(ask("22F190").rfind("7E9037F2211", 0) == 0);
+    // The gearbox speaks UDS 22 but keeps no VIN in F190: out of range.
+    REQUIRE(ask("22F190").rfind("7E9037F2231", 0) == 0);
+    REQUIRE(ask("2101").rfind("7E9037F2111", 0) == 0);
     REQUIRE(ask("ATSH7DF") == "OK\r\r>");
 
     // A wrong fixed protocol fails like on a real car.

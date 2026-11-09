@@ -179,7 +179,7 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     clearLog_ = new QPlainTextEdit;
     clearLog_->setReadOnly(true);
     clearLog_->setMaximumHeight(110);
-    clearLog_->setFont(mono(12));
+    styleFont(clearLog_, Family::Mono, 12);
     clearLog_->setVisible(false);
     root->addWidget(clearLog_);
 
@@ -211,7 +211,7 @@ FaultsPage::FaultsPage(QWidget* parent) : QWidget(parent) {
     auto* head = new QHBoxLayout;
     head->setSpacing(12);
     code_ = new QLabel;
-    code_->setFont(mono(26, 700));
+    
     severity_ = new QLabel;
     head->addWidget(code_);
     head->addWidget(severity_, 0, Qt::AlignVCenter);

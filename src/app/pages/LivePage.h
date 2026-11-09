@@ -36,6 +36,8 @@ public:
     explicit LivePage(QWidget* parent = nullptr);
 
 public slots:
+    // Values from an imported Torque CSV, shown in their own section.
+    void onCustomImported(const QVector<caruspex::CustomRow>& rows, const QStringList& errors);
     void onSupportedPids(const QVector<int>& pids);
     void onLiveValue(const caruspex::LiveRow& row);
     void setConnected(bool connected);
@@ -44,12 +46,17 @@ public slots:
 
 signals:
     void startRequested(const QVector<int>& pids);
+    // Manufacturer and user values chosen in the list (CustomPid keys).
+    void customStartRequested(const QVector<int>& keys);
+    void importRequested(const QString& path);
     void stopRequested();
 
 private:
     double windowSeconds_ = 90.0;
     void buildPidList();
     QVector<int> selectedPids() const;
+    QVector<int> selectedCustom() const;
+    void addSection(const QString& title);
     void toggleRun();
     void exportCsv();
     void resetChart();

@@ -8,7 +8,12 @@
 #include <cmath>
 
 #include "core/AdapterProbe.h"
+#include "core/Uds.h"
 #include "core/DemoTransport.h"
+#include "core/Recording.h"
+#include "data/PidPacks.h"
+
+#include <QFile>
 #include "core/analysis/DriveCycleGuide.h"
 #include "core/analysis/HealthCheck.h"
 
@@ -161,6 +166,230 @@ void Worker::openDemo(const QString& protocolOrder) {
     if (ok) refreshStatusAndFaults();
 }
 
+namespace {
+
+UdsEcuRow toUdsRow(const UdsEcu& ecu) {
+    UdsEcuRow row;
+    row.request = ecu.definition.request;
+    row.response = ecu.definition.response;
+    row.extended29 = ecu.definition.extended29;
+    row.kind = static_cast<int>(ecu.definition.kind);
+    row.name = QString::fromStdString(ecu.definition.name);
+    row.present = ecu.present;
+    row.dtcsRead = ecu.dtcsRead;
+    row.partNumber = QString::fromStdString(ecu.info.partNumber);
+    row.softwareVersion = QString::fromStdString(ecu.info.softwareVersion);
+    row.hardwareVersion = QString::fromStdString(ecu.info.hardwareVersion);
+    row.systemName = QString::fromStdString(ecu.info.systemName);
+    row.serial = QString::fromStdString(ecu.info.serial);
+    row.note = QString::fromStdString(ecu.note);
+    for (const UdsDtc& d : ecu.dtcs) {
+        UdsDtcRow dtc;
+        dtc.code = QString::fromStdString(d.code);
+        dtc.failureText = QString::fromStdString(d.failureText);
+        dtc.text = QString::fromStdString(d.text);
+        dtc.testFailed = d.testFailed;
+        dtc.pending = d.pending;
+        dtc.confirmed = d.confirmed;
+        dtc.warningLamp = d.warningLamp;
+        row.dtcs.push_back(dtc);
+    }
+    return row;
+}
+
+}  // namespace
+
+void Worker::scanUds(const QString& family) {
+    if (!obd_) {
+        emit udsScanFinished(0, 0, false, tr("Erst verbinden."));
+        return;
+    }
+    if (!elm_.isCan()) {
+        emit udsScanFinished(0, 0, false,
+                             tr("Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, "
+                                "bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel."));
+        return;
+    }
+    stopLive();
+    stopVoltagePoll();
+    cancelScan_ = false;
+    emit busy(true);
+
+    std::vector<EcuDefinition> list = family.isEmpty()
+                                          ? genericEcuSweep()
+                                          : ecuDefinitions(family.toStdString());
+    const bool generic = family.isEmpty() || list.empty();
+    if (list.empty()) list = genericEcuSweep();
+    const int total = static_cast<int>(list.size());
+    emit udsScanStarted(total, generic);
+
+    // One unit at a time, so every answer reaches the page right away.
+    int present = 0;
+    int withFaults = 0;
+    int index = 0;
+    for (const EcuDefinition& def : list) {
+        if (cancelScan_) break;
+        emit udsScanProgress(QString::fromStdString(def.name), index++, total);
+        const std::vector<UdsEcu> result = scanEcus(elm_, {def}, nullptr, [this] { return cancelScan_.load(); });
+        if (result.empty() || !result.front().present) continue;
+        ++present;
+        if (!result.front().dtcs.empty()) ++withFaults;
+        emit udsEcuResult(toUdsRow(result.front()));
+    }
+    emit udsScanFinished(present, withFaults, cancelScan_.load(), QString());
+    emit busy(false);
+}
+
+void Worker::clearUdsEcu(quint32 request, quint32 response, bool extended29, const QString& name) {
+    if (!obd_) return;
+    stopLive();
+    emit busy(true);
+    EcuDefinition def;
+    def.request = request;
+    def.response = response;
+    def.extended29 = extended29;
+    def.name = name.toStdString();
+    std::string error;
+    bool ok = false;
+    {
+        Uds uds(elm_);
+        if (uds.select(def, error)) ok = uds.clearDtcs(error);
+    }
+    emit udsClearResult(name, ok,
+                        ok ? tr("Fehlerspeicher von %1 gelöscht.").arg(name)
+                           : tr("Löschen bei %1 hat nicht geklappt: %2")
+                                 .arg(name, QString::fromStdString(error)));
+    // Read that unit again so the page shows what is left.
+    const std::vector<UdsEcu> again = scanEcus(elm_, {def}, nullptr, [] { return false; });
+    if (!again.empty() && again.front().present) {
+        UdsEcuRow row = toUdsRow(again.front());
+        row.name = name;
+        emit udsEcuResult(row);
+    }
+    emit busy(false);
+}
+
+void Worker::openReplay(const QString& path, bool realTime, const QString& protocolOrder) {
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    auto replay = std::make_unique<ReplayTransport>(path.toStdString(),
+                                                    realTime ? ReplayPacing::RealTime : ReplayPacing::Fast);
+    if (!replay->isOpen()) {
+        emit busy(false);
+        emit failed(tr("Aufnahme lässt sich nicht öffnen: %1").arg(QString::fromStdString(replay->error())));
+        return;
+    }
+    emit logLine(QString::fromStdString(recordingSummary(replay->info())));
+    const QString order = QString::fromStdString(replay->protocolOrder(protocolOrder.toStdString()));
+    const bool ok = finishConnect(std::move(replay), order, true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::startRecording(const QString& path) {
+    if (!elm_.connected()) {
+        emit recordingState(false, path, 0, tr("Erst verbinden, dann aufzeichnen."));
+        return;
+    }
+    std::string error;
+    if (!caruspex::startRecording(elm_, path.toStdString(), error)) {
+        emit recordingState(false, path, 0, QString::fromStdString(error));
+        return;
+    }
+    emit recordingState(true, path, 0, QString());
+}
+
+void Worker::stopRecording() {
+    RecordingTransport* active = activeRecording(elm_);
+    const int exchanges = active ? active->exchanges() : 0;
+    const QString path = active ? QString::fromStdString(active->path()) : QString();
+    caruspex::stopRecording(elm_);
+    emit recordingState(false, path, exchanges, QString());
+}
+
+const CustomPid* Worker::findCustom(int key) const {
+    for (const CustomPid& p : builtInPacks()) {
+        if (p.key == key) return &p;
+    }
+    for (const CustomPid& p : userPids_) {
+        if (p.key == key) return &p;
+    }
+    return nullptr;
+}
+
+int Worker::readCustomNow(const QVector<int>& keys, int* failed, QString* firstError) {
+    std::vector<CustomPid> list;
+    for (int key : keys) {
+        if (const CustomPid* p = findCustom(key)) list.push_back(*p);
+    }
+    int ok = 0;
+    int bad = 0;
+    {
+        // The reader restores the normal OBD addressing when it goes out of
+        // scope, so the next OBD request works as before.
+        CustomPidReader reader(elm_);
+        for (const CustomReading& r : reader.readAll(list)) {
+            if (r.ok) {
+                ++ok;
+                emit liveValue(toRow(r.value));
+            } else {
+                ++bad;
+                if (firstError && firstError->isEmpty()) *firstError = QString::fromStdString(r.error);
+            }
+        }
+    }
+    if (failed) *failed = bad;
+    return ok;
+}
+
+void Worker::readCustom(const QVector<int>& keys) {
+    if (!obd_) {
+        emit customRead(0, keys.size(), tr("Erst verbinden."));
+        return;
+    }
+    emit busy(true);
+    int failed = 0;
+    QString error;
+    const int ok = readCustomNow(keys, &failed, &error);
+    emit customRead(ok, failed, error);
+    emit busy(false);
+}
+
+void Worker::startCustomPoll(const QVector<int>& keys) {
+    if (!obd_) return;
+    customPollKeys_ = keys;
+    if (!pollTimer_) {
+        pollTimer_ = new QTimer(this);
+        pollTimer_->setInterval(settings_.pollIntervalMs);
+        QObject::connect(pollTimer_, &QTimer::timeout, this, &Worker::pollTick);
+    }
+    if (!customPollKeys_.isEmpty() && !pollTimer_->isActive()) pollTimer_->start();
+}
+
+void Worker::importCustomCsv(const QString& path) {
+    QFile file(path);
+    QStringList errors;
+    QVector<CustomRow> rows;
+    if (!file.open(QIODevice::ReadOnly)) {
+        errors << tr("Datei lässt sich nicht öffnen: %1").arg(file.errorString());
+        emit customImported(rows, errors);
+        return;
+    }
+    std::vector<std::string> problems;
+    // New imports get keys after the ones already loaded.
+    const int base = kUserKeyBase + static_cast<int>(userPids_.size());
+    std::vector<CustomPid> parsed = parseTorqueCsv(file.readAll().toStdString(), problems, base);
+    for (const std::string& p : problems) errors << QString::fromStdString(p);
+    for (CustomPid& p : parsed) {
+        p.pack.clear();
+        userPids_.push_back(p);
+        rows.push_back({p.key, QString::fromStdString(p.name), QString::fromStdString(p.shortName),
+                        QString::fromStdString(p.unit), QString(), QString::fromStdString(p.source),
+                        QString::fromStdString(p.request), QString::fromStdString(p.header)});
+    }
+    emit customImported(rows, errors);
+}
+
 void Worker::probeAdapter() {
     if (!elm_.connected()) {
         emit failed(tr("Für den Adaptertest erst verbinden."));
@@ -283,8 +512,8 @@ void Worker::readDetails() {
 }
 
 void Worker::startLive(const QVector<int>& pids) {
-    if (!obd_ || pids.isEmpty()) return;
     pollPids_ = pids;
+    if (!obd_ || pids.isEmpty()) return;
     pollIndex_ = 0;
     if (!pollTimer_) {
         pollTimer_ = new QTimer(this);
@@ -299,6 +528,7 @@ void Worker::startLive(const QVector<int>& pids) {
 }
 
 void Worker::stopLive() {
+    customPollKeys_.clear();
     if (pollTimer_ && pollTimer_->isActive()) {
         pollTimer_->stop();
         emit logLine(tr("Messung gestoppt."));
@@ -308,7 +538,17 @@ void Worker::stopLive() {
 // One value per tick. That keeps the event loop free and stop requests from
 // the UI get through immediately.
 void Worker::pollTick() {
-    if (!obd_ || pollPids_.isEmpty()) return;
+    if (!obd_) return;
+    // Every other tick belongs to the manufacturer values when some are
+    // selected. They change slowly and cost an addressing round each time.
+    if (!customPollKeys_.isEmpty()) {
+        customTurn_ = !customTurn_;
+        if (customTurn_ || pollPids_.isEmpty()) {
+            readCustomNow(customPollKeys_, nullptr, nullptr);
+            return;
+        }
+    }
+    if (pollPids_.isEmpty()) return;
     // Up to six PIDs per tick: on CAN they go out as one request, elsewhere
     // the core reads them one by one. Either way the event loop gets back
     // control after each slice, so a stop request is not delayed.
@@ -623,6 +863,9 @@ void Worker::applySettings(const AppSettings& values) {
     }
 
     elm_.setTimeoutScale(static_cast<double>(settings_.timeoutPercent) / 100.0);
+    elm_.setAdaptiveTiming(settings_.adaptiveTiming == 2   ? AdaptiveTiming::Aggressive
+                           : settings_.adaptiveTiming == 1 ? AdaptiveTiming::Auto
+                                                           : AdaptiveTiming::Standard);
     elm_.setVerbose(settings_.logRaw);
     if (kwp_) {
         kwp_->setBasicSettingSession(
@@ -890,6 +1133,9 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<HealthRow>("caruspex::HealthRow");
     qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
     qRegisterMetaType<FreezeFrameRow>("caruspex::FreezeFrameRow");
+    qRegisterMetaType<UdsEcuRow>("caruspex::UdsEcuRow");
+    qRegisterMetaType<CustomRow>("caruspex::CustomRow");
+    qRegisterMetaType<QVector<CustomRow>>("QVector<caruspex::CustomRow>");
     qRegisterMetaType<QVector<FreezeFrameRow>>("QVector<caruspex::FreezeFrameRow>");
 
     worker_ = new Worker();
@@ -899,6 +1145,12 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
+    connect(this, &Session::openReplayRequested, worker_, &Worker::openReplay);
+    connect(this, &Session::startRecordingRequested, worker_, &Worker::startRecording);
+    connect(this, &Session::customReadRequested, worker_, &Worker::readCustom);
+    connect(this, &Session::customPollRequested, worker_, &Worker::startCustomPoll);
+    connect(this, &Session::customImportRequested, worker_, &Worker::importCustomCsv);
+    connect(this, &Session::stopRecordingRequested, worker_, &Worker::stopRecording);
     connect(this, &Session::closeRequested, worker_, &Worker::closeAdapter);
     connect(this, &Session::readFaultsRequested, worker_, &Worker::readFaults);
     connect(this, &Session::clearFaultsRequested, worker_, &Worker::clearFaults);
@@ -920,6 +1172,8 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::runActuatorTest);
     connect(this, &Session::healthCheckRequested, worker_, &Worker::runHealthCheck);
     connect(this, &Session::probeAdapterRequested, worker_, &Worker::probeAdapter);
+    connect(this, &Session::udsScanRequested, worker_, &Worker::scanUds);
+    connect(this, &Session::udsClearRequested, worker_, &Worker::clearUdsEcu);
     connect(this, &Session::voltagePollRequested, worker_, &Worker::startVoltagePoll);
     connect(this, &Session::voltagePollStopRequested, worker_, &Worker::stopVoltagePoll);
     connect(this, &Session::readMonitorsRequested, worker_,

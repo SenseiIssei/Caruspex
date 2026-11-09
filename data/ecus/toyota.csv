@@ -1,0 +1,15 @@
+# Toyota and Lexus with CAN, roughly from 2005 on. Response = request + 8.
+# The body ECUs (main body, smart key, doors) sit behind 0x750 with ISO-TP
+# extended addressing, which these fields cannot express; they are left out.
+# 7E2 and 7E3 only exist on hybrids.
+# Sources: Toyota Techstream scan logs, Prius community documentation.
+family,kind,request,response,bits,name_de,name_en,note
+TOYOTA,engine,7E0,7E8,11,Motorsteuerung,Engine control,
+TOYOTA,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,
+TOYOTA,brakes,7B0,7B8,11,Bremsen und ABS,Brakes and ABS,ABS/VSC
+TOYOTA,airbag,780,788,11,Airbag,Airbag,
+TOYOTA,steering,7A1,7A9,11,Lenkhilfe (EPS),Power steering (EPS),
+TOYOTA,instruments,7C0,7C8,11,Kombiinstrument,Instrument cluster,
+TOYOTA,climate,7C4,7CC,11,Klimaanlage,Climate control,
+TOYOTA,hybrid,7E2,7EA,11,Hybridsteuerung,Hybrid control,hybrids only
+TOYOTA,battery,7E3,7EB,11,Hybridbatterie,Hybrid battery,hybrids only

@@ -11,7 +11,9 @@
 #include <QTimer>
 #include <QTranslator>
 
+#include "app/Garage.h"
 #include "app/MainWindow.h"
+#include "app/Report.h"
 #include "app/Settings.h"
 #include "app/Theme.h"
 #include "app/VehicleDiagram.h"
@@ -77,6 +79,11 @@ int main(int argc, char** argv) {
         QStringList() << QStringLiteral("demo"),
         QCoreApplication::translate("main", "Gleich mit dem eingebauten Demo-Auto verbinden"));
     parser.addOption(demoOption);
+    QCommandLineOption replayOption(
+        QStringList() << QStringLiteral("replay"),
+        QCoreApplication::translate("main", "Eine aufgezeichnete Sitzung abspielen"),
+        QStringLiteral("file.jsonl"));
+    parser.addOption(replayOption);
     QCommandLineOption pageOption(
         QStringList() << QStringLiteral("page"),
         QCoreApplication::translate("main", "Mit dieser Seite starten, z.B. faults oder live"),
@@ -105,6 +112,12 @@ int main(int argc, char** argv) {
         QStringLiteral("file.png"));
     carsOption.setFlags(QCommandLineOption::HiddenFromHelp);
     parser.addOption(carsOption);
+    QCommandLineOption aktePdf(QStringList() << QStringLiteral("garage-pdf"),
+                               QStringLiteral("Developer aid: write the garage file of the first car as PDF and quit"),
+                               QStringLiteral("file.pdf"));
+    aktePdf.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(aktePdf);
+
     QCommandLineOption themeOption(
         QStringList() << QStringLiteral("theme"),
         QCoreApplication::translate("main", "Erscheinungsbild für diesen Start: dark oder light"),
@@ -116,6 +129,12 @@ int main(int argc, char** argv) {
     caruspex::theme::setLight(caruspex::effectiveLight(startup));
     caruspex::theme::apply(app);
 
+    if (parser.isSet(aktePdf)) {
+        caruspex::Garage garage;
+        garage.load();
+        if (garage.cars().isEmpty()) return 1;
+        return caruspex::writeGaragePdf(garage.cars().front(), parser.value(aktePdf)) ? 0 : 1;
+    }
     if (parser.isSet(carsOption)) {
         // Every body style, plain and see-through, in a grid.
         const int w = 560;
@@ -150,10 +169,11 @@ int main(int argc, char** argv) {
     window.show();
     if (parser.isSet(tcpOption)) window.autoConnectTcp(parser.value(tcpOption));
     if (parser.isSet(demoOption)) window.autoConnectDemo();
+    if (parser.isSet(replayOption)) window.autoConnectReplay(parser.value(replayOption));
     if (parser.isSet(pageOption)) {
         const QString page = parser.value(pageOption);
         // Give a connection a moment, it jumps to the start page when done.
-        QTimer::singleShot(parser.isSet(tcpOption) || parser.isSet(demoOption) ? 2600 : 0, &window,
+        QTimer::singleShot(parser.isSet(tcpOption) || parser.isSet(demoOption) || parser.isSet(replayOption) ? 2600 : 0, &window,
                            [&window, page] { window.showPageByName(page); });
     }
     if (parser.isSet(shotOption)) {

@@ -1,0 +1,11 @@
+# Mazda with CAN, roughly from 2004 on (Mazda 3 and 6 onwards). Mazda shares
+# the Ford address scheme for the main modules, response = request + 8.
+# Only the modules where the shared scheme holds for Mazda are listed.
+# Sources: FORScan (which supports Mazda), Mazda owner forum scan logs.
+family,kind,request,response,bits,name_de,name_en,note
+MAZDA,engine,7E0,7E8,11,Motorsteuerung (PCM),Powertrain control (PCM),
+MAZDA,gearbox,7E1,7E9,11,Getriebesteuerung (TCM),Transmission control (TCM),
+MAZDA,brakes,760,768,11,Bremsen und ABS,Brakes and ABS,ABS/DSC
+MAZDA,airbag,737,73F,11,Airbag (RCM),Airbag (RCM),RCM
+MAZDA,steering,730,738,11,Lenkhilfe (EPS),Power steering (EPS),EPS
+MAZDA,instruments,720,728,11,Kombiinstrument,Instrument cluster,IC

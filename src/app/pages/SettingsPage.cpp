@@ -92,6 +92,11 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     timeout_->setSingleStep(25);
     timeout_->setSuffix(tr(" %"));
     form->addRow(tr("Geduld mit dem Adapter"), timeout_);
+    timing_ = new QComboBox;
+    timing_->addItem(tr("Standard (ATAT1)"), 0);
+    timing_->addItem(tr("Schneller bei OBDLink und anderen STN-Adaptern"), 1);
+    timing_->addItem(tr("Immer schneller (ATAT2)"), 2);
+    form->addRow(tr("Taktung"), timing_);
     form->addRow(makeNote(tr(
         "Streckt oder kürzt jede Wartezeit. Ein träger Klon braucht mehr, ein "
         "gutes FTDI-Kabel kommt mit weniger aus. Die Abstufung bleibt erhalten: "
@@ -242,6 +247,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
 
     const auto onSpin = [this](int) { emitChange(); };
     connect(timeout_, &QSpinBox::valueChanged, this, onSpin);
+    connect(timing_, &QComboBox::currentIndexChanged, this, onCombo);
     connect(pollInterval_, &QSpinBox::valueChanged, this, onSpin);
     connect(chartWindow_, &QSpinBox::valueChanged, this, onSpin);
     connect(clearAttempts_, &QSpinBox::valueChanged, this, onSpin);
@@ -266,6 +272,7 @@ void SettingsPage::showValues(const AppSettings& v) {
     const int orderIndex = protocolOrder_->findData(v.protocolOrder);
     protocolOrder_->setCurrentIndex(orderIndex >= 0 ? orderIndex : 0);
     timeout_->setValue(v.timeoutPercent);
+    timing_->setCurrentIndex(qBound(0, v.adaptiveTiming, 2));
     autoConnect_->setChecked(v.autoConnect);
 
     pollInterval_->setValue(v.pollIntervalMs);
@@ -299,6 +306,7 @@ AppSettings SettingsPage::values() const {
     v.baudOverride = baud_->currentData().toInt();
     v.protocolOrder = protocolOrder_->currentData().toString();
     v.timeoutPercent = timeout_->value();
+    v.adaptiveTiming = timing_->currentData().toInt();
     v.autoConnect = autoConnect_->isChecked();
 
     v.pollIntervalMs = pollInterval_->value();

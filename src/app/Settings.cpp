@@ -21,6 +21,7 @@ AppSettings loadSettings() {
     v.baudOverride = s.value(QStringLiteral("baud"), v.baudOverride).toInt();
     v.protocolOrder = s.value(QStringLiteral("protokoll"), v.protocolOrder).toString();
     v.timeoutPercent = s.value(QStringLiteral("zeitlimit"), v.timeoutPercent).toInt();
+    v.adaptiveTiming = qBound(0, s.value(QStringLiteral("taktung"), v.adaptiveTiming).toInt(), 2);
     v.lastPort = s.value(QStringLiteral("anschluss"), v.lastPort).toString();
     v.autoConnect = s.value(QStringLiteral("autoverbinden"), v.autoConnect).toBool();
     s.endGroup();
@@ -85,6 +86,7 @@ void saveSettings(const AppSettings& v) {
     s.setValue(QStringLiteral("baud"), v.baudOverride);
     s.setValue(QStringLiteral("protokoll"), v.protocolOrder);
     s.setValue(QStringLiteral("zeitlimit"), v.timeoutPercent);
+    s.setValue(QStringLiteral("taktung"), v.adaptiveTiming);
     s.setValue(QStringLiteral("anschluss"), v.lastPort);
     s.setValue(QStringLiteral("autoverbinden"), v.autoConnect);
     s.endGroup();

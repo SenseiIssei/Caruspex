@@ -87,7 +87,7 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent) {
     layout->addSpacing(4);
 
     title_ = new QLabel(QStringLiteral("Caruspex"));
-    title_->setFont(display(15, 800));
+    styleFont(title_, Family::Display, 15, 800);
     auto* version = new QLabel(QStringLiteral("v") + QApplication::applicationVersion());
     version->setStyleSheet(QStringLiteral("color: %1; font-size: 12px;").arg(color::textFaint.name()));
     layout->addWidget(title_);

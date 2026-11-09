@@ -347,6 +347,38 @@ Protokoll: %3</source>
 Link: %2
 Protocol: %3</translation>
     </message>
+    <message>
+        <source>Aufnahme</source>
+        <translation>Recording</translation>
+    </message>
+    <message>
+        <source>Aufnahme wählen (.jsonl)</source>
+        <translation>Choose a recording (.jsonl)</translation>
+    </message>
+    <message>
+        <source>Wählen</source>
+        <translation>Choose</translation>
+    </message>
+    <message>
+        <source>Im ursprünglichen Tempo abspielen</source>
+        <translation>Play back at the original pace</translation>
+    </message>
+    <message>
+        <source>Spielt eine aufgezeichnete Sitzung ab, als wäre das Auto da. Gut für die Fehlersuche, oder wenn jemand eine Aufnahme schickt.</source>
+        <translation>Plays a recorded session back as if the car were there. Good for troubleshooting, or when someone sends you a recording.</translation>
+    </message>
+    <message>
+        <source>Aufnahme wählen</source>
+        <translation>Choose a recording</translation>
+    </message>
+    <message>
+        <source>Caruspex-Aufnahme (*.jsonl);;Alle Dateien (*)</source>
+        <translation>Caruspex recording (*.jsonl);;All files (*)</translation>
+    </message>
+    <message>
+        <source>Erst eine Aufnahme wählen.</source>
+        <translation>Choose a recording first.</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -528,6 +560,299 @@ Protocol: %3</translation>
     </message>
 </context>
 <context>
+    <name>caruspex::EcuPage</name>
+    <message>
+        <source>Werkstatt</source>
+        <translation>Workshop</translation>
+    </message>
+    <message>
+        <source>Alle Steuergeräte</source>
+        <translation>All control units</translation>
+    </message>
+    <message>
+        <source>Fragt über CAN jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr. Mit einem normalen ELM327, bei den meisten Autos ab etwa 2008. Ältere VW und Audi gehen über das KKL-Kabel.</source>
+        <translation>Asks every control unit one by one over CAN: engine, gearbox, ABS, airbag, instrument cluster, climate and more. With a plain ELM327, on most cars from about 2008. Older VW and Audi go through the KKL cable.</translation>
+    </message>
+    <message>
+        <source>Alle üblichen Adressen durchsuchen (langsamer)</source>
+        <translation>Search all usual addresses (slower)</translation>
+    </message>
+    <message>
+        <source>Adressliste %1</source>
+        <translation>Address list %1</translation>
+    </message>
+    <message>
+        <source>Steuergeräte suchen</source>
+        <translation>Find control units</translation>
+    </message>
+    <message>
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher</source>
+        <translation>Fault memory</translation>
+    </message>
+    <message>
+        <source>Fehler dieses Steuergeräts löschen</source>
+        <translation>Clear this unit&apos;s faults</translation>
+    </message>
+    <message>
+        <source>Fehler löschen</source>
+        <translation>Clear faults</translation>
+    </message>
+    <message>
+        <source>Den Fehlerspeicher von %1 löschen? Ein Fehler, dessen Ursache noch besteht, kommt wieder. Bei Airbag und ABS erst die Ursache beheben.</source>
+        <translation>Clear the fault memory of %1? A fault whose cause is still there comes back. For airbag and ABS, fix the cause first.</translation>
+    </message>
+    <message>
+        <source>Noch nicht gesucht. Verbinden, dann auf Steuergeräte suchen.</source>
+        <translation>Not searched yet. Connect, then press Find control units.</translation>
+    </message>
+    <message>
+        <source>Suche läuft ...</source>
+        <translation>Searching ...</translation>
+    </message>
+    <message>
+        <source>Durchsucht %1 Adressen. Das dauert ein, zwei Minuten.</source>
+        <translation>Searching %1 addresses. This takes a minute or two.</translation>
+    </message>
+    <message>
+        <source>Fragt %1 bekannte Steuergeräte.</source>
+        <translation>Asking %1 known control units.</translation>
+    </message>
+    <message>
+        <source>Frage %1 (%2 von %3)</source>
+        <translation>Asking %1 (%2 of %3)</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Fehler</source>
+        <translation>
+            <numerusform>%n fault</numerusform>
+            <numerusform>%n faults</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>in Ordnung</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Anfrage %1, Antwort %2</source>
+        <translation>Request %1, response %2</translation>
+    </message>
+    <message>
+        <source>Bezeichnung</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Teilenummer</source>
+        <translation>Part number</translation>
+    </message>
+    <message>
+        <source>Software</source>
+        <translation>Software</translation>
+    </message>
+    <message>
+        <source>Hardware</source>
+        <translation>Hardware</translation>
+    </message>
+    <message>
+        <source>Seriennummer</source>
+        <translation>Serial number</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher nicht lesbar</source>
+        <translation>Fault memory not readable</translation>
+    </message>
+    <message>
+        <source>Das Steuergerät hat geantwortet, gibt seinen Fehlerspeicher aber nicht heraus.</source>
+        <translation>The control unit answered but does not hand out its fault memory.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert</source>
+        <translation>No fault stored</translation>
+    </message>
+    <message>
+        <source>gerade aktiv</source>
+        <translation>active right now</translation>
+    </message>
+    <message>
+        <source>gespeichert</source>
+        <translation>stored</translation>
+    </message>
+    <message>
+        <source>vorläufig</source>
+        <translation>pending</translation>
+    </message>
+    <message>
+        <source>Warnlampe an</source>
+        <translation>warning lamp on</translation>
+    </message>
+    <message>
+        <source>%1 Steuergeräte gefunden, %2 davon mit Fehlern.</source>
+        <translation>%1 control units found, %2 of them with faults.</translation>
+    </message>
+    <message>
+        <source>Abgebrochen.</source>
+        <translation>Cancelled.</translation>
+    </message>
+    <message>
+        <source>Kein Steuergerät hat geantwortet. Manche Autos lassen über die Buchse nur das Motorsteuergerät antworten, dann hilft nur die Werkstatt.</source>
+        <translation>No control unit answered. Some cars only let the engine unit answer through the socket; then only a workshop tool helps.</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::EvPage</name>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Akku von E-Auto und Hybrid</source>
+        <translation>Electric and hybrid battery</translation>
+    </message>
+    <message>
+        <source>Akkugesundheit, Ladestand, Zellen und Temperaturen direkt aus dem Batteriesteuergerät. Die Werte kommen aus belegten Herstellerlisten, die Quelle steht bei jedem Wert.</source>
+        <translation>State of health, charge, cells and temperatures straight from the battery management unit. The values come from documented manufacturer lists; each one names its source.</translation>
+    </message>
+    <message>
+        <source>Akku lesen</source>
+        <translation>Read battery</translation>
+    </message>
+    <message>
+        <source>Laufend lesen</source>
+        <translation>Read continuously</translation>
+    </message>
+    <message>
+        <source>Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf. Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.</source>
+        <translation>For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe and Nissan Leaf. Other electric cars can be added through custom values on the Live values page.</translation>
+    </message>
+    <message>
+        <source>Akkugesundheit</source>
+        <translation>Battery health</translation>
+    </message>
+    <message>
+        <source>SOH</source>
+        <translation>SOH</translation>
+    </message>
+    <message>
+        <source>LADESTAND</source>
+        <translation>STATE OF CHARGE</translation>
+    </message>
+    <message>
+        <source>Spannung</source>
+        <translation>Voltage</translation>
+    </message>
+    <message>
+        <source>Strom</source>
+        <translation>Current</translation>
+    </message>
+    <message>
+        <source>Leistung</source>
+        <translation>Power</translation>
+    </message>
+    <message>
+        <source>Zellen</source>
+        <translation>Cells</translation>
+    </message>
+    <message>
+        <source>Zellspreizung</source>
+        <translation>Cell spread</translation>
+    </message>
+    <message>
+        <source>Akkutemperatur</source>
+        <translation>Battery temperature</translation>
+    </message>
+    <message>
+        <source>12-Volt-Batterie</source>
+        <translation>12 V battery</translation>
+    </message>
+    <message>
+        <source>Alle Werte</source>
+        <translation>All values</translation>
+    </message>
+    <message>
+        <source>Wert</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <source>Messung</source>
+        <translation>Reading</translation>
+    </message>
+    <message>
+        <source>Quelle</source>
+        <translation>Source</translation>
+    </message>
+    <message>
+        <source>Lese ...</source>
+        <translation>Reading ...</translation>
+    </message>
+    <message>
+        <source>Anhalten</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Keine Antwort vom Batteriesteuergerät: %1. Passt das Paket zum Auto, und ist die Zündung an?</source>
+        <translation>No answer from the battery management unit: %1. Does the pack fit the car, and is the ignition on?</translation>
+    </message>
+    <message>
+        <source>%1 Werte gelesen, %2 ohne Antwort.</source>
+        <translation>%1 values read, %2 without an answer.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Wert(e) gelesen.</source>
+        <translation><numerusform>%n value read.</numerusform><numerusform>%n values read.</numerusform></translation>
+    </message>
+    <message>
+        <source>Wie neu</source>
+        <translation>As new</translation>
+    </message>
+    <message>
+        <source>Gut</source>
+        <translation>Good</translation>
+    </message>
+    <message>
+        <source>Gebraucht</source>
+        <translation>Used</translation>
+    </message>
+    <message>
+        <source>Deutlich gealtert</source>
+        <translation>Clearly aged</translation>
+    </message>
+    <message>
+        <source>noch nicht gelesen</source>
+        <translation>not read yet</translation>
+    </message>
+    <message>
+        <source>Anzeige %1 %, Batteriesteuergerät intern %2 %</source>
+        <translation>Display %1 %, battery unit internally %2 %</translation>
+    </message>
+    <message>
+        <source>gleichmäßig</source>
+        <translation>even</translation>
+    </message>
+    <message>
+        <source>etwas ungleich</source>
+        <translation>slightly uneven</translation>
+    </message>
+    <message>
+        <source>deutlich ungleich</source>
+        <translation>clearly uneven</translation>
+    </message>
+    <message>
+        <source>kälteste Stelle %1 °C</source>
+        <translation>coldest point %1 °C</translation>
+    </message>
+    <message>
+        <source>Der Akku hat deutlich an Kapazität verloren. Reichweite und Ladeleistung sind spürbar geringer; Garantiebedingungen prüfen, viele Hersteller garantieren 70 %.</source>
+        <translation>The battery has clearly lost capacity. Range and charging power are noticeably lower; check the warranty terms, many makers guarantee 70 %.</translation>
+    </message>
+    <message>
+        <source>Die Zellen sind ungleich geladen. Einmal langsam auf 100 % laden und einige Stunden stehen lassen hilft dem Ausgleich; bleibt es so, in die Werkstatt.</source>
+        <translation>The cells are unevenly charged. Charging slowly to 100 % once and leaving the car for a few hours helps them balance; if it stays like this, see a workshop.</translation>
+    </message>
+</context>
+<context>
     <name>caruspex::FaultsPage</name>
     <message>
         <source>Fehlerspeicher</source>
@@ -694,6 +1019,86 @@ The readiness monitors are reset as well.</translation>
     </message>
 </context>
 <context>
+    <name>caruspex::Garage</name>
+    <message>
+        <source>Ölwechsel</source>
+        <translation>Oil change</translation>
+    </message>
+    <message>
+        <source>Hauptuntersuchung (HU/AU)</source>
+        <translation>Roadworthiness and emissions test</translation>
+    </message>
+    <message>
+        <source>Kilometerstand unbekannt, beim nächsten Verbinden berechnet</source>
+        <translation>Odometer unknown, worked out on the next connection</translation>
+    </message>
+    <message>
+        <source>Noch nicht eingetragen, wann es zuletzt gemacht wurde</source>
+        <translation>When it was last done is not entered yet</translation>
+    </message>
+    <message>
+        <source>noch %1 km</source>
+        <translation>%1 km left</translation>
+    </message>
+    <message>
+        <source>seit %1 km überfällig</source>
+        <translation>overdue by %1 km</translation>
+    </message>
+    <message numerus="yes">
+        <source>noch %n Tag(e)</source>
+        <translation>
+            <numerusform>%n day left</numerusform>
+            <numerusform>%n days left</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>seit %n Tag(en) überfällig</source>
+        <translation>
+            <numerusform>overdue by %n day</numerusform>
+            <numerusform>overdue by %n days</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Inspektion</source>
+        <translation>Service inspection</translation>
+    </message>
+    <message>
+        <source>Zahnriemen</source>
+        <translation>Timing belt</translation>
+    </message>
+    <message>
+        <source>Bremsflüssigkeit</source>
+        <translation>Brake fluid</translation>
+    </message>
+    <message>
+        <source>Innenraumfilter</source>
+        <translation>Cabin filter</translation>
+    </message>
+    <message>
+        <source>Luftfilter</source>
+        <translation>Air filter</translation>
+    </message>
+    <message>
+        <source>Zündkerzen</source>
+        <translation>Spark plugs</translation>
+    </message>
+    <message>
+        <source>Kühlmittel</source>
+        <translation>Coolant</translation>
+    </message>
+    <message>
+        <source>Reifen wechseln (Sommer/Winter)</source>
+        <translation>Tyre change (summer/winter)</translation>
+    </message>
+    <message numerus="yes">
+        <source>noch etwa %n Monat(e)</source>
+        <translation>
+            <numerusform>about %n month left</numerusform>
+            <numerusform>about %n months left</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>caruspex::GaragePage</name>
     <message>
         <source>Garage</source>
@@ -785,6 +1190,248 @@ The readiness monitors are reset as well.</translation>
     <message>
         <source>%1 Punkte</source>
         <translation>%1 points</translation>
+    </message>
+    <message>
+        <source>Garage sichern</source>
+        <translation>Back up garage</translation>
+    </message>
+    <message>
+        <source>Sicherung laden</source>
+        <translation>Load backup</translation>
+    </message>
+    <message>
+        <source>Garage (*.json)</source>
+        <translation>Garage (*.json)</translation>
+    </message>
+    <message>
+        <source>Garage gesichert: %1</source>
+        <translation>Garage backed up: %1</translation>
+    </message>
+    <message>
+        <source>Sichern hat nicht geklappt.</source>
+        <translation>The backup did not work.</translation>
+    </message>
+    <message>
+        <source>Laden hat nicht geklappt: %1</source>
+        <translation>Loading did not work: %1</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Auto(s) übernommen, nichts wurde gelöscht.</source>
+        <translation>
+            <numerusform>%n car taken over, nothing was deleted.</numerusform>
+            <numerusform>%n cars taken over, nothing was deleted.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Was wann fällig ist, nach Kilometer oder Zeit, je nachdem was zuerst kommt.</source>
+        <translation>What is due when, by distance or time, whichever comes first.</translation>
+    </message>
+    <message>
+        <source>Wartung hinzufügen</source>
+        <translation>Add service item</translation>
+    </message>
+    <message>
+        <source>Wartung</source>
+        <translation>Service</translation>
+    </message>
+    <message>
+        <source>Strecke gesamt</source>
+        <translation>Total distance</translation>
+    </message>
+    <message>
+        <source>Verbrauch im Schnitt</source>
+        <translation>Average consumption</translation>
+    </message>
+    <message>
+        <source>Kosten gesamt</source>
+        <translation>Total cost</translation>
+    </message>
+    <message>
+        <source>Fahrten</source>
+        <translation>Trips</translation>
+    </message>
+    <message>
+        <source>Verbrauch laut Tankbuch</source>
+        <translation>Consumption from the fuel log</translation>
+    </message>
+    <message>
+        <source>Getankt gesamt</source>
+        <translation>Fuel bought in total</translation>
+    </message>
+    <message>
+        <source>Tankfüllung eintragen</source>
+        <translation>Add a fill-up</translation>
+    </message>
+    <message>
+        <source>Tankbuch</source>
+        <translation>Fuel log</translation>
+    </message>
+    <message>
+        <source>Kilometerstand ist gesunken</source>
+        <translation>The odometer went down</translation>
+    </message>
+    <message>
+        <source>Am %1 waren es %2 km, am %3 nur noch %4 km. Das kann ein getauschtes Kombiinstrument sein, aber auch ein zurückgedrehter Tacho. Beim Gebrauchtwagenkauf nachfragen.</source>
+        <translation>On %1 it read %2 km, on %3 only %4 km. That can be a replaced instrument cluster, but also a rolled-back odometer. Ask about it when buying a used car.</translation>
+    </message>
+    <message>
+        <source>alle %1 km</source>
+        <translation>every %1 km</translation>
+    </message>
+    <message numerus="yes">
+        <source>alle %n Monat(e)</source>
+        <translation>
+            <numerusform>every month</numerusform>
+            <numerusform>every %n months</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> oder </source>
+        <translation> or </translation>
+    </message>
+    <message>
+        <source>Zuletzt: %1</source>
+        <translation>Last done: %1</translation>
+    </message>
+    <message>
+        <source>Erledigt</source>
+        <translation>Done</translation>
+    </message>
+    <message>
+        <source>%1 erledigt</source>
+        <translation>%1 done</translation>
+    </message>
+    <message>
+        <source>Datum</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <source>Kilometerstand</source>
+        <translation>Odometer</translation>
+    </message>
+    <message>
+        <source>Noch keine Wartung eingetragen</source>
+        <translation>No service items yet</translation>
+    </message>
+    <message>
+        <source>Ölwechsel, Inspektion, HU und mehr: einmal eintragen, Caruspex erinnert beim Verbinden.</source>
+        <translation>Oil change, inspection, roadworthiness test and more: enter them once and Caruspex reminds you when you connect.</translation>
+    </message>
+    <message>
+        <source>%1 km, %2 l/100 km</source>
+        <translation>%1 km, %2 l/100 km</translation>
+    </message>
+    <message>
+        <source>, %1 €</source>
+        <translation>, %1 €</translation>
+    </message>
+    <message>
+        <source>, höchstens %1 km/h</source>
+        <translation>, top speed %1 km/h</translation>
+    </message>
+    <message>
+        <source>Fahrstil %1</source>
+        <translation>Driving style %1</translation>
+    </message>
+    <message>
+        <source>Noch keine Fahrt gespeichert</source>
+        <translation>No trip saved yet</translation>
+    </message>
+    <message>
+        <source>Der Bordcomputer legt hier jede Fahrt ab, sobald sie zurückgesetzt oder die Verbindung getrennt wird.</source>
+        <translation>The trip computer files every trip here as soon as it is reset or the connection ends.</translation>
+    </message>
+    <message>
+        <source>%1 l zu %2 €/l</source>
+        <translation>%1 l at %2 €/l</translation>
+    </message>
+    <message>
+        <source>, bei %1 km</source>
+        <translation>, at %1 km</translation>
+    </message>
+    <message>
+        <source>, nicht voll getankt</source>
+        <translation>, not filled up</translation>
+    </message>
+    <message>
+        <source>Noch nichts eingetragen</source>
+        <translation>Nothing entered yet</translation>
+    </message>
+    <message>
+        <source>Mit zwei vollen Tankfüllungen samt Kilometerstand rechnet Caruspex den echten Verbrauch aus.</source>
+        <translation>With two full fill-ups and their odometer readings, Caruspex works out the real consumption.</translation>
+    </message>
+    <message>
+        <source>braucht zwei volle Tankfüllungen</source>
+        <translation>needs two full fill-ups</translation>
+    </message>
+    <message>
+        <source>Eigener Eintrag</source>
+        <translation>Custom item</translation>
+    </message>
+    <message>
+        <source>nicht nach km</source>
+        <translation>not by distance</translation>
+    </message>
+    <message>
+        <source> Monate</source>
+        <translation> months</translation>
+    </message>
+    <message>
+        <source>nicht nach Zeit</source>
+        <translation>not by time</translation>
+    </message>
+    <message>
+        <source>Zuletzt erledigt am</source>
+        <translation>Last done on</translation>
+    </message>
+    <message>
+        <source>unbekannt</source>
+        <translation>unknown</translation>
+    </message>
+    <message>
+        <source>Art</source>
+        <translation>Kind</translation>
+    </message>
+    <message>
+        <source>Bezeichnung</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Alle</source>
+        <translation>Every</translation>
+    </message>
+    <message>
+        <source>oder alle</source>
+        <translation>or every</translation>
+    </message>
+    <message>
+        <source>bei Kilometerstand</source>
+        <translation>at odometer</translation>
+    </message>
+    <message>
+        <source>voll getankt</source>
+        <translation>filled up</translation>
+    </message>
+    <message>
+        <source>Menge</source>
+        <translation>Amount</translation>
+    </message>
+    <message>
+        <source>Preis</source>
+        <translation>Price</translation>
+    </message>
+    <message>
+        <source>Akte als PDF</source>
+        <translation>File as PDF</translation>
+    </message>
+    <message>
+        <source>Prüfungen, Wartung, Fahrten und Tankbuch, auch ohne verbundenes Auto</source>
+        <translation>Checks, service, trips and fuel log, also without a connected car</translation>
+    </message>
+    <message>
+        <source>Akte gespeichert: %1</source>
+        <translation>File saved: %1</translation>
     </message>
 </context>
 <context>
@@ -1222,6 +1869,34 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <source>% Bereich</source>
         <translation>% of range</translation>
     </message>
+    <message>
+        <source>Eigene Werte laden</source>
+        <translation>Load custom values</translation>
+    </message>
+    <message>
+        <source>Messwerte aus einer Torque-CSV-Datei hinzufügen</source>
+        <translation>Add values from a Torque CSV file</translation>
+    </message>
+    <message>
+        <source>Torque-CSV (*.csv);;Alle Dateien (*)</source>
+        <translation>Torque CSV (*.csv);;All files (*)</translation>
+    </message>
+    <message>
+        <source>Quelle: %1</source>
+        <translation>Source: %1</translation>
+    </message>
+    <message>
+        <source>Eigene Werte</source>
+        <translation>Custom values</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Wert(e) geladen.</source>
+        <translation><numerusform>%n value loaded.</numerusform><numerusform>%n values loaded.</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Zeile(n) übersprungen: %1</source>
+        <translation><numerusform>%n line skipped: %1</numerusform><numerusform>%n lines skipped: %1</numerusform></translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MainWindow</name>
@@ -1447,6 +2122,58 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>Prüfbericht gespeichert: %1</source>
         <translation>Diagnostic report saved: %1</translation>
+    </message>
+    <message>
+        <source>Steuergeräte über KKL</source>
+        <translation>Control units via KKL</translation>
+    </message>
+    <message>
+        <source>Fahrt in der Garage gespeichert.</source>
+        <translation>Trip saved in the garage.</translation>
+    </message>
+    <message>
+        <source>Wartung: %1</source>
+        <translation>Service: %1</translation>
+    </message>
+    <message>
+        <source>Spiele die Aufnahme %1 ab ...</source>
+        <translation>Playing back the recording %1 ...</translation>
+    </message>
+    <message>
+        <source>Aufzeichnung beenden</source>
+        <translation>Stop recording</translation>
+    </message>
+    <message>
+        <source>Aufzeichnen</source>
+        <translation>Record</translation>
+    </message>
+    <message>
+        <source>Zeichne auf nach %1</source>
+        <translation>Recording to %1</translation>
+    </message>
+    <message numerus="yes">
+        <source>Aufzeichnung gespeichert: %1 (%n Anfragen)</source>
+        <translation><numerusform>Recording saved: %1 (%n request)</numerusform><numerusform>Recording saved: %1 (%n requests)</numerusform></translation>
+    </message>
+    <message>
+        <source>E-Auto-Akku</source>
+        <translation>EV battery</translation>
+    </message>
+    <message>
+        <source>Die laufende Sitzung in eine Datei aufzeichnen, zum späteren Abspielen</source>
+        <translation>Record the running session to a file, to play back later</translation>
+    </message>
+    <message>
+        <source>Erst verbinden, dann aufzeichnen.</source>
+        <translation>Connect first, then record.</translation>
+    </message>
+    <message>
+        <source>Aufzeichnung speichern</source>
+        <translation>Save recording</translation>
+    </message>
+    <message>
+        <source>Caruspex-Aufnahme (*.jsonl)</source>
+        <translation>Caruspex recording (*.jsonl)</translation>
     </message>
 </context>
 <context>
@@ -1836,6 +2563,94 @@ A catalytic converter whose efficiency is scraping the limit shows up here, whil
     <message>
         <source>PDF-Dokument (*.pdf)</source>
         <translation>PDF document (*.pdf)</translation>
+    </message>
+    <message>
+        <source>Alle Steuergeräte</source>
+        <translation>All control units</translation>
+    </message>
+    <message>
+        <source>Teilenummer</source>
+        <translation>Part number</translation>
+    </message>
+    <message>
+        <source>Fehler</source>
+        <translation>Faults</translation>
+    </message>
+    <message>
+        <source>keine</source>
+        <translation>none</translation>
+    </message>
+    <message>
+        <source>Fahrzeugakte speichern</source>
+        <translation>Save vehicle file</translation>
+    </message>
+    <message>
+        <source>Fahrzeugakte</source>
+        <translation>Vehicle file</translation>
+    </message>
+    <message>
+        <source>Wartung</source>
+        <translation>Service</translation>
+    </message>
+    <message>
+        <source>Was</source>
+        <translation>What</translation>
+    </message>
+    <message>
+        <source>Zuletzt</source>
+        <translation>Last done</translation>
+    </message>
+    <message>
+        <source>Kilometerstand gesunken:</source>
+        <translation>Odometer went down:</translation>
+    </message>
+    <message>
+        <source>Prüfungen</source>
+        <translation>Checks</translation>
+    </message>
+    <message>
+        <source>Noch keine.</source>
+        <translation>None yet.</translation>
+    </message>
+    <message>
+        <source>Datum</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <source>Kilometer</source>
+        <translation>Kilometres</translation>
+    </message>
+    <message>
+        <source>Punkte</source>
+        <translation>Score</translation>
+    </message>
+    <message>
+        <source>%1 Fahrten, %2 km, im Schnitt %3 l/100 km, %4 €</source>
+        <translation>%1 trips, %2 km, on average %3 l/100 km, %4 €</translation>
+    </message>
+    <message>
+        <source>Fahrten</source>
+        <translation>Trips</translation>
+    </message>
+    <message>
+        <source>%1 Tankfüllungen, Verbrauch %2 l/100 km</source>
+        <translation>%1 fill-ups, consumption %2 l/100 km</translation>
+    </message>
+    <message>
+        <source>%1 Tankfüllungen</source>
+        <translation>%1 fill-ups</translation>
+    </message>
+    <message>
+        <source>Tankbuch</source>
+        <translation>Fuel log</translation>
+    </message>
+    <message>
+        <source>Notiz</source>
+        <translation>Note</translation>
+    </message>
+    <message>
+        <source>Erstellt mit Caruspex aus der Garage auf diesem Rechner.</source>
+        <translation>Made with Caruspex from the garage on this computer.</translation>
     </message>
 </context>
 <context>
@@ -2262,6 +3077,22 @@ Ignition on, engine off. The run takes a few minutes.</translation>
     <message>
         <source>Sprache und Erscheinungsbild wechseln beim nächsten Start.</source>
         <translation>Language and appearance change on the next start.</translation>
+    </message>
+    <message>
+        <source>Standard (ATAT1)</source>
+        <translation>Standard (ATAT1)</translation>
+    </message>
+    <message>
+        <source>Schneller bei OBDLink und anderen STN-Adaptern</source>
+        <translation>Faster on OBDLink and other STN adapters</translation>
+    </message>
+    <message>
+        <source>Immer schneller (ATAT2)</source>
+        <translation>Always faster (ATAT2)</translation>
+    </message>
+    <message>
+        <source>Taktung</source>
+        <translation>Timing</translation>
     </message>
 </context>
 <context>
@@ -3195,6 +4026,34 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Fertig</source>
         <translation>Done</translation>
     </message>
+    <message>
+        <source>Erst verbinden.</source>
+        <translation>Connect first.</translation>
+    </message>
+    <message>
+        <source>Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel.</source>
+        <translation>This car does not speak CAN. UDS only exists on CAN cars; on older VW and Audi the control units go through the KKL cable.</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher von %1 gelöscht.</source>
+        <translation>Fault memory of %1 cleared.</translation>
+    </message>
+    <message>
+        <source>Löschen bei %1 hat nicht geklappt: %2</source>
+        <translation>Clearing %1 did not work: %2</translation>
+    </message>
+    <message>
+        <source>Aufnahme lässt sich nicht öffnen: %1</source>
+        <translation>The recording cannot be opened: %1</translation>
+    </message>
+    <message>
+        <source>Erst verbinden, dann aufzeichnen.</source>
+        <translation>Connect first, then record.</translation>
+    </message>
+    <message>
+        <source>Datei lässt sich nicht öffnen: %1</source>
+        <translation>The file cannot be opened: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -3233,6 +4092,10 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Erscheinungsbild für diesen Start: dark oder light</source>
         <translation>Appearance for this run: dark or light</translation>
+    </message>
+    <message>
+        <source>Eine aufgezeichnete Sitzung abspielen</source>
+        <translation>Play back a recorded session</translation>
     </message>
 </context>
 </TS>

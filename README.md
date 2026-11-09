@@ -94,10 +94,23 @@ the settings, or forced per run with `--language en` / `--language de`. [Deutsch
 
 ![Adapter check](docs/screenshot-adapter.png)
 
+### All control units over CAN (UDS)
+- With a plain ELM327, Caruspex asks every control unit one by one: engine, gearbox, ABS, airbag, instrument cluster, climate and more, on most cars from about 2008.
+- Fault memory per unit with the failure type (short circuit, open circuit, implausible ...), part number, software and hardware version.
+- Address lists for VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault and PSA; for everything else a sweep over the usual addresses.
+- Clearing per unit, with a warning.
+
 ### VW and Audi over a KKL cable (KWP1281 and KWP2000)
 - Throttle body adaptation: the real basic setting in measuring block 060 or 098.
 - Scan every control unit, including ABS, airbag, instrument cluster and comfort, with a printable report.
 - Adaptation channels and output tests, deliberately read-only.
+
+### Manufacturer and custom values
+- Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe and Nissan Leaf; every value with a documented source.
+- Load your own values in the widely used Torque CSV format, with a complete evaluator for Torque equations.
+
+### Record and replay
+- Record a session with the car into a file and play it back later without the car, handy for troubleshooting.
 
 ### Without a car or adapter
 - A built-in demo car: it drives, warms up, has a few faults stored and talks like a real ELM327 over CAN.

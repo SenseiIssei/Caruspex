@@ -20,6 +20,7 @@
 #include "core/KLineStream.h"
 #include "core/Kwp1281.h"
 #include "core/VagKLine.h"
+#include "core/CustomPids.h"
 #include "core/Obd2.h"
 #include "app/Settings.h"
 
@@ -68,6 +69,47 @@ struct FreezeFrameRow {
     QString dtc;
     QString ecu;
     QVector<LiveRow> values;
+};
+
+// One fault of a control unit read over UDS.
+struct UdsDtcRow {
+    QString code;
+    QString failureText;
+    QString text;
+    bool testFailed = false;
+    bool pending = false;
+    bool confirmed = false;
+    bool warningLamp = false;
+};
+
+// One control unit from the UDS scan.
+struct UdsEcuRow {
+    quint32 request = 0;
+    quint32 response = 0;
+    bool extended29 = false;
+    int kind = 0;               // EcuKind
+    QString name;
+    bool present = false;
+    bool dtcsRead = false;
+    QString partNumber;
+    QString softwareVersion;
+    QString hardwareVersion;
+    QString systemName;
+    QString serial;
+    QVector<UdsDtcRow> dtcs;
+    QString note;
+};
+
+// One manufacturer or user value that can be read, for the lists in the UI.
+struct CustomRow {
+    int key = 0;
+    QString name;
+    QString shortName;
+    QString unit;
+    QString pack;        // empty for imported values
+    QString source;
+    QString request;
+    QString header;
 };
 
 struct HealthFindingRow {
@@ -174,6 +216,17 @@ public slots:
     void openTcp(const QString& host, int port, const QString& protocolOrder);
     // The built-in demo car, no adapter needed.
     void openDemo(const QString& protocolOrder);
+    // Manufacturer and user values (CustomPids): read once, or keep them in
+    // the live loop next to the OBD values.
+    void readCustom(const QVector<int>& keys);
+    void startCustomPoll(const QVector<int>& keys);
+    // Loads a Torque CSV file; the values get keys from the user range.
+    void importCustomCsv(const QString& path);
+    // Plays a recorded session back as if the car were there.
+    void openReplay(const QString& path, bool realTime, const QString& protocolOrder);
+    // Records the running session into a file, and stops it again.
+    void startRecording(const QString& path);
+    void stopRecording();
     void closeAdapter();
     void readFaults();
     void clearFaults();
@@ -203,6 +256,11 @@ public slots:
     void runHealthCheck(int seconds);
     // Tests what the adapter really is and can do.
     void probeAdapter();
+    // Asks every control unit of a brand family over UDS. An empty family
+    // means the generic sweep over the usual address range.
+    void scanUds(const QString& family);
+    // Clears the fault memory of one control unit (service 14).
+    void clearUdsEcu(quint32 request, quint32 response, bool extended29, const QString& name);
     // Adapter voltage (ATRV) in a fast loop, for the battery test.
     void startVoltagePoll(int intervalMs);
     void stopVoltagePoll();
@@ -251,7 +309,15 @@ signals:
     void healthResult(const caruspex::HealthRow& row);
     void adapterVoltage(double volts, double time);
     void adapterReport(const caruspex::AdapterRow& row);
+    void recordingState(bool active, const QString& path, int exchanges, const QString& error);
+    void customRead(int ok, int failed, const QString& firstError);
+    void customImported(const QVector<caruspex::CustomRow>& rows, const QStringList& errors);
     void freezeFrames(const QVector<caruspex::FreezeFrameRow>& frames);
+    void udsScanStarted(int total, bool generic);
+    void udsScanProgress(const QString& name, int index, int total);
+    void udsEcuResult(const caruspex::UdsEcuRow& row);
+    void udsScanFinished(int present, int withFaults, bool cancelled, const QString& note);
+    void udsClearResult(const QString& name, bool ok, const QString& message);
 
 private slots:
     void pollTick();
@@ -277,6 +343,12 @@ private:
     std::unique_ptr<VagKLine> kwp_;
     QTimer* basicSettingTimer_ = nullptr;
     QTimer* voltageTimer_ = nullptr;
+    QVector<int> customPollKeys_;
+    bool customTurn_ = false;
+    std::vector<CustomPid> userPids_;
+    const CustomPid* findCustom(int key) const;
+    // Reads custom values and emits them; returns how many worked.
+    int readCustomNow(const QVector<int>& keys, int* failed, QString* firstError);
     int basicSettingGroup_ = 60;
     AppSettings settings_;
 };
@@ -298,6 +370,12 @@ signals:
     void openSerialRequested(const QString& device, int baud, const QString& protocolOrder);
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
     void openDemoRequested(const QString& protocolOrder);
+    void openReplayRequested(const QString& path, bool realTime, const QString& protocolOrder);
+    void startRecordingRequested(const QString& path);
+    void customReadRequested(const QVector<int>& keys);
+    void customPollRequested(const QVector<int>& keys);
+    void customImportRequested(const QString& path);
+    void stopRecordingRequested();
     void closeRequested();
     void readFaultsRequested();
     void clearFaultsRequested();
@@ -317,6 +395,8 @@ signals:
     void readMonitorsRequested();
     void healthCheckRequested(int seconds);
     void probeAdapterRequested();
+    void udsScanRequested(const QString& family);
+    void udsClearRequested(quint32 request, quint32 response, bool extended29, const QString& name);
     void voltagePollRequested(int intervalMs);
     void voltagePollStopRequested();
     void settingsChanged(const caruspex::AppSettings& values);
@@ -338,3 +418,5 @@ Q_DECLARE_METATYPE(caruspex::OxygenRow)
 Q_DECLARE_METATYPE(caruspex::HealthRow)
 Q_DECLARE_METATYPE(caruspex::AdapterRow)
 Q_DECLARE_METATYPE(caruspex::FreezeFrameRow)
+Q_DECLARE_METATYPE(caruspex::UdsEcuRow)
+Q_DECLARE_METATYPE(caruspex::CustomRow)

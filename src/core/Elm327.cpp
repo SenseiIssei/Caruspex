@@ -50,6 +50,15 @@ bool startsWith(const std::string& s, const std::string& prefix) {
     return s.rfind(prefix, 0) == 0;
 }
 
+// True if the adapter confirmed a setting with a line that says "OK".
+bool answeredOk(const ElmResult& result) {
+    if (result.status == ElmStatus::AdapterError) return false;
+    for (const std::string& line : result.lines) {
+        if (toUpper(line) == "OK") return true;
+    }
+    return false;
+}
+
 bool isHexLine(const std::string& s) {
     if (s.empty()) return false;
     for (char c : s) {
@@ -107,12 +116,6 @@ HeaderFormat headerFormatFor(char protocolId) {
 
 namespace {
 
-// One complete message (service byte first) and who sent it.
-struct RawMessage {
-    std::string source;
-    std::vector<int> bytes;
-};
-
 bool isIndexedLine(const std::string& line) {
     return line.size() > 2 && line[1] == ':' && std::isxdigit(static_cast<unsigned char>(line[0]));
 }
@@ -125,8 +128,8 @@ bool isIndexedLine(const std::string& line) {
 // length is complete, starts the next message: that is how the responses of
 // two control units are kept apart. The index wraps from F to 0 on long
 // messages, which is why "0:" alone is not enough.
-std::vector<RawMessage> splitWithoutHeaders(const std::vector<std::string>& lines) {
-    std::vector<RawMessage> out;
+std::vector<ElmMessage> splitWithoutHeaders(const std::vector<std::string>& lines) {
+    std::vector<ElmMessage> out;
     std::vector<int> collected;
     int announced = -1;
     bool collecting = false;
@@ -170,9 +173,9 @@ std::vector<RawMessage> splitWithoutHeaders(const std::vector<std::string>& line
 }
 
 // Headers on. Every line is one frame with the sender in front.
-std::vector<RawMessage> splitWithHeaders(const std::vector<std::string>& lines,
+std::vector<ElmMessage> splitWithHeaders(const std::vector<std::string>& lines,
                                          HeaderFormat format) {
-    std::vector<RawMessage> out;
+    std::vector<ElmMessage> out;
 
     // ISO-TP reassembly per sender for CAN.
     struct Pending {
@@ -263,6 +266,10 @@ std::vector<RawMessage> splitWithHeaders(const std::vector<std::string>& lines,
 
 }  // namespace
 
+std::vector<ElmMessage> splitMessages(const std::vector<std::string>& lines, HeaderFormat headers) {
+    return headers == HeaderFormat::None ? splitWithoutHeaders(lines) : splitWithHeaders(lines, headers);
+}
+
 ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedService,
                          HeaderFormat headers) {
     ElmResult result;
@@ -286,13 +293,12 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         }
     }
 
-    const std::vector<RawMessage> raw =
-        headers == HeaderFormat::None ? splitWithoutHeaders(lines) : splitWithHeaders(lines, headers);
+    const std::vector<ElmMessage> raw = splitMessages(lines, headers);
 
     // With several control units on the bus one of them may refuse while
     // another answers. Only if nobody answers is the refusal the result.
     int refusal = -1;
-    for (const RawMessage& msg : raw) {
+    for (const ElmMessage& msg : raw) {
         const std::vector<int>& bytes = msg.bytes;
         if (bytes.empty()) continue;
         if (bytes[0] == 0x7F && bytes.size() >= 3) {
@@ -417,10 +423,74 @@ bool Elm327::setHeaders(bool on) {
     return false;
 }
 
+void Elm327::wrapTransport(
+    const std::function<std::unique_ptr<ITransport>(std::unique_ptr<ITransport>)>& wrap) {
+    if (!transport_ || !wrap) return;
+    std::unique_ptr<ITransport> next = wrap(std::move(transport_));
+    transport_ = std::move(next);
+    if (!transport_) connected_ = false;
+}
+
+void Elm327::detectStn() {
+    // STI only reads the firmware identification. An ELM327 or a clone
+    // answers "?" (an ST command is not an AT command, so even clones that
+    // say "OK" to every AT command give themselves away here).
+    stn_ = false;
+    stnId_.clear();
+    const ElmResult sti = send("STI", 1500);
+    if (sti.status == ElmStatus::AdapterError || sti.lines.empty()) return;
+    const std::string first = sti.lines.front();
+    if (startsWith(toUpper(first), "STN")) {
+        stn_ = true;
+        stnId_ = first;
+        if (log_) log_(L("  STN-Chip erkannt: ", "  STN chip detected: ") + first);
+    }
+}
+
+void Elm327::applyAggressiveTiming() {
+    const bool wanted = adaptiveTiming_ == AdaptiveTiming::Aggressive ||
+                        (adaptiveTiming_ == AdaptiveTiming::Auto && stn_);
+    if (!wanted) return;
+    if (timingLevel_ == 0) {
+        if (log_)
+            log_(L("  Der Adapter kennt keine adaptive Zeitsteuerung (ATAT), ATAT2 entfällt.",
+                   "  The adapter has no adaptive timing (ATAT), so ATAT2 is skipped."));
+        return;
+    }
+    // Only now, with a protocol found: the search itself runs with the
+    // careful ATAT1, so a slow control unit is not missed while looking.
+    if (!answeredOk(at("AT2", 2000))) {
+        at("AT1", 2000);
+        timingLevel_ = 1;
+        if (log_)
+            log_(L("  ATAT2 abgelehnt, es bleibt bei ATAT1.",
+                   "  ATAT2 refused, staying with ATAT1."));
+        return;
+    }
+    // One request as a check that answers still come through with the
+    // shorter wait. If not, back to the careful setting.
+    const ElmResult check = request("0100", 0x01);
+    if (!check.ok()) {
+        at("AT1", 2000);
+        timingLevel_ = 1;
+        if (log_)
+            log_(L("  Mit ATAT2 fehlen Antworten, zurück auf ATAT1.",
+                   "  Answers go missing with ATAT2, back to ATAT1."));
+        return;
+    }
+    timingLevel_ = 2;
+    if (log_)
+        log_(L("  Schnelle adaptive Zeitsteuerung (ATAT2) aktiv.",
+               "  Aggressive adaptive timing (ATAT2) active."));
+}
+
 bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& protocolOrder,
                      std::string& error) {
     transport_ = std::move(transport);
     connected_ = false;
+    stn_ = false;
+    stnId_.clear();
+    timingLevel_ = 0;
     drainGreeting();
 
     ElmResult banner = at("Z", 6000);
@@ -439,7 +509,13 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                  version_ + "'");
     }
 
-    for (const char* cmd : {"E0", "L0", "S0", "H0", "AT1", "ST64"}) at(cmd);
+    for (const char* cmd : {"E0", "L0", "S0", "H0"}) at(cmd);
+    // ATAT1 is the power-on default; set it anyway, since the adapter may
+    // come out of an earlier session with different timing. Adapters older
+    // than v1.2 know no adaptive timing at all.
+    timingLevel_ = answeredOk(at("AT1")) ? 1 : 0;
+    at("ST64");
+    detectStn();
 
     for (char proto : protocolOrder) {
         at(std::string("SP") + proto);
@@ -453,6 +529,7 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                 protocolText_ = dp.lines.empty() ? protocolName(proto) : dp.lines.front();
                 protocolId_ = proto;
                 connected_ = true;
+                applyAggressiveTiming();
                 return true;
             }
             if (probe.status == ElmStatus::AdapterError) {
@@ -480,6 +557,9 @@ void Elm327::disconnect() {
     transport_.reset();
     connected_ = false;
     headers_ = false;
+    stn_ = false;
+    stnId_.clear();
+    timingLevel_ = 0;
     protocolId_ = '0';
     protocolText_ = L("unbekannt", "unknown");
 }

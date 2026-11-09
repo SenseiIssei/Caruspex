@@ -1,7 +1,9 @@
 #include "app/pages/ConnectPage.h"
 
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QComboBox>
+#include <QFileDialog>
 #include <QCompleter>
 #include <QDate>
 #include <QStringListModel>
@@ -152,13 +154,16 @@ QWidget* ConnectPage::buildAdapter() {
     QPushButton* cable = makeModeChip(QStringLiteral("usb"), tr("USB oder Bluetooth"));
     QPushButton* wifi = makeModeChip(QStringLiteral("wifi"), tr("WLAN"));
     QPushButton* demo = makeModeChip(QStringLiteral("sparkles"), tr("Demo-Auto"));
+    QPushButton* replay = makeModeChip(QStringLiteral("play"), tr("Aufnahme"));
     modes_->addButton(cable, int(Mode::Cable));
     modes_->addButton(wifi, int(Mode::Wifi));
     modes_->addButton(demo, int(Mode::Demo));
+    modes_->addButton(replay, int(Mode::Replay));
     cable->setChecked(true);
     chips->addWidget(cable);
     chips->addWidget(wifi);
     chips->addWidget(demo);
+    chips->addWidget(replay);
     chips->addStretch();
     layout->addLayout(chips);
 
@@ -211,6 +216,34 @@ QWidget* ConnectPage::buildAdapter() {
                                   "hat ein paar Fehler gespeichert. Ideal zum Ausprobieren, ganz "
                                   "ohne Adapter."),
                                "Subtle", true));
+        modeStack_->addWidget(page);
+    }
+    // Replay
+    {
+        auto* page = new QWidget;
+        auto* v = new QVBoxLayout(page);
+        v->setContentsMargins(0, 0, 0, 0);
+        v->setSpacing(8);
+        auto* row = new QHBoxLayout;
+        row->setSpacing(8);
+        replayPath_ = new QLineEdit;
+        replayPath_->setPlaceholderText(tr("Aufnahme wählen (.jsonl)"));
+        replayPath_->setMinimumHeight(38);
+        auto* browse = new QPushButton(tr("Wählen"));
+        browse->setMinimumHeight(38);
+        row->addWidget(replayPath_, 1);
+        row->addWidget(browse);
+        v->addLayout(row);
+        replayRealTime_ = new QCheckBox(tr("Im ursprünglichen Tempo abspielen"));
+        v->addWidget(replayRealTime_);
+        v->addWidget(makeLabel(tr("Spielt eine aufgezeichnete Sitzung ab, als wäre das Auto da. Gut für "
+                                  "die Fehlersuche, oder wenn jemand eine Aufnahme schickt."),
+                               "Hint", true));
+        connect(browse, &QPushButton::clicked, this, [this] {
+            const QString path = QFileDialog::getOpenFileName(this, tr("Aufnahme wählen"), QString(),
+                                                              tr("Caruspex-Aufnahme (*.jsonl);;Alle Dateien (*)"));
+            if (!path.isEmpty()) replayPath_->setText(path);
+        });
         modeStack_->addWidget(page);
     }
     layout->addWidget(modeStack_);
@@ -358,6 +391,8 @@ bool ConnectPage::selectPort(const QString& device) {
 
 void ConnectPage::setWifiAddress(const QString& address) { addressEdit_->setText(address); }
 
+void ConnectPage::setReplayPath(const QString& path) { replayPath_->setText(path); }
+
 void ConnectPage::setMode(Mode mode) {
     if (QAbstractButton* b = modes_->button(int(mode))) b->setChecked(true);
     modeStack_->setCurrentIndex(int(mode));
@@ -431,6 +466,13 @@ void ConnectPage::startConnect() {
         }
         case Mode::Demo:
             emit demoRequested(order);
+            break;
+        case Mode::Replay:
+            if (replayPath_->text().trimmed().isEmpty()) {
+                showError(tr("Erst eine Aufnahme wählen."));
+                return;
+            }
+            emit replayRequested(replayPath_->text().trimmed(), replayRealTime_->isChecked(), order);
             break;
     }
     onConnecting();

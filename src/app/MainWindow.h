@@ -14,6 +14,7 @@ class QButtonGroup;
 class QFrame;
 class QLabel;
 class QPlainTextEdit;
+class QPushButton;
 class QPropertyAnimation;
 class QVBoxLayout;
 QT_END_NAMESPACE
@@ -42,6 +43,8 @@ class PerformancePage;
 class BatteryPage;
 class AdapterPage;
 class VehiclesPage;
+class EcuPage;
+class EvPage;
 class Garage;
 class VehicleState;
 
@@ -55,6 +58,8 @@ public:
     void autoConnectTcp(const QString& address);
     // Command-line option --demo
     void autoConnectDemo();
+    // Command-line option --replay file
+    void autoConnectReplay(const QString& path);
     // Command-line option --page: start, connect, faults, tools, monitor, live,
     // stats, scan, throttle, kkl, lexicon, settings, plus the newer pages.
     void showPageByName(const QString& name);
@@ -97,6 +102,8 @@ private:
     // Stores the current check in the garage, once VIN and faults are known.
     void recordCheck();
     void showReport();
+    // Due and nearly due service items of the connected car: badge and toast.
+    void remindServices(bool toast);
 
     Session session_;
 
@@ -116,6 +123,8 @@ private:
     QPropertyAnimation* logAnimation_ = nullptr;
     bool logOpen_ = false;
     QPlainTextEdit* log_ = nullptr;
+    QPushButton* recordButton_ = nullptr;
+    bool recording_ = false;
 
     ConnectPage* connect_ = nullptr;
     DashboardPage* dashboard_ = nullptr;
@@ -136,7 +145,10 @@ private:
     BatteryPage* battery_ = nullptr;
     AdapterPage* adapter_ = nullptr;
     VehiclesPage* vehicles_ = nullptr;
+    EcuPage* ecus_ = nullptr;
+    EvPage* ev_ = nullptr;
     NavButton* faultsButton_ = nullptr;
+    NavButton* garageButton_ = nullptr;
     VehicleState* state_ = nullptr;
     Garage* garage_ = nullptr;
 

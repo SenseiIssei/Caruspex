@@ -31,8 +31,11 @@ add_library(caruspex_core STATIC
     src/core/Elm327.cpp
     src/core/EcuAddress.cpp
     src/core/Obd2.cpp
+    src/core/Uds.cpp
+    src/core/CustomPids.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
+    src/core/Recording.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
     src/core/VagKLine.cpp
@@ -50,6 +53,11 @@ add_library(caruspex_core STATIC
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
     src/data/MonitorTests.cpp
+    src/data/EcuAddresses.cpp
+    src/data/EcuAddresses.gen.cpp
+    src/data/PidPacks.cpp
+    src/data/PidPacks.gen.cpp
+    src/data/FailureTypes.cpp
     src/core/analysis/Common.cpp
     src/core/analysis/Readiness.cpp
     src/core/analysis/DriveCycleGuide.cpp
@@ -126,6 +134,10 @@ if(CARUSPEX_GUI)
         src/app/pages/AdapterPage.h
         src/app/pages/BatteryPage.cpp
         src/app/pages/BatteryPage.h
+        src/app/pages/EcuPage.cpp
+        src/app/pages/EcuPage.h
+        src/app/pages/EvPage.cpp
+        src/app/pages/EvPage.h
         src/app/pages/FaultsPage.cpp
         src/app/pages/GaragePage.cpp
         src/app/pages/GaragePage.h
@@ -198,8 +210,12 @@ if(CARUSPEX_TESTS)
         tests/test_analysis_battery.cpp
         tests/test_demo.cpp
         tests/test_probe.cpp
+        tests/test_recording.cpp
         tests/test_dtc.cpp
         tests/test_vehicles.cpp
+        tests/test_ecus.cpp
+        tests/test_uds.cpp
+        tests/test_custom_pids.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

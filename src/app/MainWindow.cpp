@@ -9,7 +9,10 @@
 #include <QButtonGroup>
 #include <QCloseEvent>
 #include <QDateTime>
+#include <QDir>
+#include <QFileDialog>
 #include <QFrame>
+#include <QStandardPaths>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
@@ -35,6 +38,8 @@
 #include "app/pages/AdapterPage.h"
 #include "app/pages/BatteryPage.h"
 #include "app/pages/ConnectPage.h"
+#include "app/pages/EcuPage.h"
+#include "app/pages/EvPage.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
 #include "app/pages/GaragePage.h"
@@ -154,6 +159,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     battery_ = new BatteryPage;
     adapter_ = new AdapterPage;
     vehicles_ = new VehiclesPage;
+    ecus_ = new EcuPage;
+    ev_ = new EvPage;
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -241,15 +248,35 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         dashboard_->setVehicle(car.title, car.subtitle, car.body);
         dashboard_->setBrand(car.brand);
         faults_->setBrand(car.brand);
+        ecus_->setBrand(car.brand);
+        ev_->setVehicle(car.brand, car.title);
         if (car.known) {
             toast::show(this, tr("Erkannt: %1").arg(car.title), toast::Kind::Success);
         }
         garage_->touch(vin, state_->displayName(), state_->description(), state_->bodyStyle());
+        QTimer::singleShot(1500, this, [this] { remindServices(true); });
         garagePage_->setCurrentVin(vin);
         recordCheck();
     });
     connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
     connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
+    connect(trip_, &TripPage::tripCompleted, this, [this](const GarageTrip& trip) {
+        if (state_->vin().isEmpty()) return;
+        garage_->addTrip(state_->vin(), trip);
+        toast::show(this, tr("Fahrt in der Garage gespeichert."), toast::Kind::Success);
+    });
+    connect(garage_, &Garage::changed, this, [this] { remindServices(false); });
+    connect(worker, &Worker::liveValue, this, [this](const LiveRow& row) {
+        if (row.pid != 0xA6) return;
+        garagePage_->setCurrentOdometer(row.value);
+        // The odometer often arrives after the faults: store it with the
+        // check of this session (it replaces the one from a minute ago).
+        const GarageCar* car = garage_->find(state_->vin());
+        if (car && !car->checks.isEmpty() && car->checks.back().odometerKm < 0 &&
+            car->checks.back().when.secsTo(QDateTime::currentDateTime()) < 15 * 60) {
+            recordCheck();
+        }
+    });
     connect(dashboard_, &DashboardPage::gaugesLiveRequested, &session_, &Session::startLiveRequested);
     connect(dashboard_, &DashboardPage::gaugesLiveStopRequested, &session_, &Session::stopLiveRequested);
     connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
@@ -293,6 +320,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
             });
     connect(state_, &VehicleState::vinChanged, vehicles_, &VehiclesPage::showVin);
 
+    connect(worker, &Worker::udsScanStarted, ecus_, &EcuPage::onScanStarted);
+    connect(worker, &Worker::udsScanProgress, ecus_, &EcuPage::onScanProgress);
+    connect(worker, &Worker::udsEcuResult, ecus_, &EcuPage::onEcuResult);
+    connect(worker, &Worker::udsScanFinished, ecus_, &EcuPage::onScanFinished);
+    connect(worker, &Worker::udsClearResult, ecus_, &EcuPage::onClearResult);
+    connect(ecus_, &EcuPage::scanRequested, &session_, &Session::udsScanRequested);
+    connect(ecus_, &EcuPage::cancelRequested, &session_, &Session::cancelScan);
+    connect(ecus_, &EcuPage::clearRequested, &session_, &Session::udsClearRequested);
+
     // UI to worker
     connect(connect_, &ConnectPage::serialRequested, this,
             [this](const QString& device, const QString& order) {
@@ -317,7 +353,28 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
         emit session_.openDemoRequested(order);
     });
+    connect(connect_, &ConnectPage::replayRequested, this,
+            [this](const QString& path, bool realTime, const QString& order) {
+                appendLog(tr("Spiele die Aufnahme %1 ab ...").arg(path));
+                titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+                emit session_.openReplayRequested(path, realTime, order);
+            });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
+    connect(worker, &Worker::recordingState, this,
+            [this](bool active, const QString& path, int exchanges, const QString& error) {
+                recording_ = active;
+                recordButton_->setText(active ? tr("Aufzeichnung beenden") : tr("Aufzeichnen"));
+                recordButton_->setIcon(icons::icon(active ? QStringLiteral("stop") : QStringLiteral("play"),
+                                                   active ? color::bad : color::textMuted, color::text, 14));
+                if (!error.isEmpty()) {
+                    toast::show(this, error, toast::Kind::Error);
+                } else if (active) {
+                    toast::show(this, tr("Zeichne auf nach %1").arg(path), toast::Kind::Info);
+                } else if (!path.isEmpty()) {
+                    toast::show(this, tr("Aufzeichnung gespeichert: %1 (%n Anfragen)", nullptr, exchanges).arg(path),
+                                toast::Kind::Success);
+                }
+            });
 
     connect(dashboard_, &DashboardPage::readRequested, &session_, &Session::readFaultsRequested);
     connect(dashboard_, &DashboardPage::detailsRequested, &session_,
@@ -337,6 +394,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(monitor_, &MonitorPage::readRequested, &session_, &Session::readMonitorsRequested);
     connect(live_, &LivePage::startRequested, &session_, &Session::startLiveRequested);
     connect(live_, &LivePage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(live_, &LivePage::customStartRequested, &session_, &Session::customPollRequested);
+    connect(worker, &Worker::liveValue, ev_, &EvPage::onLiveValue);
+    connect(worker, &Worker::customRead, ev_, &EvPage::onCustomRead);
+    connect(ev_, &EvPage::readRequested, &session_, &Session::customReadRequested);
+    connect(ev_, &EvPage::pollRequested, this, [this](const QVector<int>& keys) {
+        emit session_.startLiveRequested({});
+        emit session_.customPollRequested(keys);
+    });
+    connect(ev_, &EvPage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(live_, &LivePage::importRequested, &session_, &Session::customImportRequested);
+    connect(worker, &Worker::customImported, live_, &LivePage::onCustomImported);
     connect(throttle_, &ThrottlePage::kklConnectRequested, &session_, &Session::openKklRequested);
     connect(throttle_, &ThrottlePage::kklDisconnectRequested, &session_,
             &Session::closeKklRequested);
@@ -459,9 +527,11 @@ QWidget* MainWindow::buildSidebar() {
     addEntry(QStringLiteral("fuel"), tr("Bordcomputer"), trip_);
     addEntry(QStringLiteral("timer"), tr("Leistung"), performance_);
     addEntry(QStringLiteral("battery"), tr("Batterie"), battery_);
+    addEntry(QStringLiteral("bolt-circle"), tr("E-Auto-Akku"), ev_);
     addEntry(QStringLiteral("chart"), tr("Statistik"), stats_);
     addSection(tr("Werkstatt"));
-    addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), scan_);
+    addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), ecus_);
+    addEntry(QStringLiteral("cable"), tr("Steuergeräte über KKL"), scan_);
     addEntry(QStringLiteral("throttle"), tr("Drosselklappe"), throttle_);
     addEntry(QStringLiteral("sliders"), tr("Anpassung und Stellglieder"), kklTools_);
     addSection(tr("Wissen"));
@@ -477,7 +547,7 @@ QWidget* MainWindow::buildSidebar() {
     bottomNavigation_ = new QVBoxLayout;
     bottomNavigation_->setSpacing(2);
     root->addLayout(bottomNavigation_);
-    addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
+    garageButton_ = addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
     addEntry(QStringLiteral("cable"), tr("Adapter"), adapter_, bottomNavigation_);
     addEntry(QStringLiteral("settings"), tr("Einstellungen"), settingsPage_, bottomNavigation_);
 
@@ -505,6 +575,28 @@ QWidget* MainWindow::buildLogDrawer() {
     head->addWidget(icon);
     head->addWidget(makeLabel(tr("Protokoll"), nullptr));
     head->addStretch();
+    recordButton_ = new QPushButton(tr("Aufzeichnen"));
+    recordButton_->setObjectName("Ghost");
+    recordButton_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    recordButton_->setToolTip(tr("Die laufende Sitzung in eine Datei aufzeichnen, zum späteren Abspielen"));
+    head->addWidget(recordButton_);
+    connect(recordButton_, &QPushButton::clicked, this, [this] {
+        if (recording_) {
+            emit session_.stopRecordingRequested();
+            return;
+        }
+        if (!connected_) {
+            toast::show(this, tr("Erst verbinden, dann aufzeichnen."), toast::Kind::Info);
+            return;
+        }
+        const QString path = QFileDialog::getSaveFileName(
+            this, tr("Aufzeichnung speichern"),
+            QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
+                .filePath(QStringLiteral("caruspex-%1.jsonl")
+                              .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd_HH-mm")))),
+            tr("Caruspex-Aufnahme (*.jsonl)"));
+        if (!path.isEmpty()) emit session_.startRecordingRequested(path);
+    });
     auto* clear = new QPushButton(tr("Leeren"));
     clear->setObjectName("Ghost");
     auto* close = new QPushButton;
@@ -515,7 +607,7 @@ QWidget* MainWindow::buildLogDrawer() {
     layout->addLayout(head);
     log_ = new QPlainTextEdit;
     log_->setReadOnly(true);
-    log_->setFont(mono(12));
+    styleFont(log_, Family::Mono, 12);
     log_->setMaximumBlockCount(5000);
     layout->addWidget(log_, 1);
     connect(clear, &QPushButton::clicked, log_, &QPlainTextEdit::clear);
@@ -585,7 +677,8 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("garage"), garagePage_},  {QStringLiteral("health"), health_},
         {QStringLiteral("trip"), trip_},          {QStringLiteral("performance"), performance_},
         {QStringLiteral("battery"), battery_},    {QStringLiteral("adapter"), adapter_},
-        {QStringLiteral("vehicles"), vehicles_},
+        {QStringLiteral("vehicles"), vehicles_},  {QStringLiteral("ecus"), ecus_},
+        {QStringLiteral("ev"), ev_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
     // Developer aids for screenshots: open a page and start what it does.
@@ -594,13 +687,25 @@ void MainWindow::showPageByName(const QString& name) {
         health_->onProgress(tr("Starte ..."), 0);
         emit session_.healthCheckRequested(12);
     }
+    if (name.startsWith(QStringLiteral("garage:"))) {
+        navigateTo(garagePage_);
+        garagePage_->showTab(name.mid(7).toInt());
+    }
     if (name.startsWith(QStringLiteral("vehicles:"))) {
         navigateTo(vehicles_);
         vehicles_->showVin(name.mid(9));
     }
+    if (name.startsWith(QStringLiteral("ecus-run"))) {
+        navigateTo(ecus_);
+        emit session_.udsScanRequested(name.mid(9));
+    }
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);
         emit session_.probeAdapterRequested();
+    }
+    if (name == QStringLiteral("ev-run")) {
+        navigateTo(ev_);
+        ev_->readNow();
     }
     if (name == QStringLiteral("start-live")) {
         navigateTo(dashboard_);
@@ -634,6 +739,8 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     performance_->setConnected(true);
     battery_->setConnected(true);
     adapter_->setConnected(true);
+    ecus_->setConnected(true);
+    ev_->setConnected(true);
     toast::show(this, tr("Verbunden über %1. Protokoll: %2").arg(transport, protocol),
                 toast::Kind::Success);
     // After connecting the start page is the natural place to go. The VIN
@@ -652,6 +759,11 @@ void MainWindow::onFailed(const QString& error) {
 
 void MainWindow::onClosed() {
     connected_ = false;
+    if (recording_) {
+        recording_ = false;
+        recordButton_->setText(tr("Aufzeichnen"));
+        recordButton_->setIcon(icons::icon(QStringLiteral("play"), color::textMuted, color::text, 14));
+    }
     titleBar_->setConnection(TitleBar::Link::Offline, tr("Nicht verbunden"));
     faultsButton_->setBadge(QString());
     garagePage_->setCurrentVin(QString());
@@ -667,6 +779,8 @@ void MainWindow::onClosed() {
     performance_->setConnected(false);
     battery_->setConnected(false);
     adapter_->setConnected(false);
+    ecus_->setConnected(false);
+    ev_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 
@@ -689,6 +803,29 @@ void MainWindow::recordCheck() {
     garage_->addCheck(state_->vin(), check);
 }
 
+void MainWindow::remindServices(bool withToast) {
+    const QString vin = state_->vin();
+    const GarageCar* car = vin.isEmpty() ? nullptr : garage_->find(vin);
+    if (!car) {
+        garageButton_->setBadge(QString());
+        return;
+    }
+    const double km = state_->hasLive(0xA6) ? state_->liveValue(0xA6) : garage_->latestOdometer(vin);
+    int due = 0;
+    QStringList lines;
+    for (const ServiceStatus& st : Garage::serviceStatus(*car, km, QDate::currentDate())) {
+        if (st.state == ServiceStatus::State::Due || st.state == ServiceStatus::State::Soon) {
+            ++due;
+            lines << QStringLiteral("%1: %2").arg(st.service->title, st.text);
+        }
+    }
+    garageButton_->setBadge(due > 0 ? QString::number(due) : QString(), color::warn);
+    if (withToast && due > 0) {
+        toast::show(this, tr("Wartung: %1").arg(lines.join(QStringLiteral(", "))),
+                    toast::Kind::Warning, 8000);
+    }
+}
+
 void MainWindow::showReport() {
     ReportExtras extras;
     extras.score = dashboard_->score();
@@ -700,6 +837,7 @@ void MainWindow::showReport() {
         else if (f.tint == color::good) level = tr("In Ordnung");
         extras.findings.push_back({level, f.title, f.text});
     }
+    extras.ecus = ecus_->results();
     const QString path = saveReportPdf(this, *state_, extras);
     if (!path.isEmpty()) {
         toast::show(this, tr("Prüfbericht gespeichert: %1").arg(path), toast::Kind::Success);
@@ -857,6 +995,12 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 void MainWindow::autoConnectTcp(const QString& address) {
     connect_->setMode(ConnectPage::Mode::Wifi);
     connect_->setWifiAddress(address);
+    connect_->startConnect();
+}
+
+void MainWindow::autoConnectReplay(const QString& path) {
+    connect_->setMode(ConnectPage::Mode::Replay);
+    connect_->setReplayPath(path);
     connect_->startConnect();
 }
 

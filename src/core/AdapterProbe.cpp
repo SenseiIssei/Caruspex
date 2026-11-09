@@ -306,10 +306,10 @@ AdapterReport probeAdapter(Elm327& elm) {
             {"STN-Chip: Mit STBR lässt sich die serielle Geschwindigkeit für diese Sitzung "
              "erhöhen, bei USB- und seriellen Verbindungen bis in den Megabit-Bereich. "
              "Bluetooth und WLAN bestimmen ihr Tempo selbst. Dauerhaft gespeichert wird dabei "
-             "nichts.",
+             "nichts (das täte erst STSBR). Caruspex stellt das nicht selbst um.",
              "STN chip: STBR raises the serial speed for this session, into the megabit range "
              "on USB and serial connections. Bluetooth and Wi-Fi set their own speed. Nothing "
-             "is stored permanently."});
+             "is stored permanently (STSBR would do that). Caruspex does not change it itself."});
         report.speedTips.push_back(
             {"STN-Chips verarbeiten Anfragen deutlich schneller als ELM327-Nachbauten und "
              "puffern mehr. Kürzere Abfrageintervalle sind hier unbedenklich.",

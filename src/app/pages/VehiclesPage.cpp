@@ -44,7 +44,7 @@ QWidget* factRow(const QString& key, const QString& value, bool monospace = fals
     k->setFixedWidth(150);
     auto* v = makeLabel(value, nullptr, true);
     v->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    if (monospace) v->setFont(mono(13, 600));
+    if (monospace) styleFont(v, Family::Mono, 13, 600);
     h->addWidget(k, 0, Qt::AlignTop);
     h->addWidget(v, 1);
     return row;
@@ -83,7 +83,7 @@ VehiclesPage::VehiclesPage(QWidget* parent) : QWidget(parent) {
     vinEdit_ = new QLineEdit;
     vinEdit_->setPlaceholderText(QStringLiteral("WAUZZZ8Z12A123456"));
     vinEdit_->setMaxLength(24);
-    vinEdit_->setFont(mono(15, 600));
+    styleFont(vinEdit_, Family::Mono, 15, 600);
     vinEdit_->setMinimumHeight(42);
     auto* check = new QPushButton(tr("Prüfen"));
     check->setObjectName("Primary");
