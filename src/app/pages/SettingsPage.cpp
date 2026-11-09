@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -42,16 +43,21 @@ QLabel* makeNote(const QString& text) {
 
 SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     auto* outer = new QVBoxLayout(this);
-    outer->setContentsMargins(24, 20, 24, 20);
+    outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
+    outer->addWidget(makeLabel(tr("PROGRAMM"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Einstellungen"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
 
+
     outer->addWidget(makeNote(
-        tr("Alles wird sofort uebernommen und beim naechsten Start wieder so geladen. "
-           "Aenderungen wirken auch waehrend einer laufenden Messung.")));
+        tr("Alles wird sofort übernommen und beim nächsten Start wieder so geladen. "
+           "Änderungen wirken auch während einer laufenden Messung.")));
 
     auto* scroll = new QScrollArea;
     scroll->setWidgetResizable(true);
@@ -75,7 +81,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     form->addRow(tr("Baudrate des Adapters"), baud_);
 
     protocolOrder_ = new QComboBox;
-    protocolOrder_->addItem(tr("K-Line zuerst (A2 und aeltere)"),
+    protocolOrder_->addItem(tr("K-Line zuerst (A2 und ältere)"),
                             QStringLiteral("kline"));
     protocolOrder_->addItem(tr("CAN zuerst (A4 B7 und neuere)"),
                             QStringLiteral("can"));
@@ -87,9 +93,9 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     timeout_->setSuffix(tr(" %"));
     form->addRow(tr("Geduld mit dem Adapter"), timeout_);
     form->addRow(makeNote(tr(
-        "Streckt oder kuerzt jede Wartezeit. Ein traeger Klon braucht mehr, ein "
+        "Streckt oder kürzt jede Wartezeit. Ein träger Klon braucht mehr, ein "
         "gutes FTDI-Kabel kommt mit weniger aus. Die Abstufung bleibt erhalten: "
-        "Loeschen darf laenger dauern als eine einzelne Abfrage.")));
+        "Löschen darf länger dauern als eine einzelne Abfrage.")));
 
     autoConnect_ = new QCheckBox(tr("Beim Start gleich mit dem zuletzt benutzten "
                                     "Anschluss verbinden"));
@@ -115,17 +121,17 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     root->addWidget(liveBox);
 
     // --- Clearing -----------------------------------------------------------
-    auto* clearBox = makeGroup(tr("Fehler loeschen"), form);
+    auto* clearBox = makeGroup(tr("Fehler löschen"), form);
 
     clearAttempts_ = new QSpinBox;
     clearAttempts_->setRange(1, 20);
-    form->addRow(tr("Versuche beim hartnaeckigen Loeschen"), clearAttempts_);
+    form->addRow(tr("Versuche beim hartnäckigen Löschen"), clearAttempts_);
     form->addRow(makeNote(tr(
         "Nach jedem Versuch wird nachgelesen. Bleibt ein Fehler stehen, liegt er "
         "meist noch an: dann hilft kein weiterer Versuch, sondern nur die "
         "Reparatur.")));
 
-    confirmClear_ = new QCheckBox(tr("Vor dem Loeschen nachfragen"));
+    confirmClear_ = new QCheckBox(tr("Vor dem Löschen nachfragen"));
     form->addRow(confirmClear_);
     root->addWidget(clearBox);
 
@@ -144,18 +150,18 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     kklEcu_->addItem(tr("25  Wegfahrsperre"), 0x25);
     kklEcu_->addItem(tr("46  Komfortsystem"), 0x46);
     kklEcu_->addItem(tr("56  Radio"), 0x56);
-    form->addRow(tr("Voreingestelltes Steuergeraet"), kklEcu_);
+    form->addRow(tr("Voreingestelltes Steuergerät"), kklEcu_);
 
     basicSession_ = new QComboBox;
-    basicSession_->addItem(tr("0x85  Grundeinstellung (ueblich)"), 0x85);
+    basicSession_->addItem(tr("0x85  Grundeinstellung (üblich)"), 0x85);
     basicSession_->addItem(tr("0x86  Anpassung"), 0x86);
     basicSession_->addItem(tr("0x87  Erweiterte Diagnose"), 0x87);
     basicSession_->addItem(tr("0x89  Werkseinstellung"), 0x89);
     form->addRow(tr("Sitzungsart bei KWP2000"), basicSession_);
     form->addRow(makeNote(tr(
-        "Welche Sitzungsart der 1.6 FSI fuer die Grundeinstellung verlangt, ist "
-        "nicht oeffentlich dokumentiert. Deshalb steht sie hier zur Wahl. "
-        "Lehnt das Steuergeraet ab, ist die naechste einen Versuch wert. Nur den "
+        "Welche Sitzungsart der 1.6 FSI für die Grundeinstellung verlangt, ist "
+        "nicht öffentlich dokumentiert. Deshalb steht sie hier zur Wahl. "
+        "Lehnt das Steuergerät ab, ist die nächste einen Versuch wert. Nur den "
         "KWP1281-Weg betrifft das nicht, dort gibt es diese Wahl nicht.")));
 
     basicInterval_ = new QSpinBox;
@@ -164,25 +170,25 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     basicInterval_->setSuffix(tr(" ms"));
     form->addRow(tr("Nachfragetakt in der Grundeinstellung"), basicInterval_);
     form->addRow(makeNote(tr(
-        "Das Steuergeraet faellt aus der Grundeinstellung, wenn laenger als etwa "
-        "eine Sekunde nichts kommt. Deutlich hoeher als 500 ms zu gehen ist "
-        "riskant, waehrend die Drosselklappe lernt.")));
+        "Das Steuergerät fällt aus der Grundeinstellung, wenn länger als etwa "
+        "eine Sekunde nichts kommt. Deutlich höher als 500 ms zu gehen ist "
+        "riskant, während die Drosselklappe lernt.")));
     root->addWidget(kklBox);
 
     // --- Log ----------------------------------------------------------------
     auto* logBox = makeGroup(tr("Protokoll"), form);
 
     logRaw_ = new QCheckBox(tr("Rohkommunikation mitschreiben (jede Zeile hin und "
-                               "zurueck)"));
+                               "zurück)"));
     form->addRow(logRaw_);
 
-    logToFile_ = new QCheckBox(tr("Zusaetzlich in eine Datei schreiben"));
+    logToFile_ = new QCheckBox(tr("Zusätzlich in eine Datei schreiben"));
     form->addRow(logToFile_);
 
     auto* pathRow = new QHBoxLayout;
     logPath_ = new QLineEdit;
-    logPath_->setPlaceholderText(tr("noch keine Datei gewaehlt"));
-    logBrowse_ = new QPushButton(tr("Waehlen ..."));
+    logPath_->setPlaceholderText(tr("noch keine Datei gewählt"));
+    logBrowse_ = new QPushButton(tr("Wählen ..."));
     pathRow->addWidget(logPath_, 1);
     pathRow->addWidget(logBrowse_);
     auto* pathWidget = new QWidget;
@@ -193,7 +199,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
 
     // --- Window -------------------------------------------------------------
     auto* windowBox = makeGroup(tr("Fenster und Sprache"), form);
-    rememberGeometry_ = new QCheckBox(tr("Groesse und Position beim Beenden merken"));
+    rememberGeometry_ = new QCheckBox(tr("Größe und Position beim Beenden merken"));
     form->addRow(rememberGeometry_);
 
     language_ = new QComboBox;
@@ -201,13 +207,13 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     language_->addItem(QStringLiteral("Deutsch"), QStringLiteral("de"));
     language_->addItem(QStringLiteral("English"), QStringLiteral("en"));
     form->addRow(tr("Sprache"), language_);
-    form->addRow(makeNote(tr("Die Sprache wechselt beim naechsten Start.")));
+    form->addRow(makeNote(tr("Die Sprache wechselt beim nächsten Start.")));
     root->addWidget(windowBox);
 
     // --- Footer -------------------------------------------------------------
     auto* footer = new QHBoxLayout;
-    auto* reset = new QPushButton(tr("Auf Vorgabe zuruecksetzen"));
-    auto* openFolder = new QPushButton(tr("Ablageort oeffnen"));
+    auto* reset = new QPushButton(tr("Auf Vorgabe zurücksetzen"));
+    auto* openFolder = new QPushButton(tr("Ablageort öffnen"));
     footer->addWidget(reset);
     footer->addWidget(openFolder);
     footer->addStretch();
@@ -311,10 +317,10 @@ void SettingsPage::emitChange() {
     const int interval = pollInterval_->value();
     pollHint_->setText(
         interval == 0
-            ? tr("Null heisst: so schnell der Adapter mitkommt. Auf der K-Line ist "
+            ? tr("Null heißt: so schnell der Adapter mitkommt. Auf der K-Line ist "
                  "das ohnehin durch das Protokoll begrenzt.")
-            : tr("Etwa %1 Abfragen je Sekunde. Ein sehr kleiner Wert schuettet die "
-                 "Oberflaeche mit Signalen zu, ein grosser laesst die Diagramme "
+            : tr("Etwa %1 Abfragen je Sekunde. Ein sehr kleiner Wert schüttet die "
+                 "Oberfläche mit Signalen zu, ein großer lässt die Diagramme "
                  "stocken.")
                   .arg(1000 / interval));
 
@@ -332,7 +338,7 @@ void SettingsPage::chooseLogPath() {
     const QString base =
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Protokolldatei waehlen"),
+        this, tr("Protokolldatei wählen"),
         logPath_->text().isEmpty() ? base + QStringLiteral("/caruspex.log")
                                    : logPath_->text(),
         tr("Protokolldatei (*.log *.txt)"));

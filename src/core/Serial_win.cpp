@@ -121,7 +121,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
                            OPEN_EXISTING, 0, nullptr);
     if (h == INVALID_HANDLE_VALUE) {
         const DWORD err = GetLastError();
-        error = device + L(" laesst sich nicht oeffnen (Windows-Fehler ",
+        error = device + L(" lässt sich nicht öffnen (Windows-Fehler ",
                            " cannot be opened (Windows error ") +
                 std::to_string(err) + ")";
         if (err == ERROR_ACCESS_DENIED)
@@ -153,7 +153,7 @@ bool Serial::open(const std::string& device, int baud, std::string& error) {
     if (!SetCommState(h, &dcb)) {
         CloseHandle(h);
         error = L("Baudrate ", "Baud rate ") + std::to_string(baud) +
-                L(" wird nicht unterstuetzt", " is not supported");
+                L(" wird nicht unterstützt", " is not supported");
         return false;
     }
 

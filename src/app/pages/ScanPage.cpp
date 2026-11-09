@@ -15,25 +15,31 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 #include "core/Serial.h"
 
 namespace caruspex {
 
 ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     auto* root = new QVBoxLayout(this);
-    root->setContentsMargins(24, 20, 24, 20);
+    root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
-    auto* title = new QLabel(tr("Alle Steuergeraete durchsuchen"));
+    root->addWidget(makeLabel(tr("WERKSTATT"), "Eyebrow"));
+
+    auto* title = new QLabel(tr("Alle Steuergeräte durchsuchen"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
 
+
     auto* hint = new QLabel(
-        tr("Klappert der Reihe nach jedes bekannte Steuergeraet ab und zeigt, welche das "
+        tr("Klappert der Reihe nach jedes bekannte Steuergerät ab und zeigt, welche das "
            "Fahrzeug hat und wo etwas im Speicher steht. Jeder Versuch braucht wegen der "
            "5-Baud-Weckadresse ein paar Sekunden, der ganze Durchlauf also rund eine Minute. "
-           "Dafuer wird ein KKL-Kabel gebraucht, ein ELM327 kommt an die Steuergeraete "
-           "ausserhalb des Motors nicht heran."));
+           "Dafür wird ein KKL-Kabel gebraucht, ein ELM327 kommt an die Steuergeräte "
+           "außerhalb des Motors nicht heran."));
     hint->setObjectName("Hint");
     hint->setWordWrap(true);
     root->addWidget(hint);
@@ -52,7 +58,7 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     bar->addWidget(portBox_, 1);
     bar->addWidget(rescanButton_);
     bar->addWidget(startButton_);
-    clearAllButton_ = new QPushButton(tr("Ueberall loeschen"));
+    clearAllButton_ = new QPushButton(tr("Überall löschen"));
     clearAllButton_->setObjectName("Danger");
     clearAllButton_->setMinimumHeight(40);
     bar->addWidget(clearAllButton_);
@@ -64,7 +70,7 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     connect(startButton_, &QPushButton::clicked, this, [this] {
         if (running_) {
             emit cancelRequested();
-            status_->setText(tr("Abbruch angefordert, das laufende Steuergeraet wird noch "
+            status_->setText(tr("Abbruch angefordert, das laufende Steuergerät wird noch "
                                 "zu Ende gefragt ..."));
             return;
         }
@@ -72,7 +78,7 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
         if (device.isEmpty()) {
             QMessageBox::information(this, tr("Kein Anschluss"),
                                      tr("Erst ein KKL-Kabel anstecken und auf Suchen "
-                                        "druecken."));
+                                        "drücken."));
             return;
         }
         emit scanRequested(device, 0);
@@ -83,22 +89,22 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
         if (device.isEmpty()) {
             QMessageBox::information(this, tr("Kein Anschluss"),
                                      tr("Erst ein KKL-Kabel anstecken und auf Suchen "
-                                        "druecken."));
+                                        "drücken."));
             return;
         }
         QMessageBox box(this);
-        box.setWindowTitle(tr("Ueberall loeschen"));
+        box.setWindowTitle(tr("Überall löschen"));
         box.setIcon(QMessageBox::Warning);
-        box.setText(tr("In jedem gefundenen Steuergeraet den Fehlerspeicher loeschen?"));
+        box.setText(tr("In jedem gefundenen Steuergerät den Fehlerspeicher löschen?"));
         box.setInformativeText(
-            tr("Jedes Steuergeraet wird angefunkt, ausgelesen und geloescht. Klappt das "
-               "Loeschen nicht, wird es bis zu %1-mal wiederholt und jedes Mal "
-               "nachgeprueft.\n\n"
+            tr("Jedes Steuergerät wird angefunkt, ausgelesen und gelöscht. Klappt das "
+               "Löschen nicht, wird es bis zu %1-mal wiederholt und jedes Mal "
+               "nachgeprüft.\n\n"
                "Was das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. "
-               "Der steht sofort wieder drin. Loeschen ersetzt keine Reparatur.\n\n"
-               "Zuendung an, Motor aus. Der Durchlauf dauert einige Minuten.")
+               "Der steht sofort wieder drin. Löschen ersetzt keine Reparatur.\n\n"
+               "Zündung an, Motor aus. Der Durchlauf dauert einige Minuten.")
                 .arg(clearAttempts_));
-        QPushButton* yes = box.addButton(tr("Ja, ueberall loeschen"), QMessageBox::AcceptRole);
+        QPushButton* yes = box.addButton(tr("Ja, überall löschen"), QMessageBox::AcceptRole);
         box.addButton(tr("Abbrechen"), QMessageBox::RejectRole);
         box.exec();
         if (box.clickedButton() == yes) {
@@ -125,7 +131,7 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
 
     tree_ = new QTreeWidget;
     tree_->setColumnCount(3);
-    tree_->setHeaderLabels({tr("Steuergeraet"), tr("Zustand"), tr("Kennung")});
+    tree_->setHeaderLabels({tr("Steuergerät"), tr("Zustand"), tr("Kennung")});
     tree_->header()->setSectionResizeMode(0, QHeaderView::Fixed);
     tree_->header()->setSectionResizeMode(1, QHeaderView::Fixed);
     tree_->header()->setSectionResizeMode(2, QHeaderView::Stretch);
@@ -211,13 +217,13 @@ void ScanPage::onScanFinished(int present, int withFaults, bool cancelled) {
     reportButton_->setEnabled(!results_.isEmpty());
 
     if (cancelled) {
-        status_->setText(tr("Abgebrochen. %1 Steuergeraete geprueft.").arg(results_.size()));
+        status_->setText(tr("Abgebrochen. %1 Steuergeräte geprüft.").arg(results_.size()));
         return;
     }
     status_->setText(
         withFaults == 0
-            ? tr("Fertig. %1 Steuergeraete gefunden, keines meldet einen Fehler.").arg(present)
-            : tr("Fertig. %1 Steuergeraete gefunden, %2 davon mit Eintraegen im Speicher.")
+            ? tr("Fertig. %1 Steuergeräte gefunden, keines meldet einen Fehler.").arg(present)
+            : tr("Fertig. %1 Steuergeräte gefunden, %2 davon mit Einträgen im Speicher.")
                   .arg(present)
                   .arg(withFaults));
 }
@@ -226,18 +232,18 @@ void ScanPage::exportReport() {
     if (results_.isEmpty()) return;
     const QString stamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm");
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Bericht speichern"), tr("pruefbericht_%1.txt").arg(stamp),
+        this, tr("Bericht speichern"), tr("prüfbericht_%1.txt").arg(stamp),
         tr("Textdatei (*.txt)"));
     if (path.isEmpty()) return;
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Fehler"), tr("Datei laesst sich nicht schreiben."));
+        QMessageBox::warning(this, tr("Fehler"), tr("Datei lässt sich nicht schreiben."));
         return;
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << tr("Pruefbericht Caruspex") << "\n";
+    out << tr("Prüfbericht Caruspex") << "\n";
     out << tr("Erstellt am %1")
                .arg(QDateTime::currentDateTime().toString(tr("dd.MM.yyyy HH:mm")))
         << "\n";
@@ -265,7 +271,7 @@ void ScanPage::exportReport() {
         out << "\n";
     }
     out << QString(60, '-') << "\n";
-    out << tr("Insgesamt %1 Eintraege.").arg(totalFaults) << "\n";
+    out << tr("Insgesamt %1 Einträge.").arg(totalFaults) << "\n";
 }
 
 }  // namespace caruspex

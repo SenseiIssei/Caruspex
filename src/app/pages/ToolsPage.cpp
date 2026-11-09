@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -49,12 +50,17 @@ QTableWidget* makeTable(const QStringList& headers) {
 
 ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     auto* outer = new QVBoxLayout(this);
-    outer->setContentsMargins(24, 20, 24, 20);
+    outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
-    auto* title = new QLabel(tr("Pruefen und Werkzeuge"));
+    outer->addWidget(makeLabel(tr("DIAGNOSE"), "Eyebrow"));
+
+    auto* title = new QLabel(tr("Prüfen und Werkzeuge"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
+
 
     loadButton_ = new QPushButton(tr("Daten vom Fahrzeug holen"));
     loadButton_->setObjectName("Primary");
@@ -101,7 +107,7 @@ ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     // Raw commands
     QFrame* rawCard = card(tr("Adapter direkt ansprechen"), body);
     auto* hint = new QLabel(
-        tr("Fuer Fortgeschrittene: ELM327-Befehle wie ATI, ATDP oder 0100 direkt senden."));
+        tr("Für Fortgeschrittene: ELM327-Befehle wie ATI, ATDP oder 0100 direkt senden."));
     hint->setObjectName("Hint");
     hint->setWordWrap(true);
     body->addWidget(hint);
@@ -142,15 +148,15 @@ void ToolsPage::onStatus(const StatusRow& row) {
         if (ok) ++ready;
     }
     if (row.monitorNames.isEmpty()) {
-        readinessSummary_->setText(tr("Das Steuergeraet meldet keine Bereitschaftstests."));
+        readinessSummary_->setText(tr("Das Steuergerät meldet keine Bereitschaftstests."));
         return;
     }
     const int total = row.monitorNames.size();
     readinessSummary_->setText(
         ready == total
-            ? tr("Alle %1 Tests sind bereit. Fuer die Abgasuntersuchung passt das.").arg(total)
-            : tr("%1 von %2 Tests sind bereit. Fuer die Abgasuntersuchung muessen alle "
-                 "durchlaufen sein, dafuer braucht das Auto ein paar vollstaendige "
+            ? tr("Alle %1 Tests sind bereit. Für die Abgasuntersuchung passt das.").arg(total)
+            : tr("%1 von %2 Tests sind bereit. Für die Abgasuntersuchung müssen alle "
+                 "durchlaufen sein, dafür braucht das Auto ein paar vollständige "
                  "Fahrzyklen.")
                   .arg(ready)
                   .arg(total));
@@ -159,7 +165,7 @@ void ToolsPage::onStatus(const StatusRow& row) {
 void ToolsPage::onVehicleInfo(const QString& vin, const QString& freezeCode,
                               const QVector<LiveRow>& freezeRows) {
     vin_->setText(vin.isEmpty()
-                      ? tr("Fahrgestellnummer: liefert das Steuergeraet nicht "
+                      ? tr("Fahrgestellnummer: liefert das Steuergerät nicht "
                            "(bei Fahrzeugen vor etwa 2003 normal)")
                       : tr("Fahrgestellnummer: %1").arg(vin));
 

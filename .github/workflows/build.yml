@@ -28,12 +28,11 @@ jobs:
             os: ubuntu-latest
             qt_arch: linux_gcc_64
             artifact: caruspex-linux-x64
-          # macos-14 instead of macos-latest: from macOS 15 on the SDK no longer
-          # ships the AGL framework that the prebuilt Qt libraries still refer
-          # to, and the linker fails with "framework 'AGL' not found".
-          # macos-14 runs Xcode 15 and is Apple Silicon as well.
+          # macos-15: GitHub retired the macos-14 image. Its SDK no longer
+          # ships the AGL framework the prebuilt Qt 6.8 libraries still refer
+          # to; CMakeLists.txt removes that reference on Apple.
           - name: macOS
-            os: macos-14
+            os: macos-15
             qt_arch: clang_64
             artifact: caruspex-macos
 
@@ -81,7 +80,8 @@ jobs:
       - name: Trouble-code database is up to date
         run: |
           python tools/gen_dtc.py
-          git diff --exit-code src/data/DtcDatabase.gen.cpp
+          git add --intent-to-add src/data
+          git diff --exit-code -- 'src/data/*.gen.cpp'
 
       - name: Configure
         run: >

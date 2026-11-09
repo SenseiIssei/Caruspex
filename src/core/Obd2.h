@@ -1,4 +1,10 @@
 // EOBD services: read/clear faults, live values, freeze frame, readiness, VIN.
+//
+// Several control units: on CAN the engine (7E8), the transmission (7E9) and
+// sometimes a hybrid controller answer the same request. With headers off
+// their answers are mixed; switch them on with Elm327::setHeaders(true) and
+// every fault, readiness block, mode 06 and mode 09 result carries the
+// address of its control unit (ecuSource) and a plain name (ecu).
 #pragma once
 
 #include <set>
@@ -6,6 +12,7 @@
 #include <vector>
 
 #include "core/Elm327.h"
+#include "data/Pids.h"
 
 namespace caruspex {
 
@@ -15,6 +22,10 @@ struct Fault {
                         // "dauerhaft"/"permanent" (active language)
     std::string text;
     bool throttleRelated = false;
+    // Which control unit reported it, e.g. "Motor (7E8)" / "Engine (7E8)".
+    // Empty while headers are off.
+    std::string ecu;
+    std::string ecuSource;   // raw address: "7E8", "18DAF110", "10"
 };
 
 struct ReadinessItem {
@@ -27,6 +38,9 @@ struct VehicleStatus {
     int faultCount = 0;
     std::vector<ReadinessItem> readiness;
     bool valid = false;
+    bool compressionIgnition = false;  // diesel: different readiness monitors
+    std::string ecu;                   // see Fault::ecu
+    std::string ecuSource;
 };
 
 // A result from on-board component monitoring (mode 06).
@@ -35,6 +49,11 @@ struct VehicleStatus {
 // unit reports not just passed or failed, but the measured value together
 // with its lower and upper limit. So you can see how close a component is to
 // its limits long before the warning lamp comes on.
+//
+// On CAN, componentId is the monitor ID (OBDMID, e.g. 0xA2 = misfire
+// cylinder 1) and testId the test ID (TID, e.g. 0x0C = misfires in the
+// current driving cycle). On the K-line, testId is the test number and
+// componentId the component or limit ID.
 struct MonitorResult {
     int testId = 0;
     int componentId = 0;
@@ -47,7 +66,34 @@ struct MonitorResult {
     bool hasMinimum = false;
     bool hasMaximum = false;
     bool passed = true;
+    bool can = false;        // decoded with the CAN layout (OBDMID/TID)
+    int unitAndScaling = 0;  // CAN only: the unit and scaling ID
+    std::string ecu;         // see Fault::ecu
+    std::string ecuSource;
 };
+
+// Misfire counts of one cylinder (or of the whole engine), taken from the
+// mode 06 results on CAN: monitor 0xA1 is the engine as a whole, 0xA2 to
+// 0xAD are cylinders 1 to 12. Test 0x0B is the weighted average over the
+// last ten driving cycles, test 0x0C the count of the current (or last)
+// driving cycle.
+struct MisfireCount {
+    int cylinder = 0;            // 0 = whole engine
+    std::string name;            // "Zylinder 3" / "Cylinder 3", "Motor gesamt"
+    double currentCycle = 0.0;
+    double averageTenCycles = 0.0;
+    bool hasCurrent = false;
+    bool hasAverage = false;
+    std::string text;            // a plain sentence for non-mechanics
+    std::string ecu;
+    std::string ecuSource;
+};
+
+// Pulls the misfire counters out of the mode 06 results. Cylinders come in
+// order, the whole engine first. Empty if the control unit has no misfire
+// monitor results (K-line vehicles: the test numbers are not standardized
+// there, so nothing is guessed).
+std::vector<MisfireCount> misfireCounts(const std::vector<MonitorResult>& results);
 
 // Result of an oxygen sensor test (mode 05). Only exists on vehicles without
 // CAN, i.e. exactly the older ones like the Audi A2.
@@ -62,18 +108,69 @@ struct OxygenSensorTest {
 // Identifiers from mode 09.
 struct VehicleIdentity {
     std::string vin;
-    std::string calibrationId;
-    std::string calibrationVerification;
+    std::string calibrationId;            // several are joined with ", "
+    std::string calibrationVerification;  // CVN as hex, several joined with ", "
     std::string ecuName;
 };
 
+// In-use performance tracking (mode 09, InfoType 0x08 for spark ignition,
+// 0x0B for compression ignition). For every monitor the control unit counts
+// how often the test ran to the end (completed) and how often the driving
+// conditions would have allowed it (conditions). The ratio shows whether a
+// monitor runs often enough in everyday driving.
+struct InUseCounter {
+    std::string name;
+    int completed = 0;
+    int conditions = 0;
+    double ratio = 0.0;      // completed / conditions, 0 if conditions == 0
+    bool hasRatio = false;
+    std::string text;        // plain sentence
+};
+
+struct InUsePerformance {
+    bool valid = false;
+    bool sparkIgnition = true;  // 0x08 spark ignition, 0x0B compression ignition
+    int obdConditions = 0;      // driving cycles that met the OBD conditions
+    int ignitionCycles = 0;     // ignition cycles counted
+    std::vector<InUseCounter> monitors;
+};
+
+// Everything mode 09 tells about one control unit.
+struct EcuInfo {
+    std::string ecuSource;       // "7E8", empty while headers are off
+    std::string ecu;             // "Motor (7E8)", empty while headers are off
+    std::string name;            // InfoType 0x0A, e.g. "ECM-EngineControl"
+    std::string vin;             // InfoType 0x02
+    std::vector<std::string> calibrationIds;   // InfoType 0x04
+    std::vector<std::string> cvns;             // InfoType 0x06, hex "1A2B3C4D"
+    std::string esn;             // InfoType 0x0D, engine serial number
+    InUsePerformance inUse;      // InfoType 0x08 or 0x0B
+};
+
+// Mode 09 decoders, public for tests. messages are the responses of one
+// control unit without the service byte, each starting with the InfoType.
+// On CAN one message holds everything (InfoType, number of items, data); on
+// the K-line every message holds a sequence number and four data bytes.
+std::vector<int> infoPayload(const std::vector<std::vector<int>>& messages);
+std::string infoText(const std::vector<int>& payload);
+std::vector<std::string> infoCalibrationIds(const std::vector<int>& payload);
+std::vector<std::string> infoCvns(const std::vector<int>& payload);
+InUsePerformance infoInUsePerformance(int infoType, const std::vector<int>& payload);
+
 struct LiveValue {
     int pid = 0;
+    int key = 0;        // series id, see liveKey() in data/Pids.h; == pid for sub 0
+    int sub = 0;
     std::string name;
     double value = 0.0;
     std::string text;   // set if this is a status value
     std::string unit;
     bool warn = false;
+    PidCategory category = PidCategory::Engine;
+    double displayMin = 0.0;
+    double displayMax = 0.0;
+    std::string ecu;    // see Fault::ecu
+    std::string ecuSource;
 };
 
 class Obd2 {
@@ -82,10 +179,20 @@ public:
 
     std::vector<Fault> readFaults(std::string& error);
     bool clearFaults(std::string& error);
+    // Status of the first control unit that answers (normally the engine).
     VehicleStatus readStatus();
+    // Status of every control unit that answers. Needs headers to tell them
+    // apart; without headers the entries simply have no ecu name.
+    std::vector<VehicleStatus> readStatusPerEcu();
+    // Supported PIDs 0x01 to 0xE0, merged over all control units.
     std::set<int> supportedPids();
+    // Primary value of a PID (sub 0). If the control unit does not report
+    // the primary value of a multi-value PID, the first value it does report.
     bool readLive(int pid, LiveValue& out);
     std::vector<LiveValue> readLive(const std::vector<int>& pids);
+    // All values of one PID the control unit reports, e.g. both coolant
+    // sensors of PID 0x67. Empty if the PID is unknown or not answered.
+    std::vector<LiveValue> readLiveAll(int pid);
     std::string readVin();
     std::vector<LiveValue> readFreezeFrame(std::string& triggerCode);
 
@@ -93,9 +200,13 @@ public:
     // missing stays empty.
     VehicleIdentity readIdentity();
 
+    // Mode 09 in full, per control unit: name, calibration IDs, CVNs,
+    // in-use performance counters, engine serial number.
+    std::vector<EcuInfo> readEcuInfo();
+
     // Mode 06: on-board component monitoring with value and limits.
-    // On the K-line the tests are queried one by one, on CAN all at once.
-    // Both are covered here.
+    // On the K-line the tests are queried one by one, on CAN monitor by
+    // monitor. Both are covered here.
     std::vector<MonitorResult> readMonitorResults(std::string& error);
 
     // Mode 05: oxygen sensor test results. Only exists without CAN.
@@ -103,6 +214,8 @@ public:
 
 private:
     std::vector<Fault> readCodes(const std::string& service, int sid, const char* kind);
+    LiveValue makeValue(const PidSpec& spec, const PidReading& reading,
+                        const std::string& source) const;
 
     Elm327& elm_;
 };

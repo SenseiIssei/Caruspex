@@ -1,22 +1,47 @@
 #include "app/Session.h"
 
+#include <QElapsedTimer>
+#include <QThread>
 #include <QTimer>
 
+#include <algorithm>
+#include <cmath>
+
+#include "core/AdapterProbe.h"
+#include "core/DemoTransport.h"
+#include "core/analysis/DriveCycleGuide.h"
+#include "core/analysis/HealthCheck.h"
+
+#include "core/Serial.h"
 #include "core/Timing.h"
 #include "core/Transport.h"
+#include "data/DtcDatabase.h"
 #include "data/Pids.h"
 
 namespace caruspex {
+
+double appSeconds() {
+    static QElapsedTimer clock = [] {
+        QElapsedTimer t;
+        t.start();
+        return t;
+    }();
+    return clock.nsecsElapsed() / 1e9;
+}
+
 namespace {
 
 LiveRow toRow(const LiveValue& v) {
     LiveRow row;
-    row.pid = v.pid;
+    // The key tells the values of one PID apart; it equals the PID for the
+    // primary value, so everything keyed by PID keeps working.
+    row.pid = v.key != 0 ? v.key : v.pid;
     row.name = QString::fromStdString(v.name);
     row.unit = QString::fromStdString(v.unit);
     row.text = QString::fromStdString(v.text);
     row.value = v.value;
     row.warn = v.warn;
+    row.time = appSeconds();
     return row;
 }
 
@@ -38,40 +63,74 @@ Worker::~Worker() {
     kline_.close();
 }
 
-void Worker::openSerial(const QString& device, int baud, const QString& protocolOrder) {
-    emit busy(true);
-    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
-
+bool Worker::finishConnect(std::unique_ptr<ITransport> transport, const QString& protocolOrder,
+                           bool reportFailure) {
     std::string error;
-    std::unique_ptr<ITransport> transport;
-    // Without a preset, try the usual baud rates; clones are picky about this.
-    const QVector<int> bauds = baud > 0 ? QVector<int>{baud}
-                                        : QVector<int>{38400, 9600, 115200, 500000};
-    for (int b : bauds) {
-        auto candidate = std::make_unique<SerialTransport>();
-        if (candidate->open(device.toStdString(), b, error)) {
-            transport = std::move(candidate);
-            emit logLine(tr("Anschluss %1 offen bei %2 Baud").arg(device).arg(b));
-            break;
-        }
-    }
-    if (!transport) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
-        return;
-    }
-
     if (!elm_.connect(std::move(transport), protocolOrder.toStdString(), error)) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
-        return;
+        if (reportFailure) emit failed(QString::fromStdString(error));
+        else emit logLine(QString::fromStdString(error));
+        return false;
     }
+    // On CAN several control units may answer; with headers on, every fault
+    // keeps the unit it came from.
+    if (elm_.isCan()) elm_.setHeaders(true);
     obd_ = std::make_unique<Obd2>(elm_);
     emit connected(QString::fromStdString(elm_.version()),
                    QString::fromStdString(elm_.transportName()),
                    QString::fromStdString(elm_.protocolText()));
+    return true;
+}
+
+void Worker::openSerial(const QString& device, int baud, const QString& protocolOrder) {
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+
+    // An empty device means: look for the adapter on every port. Only the
+    // usual rates are tried there, otherwise a computer with many ports
+    // would keep the user waiting for minutes.
+    QStringList devices;
+    if (device.isEmpty()) {
+        for (const PortInfo& p : enumeratePorts()) devices << QString::fromStdString(p.device);
+        if (devices.isEmpty()) {
+            emit busy(false);
+            emit failed(tr("Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist "
+                           "ein Bluetooth-Adapter gekoppelt?"));
+            return;
+        }
+    } else {
+        devices << device;
+    }
+    const bool searching = device.isEmpty();
+    const QVector<int> bauds = baud > 0           ? QVector<int>{baud}
+                               : searching ? QVector<int>{38400, 115200, 9600}
+                                           : QVector<int>{38400, 9600, 115200, 500000};
+
+    std::string error;
+    for (const QString& candidateDevice : devices) {
+        if (searching) emit logLine(tr("Probiere %1 ...").arg(candidateDevice));
+        for (int b : bauds) {
+            auto candidate = std::make_unique<SerialTransport>();
+            if (!candidate->open(candidateDevice.toStdString(), b, error)) break;
+            emit logLine(tr("Anschluss %1 offen bei %2 Baud").arg(candidateDevice).arg(b));
+            const bool last = !searching && b == bauds.back();
+            if (finishConnect(std::move(candidate), protocolOrder, last)) {
+                if (searching) emit adapterFound(candidateDevice);
+                emit busy(false);
+                refreshStatusAndFaults();
+                return;
+            }
+            if (!searching) break;
+        }
+        if (!searching) {
+            emit busy(false);
+            if (!error.empty()) emit failed(QString::fromStdString(error));
+            return;
+        }
+    }
     emit busy(false);
-    refreshStatusAndFaults();
+    emit failed(searching ? tr("An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und "
+                               "Adapter richtig eingesteckt?")
+                          : QString::fromStdString(error));
 }
 
 void Worker::openTcp(const QString& host, int port, const QString& protocolOrder) {
@@ -85,17 +144,54 @@ void Worker::openTcp(const QString& host, int port, const QString& protocolOrder
         emit failed(QString::fromStdString(error));
         return;
     }
-    if (!elm_.connect(std::move(transport), protocolOrder.toStdString(), error)) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
+    const bool ok = finishConnect(std::move(transport), protocolOrder, true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::openDemo(const QString& protocolOrder) {
+    // The demo car speaks CAN; the K-line protocols would only cost seconds.
+    Q_UNUSED(protocolOrder);
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    const bool ok = finishConnect(std::make_unique<DemoTransport>(), QStringLiteral("6"), true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::probeAdapter() {
+    if (!elm_.connected()) {
+        emit failed(tr("Für den Adaptertest erst verbinden."));
         return;
     }
-    obd_ = std::make_unique<Obd2>(elm_);
-    emit connected(QString::fromStdString(elm_.version()),
-                   QString::fromStdString(elm_.transportName()),
-                   QString::fromStdString(elm_.protocolText()));
+    stopLive();
+    stopVoltagePoll();
+    emit busy(true);
+    const AdapterReport report = caruspex::probeAdapter(elm_);
+    AdapterRow row;
+    row.reachable = report.reachable;
+    row.version = QString::fromStdString(report.versionText);
+    row.description = QString::fromStdString(report.description);
+    row.isStn = report.isStn;
+    row.stnId = QString::fromStdString(report.stnId);
+    row.voltage = report.voltage;
+    row.hasVoltage = report.hasVoltage;
+    row.roundTripMs = report.roundTripMs;
+    row.roundTripWithHintMs = report.roundTripWithHintMs;
+    row.behavesLike = report.behavesLikeLevel > 0
+                          ? QString::fromStdString(versionText(report.behavesLikeLevel))
+                          : QString();
+    row.acceptsUnknown = report.acceptsUnknownCommands;
+    row.verdict = QString::fromStdString(report.verdict.get());
+    for (const auto& f : report.facts) row.facts << QString::fromStdString(f.get());
+    for (const auto& t : report.speedTips) row.speedTips << QString::fromStdString(t.get());
+    for (const CommandCheck& c : report.checks) {
+        row.checks.push_back({QString::fromStdString(c.command),
+                              QString::fromStdString(versionText(c.introducedIn)), c.supported,
+                              QString::fromStdString(c.purpose.get())});
+    }
+    emit adapterReport(row);
     emit busy(false);
-    refreshStatusAndFaults();
 }
 
 void Worker::closeAdapter() {
@@ -125,12 +221,12 @@ void Worker::refreshStatusAndFaults() {
     for (const Fault& f : obd_->readFaults(error)) {
         rows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
                         QString::fromStdString(f.text), f.throttleRelated,
-                        isStoredKind(f.kind)});
+                        isStoredKind(f.kind), QString::fromStdString(f.ecu)});
     }
     emit faults(rows);
     emit logLine(rows.isEmpty()
                      ? tr("Fehlerspeicher gelesen: kein Eintrag.")
-                     : tr("Fehlerspeicher gelesen: %1 Eintraege.").arg(rows.size()));
+                     : tr("Fehlerspeicher gelesen: %1 Einträge.").arg(rows.size()));
 
     QVector<int> supported;
     for (int pid : obd_->supportedPids()) supported.push_back(pid);
@@ -147,8 +243,8 @@ void Worker::clearFaults() {
     emit busy(true);
     std::string error;
     const bool ok = obd_->clearFaults(error);
-    emit logLine(ok ? tr("Fehlerspeicher geloescht.")
-                    : tr("Loeschen fehlgeschlagen: %1")
+    emit logLine(ok ? tr("Fehlerspeicher gelöscht.")
+                    : tr("Löschen fehlgeschlagen: %1")
                           .arg(QString::fromStdString(error)));
     emit busy(false);
     refreshStatusAndFaults();
@@ -162,6 +258,15 @@ void Worker::readDetails() {
     QVector<LiveRow> frame;
     for (const LiveValue& v : obd_->readFreezeFrame(code)) frame.push_back(toRow(v));
     emit vehicleInfo(vin, QString::fromStdString(code), frame);
+
+    // One reading of the values the start page shows as tiles, so they are
+    // not empty until a measurement runs.
+    const std::set<int> supported = obd_->supportedPids();
+    for (int pid : {0x05, 0x2F, 0x42, 0xA6}) {
+        if (!supported.empty() && !supported.count(pid)) continue;
+        LiveValue value;
+        if (obd_->readLive(pid, value)) emit liveValue(toRow(value));
+    }
     emit busy(false);
 }
 
@@ -195,8 +300,7 @@ void Worker::pollTick() {
     const int pid = pollPids_[pollIndex_ % pollPids_.size()];
     pollIndex_ = (pollIndex_ + 1) % pollPids_.size();
 
-    LiveValue value;
-    if (obd_->readLive(pid, value)) emit liveValue(toRow(value));
+    for (const LiveValue& value : obd_->readLiveAll(pid)) emit liveValue(toRow(value));
 }
 
 void Worker::sendRaw(const QString& command) {
@@ -212,7 +316,7 @@ void Worker::sendRaw(const QString& command) {
 void Worker::openKkl(const QString& device, int ecuAddress) {
     closeKkl();
     emit busy(true);
-    emit kklMessage(tr("Wecke das Steuergeraet mit der 5-Baud-Adresse, "
+    emit kklMessage(tr("Wecke das Steuergerät mit der 5-Baud-Adresse, "
                        "das dauert etwa drei Sekunden ..."), false);
 
     std::string error;
@@ -248,8 +352,8 @@ void Worker::openKkl(const QString& device, int ecuAddress) {
     emit kklConnected(true, identification.join(QStringLiteral("  |  ")));
     emit kklProtocol(QString::fromStdString(kwp_->protocolName()),
                      kwp_->protocol() == KLineProtocol::Kwp2000);
-    emit kklMessage(tr("Verbunden mit %1 ueber %2. Vor dem Start die Punkte "
-                       "oben pruefen.")
+    emit kklMessage(tr("Verbunden mit %1 über %2. Vor dem Start die Punkte "
+                       "oben prüfen.")
                         .arg(QString::fromStdString(ecuName(ecu)),
                              QString::fromStdString(kwp_->protocolName())),
                     false);
@@ -281,7 +385,7 @@ void Worker::startBasicSetting(int group) {
                          &Worker::basicSettingTick);
     }
     basicSettingTimer_->start();
-    emit kklMessage(tr("Grundeinstellung im Messwertblock %1 laeuft. Gaspedal "
+    emit kklMessage(tr("Grundeinstellung im Messwertblock %1 läuft. Gaspedal "
                        "nicht antippen.")
                         .arg(group),
                     false);
@@ -390,14 +494,14 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
             if (!row.faults.isEmpty()) ++withFaults;
             row.note = row.faults.isEmpty()
                            ? tr("kein Eintrag")
-                           : tr("%1 Eintraege").arg(row.faults.size());
+                           : tr("%1 Einträge").arg(row.faults.size());
 
             // Persistent clear: read back after every attempt. Some control
             // units only accept the clear command on the second try.
             if (clearAttempts > 0 && !faults.empty()) {
                 bool cleared = false;
                 for (int attempt = 1; attempt <= clearAttempts && !cleared; ++attempt) {
-                    emit clearProgress(tr("%1: loesche, Versuch %2 von %3")
+                    emit clearProgress(tr("%1: lösche, Versuch %2 von %3")
                                            .arg(row.name)
                                            .arg(attempt)
                                            .arg(clearAttempts));
@@ -413,11 +517,11 @@ void Worker::scanAllEcus(const QString& device, int clearAttempts) {
                 }
                 if (cleared) {
                     row.faults.clear();
-                    row.note = tr("geloescht");
+                    row.note = tr("gelöscht");
                     --withFaults;
                     emit clearProgress(tr("   %1: leer").arg(row.name));
                 } else {
-                    row.note = tr("%1 Eintraege, Loeschen ohne Wirkung")
+                    row.note = tr("%1 Einträge, Löschen ohne Wirkung")
                                    .arg(row.faults.size());
                     emit clearProgress(
                         tr("   %1: bleibt bestehen, die Ursache ist noch da")
@@ -454,7 +558,7 @@ void Worker::bruteForceClear(int attempts) {
         std::string error;
         const bool acknowledged = obd_->clearFaults(error);
         if (!acknowledged) {
-            emit clearProgress(tr("   Steuergeraet quittiert nicht: %1")
+            emit clearProgress(tr("   Steuergerät quittiert nicht: %1")
                                    .arg(QString::fromStdString(error)));
         }
         sleepMs(600);
@@ -468,7 +572,7 @@ void Worker::bruteForceClear(int attempts) {
             refreshStatusAndFaults();
             return;
         }
-        emit clearProgress(tr("   noch %1 Eintraege").arg(remaining));
+        emit clearProgress(tr("   noch %1 Einträge").arg(remaining));
 
         // From the second failure on, re-establish the connection. Some control
         // units only open the clear window right after waking up.
@@ -511,7 +615,7 @@ void Worker::applySettings(const AppSettings& values) {
 
 void Worker::setBasicSettingSession(int mode) {
     if (kwp_) kwp_->setBasicSettingSession(static_cast<std::uint8_t>(mode));
-    emit logLine(tr("Sitzungsart fuer die Grundeinstellung: 0x%1")
+    emit logLine(tr("Sitzungsart für die Grundeinstellung: 0x%1")
                      .arg(QStringLiteral("%1").arg(mode, 2, 16, QChar('0')).toUpper()));
 }
 
@@ -568,6 +672,154 @@ void Worker::runActuatorTest() {
 
 // Modes 06, 05 and 09 in one go: everything the control unit reveals about
 // itself and its running self-tests.
+void Worker::runHealthCheck(int seconds) {
+    using namespace analysis;
+    if (!obd_) {
+        emit failed(tr("Für den Gesundheitscheck erst verbinden."));
+        return;
+    }
+    stopLive();
+    cancelScan_ = false;
+    emit busy(true);
+    HealthInput input;
+
+    emit healthProgress(tr("Bereitschaft und Fehlerlampe"), 4);
+    const VehicleStatus st = obd_->readStatus();
+    input.setStatus(st);
+    StatusRow statusRow;
+    statusRow.valid = st.valid;
+    statusRow.mil = st.milOn;
+    statusRow.faultCount = st.faultCount;
+    for (const ReadinessItem& item : st.readiness) {
+        statusRow.monitorNames << QString::fromStdString(item.name);
+        statusRow.monitorReady << item.ready;
+    }
+    emit status(statusRow);
+
+    emit healthProgress(tr("Fehlerspeicher"), 10);
+    std::string error;
+    input.faults = obd_->readFaults(error);
+    input.faultsRead = error.empty();
+    QVector<FaultRow> faultRows;
+    for (const Fault& f : input.faults) {
+        faultRows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
+                             QString::fromStdString(f.text), f.throttleRelated,
+                             isStoredKind(f.kind), QString::fromStdString(f.ecu)});
+    }
+    emit faults(faultRows);
+    input.faultLevel = [](const Fault& f) {
+        // The database knows how urgent a code is; pending codes count one
+        // step lower, they may still disappear on their own.
+        const Severity severity = lookupDtc(f.code).severity;
+        Level level = Level::Info;
+        if (severity == Severity::Critical) level = Level::Critical;
+        else if (severity == Severity::High || severity == Severity::Medium) level = Level::Warning;
+        if (!isStoredKind(f.kind) && level == Level::Warning) level = Level::Info;
+        return level;
+    };
+
+    emit healthProgress(tr("Bauteilprüfung (Modus 06)"), 18);
+    std::string monitorNote;
+    input.monitorResults = obd_->readMonitorResults(monitorNote);
+    input.monitorResultsRead = true;
+
+    LiveValue fuelType;
+    if (obd_->readLive(0x51, fuelType)) {
+        const int code = static_cast<int>(fuelType.value);
+        input.fuel = (code == 4 || code == 23)               ? FuelType::Diesel
+                     : (code == 1 || code == 9 || code == 17) ? FuelType::Petrol
+                                                               : FuelType::Unknown;
+    }
+
+    // Live series: only what the car offers.
+    const std::set<int> supported = obd_->supportedPids();
+    const int wanted[] = {0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0C, 0x0D, 0x0F, 0x10,
+                          0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1F, 0x21, 0x30, 0x31, 0x3C,
+                          0x42, 0x5C};
+    std::vector<int> pids;
+    for (int pid : wanted) {
+        if (supported.empty() || supported.count(pid)) pids.push_back(pid);
+    }
+    const double start = appSeconds();
+    const int total = std::max(1, seconds);
+    while (!pids.empty() && appSeconds() - start < seconds && !cancelScan_) {
+        for (int pid : pids) {
+            LiveValue value;
+            if (obd_->readLive(pid, value)) {
+                input.addValue(pid, value.value, appSeconds() - start);
+                emit liveValue(toRow(value));
+            }
+            if (cancelScan_) break;
+        }
+        const double elapsed = appSeconds() - start;
+        const int left = std::max(0, seconds - static_cast<int>(elapsed));
+        const int percent = 25 + static_cast<int>(70.0 * elapsed / total);
+        emit healthProgress(tr("Messwerte sammeln, noch %1 s").arg(left), std::min(95, percent));
+    }
+
+    const HealthReport report = analysis::runHealthCheck(input);
+    HealthRow row;
+    row.score = report.score;
+    row.grade = static_cast<int>(report.grade);
+    row.summary = QString::fromStdString(report.summary.text());
+    row.checksRun = report.checksRun;
+    row.diesel = input.fuel == FuelType::Diesel;
+    for (const Finding& f : report.findings) {
+        HealthFindingRow fr;
+        fr.level = static_cast<int>(f.level);
+        fr.title = QString::fromStdString(f.title.text());
+        fr.explanation = QString::fromStdString(f.explanation.text());
+        fr.advice = QString::fromStdString(f.advice.text());
+        row.findings.push_back(fr);
+    }
+    for (const SkippedCheck& skipped : report.notChecked) {
+        row.notChecked << QStringLiteral("%1: %2").arg(QString::fromStdString(skipped.title.text()),
+                                                       QString::fromStdString(skipped.reason.text()));
+    }
+    for (const MonitorState& m : input.readiness) {
+        if (!m.supported) continue;
+        const MonitorGuide& guide = driveCycleGuide(m.monitor);
+        MonitorGuideRow g;
+        g.name = QString::fromUtf8(guide.name.get());
+        g.complete = m.complete;
+        g.explanation = QString::fromUtf8(guide.explanation.get());
+        g.drivePattern = QString::fromUtf8(guide.drivePattern.get());
+        g.typicalTime = QString::fromUtf8(guide.typicalTime.get());
+        g.coldStart = guide.needsColdStart;
+        row.monitors.push_back(g);
+    }
+    emit healthProgress(tr("Fertig"), 100);
+    emit healthResult(row);
+    emit busy(false);
+}
+
+void Worker::startVoltagePoll(int intervalMs) {
+    if (!elm_.connected()) return;
+    stopLive();
+    if (!voltageTimer_) {
+        voltageTimer_ = new QTimer(this);
+        connect(voltageTimer_, &QTimer::timeout, this, [this] {
+            const ElmResult r = elm_.send("ATRV", 1000);
+            for (const std::string& line : r.lines) {
+                QString text = QString::fromStdString(line).trimmed();
+                text.remove(QLatin1Char('V'));
+                bool ok = false;
+                const double volts = text.toDouble(&ok);
+                if (ok && volts > 3.0 && volts < 32.0) {
+                    emit adapterVoltage(volts, appSeconds());
+                    break;
+                }
+            }
+        });
+    }
+    voltageTimer_->setInterval(std::max(20, intervalMs));
+    voltageTimer_->start();
+}
+
+void Worker::stopVoltagePoll() {
+    if (voltageTimer_) voltageTimer_->stop();
+}
+
 void Worker::readMonitors() {
     if (!obd_) {
         emit monitorResults({}, tr("Nicht verbunden."));
@@ -611,7 +863,7 @@ void Worker::readMonitors() {
     emit oxygenTests(oxygenRows, QString::fromStdString(oxygenNote));
 
     emit busy(false);
-    emit logLine(tr("Bauteilueberwachung gelesen: %1 Tests, %2 Sondenpruefungen.")
+    emit logLine(tr("Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.")
                      .arg(rows.size())
                      .arg(oxygenRows.size()));
 }
@@ -631,6 +883,8 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<QVector<OxygenRow>>("QVector<caruspex::OxygenRow>");
     qRegisterMetaType<QVector<int>>("QVector<int>");
     qRegisterMetaType<AppSettings>("caruspex::AppSettings");
+    qRegisterMetaType<HealthRow>("caruspex::HealthRow");
+    qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
 
     worker_ = new Worker();
     worker_->moveToThread(&thread_);
@@ -638,6 +892,7 @@ Session::Session(QObject* parent) : QObject(parent) {
 
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
+    connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
     connect(this, &Session::closeRequested, worker_, &Worker::closeAdapter);
     connect(this, &Session::readFaultsRequested, worker_, &Worker::readFaults);
     connect(this, &Session::clearFaultsRequested, worker_, &Worker::clearFaults);
@@ -657,6 +912,10 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::readAdaptationChannel);
     connect(this, &Session::actuatorTestRequested, worker_,
             &Worker::runActuatorTest);
+    connect(this, &Session::healthCheckRequested, worker_, &Worker::runHealthCheck);
+    connect(this, &Session::probeAdapterRequested, worker_, &Worker::probeAdapter);
+    connect(this, &Session::voltagePollRequested, worker_, &Worker::startVoltagePoll);
+    connect(this, &Session::voltagePollStopRequested, worker_, &Worker::stopVoltagePoll);
     connect(this, &Session::readMonitorsRequested, worker_,
             &Worker::readMonitors);
     connect(this, &Session::basicSettingSessionRequested, worker_,

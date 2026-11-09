@@ -4,6 +4,7 @@
 //   caruspex_cli kklcheck --port COM3
 //   caruspex_cli read --tcp 127.0.0.1:35000
 //   caruspex_cli read --port COM5 --baud 38400
+//   caruspex_cli ecus --tcp 127.0.0.1:35000   (per control unit, all live values)
 
 #include <cstdio>
 #include <cstring>
@@ -219,6 +220,42 @@ int main(int argc, char** argv) {
                 std::printf("  %-32s %s\n", v.name.c_str(), v.text.c_str());
             } else {
                 std::printf("  %-32s %10.2f %s\n", v.name.c_str(), v.value, v.unit.c_str());
+            }
+        }
+    } else if (command == "ecus") {
+        // Everything per control unit: headers on, so every answer keeps
+        // its sender.
+        if (!elm.setHeaders(true)) std::printf("Adapter refused headers (ATH1).\n");
+        std::string err;
+        for (const VehicleStatus& s : obd.readStatusPerEcu()) {
+            std::printf("%-20s MIL %s, %d code(s), %s\n", s.ecu.c_str(), s.milOn ? "ON" : "off",
+                        s.faultCount, s.compressionIgnition ? "diesel" : "spark ignition");
+        }
+        for (const Fault& f : obd.readFaults(err)) {
+            std::printf("  %s [%s] %s\n", f.code.c_str(), f.kind.c_str(), f.ecu.c_str());
+        }
+        for (const EcuInfo& e : obd.readEcuInfo()) {
+            std::printf("\n%s: %s\n", e.ecu.c_str(), e.name.c_str());
+            if (!e.vin.empty()) std::printf("  VIN  %s\n", e.vin.c_str());
+            for (const std::string& id : e.calibrationIds) std::printf("  CALID %s\n", id.c_str());
+            for (const std::string& c : e.cvns) std::printf("  CVN  %s\n", c.c_str());
+            for (const InUseCounter& c : e.inUse.monitors) {
+                std::printf("  %-40s %s\n", c.name.c_str(), c.text.c_str());
+            }
+        }
+        std::printf("\n");
+        for (const MisfireCount& m : misfireCounts(obd.readMonitorResults(err))) {
+            std::printf("  %s\n", m.text.c_str());
+        }
+        std::printf("\n");
+        for (int pid : obd.supportedPids()) {
+            for (const LiveValue& v : obd.readLiveAll(pid)) {
+                if (!v.text.empty()) {
+                    std::printf("  %03X %-50s %s\n", v.key, v.name.c_str(), v.text.c_str());
+                } else {
+                    std::printf("  %03X %-50s %10.2f %s\n", v.key, v.name.c_str(), v.value,
+                                v.unit.c_str());
+                }
             }
         }
     } else {

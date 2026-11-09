@@ -122,7 +122,7 @@ TEST_CASE("VAG numbers are translated into P-codes", "[vag]") {
     REQUIRE(vagCodeToPCode(0).empty());
 
     REQUIRE(describeVagFault(16486).find("Luftmassenmesser") != std::string::npos);
-    REQUIRE(describeVagFault(522).find("Kuehlmitteltemperaturgeber") != std::string::npos);
+    REQUIRE(describeVagFault(522).find("Kühlmitteltemperaturgeber") != std::string::npos);
     REQUIRE(describeVagFault(1249).find("Zylinder 1") != std::string::npos);
     // Unknown numbers do not fall over.
     REQUIRE_FALSE(describeVagFault(9999).empty());
@@ -139,7 +139,7 @@ TEST_CASE("The same VAG number means something different per control unit", "[va
     // And 01177: in the engine the control unit adaptation, in the
     // immobilizer the missing adaptation to the engine.
     REQUIRE(describeVagFault(1177, 0x01).find("Anpassung") != std::string::npos);
-    REQUIRE(describeVagFault(1177, 0x25).find("Motorsteuergeraet") != std::string::npos);
+    REQUIRE(describeVagFault(1177, 0x25).find("Motorsteuergerät") != std::string::npos);
 
     // Wheel speed sensors only exist in the brake control unit.
     REQUIRE(describeVagFault(283, 0x03).find("vorne links") != std::string::npos);
@@ -151,12 +151,12 @@ TEST_CASE("The same VAG number means something different per control unit", "[va
 
     // Door control units belong to the comfort area, even under their own address.
     REQUIRE(areaForEcuAddress(0x42) == FaultArea::Comfort);
-    REQUIRE(describeVagFault(1331, 0x42).find("Tuersteuergeraet") != std::string::npos);
+    REQUIRE(describeVagFault(1331, 0x42).find("Türsteuergerät") != std::string::npos);
 
     // Power supply applies everywhere, no matter which control unit reports it.
     REQUIRE(describeVagFault(532, 0x01).find("Klemme 30") != std::string::npos);
     REQUIRE(describeVagFault(532, 0x15).find("Klemme 30") != std::string::npos);
-    REQUIRE(describeVagFault(65535, 0x46).find("Steuergeraetefehler") != std::string::npos);
+    REQUIRE(describeVagFault(65535, 0x46).find("Steuergerätefehler") != std::string::npos);
 
     // Without an address it guesses, but labels the match as a guess.
     REQUIRE(describeVagFault(283, -1).find("vermutlich") != std::string::npos);
@@ -215,14 +215,18 @@ TEST_CASE("Component monitoring converts correctly", "[monitor]") {
     // ID 0x0B: voltage in millivolts.
     REQUIRE(monitorScale(0x0B, 1000, unit) == Catch::Approx(1.0));
     REQUIRE(unit == "V");
-    // ID 0x24: temperature, a tenth of a degree with offset.
-    REQUIRE(monitorScale(0x24, 800, unit) == Catch::Approx(40.0));
+    // ID 0x16: temperature, a tenth of a degree with offset (SAE J1979).
+    REQUIRE(monitorScale(0x16, 800, unit) == Catch::Approx(40.0));
     REQUIRE(unit == "Grad C");
-    // ID 0x1E: engine speed in quarters.
-    REQUIRE(monitorScale(0x1E, 4000, unit) == Catch::Approx(1000.0));
+    // ID 0x07: engine speed in quarters.
+    REQUIRE(monitorScale(0x07, 4000, unit) == Catch::Approx(1000.0));
     REQUIRE(unit == "1/min");
+    // ID 0x24: plain counts, as the misfire monitors use them.
+    REQUIRE(monitorScale(0x24, 17, unit) == Catch::Approx(17.0));
+    // Signed IDs read the two bytes as two's complement.
+    REQUIRE(monitorScale(0x96, 0xFFF6, unit) == Catch::Approx(-1.0));
     // An unknown ID returns the raw value instead of nonsense.
-    REQUIRE(monitorScale(0xFE, 1234, unit) == Catch::Approx(1234.0));
+    REQUIRE(monitorScale(0x7E, 1234, unit) == Catch::Approx(1234.0));
 
     REQUIRE_FALSE(monitorTestName(0x21).empty());
     REQUIRE(monitorComponentName(0x21).find("Katalysator") != std::string::npos);

@@ -15,6 +15,7 @@
 
 #include "app/GaugeWidget.h"
 #include "app/Theme.h"
+#include "app/Widgets.h"
 #include "core/Kwp1281.h"
 #include "core/Serial.h"
 
@@ -41,12 +42,17 @@ QFrame* card(const QString& heading, QVBoxLayout*& body) {
 
 ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     auto* outer = new QVBoxLayout(this);
-    outer->setContentsMargins(24, 20, 24, 20);
+    outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
+    outer->addWidget(makeLabel(tr("WERKSTATT"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Drosselklappe anlernen"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
+
 
     auto* scroll = new QScrollArea;
     scroll->setWidgetResizable(true);
@@ -60,18 +66,18 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     QVBoxLayout* body = nullptr;
     QFrame* intro = card(tr("Zwei Wege, je nach Adapter"), body);
     auto* explain = new QLabel(
-        tr("Die Grundeinstellung ist keine EOBD-Funktion. Ueber einen ELM327-Adapter kommt "
+        tr("Die Grundeinstellung ist keine EOBD-Funktion. Über einen ELM327-Adapter kommt "
            "man nicht daran. Mit einem KKL-Kabel (VAG 409.1) geht es, Caruspex spricht die "
            "VAG-Protokolle selbst.\n\n"
-           "Welches Protokoll das Steuergeraet spricht, verraet es nach der Weckadresse "
+           "Welches Protokoll das Steuergerät spricht, verrät es nach der Weckadresse "
            "selbst, und Caruspex richtet sich danach:\n"
-           "  - KWP1281, das alte Blockprotokoll. Ueblich beim 1.4 mit "
-           "Saugrohreinspritzung. Dort gibt es einen eigenen Befehl fuer die "
+           "  - KWP1281, das alte Blockprotokoll. Üblich beim 1.4 mit "
+           "Saugrohreinspritzung. Dort gibt es einen eigenen Befehl für die "
            "Grundeinstellung.\n"
-           "  - KWP2000, der Nachfolger. Ueblich beim 1.6 FSI mit Bosch MED. Dort wird "
-           "stattdessen eine andere Sitzungsart eroeffnet.\n\n"
-           "Der Messwertblock haengt am Motor: 060 bei Saugrohreinspritzung, 098 bei "
-           "Direkteinspritzung. Meldet das Steuergeraet, dass es den Block nicht kennt, "
+           "  - KWP2000, der Nachfolger. Üblich beim 1.6 FSI mit Bosch MED. Dort wird "
+           "stattdessen eine andere Sitzungsart eröffnet.\n\n"
+           "Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei "
+           "Direkteinspritzung. Meldet das Steuergerät, dass es den Block nicht kennt, "
            "nimm den anderen."));
     explain->setObjectName("Subtle");
     explain->setWordWrap(true);
@@ -113,21 +119,21 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
         if (port.isEmpty()) {
             QMessageBox::information(this, tr("Kein Anschluss"),
                                      tr("Erst ein KKL-Kabel anstecken und auf Suchen "
-                                        "druecken."));
+                                        "drücken."));
             return;
         }
         emit kklConnectRequested(port, static_cast<int>(Ecu::Engine));
     });
 
     // --- Prerequisites ------------------------------------------------------
-    QFrame* checks = card(tr("Vorher pruefen"), body);
+    QFrame* checks = card(tr("Vorher prüfen"), body);
     checklistHint_ = new QLabel(
-        tr("Damit das Anlernen sauber durchlaeuft, muessen diese Punkte stimmen:\n"
-           "  - Motor betriebswarm, mindestens 80 Grad Kuehlmitteltemperatur\n"
-           "  - Alle Verbraucher aus: Licht, Geblaese, Klima, Heckscheibe\n"
+        tr("Damit das Anlernen sauber durchläuft, müssen diese Punkte stimmen:\n"
+           "  - Motor betriebswarm, mindestens 80 Grad Kühlmitteltemperatur\n"
+           "  - Alle Verbraucher aus: Licht, Gebläse, Klima, Heckscheibe\n"
            "  - Lenkrad geradeaus, Getriebe in Leerlauf, Handbremse angezogen\n"
-           "  - Gaspedal nicht antippen, waehrend die Grundeinstellung laeuft\n"
-           "  - Fehlerspeicher vorher loeschen, sonst bricht das Steuergeraet ab"));
+           "  - Gaspedal nicht antippen, während die Grundeinstellung läuft\n"
+           "  - Fehlerspeicher vorher löschen, sonst bricht das Steuergerät ab"));
     checklistHint_->setObjectName("Subtle");
     checklistHint_->setWordWrap(true);
     body->addWidget(checklistHint_);
@@ -139,7 +145,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     groupBox_ = new QComboBox;
     groupBox_->addItem(tr("Messwertblock 060 (Saugrohreinspritzung, z.B. 1.4 MPI)"), 60);
     groupBox_->addItem(tr("Messwertblock 098 (Direkteinspritzung, z.B. 1.6 FSI)"), 98);
-    groupBox_->addItem(tr("Messwertblock 001 (nur beobachten, veraendert nichts)"), 1);
+    groupBox_->addItem(tr("Messwertblock 001 (nur beobachten, verändert nichts)"), 1);
     runButton_ = new QPushButton(tr("Grundeinstellung starten"));
     runButton_->setObjectName("Primary");
     runButton_->setMinimumHeight(40);
@@ -157,7 +163,7 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     auto* sessionRow = new QHBoxLayout(sessionWidget);
     sessionRow->setContentsMargins(0, 0, 0, 0);
     sessionBox_ = new QComboBox;
-    sessionBox_->addItem(tr("Sitzung 0x85 (Anpassung, ueblich)"), 0x85);
+    sessionBox_->addItem(tr("Sitzung 0x85 (Anpassung, üblich)"), 0x85);
     sessionBox_->addItem(tr("Sitzung 0x86"), 0x86);
     sessionBox_->addItem(tr("Sitzung 0x87"), 0x87);
     sessionBox_->addItem(tr("Sitzung 0x89 (Diagnose, nur lesen)"), 0x89);
@@ -171,11 +177,11 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     });
 
     sessionHint_ = new QLabel(
-        tr("Steuergeraete mit KWP2000 kennen keinen eigenen Befehl fuer die "
-           "Grundeinstellung. Stattdessen wird eine andere Sitzungsart eroeffnet und "
-           "derselbe Messwertblock gelesen, das Steuergeraet regelt dann mit. Welche "
-           "Sitzungsart es verlangt, steht in keinem oeffentlichen Papier. Lehnt es die "
-           "erste ab, nimm die naechste."));
+        tr("Steuergeräte mit KWP2000 kennen keinen eigenen Befehl für die "
+           "Grundeinstellung. Stattdessen wird eine andere Sitzungsart eröffnet und "
+           "derselbe Messwertblock gelesen, das Steuergerät regelt dann mit. Welche "
+           "Sitzungsart es verlangt, steht in keinem öffentlichen Papier. Lehnt es die "
+           "erste ab, nimm die nächste."));
     sessionHint_->setObjectName("Hint");
     sessionHint_->setWordWrap(true);
     body->addWidget(sessionHint_);
@@ -224,10 +230,10 @@ ThrottlePage::ThrottlePage(QWidget* parent) : QWidget(parent) {
     eobdHint_ = new QLabel(
         tr("Wenn kein KKL-Kabel da ist, klappt das bei vielen VAG-Motoren auch so. "
            "Garantiert ist es nicht.\n\n"
-           "  1. Fehlerspeicher loeschen\n"
-           "  2. Zuendung aus, Batterie 30 Minuten abklemmen, wieder anklemmen\n"
-           "  3. Zuendung an, 30 Sekunden warten, Motor NICHT starten. Die Klappe faehrt "
-           "dabei hoerbar ihre Endanschlaege ab\n"
+           "  1. Fehlerspeicher löschen\n"
+           "  2. Zündung aus, Batterie 30 Minuten abklemmen, wieder anklemmen\n"
+           "  3. Zündung an, 30 Sekunden warten, Motor NICHT starten. Die Klappe fährt "
+           "dabei hörbar ihre Endanschläge ab\n"
            "  4. Motor starten, 3 bis 5 Minuten im Leerlauf warm laufen lassen, Gaspedal "
            "nicht antippen\n"
            "  5. Fehlerspeicher erneut auslesen"));
@@ -269,7 +275,7 @@ void ThrottlePage::setKklConnected(bool connected, const QString& identification
     kklConnected_ = connected;
     if (!connected) running_ = false;
     connectButton_->setText(connected ? tr("Trennen") : tr("Verbinden"));
-    kklState_->setText(connected ? tr("verbunden mit dem Motorsteuergeraet")
+    kklState_->setText(connected ? tr("verbunden mit dem Motorsteuergerät")
                                  : tr("nicht verbunden"));
     kklState_->setStyleSheet(QStringLiteral("color: %1;")
                                  .arg(connected ? theme::color::good.name()
@@ -293,7 +299,7 @@ void ThrottlePage::updateAvailability() {
     activity_->setVisible(running_);
     if (!kklConnected_) {
         message_->setText(
-            tr("Fuer die echte Grundeinstellung wird ein KKL-Kabel gebraucht. Ohne das Kabel "
+            tr("Für die echte Grundeinstellung wird ein KKL-Kabel gebraucht. Ohne das Kabel "
                "bleibt nur der Anlernversuch weiter unten."));
     }
 }

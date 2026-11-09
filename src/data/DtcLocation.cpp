@@ -18,13 +18,13 @@ struct Range {
 // spot on the vehicle from the number.
 const Range kPowertrain[] = {
     {0x0010, 0x002F, CarZone::Cylinders,
-     {"Nockenwellenversteller und Steuertrieb, Kette oder Riemen pruefen",
+     {"Nockenwellenversteller und Steuertrieb, Kette oder Riemen prüfen",
       "Camshaft adjusters and timing drive, check the chain or belt"}},
     {0x0030, 0x006F, CarZone::Exhaust,
      {"Lambdasonden und ihre Heizung, vor und nach dem Katalysator",
       "Oxygen sensors and their heaters, before and after the catalytic converter"}},
     {0x0070, 0x008F, CarZone::Intake,
-     {"Aussentemperatur- und Ansauggeber",
+     {"Außentemperatur- und Ansauggeber",
       "Ambient temperature and intake sensors"}},
     {0x0087, 0x009F, CarZone::FuelTank,
      {"Kraftstoffdruck, Pumpe und Filter",
@@ -37,7 +37,7 @@ const Range kPowertrain[] = {
      {"Ansauglufttemperaturgeber",
       "Intake air temperature sensor"}},
     {0x0115, 0x0119, CarZone::Cooling,
-     {"Kuehlmitteltemperaturgeber am Motor",
+     {"Kühlmitteltemperaturgeber am Motor",
       "Coolant temperature sensor on the engine"}},
     {0x0120, 0x012F, CarZone::Throttle,
      {"Drosselklappe und Fahrpedalgeber",
@@ -46,7 +46,7 @@ const Range kPowertrain[] = {
      {"Lambdasonden im Abgasstrang",
       "Oxygen sensors in the exhaust system"}},
     {0x0170, 0x017F, CarZone::Intake,
-     {"Gemischbildung: Falschluft, Schlaeuche, Kurbelgehaeuseentlueftung",
+     {"Gemischbildung: Falschluft, Schläuche, Kurbelgehäuseentlüftung",
       "Mixture formation: vacuum leaks, hoses, crankcase ventilation"}},
     {0x0180, 0x019F, CarZone::FuelTank,
      {"Kraftstoffdruck und Temperatur",
@@ -57,7 +57,7 @@ const Range kPowertrain[] = {
     {0x0215, 0x021F, CarZone::Injection, {"Einspritzanlage", "Fuel injection system"}},
     {0x0220, 0x022F, CarZone::Throttle, {"Drosselklappensensoren", "Throttle position sensors"}},
     {0x0230, 0x025F, CarZone::Turbo,
-     {"Lader, Ladedruckdose und Unterdruckschlaeuche",
+     {"Lader, Ladedruckdose und Unterdruckschläuche",
       "Turbocharger, wastegate actuator and vacuum hoses"}},
     {0x0260, 0x0299, CarZone::Injection,
      {"Einspritzventile, Zylinder einzeln",
@@ -69,38 +69,38 @@ const Range kPowertrain[] = {
      {"Kurbel- und Nockenwellengeber, Klopfsensoren",
       "Crankshaft and camshaft position sensors, knock sensors"}},
     {0x0350, 0x036F, CarZone::Ignition,
-     {"Zuendspulen und Zuendkerzen",
+     {"Zündspulen und Zündkerzen",
       "Ignition coils and spark plugs"}},
     {0x0370, 0x039F, CarZone::Cylinders,
      {"Steuerzeiten und Drehzahlgeber",
       "Valve timing and engine speed sensor"}},
     {0x0400, 0x040F, CarZone::Exhaust,
-     {"Abgasrueckfuehrung, Ventil meist verrusst",
+     {"Abgasrückführung, Ventil meist verrußt",
       "Exhaust gas recirculation, valve usually sooted up"}},
-    {0x0410, 0x041F, CarZone::Exhaust, {"Sekundaerluftsystem", "Secondary air system"}},
+    {0x0410, 0x041F, CarZone::Exhaust, {"Sekundärluftsystem", "Secondary air system"}},
     {0x0420, 0x043F, CarZone::Exhaust,
      {"Katalysator und die Sonden davor und dahinter",
       "Catalytic converter and the sensors before and after it"}},
     {0x0440, 0x045F, CarZone::FuelTank,
-     {"Tankentlueftung: zuerst den Tankdeckel pruefen, dann die Schlaeuche",
+     {"Tankentlüftung: zuerst den Tankdeckel prüfen, dann die Schläuche",
       "EVAP system: check the fuel cap first, then the hoses"}},
     {0x0460, 0x047F, CarZone::FuelTank,
-     {"Tankgeber und Fuellstand",
+     {"Tankgeber und Füllstand",
       "Fuel level sender and fuel level"}},
     {0x0480, 0x048F, CarZone::Cooling,
-     {"Kuehlerluefter und deren Relais",
+     {"Kühlerlüfter und deren Relais",
       "Radiator fans and their relays"}},
     {0x0490, 0x04FF, CarZone::Exhaust, {"Abgasnachbehandlung", "Exhaust aftertreatment"}},
     {0x0500, 0x0504, CarZone::Wheels,
-     {"Geschwindigkeitssignal von den Raddrehzahlfuehlern",
+     {"Geschwindigkeitssignal von den Raddrehzahlfühlern",
       "Vehicle speed signal from the wheel speed sensors"}},
     {0x0505, 0x0510, CarZone::Throttle,
      {"Leerlaufregelung, Drosselklappe verschmutzt?",
       "Idle control, is the throttle body dirty?"}},
     {0x0511, 0x051F, CarZone::Throttle, {"Leerlaufsteller", "Idle actuator"}},
-    {0x0520, 0x052F, CarZone::Ecu, {"Oeldruckgeber", "Oil pressure sensor"}},
+    {0x0520, 0x052F, CarZone::Ecu, {"Öldruckgeber", "Oil pressure sensor"}},
     {0x0530, 0x055F, CarZone::Cooling,
-     {"Klimadruck und Kuehlkreis",
+     {"Klimadruck und Kühlkreis",
       "A/C pressure and refrigerant circuit"}},
     {0x0560, 0x056F, CarZone::Electrics,
      {"Bordspannung: Batterie und Lichtmaschine",
@@ -108,16 +108,16 @@ const Range kPowertrain[] = {
     {0x0570, 0x059F, CarZone::Electrics,
      {"Schalter und Bordnetz",
       "Switches and electrical system"}},
-    {0x0600, 0x062F, CarZone::Ecu, {"Motorsteuergeraet selbst", "The engine control unit itself"}},
+    {0x0600, 0x062F, CarZone::Ecu, {"Motorsteuergerät selbst", "The engine control unit itself"}},
     {0x0630, 0x064F, CarZone::Ecu,
-     {"Steuergeraet und angesteuerte Relais",
+     {"Steuergerät und angesteuerte Relais",
       "Control unit and the relays it drives"}},
-    {0x0650, 0x069F, CarZone::Electrics, {"Ausgaenge und Relais", "Outputs and relays"}},
+    {0x0650, 0x069F, CarZone::Electrics, {"Ausgänge und Relais", "Outputs and relays"}},
     {0x0700, 0x08FF, CarZone::Gearbox,
-     {"Getriebe und dessen Steuergeraet",
+     {"Getriebe und dessen Steuergerät",
       "Transmission and its control unit"}},
     {0x1000, 0x10FF, CarZone::Ecu,
-     {"herstellerspezifisch, Steuergeraet",
+     {"herstellerspezifisch, Steuergerät",
       "manufacturer-specific, control unit"}},
     {0x1100, 0x11FF, CarZone::Exhaust,
      {"herstellerspezifisch, Lambdaregelung",
@@ -149,12 +149,12 @@ const Range kPowertrain[] = {
     {0x2400, 0x24FF, CarZone::Exhaust,
      {"Partikelfilter und Differenzdruck",
       "Particulate filter and differential pressure"}},
-    {0x2500, 0x2FFF, CarZone::Ecu, {"Steuergeraet und Peripherie", "Control unit and peripherals"}},
+    {0x2500, 0x2FFF, CarZone::Ecu, {"Steuergerät und Peripherie", "Control unit and peripherals"}},
 };
 
 CarZone zoneFor(char letter, int number, std::string& hint) {
     if (letter == 'C') {
-        hint = L("Raddrehzahlfuehler, ABS-Hydraulik und die Bremsen",
+        hint = L("Raddrehzahlfühler, ABS-Hydraulik und die Bremsen",
                  "Wheel speed sensors, ABS hydraulics and the brakes");
         return CarZone::Wheels;
     }
@@ -164,7 +164,7 @@ CarZone zoneFor(char letter, int number, std::string& hint) {
         return CarZone::Cabin;
     }
     if (letter == 'U') {
-        hint = L("Datenbus zwischen den Steuergeraeten, oft nur ein Steckerproblem",
+        hint = L("Datenbus zwischen den Steuergeräten, oft nur ein Steckerproblem",
                  "Data bus between the control units, often just a connector problem");
         return CarZone::Network;
     }
@@ -185,17 +185,17 @@ std::string zoneName(CarZone zone) {
         case CarZone::Intake: return L("Ansaugtrakt", "Intake system");
         case CarZone::Throttle: return L("Drosselklappe", "Throttle body");
         case CarZone::Injection: return L("Einspritzung", "Fuel injection");
-        case CarZone::Ignition: return L("Zuendanlage", "Ignition system");
+        case CarZone::Ignition: return L("Zündanlage", "Ignition system");
         case CarZone::Cylinders: return L("Motor und Steuertrieb", "Engine and timing drive");
-        case CarZone::Cooling: return L("Kuehlung", "Cooling system");
+        case CarZone::Cooling: return L("Kühlung", "Cooling system");
         case CarZone::Turbo: return L("Turbolader", "Turbocharger");
         case CarZone::Exhaust: return L("Abgasanlage", "Exhaust system");
         case CarZone::FuelTank: return L("Kraftstoffanlage", "Fuel system");
         case CarZone::Gearbox: return L("Getriebe", "Transmission");
-        case CarZone::Ecu: return L("Steuergeraet", "Control unit");
+        case CarZone::Ecu: return L("Steuergerät", "Control unit");
         case CarZone::Electrics: return L("Bordnetz", "Electrical system");
         case CarZone::Network: return L("Datenbus", "Data bus");
-        case CarZone::Wheels: return L("Raeder und Bremsen", "Wheels and brakes");
+        case CarZone::Wheels: return L("Räder und Bremsen", "Wheels and brakes");
         case CarZone::Cabin: return L("Innenraum", "Cabin");
         case CarZone::Unknown: return L("nicht zugeordnet", "not assigned");
     }

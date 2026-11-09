@@ -12,24 +12,30 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 
 MonitorPage::MonitorPage(QWidget* parent) : QWidget(parent) {
     auto* root = new QVBoxLayout(this);
-    root->setContentsMargins(24, 20, 24, 20);
+    root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
-    auto* title = new QLabel(tr("Bauteilueberwachung"));
+    root->addWidget(makeLabel(tr("DIAGNOSE"), "Eyebrow"));
+
+    auto* title = new QLabel(tr("Bauteilüberwachung"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
 
+
     auto* hint = new QLabel(
-        tr("Das Steuergeraet prueft im Betrieb laufend seine eigenen Bauteile. Hier stehen "
+        tr("Das Steuergerät prüft im Betrieb laufend seine eigenen Bauteile. Hier stehen "
            "die Ergebnisse: nicht nur bestanden oder nicht, sondern der Messwert samt "
            "erlaubter Unter- und Obergrenze. Damit sieht man, wie knapp ein Bauteil noch "
            "im Rahmen liegt, lange bevor die Fehlerlampe angeht.\n\n"
-           "Ein Katalysator, dessen Wirkungsgrad hart an der Grenze kratzt, faellt hier "
+           "Ein Katalysator, dessen Wirkungsgrad hart an der Grenze kratzt, fällt hier "
            "auf. Im Fehlerspeicher steht dazu noch nichts."));
     hint->setObjectName("Hint");
     hint->setWordWrap(true);
@@ -88,10 +94,10 @@ void MonitorPage::onIdentity(const QString& vin, const QString& calibration,
     QStringList parts;
     if (!vin.isEmpty()) parts << tr("Fahrgestellnummer: %1").arg(vin);
     if (!calibration.isEmpty()) parts << tr("Kalibrierstand: %1").arg(calibration);
-    if (!checksum.isEmpty()) parts << tr("Pruefsumme: %1").arg(checksum);
-    if (!ecuName.isEmpty()) parts << tr("Steuergeraet: %1").arg(ecuName);
+    if (!checksum.isEmpty()) parts << tr("Prüfsumme: %1").arg(checksum);
+    if (!ecuName.isEmpty()) parts << tr("Steuergerät: %1").arg(ecuName);
     identity_->setText(parts.isEmpty()
-                           ? tr("Das Steuergeraet nennt keine Kennungen. Bei Fahrzeugen "
+                           ? tr("Das Steuergerät nennt keine Kennungen. Bei Fahrzeugen "
                                 "vor etwa 2003 ist das normal.")
                            : parts.join(QStringLiteral("     ")));
 }
@@ -109,13 +115,13 @@ void MonitorPage::onMonitorResults(const QVector<MonitorRow>& rows, const QStrin
         }
         status_->setText(failed == 0
                              ? tr("%1 Tests, alle im Rahmen.").arg(rows.size())
-                             : tr("%1 Tests, %2 ausserhalb der Grenzen.")
+                             : tr("%1 Tests, %2 außerhalb der Grenzen.")
                                    .arg(rows.size())
                                    .arg(failed));
     }
 
     auto* group = new QTreeWidgetItem(tree_);
-    group->setText(0, tr("Bauteilueberwachung (Modus 06)"));
+    group->setText(0, tr("Bauteilüberwachung (Modus 06)"));
     QFont bold = group->font(0);
     bold.setBold(true);
     group->setFont(0, bold);
@@ -145,7 +151,7 @@ void MonitorPage::onOxygenTests(const QVector<OxygenRow>& rows, const QString& n
     }
 
     auto* group = new QTreeWidgetItem(tree_);
-    group->setText(0, tr("Lambdasondenpruefung (Modus 05)"));
+    group->setText(0, tr("Lambdasondenprüfung (Modus 05)"));
     QFont bold = group->font(0);
     bold.setBold(true);
     group->setFont(0, bold);
@@ -165,24 +171,24 @@ void MonitorPage::exportReport() {
     if (monitors_.isEmpty() && oxygen_.isEmpty()) return;
     const QString stamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm");
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Bericht speichern"), tr("bauteilpruefung_%1.txt").arg(stamp),
+        this, tr("Bericht speichern"), tr("bauteilprüfung_%1.txt").arg(stamp),
         tr("Textdatei (*.txt)"));
     if (path.isEmpty()) return;
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Fehler"), tr("Datei laesst sich nicht schreiben."));
+        QMessageBox::warning(this, tr("Fehler"), tr("Datei lässt sich nicht schreiben."));
         return;
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << tr("Bauteilueberwachung, ausgelesen mit Caruspex") << "\n";
+    out << tr("Bauteilüberwachung, ausgelesen mit Caruspex") << "\n";
     out << QDateTime::currentDateTime().toString(tr("dd.MM.yyyy HH:mm")) << "\n";
     out << identity_->text() << "\n";
     out << QString(78, '=') << "\n\n";
 
     if (!monitors_.isEmpty()) {
-        out << tr("Bauteilueberwachung (Modus 06)") << "\n\n";
+        out << tr("Bauteilüberwachung (Modus 06)") << "\n\n";
         for (const MonitorRow& r : std::as_const(monitors_)) {
             out << (r.passed ? "  [ok]   " : "  [!!]   ") << r.name << "\n";
             out << "          " << r.component << "\n";
@@ -198,7 +204,7 @@ void MonitorPage::exportReport() {
         }
     }
     if (!oxygen_.isEmpty()) {
-        out << tr("Lambdasondenpruefung (Modus 05)") << "\n\n";
+        out << tr("Lambdasondenprüfung (Modus 05)") << "\n\n";
         for (const OxygenRow& r : std::as_const(oxygen_)) {
             out << "  " << tr("Sonde %1").arg(r.sensor) << "  " << r.name << ": "
                 << QString::number(r.value, 'f', 3) << " " << r.unit << "\n";

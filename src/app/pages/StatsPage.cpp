@@ -14,6 +14,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -56,15 +57,20 @@ QString formatDuration(qint64 milliseconds) {
 
 StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
     auto* root = new QVBoxLayout(this);
-    root->setContentsMargins(24, 20, 24, 20);
+    root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
+    root->addWidget(makeLabel(tr("MESSEN"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Statistik"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
 
+
     auto* bar = new QHBoxLayout;
-    resetButton_ = new QPushButton(tr("Zuruecksetzen"));
+    resetButton_ = new QPushButton(tr("Zurücksetzen"));
     resetButton_->setMinimumHeight(38);
     exportButton_ = new QPushButton(tr("Als CSV speichern"));
     exportButton_->setMinimumHeight(38);
@@ -81,15 +87,15 @@ StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
     cards->setSpacing(12);
     cards->addWidget(statCard(tr("Messdauer"), durationValue_), 0, 0);
     cards->addWidget(statCard(tr("Messpunkte"), samplesValue_), 0, 1);
-    cards->addWidget(statCard(tr("Hoechste Drehzahl"), maxRpmValue_), 0, 2);
-    cards->addWidget(statCard(tr("Hoechste Geschwindigkeit"), maxSpeedValue_), 0, 3);
-    cards->addWidget(statCard(tr("Verbrauch geschaetzt"), consumptionValue_), 0, 4);
+    cards->addWidget(statCard(tr("Höchste Drehzahl"), maxRpmValue_), 0, 2);
+    cards->addWidget(statCard(tr("Höchste Geschwindigkeit"), maxSpeedValue_), 0, 3);
+    cards->addWidget(statCard(tr("Verbrauch geschätzt"), consumptionValue_), 0, 4);
     cards->addWidget(statCard(tr("Strecke seit Start"), distanceValue_), 0, 5);
     root->addLayout(cards);
 
     table_ = new QTableWidget(0, 6);
     table_->setHorizontalHeaderLabels({tr("Messwert"), tr("Kleinster"), tr("Mittel"),
-                                       tr("Groesster"), tr("Aktuell"), tr("Einheit")});
+                                       tr("Größter"), tr("Aktuell"), tr("Einheit")});
     table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     for (int i = 1; i < 6; ++i) {
         table_->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Fixed);
@@ -101,9 +107,9 @@ StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
     root->addWidget(table_, 1);
 
     note_ = new QLabel(
-        tr("Der Verbrauch wird aus der Luftmasse gerechnet (Luftverhaeltnis 14,7 zu 1, "
-           "Dichte 745 Gramm je Liter) und gilt so nur fuer Benziner. Die Strecke ergibt "
-           "sich aus dem Geschwindigkeitssignal. Beides sind Schaetzungen aus den "
+        tr("Der Verbrauch wird aus der Luftmasse gerechnet (Luftverhältnis 14,7 zu 1, "
+           "Dichte 745 Gramm je Liter) und gilt so nur für Benziner. Die Strecke ergibt "
+           "sich aus dem Geschwindigkeitssignal. Beides sind Schätzungen aus den "
            "Messwerten, keine Werte vom Bordcomputer."));
     note_->setObjectName("Hint");
     note_->setWordWrap(true);
@@ -235,12 +241,12 @@ void StatsPage::exportCsv() {
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Fehler"), tr("Datei laesst sich nicht schreiben."));
+        QMessageBox::warning(this, tr("Fehler"), tr("Datei lässt sich nicht schreiben."));
         return;
     }
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
-    out << tr("Messwert;Kleinster;Mittel;Groesster;Aktuell;Einheit;Messpunkte") << '\n';
+    out << tr("Messwert;Kleinster;Mittel;Größter;Aktuell;Einheit;Messpunkte") << '\n';
     for (const Series& s : std::as_const(series_)) {
         out << s.name << ';' << QString::number(s.minimum, 'f', 3) << ';'
             << QString::number(s.sum / static_cast<double>(s.count), 'f', 3) << ';'

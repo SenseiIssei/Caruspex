@@ -26,6 +26,11 @@
 class QTimer;
 
 namespace caruspex {
+// Seconds since the program started, monotonic.
+double appSeconds();
+}
+
+namespace caruspex {
 
 struct FaultRow {
     QString code;
@@ -36,6 +41,9 @@ struct FaultRow {
     // permanent. Kept separately because kind is display text and depends on
     // the language.
     bool stored = false;
+    // Which control unit reported it, e.g. "Motor (7E8)". Empty on the
+    // K-line or when only one unit answers.
+    QString ecu;
 };
 
 struct LiveRow {
@@ -45,6 +53,64 @@ struct LiveRow {
     QString text;   // set for status values
     double value = 0.0;
     bool warn = false;
+    // Seconds since the program started, taken in the worker right after the
+    // reply. The trip computer and the stopwatch rely on it.
+    double time = 0.0;
+};
+
+// Result of the health check, prepared for the UI.
+struct HealthFindingRow {
+    int level = 0;          // analysis::Level: 0 good, 1 info, 2 warning, 3 critical
+    QString area;
+    QString title;
+    QString explanation;
+    QString advice;
+};
+
+struct MonitorGuideRow {
+    QString name;
+    bool complete = false;
+    QString explanation;
+    QString drivePattern;
+    QString typicalTime;
+    bool coldStart = false;
+};
+
+// Result of the adapter test, prepared for the UI.
+struct AdapterCheckRow {
+    QString command;
+    QString version;     // the ELM version that introduced it
+    bool supported = false;
+    QString purpose;
+};
+
+struct AdapterRow {
+    bool reachable = false;
+    QString version;
+    QString description;
+    bool isStn = false;
+    QString stnId;
+    double voltage = 0.0;
+    bool hasVoltage = false;
+    double roundTripMs = 0.0;
+    double roundTripWithHintMs = 0.0;
+    QString behavesLike;
+    bool acceptsUnknown = false;
+    QString verdict;
+    QStringList facts;
+    QStringList speedTips;
+    QVector<AdapterCheckRow> checks;
+};
+
+struct HealthRow {
+    int score = -1;
+    int grade = 0;          // analysis::TrafficLight: 0 green, 1 yellow, 2 red
+    QString summary;
+    QVector<HealthFindingRow> findings;
+    QStringList notChecked;         // "title: reason"
+    QVector<MonitorGuideRow> monitors;
+    int checksRun = 0;
+    bool diesel = false;
 };
 
 // Result for one control unit when scanning the whole vehicle.
@@ -95,6 +161,8 @@ public:
 public slots:
     void openSerial(const QString& device, int baud, const QString& protocolOrder);
     void openTcp(const QString& host, int port, const QString& protocolOrder);
+    // The built-in demo car, no adapter needed.
+    void openDemo(const QString& protocolOrder);
     void closeAdapter();
     void readFaults();
     void clearFaults();
@@ -119,6 +187,14 @@ public slots:
     void runActuatorTest();
     void readMonitors();
     void setBasicSettingSession(int mode);
+    // Full health check: faults, readiness, component monitoring and a
+    // series of live values over the given number of seconds.
+    void runHealthCheck(int seconds);
+    // Tests what the adapter really is and can do.
+    void probeAdapter();
+    // Adapter voltage (ATRV) in a fast loop, for the battery test.
+    void startVoltagePoll(int intervalMs);
+    void stopVoltagePoll();
     // Applies the settings. Called at startup and after every change; also
     // takes effect during a running measurement.
     void applySettings(const caruspex::AppSettings& values);
@@ -131,6 +207,8 @@ signals:
     void logLine(const QString& line);
     void connected(const QString& adapter, const QString& transport, const QString& protocol);
     void failed(const QString& error);
+    // The automatic search found the adapter on this port.
+    void adapterFound(const QString& device);
     void closed();
     void busy(bool active);
     void faults(const QVector<caruspex::FaultRow>& rows);
@@ -158,6 +236,10 @@ signals:
                      const QString& note);
     void identity(const QString& vin, const QString& calibration,
                   const QString& checksum, const QString& ecuName);
+    void healthProgress(const QString& step, int percent);
+    void healthResult(const caruspex::HealthRow& row);
+    void adapterVoltage(double volts, double time);
+    void adapterReport(const caruspex::AdapterRow& row);
 
 private slots:
     void pollTick();
@@ -165,6 +247,9 @@ private slots:
 
 private:
     void refreshStatusAndFaults();
+    // Hands a ready transport to the ELM327 driver and reports the result.
+    bool finishConnect(std::unique_ptr<ITransport> transport, const QString& protocolOrder,
+                       bool reportFailure);
 
     Elm327 elm_;
     std::unique_ptr<Obd2> obd_;
@@ -179,6 +264,7 @@ private:
     KLineStream kline_;
     std::unique_ptr<VagKLine> kwp_;
     QTimer* basicSettingTimer_ = nullptr;
+    QTimer* voltageTimer_ = nullptr;
     int basicSettingGroup_ = 60;
     AppSettings settings_;
 };
@@ -199,6 +285,7 @@ public:
 signals:
     void openSerialRequested(const QString& device, int baud, const QString& protocolOrder);
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
+    void openDemoRequested(const QString& protocolOrder);
     void closeRequested();
     void readFaultsRequested();
     void clearFaultsRequested();
@@ -216,6 +303,10 @@ signals:
     void actuatorTestRequested();
     void basicSettingSessionRequested(int mode);
     void readMonitorsRequested();
+    void healthCheckRequested(int seconds);
+    void probeAdapterRequested();
+    void voltagePollRequested(int intervalMs);
+    void voltagePollStopRequested();
     void settingsChanged(const caruspex::AppSettings& values);
 
 private:
@@ -232,3 +323,5 @@ Q_DECLARE_METATYPE(caruspex::StatusRow)
 Q_DECLARE_METATYPE(caruspex::EcuScanRow)
 Q_DECLARE_METATYPE(caruspex::MonitorRow)
 Q_DECLARE_METATYPE(caruspex::OxygenRow)
+Q_DECLARE_METATYPE(caruspex::HealthRow)
+Q_DECLARE_METATYPE(caruspex::AdapterRow)
