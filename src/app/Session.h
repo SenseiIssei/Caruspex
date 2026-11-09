@@ -70,6 +70,35 @@ struct FreezeFrameRow {
     QVector<LiveRow> values;
 };
 
+// One fault of a control unit read over UDS.
+struct UdsDtcRow {
+    QString code;
+    QString failureText;
+    QString text;
+    bool testFailed = false;
+    bool pending = false;
+    bool confirmed = false;
+    bool warningLamp = false;
+};
+
+// One control unit from the UDS scan.
+struct UdsEcuRow {
+    quint32 request = 0;
+    quint32 response = 0;
+    bool extended29 = false;
+    int kind = 0;               // EcuKind
+    QString name;
+    bool present = false;
+    bool dtcsRead = false;
+    QString partNumber;
+    QString softwareVersion;
+    QString hardwareVersion;
+    QString systemName;
+    QString serial;
+    QVector<UdsDtcRow> dtcs;
+    QString note;
+};
+
 struct HealthFindingRow {
     int level = 0;          // analysis::Level: 0 good, 1 info, 2 warning, 3 critical
     QString area;
@@ -203,6 +232,11 @@ public slots:
     void runHealthCheck(int seconds);
     // Tests what the adapter really is and can do.
     void probeAdapter();
+    // Asks every control unit of a brand family over UDS. An empty family
+    // means the generic sweep over the usual address range.
+    void scanUds(const QString& family);
+    // Clears the fault memory of one control unit (service 14).
+    void clearUdsEcu(quint32 request, quint32 response, bool extended29, const QString& name);
     // Adapter voltage (ATRV) in a fast loop, for the battery test.
     void startVoltagePoll(int intervalMs);
     void stopVoltagePoll();
@@ -252,6 +286,11 @@ signals:
     void adapterVoltage(double volts, double time);
     void adapterReport(const caruspex::AdapterRow& row);
     void freezeFrames(const QVector<caruspex::FreezeFrameRow>& frames);
+    void udsScanStarted(int total, bool generic);
+    void udsScanProgress(const QString& name, int index, int total);
+    void udsEcuResult(const caruspex::UdsEcuRow& row);
+    void udsScanFinished(int present, int withFaults, bool cancelled, const QString& note);
+    void udsClearResult(const QString& name, bool ok, const QString& message);
 
 private slots:
     void pollTick();
@@ -317,6 +356,8 @@ signals:
     void readMonitorsRequested();
     void healthCheckRequested(int seconds);
     void probeAdapterRequested();
+    void udsScanRequested(const QString& family);
+    void udsClearRequested(quint32 request, quint32 response, bool extended29, const QString& name);
     void voltagePollRequested(int intervalMs);
     void voltagePollStopRequested();
     void settingsChanged(const caruspex::AppSettings& values);
@@ -338,3 +379,4 @@ Q_DECLARE_METATYPE(caruspex::OxygenRow)
 Q_DECLARE_METATYPE(caruspex::HealthRow)
 Q_DECLARE_METATYPE(caruspex::AdapterRow)
 Q_DECLARE_METATYPE(caruspex::FreezeFrameRow)
+Q_DECLARE_METATYPE(caruspex::UdsEcuRow)

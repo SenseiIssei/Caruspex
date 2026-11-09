@@ -117,6 +117,26 @@ QString reportHtml(const VehicleState& state, const ReportExtras& extras) {
                  .arg(esc(QCoreApplication::translate("caruspex::Report", "Motorkontrollleuchte")), esc(state.mil() ? QCoreApplication::translate("caruspex::Report", "an") : QCoreApplication::translate("caruspex::Report", "aus")));
     }
 
+    // All control units over UDS
+    if (!extras.ecus.isEmpty()) {
+        h += QStringLiteral("<h2>%1</h2><table><tr><th>%2</th><th>%3</th><th>%4</th></tr>")
+                 .arg(esc(QCoreApplication::translate("caruspex::Report", "Alle Steuergeräte")),
+                      esc(QCoreApplication::translate("caruspex::Report", "Steuergerät")),
+                      esc(QCoreApplication::translate("caruspex::Report", "Teilenummer")),
+                      esc(QCoreApplication::translate("caruspex::Report", "Fehler")));
+        for (const UdsEcuRow& e : extras.ecus) {
+            QStringList codes;
+            for (const UdsDtcRow& d : e.dtcs) {
+                codes << QStringLiteral("<span class='code'>%1</span> %2").arg(esc(d.code), esc(d.text));
+            }
+            h += QStringLiteral("<tr><td>%1</td><td class='muted'>%2</td><td>%3</td></tr>")
+                     .arg(esc(e.name), esc(e.partNumber),
+                          codes.isEmpty() ? esc(QCoreApplication::translate("caruspex::Report", "keine"))
+                                          : codes.join(QStringLiteral("<br/>")));
+        }
+        h += QStringLiteral("</table>");
+    }
+
     // Readiness
     const QVector<ReadinessRow> readiness = state.readiness();
     if (!readiness.isEmpty()) {

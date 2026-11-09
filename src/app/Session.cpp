@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "core/AdapterProbe.h"
+#include "core/Uds.h"
 #include "core/DemoTransport.h"
 #include "core/analysis/DriveCycleGuide.h"
 #include "core/analysis/HealthCheck.h"
@@ -159,6 +160,109 @@ void Worker::openDemo(const QString& protocolOrder) {
     const bool ok = finishConnect(std::make_unique<DemoTransport>(), QStringLiteral("6"), true);
     emit busy(false);
     if (ok) refreshStatusAndFaults();
+}
+
+namespace {
+
+UdsEcuRow toUdsRow(const UdsEcu& ecu) {
+    UdsEcuRow row;
+    row.request = ecu.definition.request;
+    row.response = ecu.definition.response;
+    row.extended29 = ecu.definition.extended29;
+    row.kind = static_cast<int>(ecu.definition.kind);
+    row.name = QString::fromStdString(ecu.definition.name);
+    row.present = ecu.present;
+    row.dtcsRead = ecu.dtcsRead;
+    row.partNumber = QString::fromStdString(ecu.info.partNumber);
+    row.softwareVersion = QString::fromStdString(ecu.info.softwareVersion);
+    row.hardwareVersion = QString::fromStdString(ecu.info.hardwareVersion);
+    row.systemName = QString::fromStdString(ecu.info.systemName);
+    row.serial = QString::fromStdString(ecu.info.serial);
+    row.note = QString::fromStdString(ecu.note);
+    for (const UdsDtc& d : ecu.dtcs) {
+        UdsDtcRow dtc;
+        dtc.code = QString::fromStdString(d.code);
+        dtc.failureText = QString::fromStdString(d.failureText);
+        dtc.text = QString::fromStdString(d.text);
+        dtc.testFailed = d.testFailed;
+        dtc.pending = d.pending;
+        dtc.confirmed = d.confirmed;
+        dtc.warningLamp = d.warningLamp;
+        row.dtcs.push_back(dtc);
+    }
+    return row;
+}
+
+}  // namespace
+
+void Worker::scanUds(const QString& family) {
+    if (!obd_) {
+        emit udsScanFinished(0, 0, false, tr("Erst verbinden."));
+        return;
+    }
+    if (!elm_.isCan()) {
+        emit udsScanFinished(0, 0, false,
+                             tr("Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, "
+                                "bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel."));
+        return;
+    }
+    stopLive();
+    stopVoltagePoll();
+    cancelScan_ = false;
+    emit busy(true);
+
+    std::vector<EcuDefinition> list = family.isEmpty()
+                                          ? genericEcuSweep()
+                                          : ecuDefinitions(family.toStdString());
+    const bool generic = family.isEmpty() || list.empty();
+    if (list.empty()) list = genericEcuSweep();
+    const int total = static_cast<int>(list.size());
+    emit udsScanStarted(total, generic);
+
+    // One unit at a time, so every answer reaches the page right away.
+    int present = 0;
+    int withFaults = 0;
+    int index = 0;
+    for (const EcuDefinition& def : list) {
+        if (cancelScan_) break;
+        emit udsScanProgress(QString::fromStdString(def.name), index++, total);
+        const std::vector<UdsEcu> result = scanEcus(elm_, {def}, nullptr, [this] { return cancelScan_.load(); });
+        if (result.empty() || !result.front().present) continue;
+        ++present;
+        if (!result.front().dtcs.empty()) ++withFaults;
+        emit udsEcuResult(toUdsRow(result.front()));
+    }
+    emit udsScanFinished(present, withFaults, cancelScan_.load(), QString());
+    emit busy(false);
+}
+
+void Worker::clearUdsEcu(quint32 request, quint32 response, bool extended29, const QString& name) {
+    if (!obd_) return;
+    stopLive();
+    emit busy(true);
+    EcuDefinition def;
+    def.request = request;
+    def.response = response;
+    def.extended29 = extended29;
+    def.name = name.toStdString();
+    std::string error;
+    bool ok = false;
+    {
+        Uds uds(elm_);
+        if (uds.select(def, error)) ok = uds.clearDtcs(error);
+    }
+    emit udsClearResult(name, ok,
+                        ok ? tr("Fehlerspeicher von %1 gelöscht.").arg(name)
+                           : tr("Löschen bei %1 hat nicht geklappt: %2")
+                                 .arg(name, QString::fromStdString(error)));
+    // Read that unit again so the page shows what is left.
+    const std::vector<UdsEcu> again = scanEcus(elm_, {def}, nullptr, [] { return false; });
+    if (!again.empty() && again.front().present) {
+        UdsEcuRow row = toUdsRow(again.front());
+        row.name = name;
+        emit udsEcuResult(row);
+    }
+    emit busy(false);
 }
 
 void Worker::probeAdapter() {
@@ -890,6 +994,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<HealthRow>("caruspex::HealthRow");
     qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
     qRegisterMetaType<FreezeFrameRow>("caruspex::FreezeFrameRow");
+    qRegisterMetaType<UdsEcuRow>("caruspex::UdsEcuRow");
     qRegisterMetaType<QVector<FreezeFrameRow>>("QVector<caruspex::FreezeFrameRow>");
 
     worker_ = new Worker();
@@ -920,6 +1025,8 @@ Session::Session(QObject* parent) : QObject(parent) {
             &Worker::runActuatorTest);
     connect(this, &Session::healthCheckRequested, worker_, &Worker::runHealthCheck);
     connect(this, &Session::probeAdapterRequested, worker_, &Worker::probeAdapter);
+    connect(this, &Session::udsScanRequested, worker_, &Worker::scanUds);
+    connect(this, &Session::udsClearRequested, worker_, &Worker::clearUdsEcu);
     connect(this, &Session::voltagePollRequested, worker_, &Worker::startVoltagePoll);
     connect(this, &Session::voltagePollStopRequested, worker_, &Worker::stopVoltagePoll);
     connect(this, &Session::readMonitorsRequested, worker_,

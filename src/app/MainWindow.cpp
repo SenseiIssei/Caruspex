@@ -35,6 +35,7 @@
 #include "app/pages/AdapterPage.h"
 #include "app/pages/BatteryPage.h"
 #include "app/pages/ConnectPage.h"
+#include "app/pages/EcuPage.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
 #include "app/pages/GaragePage.h"
@@ -154,6 +155,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     battery_ = new BatteryPage;
     adapter_ = new AdapterPage;
     vehicles_ = new VehiclesPage;
+    ecus_ = new EcuPage;
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -241,6 +243,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         dashboard_->setVehicle(car.title, car.subtitle, car.body);
         dashboard_->setBrand(car.brand);
         faults_->setBrand(car.brand);
+        ecus_->setBrand(car.brand);
         if (car.known) {
             toast::show(this, tr("Erkannt: %1").arg(car.title), toast::Kind::Success);
         }
@@ -292,6 +295,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
                 navigateTo(connect_);
             });
     connect(state_, &VehicleState::vinChanged, vehicles_, &VehiclesPage::showVin);
+
+    connect(worker, &Worker::udsScanStarted, ecus_, &EcuPage::onScanStarted);
+    connect(worker, &Worker::udsScanProgress, ecus_, &EcuPage::onScanProgress);
+    connect(worker, &Worker::udsEcuResult, ecus_, &EcuPage::onEcuResult);
+    connect(worker, &Worker::udsScanFinished, ecus_, &EcuPage::onScanFinished);
+    connect(worker, &Worker::udsClearResult, ecus_, &EcuPage::onClearResult);
+    connect(ecus_, &EcuPage::scanRequested, &session_, &Session::udsScanRequested);
+    connect(ecus_, &EcuPage::cancelRequested, &session_, &Session::cancelScan);
+    connect(ecus_, &EcuPage::clearRequested, &session_, &Session::udsClearRequested);
 
     // UI to worker
     connect(connect_, &ConnectPage::serialRequested, this,
@@ -461,7 +473,8 @@ QWidget* MainWindow::buildSidebar() {
     addEntry(QStringLiteral("battery"), tr("Batterie"), battery_);
     addEntry(QStringLiteral("chart"), tr("Statistik"), stats_);
     addSection(tr("Werkstatt"));
-    addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), scan_);
+    addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), ecus_);
+    addEntry(QStringLiteral("cable"), tr("Steuergeräte über KKL"), scan_);
     addEntry(QStringLiteral("throttle"), tr("Drosselklappe"), throttle_);
     addEntry(QStringLiteral("sliders"), tr("Anpassung und Stellglieder"), kklTools_);
     addSection(tr("Wissen"));
@@ -585,7 +598,7 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("garage"), garagePage_},  {QStringLiteral("health"), health_},
         {QStringLiteral("trip"), trip_},          {QStringLiteral("performance"), performance_},
         {QStringLiteral("battery"), battery_},    {QStringLiteral("adapter"), adapter_},
-        {QStringLiteral("vehicles"), vehicles_},
+        {QStringLiteral("vehicles"), vehicles_},  {QStringLiteral("ecus"), ecus_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
     // Developer aids for screenshots: open a page and start what it does.
@@ -597,6 +610,10 @@ void MainWindow::showPageByName(const QString& name) {
     if (name.startsWith(QStringLiteral("vehicles:"))) {
         navigateTo(vehicles_);
         vehicles_->showVin(name.mid(9));
+    }
+    if (name.startsWith(QStringLiteral("ecus-run"))) {
+        navigateTo(ecus_);
+        emit session_.udsScanRequested(name.mid(9));
     }
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);
@@ -634,6 +651,7 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     performance_->setConnected(true);
     battery_->setConnected(true);
     adapter_->setConnected(true);
+    ecus_->setConnected(true);
     toast::show(this, tr("Verbunden über %1. Protokoll: %2").arg(transport, protocol),
                 toast::Kind::Success);
     // After connecting the start page is the natural place to go. The VIN
@@ -667,6 +685,7 @@ void MainWindow::onClosed() {
     performance_->setConnected(false);
     battery_->setConnected(false);
     adapter_->setConnected(false);
+    ecus_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 
@@ -700,6 +719,7 @@ void MainWindow::showReport() {
         else if (f.tint == color::good) level = tr("In Ordnung");
         extras.findings.push_back({level, f.title, f.text});
     }
+    extras.ecus = ecus_->results();
     const QString path = saveReportPdf(this, *state_, extras);
     if (!path.isEmpty()) {
         toast::show(this, tr("Prüfbericht gespeichert: %1").arg(path), toast::Kind::Success);

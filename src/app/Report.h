@@ -5,6 +5,8 @@
 #include <QString>
 #include <QVector>
 
+#include "app/Session.h"
+
 class QWidget;
 
 namespace caruspex {
@@ -21,6 +23,7 @@ struct ReportExtras {
     int score = -1;
     QString scoreCaption;
     QVector<ReportFinding> findings;
+    QVector<UdsEcuRow> ecus;   // from the scan of all control units, if done
 };
 
 QString reportHtml(const VehicleState& state, const ReportExtras& extras);
