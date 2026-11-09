@@ -81,7 +81,8 @@ jobs:
       - name: Trouble-code database is up to date
         run: |
           python tools/gen_dtc.py
-          git diff --exit-code src/data/DtcDatabase.gen.cpp
+          git add --intent-to-add src/data
+          git diff --exit-code -- 'src/data/*.gen.cpp'
 
       - name: Configure
         run: >

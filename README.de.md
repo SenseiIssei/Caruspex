@@ -12,7 +12,9 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 
 **Fehlerspeicher**
 - Gespeicherte, sporadische und dauerhafte Fehlercodes
-- 462 Codes im Klartext (Deutsch und Englisch), generische EOBD-Codes plus die VAG-eigenen P1xxx
+- Rund 1.400 generische SAE-Codes (P, C, B, U) plus Herstellercodes für VAG, Ford, GM, Toyota, Honda, Nissan,
+  Hyundai/Kia, Subaru und weitere, auf Deutsch und Englisch; die Bedeutung eines P1-Codes richtet sich nach der Marke
+- Für die häufigen Fehler: darf ich weiterfahren, typische Ursachen, einfache Prüfungen und eine grobe Kostenklasse
 - Unbekannte Codes fallen auf die Bedeutung ihrer Gruppe zurück statt leer zu bleiben
 - Löschen mit klarer Warnung und automatischer Gegenprobe
 - Export als CSV
@@ -229,7 +231,7 @@ tests/        Catch2-Tests
 
 Betriebssystemabhängig ist nur die serielle Schnittstelle. Alles darüber, also Protokoll, Parser und Dienste, ist reines C++20 mit `std::chrono` statt Plattform-APIs.
 
-Die Fehlercode-Datenbank wird erzeugt, nicht abgetippt. Viele EOBD-Codes folgen festen Familien, etwa pro Zylinder oder pro Lambdasonde. `tools/gen_dtc.py` rechnet die aus und schreibt `src/data/DtcDatabase.gen.cpp`. Nach Änderungen am Generator einmal laufen lassen:
+Die Fehlercode-Datenbank wird erzeugt, nicht abgetippt. Viele EOBD-Codes folgen festen Familien, etwa pro Zylinder oder pro Lambdasonde. `tools/gen_dtc.py` rechnet die aus, nimmt die gepflegten Listen aus `tools/dtc/` dazu und schreibt `src/data/*.gen.cpp`. Nach Änderungen an den Daten einmal laufen lassen:
 
 ```bash
 python tools/gen_dtc.py
