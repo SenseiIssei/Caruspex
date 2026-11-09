@@ -38,6 +38,9 @@ add_library(caruspex_core STATIC
     src/data/DtcDatabase.gen.cpp
     src/data/Pids.cpp
     src/data/Vehicles.cpp
+    src/data/Vin.cpp
+    src/data/VehicleCatalog.cpp
+    src/data/VehicleCatalog.gen.cpp
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
     src/data/MonitorTests.cpp
@@ -132,6 +135,7 @@ if(CARUSPEX_TESTS)
         tests/test_kwp1281.cpp
         tests/test_kwp2000.cpp
         tests/test_settings.cpp
+        tests/test_vehicles.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
