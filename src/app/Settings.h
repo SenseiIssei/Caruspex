@@ -54,6 +54,8 @@ struct AppSettings {
     // "auto" follows the system language, otherwise "de" or "en".
     // Takes effect at the next start.
     QString language = QStringLiteral("auto");
+    // "auto" follows the system's light or dark mode, otherwise "dark" or "light".
+    QString appearance = QStringLiteral("auto");
 };
 
 // Read from the registry or the configuration file, respectively.
@@ -62,6 +64,9 @@ void saveSettings(const AppSettings& values);
 
 // Resolves "auto" against the system locale: German on a German system,
 // English everywhere else. Returns "de" or "en".
+// true when the light palette should be used, after looking at the system.
+bool effectiveLight(const AppSettings& values);
+
 QString effectiveLanguage(const AppSettings& values);
 
 // The default state, for the "reset everything" button.

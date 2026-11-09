@@ -16,29 +16,41 @@ namespace caruspex::theme {
 
 namespace color {
 // Base surfaces
-inline const QColor background{"#0a0c11"};
-inline const QColor surface{"#12151d"};
-inline const QColor surfaceHigh{"#1a1e28"};
-inline const QColor surfaceHover{"#20253a"};
-inline const QColor border{"#232835"};
-inline const QColor borderBright{"#323949"};
+inline QColor background{"#0a0c11"};
+inline QColor surface{"#12151d"};
+inline QColor surfaceHigh{"#1a1e28"};
+inline QColor surfaceHover{"#20253a"};
+inline QColor border{"#232835"};
+// Surfaces that only appear in a few places
+inline QColor sidebar{"#0d1016"};
+inline QColor input{"#0e1118"};
+inline QColor cardTop{"#151924"};
+inline QColor track{"#1d2230"};
+inline QColor rowLine{"#1a1e29"};
+inline QColor alternate{"#141823"};
+inline QColor hoverLine{"#454e66"};
+inline QColor scroll{"#2a3040"};
+inline QColor scrollHover{"#3a4256"};
+inline QColor pressed{"#151924"};
+inline QColor disabled{"#12151c"};
+inline QColor borderBright{"#323949"};
 // Text
-inline const QColor text{"#eceef3"};
-inline const QColor textMuted{"#a4abb9"};
-inline const QColor textFaint{"#727a8a"};
+inline QColor text{"#eceef3"};
+inline QColor textMuted{"#a4abb9"};
+inline QColor textFaint{"#727a8a"};
 // Accents: indigo with a sky blue partner for gradients
-inline const QColor accent{"#8f8cff"};
-inline const QColor accentHover{"#a5a2ff"};
-inline const QColor accentDim{"#5a54f0"};
-inline const QColor sky{"#5ab8ff"};
-inline const QColor purple{"#b18cff"};
-inline const QColor purpleDim{"#7c5cf0"};
+inline QColor accent{"#8f8cff"};
+inline QColor accentHover{"#a5a2ff"};
+inline QColor accentDim{"#5a54f0"};
+inline QColor sky{"#5ab8ff"};
+inline QColor purple{"#b18cff"};
+inline QColor purpleDim{"#7c5cf0"};
 // States
-inline const QColor good{"#4fd39a"};
-inline const QColor warn{"#f2bc5c"};
-inline const QColor bad{"#ff7a7a"};
-inline const QColor info{"#6fb8ff"};
-inline const QColor warm{"#ffc66d"};
+inline QColor good{"#4fd39a"};
+inline QColor warn{"#f2bc5c"};
+inline QColor bad{"#ff7a7a"};
+inline QColor info{"#6fb8ff"};
+inline QColor warm{"#ffc66d"};
 }  // namespace color
 
 // Font families, loaded from the resources at startup.
@@ -63,6 +75,11 @@ QColor mix(const QColor& a, const QColor& b, double t);
 
 // rgba() string for style sheets.
 QString rgba(const QColor& c, double alpha);
+
+// Light or dark, decided once at startup before any widget is built.
+// The colours above are filled from the chosen palette.
+void setLight(bool light);
+bool isLight();
 
 void apply(QApplication& app);
 QString stylesheet();

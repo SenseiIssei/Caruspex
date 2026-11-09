@@ -105,8 +105,15 @@ int main(int argc, char** argv) {
         QStringLiteral("file.png"));
     carsOption.setFlags(QCommandLineOption::HiddenFromHelp);
     parser.addOption(carsOption);
+    QCommandLineOption themeOption(
+        QStringList() << QStringLiteral("theme"),
+        QCoreApplication::translate("main", "Erscheinungsbild für diesen Start: dark oder light"),
+        QStringLiteral("dark|light"));
+    parser.addOption(themeOption);
     parser.process(app);
 
+    if (parser.isSet(themeOption)) startup.appearance = parser.value(themeOption);
+    caruspex::theme::setLight(caruspex::effectiveLight(startup));
     caruspex::theme::apply(app);
 
     if (parser.isSet(carsOption)) {

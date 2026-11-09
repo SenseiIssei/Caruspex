@@ -101,8 +101,8 @@ public:
                 mark.lineTo(square.left() + side * 0.74, square.top() + side * 0.34);
                 p->drawPath(mark);
             } else {
-                p->fillPath(path, QColor("#0e1118"));
-                p->setPen(QPen(hover ? color::accent : QColor("#454e66"), 1.2));
+                p->fillPath(path, color::input);
+                p->setPen(QPen(hover ? color::accent : color::hoverLine, 1.2));
                 p->drawPath(path);
             }
             if (!enabled) p->fillPath(path, QColor(10, 12, 17, 150));
@@ -128,6 +128,50 @@ public:
 };
 
 }  // namespace
+
+namespace {
+bool g_light = false;
+}  // namespace
+
+void setLight(bool light) {
+    g_light = light;
+    if (!light) return;
+    // The light palette of Odysync: paper white surfaces, ink text, the
+    // accents a little deeper so they hold their contrast on white.
+    color::background = QColor("#f4f5fa");
+    color::surface = QColor("#ffffff");
+    color::surfaceHigh = QColor("#eef0f6");
+    color::surfaceHover = QColor("#e4e7f0");
+    color::border = QColor("#e2e5ee");
+    color::borderBright = QColor("#cdd2de");
+    color::sidebar = QColor("#fbfbfe");
+    color::input = QColor("#ffffff");
+    color::cardTop = QColor("#ffffff");
+    color::track = QColor("#e6e8f0");
+    color::rowLine = QColor("#eceef4");
+    color::alternate = QColor("#f8f9fc");
+    color::hoverLine = QColor("#b8bfcf");
+    color::scroll = QColor("#cfd4df");
+    color::scrollHover = QColor("#b3bacb");
+    color::pressed = QColor("#e4e7f0");
+    color::disabled = QColor("#f0f1f5");
+    color::text = QColor("#141821");
+    color::textMuted = QColor("#515b6b");
+    color::textFaint = QColor("#788091");
+    color::accent = QColor("#5a54f0");
+    color::accentHover = QColor("#4842d8");
+    color::accentDim = QColor("#4842d8");
+    color::sky = QColor("#1b8fe0");
+    color::purple = QColor("#7c5cf0");
+    color::purpleDim = QColor("#6a48e0");
+    color::good = QColor("#12875a");
+    color::warn = QColor("#b97a06");
+    color::bad = QColor("#c93636");
+    color::info = QColor("#1b6fc0");
+    color::warm = QColor("#b97a06");
+}
+
+bool isLight() { return g_light; }
 
 QString sansFamily() { return families().sans; }
 QString displayFamily() { return families().display; }
@@ -178,7 +222,7 @@ QMainWindow, QDialog { background: %BG%; }
 QStackedWidget > QWidget, QScrollArea > QWidget > QWidget { background: transparent; }
 
 QFrame#Card, QWidget#Card {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #151924, stop:1 %SURFACE%);
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 %CARDTOP%, stop:1 %SURFACE%);
     border: 1px solid %BORDER%;
     border-radius: 16px;
 }
@@ -188,7 +232,7 @@ QFrame#CardFlat {
     border-radius: 12px;
 }
 QFrame#Sidebar {
-    background: #0d1016;
+    background: %SIDEBAR%;
     border: none;
     border-right: 1px solid %BORDER%;
 }
@@ -244,10 +288,10 @@ QPushButton {
 }
 QPushButton:hover {
     background: %SURFACE_HOVER%;
-    border-color: #454e66;
+    border-color: %HOVERLINE%;
 }
-QPushButton:pressed { background: #151924; }
-QPushButton:disabled { color: %FAINT%; background: #12151c; border-color: %BORDER%; }
+QPushButton:pressed { background: %PRESSED%; }
+QPushButton:disabled { color: %FAINT%; background: %DISABLED%; border-color: %BORDER%; }
 
 QPushButton#Primary {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 %ACCENT%, stop:1 %SKY%);
@@ -263,7 +307,7 @@ QPushButton#Primary:pressed {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #7a77ef, stop:1 #4aa6ec);
 }
 QPushButton#Primary:disabled {
-    background: #1a1e28; color: %FAINT%; border: 1px solid %BORDER%;
+    background: %SURFACE2%; color: %FAINT%; border: 1px solid %BORDER%;
 }
 
 QPushButton#Danger {
@@ -297,7 +341,7 @@ QPushButton#Chip:checked {
 }
 
 QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QPlainTextEdit, QTextEdit {
-    background: #0e1118;
+    background: %INPUT%;
     border: 1px solid %BORDER_BRIGHT%;
     border-radius: 10px;
     padding: 8px 12px;
@@ -305,7 +349,7 @@ QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QPlainTextEdit, QTextEdit {
     selection-background-color: %ACCENT_DIM%;
     selection-color: #ffffff;
 }
-QComboBox:hover, QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover { border-color: #454e66; }
+QComboBox:hover, QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover { border-color: %HOVERLINE%; }
 QComboBox:focus, QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus,
 QPlainTextEdit:focus, QTextEdit:focus { border-color: %ACCENT%; }
 QComboBox { padding-right: 30px; }
@@ -323,7 +367,7 @@ QDoubleSpinBox::up-button, QDoubleSpinBox::down-button { width: 0; border: none;
 
 QTableWidget, QTableView, QTreeWidget, QTreeView, QListWidget {
     background: %SURFACE%;
-    alternate-background-color: #141823;
+    alternate-background-color: %ALTERNATE%;
     border: 1px solid %BORDER%;
     border-radius: 12px;
     gridline-color: transparent;
@@ -333,7 +377,7 @@ QTableWidget, QTableView, QTreeWidget, QTreeView, QListWidget {
 }
 QTableWidget::item, QTreeWidget::item, QListWidget::item {
     padding: 6px 8px;
-    border-bottom: 1px solid #1a1e29;
+    border-bottom: 1px solid %ROWLINE%;
 }
 QTableWidget::item:hover, QTreeWidget::item:hover, QListWidget::item:hover {
     background: %SURFACE2%;
@@ -352,18 +396,19 @@ QTableCornerButton::section { background: transparent; border: none; }
 
 QScrollBar:vertical   { background: transparent; width: 10px; margin: 2px; }
 QScrollBar::handle:vertical {
-    background: #2a3040; border-radius: 4px; min-height: 36px;
+    background: %SCROLL%; border-radius: 4px; min-height: 36px;
 }
-QScrollBar::handle:vertical:hover { background: #3a4256; }
+QScrollBar::handle:vertical:hover { background: %SCROLLHOVER%; }
+QScrollBar::handle:horizontal:hover { background: %SCROLLHOVER%; }
 QScrollBar:horizontal { background: transparent; height: 10px; margin: 2px; }
 QScrollBar::handle:horizontal {
-    background: #2a3040; border-radius: 4px; min-width: 36px;
+    background: %SCROLL%; border-radius: 4px; min-width: 36px;
 }
 QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; }
 QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
 
 QProgressBar {
-    background: #1a1e28;
+    background: %TRACK%;
     border: none;
     border-radius: 3px;
     max-height: 6px;
@@ -402,6 +447,17 @@ QMenu {
 QMenu::item { padding: 7px 18px; border-radius: 6px; }
 QMenu::item:selected { background: %ACCENT_FILL%; }
 )")
+        .replace("%CARDTOP%", color::cardTop.name())
+        .replace("%SIDEBAR%", color::sidebar.name())
+        .replace("%HOVERLINE%", color::hoverLine.name())
+        .replace("%PRESSED%", color::pressed.name())
+        .replace("%DISABLED%", color::disabled.name())
+        .replace("%INPUT%", color::input.name())
+        .replace("%ALTERNATE%", color::alternate.name())
+        .replace("%ROWLINE%", color::rowLine.name())
+        .replace("%SCROLLHOVER%", color::scrollHover.name())
+        .replace("%SCROLL%", color::scroll.name())
+        .replace("%TRACK%", color::track.name())
         .replace("%SANS%", families().sans)
         .replace("%DISPLAY%", families().display)
         .replace("%MONO%", families().mono)

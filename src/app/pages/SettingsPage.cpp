@@ -207,7 +207,12 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     language_->addItem(QStringLiteral("Deutsch"), QStringLiteral("de"));
     language_->addItem(QStringLiteral("English"), QStringLiteral("en"));
     form->addRow(tr("Sprache"), language_);
-    form->addRow(makeNote(tr("Die Sprache wechselt beim nächsten Start.")));
+    appearance_ = new QComboBox;
+    appearance_->addItem(tr("Wie das System"), QStringLiteral("auto"));
+    appearance_->addItem(tr("Dunkel"), QStringLiteral("dark"));
+    appearance_->addItem(tr("Hell"), QStringLiteral("light"));
+    form->addRow(tr("Erscheinungsbild"), appearance_);
+    form->addRow(makeNote(tr("Sprache und Erscheinungsbild wechseln beim nächsten Start.")));
     root->addWidget(windowBox);
 
     // --- Footer -------------------------------------------------------------
@@ -233,6 +238,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     connect(basicSession_, &QComboBox::currentIndexChanged, this, onCombo);
     connect(kklEcu_, &QComboBox::currentIndexChanged, this, onCombo);
     connect(language_, &QComboBox::currentIndexChanged, this, onCombo);
+    connect(appearance_, &QComboBox::currentIndexChanged, this, onCombo);
 
     const auto onSpin = [this](int) { emitChange(); };
     connect(timeout_, &QSpinBox::valueChanged, this, onSpin);
@@ -281,6 +287,8 @@ void SettingsPage::showValues(const AppSettings& v) {
     rememberGeometry_->setChecked(v.rememberGeometry);
     const int languageIndex = language_->findData(v.language);
     language_->setCurrentIndex(languageIndex >= 0 ? languageIndex : 0);
+    const int appearanceIndex = appearance_->findData(v.appearance);
+    appearance_->setCurrentIndex(appearanceIndex >= 0 ? appearanceIndex : 0);
 
     loading_ = false;
     emitChange();
@@ -309,6 +317,7 @@ AppSettings SettingsPage::values() const {
 
     v.rememberGeometry = rememberGeometry_->isChecked();
     v.language = language_->currentData().toString();
+    v.appearance = appearance_->currentData().toString();
     return v;
 }
 

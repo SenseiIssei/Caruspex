@@ -60,7 +60,7 @@ public:
         const QColor tone = severityColour(index.data(SeverityRole).toInt());
 
         QColor fill = selected ? rgbaColour(color::accent, 0.12)
-                               : hover ? QColor(255, 255, 255, 8) : QColor(0, 0, 0, 0);
+                               : hover ? rgbaColour(color::text, 0.04) : QColor(0, 0, 0, 0);
         p->setPen(selected ? QPen(rgbaColour(color::accent, 0.5), 1.0) : Qt::NoPen);
         p->setBrush(fill);
         p->drawRoundedRect(r, 12, 12);

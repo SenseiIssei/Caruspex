@@ -1,5 +1,8 @@
 #include "app/Settings.h"
 
+#include <QGuiApplication>
+#include <QStyleHints>
+
 #include <QLocale>
 #include <QSettings>
 
@@ -52,6 +55,10 @@ AppSettings loadSettings() {
     s.endGroup();
 
     v.language = s.value(QStringLiteral("sprache"), v.language).toString();
+    v.appearance = s.value(QStringLiteral("erscheinungsbild"), v.appearance).toString();
+    if (v.appearance != QStringLiteral("dark") && v.appearance != QStringLiteral("light")) {
+        v.appearance = QStringLiteral("auto");
+    }
     if (v.language != QStringLiteral("de") && v.language != QStringLiteral("en")) {
         v.language = QStringLiteral("auto");
     }
@@ -109,6 +116,7 @@ void saveSettings(const AppSettings& v) {
     s.endGroup();
 
     s.setValue(QStringLiteral("sprache"), v.language);
+    s.setValue(QStringLiteral("erscheinungsbild"), v.appearance);
 
     s.sync();
 }
@@ -119,6 +127,17 @@ QString effectiveLanguage(const AppSettings& v) {
     }
     return QLocale::system().language() == QLocale::German ? QStringLiteral("de")
                                                            : QStringLiteral("en");
+}
+
+}  // namespace caruspex
+
+namespace caruspex {
+
+bool effectiveLight(const AppSettings& values) {
+    if (values.appearance == QStringLiteral("light")) return true;
+    if (values.appearance == QStringLiteral("dark")) return false;
+    if (!qGuiApp) return false;
+    return qGuiApp->styleHints()->colorScheme() == Qt::ColorScheme::Light;
 }
 
 }  // namespace caruspex

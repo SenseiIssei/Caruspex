@@ -363,8 +363,8 @@ void ScoreRing::paintEvent(QPaintEvent*) {
 
     // Inner disc
     QRadialGradient disc(c, radius);
-    disc.setColorAt(0.0, QColor("#1a1e2a"));
-    disc.setColorAt(1.0, QColor("#11141c"));
+    disc.setColorAt(0.0, color::surfaceHigh);
+    disc.setColorAt(1.0, color::surface);
     p.setBrush(disc);
     p.drawEllipse(c, radius - thickness / 2.0, radius - thickness / 2.0);
 
@@ -384,7 +384,7 @@ void ScoreRing::paintEvent(QPaintEvent*) {
     // Track
     const QRectF ring(c.x() - radius, c.y() - radius, radius * 2, radius * 2);
     p.setBrush(Qt::NoBrush);
-    p.setPen(QPen(QColor("#1d2230"), thickness, Qt::SolidLine, Qt::RoundCap));
+    p.setPen(QPen(color::track, thickness, Qt::SolidLine, Qt::RoundCap));
     p.drawEllipse(ring);
 
     if (busy_ || target_ < 0) {
@@ -425,7 +425,7 @@ void ScoreRing::paintEvent(QPaintEvent*) {
     const QFontMetricsF fm(big);
     const QRectF numberBox(c.x() - radius, c.y() - fm.height() * 0.78, radius * 2, fm.height());
     QLinearGradient textGradient(numberBox.topLeft(), numberBox.bottomLeft());
-    textGradient.setColorAt(0, QColor("#ffffff"));
+    textGradient.setColorAt(0, isLight() ? color::text : QColor("#ffffff"));
     textGradient.setColorAt(1, target_ >= 0 ? tone.lighter(110) : color::textMuted);
     p.setPen(QPen(QBrush(textGradient), 1));
     p.drawText(numberBox, Qt::AlignCenter, number);
@@ -588,11 +588,13 @@ void FindingRow::paintEvent(QPaintEvent*) {
     p.setRenderHint(QPainter::Antialiasing);
     if (hover_) {
         p.setPen(Qt::NoPen);
-        p.setBrush(QColor(255, 255, 255, 8));
+        QColor veil = color::text;
+        veil.setAlpha(isLight() ? 12 : 8);
+        p.setBrush(veil);
         p.drawRoundedRect(QRectF(rect()).adjusted(0, 1, 0, -1), 10, 10);
     }
     // Hairline between rows
-    p.setPen(QPen(QColor("#1d2230"), 1));
+    p.setPen(QPen(color::track, 1));
     p.drawLine(QPointF(64, height() - 0.5), QPointF(width() - 12, height() - 0.5));
 }
 
@@ -631,9 +633,9 @@ public:
             case Kind::Error: tone = color::bad; iconName = QStringLiteral("x-circle"); break;
             case Kind::Info: break;
         }
-        setStyleSheet(QStringLiteral("QFrame { background: #1b2030; border: 1px solid %1; "
+        setStyleSheet(QStringLiteral("QFrame { background: %2; border: 1px solid %1; "
                                      "border-radius: 12px; } QLabel { border: none; }")
-                          .arg(rgba(tone, 0.45)));
+                          .arg(rgba(tone, 0.45), color::surfaceHigh.name()));
         auto* layout = new QHBoxLayout(this);
         layout->setContentsMargins(14, 12, 16, 12);
         layout->setSpacing(10);
