@@ -1,11 +1,17 @@
 #include "app/Theme.h"
 
 #include <QApplication>
+
+#include <algorithm>
 #include <QFont>
 #include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
 #include <QPalette>
+#include <QPainter>
+#include <QPainterPath>
 #include <QPropertyAnimation>
+#include <QProxyStyle>
+#include <QStyleOption>
 #include <QStyle>
 #include <QWidget>
 
@@ -57,6 +63,69 @@ QFont make(const QString& family, int px, int weight) {
     font.setStyleStrategy(QFont::PreferAntialias);
     return font;
 }
+
+// Draws the few primitives the style sheet cannot: check boxes with the
+// gradient and a white tick, and the small arrow in combo boxes. Everything
+// else is Fusion.
+class CaruspexStyle : public QProxyStyle {
+public:
+    CaruspexStyle() : QProxyStyle(QStringLiteral("Fusion")) {}
+
+    int pixelMetric(PixelMetric metric, const QStyleOption* option,
+                    const QWidget* widget) const override {
+        if (metric == PM_IndicatorWidth || metric == PM_IndicatorHeight) return 18;
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* p,
+                       const QWidget* widget) const override {
+        if (element == PE_IndicatorCheckBox || element == PE_IndicatorItemViewItemCheck) {
+            p->save();
+            p->setRenderHint(QPainter::Antialiasing);
+            const QRectF box = QRectF(option->rect).adjusted(1, 1, -1, -1);
+            const double side = std::min(box.width(), box.height());
+            const QRectF square(box.center().x() - side / 2, box.center().y() - side / 2, side, side);
+            const bool on = option->state & State_On;
+            const bool hover = option->state & State_MouseOver;
+            const bool enabled = option->state & State_Enabled;
+            QPainterPath path;
+            path.addRoundedRect(square, 5, 5);
+            if (on) {
+                p->fillPath(path, accentGradient(square.left(), square.top(), square.right(),
+                                                 square.bottom()));
+                QPen tick(Qt::white, 2.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+                p->setPen(tick);
+                QPainterPath mark;
+                mark.moveTo(square.left() + side * 0.27, square.top() + side * 0.52);
+                mark.lineTo(square.left() + side * 0.43, square.top() + side * 0.68);
+                mark.lineTo(square.left() + side * 0.74, square.top() + side * 0.34);
+                p->drawPath(mark);
+            } else {
+                p->fillPath(path, QColor("#0e1118"));
+                p->setPen(QPen(hover ? color::accent : QColor("#454e66"), 1.2));
+                p->drawPath(path);
+            }
+            if (!enabled) p->fillPath(path, QColor(10, 12, 17, 150));
+            p->restore();
+            return;
+        }
+        if (element == PE_IndicatorArrowDown) {
+            p->save();
+            p->setRenderHint(QPainter::Antialiasing);
+            const QPointF c = QRectF(option->rect).center();
+            QPen pen(color::textMuted, 1.8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+            p->setPen(pen);
+            QPainterPath v;
+            v.moveTo(c.x() - 4.5, c.y() - 2);
+            v.lineTo(c.x(), c.y() + 2.5);
+            v.lineTo(c.x() + 4.5, c.y() - 2);
+            p->drawPath(v);
+            p->restore();
+            return;
+        }
+        QProxyStyle::drawPrimitive(element, option, p, widget);
+    }
+};
 
 }  // namespace
 
@@ -239,8 +308,7 @@ QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QPlainTextEdit, QTextEdit {
 QComboBox:hover, QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover { border-color: #454e66; }
 QComboBox:focus, QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus,
 QPlainTextEdit:focus, QTextEdit:focus { border-color: %ACCENT%; }
-QComboBox::drop-down { border: none; width: 26px; }
-QComboBox::down-arrow { image: url(:/ui/chevron-down.svg); width: 12px; height: 12px; }
+QComboBox { padding-right: 30px; }
 QComboBox QAbstractItemView {
     background: %SURFACE2%;
     border: 1px solid %BORDER_BRIGHT%;
@@ -309,15 +377,6 @@ QProgressBar::chunk {
 }
 
 QCheckBox { spacing: 10px; }
-QCheckBox::indicator { width: 18px; height: 18px; }
-QCheckBox::indicator:unchecked {
-    border: 1px solid #454e66; border-radius: 5px; background: #0e1118;
-}
-QCheckBox::indicator:unchecked:hover { border-color: %ACCENT%; }
-QCheckBox::indicator:checked {
-    border: none; border-radius: 5px; image: url(:/ui/check-box.svg);
-}
-QRadioButton::indicator { width: 16px; height: 16px; }
 
 QToolTip {
     background: %SURFACE2%; color: %TEXT%;
@@ -368,7 +427,7 @@ QMenu::item:selected { background: %ACCENT_FILL%; }
 }
 
 void apply(QApplication& app) {
-    app.setStyle(QStringLiteral("Fusion"));
+    app.setStyle(new CaruspexStyle);
     loadFonts();
 
     QPalette palette;

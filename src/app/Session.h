@@ -41,6 +41,9 @@ struct FaultRow {
     // permanent. Kept separately because kind is display text and depends on
     // the language.
     bool stored = false;
+    // Which control unit reported it, e.g. "Motor (7E8)". Empty on the
+    // K-line or when only one unit answers.
+    QString ecu;
 };
 
 struct LiveRow {

@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QLineSeries>
 #include <QListWidget>
 #include <QMessageBox>
@@ -21,6 +22,7 @@
 #include <limits>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 #include "data/Pids.h"
 
 namespace caruspex {
@@ -39,9 +41,9 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
-    auto* title = new QLabel(tr("Live-Werte"));
-    title->setObjectName("PageTitle");
-    root->addWidget(title);
+    root->addWidget(makePageHeader(tr("Messen"), tr("Live-Werte"),
+                                   tr("Alles, was das Steuergerät laufend misst, nach Bereichen "
+                                      "sortiert. Links ankreuzen, oben starten.")));
 
     auto* bar = new QHBoxLayout;
     bar->setSpacing(10);
@@ -108,11 +110,29 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
     table_->setAlternatingRowColors(true);
 
     pidList_ = new QListWidget;
-    pidList_->setMaximumWidth(300);
     buildPidList();
+    search_ = new QLineEdit;
+    search_->setPlaceholderText(tr("Messwert suchen, z.B. Öl oder Lambda"));
+    search_->setClearButtonEnabled(true);
+    connect(search_, &QLineEdit::textChanged, this, [this](const QString& text) {
+        const QString needle = text.trimmed();
+        for (int i = 0; i < pidList_->count(); ++i) {
+            QListWidgetItem* item = pidList_->item(i);
+            const bool header = item->data(Qt::UserRole).toInt() < 0;
+            item->setHidden(!needle.isEmpty() &&
+                            (header || !item->text().contains(needle, Qt::CaseInsensitive)));
+        }
+    });
+    auto* listBox = new QWidget;
+    listBox->setMaximumWidth(340);
+    auto* listLayout = new QVBoxLayout(listBox);
+    listLayout->setContentsMargins(0, 0, 0, 0);
+    listLayout->setSpacing(8);
+    listLayout->addWidget(search_);
+    listLayout->addWidget(pidList_, 1);
 
     auto* bottom = new QSplitter(Qt::Horizontal);
-    bottom->addWidget(pidList_);
+    bottom->addWidget(listBox);
     bottom->addWidget(table_);
     bottom->setStretchFactor(1, 1);
 
@@ -126,8 +146,27 @@ LivePage::LivePage(QWidget* parent) : QWidget(parent) {
 
 void LivePage::buildPidList() {
     pidList_->clear();
-    for (const PidSpec& spec : pidTable()) {
-        auto* item = new QListWidgetItem(QString::fromUtf8(spec.name));
+    for (PidCategory category : pidCategories()) {
+      bool any = false;
+      for (const PidSpec& spec : pidTable()) {
+        if (spec.category != category || spec.pid == 0x00) continue;
+        if (!any) {
+            // Section heading, not selectable.
+            auto* head = new QListWidgetItem(QString::fromUtf8(pidCategoryName(category)).toUpper());
+            head->setFlags(Qt::NoItemFlags);
+            head->setData(Qt::UserRole, -1);
+            head->setForeground(theme::color::accent);
+            QFont f = theme::sans(11, 700);
+            f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
+            head->setFont(f);
+            pidList_->addItem(head);
+            any = true;
+        }
+        const char* label = (spec.title && *spec.title) ? spec.title : spec.name;
+        auto* item = new QListWidgetItem(QString::fromUtf8(label));
+        if (spec.values.size() > 1) {
+            item->setToolTip(tr("%n Werte", nullptr, static_cast<int>(spec.values.size())));
+        }
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setData(Qt::UserRole, spec.pid);
         const bool standard = defaultLivePids().end() !=
@@ -135,6 +174,7 @@ void LivePage::buildPidList() {
                                         spec.pid);
         item->setCheckState(standard ? Qt::Checked : Qt::Unchecked);
         pidList_->addItem(item);
+      }
     }
 }
 
@@ -144,6 +184,7 @@ void LivePage::onSupportedPids(const QVector<int>& pids) {
     for (int i = 0; i < pidList_->count(); ++i) {
         QListWidgetItem* item = pidList_->item(i);
         const int pid = item->data(Qt::UserRole).toInt();
+        if (pid < 0) continue;
         const bool supported = pids.contains(pid);
         item->setForeground(supported ? theme::color::text : theme::color::textMuted);
         if (!supported) {
@@ -158,7 +199,9 @@ QVector<int> LivePage::selectedPids() const {
     QVector<int> pids;
     for (int i = 0; i < pidList_->count(); ++i) {
         const QListWidgetItem* item = pidList_->item(i);
-        if (item->checkState() == Qt::Checked) pids.push_back(item->data(Qt::UserRole).toInt());
+        if (item->data(Qt::UserRole).toInt() >= 0 && item->checkState() == Qt::Checked) {
+            pids.push_back(item->data(Qt::UserRole).toInt());
+        }
     }
     return pids;
 }

@@ -12,6 +12,7 @@
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QLabel;
+class QLineEdit;
 class QListWidget;
 class QPushButton;
 class QTableWidget;
@@ -54,6 +55,7 @@ private:
     void resetChart();
 
     QListWidget* pidList_ = nullptr;
+    QLineEdit* search_ = nullptr;
     QTableWidget* table_ = nullptr;
     QPushButton* runButton_ = nullptr;
     QPushButton* exportButton_ = nullptr;

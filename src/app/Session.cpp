@@ -32,7 +32,9 @@ namespace {
 
 LiveRow toRow(const LiveValue& v) {
     LiveRow row;
-    row.pid = v.pid;
+    // The key tells the values of one PID apart; it equals the PID for the
+    // primary value, so everything keyed by PID keeps working.
+    row.pid = v.key != 0 ? v.key : v.pid;
     row.name = QString::fromStdString(v.name);
     row.unit = QString::fromStdString(v.unit);
     row.text = QString::fromStdString(v.text);
@@ -68,6 +70,9 @@ bool Worker::finishConnect(std::unique_ptr<ITransport> transport, const QString&
         else emit logLine(QString::fromStdString(error));
         return false;
     }
+    // On CAN several control units may answer; with headers on, every fault
+    // keeps the unit it came from.
+    if (elm_.isCan()) elm_.setHeaders(true);
     obd_ = std::make_unique<Obd2>(elm_);
     emit connected(QString::fromStdString(elm_.version()),
                    QString::fromStdString(elm_.transportName()),
@@ -215,7 +220,7 @@ void Worker::refreshStatusAndFaults() {
     for (const Fault& f : obd_->readFaults(error)) {
         rows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
                         QString::fromStdString(f.text), f.throttleRelated,
-                        isStoredKind(f.kind)});
+                        isStoredKind(f.kind), QString::fromStdString(f.ecu)});
     }
     emit faults(rows);
     emit logLine(rows.isEmpty()
@@ -294,8 +299,7 @@ void Worker::pollTick() {
     const int pid = pollPids_[pollIndex_ % pollPids_.size()];
     pollIndex_ = (pollIndex_ + 1) % pollPids_.size();
 
-    LiveValue value;
-    if (obd_->readLive(pid, value)) emit liveValue(toRow(value));
+    for (const LiveValue& value : obd_->readLiveAll(pid)) emit liveValue(toRow(value));
 }
 
 void Worker::sendRaw(const QString& command) {
@@ -699,7 +703,7 @@ void Worker::runHealthCheck(int seconds) {
     for (const Fault& f : input.faults) {
         faultRows.push_back({QString::fromStdString(f.code), QString::fromStdString(f.kind),
                              QString::fromStdString(f.text), f.throttleRelated,
-                             isStoredKind(f.kind)});
+                             isStoredKind(f.kind), QString::fromStdString(f.ecu)});
     }
     emit faults(faultRows);
     input.faultLevel = [](const Fault& f) {
