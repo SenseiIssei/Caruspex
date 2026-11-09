@@ -249,6 +249,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     });
     connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
     connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
+    connect(dashboard_, &DashboardPage::gaugesLiveRequested, &session_, &Session::startLiveRequested);
+    connect(dashboard_, &DashboardPage::gaugesLiveStopRequested, &session_, &Session::stopLiveRequested);
     connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
 
     // New pages
@@ -598,6 +600,10 @@ void MainWindow::showPageByName(const QString& name) {
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);
         emit session_.probeAdapterRequested();
+    }
+    if (name == QStringLiteral("start-live")) {
+        navigateTo(dashboard_);
+        dashboard_->startGaugesLive();
     }
     if (name == QStringLiteral("live-run")) {
         navigateTo(live_);
