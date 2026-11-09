@@ -209,7 +209,7 @@ void NavButton::setCompact(bool compact) {
     update();
 }
 
-QSize NavButton::sizeHint() const { return compact_ ? QSize(44, 40) : QSize(220, 38); }
+QSize NavButton::sizeHint() const { return compact_ ? QSize(44, 36) : QSize(220, 34); }
 
 void NavButton::enterEvent(QEnterEvent* event) {
     animateTo(hoverAnimation_, 1.0);

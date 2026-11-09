@@ -94,6 +94,11 @@ int main(int argc, char** argv) {
         QCoreApplication::translate("main", "Fenstergröße, z.B. 1440x920"),
         QStringLiteral("WxH"));
     parser.addOption(sizeOption);
+    QCommandLineOption shotDelayOption(QStringList() << QStringLiteral("shot-delay"),
+                                       QStringLiteral("Developer aid: milliseconds before --shot"),
+                                       QStringLiteral("ms"), QStringLiteral("5200"));
+    shotDelayOption.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(shotDelayOption);
     QCommandLineOption carsOption(
         QStringList() << QStringLiteral("render-cars"),
         QStringLiteral("Developer aid: draw every body style into one image and quit"),
@@ -146,7 +151,7 @@ int main(int argc, char** argv) {
     }
     if (parser.isSet(shotOption)) {
         const QString file = parser.value(shotOption);
-        QTimer::singleShot(5200, &window, [&window, file] {
+        QTimer::singleShot(parser.value(shotDelayOption).toInt(), &window, [&window, file] {
             window.grab().save(file);
             QApplication::quit();
         });

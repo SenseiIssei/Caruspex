@@ -100,8 +100,9 @@ GaragePage::GaragePage(Garage* garage, QWidget* parent) : QWidget(parent), garag
     auto* scroll = new QScrollArea;
     scroll->setWidgetResizable(true);
     scroll->setFrameShape(QFrame::NoFrame);
-    scroll->setMinimumWidth(360);
-    scroll->setMaximumWidth(440);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setMinimumWidth(420);
+    scroll->setMaximumWidth(460);
     auto* listHost = new QWidget;
     list_ = new QVBoxLayout(listHost);
     list_->setContentsMargins(0, 0, 6, 0);

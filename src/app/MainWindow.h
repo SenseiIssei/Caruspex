@@ -36,6 +36,11 @@ class MonitorPage;
 class SettingsPage;
 class LexiconPage;
 class GaragePage;
+class HealthPage;
+class TripPage;
+class PerformancePage;
+class BatteryPage;
+class AdapterPage;
 class Garage;
 class VehicleState;
 
@@ -124,6 +129,11 @@ private:
     SettingsPage* settingsPage_ = nullptr;
     LexiconPage* lexicon_ = nullptr;
     GaragePage* garagePage_ = nullptr;
+    HealthPage* health_ = nullptr;
+    TripPage* trip_ = nullptr;
+    PerformancePage* performance_ = nullptr;
+    BatteryPage* battery_ = nullptr;
+    AdapterPage* adapter_ = nullptr;
     NavButton* faultsButton_ = nullptr;
     VehicleState* state_ = nullptr;
     Garage* garage_ = nullptr;

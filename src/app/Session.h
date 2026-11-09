@@ -73,6 +73,32 @@ struct MonitorGuideRow {
     bool coldStart = false;
 };
 
+// Result of the adapter test, prepared for the UI.
+struct AdapterCheckRow {
+    QString command;
+    QString version;     // the ELM version that introduced it
+    bool supported = false;
+    QString purpose;
+};
+
+struct AdapterRow {
+    bool reachable = false;
+    QString version;
+    QString description;
+    bool isStn = false;
+    QString stnId;
+    double voltage = 0.0;
+    bool hasVoltage = false;
+    double roundTripMs = 0.0;
+    double roundTripWithHintMs = 0.0;
+    QString behavesLike;
+    bool acceptsUnknown = false;
+    QString verdict;
+    QStringList facts;
+    QStringList speedTips;
+    QVector<AdapterCheckRow> checks;
+};
+
 struct HealthRow {
     int score = -1;
     int grade = 0;          // analysis::TrafficLight: 0 green, 1 yellow, 2 red
@@ -161,6 +187,8 @@ public slots:
     // Full health check: faults, readiness, component monitoring and a
     // series of live values over the given number of seconds.
     void runHealthCheck(int seconds);
+    // Tests what the adapter really is and can do.
+    void probeAdapter();
     // Adapter voltage (ATRV) in a fast loop, for the battery test.
     void startVoltagePoll(int intervalMs);
     void stopVoltagePoll();
@@ -208,6 +236,7 @@ signals:
     void healthProgress(const QString& step, int percent);
     void healthResult(const caruspex::HealthRow& row);
     void adapterVoltage(double volts, double time);
+    void adapterReport(const caruspex::AdapterRow& row);
 
 private slots:
     void pollTick();
@@ -272,6 +301,7 @@ signals:
     void basicSettingSessionRequested(int mode);
     void readMonitorsRequested();
     void healthCheckRequested(int seconds);
+    void probeAdapterRequested();
     void voltagePollRequested(int intervalMs);
     void voltagePollStopRequested();
     void settingsChanged(const caruspex::AppSettings& values);
@@ -291,3 +321,4 @@ Q_DECLARE_METATYPE(caruspex::EcuScanRow)
 Q_DECLARE_METATYPE(caruspex::MonitorRow)
 Q_DECLARE_METATYPE(caruspex::OxygenRow)
 Q_DECLARE_METATYPE(caruspex::HealthRow)
+Q_DECLARE_METATYPE(caruspex::AdapterRow)

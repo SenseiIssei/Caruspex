@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "core/AdapterProbe.h"
+#include "core/DemoTransport.h"
 #include "core/analysis/DriveCycleGuide.h"
 #include "core/analysis/HealthCheck.h"
 
@@ -142,8 +144,48 @@ void Worker::openTcp(const QString& host, int port, const QString& protocolOrder
 }
 
 void Worker::openDemo(const QString& protocolOrder) {
+    // The demo car speaks CAN; the K-line protocols would only cost seconds.
     Q_UNUSED(protocolOrder);
-    emit failed(tr("Das Demo-Auto ist in dieser Version noch nicht eingebaut."));
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    const bool ok = finishConnect(std::make_unique<DemoTransport>(), QStringLiteral("6"), true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::probeAdapter() {
+    if (!elm_.connected()) {
+        emit failed(tr("Für den Adaptertest erst verbinden."));
+        return;
+    }
+    stopLive();
+    stopVoltagePoll();
+    emit busy(true);
+    const AdapterReport report = caruspex::probeAdapter(elm_);
+    AdapterRow row;
+    row.reachable = report.reachable;
+    row.version = QString::fromStdString(report.versionText);
+    row.description = QString::fromStdString(report.description);
+    row.isStn = report.isStn;
+    row.stnId = QString::fromStdString(report.stnId);
+    row.voltage = report.voltage;
+    row.hasVoltage = report.hasVoltage;
+    row.roundTripMs = report.roundTripMs;
+    row.roundTripWithHintMs = report.roundTripWithHintMs;
+    row.behavesLike = report.behavesLikeLevel > 0
+                          ? QString::fromStdString(versionText(report.behavesLikeLevel))
+                          : QString();
+    row.acceptsUnknown = report.acceptsUnknownCommands;
+    row.verdict = QString::fromStdString(report.verdict.get());
+    for (const auto& f : report.facts) row.facts << QString::fromStdString(f.get());
+    for (const auto& t : report.speedTips) row.speedTips << QString::fromStdString(t.get());
+    for (const CommandCheck& c : report.checks) {
+        row.checks.push_back({QString::fromStdString(c.command),
+                              QString::fromStdString(versionText(c.introducedIn)), c.supported,
+                              QString::fromStdString(c.purpose.get())});
+    }
+    emit adapterReport(row);
+    emit busy(false);
 }
 
 void Worker::closeAdapter() {
@@ -210,6 +252,15 @@ void Worker::readDetails() {
     QVector<LiveRow> frame;
     for (const LiveValue& v : obd_->readFreezeFrame(code)) frame.push_back(toRow(v));
     emit vehicleInfo(vin, QString::fromStdString(code), frame);
+
+    // One reading of the values the start page shows as tiles, so they are
+    // not empty until a measurement runs.
+    const std::set<int> supported = obd_->supportedPids();
+    for (int pid : {0x05, 0x2F, 0x42, 0xA6}) {
+        if (!supported.empty() && !supported.count(pid)) continue;
+        LiveValue value;
+        if (obd_->readLive(pid, value)) emit liveValue(toRow(value));
+    }
     emit busy(false);
 }
 
@@ -822,6 +873,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     qRegisterMetaType<QVector<int>>("QVector<int>");
     qRegisterMetaType<AppSettings>("caruspex::AppSettings");
     qRegisterMetaType<HealthRow>("caruspex::HealthRow");
+    qRegisterMetaType<AdapterRow>("caruspex::AdapterRow");
 
     worker_ = new Worker();
     worker_->moveToThread(&thread_);
@@ -850,6 +902,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::actuatorTestRequested, worker_,
             &Worker::runActuatorTest);
     connect(this, &Session::healthCheckRequested, worker_, &Worker::runHealthCheck);
+    connect(this, &Session::probeAdapterRequested, worker_, &Worker::probeAdapter);
     connect(this, &Session::voltagePollRequested, worker_, &Worker::startVoltagePoll);
     connect(this, &Session::voltagePollStopRequested, worker_, &Worker::stopVoltagePoll);
     connect(this, &Session::readMonitorsRequested, worker_,

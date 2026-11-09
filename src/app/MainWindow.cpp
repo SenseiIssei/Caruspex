@@ -31,19 +31,24 @@
 #include "app/Theme.h"
 #include "app/TitleBar.h"
 #include "app/Widgets.h"
+#include "app/pages/AdapterPage.h"
+#include "app/pages/BatteryPage.h"
 #include "app/pages/ConnectPage.h"
 #include "app/pages/DashboardPage.h"
 #include "app/pages/FaultsPage.h"
 #include "app/pages/GaragePage.h"
+#include "app/pages/HealthPage.h"
 #include "app/pages/KklToolsPage.h"
 #include "app/pages/LexiconPage.h"
 #include "app/pages/LivePage.h"
 #include "app/pages/MonitorPage.h"
+#include "app/pages/PerformancePage.h"
 #include "app/pages/ScanPage.h"
 #include "app/pages/SettingsPage.h"
 #include "app/pages/StatsPage.h"
 #include "app/pages/ThrottlePage.h"
 #include "app/pages/ToolsPage.h"
+#include "app/pages/TripPage.h"
 
 namespace caruspex {
 
@@ -141,6 +146,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     garage_ = new Garage(this);
     garage_->load();
     garagePage_ = new GaragePage(garage_);
+    health_ = new HealthPage;
+    trip_ = new TripPage;
+    performance_ = new PerformancePage;
+    battery_ = new BatteryPage;
+    adapter_ = new AdapterPage;
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -228,6 +238,38 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(state_, &VehicleState::faultsChanged, this, &MainWindow::recordCheck);
     connect(dashboard_, &DashboardPage::reportRequested, this, &MainWindow::showReport);
     connect(garagePage_, &GaragePage::reportRequested, this, &MainWindow::showReport);
+
+    // New pages
+    connect(worker, &Worker::healthProgress, health_, &HealthPage::onProgress);
+    connect(worker, &Worker::healthResult, health_, &HealthPage::onResult);
+    connect(worker, &Worker::healthResult, this, [this](const HealthRow& row) {
+        // The start page shows the same result as the health check.
+        QVector<DashboardPage::Finding> findings;
+        for (const HealthFindingRow& f : row.findings) {
+            findings.push_back({levelIcon(f.level), levelColour(f.level), f.title, f.explanation,
+                                levelLabel(f.level)});
+        }
+        const QString caption = row.grade == 0   ? tr("Gut in Schuss")
+                                : row.grade == 1 ? tr("Braucht Pflege")
+                                                 : tr("Bitte ansehen");
+        dashboard_->setHealth(row.score, caption, findings);
+        toast::show(this, tr("Gesundheitscheck fertig: %1 Punkte.").arg(row.score),
+                    row.grade == 0 ? toast::Kind::Success : toast::Kind::Warning);
+    });
+    connect(health_, &HealthPage::startRequested, &session_, &Session::healthCheckRequested);
+    connect(health_, &HealthPage::cancelRequested, &session_, &Session::cancelScan);
+    connect(worker, &Worker::liveValue, trip_, &TripPage::onLiveValue);
+    connect(worker, &Worker::supportedPids, trip_, &TripPage::onSupportedPids);
+    connect(trip_, &TripPage::startRequested, &session_, &Session::startLiveRequested);
+    connect(trip_, &TripPage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(worker, &Worker::liveValue, performance_, &PerformancePage::onLiveValue);
+    connect(performance_, &PerformancePage::startRequested, &session_, &Session::startLiveRequested);
+    connect(performance_, &PerformancePage::stopRequested, &session_, &Session::stopLiveRequested);
+    connect(worker, &Worker::adapterVoltage, battery_, &BatteryPage::onVoltage);
+    connect(battery_, &BatteryPage::pollRequested, &session_, &Session::voltagePollRequested);
+    connect(battery_, &BatteryPage::pollStopRequested, &session_, &Session::voltagePollStopRequested);
+    connect(worker, &Worker::adapterReport, adapter_, &AdapterPage::onReport);
+    connect(adapter_, &AdapterPage::probeRequested, &session_, &Session::probeAdapterRequested);
 
     // UI to worker
     connect(connect_, &ConnectPage::serialRequested, this,
@@ -386,11 +428,15 @@ QWidget* MainWindow::buildSidebar() {
     addEntry(QStringLiteral("home"), tr("Start"), dashboard_);
     addEntry(QStringLiteral("plug"), tr("Verbinden"), connect_);
     addSection(tr("Diagnose"));
+    addEntry(QStringLiteral("heart"), tr("Gesundheitscheck"), health_);
     faultsButton_ = addEntry(QStringLiteral("alert"), tr("Fehlerspeicher"), faults_);
     addEntry(QStringLiteral("shield"), tr("Prüfen und AU"), tools_);
     addEntry(QStringLiteral("stethoscope"), tr("Bauteilprüfung"), monitor_);
     addSection(tr("Messen"));
     addEntry(QStringLiteral("activity"), tr("Live-Werte"), live_);
+    addEntry(QStringLiteral("fuel"), tr("Bordcomputer"), trip_);
+    addEntry(QStringLiteral("timer"), tr("Leistung"), performance_);
+    addEntry(QStringLiteral("battery"), tr("Batterie"), battery_);
     addEntry(QStringLiteral("chart"), tr("Statistik"), stats_);
     addSection(tr("Werkstatt"));
     addEntry(QStringLiteral("cpu"), tr("Alle Steuergeräte"), scan_);
@@ -409,6 +455,7 @@ QWidget* MainWindow::buildSidebar() {
     bottomNavigation_->setSpacing(2);
     root->addLayout(bottomNavigation_);
     addEntry(QStringLiteral("garage"), tr("Garage"), garagePage_, bottomNavigation_);
+    addEntry(QStringLiteral("cable"), tr("Adapter"), adapter_, bottomNavigation_);
     addEntry(QStringLiteral("settings"), tr("Einstellungen"), settingsPage_, bottomNavigation_);
 
     buttonForPage_.value(dashboard_)->setChecked(true);
@@ -487,7 +534,7 @@ void MainWindow::addSection(const QString& title) {
     auto* label = new QLabel(title.toUpper());
     label->setObjectName("NavSection");
     label->setProperty("fullText", title.toUpper());
-    navigationLayout_->addSpacing(6);
+    navigationLayout_->addSpacing(2);
     navigationLayout_->addWidget(label);
     sectionLabels_.push_back(label);
 }
@@ -512,9 +559,25 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("stats"), stats_},     {QStringLiteral("scan"), scan_},
         {QStringLiteral("throttle"), throttle_}, {QStringLiteral("kkl"), kklTools_},
         {QStringLiteral("lexicon"), lexicon_}, {QStringLiteral("settings"), settingsPage_},
-        {QStringLiteral("garage"), garagePage_},
+        {QStringLiteral("garage"), garagePage_},  {QStringLiteral("health"), health_},
+        {QStringLiteral("trip"), trip_},          {QStringLiteral("performance"), performance_},
+        {QStringLiteral("battery"), battery_},    {QStringLiteral("adapter"), adapter_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
+    // Developer aids for screenshots: open a page and start what it does.
+    if (name == QStringLiteral("health-run")) {
+        navigateTo(health_);
+        health_->onProgress(tr("Starte ..."), 0);
+        emit session_.healthCheckRequested(12);
+    }
+    if (name == QStringLiteral("adapter-run")) {
+        navigateTo(adapter_);
+        emit session_.probeAdapterRequested();
+    }
+    if (name == QStringLiteral("live-run")) {
+        navigateTo(live_);
+        live_->toggleFromOutside();
+    }
     if (name == QStringLiteral("log") && !logOpen_) toggleLog();
 }
 
@@ -534,6 +597,11 @@ void MainWindow::onConnected(const QString& adapter, const QString& transport,
     monitor_->setConnected(true);
     throttle_->setEobdConnected(true);
     stats_->setConnected(true);
+    health_->setConnected(true);
+    trip_->setConnected(true);
+    performance_->setConnected(true);
+    battery_->setConnected(true);
+    adapter_->setConnected(true);
     toast::show(this, tr("Verbunden über %1. Protokoll: %2").arg(transport, protocol),
                 toast::Kind::Success);
     // After connecting the start page is the natural place to go. The VIN
@@ -562,6 +630,11 @@ void MainWindow::onClosed() {
     monitor_->setConnected(false);
     throttle_->setEobdConnected(false);
     stats_->setConnected(false);
+    health_->setConnected(false);
+    trip_->setConnected(false);
+    performance_->setConnected(false);
+    battery_->setConnected(false);
+    adapter_->setConnected(false);
     appendLog(tr("Verbindung getrennt."));
 }
 

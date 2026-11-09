@@ -142,7 +142,7 @@ QLabel#NavSection {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 1.4px;
-    padding: 10px 12px 4px 12px;
+    padding: 8px 12px 2px 12px;
 }
 QLabel#Subtle { color: %DIM%; }
 QLabel#Hint   { color: %FAINT%; font-size: 12px; }

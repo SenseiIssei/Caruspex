@@ -102,6 +102,8 @@ if(CARUSPEX_GUI)
         src/app/pages/ConnectPage.h
         src/app/pages/DashboardPage.cpp
         src/app/pages/DashboardPage.h
+        src/app/pages/AdapterPage.cpp
+        src/app/pages/AdapterPage.h
         src/app/pages/BatteryPage.cpp
         src/app/pages/BatteryPage.h
         src/app/pages/FaultsPage.cpp
