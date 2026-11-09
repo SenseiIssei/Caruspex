@@ -97,6 +97,8 @@ if(CARUSPEX_GUI)
         src/app/Icons.h
         src/app/Report.cpp
         src/app/Report.h
+        src/app/VehicleIdentity.cpp
+        src/app/VehicleIdentity.h
         src/app/VehicleState.cpp
         src/app/VehicleState.h
         src/app/Widgets.cpp
@@ -124,6 +126,8 @@ if(CARUSPEX_GUI)
         src/app/pages/ToolsPage.cpp
         src/app/pages/TripPage.cpp
         src/app/pages/TripPage.h
+        src/app/pages/VehiclesPage.cpp
+        src/app/pages/VehiclesPage.h
         src/app/pages/ToolsPage.h
         src/app/pages/ThrottlePage.cpp
         src/app/pages/ThrottlePage.h

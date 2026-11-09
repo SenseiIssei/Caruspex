@@ -27,6 +27,7 @@
 #include "app/Garage.h"
 #include "app/Icons.h"
 #include "app/Report.h"
+#include "app/VehicleIdentity.h"
 #include "app/VehicleState.h"
 #include "app/Theme.h"
 #include "app/TitleBar.h"
@@ -49,6 +50,7 @@
 #include "app/pages/ThrottlePage.h"
 #include "app/pages/ToolsPage.h"
 #include "app/pages/TripPage.h"
+#include "app/pages/VehiclesPage.h"
 
 namespace caruspex {
 
@@ -151,6 +153,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     performance_ = new PerformancePage;
     battery_ = new BatteryPage;
     adapter_ = new AdapterPage;
+    vehicles_ = new VehiclesPage;
 
     auto* central = new QWidget;
     auto* layout = new QHBoxLayout(central);
@@ -231,6 +234,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     state_->attach(worker);
     connect(dashboard_, &DashboardPage::scoreChanged, state_, &VehicleState::setScore);
     connect(state_, &VehicleState::vinChanged, this, [this](const QString& vin) {
+        // Recognise the car: name, picture and the brand for maker codes.
+        const IdentifiedVehicle car = identifyVin(vin);
+        state_->setIdentity(car.title, car.subtitle, static_cast<int>(car.body));
+        dashboard_->setVehicle(car.title, car.subtitle, car.body);
+        dashboard_->setBrand(car.brand);
+        faults_->setBrand(car.brand);
+        if (car.known) {
+            toast::show(this, tr("Erkannt: %1").arg(car.title), toast::Kind::Success);
+        }
         garage_->touch(vin, state_->displayName(), state_->description(), state_->bodyStyle());
         garagePage_->setCurrentVin(vin);
         recordCheck();
@@ -270,6 +282,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(battery_, &BatteryPage::pollStopRequested, &session_, &Session::voltagePollStopRequested);
     connect(worker, &Worker::adapterReport, adapter_, &AdapterPage::onReport);
     connect(adapter_, &AdapterPage::probeRequested, &session_, &Session::probeAdapterRequested);
+
+    connect(vehicles_, &VehiclesPage::useForConnection, this,
+            [this](const VehicleGeneration* generation, int year) {
+                connect_->setGeneration(generation, year);
+                navigateTo(connect_);
+            });
+    connect(state_, &VehicleState::vinChanged, vehicles_, &VehiclesPage::showVin);
 
     // UI to worker
     connect(connect_, &ConnectPage::serialRequested, this,
@@ -443,6 +462,7 @@ QWidget* MainWindow::buildSidebar() {
     addEntry(QStringLiteral("throttle"), tr("Drosselklappe"), throttle_);
     addEntry(QStringLiteral("sliders"), tr("Anpassung und Stellglieder"), kklTools_);
     addSection(tr("Wissen"));
+    addEntry(QStringLiteral("car"), tr("Fahrzeuge"), vehicles_);
     addEntry(QStringLiteral("book"), tr("Fehlercode-Lexikon"), lexicon_);
     navigationLayout_->addStretch();
 
@@ -562,6 +582,7 @@ void MainWindow::showPageByName(const QString& name) {
         {QStringLiteral("garage"), garagePage_},  {QStringLiteral("health"), health_},
         {QStringLiteral("trip"), trip_},          {QStringLiteral("performance"), performance_},
         {QStringLiteral("battery"), battery_},    {QStringLiteral("adapter"), adapter_},
+        {QStringLiteral("vehicles"), vehicles_},
     };
     if (QWidget* page = pages.value(name.toLower())) navigateTo(page);
     // Developer aids for screenshots: open a page and start what it does.
@@ -569,6 +590,10 @@ void MainWindow::showPageByName(const QString& name) {
         navigateTo(health_);
         health_->onProgress(tr("Starte ..."), 0);
         emit session_.healthCheckRequested(12);
+    }
+    if (name.startsWith(QStringLiteral("vehicles:"))) {
+        navigateTo(vehicles_);
+        vehicles_->showVin(name.mid(9));
     }
     if (name == QStringLiteral("adapter-run")) {
         navigateTo(adapter_);

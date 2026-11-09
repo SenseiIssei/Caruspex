@@ -2,6 +2,9 @@
 
 #include <QButtonGroup>
 #include <QComboBox>
+#include <QCompleter>
+#include <QDate>
+#include <QStringListModel>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -18,7 +21,7 @@
 #include "app/Widgets.h"
 #include "core/Elm327.h"
 #include "core/Serial.h"
-#include "data/Vehicles.h"
+#include "data/VehicleCatalog.h"
 
 namespace caruspex {
 
@@ -228,27 +231,50 @@ QWidget* ConnectPage::buildAdapter() {
 
     auto* vehicleRow = new QHBoxLayout;
     vehicleRow->setSpacing(8);
-    brandBox_ = new QComboBox;
-    brandBox_->setMinimumHeight(38);
-    for (const std::string& b : vehicleBrands()) {
-        brandBox_->addItem(QString::fromStdString(b), QString::fromStdString(b));
-    }
-    brandBox_->setCurrentText(QString::fromUtf8(autoDetectBrand()));
+    vehicleEdit_ = new QLineEdit;
+    vehicleEdit_->setPlaceholderText(tr("Automatisch erkennen, oder suchen: Golf 4, A2, E46 ..."));
+    vehicleEdit_->setClearButtonEnabled(true);
+    vehicleEdit_->setMinimumHeight(38);
+    suggestions_ = new QStringListModel(this);
+    completer_ = new QCompleter(suggestions_, this);
+    completer_->setCaseSensitivity(Qt::CaseInsensitive);
+    completer_->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+    completer_->setMaxVisibleItems(12);
+    vehicleEdit_->setCompleter(completer_);
     yearBox_ = new QSpinBox;
-    yearBox_->setRange(1990, 2030);
+    yearBox_->setRange(1980, QDate::currentDate().year() + 1);
     yearBox_->setValue(2010);
     yearBox_->setMinimumHeight(38);
-    yearBox_->setMinimumWidth(90);
+    yearBox_->setMinimumWidth(110);
     yearBox_->setPrefix(tr("Baujahr "));
-    vehicleRow->addWidget(brandBox_, 1);
+    vehicleRow->addWidget(vehicleEdit_, 1);
     vehicleRow->addWidget(yearBox_);
     layout->addLayout(vehicleRow);
     profileNote_ = makeLabel(QString(), "Hint", true);
     layout->addWidget(profileNote_);
-    connect(brandBox_, &QComboBox::currentTextChanged, this, [this] {
-        updateProfileNote();
-        emit vehicleChoiceChanged();
+    connect(vehicleEdit_, &QLineEdit::textEdited, this, [this](const QString& text) {
+        QStringList items;
+        suggestionMap_.clear();
+        if (text.trimmed().size() >= 2) {
+            for (const VehicleGeneration* g : catalog::search(text.trimmed().toStdString(), 15)) {
+                const QString label = QStringLiteral("%1  (%2)").arg(
+                    QString::fromStdString(catalog::displayName(*g)),
+                    QString::fromStdString(catalog::yearsText(*g)));
+                items << label;
+                suggestionMap_.insert(label, g);
+            }
+        }
+        suggestions_->setStringList(items);
+        if (text.trimmed().isEmpty()) setGeneration(nullptr, yearBox_->value());
     });
+    connect(completer_, qOverload<const QString&>(&QCompleter::activated), this,
+            [this](const QString& label) {
+                if (const VehicleGeneration* g = suggestionMap_.value(label)) {
+                    const int last = g->yearTo > 0 ? g->yearTo : QDate::currentDate().year();
+                    const int year = qBound(g->yearFrom, yearBox_->value(), last);
+                    setGeneration(g, year);
+                }
+            });
     connect(yearBox_, &QSpinBox::valueChanged, this, [this] {
         updateProfileNote();
         emit vehicleChoiceChanged();
@@ -345,25 +371,42 @@ void ConnectPage::setSocketHint(const QString& text) {
 }
 
 QString ConnectPage::protocolOrder() const {
-    const VehicleProfile* profile =
-        findProfile(brandBox_->currentData().toString().toStdString(), yearBox_->value());
-    if (profile) return QString::fromStdString(profile->protocolOrder);
+    if (generation_) {
+        const std::string order = catalog::protocolOrderFor(*generation_);
+        if (!order.empty()) return QString::fromStdString(order);
+    }
     return QString::fromStdString(settings_.protocolOrder == QStringLiteral("can")
                                       ? kProtocolOrderCanFirst
                                       : kProtocolOrderKLineFirst);
 }
 
+void ConnectPage::setGeneration(const VehicleGeneration* generation, int year) {
+    generation_ = generation;
+    if (generation) {
+        const QSignalBlocker block(yearBox_);
+        const int last = generation->yearTo > 0 ? generation->yearTo : QDate::currentDate().year();
+        yearBox_->setRange(generation->yearFrom, last);
+        yearBox_->setValue(qBound(generation->yearFrom, year, last));
+        vehicleEdit_->setText(QString::fromStdString(catalog::displayName(*generation)));
+    } else {
+        const QSignalBlocker block(yearBox_);
+        yearBox_->setRange(1980, QDate::currentDate().year() + 1);
+    }
+    updateProfileNote();
+    emit vehicleChoiceChanged();
+}
+
 void ConnectPage::updateProfileNote() {
-    const VehicleProfile* profile =
-        findProfile(brandBox_->currentData().toString().toStdString(), yearBox_->value());
-    if (!profile) {
-        profileNote_->setText(tr("Kein Profil hinterlegt, alle Protokolle werden probiert."));
+    if (!generation_) {
+        profileNote_->setText(tr("Ohne Auswahl probiert Caruspex die Protokolle der Reihe nach "
+                                 "durch und erkennt das Auto danach an der Fahrgestellnummer."));
+        setSocketHint(QString());
         return;
     }
-    profileNote_->setText(QStringLiteral("%1. %2")
-                              .arg(QString::fromStdString(busName(profile->bus)),
-                                   QString::fromStdString(profile->note))
-                              .trimmed());
+    const int year = yearBox_->value();
+    profileNote_->setText(QString::fromStdString(catalog::diagnosisText(*generation_, year)));
+    setSocketHint(tr("Bei diesem Auto: %1")
+                      .arg(QString::fromStdString(locationText(*generation_, year))));
 }
 
 void ConnectPage::startConnect() {

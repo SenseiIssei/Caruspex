@@ -2,12 +2,16 @@
 // button. Replaces the controls that used to crowd the sidebar.
 #pragma once
 
+#include <QHash>
 #include <QWidget>
 
 #include "app/Settings.h"
+#include "data/VehicleCatalog.h"
 
 class QButtonGroup;
 class QComboBox;
+class QCompleter;
+class QStringListModel;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -41,6 +45,9 @@ public:
     // Where the vehicle's OBD socket is, if known. Shown in step one.
     void setSocketHint(const QString& text);
 
+    // Preselects a car from the catalog (or none for automatic).
+    void setGeneration(const VehicleGeneration* generation, int year);
+
 public slots:
     void startConnect();
     void onConnecting();
@@ -70,7 +77,11 @@ private:
     QStackedWidget* modeStack_ = nullptr;
     QComboBox* portBox_ = nullptr;
     QLineEdit* addressEdit_ = nullptr;
-    QComboBox* brandBox_ = nullptr;
+    QLineEdit* vehicleEdit_ = nullptr;
+    QCompleter* completer_ = nullptr;
+    QStringListModel* suggestions_ = nullptr;
+    QHash<QString, const VehicleGeneration*> suggestionMap_;
+    const VehicleGeneration* generation_ = nullptr;
     QSpinBox* yearBox_ = nullptr;
     QLabel* profileNote_ = nullptr;
     QLabel* socketHint_ = nullptr;
