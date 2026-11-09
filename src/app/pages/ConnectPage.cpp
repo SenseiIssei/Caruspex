@@ -152,11 +152,11 @@ QWidget* ConnectPage::buildAdapter() {
     chips->setSpacing(8);
     modes_ = new QButtonGroup(this);
     modes_->setExclusive(true);
-    QPushButton* cable = makeModeChip(QStringLiteral("usb"), tr("USB oder Bluetooth"));
+    QPushButton* cable = makeModeChip(QStringLiteral("usb"), tr("USB oder COM-Port"));
     QPushButton* wifi = makeModeChip(QStringLiteral("wifi"), tr("WLAN"));
     QPushButton* demo = makeModeChip(QStringLiteral("sparkles"), tr("Demo-Auto"));
     QPushButton* replay = makeModeChip(QStringLiteral("play"), tr("Aufnahme"));
-    QPushButton* ble = makeModeChip(QStringLiteral("bluetooth"), tr("Bluetooth LE"));
+    QPushButton* ble = makeModeChip(QStringLiteral("bluetooth"), tr("Bluetooth"));
     modes_->addButton(ble, int(Mode::Ble));
     modes_->addButton(cable, int(Mode::Cable));
     modes_->addButton(wifi, int(Mode::Wifi));
@@ -272,25 +272,26 @@ QWidget* ConnectPage::buildAdapter() {
         if (!lastId.isEmpty()) {
             bleBox_->addItem(lastName.isEmpty() ? lastId : lastName, lastId);
             bleBox_->setItemData(1, lastName, Qt::UserRole + 1);
+            bleBox_->setItemData(1, store.value(QStringLiteral("connect/bleKinds"), 1).toInt(), Qt::UserRole + 2);
             bleBox_->setCurrentIndex(1);
         }
         bleScan_ = new QPushButton;
         bleScan_->setIcon(icons::icon(QStringLiteral("refresh"), color::textMuted, color::text, 18));
-        bleScan_->setToolTip(tr("Nach Bluetooth-LE-Geräten suchen"));
+        bleScan_->setToolTip(tr("Nach Bluetooth-Geräten suchen"));
         bleScan_->setFixedSize(40, 38);
         bleScan_->setStyleSheet(QStringLiteral("QPushButton { padding: 0; }"));
         row->addWidget(bleBox_, 1);
         row->addWidget(bleScan_);
         v->addLayout(row);
-        bleNote_ = makeLabel(tr("Für Adapter mit Bluetooth LE, zum Beispiel Vgate iCar Pro BLE, vLinker, "
-                                "OBDLink CX oder Veepeak BLE. Sie werden nicht gekoppelt, Caruspex "
-                                "verbindet sich direkt. Klassische Bluetooth-Adapter laufen über "
-                                "USB oder Bluetooth."),
+        bleNote_ = makeLabel(tr("Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, "
+                                "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische "
+                                "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN "
+                                "ist meist 1234 oder 0000, danach stehen sie hier in der Liste."),
                              "Hint", true);
         v->addWidget(bleNote_);
         connect(bleScan_, &QPushButton::clicked, this, [this] {
             bleScan_->setEnabled(false);
-            bleNote_->setText(tr("Suche Bluetooth-LE-Geräte, das dauert ein paar Sekunden ..."));
+            bleNote_->setText(tr("Suche Bluetooth-Geräte, das dauert bis zu einer halben Minute ..."));
             emit bleScanRequested();
         });
         modeStack_->addWidget(page);
@@ -440,6 +441,19 @@ bool ConnectPage::selectPort(const QString& device) {
 
 void ConnectPage::setWifiAddress(const QString& address) { addressEdit_->setText(address); }
 
+void ConnectPage::selectBluetooth(const QString& id) {
+    if (!bleBox_) return;
+    int index = bleBox_->findData(id);
+    if (index < 0) {
+        // Unknown device: offer both ways, Bluetooth LE first.
+        bleBox_->addItem(id, id);
+        index = bleBox_->count() - 1;
+        bleBox_->setItemData(index, QString(), Qt::UserRole + 1);
+        bleBox_->setItemData(index, 3, Qt::UserRole + 2);
+    }
+    bleBox_->setCurrentIndex(index);
+}
+
 void ConnectPage::setReplayPath(const QString& path) { replayPath_->setText(path); }
 
 void ConnectPage::setMode(Mode mode) {
@@ -494,7 +508,7 @@ void ConnectPage::updateProfileNote() {
 }
 
 void ConnectPage::onBleScan(const QStringList& ids, const QStringList& names, const QList<int>& scores,
-                            const QString& error) {
+                            const QList<int>& kinds, const QString& error) {
     bleScan_->setEnabled(true);
     const QString previous = bleBox_->currentData().toString();
     bleBox_->clear();
@@ -504,10 +518,14 @@ void ConnectPage::onBleScan(const QStringList& ids, const QStringList& names, co
         const QString name = names.value(i);
         const bool adapter = scores.value(i) >= 3;
         adapters += adapter ? 1 : 0;
+        const int kind = kinds.value(i, 1);
         QString text = name.isEmpty() ? tr("Unbenanntes Gerät (%1)").arg(ids[i]) : name;
+        text += QStringLiteral("  ·  ") +
+                (kind == 2 ? tr("klassisch") : kind == 3 ? tr("LE und klassisch") : tr("LE"));
         if (adapter) text += QStringLiteral("  ·  ") + tr("OBD-Adapter");
         bleBox_->addItem(text, ids[i]);
         bleBox_->setItemData(bleBox_->count() - 1, name, Qt::UserRole + 1);
+        bleBox_->setItemData(bleBox_->count() - 1, kind, Qt::UserRole + 2);
     }
     const int keep = bleBox_->findData(previous);
     if (keep > 0) {
@@ -518,7 +536,7 @@ void ConnectPage::onBleScan(const QStringList& ids, const QStringList& names, co
     if (!error.isEmpty()) {
         bleNote_->setText(error);
     } else if (ids.isEmpty()) {
-        bleNote_->setText(tr("Kein Bluetooth-LE-Gerät gefunden. Steckt der Adapter im Auto, und "
+        bleNote_->setText(tr("Kein Bluetooth-Gerät gefunden. Steckt der Adapter im Auto, und "
                              "ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach "
                              "einem Druck auf ihren Knopf wieder auf."));
     } else {
@@ -531,13 +549,15 @@ void ConnectPage::onBleScan(const QStringList& ids, const QStringList& names, co
     }
 }
 
-void ConnectPage::rememberBle(const QString& id, const QString& name) {
+void ConnectPage::rememberBle(const QString& id, const QString& name, int kinds) {
     QSettings store;
     store.setValue(QStringLiteral("connect/bleId"), id);
     store.setValue(QStringLiteral("connect/bleName"), name);
+    store.setValue(QStringLiteral("connect/bleKinds"), kinds);
     if (bleBox_->findData(id) < 0) {
         bleBox_->addItem(name.isEmpty() ? id : name, id);
         bleBox_->setItemData(bleBox_->count() - 1, name, Qt::UserRole + 1);
+        bleBox_->setItemData(bleBox_->count() - 1, kinds, Qt::UserRole + 2);
     }
     bleBox_->setCurrentIndex(bleBox_->findData(id));
 }
@@ -567,7 +587,8 @@ void ConnectPage::startConnect() {
             break;
         case Mode::Ble:
             emit bleRequested(bleBox_->currentData().toString(),
-                              bleBox_->currentData(Qt::UserRole + 1).toString(), order);
+                              bleBox_->currentData(Qt::UserRole + 1).toString(),
+                              bleBox_->currentData(Qt::UserRole + 2).toInt(), order);
             break;
         case Mode::Replay:
             if (replayPath_->text().trimmed().isEmpty()) {

@@ -40,6 +40,8 @@ public:
     bool selectPort(const QString& device);
     void setWifiAddress(const QString& address);
     void setReplayPath(const QString& path);
+    // Selects a Bluetooth device by id, empty means automatic search.
+    void selectBluetooth(const QString& id);
     void setMode(Mode mode);
 
     // The protocol order to try first, from the vehicle choice or the settings.
@@ -59,9 +61,9 @@ public slots:
     void onClosed();
     // Result of a Bluetooth LE scan (Worker::bleScanFinished).
     void onBleScan(const QStringList& ids, const QStringList& names, const QList<int>& scores,
-                   const QString& error);
-    // Remembers the device the Bluetooth LE connection went to.
-    void rememberBle(const QString& id, const QString& name);
+                   const QList<int>& kinds, const QString& error);
+    // Remembers the device the Bluetooth connection went to.
+    void rememberBle(const QString& id, const QString& name, int kinds);
 
 signals:
     // device empty means: try every port.
@@ -70,7 +72,8 @@ signals:
     void demoRequested(const QString& protocolOrder);
     void replayRequested(const QString& path, bool realTime, const QString& protocolOrder);
     // id empty means: search and take the first device that looks like an adapter.
-    void bleRequested(const QString& id, const QString& name, const QString& protocolOrder);
+    // kinds: 1 = Bluetooth LE, 2 = classic, 3 = both.
+    void bleRequested(const QString& id, const QString& name, int kinds, const QString& protocolOrder);
     void bleScanRequested();
     void disconnectRequested();
     void vehicleChoiceChanged();

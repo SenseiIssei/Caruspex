@@ -1,5 +1,8 @@
 #include "app/MainWindow.h"
 
+#include <cstdio>
+#include <memory>
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #include <windowsx.h>
@@ -362,14 +365,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
                 emit session_.openReplayRequested(path, realTime, order);
             });
     connect(connect_, &ConnectPage::bleRequested, this,
-            [this](const QString& id, const QString& name, const QString& order) {
-                appendLog(id.isEmpty() ? tr("Suche einen Bluetooth-LE-Adapter ...")
-                                       : tr("Verbinde über Bluetooth LE mit %1 ...")
+            [this](const QString& id, const QString& name, int kinds, const QString& order) {
+                appendLog(id.isEmpty() ? tr("Suche einen Bluetooth-Adapter ...")
+                                       : tr("Verbinde über Bluetooth mit %1 ...")
                                              .arg(name.isEmpty() ? id : name));
                 titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
-                emit session_.openBleRequested(id, name, order);
+                emit session_.openBleRequested(id, name, kinds, order);
             });
-    connect(connect_, &ConnectPage::bleScanRequested, this, [this] { emit session_.scanBleRequested(5000); });
+    connect(connect_, &ConnectPage::bleScanRequested, this, [this] { emit session_.scanBleRequested(8000); });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
     connect(worker, &Worker::recordingState, this,
             [this](bool active, const QString& path, int exchanges, const QString& error) {
@@ -843,7 +846,7 @@ void MainWindow::remindServices(bool withToast) {
     }
 }
 
-void MainWindow::showReport() {
+ReportExtras MainWindow::collectReportExtras() const {
     ReportExtras extras;
     extras.score = dashboard_->score();
     extras.scoreCaption = dashboard_->scoreCaption();
@@ -855,6 +858,11 @@ void MainWindow::showReport() {
         extras.findings.push_back({level, f.title, f.text});
     }
     extras.ecus = ecus_->results();
+    return extras;
+}
+
+void MainWindow::showReport() {
+    const ReportExtras extras = collectReportExtras();
     const QString path = saveReportPdf(this, *state_, extras);
     if (!path.isEmpty()) {
         toast::show(this, tr("Prüfbericht gespeichert: %1").arg(path), toast::Kind::Success);
@@ -1024,6 +1032,46 @@ void MainWindow::autoConnectReplay(const QString& path) {
 void MainWindow::autoConnectDemo() {
     connect_->setMode(ConnectPage::Mode::Demo);
     connect_->startConnect();
+}
+
+void MainWindow::autoConnectSerial(const QString& device) {
+    connect_->setMode(ConnectPage::Mode::Cable);
+    connect_->refreshPorts();
+    if (device.compare(QStringLiteral("auto"), Qt::CaseInsensitive) == 0 || !connect_->selectPort(device)) {
+        connect_->selectPort(QString());
+    }
+    connect_->startConnect();
+}
+
+void MainWindow::autoConnectBluetooth(const QString& id) {
+    connect_->setMode(ConnectPage::Mode::Ble);
+    connect_->selectBluetooth(id.compare(QStringLiteral("auto"), Qt::CaseInsensitive) == 0 ? QString() : id);
+    connect_->startConnect();
+}
+
+void MainWindow::reportAndQuit(const QString& path, int settleMs) {
+    Worker* worker = session_.worker();
+    auto done = std::make_shared<bool>(false);
+    auto finish = [done](int code, const QString& message) {
+        if (*done) return;
+        *done = true;
+        std::fprintf(code == 0 ? stdout : stderr, "%s\n", message.toLocal8Bit().constData());
+        std::fflush(code == 0 ? stdout : stderr);
+        QCoreApplication::exit(code);
+    };
+    connect(worker, &Worker::connected, this, [this, path, settleMs, finish] {
+        // The readout (status, faults, vehicle data) follows the connection;
+        // give it time before the report is written.
+        QTimer::singleShot(settleMs, this, [this, path, finish] {
+            const bool ok = writeReport(*state_, collectReportExtras(), path);
+            finish(ok ? 0 : 1, ok ? tr("Prüfbericht gespeichert: %1").arg(path)
+                                  : tr("Prüfbericht ließ sich nicht schreiben: %1").arg(path));
+        });
+    });
+    connect(worker, &Worker::failed, this, [finish](const QString& error) { finish(2, error); });
+    QTimer::singleShot(120000, this, [finish] {
+        finish(3, tr("Keine Verbindung nach zwei Minuten, abgebrochen."));
+    });
 }
 
 }  // namespace caruspex

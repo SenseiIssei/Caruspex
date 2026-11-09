@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QVector>
 
+#include "app/Report.h"
 #include "app/Session.h"
 #include "app/Settings.h"
 
@@ -58,6 +59,13 @@ public:
     void autoConnectTcp(const QString& address);
     // Command-line option --demo
     void autoConnectDemo();
+    // Serial adapter by port name, "auto" searches every port.
+    void autoConnectSerial(const QString& device);
+    // Bluetooth adapter by address, "auto" searches.
+    void autoConnectBluetooth(const QString& id);
+    // For the command line: once connected and read, writes the report to
+    // path (PDF or HTML) and quits. Exit code 0 on success.
+    void reportAndQuit(const QString& path, int settleMs);
     // Command-line option --replay file
     void autoConnectReplay(const QString& path);
     // Command-line option --page: start, connect, faults, tools, monitor, live,
@@ -102,6 +110,7 @@ private:
     // Stores the current check in the garage, once VIN and faults are known.
     void recordCheck();
     void showReport();
+    ReportExtras collectReportExtras() const;
     // Due and nearly due service items of the connected car: badge and toast.
     void remindServices(bool toast);
 

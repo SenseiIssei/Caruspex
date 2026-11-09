@@ -168,22 +168,24 @@ void Worker::scanBle(int milliseconds) {
     QStringList ids;
     QStringList names;
     QList<int> scores;
+    QList<int> kinds;
     for (const BleDevice& d : devices) {
         ids << d.id;
         names << d.name;
         scores << d.score;
+        kinds << bluetoothKinds(d);
     }
     emit busy(false);
-    emit bleScanFinished(ids, names, scores, error);
+    emit bleScanFinished(ids, names, scores, kinds, error);
 }
 
-void Worker::openBle(const QString& id, const QString& name, const QString& protocolOrder) {
+void Worker::openBle(const QString& id, const QString& name, int kinds, const QString& protocolOrder) {
     emit busy(true);
     elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
 
     QList<BleDevice> candidates;
     if (id.isEmpty()) {
-        emit logLine(tr("Suche Bluetooth-LE-Adapter ..."));
+        emit logLine(tr("Suche Bluetooth-Adapter ..."));
         QString error;
         for (const BleDevice& d : scanBleDevices(6000, error)) {
             if (d.score >= 3) candidates << d;
@@ -191,26 +193,46 @@ void Worker::openBle(const QString& id, const QString& name, const QString& prot
         if (candidates.isEmpty()) {
             emit busy(false);
             emit failed(!error.isEmpty() ? error
-                                         : tr("Kein Bluetooth-LE-Adapter in der Nähe gefunden. Steckt "
+                                         : tr("Kein Bluetooth-Adapter in der Nähe gefunden. Steckt "
                                               "er im Auto, und ist die Zündung an?"));
             return;
         }
     } else {
-        candidates << BleDevice{id, name, 0, 0};
+        BleDevice d{id, name, 0, 0};
+        d.lowEnergy = (kinds & 1) != 0;
+        d.classic = (kinds & 2) != 0;
+        if (!d.lowEnergy && !d.classic) d.lowEnergy = true;
+        candidates << d;
     }
 
     std::string error;
     for (const BleDevice& d : candidates) {
         const QString shown = d.name.isEmpty() ? d.id : d.name;
-        emit logLine(tr("Verbinde mit %1 über Bluetooth LE ...").arg(shown));
-        auto transport = std::make_unique<BleTransport>();
-        if (!transport->open(d, error)) {
-            emit logLine(QString::fromStdString(error));
-            continue;
+        // Bluetooth LE first, a dual-mode adapter then also gets the
+        // classic serial port as a second try.
+        std::unique_ptr<ITransport> transport;
+        if (d.lowEnergy) {
+            emit logLine(tr("Verbinde mit %1 über Bluetooth LE ...").arg(shown));
+            auto ble = std::make_unique<BleTransport>();
+            if (ble->open(d, error)) {
+                emit logLine(tr("Kanal gefunden (%1)").arg(ble->profile()));
+                transport = std::move(ble);
+            } else {
+                emit logLine(QString::fromStdString(error));
+            }
         }
-        emit logLine(tr("Kanal gefunden (%1)").arg(transport->profile()));
+        if (!transport && d.classic) {
+            emit logLine(tr("Verbinde mit %1 über klassisches Bluetooth ...").arg(shown));
+            auto rfcomm = std::make_unique<RfcommTransport>();
+            if (rfcomm->open(d, error)) {
+                transport = std::move(rfcomm);
+            } else {
+                emit logLine(QString::fromStdString(error));
+            }
+        }
+        if (!transport) continue;
         if (finishConnect(std::move(transport), protocolOrder, true)) {
-            emit bleAdapterFound(d.id, d.name);
+            emit bleAdapterFound(d.id, d.name, bluetoothKinds(d));
             emit busy(false);
             refreshStatusAndFaults();
             return;

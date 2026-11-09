@@ -3,6 +3,7 @@
 #include <QBluetoothAddress>
 #include <QBluetoothDeviceDiscoveryAgent>
 #include <QBluetoothLocalDevice>
+#include <QBluetoothSocket>
 #include <QBluetoothUuid>
 #include <QCoreApplication>
 #include <QDeadlineTimer>
@@ -24,7 +25,7 @@ std::string uuidText(const QBluetoothUuid& uuid) { return uuid.toString(QUuid::W
 
 }  // namespace
 
-QList<BleDevice> scanBleDevices(int milliseconds, QString& error) {
+QList<BleDevice> scanBleDevices(int milliseconds, QString& error, bool classic) {
     QList<BleDevice> found;
     QBluetoothDeviceDiscoveryAgent agent;
     agent.setLowEnergyDiscoveryTimeout(milliseconds);
@@ -60,14 +61,26 @@ QList<BleDevice> scanBleDevices(int milliseconds, QString& error) {
                      });
     // Guard against a backend that never reports back.
     QTimer::singleShot(milliseconds + 5000, &loop, &QEventLoop::quit);
-    agent.start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
+    // Classic inquiry is not offered everywhere (macOS lists paired devices
+    // only); then the low energy scan alone runs.
+    const auto supported = QBluetoothDeviceDiscoveryAgent::supportedDiscoveryMethods();
+    QBluetoothDeviceDiscoveryAgent::DiscoveryMethods methods = QBluetoothDeviceDiscoveryAgent::LowEnergyMethod;
+    if (classic && supported.testFlag(QBluetoothDeviceDiscoveryAgent::ClassicMethod)) {
+        methods |= QBluetoothDeviceDiscoveryAgent::ClassicMethod;
+    }
+    agent.start(methods);
     if (agent.isActive()) loop.exec();
     agent.stop();
     if (failed && agent.discoveredDevices().isEmpty()) return found;
 
     for (const QBluetoothDeviceInfo& info : agent.discoveredDevices()) {
-        if (!(info.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration)) continue;
+        const auto config = info.coreConfigurations();
         BleDevice d;
+        d.lowEnergy = config.testFlag(QBluetoothDeviceInfo::LowEnergyCoreConfiguration);
+        d.classic = config.testFlag(QBluetoothDeviceInfo::BaseRateCoreConfiguration) ||
+                    config.testFlag(QBluetoothDeviceInfo::BaseRateAndLowEnergyCoreConfiguration);
+        if (config.testFlag(QBluetoothDeviceInfo::BaseRateAndLowEnergyCoreConfiguration)) d.lowEnergy = true;
+        if (!d.lowEnergy && !(classic && d.classic)) continue;
         d.id = info.address().isNull() ? info.deviceUuid().toString(QUuid::WithoutBraces)
                                        : info.address().toString();
         d.name = info.name().trimmed();
@@ -234,6 +247,86 @@ std::string BleTransport::read(int timeoutMs) {
 }
 
 void BleTransport::flushInput() {
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
+    buffer_.clear();
+}
+
+}  // namespace caruspex
+
+namespace caruspex {
+
+RfcommTransport::RfcommTransport() = default;
+
+RfcommTransport::~RfcommTransport() {
+    if (socket_) {
+        socket_->abort();
+        delete socket_;
+    }
+}
+
+bool RfcommTransport::open(const BleDevice& device, std::string& error) {
+    const QString shown = device.name.isEmpty() ? device.id : device.name;
+    name_ = ("Bluetooth " + shown).toStdString();
+    socket_ = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+    connect(socket_, &QBluetoothSocket::readyRead, this, [this] { buffer_.append(socket_->readAll()); });
+    connect(socket_, &QBluetoothSocket::disconnected, this, [this] { disconnected_ = true; });
+    QString lastError;
+    const auto errorConnection = connect(socket_, &QBluetoothSocket::errorOccurred, this,
+                                         [this, &lastError](QBluetoothSocket::SocketError) {
+                                             lastError = socket_->errorString();
+                                         });
+
+    // The serial port profile; the adapters offer nothing else.
+    const QBluetoothAddress address(device.id);
+    if (address.isNull()) {
+        error = tr("Klassisches Bluetooth braucht die Adresse des Geräts.").toStdString();
+        disconnect(errorConnection);
+        return false;
+    }
+    socket_->connectToService(address, QBluetoothUuid(QBluetoothUuid::ServiceClassUuid::SerialPort));
+
+    const QDeadlineTimer deadline(20000);
+    while (socket_->state() != QBluetoothSocket::SocketState::ConnectedState) {
+        if (deadline.hasExpired() || socket_->state() == QBluetoothSocket::SocketState::UnconnectedState) {
+            break;
+        }
+        QEventLoop loop;
+        QTimer::singleShot(20, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    disconnect(errorConnection);
+    if (socket_->state() != QBluetoothSocket::SocketState::ConnectedState) {
+        error = (tr("Verbindung zu %1 kam nicht zustande. Ist der Adapter im System gekoppelt "
+                    "(PIN meist 1234 oder 0000)?")
+                     .arg(shown) +
+                 (lastError.isEmpty() ? QString() : QStringLiteral(" (") + lastError + QStringLiteral(")")))
+                    .toStdString();
+        return false;
+    }
+    return true;
+}
+
+bool RfcommTransport::write(const std::string& data) {
+    if (!socket_ || disconnected_) return false;
+    const qint64 written = socket_->write(data.data(), static_cast<qint64>(data.size()));
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
+    return written == static_cast<qint64>(data.size()) && !disconnected_;
+}
+
+std::string RfcommTransport::read(int timeoutMs) {
+    const QDeadlineTimer deadline(timeoutMs);
+    while (buffer_.isEmpty() && !disconnected_ && !deadline.hasExpired()) {
+        QEventLoop loop;
+        QTimer::singleShot(qMin<qint64>(20, qMax<qint64>(1, deadline.remainingTime())), &loop,
+                           &QEventLoop::quit);
+        loop.exec();
+    }
+    std::string out = buffer_.toStdString();
+    buffer_.clear();
+    return out;
+}
+
+void RfcommTransport::flushInput() {
     QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
     buffer_.clear();
 }
