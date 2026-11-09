@@ -1,0 +1,97 @@
+# Every brand of the catalog once. group decides the manufacturer plugs of
+# older cars and the US protocols, market the default rules (eu or na).
+name,country_de,country_en,group,market
+Abarth,Italien,Italy,,eu
+Acura,Japan,Japan,,na
+Aiways,China,China,,eu
+Alfa Romeo,Italien,Italy,,eu
+Alpine,Frankreich,France,,eu
+Aston Martin,Vereinigtes Königreich,United Kingdom,,eu
+Audi,Deutschland,Germany,vag,eu
+Austin,Vereinigtes Königreich,United Kingdom,,eu
+Bentley,Vereinigtes Königreich,United Kingdom,,eu
+BMW,Deutschland,Germany,bmw,eu
+Bugatti,Frankreich,France,,eu
+Buick,USA,USA,gm,na
+BYD,China,China,,eu
+Cadillac,USA,USA,gm,na
+Chevrolet,USA,USA,gm,na
+Chrysler,USA,USA,chrysler,na
+Citroën,Frankreich,France,,eu
+Cupra,Spanien,Spain,vag,eu
+Dacia,Rumänien,Romania,,eu
+Daewoo,Südkorea,South Korea,,eu
+Daihatsu,Japan,Japan,,eu
+DeLorean,Vereinigtes Königreich,United Kingdom,,na
+Dodge,USA,USA,chrysler,na
+DS,Frankreich,France,,eu
+Ferrari,Italien,Italy,,eu
+Fiat,Italien,Italy,,eu
+Fisker,USA,USA,,na
+Ford,USA,USA,ford,na
+Geely,China,China,,eu
+Genesis,Südkorea,South Korea,,eu
+GMC,USA,USA,gm,na
+Honda,Japan,Japan,,eu
+Hummer,USA,USA,gm,na
+Hyundai,Südkorea,South Korea,,eu
+Infiniti,Japan,Japan,,na
+Isuzu,Japan,Japan,,eu
+Jaguar,Vereinigtes Königreich,United Kingdom,,eu
+Jeep,USA,USA,chrysler,na
+Kia,Südkorea,South Korea,,eu
+Lada,Russland,Russia,,eu
+Lamborghini,Italien,Italy,,eu
+Lancia,Italien,Italy,,eu
+Land Rover,Vereinigtes Königreich,United Kingdom,,eu
+Leapmotor,China,China,,eu
+Lexus,Japan,Japan,,eu
+Lincoln,USA,USA,ford,na
+Lotus,Vereinigtes Königreich,United Kingdom,,eu
+Lucid,USA,USA,,na
+Lynk & Co,China,China,,eu
+Matra,Frankreich,France,,eu
+Maserati,Italien,Italy,,eu
+Maybach,Deutschland,Germany,mb,eu
+Mazda,Japan,Japan,,eu
+McLaren,Vereinigtes Königreich,United Kingdom,,eu
+Mercedes-Benz,Deutschland,Germany,mb,eu
+Mercury,USA,USA,ford,na
+MG,Vereinigtes Königreich und China,United Kingdom and China,,eu
+Mini,Vereinigtes Königreich,United Kingdom,,eu
+Mitsubishi,Japan,Japan,,eu
+NIO,China,China,,eu
+Nissan,Japan,Japan,,eu
+Oldsmobile,USA,USA,gm,na
+Omoda,China,China,,eu
+Opel,Deutschland,Germany,,eu
+ORA,China,China,,eu
+Peugeot,Frankreich,France,,eu
+Plymouth,USA,USA,chrysler,na
+Polestar,Schweden und China,Sweden and China,,eu
+Pontiac,USA,USA,gm,na
+Porsche,Deutschland,Germany,,eu
+Ram,USA,USA,chrysler,na
+Renault,Frankreich,France,,eu
+Rivian,USA,USA,,na
+Rolls-Royce,Vereinigtes Königreich,United Kingdom,,eu
+Rover,Vereinigtes Königreich,United Kingdom,,eu
+Saab,Schweden,Sweden,,eu
+Saturn,USA,USA,gm,na
+Scion,Japan,Japan,,na
+SEAT,Spanien,Spain,vag,eu
+Škoda,Tschechien,Czech Republic,vag,eu
+Smart,Deutschland,Germany,mb,eu
+SsangYong,Südkorea,South Korea,,eu
+Subaru,Japan,Japan,,eu
+Suzuki,Japan,Japan,,eu
+Talbot,Frankreich,France,,eu
+Tesla,USA,USA,,na
+Toyota,Japan,Japan,,eu
+Trabant,Deutschland (DDR),Germany (GDR),,eu
+VinFast,Vietnam,Vietnam,,eu
+Volkswagen,Deutschland,Germany,vag,eu
+Volvo,Schweden,Sweden,,eu
+Wartburg,Deutschland (DDR),Germany (GDR),,eu
+Xpeng,China,China,,eu
+Zeekr,China,China,,eu
