@@ -62,6 +62,14 @@ struct LiveRow {
 };
 
 // Result of the health check, prepared for the UI.
+// One freeze frame: the values the control unit kept when it stored a code.
+struct FreezeFrameRow {
+    int frame = 0;
+    QString dtc;
+    QString ecu;
+    QVector<LiveRow> values;
+};
+
 struct HealthFindingRow {
     int level = 0;          // analysis::Level: 0 good, 1 info, 2 warning, 3 critical
     QString area;
@@ -243,6 +251,7 @@ signals:
     void healthResult(const caruspex::HealthRow& row);
     void adapterVoltage(double volts, double time);
     void adapterReport(const caruspex::AdapterRow& row);
+    void freezeFrames(const QVector<caruspex::FreezeFrameRow>& frames);
 
 private slots:
     void pollTick();
@@ -328,3 +337,4 @@ Q_DECLARE_METATYPE(caruspex::MonitorRow)
 Q_DECLARE_METATYPE(caruspex::OxygenRow)
 Q_DECLARE_METATYPE(caruspex::HealthRow)
 Q_DECLARE_METATYPE(caruspex::AdapterRow)
+Q_DECLARE_METATYPE(caruspex::FreezeFrameRow)

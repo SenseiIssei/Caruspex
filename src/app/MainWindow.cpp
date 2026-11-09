@@ -190,6 +190,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::liveValue, dashboard_, &DashboardPage::onLiveValue);
     connect(worker, &Worker::busy, dashboard_, &DashboardPage::onBusy);
     connect(worker, &Worker::faults, faults_, &FaultsPage::onFaults);
+    connect(worker, &Worker::freezeFrames, faults_, &FaultsPage::onFreezeFrames);
     connect(worker, &Worker::faults, this, [this](const QVector<FaultRow>& rows) {
         faultsButton_->setBadge(rows.isEmpty() ? QString() : QString::number(rows.size()),
                                 color::bad);
