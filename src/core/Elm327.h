@@ -113,4 +113,18 @@ std::vector<int> hexToBytes(const std::string& text);
 ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedService,
                          HeaderFormat headers = HeaderFormat::None);
 
+// One complete message as it came off the bus, service byte first, and who
+// sent it (empty while headers are off).
+struct ElmMessage {
+    std::string source;
+    std::vector<int> bytes;
+};
+
+// The first half of decodeMessages: the adapter lines put back together into
+// whole messages (ISO-TP reassembly included), without filtering by service.
+// UDS needs this to see negative responses such as 7F 22 78 next to the
+// positive one. Status lines like "NO DATA" are skipped.
+std::vector<ElmMessage> splitMessages(const std::vector<std::string>& lines,
+                                      HeaderFormat headers = HeaderFormat::None);
+
 }  // namespace caruspex

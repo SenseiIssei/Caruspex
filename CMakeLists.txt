@@ -31,6 +31,7 @@ add_library(caruspex_core STATIC
     src/core/Elm327.cpp
     src/core/EcuAddress.cpp
     src/core/Obd2.cpp
+    src/core/Uds.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
     src/core/Kwp1281.cpp
@@ -50,6 +51,7 @@ add_library(caruspex_core STATIC
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
     src/data/MonitorTests.cpp
+    src/data/FailureTypes.cpp
     src/core/analysis/Common.cpp
     src/core/analysis/Readiness.cpp
     src/core/analysis/DriveCycleGuide.cpp
@@ -200,6 +202,7 @@ if(CARUSPEX_TESTS)
         tests/test_probe.cpp
         tests/test_dtc.cpp
         tests/test_vehicles.cpp
+        tests/test_uds.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

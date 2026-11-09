@@ -15,6 +15,12 @@
 // freeze frame, readiness, on-board monitoring and identification behave
 // consistently, including clearing with mode 04.
 //
+// Addressed physically (ATSH, ATCRA) the car also speaks UDS (ISO 14229):
+// tester present, identification (22 F187 ...), fault memory (19 02) and
+// clearing (14 FF FF FF). Besides engine (7E0) and gearbox (7E1) four units
+// answer only this way: ABS 760, airbag 737, instrument cluster 720 and
+// climate 744, each on request + 8.
+//
 // For tests the clock can be injected and the answer delay switched off, so
 // every response is deterministic.
 #pragma once

@@ -507,6 +507,80 @@ struct Reply {
     Bytes payload;
 };
 
+// ---------------------------------------------------------------------------
+// UDS (ISO 14229) control units
+// ---------------------------------------------------------------------------
+
+// Status bits of a UDS fault (ISO 14229-1 D.2) as the demo uses them.
+constexpr int kUdsActive = 0xAF;     // failing now, pending, confirmed, warning lamp on
+constexpr int kUdsPending = 0x24;    // pending, failed since the last clear
+constexpr int kUdsStored = 0x28;     // confirmed, not failing right now
+constexpr int kUdsEngineStored = 0xA8;   // confirmed with the MIL on
+
+struct UdsFault {
+    const char* code;
+    int failureType;
+    int status;
+};
+
+struct UdsDid {
+    int id;
+    std::string text;
+};
+
+// One control unit that answers UDS on its own request id. The engine and
+// the gearbox also speak OBD; the others are reachable only physically, the
+// way body and chassis units are on a real car. Every id follows the common
+// "response = request + 8" convention, so a generic sweep finds them too.
+struct UdsUnit {
+    int request = 0;
+    int response = 0;
+    bool obd = false;               // also answers the OBD services (engine, gearbox)
+    std::vector<UdsDid> dids;
+    std::vector<UdsFault> faults;   // fault memory; the engine computes its own
+    bool slowFaultRead = false;     // answers 19 02 with 7F 19 78 first
+};
+
+std::vector<UdsUnit> makeUdsUnits() {
+    std::vector<UdsUnit> units;
+    // Fictional part numbers in the usual "three groups and an index" style.
+    units.push_back({0x7E0, 0x7E8, true,
+                     {{0xF187, "CX5 906 018 B"}, {0xF189, "0417"}, {0xF191, "H05"},
+                      {0xF197, "ECM 1.4 MPI   "}, {0xF18C, "EM21A0048217"}, {0xF190, kVin}},
+                     {}, false});
+    units.push_back({0x7E1, 0x7E9, true,
+                     {{0xF187, "CX6 927 156 A"}, {0xF189, "0203"}, {0xF191, "H03"},
+                      {0xF197, "TCM AT6"}, {0xF18C, "TA21B0009144"}},
+                     {}, false});
+    // ABS: the left front wheel speed sensor reads a voltage out of range.
+    units.push_back({0x760, 0x768, false,
+                     {{0xF187, "CX1 614 517 C"}, {0xF189, "0122"}, {0xF191, "H11"},
+                      {0xF197, "ABS/ESP 9.3"}, {0xF18C, "AB21C0031877"}, {0xF190, kVin}},
+                     {{"C0035", 0x1C, kUdsActive}}, true});
+    // Airbag: resistance of the driver airbag squib too low, seen once.
+    units.push_back({0x737, 0x73F, false,
+                     {{0xF187, "CX0 959 655 F"}, {0xF189, "0310"}, {0xF191, "H07"},
+                      {0xF197, "AIRBAG 8CH"}, {0xF18C, "SR21D0007730"}, {0xF190, kVin}},
+                     {{"B0001", 0x1A, kUdsPending}}, false});
+    // Instrument cluster: nothing stored.
+    units.push_back({0x720, 0x728, false,
+                     {{0xF187, "CX2 920 870 D"}, {0xF189, "0805"}, {0xF191, "H22"},
+                      {0xF197, "INSTRUMENTS"}, {0xF18C, "IC21A0102265"}, {0xF190, kVin}},
+                     {}, false});
+    // Climate: lost the engine on the bus once (a weak battery at a cold
+    // start does that). It keeps its versions in F195 and F193 instead of
+    // F189 and F191, as some makers do.
+    units.push_back({0x744, 0x74C, false,
+                     {{0xF187, "CX8 907 044 A"}, {0xF195, "0109"}, {0xF193, "H04"},
+                      {0xF197, "CLIMATE 2Z"}, {0xF18C, "HV21B0055102"}, {0xF190, kVin}},
+                     {{"U0100", 0x00, kUdsStored}}, false});
+    return units;
+}
+
+bool isUdsService(int sid) {
+    return sid == 0x14 || sid == 0x19 || sid == 0x22 || sid == 0x3E;
+}
+
 }  // namespace
 
 // ---------------------------------------------------------------------------
@@ -539,6 +613,9 @@ struct DemoTransport::Impl {
     bool monitoring = false;
     Bytes lastFrame = Bytes(8, 0x00);
     int savedByte = 0x00;      // ATSD / ATRD, kept in RAM only
+
+    // The control units that answer UDS, with their own fault memory.
+    std::vector<UdsUnit> udsUnits = makeUdsUnits();
 
     // Fault memory state.
     bool cleared = false;
@@ -900,6 +977,89 @@ struct DemoTransport::Impl {
         return out;
     }
 
+    void clearEngine(double t) {
+        cleared = true;
+        clearRun = engineRunTime(t, options.engineStartSeconds);
+        clearKm = simulate(t, options.engineStartSeconds).distanceKm;
+    }
+
+    // ---- UDS -------------------------------------------------------------
+
+    UdsUnit* udsUnit(int request) {
+        if (request == 0x7E1 && !options.transmissionEcu) return nullptr;
+        for (UdsUnit& unit : udsUnits) {
+            if (unit.request == request) return &unit;
+        }
+        return nullptr;
+    }
+
+    // The engine's UDS fault memory is the same as its OBD one: stored codes
+    // are confirmed with the MIL on, pending ones carry the pending bit.
+    std::vector<UdsFault> udsFaults(const UdsUnit& unit, double t) const {
+        if (unit.request != 0x7E0) return unit.faults;
+        std::vector<UdsFault> out;
+        auto add = [&out](const char* code, int bits) {
+            for (UdsFault& f : out) {
+                if (std::string(f.code) == code) {
+                    f.status |= bits;
+                    return;
+                }
+            }
+            out.push_back({code, 0x00, bits});
+        };
+        for (const char* code : storedCodes(t)) add(code, kUdsEngineStored);
+        for (const char* code : pendingCodes(t)) add(code, kUdsPending);
+        return out;
+    }
+
+    // Answers of one unit to a physical request: none, one, or two when it
+    // first reports "response pending" (7F xx 78).
+    std::vector<Bytes> udsService(UdsUnit& unit, const Bytes& request, double t) {
+        const std::uint8_t sid = request[0];
+        auto negative = [sid](int nrc) { return Bytes{0x7F, sid, static_cast<std::uint8_t>(nrc)}; };
+        switch (sid) {
+            case 0x3E:   // tester present
+                if (request.size() != 2) return {negative(0x13)};
+                if (request[1] == 0x80) return {};   // positive answer suppressed
+                if (request[1] != 0x00) return {negative(0x12)};
+                return {Bytes{0x7E, 0x00}};
+            case 0x22: {   // read data by identifier
+                if (request.size() != 3) return {negative(0x13)};
+                const int id = request[1] << 8 | request[2];
+                for (const UdsDid& did : unit.dids) {
+                    if (did.id != id) continue;
+                    Bytes out = {0x62, request[1], request[2]};
+                    for (char c : did.text) out.push_back(static_cast<std::uint8_t>(c));
+                    return {out};
+                }
+                return {negative(0x31)};
+            }
+            case 0x19: {   // read DTC information, only "by status mask"
+                if (request.size() < 2) return {negative(0x13)};
+                if (request[1] != 0x02) return {negative(0x12)};
+                if (request.size() != 3) return {negative(0x13)};
+                Bytes out = {0x59, 0x02, 0xFF};
+                for (const UdsFault& f : udsFaults(unit, t)) {
+                    if ((f.status & request[2]) == 0) continue;
+                    putDtc(out, f.code);
+                    out.push_back(static_cast<std::uint8_t>(f.failureType));
+                    out.push_back(static_cast<std::uint8_t>(f.status));
+                }
+                if (unit.slowFaultRead) return {negative(0x78), out};
+                return {out};
+            }
+            case 0x14: {   // clear diagnostic information
+                if (request.size() != 4) return {negative(0x13)};
+                if (request[1] != 0xFF || request[2] != 0xFF || request[3] != 0xFF)
+                    return {negative(0x31)};
+                if (unit.request == 0x7E0) clearEngine(t);
+                else unit.faults.clear();
+                return {Bytes{0x54}};
+            }
+            default: return {negative(0x11)};
+        }
+    }
+
     std::optional<Bytes> engine(const Bytes& request, bool physical, double t) {
         const int sid = request[0];
         switch (sid) {
@@ -936,12 +1096,9 @@ struct DemoTransport::Impl {
             case 0x03: return codeList(0x03, storedCodes(t));
             case 0x07: return codeList(0x07, pendingCodes(t));
             case 0x0A: return codeList(0x0A, permanentCodes(t));
-            case 0x04: {
-                cleared = true;
-                clearRun = engineRunTime(t, options.engineStartSeconds);
-                clearKm = simulate(t, options.engineStartSeconds).distanceKm;
+            case 0x04:
+                clearEngine(t);
                 return Bytes{0x44};
-            }
             case 0x06: {
                 if (request.size() != 2) return std::nullopt;
                 const int mid = request[1];
@@ -1157,11 +1314,19 @@ struct DemoTransport::Impl {
         const double t = now();
         const bool functional = header == 0x7DF;
         std::vector<Reply> replies;
-        if (functional || header == 0x7E0) {
-            if (auto p = engine(data, !functional, t)) replies.push_back({0x7E8, *p});
-        }
-        if (options.transmissionEcu && (functional || header == 0x7E1)) {
-            if (auto p = gearbox(data, !functional, t)) replies.push_back({0x7E9, *p});
+        UdsUnit* unit = functional ? nullptr : udsUnit(header);
+        if (unit && (isUdsService(data[0]) || !unit->obd)) {
+            // A physical UDS request: only the addressed unit answers.
+            const std::vector<Bytes> answers = udsService(*unit, data, t);
+            for (const Bytes& p : answers) replies.push_back({unit->response, p});
+            if (answers.size() > 1) response.delayMs += 60.0;   // the "pending" pause
+        } else {
+            if (functional || header == 0x7E0) {
+                if (auto p = engine(data, !functional, t)) replies.push_back({0x7E8, *p});
+            }
+            if (options.transmissionEcu && (functional || header == 0x7E1)) {
+                if (auto p = gearbox(data, !functional, t)) replies.push_back({0x7E9, *p});
+            }
         }
         replies.erase(std::remove_if(replies.begin(), replies.end(),
                                      [&](const Reply& r) { return !passesFilter(r.id); }),
