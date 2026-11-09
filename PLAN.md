@@ -55,7 +55,7 @@ Ehrlich bleibt es trotzdem. Was ein Auto oder ein Adapter technisch nicht hergib
 - [x] Englische Übersetzung der neuen Texte
 - [x] README deutsch und englisch
 - [x] Neue Bildschirmfotos (tools/screenshots.sh)
-- [ ] CI auf Linux und macOS: bisher nur mit MSVC gebaut, GCC und Clang prüft erst der nächste CI-Lauf
+- [x] CI auf Windows, Linux (GCC) und macOS (Clang) grün
 
 ## Noch offen, auf einem echten Auto zu prüfen
 
