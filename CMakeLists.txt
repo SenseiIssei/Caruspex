@@ -37,6 +37,7 @@ add_library(caruspex_core STATIC
     src/core/CustomPids.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
+    src/core/BleProfile.cpp
     src/core/Recording.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
@@ -196,6 +197,18 @@ if(CARUSPEX_GUI)
     target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts Qt6::Svg
                                            Qt6::PrintSupport)
 
+    # Bluetooth LE adapters need the Qt module qtconnectivity. Without it the
+    # app is built as before, only the Bluetooth LE choice is missing.
+    find_package(Qt6 QUIET COMPONENTS Bluetooth)
+    if(TARGET Qt6::Bluetooth)
+        target_sources(caruspex PRIVATE src/app/BleTransport.cpp src/app/BleTransport.h)
+        target_link_libraries(caruspex PRIVATE Qt6::Bluetooth)
+        target_compile_definitions(caruspex PRIVATE CARUSPEX_HAS_BLE)
+        message(STATUS "Bluetooth LE: on")
+    else()
+        message(STATUS "Bluetooth LE: off (Qt module qtconnectivity not found)")
+    endif()
+
     # The source strings are German; the English translation is compiled into
     # the binary as :/i18n/caruspex_en.qm. Refresh the .ts file after changing
     # UI strings with: cmake --build build --target update_translations
@@ -215,6 +228,9 @@ if(CARUSPEX_GUI)
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
         MACOSX_BUNDLE_ICON_FILE caruspex.icns
         MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2026 SenseiIssei, MIT License"
+        # Own template: macOS ends the app on first Bluetooth use without a
+        # reason in NSBluetoothAlwaysUsageDescription.
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/packaging/macos/Info.plist.in
     )
 endif()
 
@@ -263,6 +279,7 @@ if(CARUSPEX_TESTS)
         tests/test_ecus.cpp
         tests/test_uds.cpp
         tests/test_custom_pids.cpp
+        tests/test_ble_profile.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

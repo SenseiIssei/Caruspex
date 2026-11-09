@@ -206,6 +206,37 @@
     </message>
 </context>
 <context>
+    <name>caruspex::BleTransport</name>
+    <message>
+        <source>Bluetooth ist ausgeschaltet.</source>
+        <translation>Bluetooth is switched off.</translation>
+    </message>
+    <message>
+        <source>Caruspex darf Bluetooth nicht verwenden. Bitte in den Systemeinstellungen unter Datenschutz erlauben.</source>
+        <translation>Caruspex is not allowed to use Bluetooth. Please allow it in the system settings under privacy.</translation>
+    </message>
+    <message>
+        <source>Dieser Rechner hat kein Bluetooth LE, das Caruspex nutzen kann.</source>
+        <translation>This computer has no Bluetooth LE that Caruspex can use.</translation>
+    </message>
+    <message>
+        <source>Bluetooth LE ist auf diesem Rechner nicht verfügbar.</source>
+        <translation>Bluetooth LE is not available on this computer.</translation>
+    </message>
+    <message>
+        <source>Verbindung zu %1 kam nicht zustande</source>
+        <translation>Could not connect to %1</translation>
+    </message>
+    <message>
+        <source>Das Gerät hat seine Dienste nicht gemeldet.</source>
+        <translation>The device did not report its services.</translation>
+    </message>
+    <message>
+        <source>Auf diesem Gerät wurde kein serieller Kanal für OBD gefunden. Ist es ein OBD-Adapter mit Bluetooth LE?</source>
+        <translation>No serial channel for OBD was found on this device. Is it an OBD adapter with Bluetooth LE?</translation>
+    </message>
+</context>
+<context>
     <name>caruspex::ConnectPage</name>
     <message>
         <source>Verbindung</source>
@@ -378,6 +409,50 @@ Protocol: %3</translation>
     <message>
         <source>Erst eine Aufnahme wählen.</source>
         <translation>Choose a recording first.</translation>
+    </message>
+    <message>
+        <source>Bluetooth LE</source>
+        <translation>Bluetooth LE</translation>
+    </message>
+    <message>
+        <source>Nach Bluetooth-LE-Geräten suchen</source>
+        <translation>Search for Bluetooth LE devices</translation>
+    </message>
+    <message>
+        <source>Für Adapter mit Bluetooth LE, zum Beispiel Vgate iCar Pro BLE, vLinker, OBDLink CX oder Veepeak BLE. Sie werden nicht gekoppelt, Caruspex verbindet sich direkt. Klassische Bluetooth-Adapter laufen über USB oder Bluetooth.</source>
+        <translation>For adapters with Bluetooth LE, for example Vgate iCar Pro BLE, vLinker, OBDLink CX or Veepeak BLE. They are not paired; Caruspex connects to them directly. Classic Bluetooth adapters work through USB or Bluetooth.</translation>
+    </message>
+    <message>
+        <source>Suche Bluetooth-LE-Geräte, das dauert ein paar Sekunden ...</source>
+        <translation>Searching for Bluetooth LE devices, this takes a few seconds ...</translation>
+    </message>
+    <message>
+        <source>Unbenanntes Gerät (%1)</source>
+        <translation>Unnamed device (%1)</translation>
+    </message>
+    <message>
+        <source>OBD-Adapter</source>
+        <translation>OBD adapter</translation>
+    </message>
+    <message>
+        <source>Kein Bluetooth-LE-Gerät gefunden. Steckt der Adapter im Auto, und ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach einem Druck auf ihren Knopf wieder auf.</source>
+        <translation>No Bluetooth LE device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.</translation>
+    </message>
+    <message>
+        <source>Ein Gerät gefunden</source>
+        <translation>One device found</translation>
+    </message>
+    <message>
+        <source>%1 Geräte gefunden</source>
+        <translation>%1 devices found</translation>
+    </message>
+    <message>
+        <source>%1, keins davon sieht nach einem OBD-Adapter aus. Unbekannte Adapter lassen sich trotzdem wählen.</source>
+        <translation>%1, none of them looks like an OBD adapter. Unknown adapters can still be chosen.</translation>
+    </message>
+    <message>
+        <source>%1, davon %2 als OBD-Adapter erkannt.</source>
+        <translation>%1, %2 of them recognised as OBD adapters.</translation>
     </message>
 </context>
 <context>
@@ -801,7 +876,10 @@ Protocol: %3</translation>
     </message>
     <message numerus="yes">
         <source>%n Wert(e) gelesen.</source>
-        <translation><numerusform>%n value read.</numerusform><numerusform>%n values read.</numerusform></translation>
+        <translation>
+            <numerusform>%n value read.</numerusform>
+            <numerusform>%n values read.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Wie neu</source>
@@ -1891,11 +1969,17 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     </message>
     <message numerus="yes">
         <source>%n Wert(e) geladen.</source>
-        <translation><numerusform>%n value loaded.</numerusform><numerusform>%n values loaded.</numerusform></translation>
+        <translation>
+            <numerusform>%n value loaded.</numerusform>
+            <numerusform>%n values loaded.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>%n Zeile(n) übersprungen: %1</source>
-        <translation><numerusform>%n line skipped: %1</numerusform><numerusform>%n lines skipped: %1</numerusform></translation>
+        <translation>
+            <numerusform>%n line skipped: %1</numerusform>
+            <numerusform>%n lines skipped: %1</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -2153,7 +2237,10 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     </message>
     <message numerus="yes">
         <source>Aufzeichnung gespeichert: %1 (%n Anfragen)</source>
-        <translation><numerusform>Recording saved: %1 (%n request)</numerusform><numerusform>Recording saved: %1 (%n requests)</numerusform></translation>
+        <translation>
+            <numerusform>Recording saved: %1 (%n request)</numerusform>
+            <numerusform>Recording saved: %1 (%n requests)</numerusform>
+        </translation>
     </message>
     <message>
         <source>E-Auto-Akku</source>
@@ -2174,6 +2261,14 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>Caruspex-Aufnahme (*.jsonl)</source>
         <translation>Caruspex recording (*.jsonl)</translation>
+    </message>
+    <message>
+        <source>Suche einen Bluetooth-LE-Adapter ...</source>
+        <translation>Searching for a Bluetooth LE adapter ...</translation>
+    </message>
+    <message>
+        <source>Verbinde über Bluetooth LE mit %1 ...</source>
+        <translation>Connecting to %1 over Bluetooth LE ...</translation>
     </message>
 </context>
 <context>
@@ -4053,6 +4148,22 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Datei lässt sich nicht öffnen: %1</source>
         <translation>The file cannot be opened: %1</translation>
+    </message>
+    <message>
+        <source>Suche Bluetooth-LE-Adapter ...</source>
+        <translation>Searching for Bluetooth LE adapters ...</translation>
+    </message>
+    <message>
+        <source>Kein Bluetooth-LE-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?</source>
+        <translation>No Bluetooth LE adapter found nearby. Is it plugged into the car, and is the ignition on?</translation>
+    </message>
+    <message>
+        <source>Verbinde mit %1 über Bluetooth LE ...</source>
+        <translation>Connecting to %1 over Bluetooth LE ...</translation>
+    </message>
+    <message>
+        <source>Kanal gefunden (%1)</source>
+        <translation>Channel found (%1)</translation>
     </message>
 </context>
 <context>

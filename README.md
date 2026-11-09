@@ -136,7 +136,9 @@ Pure electric cars do not have to offer OBD-II emissions data. Some answer partl
 
 ## Supported adapters
 
-- Any **ELM327**-compatible adapter (USB, Bluetooth as a COM port, or Wi-Fi via TCP)
+- Any **ELM327**-compatible adapter: USB, classic Bluetooth (paired, appears as a serial port), **Bluetooth LE**
+  (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE and other adapters with the usual GATT services; found by a
+  scan, no pairing) or Wi-Fi via TCP
 - Any **KKL cable (VAG 409.1)**. FTDI or CP2102 based cables are far more reliable on the K-Line than the
   cheapest clones; for KWP1281 a genuine FTDI FT232RL is recommended.
 

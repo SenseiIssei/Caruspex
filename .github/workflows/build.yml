@@ -65,7 +65,7 @@ jobs:
           host: ${{ runner.os == 'Windows' && 'windows' || (runner.os == 'macOS' && 'mac' || 'linux') }}
           target: desktop
           arch: ${{ matrix.qt_arch }}
-          modules: qtcharts
+          modules: qtcharts qtconnectivity
           cache: true
 
       - name: Set up Conan

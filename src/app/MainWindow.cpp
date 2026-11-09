@@ -229,6 +229,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(worker, &Worker::basicSettingValues, throttle_, &ThrottlePage::onBasicSettingValues);
     connect(worker, &Worker::kklMessage, this,
             [this](const QString& text, bool) { appendLog(text); });
+    connect(worker, &Worker::bleScanFinished, connect_, &ConnectPage::onBleScan);
+    connect(worker, &Worker::bleAdapterFound, connect_, &ConnectPage::rememberBle);
     connect(worker, &Worker::adapterFound, this, [this](const QString& device) {
         connect_->refreshPorts();
         connect_->selectPort(device);
@@ -359,6 +361,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
                 titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
                 emit session_.openReplayRequested(path, realTime, order);
             });
+    connect(connect_, &ConnectPage::bleRequested, this,
+            [this](const QString& id, const QString& name, const QString& order) {
+                appendLog(id.isEmpty() ? tr("Suche einen Bluetooth-LE-Adapter ...")
+                                       : tr("Verbinde über Bluetooth LE mit %1 ...")
+                                             .arg(name.isEmpty() ? id : name));
+                titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+                emit session_.openBleRequested(id, name, order);
+            });
+    connect(connect_, &ConnectPage::bleScanRequested, this, [this] { emit session_.scanBleRequested(5000); });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
     connect(worker, &Worker::recordingState, this,
             [this](bool active, const QString& path, int exchanges, const QString& error) {
@@ -706,6 +717,12 @@ void MainWindow::showPageByName(const QString& name) {
     if (name == QStringLiteral("ev-run")) {
         navigateTo(ev_);
         ev_->readNow();
+    }
+    // Opens the Bluetooth LE choice and scans, without connecting.
+    if (name == QStringLiteral("connect-ble")) {
+        navigateTo(connect_);
+        connect_->setMode(ConnectPage::Mode::Ble);
+        emit session_.scanBleRequested(5000);
     }
     if (name == QStringLiteral("start-live")) {
         navigateTo(dashboard_);

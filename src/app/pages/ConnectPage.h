@@ -28,7 +28,8 @@ class ConnectPage : public QWidget {
     Q_OBJECT
 
 public:
-    enum class Mode { Cable, Wifi, Demo, Replay };
+    // The values are the pages of the mode stack, Ble was added last.
+    enum class Mode { Cable, Wifi, Demo, Replay, Ble };
 
     explicit ConnectPage(QWidget* parent = nullptr);
 
@@ -56,6 +57,11 @@ public slots:
     void onConnected(const QString& adapter, const QString& transport, const QString& protocol);
     void onFailed(const QString& error);
     void onClosed();
+    // Result of a Bluetooth LE scan (Worker::bleScanFinished).
+    void onBleScan(const QStringList& ids, const QStringList& names, const QList<int>& scores,
+                   const QString& error);
+    // Remembers the device the Bluetooth LE connection went to.
+    void rememberBle(const QString& id, const QString& name);
 
 signals:
     // device empty means: try every port.
@@ -63,6 +69,9 @@ signals:
     void tcpRequested(const QString& host, int port, const QString& protocolOrder);
     void demoRequested(const QString& protocolOrder);
     void replayRequested(const QString& path, bool realTime, const QString& protocolOrder);
+    // id empty means: search and take the first device that looks like an adapter.
+    void bleRequested(const QString& id, const QString& name, const QString& protocolOrder);
+    void bleScanRequested();
     void disconnectRequested();
     void vehicleChoiceChanged();
 
@@ -79,6 +88,9 @@ private:
     QButtonGroup* modes_ = nullptr;
     QStackedWidget* modeStack_ = nullptr;
     QComboBox* portBox_ = nullptr;
+    QComboBox* bleBox_ = nullptr;
+    QPushButton* bleScan_ = nullptr;
+    QLabel* bleNote_ = nullptr;
     QLineEdit* addressEdit_ = nullptr;
     QLineEdit* replayPath_ = nullptr;
     QCheckBox* replayRealTime_ = nullptr;
