@@ -52,9 +52,9 @@ Ehrlich bleibt es trotzdem. Was ein Auto oder ein Adapter technisch nicht hergib
 ## Phase 4: Abschluss
 
 - [x] Tests: 148 Testfälle
-- [ ] Englische Übersetzung der neuen Texte
+- [x] Englische Übersetzung der neuen Texte
 - [x] README deutsch und englisch
-- [ ] Neue Bildschirmfotos
+- [x] Neue Bildschirmfotos (tools/screenshots.sh)
 - [ ] CI auf Linux und macOS: bisher nur mit MSVC gebaut, GCC und Clang prüft erst der nächste CI-Lauf
 
 ## Noch offen, auf einem echten Auto zu prüfen

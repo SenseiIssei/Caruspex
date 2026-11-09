@@ -2,66 +2,357 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="de">
 <context>
-    <name>caruspex::DashboardPage</name>
+    <name>QObject</name>
     <message>
-        <source>Übersicht</source>
-        <translation>Overview</translation>
+        <source>Unbekanntes Fahrzeug</source>
+        <translation>Unknown vehicle</translation>
+    </message>
+    <message>
+        <source>noch keine Prüfung</source>
+        <translation>not checked yet</translation>
+    </message>
+    <message>
+        <source>zuletzt ohne Fehler</source>
+        <translation>last check: no faults</translation>
+    </message>
+    <message numerus="yes">
+        <source>zuletzt %n Fehler</source>
+        <translation>
+            <numerusform>last check: %n fault</numerusform>
+            <numerusform>last check: %n faults</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>verbunden</source>
+        <translation>connected</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::AdapterPage</name>
+    <message>
+        <source>Werkzeug</source>
+        <translation>Tools</translation>
+    </message>
+    <message>
+        <source>Adaptertest</source>
+        <translation>Adapter test</translation>
+    </message>
+    <message>
+        <source>Viele ELM327 sind Nachbauten, die eine höhere Version behaupten, als sie können. Der Test fragt nach, misst die Antwortzeit und sagt ehrlich, was er daraus schließt. Er schreibt nichts in den Adapter.</source>
+        <translation>Many ELM327 adapters are clones that claim a higher version than they can actually handle. The test asks, measures the response time and tells you honestly what it concludes from that. It writes nothing to the adapter.</translation>
+    </message>
+    <message>
+        <source>Adapter testen</source>
+        <translation>Test adapter</translation>
+    </message>
+    <message>
+        <source>Erst verbinden, dann testen. Dauert etwa zehn Sekunden.</source>
+        <translation>Connect first, then test. Takes about ten seconds.</translation>
+    </message>
+    <message>
+        <source>Meldet sich als</source>
+        <translation>Reports as</translation>
+    </message>
+    <message>
+        <source>Verhält sich wie</source>
+        <translation>Behaves like</translation>
+    </message>
+    <message>
+        <source>Antwortzeit</source>
+        <translation>Response time</translation>
+    </message>
+    <message>
+        <source>Spannung an der Buchse</source>
+        <translation>Voltage at the socket</translation>
+    </message>
+    <message>
+        <source>Was der Test ergeben hat</source>
+        <translation>What the test found</translation>
+    </message>
+    <message>
+        <source>Befehle im Einzelnen</source>
+        <translation>Commands in detail</translation>
+    </message>
+    <message>
+        <source>Befehl</source>
+        <translation>Command</translation>
+    </message>
+    <message>
+        <source>Seit</source>
+        <translation>Since</translation>
+    </message>
+    <message>
+        <source>Kann er</source>
+        <translation>Supported</translation>
+    </message>
+    <message>
+        <source>Wofür</source>
+        <translation>Used for</translation>
+    </message>
+    <message>
+        <source>Teste ...</source>
+        <translation>Testing ...</translation>
+    </message>
+    <message>
+        <source>mit Antwortzahl %1 ms</source>
+        <translation>with response count: %1 ms</translation>
+    </message>
+    <message>
+        <source>ja</source>
+        <translation>yes</translation>
+    </message>
+    <message>
+        <source>nein</source>
+        <translation>no</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::BatteryPage</name>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Batterie und Lichtmaschine</source>
+        <translation>Battery and alternator</translation>
+    </message>
+    <message>
+        <source>Vier kurze Messungen, Schritt für Schritt. Die Spannung misst der Adapter direkt an der Buchse, das klappt bei jedem Auto.</source>
+        <translation>Four short measurements, step by step. The adapter measures the voltage directly at the socket, which works on every car.</translation>
+    </message>
+    <message>
+        <source>Spannung jetzt</source>
+        <translation>Voltage now</translation>
+    </message>
+    <message>
+        <source>Bordnetz</source>
+        <translation>Electrical system</translation>
+    </message>
+    <message>
+        <source>Batterieart unbekannt</source>
+        <translation>Battery type unknown</translation>
+    </message>
+    <message>
+        <source>Nassbatterie (Standard)</source>
+        <translation>Flooded battery (standard)</translation>
+    </message>
+    <message>
+        <source>EFB (Start-Stopp)</source>
+        <translation>EFB (start-stop)</translation>
+    </message>
+    <message>
+        <source>AGM (Start-Stopp, Vlies)</source>
+        <translation>AGM (start-stop, glass mat)</translation>
+    </message>
+    <message>
+        <source>Auto hat Start-Stopp</source>
+        <translation>Car has start-stop</translation>
+    </message>
+    <message>
+        <source>So geht&apos;s</source>
+        <translation>How it works</translation>
+    </message>
+    <message>
+        <source>Ruhespannung</source>
+        <translation>Resting voltage</translation>
+    </message>
+    <message>
+        <source>Beim Anlassen</source>
+        <translation>While cranking</translation>
+    </message>
+    <message>
+        <source>Laden im Leerlauf</source>
+        <translation>Charging at idle</translation>
+    </message>
+    <message>
+        <source>Laden unter Last</source>
+        <translation>Charging under load</translation>
+    </message>
+    <message>
+        <source>Aufnehmen, dann starten</source>
+        <translation>Record, then start</translation>
+    </message>
+    <message>
+        <source>Ergebnis</source>
+        <translation>Result</translation>
+    </message>
+    <message>
+        <source>Nach der ersten Messung steht hier, wie es um Batterie und Lichtmaschine steht.</source>
+        <translation>After the first measurement, this shows how the battery and alternator are doing.</translation>
+    </message>
+    <message>
+        <source>Nimmt %1 s auf. Jetzt den Motor starten.</source>
+        <translation>Recording for %1 s. Start the engine now.</translation>
+    </message>
+    <message>
+        <source>Misst %1 s ...</source>
+        <translation>Measuring for %1 s ...</translation>
+    </message>
+    <message>
+        <source>gemessen: %1 V</source>
+        <translation>measured: %1 V</translation>
+    </message>
+    <message>
+        <source>tiefster Wert: %1 V</source>
+        <translation>lowest value: %1 V</translation>
+    </message>
+    <message>
+        <source>Ladezustand etwa %1 %.</source>
+        <translation>State of charge about %1 %.</translation>
+    </message>
+    <message>
+        <source>Was tun: %1</source>
+        <translation>What to do: %1</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::ConnectPage</name>
+    <message>
+        <source>Verbindung</source>
+        <translation>Connection</translation>
+    </message>
+    <message>
+        <source>Mit dem Auto verbinden</source>
+        <translation>Connect to the car</translation>
+    </message>
+    <message>
+        <source>Ein Adapter in der OBD-Buchse, die Zündung an, ein Klick. Welches Protokoll das Auto spricht, findet Caruspex selbst heraus.</source>
+        <translation>An adapter in the OBD socket, ignition on, one click. Caruspex works out by itself which protocol the car speaks.</translation>
+    </message>
+    <message>
+        <source>So geht&apos;s</source>
+        <translation>How it works</translation>
+    </message>
+    <message>
+        <source>Buchse finden</source>
+        <translation>Find the socket</translation>
+    </message>
+    <message>
+        <source>Die OBD-Buchse sitzt fast immer im Fußraum auf der Fahrerseite, unter dem Lenkrad oder hinter einer kleinen Klappe.</source>
+        <translation>The OBD socket is almost always in the footwell on the driver&apos;s side, under the steering wheel or behind a small cover.</translation>
+    </message>
+    <message>
+        <source>Adapter einstecken</source>
+        <translation>Plug in the adapter</translation>
+    </message>
+    <message>
+        <source>ELM327 per USB, Bluetooth oder WLAN. Für Airbag, ABS und Grundeinstellungen bei VAG bis etwa 2004 ein KKL-Kabel.</source>
+        <translation>ELM327 via USB, Bluetooth or Wi-Fi. For airbag, ABS and basic settings on VAG cars up to about 2004, a KKL cable.</translation>
+    </message>
+    <message>
+        <source>Zündung an</source>
+        <translation>Ignition on</translation>
+    </message>
+    <message>
+        <source>Zündung einschalten. Der Motor darf aus sein, für Live-Werte darf er laufen, aber nur im Freien.</source>
+        <translation>Switch on the ignition. The engine can stay off. For live values it may run, but only outdoors.</translation>
+    </message>
+    <message>
+        <source>Verbinden</source>
+        <translation>Connect</translation>
+    </message>
+    <message>
+        <source>Rechts auf Verbinden drücken. Beim ersten Mal dauert es ein paar Sekunden, bis das Protokoll gefunden ist.</source>
+        <translation>Press Connect on the right. The first time, it takes a few seconds to find the protocol.</translation>
+    </message>
+    <message>
+        <source>Adapter</source>
+        <translation>Adapter</translation>
+    </message>
+    <message>
+        <source>USB oder Bluetooth</source>
+        <translation>USB or Bluetooth</translation>
+    </message>
+    <message>
+        <source>WLAN</source>
+        <translation>Wi-Fi</translation>
+    </message>
+    <message>
+        <source>Demo-Auto</source>
+        <translation>Demo car</translation>
+    </message>
+    <message>
+        <source>Anschlüsse neu suchen</source>
+        <translation>Rescan ports</translation>
+    </message>
+    <message>
+        <source>Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle Anschlüsse der Reihe nach.</source>
+        <translation>After pairing, Bluetooth adapters show up in Windows as their own COM port. With Search automatically, Caruspex tries all ports one after another.</translation>
+    </message>
+    <message>
+        <source>Erst mit dem WLAN des Adapters verbinden. Die meisten nutzen 192.168.0.10, Port 35000.</source>
+        <translation>Connect to the adapter&apos;s Wi-Fi first. Most use 192.168.0.10, port 35000.</translation>
+    </message>
+    <message>
+        <source>Ein nachgebautes Auto im Programm: es fährt, wärmt sich auf, hat ein paar Fehler gespeichert. Ideal zum Ausprobieren, ganz ohne Adapter.</source>
+        <translation>A simulated car inside the app: it drives, warms up and has a few faults stored. Ideal for trying things out, no adapter needed.</translation>
+    </message>
+    <message>
+        <source>Fahrzeug</source>
+        <translation>Vehicle</translation>
+    </message>
+    <message>
+        <source>freiwillig</source>
+        <translation>optional</translation>
+    </message>
+    <message>
+        <source>Automatisch erkennen, oder suchen: Golf 4, A2, E46 ...</source>
+        <translation>Detect automatically, or search: Golf 4, A2, E46 ...</translation>
+    </message>
+    <message>
+        <source>Baujahr </source>
+        <translation>Year </translation>
     </message>
     <message>
         <source>Nicht verbunden</source>
         <translation>Not connected</translation>
     </message>
     <message>
-        <source>Links Fahrzeug und Adapter wählen, dann auf Verbinden drücken.</source>
-        <translation>Choose vehicle and adapter on the left, then press Connect.</translation>
+        <source>Das hat nicht geklappt</source>
+        <translation>That didn&apos;t work</translation>
     </message>
     <message>
-        <source>Fehler auslesen</source>
-        <translation>Read faults</translation>
+        <source>Häufige Gründe: Zündung aus, Adapter nicht ganz eingesteckt, falscher Anschluss gewählt, oder ein anderes Programm hält den Anschluss offen. Bei Bluetooth hilft oft, den Adapter neu zu koppeln.</source>
+        <translation>Common reasons: ignition off, adapter not fully plugged in, wrong port selected, or another program is holding the port open. With Bluetooth, pairing the adapter again often helps.</translation>
     </message>
     <message>
-        <source>Details laden</source>
-        <translation>Load details</translation>
+        <source>Automatisch suchen</source>
+        <translation>Search automatically</translation>
     </message>
     <message>
-        <source>Messung starten</source>
-        <translation>Start measurement</translation>
+        <source>Ohne Auswahl probiert Caruspex die Protokolle der Reihe nach durch und erkennt das Auto danach an der Fahrgestellnummer.</source>
+        <translation>Without a selection, Caruspex tries the protocols one after another and then recognises the car by its VIN.</translation>
     </message>
     <message>
-        <source>Adapter: %1     Weg: %2     Protokoll: %3</source>
-        <translation>Adapter: %1     Link: %2     Protocol: %3</translation>
+        <source>Bei diesem Auto: %1</source>
+        <translation>For this car: %1</translation>
+    </message>
+    <message>
+        <source>Verbinde ...</source>
+        <translation>Connecting ...</translation>
+    </message>
+    <message>
+        <source>Trennen</source>
+        <translation>Disconnect</translation>
     </message>
     <message>
         <source>Verbunden</source>
         <translation>Connected</translation>
     </message>
     <message>
-        <source>Auf Fehler auslesen drücken.</source>
-        <translation>Press Read faults.</translation>
+        <source>Adapter: %1
+Weg: %2
+Protokoll: %3</source>
+        <translation>Adapter: %1
+Link: %2
+Protocol: %3</translation>
     </message>
+</context>
+<context>
+    <name>caruspex::DashboardPage</name>
     <message>
         <source>Alles in Ordnung</source>
         <translation>All good</translation>
-    </message>
-    <message>
-        <source>Kein Fehler gespeichert, Fehlerlampe ist aus.</source>
-        <translation>No faults stored, the check engine light is off.</translation>
-    </message>
-    <message>
-        <source>1 Fehler gespeichert</source>
-        <translation>1 fault stored</translation>
-    </message>
-    <message>
-        <source>%1 Fehler gespeichert</source>
-        <translation>%1 faults stored</translation>
-    </message>
-    <message>
-        <source>Die Fehlerlampe im Tacho brennt.</source>
-        <translation>The check engine light in the instrument cluster is on.</translation>
-    </message>
-    <message>
-        <source>Die Fehlerlampe brennt nicht, der Speicher ist trotzdem nicht leer.</source>
-        <translation>The check engine light is off, but the memory is not empty.</translation>
     </message>
     <message>
         <source>Drehzahl</source>
@@ -80,10 +371,6 @@
         <translation>Coolant</translation>
     </message>
     <message>
-        <source>Grad C</source>
-        <translation>°C</translation>
-    </message>
-    <message>
         <source>Motorlast</source>
         <translation>Engine load</translation>
     </message>
@@ -94,6 +381,166 @@
     <message>
         <source>Bordspannung</source>
         <translation>Battery voltage</translation>
+    </message>
+    <message>
+        <source>DEIN FAHRZEUG</source>
+        <translation>YOUR CAR</translation>
+    </message>
+    <message>
+        <source>Verbinden</source>
+        <translation>Connect</translation>
+    </message>
+    <message>
+        <source>Live-Werte</source>
+        <translation>Live values</translation>
+    </message>
+    <message>
+        <source>Prüfbericht</source>
+        <translation>Diagnostic report</translation>
+    </message>
+    <message>
+        <source>Alles Gelesene als PDF speichern oder drucken</source>
+        <translation>Save everything read as a PDF or print it</translation>
+    </message>
+    <message>
+        <source>Was Caruspex gefunden hat</source>
+        <translation>What Caruspex found</translation>
+    </message>
+    <message>
+        <source>Jeder Punkt Abzug steht hier, mit Grund.</source>
+        <translation>Every point deducted is listed here, with the reason.</translation>
+    </message>
+    <message>
+        <source>Batterie</source>
+        <translation>Battery</translation>
+    </message>
+    <message>
+        <source>Kilometerstand</source>
+        <translation>Mileage</translation>
+    </message>
+    <message>
+        <source>Tank</source>
+        <translation>Tank</translation>
+    </message>
+    <message>
+        <source>Live</source>
+        <translation>Live</translation>
+    </message>
+    <message>
+        <source>läuft, sobald eine Messung gestartet ist</source>
+        <translation>runs once a measurement has started</translation>
+    </message>
+    <message>
+        <source>%1 über %2, Protokoll %3</source>
+        <translation>%1 via %2, protocol %3</translation>
+    </message>
+    <message>
+        <source>noch nicht warm</source>
+        <translation>not warm yet</translation>
+    </message>
+    <message>
+        <source>Gesundheit</source>
+        <translation>Health</translation>
+    </message>
+    <message>
+        <source>WILLKOMMEN</source>
+        <translation>WELCOME</translation>
+    </message>
+    <message>
+        <source>Noch kein Auto verbunden</source>
+        <translation>No car connected yet</translation>
+    </message>
+    <message>
+        <source>Adapter einstecken, Zündung an, verbinden. Oder erst einmal mit dem Demo-Auto ausprobieren.</source>
+        <translation>Plug in the adapter, switch on the ignition, connect. Or try the demo car first.</translation>
+    </message>
+    <message>
+        <source>Verbundenes Fahrzeug</source>
+        <translation>Connected vehicle</translation>
+    </message>
+    <message>
+        <source>Auto prüfen</source>
+        <translation>Check car</translation>
+    </message>
+    <message>
+        <source>Verbunden. Auto prüfen liest Fehler, Bereitschaft und Fahrzeugdaten.</source>
+        <translation>Connected. Check car reads faults, readiness and vehicle data.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert.</source>
+        <translation>No faults stored.</translation>
+    </message>
+    <message>
+        <source>1 Eintrag im Fehlerspeicher.</source>
+        <translation>1 entry in the fault memory.</translation>
+    </message>
+    <message>
+        <source>%1 Einträge im Fehlerspeicher.</source>
+        <translation>%1 entries in the fault memory.</translation>
+    </message>
+    <message>
+        <source>Noch offen</source>
+        <translation>Pending</translation>
+    </message>
+    <message>
+        <source>Noch nichts geprüft</source>
+        <translation>Nothing checked yet</translation>
+    </message>
+    <message>
+        <source>Nach dem Verbinden steht hier, was mit dem Auto los ist, in einfachen Worten.</source>
+        <translation>After connecting, this shows what is going on with the car, in plain words.</translation>
+    </message>
+    <message>
+        <source>Bereit</source>
+        <translation>Ready</translation>
+    </message>
+    <message>
+        <source>Auto prüfen drücken</source>
+        <translation>Press Check car</translation>
+    </message>
+    <message>
+        <source>Bereit zur Prüfung</source>
+        <translation>Ready to check</translation>
+    </message>
+    <message>
+        <source>Auto prüfen liest den Fehlerspeicher, die Bereitschaftstests und die Fahrzeugdaten.</source>
+        <translation>Check car reads the fault memory, the readiness monitors and the vehicle data.</translation>
+    </message>
+    <message>
+        <source>Motorkontrollleuchte an</source>
+        <translation>Check engine light on</translation>
+    </message>
+    <message>
+        <source>Das Steuergerät meldet einen abgasrelevanten Fehler. Bald in die Werkstatt oder selbst nachsehen.</source>
+        <translation>The control unit reports an emissions-related fault. Visit a workshop soon or take a look yourself.</translation>
+    </message>
+    <message>
+        <source>1 Bereitschaftstest noch offen</source>
+        <translation>1 readiness monitor still incomplete</translation>
+    </message>
+    <message>
+        <source>%1 Bereitschaftstests noch offen</source>
+        <translation>%1 readiness monitors still incomplete</translation>
+    </message>
+    <message>
+        <source>Nach dem Löschen oder einem Batteriewechsel normal. Für die AU sollten sie abgeschlossen sein.</source>
+        <translation>Normal after clearing faults or changing the battery. They should be complete for the emissions test.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert, die Lampe ist aus.</source>
+        <translation>No faults stored, the light is off.</translation>
+    </message>
+    <message>
+        <source>Gut in Schuss</source>
+        <translation>In good shape</translation>
+    </message>
+    <message>
+        <source>Braucht Pflege</source>
+        <translation>Needs care</translation>
+    </message>
+    <message>
+        <source>Bitte ansehen</source>
+        <translation>Needs attention</translation>
     </message>
 </context>
 <context>
@@ -119,46 +566,12 @@
         <translation>Save as CSV</translation>
     </message>
     <message>
-        <source>Code</source>
-        <translation>Code</translation>
-    </message>
-    <message>
-        <source>Art</source>
-        <translation>Type</translation>
-    </message>
-    <message>
-        <source>Bedeutung</source>
-        <translation>Meaning</translation>
-    </message>
-    <message>
-        <source>Wo kommt das her?</source>
-        <translation>Where does it come from?</translation>
-    </message>
-    <message>
-        <source>Einen Fehler in der Liste anklicken.</source>
-        <translation>Click a fault in the list.</translation>
-    </message>
-    <message>
         <source>Kein Eintrag im Speicher</source>
         <translation>No entries in memory</translation>
     </message>
     <message>
-        <source>%1 Einträge</source>
-        <translation>%1 entries</translation>
-    </message>
-    <message>
         <source>Mindestens ein Code betrifft die Drosselklappe. Löschen allein reicht da erfahrungsgemäß nicht, die Klappe muss angelernt werden.</source>
         <translation>At least one code concerns the throttle body. In practice clearing alone is not enough here; the throttle body needs an adaptation.</translation>
-    </message>
-    <message>
-        <source>Kein Fehler, nichts zu zeigen.</source>
-        <translation>No faults, nothing to show.</translation>
-    </message>
-    <message>
-        <source>%1 zeigt auf: %2
-%3</source>
-        <translation>%1 points to: %2
-%3</translation>
     </message>
     <message>
         <source>Fehlerspeicher löschen</source>
@@ -239,6 +652,327 @@ The readiness monitors are reset as well.</translation>
     <message>
         <source>Löschen setzt auch die Bereitschaftstests zurück. Direkt danach fällt eine Abgasuntersuchung durch, bis das Auto wieder ein paar vollständige Fahrzyklen gelaufen ist. Ein Fehler, dessen Ursache noch da ist, kommt nach kurzer Fahrt zurück.</source>
         <translation>Clearing also resets the readiness monitors. Right afterwards the car fails an emissions test until it has completed a few full drive cycles again. A fault whose cause is still present comes back after a short drive.</translation>
+    </message>
+    <message>
+        <source>Diagnose</source>
+        <translation>Diagnostics</translation>
+    </message>
+    <message>
+        <source>Jeder Eintrag mit Dringlichkeit. Rechts steht, was er bedeutet, ob das Auto noch fahren darf und wo man nachsehen kann.</source>
+        <translation>Every entry with its urgency. On the right: what it means, whether the car is still safe to drive and where to look.</translation>
+    </message>
+    <message>
+        <source>Häufige Ursachen</source>
+        <translation>Common causes</translation>
+    </message>
+    <message>
+        <source>Selbst nachsehen</source>
+        <translation>Check it yourself</translation>
+    </message>
+    <message>
+        <source>Noch nichts gelesen. Nach dem Verbinden stehen hier die Einträge, mit Erklärung.</source>
+        <translation>Nothing read yet. After connecting, the entries appear here with an explanation.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Einträge</source>
+        <translation>
+            <numerusform>%n entry</numerusform>
+            <numerusform>%n entries</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert. Gut so.</source>
+        <translation>No faults stored. Good.</translation>
+    </message>
+    <message>
+        <source>Herstellercode %1</source>
+        <translation>Manufacturer code %1</translation>
+    </message>
+    <message>
+        <source>genaue Bedeutung unbekannt, das ist die Gruppe</source>
+        <translation>exact meaning unknown, this is the group</translation>
+    </message>
+    <message>
+        <source>Darf ich weiterfahren?</source>
+        <translation>Can I keep driving?</translation>
+    </message>
+    <message>
+        <source>Wo nachsehen: %1. %2</source>
+        <translation>Where to look: %1. %2</translation>
+    </message>
+    <message>
+        <source>Kosten in der Werkstatt: %1. %2</source>
+        <translation>Workshop cost: %1. %2</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::GaragePage</name>
+    <message>
+        <source>Garage</source>
+        <translation>Garage</translation>
+    </message>
+    <message>
+        <source>Deine Fahrzeuge</source>
+        <translation>Your vehicles</translation>
+    </message>
+    <message>
+        <source>Jedes Auto, das Caruspex einmal gesehen hat, erkannt an seiner Fahrgestellnummer. Mit allen Prüfungen und Kilometerständen. Bleibt auf diesem Rechner.</source>
+        <translation>Every car Caruspex has ever seen, recognised by its VIN. With all checks and mileage readings. Stays on this computer.</translation>
+    </message>
+    <message>
+        <source>Prüfbericht</source>
+        <translation>Diagnostic report</translation>
+    </message>
+    <message>
+        <source>Aus der Garage entfernen</source>
+        <translation>Remove from garage</translation>
+    </message>
+    <message>
+        <source>Verlauf</source>
+        <translation>History</translation>
+    </message>
+    <message>
+        <source>Notiz</source>
+        <translation>Note</translation>
+    </message>
+    <message>
+        <source>z.B. Zahnriemen bei 180 000 km gewechselt</source>
+        <translation>e.g. timing belt replaced at 180 000 km</translation>
+    </message>
+    <message>
+        <source>Die Garage ist noch leer</source>
+        <translation>The garage is still empty</translation>
+    </message>
+    <message>
+        <source>Sobald ein Auto verbunden ist und seine Fahrgestellnummer verrät, steht es hier. Ältere Autos ohne VIN im Steuergerät lassen sich leider nicht wiedererkennen.</source>
+        <translation>As soon as a car is connected and reveals its VIN, it shows up here. Older cars without a VIN in the control unit unfortunately cannot be recognised again.</translation>
+    </message>
+    <message>
+        <source>Entfernen</source>
+        <translation>Remove</translation>
+    </message>
+    <message>
+        <source>Das Auto und seinen ganzen Verlauf aus der Garage entfernen? Das lässt sich nicht rückgängig machen.</source>
+        <translation>Remove the car and its entire history from the garage? This cannot be undone.</translation>
+    </message>
+    <message>
+        <source>Unbekanntes Fahrzeug</source>
+        <translation>Unknown vehicle</translation>
+    </message>
+    <message>
+        <source>VIN %1</source>
+        <translation>VIN %1</translation>
+    </message>
+    <message>
+        <source>zuerst gesehen %1</source>
+        <translation>first seen %1</translation>
+    </message>
+    <message>
+        <source>Der Bericht braucht das verbundene Auto.</source>
+        <translation>The report needs the car to be connected.</translation>
+    </message>
+    <message>
+        <source>Noch keine Prüfung gespeichert</source>
+        <translation>No check saved yet</translation>
+    </message>
+    <message>
+        <source>Auto prüfen auf der Startseite legt einen Eintrag an.</source>
+        <translation>Check car on the home page creates an entry.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert.</source>
+        <translation>No faults stored.</translation>
+    </message>
+    <message>
+        <source>Motorkontrollleuchte an.</source>
+        <translation>Check engine light on.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Bereitschaftstest(s) offen.</source>
+        <translation>
+            <numerusform>%n readiness monitor incomplete.</numerusform>
+            <numerusform>%n readiness monitors incomplete.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>%1 Punkte</source>
+        <translation>%1 points</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::HealthPage</name>
+    <message>
+        <source>In Ordnung</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Hinweis</source>
+        <translation>Note</translation>
+    </message>
+    <message>
+        <source>Bald ansehen</source>
+        <translation>Check soon</translation>
+    </message>
+    <message>
+        <source>Dringend</source>
+        <translation>Urgent</translation>
+    </message>
+    <message>
+        <source>Diagnose</source>
+        <translation>Diagnostics</translation>
+    </message>
+    <message>
+        <source>Gesundheitscheck</source>
+        <translation>Health check</translation>
+    </message>
+    <message>
+        <source>Liest Fehlerspeicher, Bereitschaftstests und die Bauteilprüfung, beobachtet dann eine halbe Minute lang Gemisch, Temperatur, Lambdasonden und Ladespannung. Heraus kommt eine Punktzahl, und jeder Abzug wird erklärt.</source>
+        <translation>Reads the fault memory, readiness monitors and component monitoring, then watches mixture, temperature, oxygen sensors and charging voltage for half a minute. The result is a score, and every deduction is explained.</translation>
+    </message>
+    <message>
+        <source>Noch offen</source>
+        <translation>Pending</translation>
+    </message>
+    <message>
+        <source>Gesundheit</source>
+        <translation>Health</translation>
+    </message>
+    <message>
+        <source>Bereit für den Check</source>
+        <translation>Ready for the check</translation>
+    </message>
+    <message>
+        <source>Am besten mit warmem Motor im Stand. Während der Messung einmal für ein paar Sekunden 2500 1/min halten, dann sieht Caruspex auch, wie das Gemisch unter Last geregelt wird.</source>
+        <translation>Best with a warm engine while standing still. During the measurement, hold 2500 rpm for a few seconds once, so Caruspex can also see how the mixture is controlled under load.</translation>
+    </message>
+    <message>
+        <source>Check starten</source>
+        <translation>Start check</translation>
+    </message>
+    <message>
+        <source>Kurz, 15 Sekunden</source>
+        <translation>Short, 15 seconds</translation>
+    </message>
+    <message>
+        <source>Normal, 30 Sekunden</source>
+        <translation>Normal, 30 seconds</translation>
+    </message>
+    <message>
+        <source>Gründlich, 90 Sekunden</source>
+        <translation>Thorough, 90 seconds</translation>
+    </message>
+    <message>
+        <source>Abbrechen</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>Befunde</source>
+        <translation>Findings</translation>
+    </message>
+    <message>
+        <source>Das Wichtigste zuerst. Jeder Punkt sagt, was er bedeutet und was jetzt zu tun ist.</source>
+        <translation>Most important first. Each point says what it means and what to do now.</translation>
+    </message>
+    <message>
+        <source>Bereit für die AU?</source>
+        <translation>Ready for the emissions test?</translation>
+    </message>
+    <message>
+        <source>Die Bereitschaftstests zeigen, ob das Auto seine Selbstprüfungen seit dem letzten Löschen abgeschlossen hat.</source>
+        <translation>The readiness monitors show whether the car has completed its self-tests since the faults were last cleared.</translation>
+    </message>
+    <message>
+        <source>Nicht geprüft</source>
+        <translation>Not checked</translation>
+    </message>
+    <message>
+        <source>Was dieses Auto nicht meldet oder was die Messung nicht hergab.</source>
+        <translation>What this car does not report or what the measurement could not provide.</translation>
+    </message>
+    <message>
+        <source>Noch kein Ergebnis</source>
+        <translation>No result yet</translation>
+    </message>
+    <message>
+        <source>Nach dem Check steht hier jeder Befund.</source>
+        <translation>After the check, every finding appears here.</translation>
+    </message>
+    <message>
+        <source>Erst verbinden.</source>
+        <translation>Connect first.</translation>
+    </message>
+    <message>
+        <source>Prüfe ...</source>
+        <translation>Checking ...</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Prüfungen ausgeführt.</source>
+        <translation>
+            <numerusform>%n check run.</numerusform>
+            <numerusform>%n checks run.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Gut in Schuss</source>
+        <translation>In good shape</translation>
+    </message>
+    <message>
+        <source>Braucht Pflege</source>
+        <translation>Needs care</translation>
+    </message>
+    <message>
+        <source>Bitte ansehen</source>
+        <translation>Needs attention</translation>
+    </message>
+    <message>
+        <source>Was tun: %1</source>
+        <translation>What to do: %1</translation>
+    </message>
+    <message>
+        <source>Nichts gefunden</source>
+        <translation>Nothing found</translation>
+    </message>
+    <message>
+        <source>Alle Prüfungen, die dieses Auto zulässt, sind unauffällig.</source>
+        <translation>All checks this car allows came back clean.</translation>
+    </message>
+    <message>
+        <source>Das Auto hat keine Bereitschaftstests gemeldet.</source>
+        <translation>The car reported no readiness monitors.</translation>
+    </message>
+    <message>
+        <source>Alle Tests abgeschlossen. Von dieser Seite steht der AU nichts im Weg.</source>
+        <translation>All monitors complete. Nothing here stands in the way of the emissions test.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Test(s) noch offen. Beim Diesel sollten für die AU möglichst alle abgeschlossen sein. Unten steht, wie man sie fährt.</source>
+        <translation>
+            <numerusform>%n monitor still incomplete. On a diesel, all of them should ideally be complete for the emissions test. How to drive it to completion is shown below.</numerusform>
+            <numerusform>%n monitors still incomplete. On a diesel, all of them should ideally be complete for the emissions test. How to drive them to completion is shown below.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Test(s) noch offen. Beim Benziner wird ein offener Test oft akzeptiert, sicherer ist es, vorher die Prüfstelle zu fragen. Unten steht, wie man sie fährt.</source>
+        <translation>
+            <numerusform>%n monitor still incomplete. On a petrol car, one incomplete monitor is often accepted, but it is safer to ask the test centre beforehand. How to drive it to completion is shown below.</numerusform>
+            <numerusform>%n monitors still incomplete. On a petrol car, one incomplete monitor is often accepted, but it is safer to ask the test centre beforehand. How to drive them to completion is shown below.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>fertig</source>
+        <translation>done</translation>
+    </message>
+    <message>
+        <source>So fahren: %1</source>
+        <translation>How to drive: %1</translation>
+    </message>
+    <message>
+        <source>Braucht einen Kaltstart, also erst nach einigen Stunden Standzeit beginnen.</source>
+        <translation>Needs a cold start, so only begin after the car has been parked for a few hours.</translation>
+    </message>
+    <message>
+        <source>offen</source>
+        <translation>incomplete</translation>
     </message>
 </context>
 <context>
@@ -347,16 +1081,16 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <source>Erst ein KKL-Kabel anstecken und auf Suchen drücken.</source>
         <translation>Plug in a KKL cable first and press Scan.</translation>
     </message>
+    <message>
+        <source>WERKSTATT</source>
+        <translation>WORKSHOP</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::LexiconPage</name>
     <message>
         <source>Fehlercode-Lexikon</source>
         <translation>Trouble code lexicon</translation>
-    </message>
-    <message>
-        <source>Nachschlagewerk für unterwegs, funktioniert auch ohne Auto. Suche nach Code oder nach Stichwort, zum Beispiel Drosselklappe oder Lambdasonde.</source>
-        <translation>Reference for on the road, also works without a car. Search by code or keyword, for example throttle or oxygen sensor.</translation>
     </message>
     <message>
         <source>P0301, Lambdasonde, Zylinder 3 ...</source>
@@ -373,6 +1107,34 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>%1 von %2 Codes</source>
         <translation>%1 of %2 codes</translation>
+    </message>
+    <message>
+        <source>Wissen</source>
+        <translation>Knowledge</translation>
+    </message>
+    <message>
+        <source>Nachschlagewerk für unterwegs, funktioniert auch ohne Auto. Suche nach Code oder Stichwort, zum Beispiel Drosselklappe oder Lambdasonde. Herstellercodes bedeuten je Marke etwas anderes, deshalb lässt sich nach Marke filtern.</source>
+        <translation>A reference for on the go that also works without a car. Search by code or keyword, for example throttle body or oxygen sensor. Manufacturer codes mean different things for each brand, so you can filter by brand.</translation>
+    </message>
+    <message>
+        <source>Alle Marken</source>
+        <translation>All brands</translation>
+    </message>
+    <message>
+        <source>Bereich</source>
+        <translation>Area</translation>
+    </message>
+    <message>
+        <source>Dringlichkeit</source>
+        <translation>Urgency</translation>
+    </message>
+    <message>
+        <source>Gilt für</source>
+        <translation>Applies to</translation>
+    </message>
+    <message>
+        <source>%1 Treffer, die ersten %2 gezeigt</source>
+        <translation>%1 matches, showing the first %2</translation>
     </message>
 </context>
 <context>
@@ -449,6 +1211,25 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <source>Sekunde;PID;Messwert;Wert;Einheit</source>
         <translation>Second;PID;Value;Reading;Unit</translation>
     </message>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Alles, was das Steuergerät laufend misst, nach Bereichen sortiert. Links ankreuzen, oben starten.</source>
+        <translation>Everything the control unit measures continuously, sorted by area. Tick on the left, start at the top.</translation>
+    </message>
+    <message>
+        <source>Messwert suchen, z.B. Öl oder Lambda</source>
+        <translation>Search values, e.g. oil or lambda</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Werte</source>
+        <translation>
+            <numerusform>%n value</numerusform>
+            <numerusform>%n values</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MainWindow</name>
@@ -457,24 +1238,12 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <translation>Caruspex - Vehicle Diagnostics</translation>
     </message>
     <message>
-        <source>Übersicht</source>
-        <translation>Overview</translation>
-    </message>
-    <message>
         <source>Fehlerspeicher</source>
         <translation>Fault memory</translation>
     </message>
     <message>
         <source>Live-Werte</source>
         <translation>Live values</translation>
-    </message>
-    <message>
-        <source>Prüfen und Werkzeuge</source>
-        <translation>Checks and tools</translation>
-    </message>
-    <message>
-        <source>Bauteilüberwachung</source>
-        <translation>Component monitoring</translation>
     </message>
     <message>
         <source>Drosselklappe</source>
@@ -501,10 +1270,6 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <translation>Settings</translation>
     </message>
     <message>
-        <source>Caruspex bereit. Fahrzeug und Adapter wählen, dann verbinden.</source>
-        <translation>Caruspex ready. Choose vehicle and adapter, then connect.</translation>
-    </message>
-    <message>
         <source>Verbinde selbsttätig mit %1, so eingestellt.</source>
         <translation>Connecting automatically to %1, as configured.</translation>
     </message>
@@ -521,96 +1286,175 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <translation>Cannot write log file %1. Logging only here in the window.</translation>
     </message>
     <message>
-        <source>Fahrzeugdiagnose</source>
-        <translation>Vehicle diagnostics</translation>
-    </message>
-    <message>
-        <source>Fahrzeug (optional)</source>
-        <translation>Vehicle (optional)</translation>
-    </message>
-    <message>
-        <source>Baujahr</source>
-        <translation>Model year</translation>
-    </message>
-    <message>
         <source>Adapter</source>
         <translation>Adapter</translation>
-    </message>
-    <message>
-        <source>WLAN-Adapter statt Kabel</source>
-        <translation>Wi-Fi adapter instead of cable</translation>
-    </message>
-    <message>
-        <source>Anschlüsse neu suchen</source>
-        <translation>Rescan ports</translation>
     </message>
     <message>
         <source>Verbinden</source>
         <translation>Connect</translation>
     </message>
     <message>
-        <source>nicht verbunden</source>
-        <translation>not connected</translation>
-    </message>
-    <message>
         <source>Protokoll</source>
         <translation>Log</translation>
-    </message>
-    <message>
-        <source>Zündung an, Motor darf aus sein.</source>
-        <translation>Ignition on, engine may be off.</translation>
-    </message>
-    <message>
-        <source>Kein Profil hinterlegt, alle Protokolle werden probiert.</source>
-        <translation>No profile stored, all protocols will be tried.</translation>
-    </message>
-    <message>
-        <source>kein Anschluss gefunden</source>
-        <translation>no port found</translation>
     </message>
     <message>
         <source>Kein COM-Anschluss gefunden. Steckt der Adapter am Rechner?</source>
         <translation>No COM port found. Is the adapter plugged into the computer?</translation>
     </message>
     <message>
-        <source>%1 Anschluss/Anschlüsse gefunden.</source>
-        <translation>%1 port(s) found.</translation>
-    </message>
-    <message>
-        <source>Verbinde mit %1 ...</source>
-        <translation>Connecting to %1 ...</translation>
-    </message>
-    <message>
-        <source>Kein Anschluss ausgewählt.</source>
-        <translation>No port selected.</translation>
-    </message>
-    <message>
         <source>Verbinde über %1 ...</source>
         <translation>Connecting via %1 ...</translation>
     </message>
     <message>
-        <source>verbinde ...</source>
-        <translation>connecting ...</translation>
-    </message>
-    <message>
-        <source>Trennen</source>
-        <translation>Disconnect</translation>
-    </message>
-    <message>
-        <source>VERBUNDEN</source>
-        <translation>CONNECTED</translation>
-    </message>
-    <message>
-        <source>Adapter: %1
-Weg: %2
-Protokoll: %3</source>
-        <translation>Adapter: %1
-Link: %2
-Protocol: %3</translation>
-    </message>
-    <message>
         <source>Verbindung getrennt.</source>
         <translation>Disconnected.</translation>
+    </message>
+    <message>
+        <source>Adapter an %1 gefunden.</source>
+        <translation>Adapter found on %1.</translation>
+    </message>
+    <message>
+        <source>Erkannt: %1</source>
+        <translation>Detected: %1</translation>
+    </message>
+    <message>
+        <source>Gut in Schuss</source>
+        <translation>In good shape</translation>
+    </message>
+    <message>
+        <source>Braucht Pflege</source>
+        <translation>Needs care</translation>
+    </message>
+    <message>
+        <source>Bitte ansehen</source>
+        <translation>Needs attention</translation>
+    </message>
+    <message>
+        <source>Gesundheitscheck fertig: %1 Punkte.</source>
+        <translation>Health check done: %1 points.</translation>
+    </message>
+    <message>
+        <source>Suche den Adapter an allen Anschlüssen ...</source>
+        <translation>Looking for the adapter on all ports ...</translation>
+    </message>
+    <message>
+        <source>Verbinde ...</source>
+        <translation>Connecting ...</translation>
+    </message>
+    <message>
+        <source>Verbinde mit %1:%2 ...</source>
+        <translation>Connecting to %1:%2 ...</translation>
+    </message>
+    <message>
+        <source>Starte das Demo-Auto ...</source>
+        <translation>Starting the demo car ...</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Anschluss/Anschlüsse gefunden.</source>
+        <translation>
+            <numerusform>%n port found.</numerusform>
+            <numerusform>%n ports found.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Caruspex bereit. Adapter einstecken, Zündung an, dann verbinden.</source>
+        <translation>Caruspex is ready. Plug in the adapter, switch on the ignition, then connect.</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>Home</translation>
+    </message>
+    <message>
+        <source>Diagnose</source>
+        <translation>Diagnostics</translation>
+    </message>
+    <message>
+        <source>Gesundheitscheck</source>
+        <translation>Health check</translation>
+    </message>
+    <message>
+        <source>Prüfen und AU</source>
+        <translation>Checks and emissions</translation>
+    </message>
+    <message>
+        <source>Bauteilprüfung</source>
+        <translation>Component monitoring</translation>
+    </message>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Bordcomputer</source>
+        <translation>Trip computer</translation>
+    </message>
+    <message>
+        <source>Leistung</source>
+        <translation>Performance</translation>
+    </message>
+    <message>
+        <source>Batterie</source>
+        <translation>Battery</translation>
+    </message>
+    <message>
+        <source>Werkstatt</source>
+        <translation>Workshop</translation>
+    </message>
+    <message>
+        <source>Wissen</source>
+        <translation>Knowledge</translation>
+    </message>
+    <message>
+        <source>Fahrzeuge</source>
+        <translation>Vehicles</translation>
+    </message>
+    <message>
+        <source>Garage</source>
+        <translation>Garage</translation>
+    </message>
+    <message>
+        <source>Leeren</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <source>Starte ...</source>
+        <translation>Starting ...</translation>
+    </message>
+    <message>
+        <source>Verbunden · %1</source>
+        <translation>Connected · %1</translation>
+    </message>
+    <message>
+        <source>Verbunden über %1. Protokoll: %2</source>
+        <translation>Connected via %1. Protocol: %2</translation>
+    </message>
+    <message>
+        <source>Keine Verbindung</source>
+        <translation>No connection</translation>
+    </message>
+    <message>
+        <source>Nicht verbunden</source>
+        <translation>Not connected</translation>
+    </message>
+    <message>
+        <source>Hinweis</source>
+        <translation>Note</translation>
+    </message>
+    <message>
+        <source>Hoch</source>
+        <translation>High</translation>
+    </message>
+    <message>
+        <source>Mittel</source>
+        <translation>Medium</translation>
+    </message>
+    <message>
+        <source>In Ordnung</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Prüfbericht gespeichert: %1</source>
+        <translation>Diagnostic report saved: %1</translation>
     </message>
 </context>
 <context>
@@ -754,6 +1598,252 @@ A catalytic converter whose efficiency is scraping the limit shows up here, whil
     <message>
         <source>, Obergrenze %1</source>
         <translation>, upper limit %1</translation>
+    </message>
+    <message>
+        <source>DIAGNOSE</source>
+        <translation>DIAGNOSTICS</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::PerformancePage</name>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Leistungsmessung</source>
+        <translation>Performance measurement</translation>
+    </message>
+    <message>
+        <source>Stoppuhr aus dem Tachosignal: 0 bis 100, 80 bis 120, Viertelmeile und Bremsweg. Während der Messung fragt Caruspex nur das Tempo ab, so oft der Adapter kann.</source>
+        <translation>Stopwatch from the speedometer signal: 0 to 100, 80 to 120, quarter mile and braking distance. During the measurement Caruspex only requests the speed, as often as the adapter can.</translation>
+    </message>
+    <message>
+        <source>Nur auf abgesperrter Strecke oder Rennstrecke messen, nie im Straßenverkehr. Den Laptop bedient der Beifahrer, nicht wer fährt.</source>
+        <translation>Only measure on a closed-off course or a race track, never on public roads. The passenger operates the laptop, not the driver.</translation>
+    </message>
+    <message>
+        <source>TEMPO</source>
+        <translation>SPEED</translation>
+    </message>
+    <message>
+        <source>Bereit machen: anhalten, dann auf Messen drücken.</source>
+        <translation>Get ready: stop, then press Measure.</translation>
+    </message>
+    <message>
+        <source>0 bis 100 km/h</source>
+        <translation>0 to 100 km/h</translation>
+    </message>
+    <message>
+        <source>80 bis 120 km/h</source>
+        <translation>80 to 120 km/h</translation>
+    </message>
+    <message>
+        <source>0 bis 60 mph</source>
+        <translation>0 to 60 mph</translation>
+    </message>
+    <message>
+        <source>Viertelmeile (402 m)</source>
+        <translation>Quarter mile (402 m)</translation>
+    </message>
+    <message>
+        <source>Bremsen 100 bis 0</source>
+        <translation>Braking 100 to 0</translation>
+    </message>
+    <message>
+        <source>Messung beenden</source>
+        <translation>Stop measurement</translation>
+    </message>
+    <message>
+        <source>Misst. Aus dem Stand losfahren oder bei 80 km/h durchbeschleunigen.</source>
+        <translation>Measuring. Pull away from a standstill or accelerate hard from 80 km/h.</translation>
+    </message>
+    <message>
+        <source>Messung beendet. Die Zeiten bleiben stehen, bis neu gemessen wird.</source>
+        <translation>Measurement finished. The times stay here until you measure again.</translation>
+    </message>
+    <message>
+        <source>in %1 s</source>
+        <translation>in %1 s</translation>
+    </message>
+    <message>
+        <source>Ziel mit %1 km/h</source>
+        <translation>finish at %1 km/h</translation>
+    </message>
+    <message>
+        <source>Lücken in der Messung, ungenau</source>
+        <translation>Gaps in the measurement, inaccurate</translation>
+    </message>
+    <message>
+        <source>%1 Messungen pro Sekunde, Genauigkeit etwa ±%2 s. %3</source>
+        <translation>%1 measurements per second, accuracy about ±%2 s. %3</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::Report</name>
+    <message>
+        <source>Prüfbericht</source>
+        <translation>Diagnostic report</translation>
+    </message>
+    <message>
+        <source>Fahrzeug</source>
+        <translation>Vehicle</translation>
+    </message>
+    <message>
+        <source>Bezeichnung</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Beschreibung</source>
+        <translation>Description</translation>
+    </message>
+    <message>
+        <source>Fahrgestellnummer</source>
+        <translation>VIN</translation>
+    </message>
+    <message>
+        <source>Steuergerät</source>
+        <translation>Control unit</translation>
+    </message>
+    <message>
+        <source>Kalibrierung</source>
+        <translation>Calibration</translation>
+    </message>
+    <message>
+        <source>Kilometerstand</source>
+        <translation>Mileage</translation>
+    </message>
+    <message>
+        <source>Adapter</source>
+        <translation>Adapter</translation>
+    </message>
+    <message>
+        <source>Verbindung</source>
+        <translation>Connection</translation>
+    </message>
+    <message>
+        <source>Protokoll</source>
+        <translation>Protocol</translation>
+    </message>
+    <message>
+        <source>Befunde</source>
+        <translation>Findings</translation>
+    </message>
+    <message>
+        <source>Stufe</source>
+        <translation>Level</translation>
+    </message>
+    <message>
+        <source>Befund</source>
+        <translation>Finding</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher</source>
+        <translation>Fault memory</translation>
+    </message>
+    <message>
+        <source>Nicht ausgelesen.</source>
+        <translation>Not read.</translation>
+    </message>
+    <message>
+        <source>Kein Fehler gespeichert.</source>
+        <translation>No faults stored.</translation>
+    </message>
+    <message>
+        <source>Code</source>
+        <translation>Code</translation>
+    </message>
+    <message>
+        <source>Art</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <source>Bedeutung</source>
+        <translation>Meaning</translation>
+    </message>
+    <message>
+        <source>Wo</source>
+        <translation>Where</translation>
+    </message>
+    <message>
+        <source>Motorkontrollleuchte</source>
+        <translation>Check engine light</translation>
+    </message>
+    <message>
+        <source>an</source>
+        <translation>on</translation>
+    </message>
+    <message>
+        <source>aus</source>
+        <translation>off</translation>
+    </message>
+    <message>
+        <source>Bereitschaftstests</source>
+        <translation>Readiness monitors</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <source>Stand</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>abgeschlossen</source>
+        <translation>complete</translation>
+    </message>
+    <message>
+        <source>offen</source>
+        <translation>incomplete</translation>
+    </message>
+    <message>
+        <source>Umgebungsdaten zum Fehler</source>
+        <translation>Freeze frame data</translation>
+    </message>
+    <message>
+        <source>Ausgelöst durch</source>
+        <translation>Triggered by</translation>
+    </message>
+    <message>
+        <source>Bauteilprüfung</source>
+        <translation>Component monitoring</translation>
+    </message>
+    <message>
+        <source>Prüfung</source>
+        <translation>Check</translation>
+    </message>
+    <message>
+        <source>Wert</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <source>Grenzen</source>
+        <translation>Limits</translation>
+    </message>
+    <message>
+        <source>Ergebnis</source>
+        <translation>Result</translation>
+    </message>
+    <message>
+        <source>bestanden</source>
+        <translation>passed</translation>
+    </message>
+    <message>
+        <source>nicht bestanden</source>
+        <translation>failed</translation>
+    </message>
+    <message>
+        <source>Erstellt mit Caruspex, freie Fahrzeugdiagnose. Der Bericht gibt wieder, was die Steuergeräte gemeldet haben. Er ersetzt keine Prüfung in der Werkstatt.</source>
+        <translation>Created with Caruspex, free vehicle diagnostics. The report shows what the control units reported. It does not replace an inspection at a workshop.</translation>
+    </message>
+    <message>
+        <source>Prüfbericht speichern</source>
+        <translation>Save diagnostic report</translation>
+    </message>
+    <message>
+        <source>PDF-Dokument (*.pdf)</source>
+        <translation>PDF document (*.pdf)</translation>
     </message>
 </context>
 <context>
@@ -917,6 +2007,10 @@ Ignition on, engine off. The run takes a few minutes.</translation>
     <message>
         <source>Erst ein KKL-Kabel anstecken und auf Suchen drücken.</source>
         <translation>Plug in a KKL cable first and press Search.</translation>
+    </message>
+    <message>
+        <source>WERKSTATT</source>
+        <translation>WORKSHOP</translation>
     </message>
 </context>
 <context>
@@ -1161,6 +2255,10 @@ Ignition on, engine off. The run takes a few minutes.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Log file (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>PROGRAMM</source>
+        <translation>APP</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -1251,6 +2349,10 @@ Ignition on, engine off. The run takes a few minutes.</translation>
     <message>
         <source>Messwert;Kleinster;Mittel;Größter;Aktuell;Einheit;Messpunkte</source>
         <translation>Value;Minimum;Average;Maximum;Current;Unit;Samples</translation>
+    </message>
+    <message>
+        <source>MESSEN</source>
+        <translation>MEASURE</translation>
     </message>
 </context>
 <context>
@@ -1433,6 +2535,10 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Erst ein KKL-Kabel anstecken und auf Suchen drücken.</source>
         <translation>Plug in a KKL cable first and press Search.</translation>
     </message>
+    <message>
+        <source>WERKSTATT</source>
+        <translation>WORKSHOP</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::TitleBar</name>
@@ -1453,8 +2559,20 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <translation>Restore</translation>
     </message>
     <message>
-        <source>Fahrzeugdiagnose</source>
-        <translation>Vehicle diagnostics</translation>
+        <source>Seitenleiste ein- oder ausklappen</source>
+        <translation>Expand or collapse the sidebar</translation>
+    </message>
+    <message>
+        <source>Protokoll ein- oder ausblenden</source>
+        <translation>Show or hide the log</translation>
+    </message>
+    <message>
+        <source>Nicht verbunden</source>
+        <translation>Not connected</translation>
+    </message>
+    <message>
+        <source>Verbindung öffnen</source>
+        <translation>Open connection</translation>
     </message>
 </context>
 <context>
@@ -1551,13 +2669,124 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Aufgezeichnet beim Auftreten von %1:</source>
         <translation>Recorded when %1 occurred:</translation>
     </message>
+    <message>
+        <source>DIAGNOSE</source>
+        <translation>DIAGNOSTICS</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::TripPage</name>
+    <message>
+        <source>Messen</source>
+        <translation>Measure</translation>
+    </message>
+    <message>
+        <source>Bordcomputer</source>
+        <translation>Trip computer</translation>
+    </message>
+    <message>
+        <source>Verbrauch, Kosten und Fahrstil, auch bei Autos, die selbst keinen Bordcomputer haben. Am genauesten mit dem Kraftstoffdurchfluss, sonst aus der Luftmasse gerechnet.</source>
+        <translation>Consumption, cost and driving style, even on cars that have no trip computer of their own. Most accurate with the fuel flow signal, otherwise calculated from the air mass.</translation>
+    </message>
+    <message>
+        <source>VERBRAUCH JETZT</source>
+        <translation>CONSUMPTION NOW</translation>
+    </message>
+    <message>
+        <source>Fahrt starten</source>
+        <translation>Start trip</translation>
+    </message>
+    <message>
+        <source>Zurücksetzen</source>
+        <translation>Reset</translation>
+    </message>
+    <message>
+        <source>Benzin</source>
+        <translation>Petrol</translation>
+    </message>
+    <message>
+        <source>Diesel</source>
+        <translation>Diesel</translation>
+    </message>
+    <message>
+        <source> €/l</source>
+        <translation> €/l</translation>
+    </message>
+    <message>
+        <source> l Hubraum</source>
+        <translation> l displacement</translation>
+    </message>
+    <message>
+        <source>Nur nötig, wenn das Auto weder Durchfluss noch Luftmasse meldet.</source>
+        <translation>Only needed if the car reports neither fuel flow nor air mass.</translation>
+    </message>
+    <message>
+        <source>Fahrstil</source>
+        <translation>Driving style</translation>
+    </message>
+    <message>
+        <source>noch keine Fahrt</source>
+        <translation>no trip yet</translation>
+    </message>
+    <message>
+        <source>Strecke</source>
+        <translation>Distance</translation>
+    </message>
+    <message>
+        <source>Verbrauch im Schnitt</source>
+        <translation>Average consumption</translation>
+    </message>
+    <message>
+        <source>Kraftstoff verbraucht</source>
+        <translation>Fuel used</translation>
+    </message>
+    <message>
+        <source>Kosten</source>
+        <translation>Cost</translation>
+    </message>
+    <message>
+        <source>CO₂</source>
+        <translation>CO₂</translation>
+    </message>
+    <message>
+        <source>Tempo im Schnitt</source>
+        <translation>Average speed</translation>
+    </message>
+    <message>
+        <source>Höchsttempo</source>
+        <translation>Top speed</translation>
+    </message>
+    <message>
+        <source>Leerlauf</source>
+        <translation>Idle</translation>
+    </message>
+    <message>
+        <source>Fahrt anhalten</source>
+        <translation>Pause trip</translation>
+    </message>
+    <message>
+        <source>Weiterfahren</source>
+        <translation>Resume</translation>
+    </message>
+    <message>
+        <source>VERBRAUCH IM STAND</source>
+        <translation>CONSUMPTION AT STANDSTILL</translation>
+    </message>
+    <message>
+        <source>%1 kg gesamt</source>
+        <translation>%1 kg in total</translation>
+    </message>
+    <message>
+        <source>%1 l/h im Stand</source>
+        <translation>%1 l/h at standstill</translation>
+    </message>
+    <message>
+        <source>%1 starke Beschleunigungen</source>
+        <translation>%1 hard accelerations</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::VehicleDiagram</name>
-    <message>
-        <source>Ansaug</source>
-        <translation>Intake</translation>
-    </message>
     <message>
         <source>Drosselklappe</source>
         <translation>Throttle body</translation>
@@ -1611,12 +2840,165 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <translation>Exhaust</translation>
     </message>
     <message>
-        <source>Räder / ABS</source>
-        <translation>Wheels / ABS</translation>
+        <source>Ansaugung</source>
+        <translation>Intake</translation>
     </message>
     <message>
-        <source>vorne</source>
-        <translation>front</translation>
+        <source>Räder und ABS</source>
+        <translation>Wheels and ABS</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::VehicleIdentity</name>
+    <message>
+        <source>Baujahr %1</source>
+        <translation>Year %1</translation>
+    </message>
+    <message>
+        <source>Caruspex Demo-Auto</source>
+        <translation>Caruspex demo car</translation>
+    </message>
+    <message>
+        <source>Baujahr 2021 · 1.4 Benziner · Automatik · simuliert</source>
+        <translation>Year 2021 · 1.4 petrol · automatic · simulated</translation>
+    </message>
+    <message>
+        <source>vermutet</source>
+        <translation>guessed</translation>
+    </message>
+    <message>
+        <source>Baujahr etwa %1</source>
+        <translation>Year about %1</translation>
+    </message>
+    <message>
+        <source>Modell nicht eindeutig</source>
+        <translation>Model not certain</translation>
+    </message>
+    <message>
+        <source>Unbekannter Hersteller</source>
+        <translation>Unknown manufacturer</translation>
+    </message>
+    <message>
+        <source>Die Fahrgestellnummer passt zu keinem bekannten Hersteller.</source>
+        <translation>The VIN does not match any known manufacturer.</translation>
+    </message>
+</context>
+<context>
+    <name>caruspex::VehiclesPage</name>
+    <message>
+        <source>Wissen</source>
+        <translation>Knowledge</translation>
+    </message>
+    <message>
+        <source>Fahrzeuge</source>
+        <translation>Vehicles</translation>
+    </message>
+    <message>
+        <source>Über %1 Modellgenerationen von %2 Marken, von 1980 bis heute. Zu jeder steht, welchen Diagnosestecker sie hat, wo er sitzt und was Caruspex damit kann.</source>
+        <translation>Over %1 model generations from %2 brands, from 1980 to today. Each one shows which diagnostic connector it has, where it is and what Caruspex can do with it.</translation>
+    </message>
+    <message>
+        <source>Fahrgestellnummer prüfen</source>
+        <translation>Check VIN</translation>
+    </message>
+    <message>
+        <source>Die 17 Zeichen stehen im Fahrzeugschein unter E, an der Windschutzscheibe unten links und im Motorraum.</source>
+        <translation>The 17 characters are on the registration certificate under E, at the bottom left of the windscreen and in the engine bay.</translation>
+    </message>
+    <message>
+        <source>Prüfen</source>
+        <translation>Check</translation>
+    </message>
+    <message>
+        <source>Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...</source>
+        <translation>Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...</translation>
+    </message>
+    <message>
+        <source>Baujahr</source>
+        <translation>Year</translation>
+    </message>
+    <message>
+        <source>Mit diesem Auto verbinden</source>
+        <translation>Connect to this car</translation>
+    </message>
+    <message>
+        <source>Beliebte Modelle, oben suchen für alle</source>
+        <translation>Popular models, search above for all</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n Treffer</source>
+        <translation>
+            <numerusform>%n match</numerusform>
+            <numerusform>%n matches</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Stecker: %1</source>
+        <translation>Connector: %1</translation>
+    </message>
+    <message>
+        <source>Wo er sitzt: %1</source>
+        <translation>Where it is: %1</translation>
+    </message>
+    <message>
+        <source>Hersteller</source>
+        <translation>Manufacturer</translation>
+    </message>
+    <message>
+        <source>unbekannt</source>
+        <translation>unknown</translation>
+    </message>
+    <message>
+        <source>Herkunft</source>
+        <translation>Origin</translation>
+    </message>
+    <message>
+        <source>Modelljahr</source>
+        <translation>Model year</translation>
+    </message>
+    <message>
+        <source>steht nicht in der Nummer</source>
+        <translation>not in the number</translation>
+    </message>
+    <message>
+        <source>%1 (nicht sicher)</source>
+        <translation>%1 (not certain)</translation>
+    </message>
+    <message>
+        <source>Modellcode</source>
+        <translation>Model code</translation>
+    </message>
+    <message>
+        <source>Prüfziffer</source>
+        <translation>Check digit</translation>
+    </message>
+    <message>
+        <source>wird hier nicht verwendet</source>
+        <translation>not used here</translation>
+    </message>
+    <message>
+        <source>stimmt</source>
+        <translation>correct</translation>
+    </message>
+    <message>
+        <source>stimmt nicht, erwartet wäre %1</source>
+        <translation>incorrect, expected %1</translation>
+    </message>
+    <message>
+        <source>Seriennummer</source>
+        <translation>Serial number</translation>
+    </message>
+    <message>
+        <source>Passt zu: %1</source>
+        <translation>Matches: %1</translation>
+    </message>
+    <message>
+        <source>Sicherheit %1 von 100. %2</source>
+        <translation>Confidence %1 of 100. %2</translation>
+    </message>
+    <message>
+        <source>Treffer zur Fahrgestellnummer</source>
+        <translation>Matches for the VIN</translation>
     </message>
 </context>
 <context>
@@ -1769,6 +3151,46 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Component monitoring read: %1 tests, %2 O2 sensor tests.</translation>
     </message>
+    <message>
+        <source>Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?</source>
+        <translation>No port found. Is the adapter plugged into the computer, and is the Bluetooth adapter paired?</translation>
+    </message>
+    <message>
+        <source>Probiere %1 ...</source>
+        <translation>Trying %1 ...</translation>
+    </message>
+    <message>
+        <source>An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?</source>
+        <translation>No ELM327 answered on any port. Is the ignition on and the adapter properly plugged in?</translation>
+    </message>
+    <message>
+        <source>Für den Adaptertest erst verbinden.</source>
+        <translation>Connect first to run the adapter test.</translation>
+    </message>
+    <message>
+        <source>Für den Gesundheitscheck erst verbinden.</source>
+        <translation>Connect first to run the health check.</translation>
+    </message>
+    <message>
+        <source>Bereitschaft und Fehlerlampe</source>
+        <translation>Readiness and check engine light</translation>
+    </message>
+    <message>
+        <source>Fehlerspeicher</source>
+        <translation>Fault memory</translation>
+    </message>
+    <message>
+        <source>Bauteilprüfung (Modus 06)</source>
+        <translation>Component monitoring (mode 06)</translation>
+    </message>
+    <message>
+        <source>Messwerte sammeln, noch %1 s</source>
+        <translation>Collecting values, %1 s left</translation>
+    </message>
+    <message>
+        <source>Fertig</source>
+        <translation>Done</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -1787,6 +3209,22 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Sprache für diesen Start: de oder en</source>
         <translation>Language for this run: de or en</translation>
+    </message>
+    <message>
+        <source>Gleich mit dem eingebauten Demo-Auto verbinden</source>
+        <translation>Connect straight to the built-in demo car</translation>
+    </message>
+    <message>
+        <source>Mit dieser Seite starten, z.B. faults oder live</source>
+        <translation>Start on this page, e.g. faults or live</translation>
+    </message>
+    <message>
+        <source>Nach ein paar Sekunden ein Bild des Fensters speichern und beenden (für Dokumentation)</source>
+        <translation>Save a picture of the window after a few seconds and quit (for documentation)</translation>
+    </message>
+    <message>
+        <source>Fenstergröße, z.B. 1440x920</source>
+        <translation>Window size, e.g. 1440x920</translation>
     </message>
 </context>
 </TS>
