@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 
@@ -20,9 +21,14 @@ MonitorPage::MonitorPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
+    root->addWidget(makeLabel(tr("DIAGNOSE"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Bauteilüberwachung"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
+
 
     auto* hint = new QLabel(
         tr("Das Steuergerät prüft im Betrieb laufend seine eigenen Bauteile. Hier stehen "

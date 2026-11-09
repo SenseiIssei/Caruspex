@@ -14,6 +14,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -59,9 +60,14 @@ StatsPage::StatsPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
+    root->addWidget(makeLabel(tr("MESSEN"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Statistik"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
+
 
     auto* bar = new QHBoxLayout;
     resetButton_ = new QPushButton(tr("Zurücksetzen"));

@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -52,9 +53,14 @@ ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
+    outer->addWidget(makeLabel(tr("DIAGNOSE"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Prüfen und Werkzeuge"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
+
 
     loadButton_ = new QPushButton(tr("Daten vom Fahrzeug holen"));
     loadButton_->setObjectName("Primary");

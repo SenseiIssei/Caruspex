@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 
 namespace caruspex {
 namespace {
@@ -45,9 +46,14 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
+    outer->addWidget(makeLabel(tr("PROGRAMM"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Einstellungen"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
+
 
     outer->addWidget(makeNote(
         tr("Alles wird sofort übernommen und beim nächsten Start wieder so geladen. "

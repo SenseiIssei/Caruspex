@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 #include "core/Kwp1281.h"
 #include "core/Serial.h"
 
@@ -44,9 +45,14 @@ KklToolsPage::KklToolsPage(QWidget* parent) : QWidget(parent) {
     outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
+    outer->addWidget(makeLabel(tr("WERKSTATT"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Anpassung und Stellglieder"));
+
     title->setObjectName("PageTitle");
+
     outer->addWidget(title);
+
 
     auto* scroll = new QScrollArea;
     scroll->setWidgetResizable(true);

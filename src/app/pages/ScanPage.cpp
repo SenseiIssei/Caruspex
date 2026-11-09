@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
 #include "core/Serial.h"
 
 namespace caruspex {
@@ -24,9 +25,14 @@ ScanPage::ScanPage(QWidget* parent) : QWidget(parent) {
     root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
+    root->addWidget(makeLabel(tr("WERKSTATT"), "Eyebrow"));
+
     auto* title = new QLabel(tr("Alle Steuergeräte durchsuchen"));
+
     title->setObjectName("PageTitle");
+
     root->addWidget(title);
+
 
     auto* hint = new QLabel(
         tr("Klappert der Reihe nach jedes bekannte Steuergerät ab und zeigt, welche das "
