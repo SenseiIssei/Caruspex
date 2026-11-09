@@ -7,8 +7,10 @@
 // address of its control unit (ecuSource) and a plain name (ecu).
 #pragma once
 
+#include <map>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "core/Elm327.h"
@@ -173,6 +175,32 @@ struct LiveValue {
     std::string ecuSource;
 };
 
+// One freeze frame (mode 02). A control unit may keep several: frame 0 is
+// the one the standard requires, further frames belong to later faults.
+// PID 02 of each frame names the fault that stored it.
+struct FreezeFrame {
+    int frame = 0;
+    std::string dtc;          // e.g. "P0300"
+    std::string ecu;          // see Fault::ecu, empty while headers are off
+    std::string ecuSource;
+    std::vector<LiveValue> values;   // all values of the frame, sub-values included
+};
+
+// Splits one mode 01 answer to a multi-PID request into its values. data is
+// the message without the service byte: PID, its data bytes, next PID, ...
+// The length of each block comes from the PID table. Only PIDs listed in
+// requested are accepted, each once. Padding bytes after the last block are
+// ignored. Returns false if the message does not add up (unknown PID, short
+// data, leftover bytes); blocks is then incomplete and must not be used.
+// Public for tests.
+bool splitMultiPidAnswer(const std::vector<int>& data, const std::vector<int>& requested,
+                         std::vector<std::pair<int, std::vector<int>>>& blocks);
+
+// Whether a PID may go into a multi-PID request: known to the PID table,
+// not a range marker, and with a length that does not vary between control
+// units (0x68 is three bytes on older ones and seven on newer ones).
+bool batchablePid(int pid);
+
 class Obd2 {
 public:
     explicit Obd2(Elm327& elm) : elm_(elm) {}
@@ -189,12 +217,48 @@ public:
     // Primary value of a PID (sub 0). If the control unit does not report
     // the primary value of a multi-value PID, the first value it does report.
     bool readLive(int pid, LiveValue& out);
+    // One value per PID, in the order of pids, like readLive(int) for each.
+    // Uses readLiveBatch underneath, so on CAN it is just as fast.
     std::vector<LiveValue> readLive(const std::vector<int>& pids);
     // All values of one PID the control unit reports, e.g. both coolant
     // sensors of PID 0x67. Empty if the PID is unknown or not answered.
     std::vector<LiveValue> readLiveAll(int pid);
+
+    // All values of several PIDs, sub-values included: the same as calling
+    // readLiveAll for each PID, in the order of pids, but much faster on CAN.
+    //
+    // On CAN (ISO 15765-4) SAE J1979 allows up to six mode 01 PIDs in one
+    // request ("010C0D0511"); the answer holds each PID followed by its data
+    // bytes. The PIDs are grouped by six and every group costs one round
+    // trip instead of six. On the K-line and J1850, and for PIDs whose
+    // length varies (see batchablePid), every PID is asked on its own.
+    //
+    // If a group gets NO DATA, a refusal or an answer that does not add up,
+    // its PIDs are read one by one and remembered: for the rest of the
+    // session (this Obd2 object, or until resetBatchMemory) they are no
+    // longer put into groups. The same happens to a PID a control unit
+    // leaves out of a group answer.
+    //
+    // Several control units: like readLiveAll, a PID keeps the values of
+    // the first control unit that answers it (the engine on CAN). With
+    // everyEcu the values of every control unit are kept, each with its
+    // ecu/ecuSource (needs headers on to tell them apart).
+    std::vector<LiveValue> readLiveBatch(const std::vector<int>& pids, bool everyEcu = false);
+    // PIDs that are read one by one for the rest of the session because a
+    // group request with them failed.
+    const std::set<int>& batchRefusedPids() const { return batchRefused_; }
+    void resetBatchMemory() { batchRefused_.clear(); }
+
     std::string readVin();
+    // Frame 0 only, primary values of a fixed set of PIDs. Kept for older
+    // callers; readFreezeFrames gives every frame with all values.
     std::vector<LiveValue> readFreezeFrame(std::string& triggerCode);
+
+    // Freeze frames 0 to maxFrames - 1. Stops at the first frame that
+    // reports no fault code (00 00) or gets no answer. The values of each
+    // frame are the PIDs the control unit lists as supported for it; if it
+    // does not list them, a fixed set of the usual ones.
+    std::vector<FreezeFrame> readFreezeFrames(int maxFrames = 4);
 
     // Mode 09: VIN, calibration ID, checksum, control unit name. Anything
     // missing stays empty.
@@ -216,8 +280,16 @@ private:
     std::vector<Fault> readCodes(const std::string& service, int sid, const char* kind);
     LiveValue makeValue(const PidSpec& spec, const PidReading& reading,
                         const std::string& source) const;
+    // readLiveAll, optionally keeping the values of every control unit.
+    std::vector<LiveValue> readPid(int pid, bool everyEcu);
+    // Freeze frame PIDs a control unit lists as supported for one frame.
+    std::vector<int> freezeFramePids(int frame);
+    // One group request; false if it has to be read PID by PID instead.
+    bool readGroup(const std::vector<int>& group, bool everyEcu,
+                   std::map<int, std::vector<LiveValue>>& values, std::vector<int>& missing);
 
     Elm327& elm_;
+    std::set<int> batchRefused_;
 };
 
 }  // namespace caruspex

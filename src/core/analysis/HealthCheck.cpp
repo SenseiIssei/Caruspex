@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdio>
 #include <numeric>
+#include <set>
 
 namespace caruspex::analysis {
 
@@ -15,7 +16,34 @@ void HealthInput::setStatus(const VehicleStatus& status) {
 }
 
 void HealthInput::addSnapshot(const std::vector<LiveValue>& values, double t) {
-    for (const LiveValue& v : values) addValue(v.pid, v.value, t);
+    // Obd2::readLiveBatch hands out sub-values as well (both sensors of
+    // PID 0x67, ...). A PID's series takes its first value, which is the
+    // primary one whenever the control unit reports it, like readLive.
+    std::set<int> seen;
+    for (const LiveValue& v : values) {
+        if (seen.insert(v.pid).second) addValue(v.pid, v.value, t);
+    }
+}
+
+const std::vector<int>& healthLivePids() {
+    static const std::vector<int> pids = {0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0C,
+                                          0x0D, 0x0F, 0x10, 0x14, 0x15, 0x16, 0x17, 0x18,
+                                          0x19, 0x1F, 0x21, 0x30, 0x31, 0x3C, 0x42, 0x5C};
+    return pids;
+}
+
+FuelType fuelTypeFromObd(int code) {
+    switch (code) {
+        case 4:    // diesel
+        case 19:   // hybrid diesel
+        case 23:   // bifuel, running on diesel
+            return FuelType::Diesel;
+        case 1:    // gasoline
+        case 9:    // bifuel, running on gasoline
+        case 17:   // hybrid gasoline
+            return FuelType::Petrol;
+        default: return FuelType::Unknown;
+    }
 }
 
 void HealthInput::addValue(int pid, double value, double t) {
