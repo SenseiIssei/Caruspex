@@ -30,6 +30,8 @@ add_library(caruspex_core STATIC
     src/core/Transport.cpp
     src/core/Elm327.cpp
     src/core/Obd2.cpp
+    src/core/DemoTransport.cpp
+    src/core/AdapterProbe.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
     src/core/VagKLine.cpp
@@ -100,13 +102,19 @@ if(CARUSPEX_GUI)
         src/app/pages/ConnectPage.h
         src/app/pages/DashboardPage.cpp
         src/app/pages/DashboardPage.h
+        src/app/pages/BatteryPage.cpp
+        src/app/pages/BatteryPage.h
         src/app/pages/FaultsPage.cpp
         src/app/pages/GaragePage.cpp
         src/app/pages/GaragePage.h
+        src/app/pages/HealthPage.cpp
+        src/app/pages/HealthPage.h
         src/app/pages/FaultsPage.h
         src/app/pages/LivePage.cpp
         src/app/pages/LivePage.h
         src/app/pages/ToolsPage.cpp
+        src/app/pages/TripPage.cpp
+        src/app/pages/TripPage.h
         src/app/pages/ToolsPage.h
         src/app/pages/ThrottlePage.cpp
         src/app/pages/ThrottlePage.h
@@ -117,6 +125,8 @@ if(CARUSPEX_GUI)
         src/app/pages/KklToolsPage.cpp
         src/app/pages/KklToolsPage.h
         src/app/pages/MonitorPage.cpp
+        src/app/pages/PerformancePage.cpp
+        src/app/pages/PerformancePage.h
         src/app/pages/MonitorPage.h
         src/app/pages/LexiconPage.cpp
         src/app/pages/LexiconPage.h
@@ -159,6 +169,8 @@ if(CARUSPEX_TESTS)
         tests/test_analysis_trip.cpp
         tests/test_analysis_performance.cpp
         tests/test_analysis_battery.cpp
+        tests/test_demo.cpp
+        tests/test_probe.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
