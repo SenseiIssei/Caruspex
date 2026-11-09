@@ -12,3 +12,4 @@ conan.lock
 package/
 dist/
 smoke/
+aqtinstall.log

@@ -2,6 +2,10 @@
 
 #include <QElapsedTimer>
 #include <QThread>
+
+#ifdef CARUSPEX_HAS_BLE
+#include "app/BleTransport.h"
+#endif
 #include <QTimer>
 
 #include <algorithm>
@@ -155,6 +159,67 @@ void Worker::openTcp(const QString& host, int port, const QString& protocolOrder
     emit busy(false);
     if (ok) refreshStatusAndFaults();
 }
+
+#ifdef CARUSPEX_HAS_BLE
+void Worker::scanBle(int milliseconds) {
+    emit busy(true);
+    QString error;
+    const QList<BleDevice> devices = scanBleDevices(milliseconds, error);
+    QStringList ids;
+    QStringList names;
+    QList<int> scores;
+    for (const BleDevice& d : devices) {
+        ids << d.id;
+        names << d.name;
+        scores << d.score;
+    }
+    emit busy(false);
+    emit bleScanFinished(ids, names, scores, error);
+}
+
+void Worker::openBle(const QString& id, const QString& name, const QString& protocolOrder) {
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+
+    QList<BleDevice> candidates;
+    if (id.isEmpty()) {
+        emit logLine(tr("Suche Bluetooth-LE-Adapter ..."));
+        QString error;
+        for (const BleDevice& d : scanBleDevices(6000, error)) {
+            if (d.score >= 3) candidates << d;
+        }
+        if (candidates.isEmpty()) {
+            emit busy(false);
+            emit failed(!error.isEmpty() ? error
+                                         : tr("Kein Bluetooth-LE-Adapter in der Nähe gefunden. Steckt "
+                                              "er im Auto, und ist die Zündung an?"));
+            return;
+        }
+    } else {
+        candidates << BleDevice{id, name, 0, 0};
+    }
+
+    std::string error;
+    for (const BleDevice& d : candidates) {
+        const QString shown = d.name.isEmpty() ? d.id : d.name;
+        emit logLine(tr("Verbinde mit %1 über Bluetooth LE ...").arg(shown));
+        auto transport = std::make_unique<BleTransport>();
+        if (!transport->open(d, error)) {
+            emit logLine(QString::fromStdString(error));
+            continue;
+        }
+        emit logLine(tr("Kanal gefunden (%1)").arg(transport->profile()));
+        if (finishConnect(std::move(transport), protocolOrder, true)) {
+            emit bleAdapterFound(d.id, d.name);
+            emit busy(false);
+            refreshStatusAndFaults();
+            return;
+        }
+    }
+    emit busy(false);
+    emit failed(QString::fromStdString(error));
+}
+#endif
 
 void Worker::openDemo(const QString& protocolOrder) {
     // The demo car speaks CAN; the K-line protocols would only cost seconds.
@@ -1145,6 +1210,10 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
+#ifdef CARUSPEX_HAS_BLE
+    connect(this, &Session::scanBleRequested, worker_, &Worker::scanBle);
+    connect(this, &Session::openBleRequested, worker_, &Worker::openBle);
+#endif
     connect(this, &Session::openReplayRequested, worker_, &Worker::openReplay);
     connect(this, &Session::startRecordingRequested, worker_, &Worker::startRecording);
     connect(this, &Session::customReadRequested, worker_, &Worker::readCustom);

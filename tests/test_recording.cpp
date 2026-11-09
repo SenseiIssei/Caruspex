@@ -370,12 +370,14 @@ TEST_CASE("Repeating live polls wrap around to the start", "[recording]") {
 }
 
 TEST_CASE("Real-time replay honours the recorded delay", "[recording]") {
+    // A whole second between question and answer: a short read must come
+    // back empty even when a busy build machine oversleeps a lot.
     ReplayTransport replay(smallRecording("{\"t\":1.000,\"dir\":\"tx\",\"data\":\"0100\\r\"}\n"
-                                          "{\"t\":1.150,\"dir\":\"rx\",\"data\":\"4100BE3FA813\\r\\r>\"}\n"),
+                                          "{\"t\":2.000,\"dir\":\"rx\",\"data\":\"4100BE3FA813\\r\\r>\"}\n"),
                            "paced", ReplayPacing::RealTime);
     replay.write("0100\r");
     REQUIRE(replay.read(20).empty());                       // not there yet
-    REQUIRE(replay.read(500) == "4100BE3FA813\r\r>");       // arrives later
+    REQUIRE(replay.read(3000) == "4100BE3FA813\r\r>");      // arrives later
 }
 
 TEST_CASE("Adaptive timing: ATAT2 on request, with fallback", "[timing]") {

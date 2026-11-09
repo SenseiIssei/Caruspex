@@ -216,6 +216,13 @@ public slots:
     void openTcp(const QString& host, int port, const QString& protocolOrder);
     // The built-in demo car, no adapter needed.
     void openDemo(const QString& protocolOrder);
+#ifdef CARUSPEX_HAS_BLE
+    // Looks for Bluetooth LE devices; answers with bleScanFinished.
+    void scanBle(int milliseconds);
+    // Bluetooth LE adapter by id (address or, on macOS, UUID). An empty id
+    // scans and tries the devices that look like OBD adapters.
+    void openBle(const QString& id, const QString& name, const QString& protocolOrder);
+#endif
     // Manufacturer and user values (CustomPids): read once, or keep them in
     // the live loop next to the OBD values.
     void readCustom(const QVector<int>& keys);
@@ -278,6 +285,11 @@ signals:
     void failed(const QString& error);
     // The automatic search found the adapter on this port.
     void adapterFound(const QString& device);
+    // The Bluetooth LE search connected to this device.
+    void bleAdapterFound(const QString& id, const QString& name);
+    // Result of scanBle: parallel lists, OBD adapters first.
+    void bleScanFinished(const QStringList& ids, const QStringList& names, const QList<int>& scores,
+                         const QString& error);
     void closed();
     void busy(bool active);
     void faults(const QVector<caruspex::FaultRow>& rows);
@@ -370,6 +382,8 @@ signals:
     void openSerialRequested(const QString& device, int baud, const QString& protocolOrder);
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
     void openDemoRequested(const QString& protocolOrder);
+    void scanBleRequested(int milliseconds);
+    void openBleRequested(const QString& id, const QString& name, const QString& protocolOrder);
     void openReplayRequested(const QString& path, bool realTime, const QString& protocolOrder);
     void startRecordingRequested(const QString& path);
     void customReadRequested(const QVector<int>& keys);

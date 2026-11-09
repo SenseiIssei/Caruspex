@@ -5,6 +5,8 @@
 //   caruspex.exe --language en
 
 #include <QApplication>
+
+#include <cstdio>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDir>
@@ -13,6 +15,9 @@
 #include <QTranslator>
 
 #include "app/AppIcon.h"
+#ifdef CARUSPEX_HAS_BLE
+#include "app/BleTransport.h"
+#endif
 #include "app/Garage.h"
 #include "app/MainWindow.h"
 #include "app/Report.h"
@@ -125,6 +130,13 @@ int main(int argc, char** argv) {
                                   QStringLiteral("folder"));
     iconOption.setFlags(QCommandLineOption::HiddenFromHelp);
     parser.addOption(iconOption);
+    QCommandLineOption bleProbeOption(
+        QStringList() << QStringLiteral("ble-probe"),
+        QStringLiteral("Developer aid: list Bluetooth LE devices, connect to the given one (or the "
+                       "first adapter), send ATZ and print everything"),
+        QStringLiteral("id|auto"));
+    bleProbeOption.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(bleProbeOption);
 
     QCommandLineOption themeOption(
         QStringList() << QStringLiteral("theme"),
@@ -137,6 +149,44 @@ int main(int argc, char** argv) {
     caruspex::theme::setLight(caruspex::effectiveLight(startup));
     caruspex::theme::apply(app);
 
+#ifdef CARUSPEX_HAS_BLE
+    if (parser.isSet(bleProbeOption)) {
+        QString error;
+        const QList<caruspex::BleDevice> devices = caruspex::scanBleDevices(5000, error);
+        std::printf("%lld device(s)%s%s\n", static_cast<long long>(devices.size()),
+                    error.isEmpty() ? "" : ", error: ", error.toUtf8().constData());
+        for (const caruspex::BleDevice& d : devices) {
+            std::printf("  %-40s %-30s rssi %4d score %d\n", d.id.toUtf8().constData(),
+                        d.name.toUtf8().constData(), d.rssi, d.score);
+        }
+        caruspex::BleDevice target;
+        const QString wanted = parser.value(bleProbeOption);
+        for (const caruspex::BleDevice& d : devices) {
+            if (wanted == QStringLiteral("auto") ? d.score >= 3 : d.id == wanted) {
+                target = d;
+                break;
+            }
+        }
+        if (target.id.isEmpty() && wanted != QStringLiteral("auto")) target.id = wanted;
+        if (target.id.isEmpty()) return 2;
+        std::printf("connecting to %s ...\n", target.id.toUtf8().constData());
+        caruspex::BleTransport transport;
+        std::string failure;
+        if (!transport.open(target, failure)) {
+            std::printf("open failed: %s\n", failure.c_str());
+            return 1;
+        }
+        std::printf("channel %s\n", transport.profile().toUtf8().constData());
+        // Only adapters get a command; other devices are just looked at.
+        if (target.score < 3) return 0;
+        std::printf("sending ATZ\n");
+        transport.write("ATZ\r");
+        std::string reply;
+        for (int i = 0; i < 20 && reply.find('>') == std::string::npos; ++i) reply += transport.read(250);
+        std::printf("reply: %s\n", reply.c_str());
+        return reply.empty() ? 1 : 0;
+    }
+#endif
     if (parser.isSet(iconOption)) {
         // tools/gen_icons.py packs these into the .ico, .icns and .png files.
         const QDir dir(parser.value(iconOption));
