@@ -1,0 +1,22 @@
+# Ford and Lincoln with CAN, roughly from 2005 on. Every module answers on its
+# request id plus 8. Many body modules (BCM, doors, climate, audio, SYNC) sit
+# on the medium speed CAN (MS-CAN, pins 3 and 11), which a plain ELM327 does
+# not reach; adapters with an HS/MS switch do. Not every model has every module.
+# Sources: FORScan module lists and scan logs, Ford workshop documentation
+# as quoted in owner forums.
+family,kind,request,response,bits,name_de,name_en,note
+FORD,engine,7E0,7E8,11,Motorsteuerung (PCM),Powertrain control (PCM),
+FORD,gearbox,7E1,7E9,11,Getriebesteuerung (TCM),Transmission control (TCM),
+FORD,brakes,760,768,11,Bremsen und ABS,Brakes and ABS,ABS
+FORD,airbag,737,73F,11,Airbag (RCM),Airbag (RCM),RCM
+FORD,steering,730,738,11,Lenkhilfe (PSCM),Power steering (PSCM),PSCM
+FORD,instruments,720,728,11,Kombiinstrument (IPC),Instrument cluster (IPC),IPC
+FORD,gateway,716,71E,11,Gateway (GWM),Gateway (GWM),GWM; newer models only
+FORD,body,726,72E,11,Bordnetzsteuergerät (BCM),Body control (BCM),BCM; MS-CAN on many models
+FORD,body,724,72C,11,Lenksäulenschalter (SCCM),Steering column (SCCM),SCCM
+FORD,climate,733,73B,11,Klimaanlage (HVAC),Climate control (HVAC),HVAC
+FORD,parking,736,73E,11,Einparkhilfe (PAM),Parking aid (PAM),PAM
+FORD,doors,740,748,11,Tür Fahrer (DDM),Driver door (DDM),DDM
+FORD,doors,741,749,11,Tür Beifahrer (PDM),Passenger door (PDM),PDM
+FORD,infotainment,727,72F,11,Radio (ACM),Audio (ACM),ACM
+FORD,infotainment,7D0,7D8,11,SYNC (APIM),SYNC (APIM),APIM

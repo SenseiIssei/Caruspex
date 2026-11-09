@@ -1,0 +1,12 @@
+# General Motors (Chevrolet, Buick, Cadillac, GMC) with GMLAN, roughly from
+# 2007 on. The powertrain answers on the OBD addresses; GM places the
+# transmission at 7E2, not 7E1. Body modules use their own range: request
+# 0x24x, response 0x64x. Only entries that hold across models are listed;
+# the other 0x24x modules differ too much between platforms.
+# Sources: GMLAN documentation as quoted in the open source car hacking
+# community, Chevrolet Volt and Bolt owner tools.
+family,kind,request,response,bits,name_de,name_en,note
+GM,engine,7E0,7E8,11,Motorsteuerung (ECM),Engine control (ECM),
+GM,gearbox,7E2,7EA,11,Getriebesteuerung (TCM),Transmission control (TCM),
+GM,body,241,641,11,Bordnetzsteuergerät (BCM),Body control (BCM),
+GM,battery,7E4,7EC,11,Hochvoltbatterie (BECM),High voltage battery (BECM),Volt and Bolt

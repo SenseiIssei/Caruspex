@@ -1,0 +1,13 @@
+# Nissan and Infiniti with CAN, roughly from 2007 on. Outside the OBD
+# addresses the response is mostly the request plus 0x20, the scheme of the
+# Renault-Nissan alliance. 797 and 79B exist on the Leaf.
+# Sources: Nissan Consult scan logs, LeafSpy and Open Vehicle Monitoring
+# System documentation for the Leaf.
+family,kind,request,response,bits,name_de,name_en,note
+NISSAN,engine,7E0,7E8,11,Motorsteuerung,Engine control,
+NISSAN,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,
+NISSAN,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,
+NISSAN,instruments,743,763,11,Kombiinstrument,Instrument cluster,
+NISSAN,body,745,765,11,Bordnetzsteuergerät (BCM),Body control (BCM),
+NISSAN,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),Leaf
+NISSAN,hybrid,797,79A,11,Fahrzeugsteuerung (VCM),Vehicle control (VCM),Leaf

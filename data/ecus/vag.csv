@@ -1,0 +1,19 @@
+# Volkswagen group (VW, Audi, Seat, Cupra, Škoda) on the MQB and MLB evo
+# platforms, roughly from 2012 on. These cars speak UDS on 11-bit CAN; the
+# response id is the request id plus 0x6A, except for the two OBD addresses.
+# Older PQ35/PQ46 cars (about 2004 to 2012) use TP 2.0 for everything except
+# the engine and gearbox, so on those only the first two entries answer.
+# The note holds the VAG address known from VCDS and OBDeleven.
+# Sources: VCDS and OBDeleven scan logs, Ross-Tech forum, community CAN lists.
+family,kind,request,response,bits,name_de,name_en,note
+VAG,engine,7E0,7E8,11,Motorsteuerung,Engine control,address 01
+VAG,gearbox,7E1,7E9,11,Getriebesteuerung,Gearbox control,address 02
+VAG,brakes,713,77D,11,Bremsen und ABS,Brakes and ABS,address 03
+VAG,airbag,715,77F,11,Airbag,Airbag,address 15
+VAG,steering,712,77C,11,Lenkhilfe,Power steering,address 44
+VAG,instruments,714,77E,11,Kombiinstrument,Instrument cluster,address 17
+VAG,gateway,710,77A,11,Gateway,Gateway,address 19
+VAG,body,70E,778,11,Zentralelektronik,Central electronics,address 09
+VAG,body,70C,776,11,Lenksäulenelektronik,Steering column electronics,address 16
+VAG,climate,746,7B0,11,Klimaanlage,Climate control,address 08
+VAG,parking,70A,774,11,Einparkhilfe,Parking aid,address 10
