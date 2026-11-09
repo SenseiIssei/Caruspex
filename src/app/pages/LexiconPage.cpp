@@ -1,5 +1,6 @@
 #include "app/pages/LexiconPage.h"
 
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -7,10 +8,11 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-#include <algorithm>
 #include <vector>
 
 #include "app/Theme.h"
+#include "app/Widgets.h"
+#include "app/pages/FaultsPage.h"
 #include "data/DtcDatabase.h"
 
 namespace caruspex {
@@ -18,23 +20,23 @@ namespace {
 
 struct Entry {
     QString code;
+    QString family;
+    QString familyLabel;
     QString text;
-    bool throttle;
+    int severity;
+    QString system;
 };
 
+// Built once in the language that is active at startup.
 const std::vector<Entry>& allEntries() {
     static const std::vector<Entry> entries = [] {
         std::vector<Entry> list;
-        list.reserve(dtcDescriptions().size());
-        // Only the codes come from the table. The text is fetched through
-        // describeDtc(), which returns it in the active language.
-        for (const auto& entry : dtcDescriptions()) {
-            const std::string& code = entry.first;
-            list.push_back({QString::fromStdString(code),
-                            QString::fromStdString(describeDtc(code)), isThrottleDtc(code)});
+        for (const DtcLexiconEntry& e : dtcLexicon()) {
+            list.push_back({QString::fromStdString(e.code), QString::fromStdString(e.family),
+                            QString::fromStdString(e.familyLabel), QString::fromStdString(e.text),
+                            static_cast<int>(e.severity),
+                            QString::fromUtf8(dtcSystemName(e.system))});
         }
-        std::sort(list.begin(), list.end(),
-                  [](const Entry& a, const Entry& b) { return a.code < b.code; });
         return list;
     }();
     return entries;
@@ -46,67 +48,96 @@ LexiconPage::LexiconPage(QWidget* parent) : QWidget(parent) {
     auto* root = new QVBoxLayout(this);
     root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
-
-    auto* title = new QLabel(tr("Fehlercode-Lexikon"));
-    title->setObjectName("PageTitle");
-    root->addWidget(title);
-
-    auto* hint = new QLabel(
-        tr("Nachschlagewerk für unterwegs, funktioniert auch ohne Auto. Suche nach Code "
-           "oder nach Stichwort, zum Beispiel Drosselklappe oder Lambdasonde."));
-    hint->setObjectName("Hint");
-    hint->setWordWrap(true);
-    root->addWidget(hint);
+    root->addWidget(makePageHeader(
+        tr("Wissen"), tr("Fehlercode-Lexikon"),
+        tr("Nachschlagewerk für unterwegs, funktioniert auch ohne Auto. Suche nach Code oder "
+           "Stichwort, zum Beispiel Drosselklappe oder Lambdasonde. Herstellercodes bedeuten je "
+           "Marke etwas anderes, deshalb lässt sich nach Marke filtern.")));
 
     auto* row = new QHBoxLayout;
+    row->setSpacing(10);
     search_ = new QLineEdit;
     search_->setPlaceholderText(tr("P0301, Lambdasonde, Zylinder 3 ..."));
     search_->setClearButtonEnabled(true);
+    search_->setMinimumHeight(40);
+    family_ = new QComboBox;
+    family_->setMinimumHeight(40);
+    family_->addItem(tr("Alle Marken"), QStringLiteral("*"));
+    family_->addItem(QString::fromStdString(brandFamilyLabel("")), QString());
+    for (const std::string& f : brandFamilies()) {
+        if (dtcCount(f) == 0) continue;
+        family_->addItem(QString::fromStdString(brandFamilyLabel(f)), QString::fromStdString(f));
+    }
     count_ = new QLabel;
     count_->setObjectName("Subtle");
     row->addWidget(search_, 1);
+    row->addWidget(family_);
     row->addWidget(count_);
     root->addLayout(row);
 
-    table_ = new QTableWidget(0, 2);
-    table_->setHorizontalHeaderLabels({tr("Code"), tr("Bedeutung")});
-    table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    table_ = new QTableWidget(0, 5);
+    table_->setHorizontalHeaderLabels(
+        {tr("Code"), tr("Bedeutung"), tr("Bereich"), tr("Dringlichkeit"), tr("Gilt für")});
     table_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    table_->setColumnWidth(0, 110);
+    table_->setColumnWidth(0, 96);
+    table_->setColumnWidth(2, 190);
+    table_->setColumnWidth(3, 110);
+    table_->setColumnWidth(4, 170);
     table_->verticalHeader()->setVisible(false);
     table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table_->setAlternatingRowColors(true);
     table_->setSelectionBehavior(QAbstractItemView::SelectRows);
+    table_->setWordWrap(false);
     root->addWidget(table_, 1);
 
     connect(search_, &QLineEdit::textChanged, this, &LexiconPage::applyFilter);
+    connect(family_, &QComboBox::currentIndexChanged, this,
+            [this] { applyFilter(search_->text()); });
     applyFilter(QString());
 }
 
 void LexiconPage::applyFilter(const QString& needle) {
     const QString query = needle.trimmed();
+    const QString family = family_->currentData().toString();
     std::vector<const Entry*> hits;
     for (const Entry& e : allEntries()) {
+        if (family != QStringLiteral("*") && e.family != family) continue;
         if (query.isEmpty() || e.code.contains(query, Qt::CaseInsensitive) ||
-            e.text.contains(query, Qt::CaseInsensitive)) {
+            e.text.contains(query, Qt::CaseInsensitive) ||
+            e.system.contains(query, Qt::CaseInsensitive)) {
             hits.push_back(&e);
         }
     }
 
-    table_->setRowCount(static_cast<int>(hits.size()));
-    for (int i = 0; i < static_cast<int>(hits.size()); ++i) {
+    // Filling thousands of rows at once would stall the window; the first
+    // few thousand are plenty for a search result.
+    const int shown = static_cast<int>(std::min<size_t>(hits.size(), 3000));
+    table_->setUpdatesEnabled(false);
+    table_->setRowCount(shown);
+    const QFont codeFont = theme::mono(13, 700);
+    for (int i = 0; i < shown; ++i) {
         const Entry* e = hits[i];
+        const QColor tone = severityColour(e->severity);
         auto* code = new QTableWidgetItem(e->code);
-        QFont bold = code->font();
-        bold.setBold(true);
-        code->setFont(bold);
-        if (e->throttle) code->setForeground(theme::color::warn);
+        code->setFont(codeFont);
+        code->setForeground(tone);
         table_->setItem(i, 0, code);
         table_->setItem(i, 1, new QTableWidgetItem(e->text));
+        auto* system = new QTableWidgetItem(e->system);
+        system->setForeground(theme::color::textMuted);
+        table_->setItem(i, 2, system);
+        auto* severity = new QTableWidgetItem(
+            QString::fromUtf8(severityLabel(static_cast<Severity>(e->severity))));
+        severity->setForeground(tone);
+        table_->setItem(i, 3, severity);
+        auto* scope = new QTableWidgetItem(e->familyLabel);
+        scope->setForeground(theme::color::textFaint);
+        table_->setItem(i, 4, scope);
     }
-    count_->setText(tr("%1 von %2 Codes")
-                        .arg(hits.size())
-                        .arg(allEntries().size()));
+    table_->setUpdatesEnabled(true);
+    count_->setText(hits.size() > static_cast<size_t>(shown)
+                        ? tr("%1 Treffer, die ersten %2 gezeigt").arg(hits.size()).arg(shown)
+                        : tr("%1 von %2 Codes").arg(hits.size()).arg(allEntries().size()));
 }
 
 }  // namespace caruspex

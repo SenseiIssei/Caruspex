@@ -3,6 +3,7 @@
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
+class QComboBox;
 class QLabel;
 class QLineEdit;
 class QTableWidget;
@@ -23,6 +24,7 @@ private:
     QLineEdit* search_ = nullptr;
     QTableWidget* table_ = nullptr;
     QLabel* count_ = nullptr;
+    QComboBox* family_ = nullptr;
 };
 
 }  // namespace caruspex
