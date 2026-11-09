@@ -33,14 +33,16 @@ the settings, or forced per run with `--language en` / `--language de`. [Deutsch
   byte-by-byte handshake, plus a Python ELM327 simulator for end-to-end runs of the GUI.
 - **Bilingual without Qt in the core**: the GUI uses Qt Linguist (`translations/caruspex_en.ts`), while the
   Qt-free core resolves its texts (trouble codes, PID names, protocol messages) through a tiny `L(de, en)` helper.
-- **Generated data, not hand-typed**: 462 trouble codes, many of them computed from regular code families
+- **Generated data, not hand-typed**: about 1,700 trouble codes, many of them computed from regular code families
   (per cylinder, per bank, per oxygen sensor) by `tools/gen_dtc.py`.
 
 ## Features
 
 ### Fault memory
 - Stored, pending and permanent trouble codes (OBD modes 03, 07, 0A)
-- 462 codes with plain-language descriptions in English and German: generic EOBD codes plus VAG-specific P1xxx
+- About 1,400 generic SAE codes (P, C, B, U) plus manufacturer codes for VAG, Ford, GM, Toyota, Honda, Nissan,
+  Hyundai/Kia, Subaru and others, in English and German; the meaning of a P1 code follows the brand
+- For the common faults: may I keep driving, likely causes, simple checks and a rough cost class
 - Unknown codes fall back to the meaning of their code group instead of showing nothing
 - Clearing with an explicit warning, automatic re-read and an optional "persistent clear" with retries
 - CSV export
@@ -294,8 +296,8 @@ tools/            Trouble-code generator and ELM327 simulator
 tests/            Catch2 tests and simulated ECUs
 ```
 
-The trouble-code database is generated: `tools/gen_dtc.py` expands the regular EOBD code families and a
-curated list into `src/data/DtcDatabase.gen.cpp`. Re-run it after changing the generator:
+The trouble-code database is generated: `tools/gen_dtc.py` expands the regular EOBD code families and the
+curated lists in `tools/dtc/` into `src/data/*.gen.cpp`. Re-run it after changing the data:
 
 ```bash
 python tools/gen_dtc.py

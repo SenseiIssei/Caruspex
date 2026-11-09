@@ -38,7 +38,10 @@ add_library(caruspex_core STATIC
     src/core/VagKLine.cpp
     src/core/KLineStream.cpp
     src/data/DtcDatabase.cpp
-    src/data/DtcDatabase.gen.cpp
+    src/data/DtcGenericP.gen.cpp
+    src/data/DtcGenericCBU.gen.cpp
+    src/data/DtcBrands.gen.cpp
+    src/data/DtcDetails.gen.cpp
     src/data/Pids.cpp
     src/data/Vehicles.cpp
     src/data/DtcLocation.cpp
@@ -175,6 +178,7 @@ if(CARUSPEX_TESTS)
         tests/test_analysis_battery.cpp
         tests/test_demo.cpp
         tests/test_probe.cpp
+        tests/test_dtc.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
