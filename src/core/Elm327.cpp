@@ -50,6 +50,15 @@ bool startsWith(const std::string& s, const std::string& prefix) {
     return s.rfind(prefix, 0) == 0;
 }
 
+// True if the adapter confirmed a setting with a line that says "OK".
+bool answeredOk(const ElmResult& result) {
+    if (result.status == ElmStatus::AdapterError) return false;
+    for (const std::string& line : result.lines) {
+        if (toUpper(line) == "OK") return true;
+    }
+    return false;
+}
+
 bool isHexLine(const std::string& s) {
     if (s.empty()) return false;
     for (char c : s) {
@@ -414,10 +423,74 @@ bool Elm327::setHeaders(bool on) {
     return false;
 }
 
+void Elm327::wrapTransport(
+    const std::function<std::unique_ptr<ITransport>(std::unique_ptr<ITransport>)>& wrap) {
+    if (!transport_ || !wrap) return;
+    std::unique_ptr<ITransport> next = wrap(std::move(transport_));
+    transport_ = std::move(next);
+    if (!transport_) connected_ = false;
+}
+
+void Elm327::detectStn() {
+    // STI only reads the firmware identification. An ELM327 or a clone
+    // answers "?" (an ST command is not an AT command, so even clones that
+    // say "OK" to every AT command give themselves away here).
+    stn_ = false;
+    stnId_.clear();
+    const ElmResult sti = send("STI", 1500);
+    if (sti.status == ElmStatus::AdapterError || sti.lines.empty()) return;
+    const std::string first = sti.lines.front();
+    if (startsWith(toUpper(first), "STN")) {
+        stn_ = true;
+        stnId_ = first;
+        if (log_) log_(L("  STN-Chip erkannt: ", "  STN chip detected: ") + first);
+    }
+}
+
+void Elm327::applyAggressiveTiming() {
+    const bool wanted = adaptiveTiming_ == AdaptiveTiming::Aggressive ||
+                        (adaptiveTiming_ == AdaptiveTiming::Auto && stn_);
+    if (!wanted) return;
+    if (timingLevel_ == 0) {
+        if (log_)
+            log_(L("  Der Adapter kennt keine adaptive Zeitsteuerung (ATAT), ATAT2 entfällt.",
+                   "  The adapter has no adaptive timing (ATAT), so ATAT2 is skipped."));
+        return;
+    }
+    // Only now, with a protocol found: the search itself runs with the
+    // careful ATAT1, so a slow control unit is not missed while looking.
+    if (!answeredOk(at("AT2", 2000))) {
+        at("AT1", 2000);
+        timingLevel_ = 1;
+        if (log_)
+            log_(L("  ATAT2 abgelehnt, es bleibt bei ATAT1.",
+                   "  ATAT2 refused, staying with ATAT1."));
+        return;
+    }
+    // One request as a check that answers still come through with the
+    // shorter wait. If not, back to the careful setting.
+    const ElmResult check = request("0100", 0x01);
+    if (!check.ok()) {
+        at("AT1", 2000);
+        timingLevel_ = 1;
+        if (log_)
+            log_(L("  Mit ATAT2 fehlen Antworten, zurück auf ATAT1.",
+                   "  Answers go missing with ATAT2, back to ATAT1."));
+        return;
+    }
+    timingLevel_ = 2;
+    if (log_)
+        log_(L("  Schnelle adaptive Zeitsteuerung (ATAT2) aktiv.",
+               "  Aggressive adaptive timing (ATAT2) active."));
+}
+
 bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& protocolOrder,
                      std::string& error) {
     transport_ = std::move(transport);
     connected_ = false;
+    stn_ = false;
+    stnId_.clear();
+    timingLevel_ = 0;
     drainGreeting();
 
     ElmResult banner = at("Z", 6000);
@@ -436,7 +509,13 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                  version_ + "'");
     }
 
-    for (const char* cmd : {"E0", "L0", "S0", "H0", "AT1", "ST64"}) at(cmd);
+    for (const char* cmd : {"E0", "L0", "S0", "H0"}) at(cmd);
+    // ATAT1 is the power-on default; set it anyway, since the adapter may
+    // come out of an earlier session with different timing. Adapters older
+    // than v1.2 know no adaptive timing at all.
+    timingLevel_ = answeredOk(at("AT1")) ? 1 : 0;
+    at("ST64");
+    detectStn();
 
     for (char proto : protocolOrder) {
         at(std::string("SP") + proto);
@@ -450,6 +529,7 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                 protocolText_ = dp.lines.empty() ? protocolName(proto) : dp.lines.front();
                 protocolId_ = proto;
                 connected_ = true;
+                applyAggressiveTiming();
                 return true;
             }
             if (probe.status == ElmStatus::AdapterError) {
@@ -477,6 +557,9 @@ void Elm327::disconnect() {
     transport_.reset();
     connected_ = false;
     headers_ = false;
+    stn_ = false;
+    stnId_.clear();
+    timingLevel_ = 0;
     protocolId_ = '0';
     protocolText_ = L("unbekannt", "unknown");
 }
