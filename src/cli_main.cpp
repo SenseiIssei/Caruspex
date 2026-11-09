@@ -66,6 +66,7 @@ const char* const kUsage =
     "  ecus        everything per control unit (headers on)\n"
     "  uds         UDS on CAN: identification and fault memory of every control unit\n"
     "  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once\n"
+    "  version     the version of this program\n"
     "  help        this text\n"
     "\n"
     "Connection (one of them):\n"
@@ -1057,6 +1058,10 @@ int main(int argc, char** argv) {
 
     if (command == "help" || command == "--help" || command == "-h") {
         std::fputs(kUsage, stdout);
+        return 0;
+    }
+    if (command == "version" || command == "--version") {
+        std::printf("caruspex_cli %s\n", CARUSPEX_VERSION);
         return 0;
     }
     if (command == "ports") {

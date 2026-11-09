@@ -9,3 +9,6 @@ CMakeSettings.json
 __pycache__/
 *.pyc
 conan.lock
+package/
+dist/
+smoke/

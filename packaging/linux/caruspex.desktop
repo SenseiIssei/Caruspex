@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Caruspex
+GenericName=Vehicle diagnostics
+GenericName[de]=Fahrzeugdiagnose
+Comment=Read fault codes, live data and battery health over OBD-II
+Comment[de]=Fehlercodes, Live-Werte und Akkuzustand über OBD-II lesen
+Exec=caruspex
+Icon=caruspex
+Terminal=false
+Categories=Utility;
+Keywords=OBD;OBD2;ELM327;car;diagnostics;Auto;Diagnose;
