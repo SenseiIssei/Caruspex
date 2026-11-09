@@ -1,0 +1,10 @@
+# Peugeot, Citroën and DS on the AEE2004 and AEE2010 electrics, roughly from
+# 2004 on. PSA uses its own ids: the response is not request + 8, so the
+# generic sweep cannot find these. The engine also answers on the OBD address.
+# Sources: PSA diagnostic community projects (arduino-psa-diag) and forum
+# scan logs with ATSH/ATCRA.
+family,kind,request,response,bits,name_de,name_en,note
+PSA,engine,7E0,7E8,11,Motorsteuerung,Engine control,OBD address
+PSA,brakes,6AD,68D,11,Bremsen und ESP,Brakes and ESP,
+PSA,airbag,772,672,11,Airbag,Airbag,
+PSA,body,752,652,11,Bordnetzrechner (BSI),Body computer (BSI),BSI

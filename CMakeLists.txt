@@ -50,6 +50,9 @@ add_library(caruspex_core STATIC
     src/data/DtcLocation.cpp
     src/data/VagFaults.cpp
     src/data/MonitorTests.cpp
+    src/data/EcuAddresses.cpp
+    src/data/EcuAddresses.gen.cpp
+    src/data/FailureTypes.cpp
     src/core/analysis/Common.cpp
     src/core/analysis/Readiness.cpp
     src/core/analysis/DriveCycleGuide.cpp
@@ -200,6 +203,7 @@ if(CARUSPEX_TESTS)
         tests/test_probe.cpp
         tests/test_dtc.cpp
         tests/test_vehicles.cpp
+        tests/test_ecus.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

@@ -1,0 +1,16 @@
+# Renault and Dacia with CAN, roughly from 2005 on. Outside the OBD addresses
+# the response is mostly the request plus 0x20 (alliance scheme). 7E4, 79B
+# and 792 exist on the electric models such as the Zoe.
+# Sources: DDT4all address tables, CanZE documentation for the Zoe.
+family,kind,request,response,bits,name_de,name_en,note
+RENAULT,engine,7E0,7E8,11,Motorsteuerung,Engine control,injection
+RENAULT,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,automatic only
+RENAULT,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,ABS/ESP
+RENAULT,airbag,752,772,11,Airbag,Airbag,
+RENAULT,steering,742,762,11,Lenkhilfe,Power steering,DAE
+RENAULT,instruments,743,763,11,Kombiinstrument,Instrument cluster,TDB
+RENAULT,body,745,765,11,Zentralelektronik (UCH),Central electronics (UCH),UCH
+RENAULT,climate,744,764,11,Klimaanlage,Climate control,
+RENAULT,hybrid,7E4,7EC,11,Fahrzeugsteuerung (EVC),Vehicle control (EVC),electric only
+RENAULT,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),electric only
+RENAULT,charger,792,793,11,Ladegerät,Charger,electric only

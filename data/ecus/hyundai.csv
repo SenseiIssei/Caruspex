@@ -1,0 +1,16 @@
+# Hyundai, Kia and Genesis with CAN, roughly from 2010 on. Response =
+# request + 8. 7E2 and 7E4 exist on the hybrid and electric models (Ioniq,
+# Kona, Niro, e-Soul and later).
+# Sources: Hyundai/Kia GDS scan logs, EV community PID lists (EVNotify,
+# Torque PID sheets for Kona, Ioniq and Niro).
+family,kind,request,response,bits,name_de,name_en,note
+HYUNDAI,engine,7E0,7E8,11,Motorsteuerung,Engine control,
+HYUNDAI,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,
+HYUNDAI,brakes,7D1,7D9,11,Bremsen und ESC,Brakes and ESC,ESC
+HYUNDAI,airbag,7D2,7DA,11,Airbag,Airbag,
+HYUNDAI,steering,7D4,7DC,11,Lenkhilfe (MDPS),Power steering (MDPS),MDPS
+HYUNDAI,instruments,7C6,7CE,11,Kombiinstrument,Instrument cluster,
+HYUNDAI,body,7A0,7A8,11,Bordnetzsteuergerät (BCM),Body control (BCM),BCM with tyre pressure on many models
+HYUNDAI,climate,7B3,7BB,11,Klimaanlage,Climate control,
+HYUNDAI,hybrid,7E2,7EA,11,Fahrzeugsteuerung (VCU),Vehicle control (VCU),hybrid and electric only
+HYUNDAI,battery,7E4,7EC,11,Batteriemanagement (BMS),Battery management (BMS),hybrid and electric only
