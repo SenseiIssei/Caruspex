@@ -44,7 +44,7 @@ const std::vector<Entry>& allEntries() {
 
 LexiconPage::LexiconPage(QWidget* parent) : QWidget(parent) {
     auto* root = new QVBoxLayout(this);
-    root->setContentsMargins(24, 20, 24, 20);
+    root->setContentsMargins(32, 26, 32, 24);
     root->setSpacing(14);
 
     auto* title = new QLabel(tr("Fehlercode-Lexikon"));

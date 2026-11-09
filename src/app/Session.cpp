@@ -2,6 +2,7 @@
 
 #include <QTimer>
 
+#include "core/Serial.h"
 #include "core/Timing.h"
 #include "core/Transport.h"
 #include "data/Pids.h"
@@ -38,40 +39,71 @@ Worker::~Worker() {
     kline_.close();
 }
 
-void Worker::openSerial(const QString& device, int baud, const QString& protocolOrder) {
-    emit busy(true);
-    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
-
+bool Worker::finishConnect(std::unique_ptr<ITransport> transport, const QString& protocolOrder,
+                           bool reportFailure) {
     std::string error;
-    std::unique_ptr<ITransport> transport;
-    // Without a preset, try the usual baud rates; clones are picky about this.
-    const QVector<int> bauds = baud > 0 ? QVector<int>{baud}
-                                        : QVector<int>{38400, 9600, 115200, 500000};
-    for (int b : bauds) {
-        auto candidate = std::make_unique<SerialTransport>();
-        if (candidate->open(device.toStdString(), b, error)) {
-            transport = std::move(candidate);
-            emit logLine(tr("Anschluss %1 offen bei %2 Baud").arg(device).arg(b));
-            break;
-        }
-    }
-    if (!transport) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
-        return;
-    }
-
     if (!elm_.connect(std::move(transport), protocolOrder.toStdString(), error)) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
-        return;
+        if (reportFailure) emit failed(QString::fromStdString(error));
+        else emit logLine(QString::fromStdString(error));
+        return false;
     }
     obd_ = std::make_unique<Obd2>(elm_);
     emit connected(QString::fromStdString(elm_.version()),
                    QString::fromStdString(elm_.transportName()),
                    QString::fromStdString(elm_.protocolText()));
+    return true;
+}
+
+void Worker::openSerial(const QString& device, int baud, const QString& protocolOrder) {
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+
+    // An empty device means: look for the adapter on every port. Only the
+    // usual rates are tried there, otherwise a computer with many ports
+    // would keep the user waiting for minutes.
+    QStringList devices;
+    if (device.isEmpty()) {
+        for (const PortInfo& p : enumeratePorts()) devices << QString::fromStdString(p.device);
+        if (devices.isEmpty()) {
+            emit busy(false);
+            emit failed(tr("Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist "
+                           "ein Bluetooth-Adapter gekoppelt?"));
+            return;
+        }
+    } else {
+        devices << device;
+    }
+    const bool searching = device.isEmpty();
+    const QVector<int> bauds = baud > 0           ? QVector<int>{baud}
+                               : searching ? QVector<int>{38400, 115200, 9600}
+                                           : QVector<int>{38400, 9600, 115200, 500000};
+
+    std::string error;
+    for (const QString& candidateDevice : devices) {
+        if (searching) emit logLine(tr("Probiere %1 ...").arg(candidateDevice));
+        for (int b : bauds) {
+            auto candidate = std::make_unique<SerialTransport>();
+            if (!candidate->open(candidateDevice.toStdString(), b, error)) break;
+            emit logLine(tr("Anschluss %1 offen bei %2 Baud").arg(candidateDevice).arg(b));
+            const bool last = !searching && b == bauds.back();
+            if (finishConnect(std::move(candidate), protocolOrder, last)) {
+                if (searching) emit adapterFound(candidateDevice);
+                emit busy(false);
+                refreshStatusAndFaults();
+                return;
+            }
+            if (!searching) break;
+        }
+        if (!searching) {
+            emit busy(false);
+            if (!error.empty()) emit failed(QString::fromStdString(error));
+            return;
+        }
+    }
     emit busy(false);
-    refreshStatusAndFaults();
+    emit failed(searching ? tr("An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und "
+                               "Adapter richtig eingesteckt?")
+                          : QString::fromStdString(error));
 }
 
 void Worker::openTcp(const QString& host, int port, const QString& protocolOrder) {
@@ -85,17 +117,14 @@ void Worker::openTcp(const QString& host, int port, const QString& protocolOrder
         emit failed(QString::fromStdString(error));
         return;
     }
-    if (!elm_.connect(std::move(transport), protocolOrder.toStdString(), error)) {
-        emit busy(false);
-        emit failed(QString::fromStdString(error));
-        return;
-    }
-    obd_ = std::make_unique<Obd2>(elm_);
-    emit connected(QString::fromStdString(elm_.version()),
-                   QString::fromStdString(elm_.transportName()),
-                   QString::fromStdString(elm_.protocolText()));
+    const bool ok = finishConnect(std::move(transport), protocolOrder, true);
     emit busy(false);
-    refreshStatusAndFaults();
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::openDemo(const QString& protocolOrder) {
+    Q_UNUSED(protocolOrder);
+    emit failed(tr("Das Demo-Auto ist in dieser Version noch nicht eingebaut."));
 }
 
 void Worker::closeAdapter() {
@@ -638,6 +667,7 @@ Session::Session(QObject* parent) : QObject(parent) {
 
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
+    connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
     connect(this, &Session::closeRequested, worker_, &Worker::closeAdapter);
     connect(this, &Session::readFaultsRequested, worker_, &Worker::readFaults);
     connect(this, &Session::clearFaultsRequested, worker_, &Worker::clearFaults);

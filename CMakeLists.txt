@@ -61,7 +61,7 @@ target_link_libraries(caruspex_cli PRIVATE caruspex_core)
 # Graphical application (Qt 6 Widgets and Charts)
 # ---------------------------------------------------------------------------
 if(CARUSPEX_GUI)
-    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts LinguistTools)
+    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts Svg PrintSupport LinguistTools)
     qt_standard_project_setup()
 
     qt_add_executable(caruspex
@@ -75,10 +75,16 @@ if(CARUSPEX_GUI)
         src/app/Theme.h
         src/app/GaugeWidget.cpp
         src/app/GaugeWidget.h
+        src/app/Icons.cpp
+        src/app/Icons.h
+        src/app/Widgets.cpp
+        src/app/Widgets.h
         src/app/TitleBar.cpp
         src/app/TitleBar.h
         src/app/VehicleDiagram.cpp
         src/app/VehicleDiagram.h
+        src/app/pages/ConnectPage.cpp
+        src/app/pages/ConnectPage.h
         src/app/pages/DashboardPage.cpp
         src/app/pages/DashboardPage.h
         src/app/pages/FaultsPage.cpp
@@ -104,7 +110,8 @@ if(CARUSPEX_GUI)
         src/app/Settings.cpp
         src/app/Settings.h
     )
-    target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts)
+    target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts Qt6::Svg
+                                           Qt6::PrintSupport)
 
     # The source strings are German; the English translation is compiled into
     # the binary as :/i18n/caruspex_en.qm. Refresh the .ts file after changing

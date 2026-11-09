@@ -49,7 +49,7 @@ QTableWidget* makeTable(const QStringList& headers) {
 
 ToolsPage::ToolsPage(QWidget* parent) : QWidget(parent) {
     auto* outer = new QVBoxLayout(this);
-    outer->setContentsMargins(24, 20, 24, 20);
+    outer->setContentsMargins(32, 26, 32, 24);
     outer->setSpacing(14);
 
     auto* title = new QLabel(tr("Prüfen und Werkzeuge"));

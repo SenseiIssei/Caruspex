@@ -95,6 +95,8 @@ public:
 public slots:
     void openSerial(const QString& device, int baud, const QString& protocolOrder);
     void openTcp(const QString& host, int port, const QString& protocolOrder);
+    // The built-in demo car, no adapter needed.
+    void openDemo(const QString& protocolOrder);
     void closeAdapter();
     void readFaults();
     void clearFaults();
@@ -131,6 +133,8 @@ signals:
     void logLine(const QString& line);
     void connected(const QString& adapter, const QString& transport, const QString& protocol);
     void failed(const QString& error);
+    // The automatic search found the adapter on this port.
+    void adapterFound(const QString& device);
     void closed();
     void busy(bool active);
     void faults(const QVector<caruspex::FaultRow>& rows);
@@ -165,6 +169,9 @@ private slots:
 
 private:
     void refreshStatusAndFaults();
+    // Hands a ready transport to the ELM327 driver and reports the result.
+    bool finishConnect(std::unique_ptr<ITransport> transport, const QString& protocolOrder,
+                       bool reportFailure);
 
     Elm327 elm_;
     std::unique_ptr<Obd2> obd_;
@@ -199,6 +206,7 @@ public:
 signals:
     void openSerialRequested(const QString& device, int baud, const QString& protocolOrder);
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
+    void openDemoRequested(const QString& protocolOrder);
     void closeRequested();
     void readFaultsRequested();
     void clearFaultsRequested();
