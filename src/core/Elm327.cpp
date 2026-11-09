@@ -107,12 +107,6 @@ HeaderFormat headerFormatFor(char protocolId) {
 
 namespace {
 
-// One complete message (service byte first) and who sent it.
-struct RawMessage {
-    std::string source;
-    std::vector<int> bytes;
-};
-
 bool isIndexedLine(const std::string& line) {
     return line.size() > 2 && line[1] == ':' && std::isxdigit(static_cast<unsigned char>(line[0]));
 }
@@ -125,8 +119,8 @@ bool isIndexedLine(const std::string& line) {
 // length is complete, starts the next message: that is how the responses of
 // two control units are kept apart. The index wraps from F to 0 on long
 // messages, which is why "0:" alone is not enough.
-std::vector<RawMessage> splitWithoutHeaders(const std::vector<std::string>& lines) {
-    std::vector<RawMessage> out;
+std::vector<ElmMessage> splitWithoutHeaders(const std::vector<std::string>& lines) {
+    std::vector<ElmMessage> out;
     std::vector<int> collected;
     int announced = -1;
     bool collecting = false;
@@ -170,9 +164,9 @@ std::vector<RawMessage> splitWithoutHeaders(const std::vector<std::string>& line
 }
 
 // Headers on. Every line is one frame with the sender in front.
-std::vector<RawMessage> splitWithHeaders(const std::vector<std::string>& lines,
+std::vector<ElmMessage> splitWithHeaders(const std::vector<std::string>& lines,
                                          HeaderFormat format) {
-    std::vector<RawMessage> out;
+    std::vector<ElmMessage> out;
 
     // ISO-TP reassembly per sender for CAN.
     struct Pending {
@@ -263,6 +257,10 @@ std::vector<RawMessage> splitWithHeaders(const std::vector<std::string>& lines,
 
 }  // namespace
 
+std::vector<ElmMessage> splitMessages(const std::vector<std::string>& lines, HeaderFormat headers) {
+    return headers == HeaderFormat::None ? splitWithoutHeaders(lines) : splitWithHeaders(lines, headers);
+}
+
 ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedService,
                          HeaderFormat headers) {
     ElmResult result;
@@ -286,13 +284,12 @@ ElmResult decodeMessages(const std::vector<std::string>& lines, int expectedServ
         }
     }
 
-    const std::vector<RawMessage> raw =
-        headers == HeaderFormat::None ? splitWithoutHeaders(lines) : splitWithHeaders(lines, headers);
+    const std::vector<ElmMessage> raw = splitMessages(lines, headers);
 
     // With several control units on the bus one of them may refuse while
     // another answers. Only if nobody answers is the refusal the result.
     int refusal = -1;
-    for (const RawMessage& msg : raw) {
+    for (const ElmMessage& msg : raw) {
         const std::vector<int>& bytes = msg.bytes;
         if (bytes.empty()) continue;
         if (bytes[0] == 0x7F && bytes.size() >= 3) {

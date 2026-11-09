@@ -6,6 +6,7 @@
 //   caruspex_cli read --port COM5 --baud 38400
 //   caruspex_cli health --demo --json
 //   caruspex_cli ecus --tcp 127.0.0.1:35000   (per control unit, all live values)
+//   caruspex_cli uds --demo --ids 760,737      (UDS: identification and faults per ECU)
 //
 // `caruspex_cli help` lists every command and option.
 
@@ -29,6 +30,7 @@
 #include "core/Obd2.h"
 #include "core/Timing.h"
 #include "core/Transport.h"
+#include "core/Uds.h"
 #include "core/analysis/HealthCheck.h"
 #include "data/DtcDatabase.h"
 #include "data/Pids.h"
@@ -54,6 +56,7 @@ const char* const kUsage =
     "  health      health check: faults, readiness, mode 06 and a live series\n"
     "  probe       adapter test: what the ELM327 really is and can do\n"
     "  ecus        everything per control unit (headers on)\n"
+    "  uds         UDS on CAN: identification and fault memory of every control unit\n"
     "  help        this text\n"
     "\n"
     "Connection (one of them):\n"
@@ -63,8 +66,11 @@ const char* const kUsage =
     "  --baud N            baud rate of the serial port, 38400 if left out\n"
     "\n"
     "Options:\n"
-    "  --json              machine-readable output for read, vin, health, probe, freeze\n"
+    "  --json              machine-readable output for read, vin, health, probe, freeze, uds\n"
     "  --seconds N         length of the live series of health, 15 if left out\n"
+    "  --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit\n"
+    "                      ids like 18DA28F1 answer on 18DAF128); the demo car's six\n"
+    "                      control units if left out\n"
     "  -v                  log every command sent to the adapter\n";
 
 void printPorts() {
@@ -697,6 +703,185 @@ int fail(bool asJson, const std::string& message, int code) {
     return code;
 }
 
+// The control units of the demo car, which also suit many real cars that
+// follow the "+8" convention.
+std::vector<EcuDefinition> defaultUdsList() {
+    struct Entry {
+        std::uint32_t request;
+        EcuKind kind;
+        const char* name;
+    };
+    static const Entry entries[] = {
+        {0x7E0, EcuKind::Engine, "Engine"},
+        {0x7E1, EcuKind::Gearbox, "Gearbox"},
+        {0x760, EcuKind::Brakes, "ABS"},
+        {0x737, EcuKind::Airbag, "Airbag"},
+        {0x720, EcuKind::Instruments, "Instruments"},
+        {0x744, EcuKind::Climate, "Climate"},
+    };
+    std::vector<EcuDefinition> out;
+    for (const Entry& e : entries) {
+        EcuDefinition d;
+        d.request = e.request;
+        d.response = e.request + 8;
+        d.kind = e.kind;
+        d.name = e.name;
+        out.push_back(d);
+    }
+    return out;
+}
+
+// "760,737,18DA28F1" -> definitions. 11-bit ids answer on request + 8,
+// 29-bit ids (18DA<target><source>) with target and source swapped.
+bool parseUdsIds(const std::string& text, std::vector<EcuDefinition>& out, std::string& error) {
+    size_t start = 0;
+    for (;;) {
+        const size_t comma = text.find(',', start);
+        std::string item =
+            text.substr(start, comma == std::string::npos ? std::string::npos : comma - start);
+        if (item.rfind("0x", 0) == 0 || item.rfind("0X", 0) == 0) item = item.substr(2);
+        if (!item.empty()) {
+            std::uint32_t id = 0;
+            try {
+                size_t used = 0;
+                id = static_cast<std::uint32_t>(std::stoul(item, &used, 16));
+                if (used != item.size()) throw std::invalid_argument(item);
+            } catch (const std::exception&) {
+                error = "Not a hex id: " + item;
+                return false;
+            }
+            EcuDefinition d;
+            d.request = id;
+            if (id > 0x7FF) {
+                d.extended29 = true;
+                d.response = (id & 0xFFFF0000u) | ((id & 0xFFu) << 8) | ((id >> 8) & 0xFFu);
+            } else {
+                d.response = id + 8;
+            }
+            char name[24];
+            std::snprintf(name, sizeof(name), d.extended29 ? "ECU %08X" : "ECU %03X",
+                          static_cast<unsigned>(id));
+            d.name = name;
+            out.push_back(d);
+        }
+        if (comma == std::string::npos) break;
+        start = comma + 1;
+    }
+    if (out.empty()) {
+        error = "No ids given after --ids";
+        return false;
+    }
+    return true;
+}
+
+std::string idText(const EcuDefinition& d, bool response) {
+    char buffer[16];
+    const unsigned id = static_cast<unsigned>(response ? d.response : d.request);
+    std::snprintf(buffer, sizeof(buffer), d.extended29 ? "%08X" : "%03X", id);
+    return buffer;
+}
+
+std::string dtcStatusText(const UdsDtc& d) {
+    std::string out;
+    auto add = [&out](const char* word) {
+        if (!out.empty()) out += ", ";
+        out += word;
+    };
+    if (d.testFailed) add("failing now");
+    if (d.confirmed) add("confirmed");
+    if (d.pending) add("pending");
+    if (d.warningLamp) add("warning lamp");
+    if (out.empty()) add("not failing");
+    return out;
+}
+
+int commandUds(Elm327& elm, const std::vector<EcuDefinition>& list, bool asJson) {
+    if (!elm.isCan()) return fail(asJson, "UDS needs a CAN connection; this car speaks " +
+                                              elm.protocolText() + ".", 3);
+    const std::uint64_t started = nowMs();
+    const std::vector<UdsEcu> ecus = scanEcus(
+        elm, list,
+        [asJson](int index, int total, const std::string& name) {
+            if (!asJson) std::fprintf(stderr, "  [%d/%d] %s ...\n", index + 1, total, name.c_str());
+        },
+        nullptr);
+    const double seconds = static_cast<double>(nowMs() - started) / 1000.0;
+
+    int found = 0;
+    for (const UdsEcu& e : ecus) found += e.present ? 1 : 0;
+
+    if (asJson) {
+        JsonWriter json;
+        json.beginObject()
+            .field("seconds", seconds)
+            .field("asked", static_cast<int>(ecus.size()))
+            .field("present", found)
+            .key("ecus")
+            .beginArray();
+        for (const UdsEcu& e : ecus) {
+            json.beginObject()
+                .field("name", e.definition.name)
+                .field("request", idText(e.definition, false))
+                .field("response", idText(e.definition, true))
+                .field("present", e.present);
+            if (e.present) {
+                json.key("info")
+                    .beginObject()
+                    .field("partNumber", e.info.partNumber)
+                    .field("softwareVersion", e.info.softwareVersion)
+                    .field("hardwareVersion", e.info.hardwareVersion)
+                    .field("systemName", e.info.systemName)
+                    .field("serial", e.info.serial)
+                    .field("vin", e.info.vin)
+                    .endObject();
+                json.field("dtcsRead", e.dtcsRead).key("dtcs").beginArray();
+                for (const UdsDtc& d : e.dtcs) {
+                    json.beginObject()
+                        .field("code", d.code)
+                        .field("failureType", d.failureType)
+                        .field("failureText", d.failureText)
+                        .field("status", d.status)
+                        .field("testFailed", d.testFailed)
+                        .field("pending", d.pending)
+                        .field("confirmed", d.confirmed)
+                        .field("warningLamp", d.warningLamp)
+                        .field("text", d.text)
+                        .endObject();
+                }
+                json.endArray();
+            }
+            if (!e.note.empty()) json.field("note", e.note);
+            json.endObject();
+        }
+        json.endArray().endObject();
+        std::fputs(json.text().c_str(), stdout);
+        return 0;
+    }
+
+    for (const UdsEcu& e : ecus) {
+        std::printf("%s (%s/%s): %s\n", e.definition.name.c_str(), idText(e.definition, false).c_str(),
+                    idText(e.definition, true).c_str(), e.present ? "present" : "no answer");
+        if (!e.present) continue;
+        const UdsEcuInfo& i = e.info;
+        if (!i.systemName.empty()) std::printf("  System    %s\n", i.systemName.c_str());
+        if (!i.partNumber.empty()) std::printf("  Part no.  %s\n", i.partNumber.c_str());
+        if (!i.softwareVersion.empty()) std::printf("  Software  %s\n", i.softwareVersion.c_str());
+        if (!i.hardwareVersion.empty()) std::printf("  Hardware  %s\n", i.hardwareVersion.c_str());
+        if (!i.serial.empty()) std::printf("  Serial    %s\n", i.serial.c_str());
+        if (!i.vin.empty()) std::printf("  VIN       %s\n", i.vin.c_str());
+        if (e.dtcsRead && e.dtcs.empty()) std::printf("  No fault codes stored.\n");
+        for (const UdsDtc& d : e.dtcs) {
+            std::printf("  %s", d.code.c_str());
+            if (!d.failureText.empty()) std::printf("-%02X (%s)", d.failureType, d.failureText.c_str());
+            std::printf(" [%s]\n      %s\n", dtcStatusText(d).c_str(), d.text.c_str());
+        }
+        if (!e.note.empty()) std::printf("  Note: %s\n", e.note.c_str());
+    }
+    std::printf("\n%d of %d control units answered, %.1f s.\n", found,
+                static_cast<int>(ecus.size()), seconds);
+    return 0;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -710,6 +895,7 @@ int main(int argc, char** argv) {
     bool verbose = false;
     bool demo = false;
     bool asJson = false;
+    std::string udsIds;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
         try {
@@ -717,6 +903,7 @@ int main(int argc, char** argv) {
             else if (arg == "--port" && i + 1 < argc) port = argv[++i];
             else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
             else if (arg == "--seconds" && i + 1 < argc) seconds = std::stoi(argv[++i]);
+            else if (arg == "--ids" && i + 1 < argc) udsIds = argv[++i];
             else if (arg == "--demo") demo = true;
             else if (arg == "--json") asJson = true;
             else if (arg == "-v") verbose = true;
@@ -743,7 +930,7 @@ int main(int argc, char** argv) {
         return kklCheck(port);
     }
     static const char* const known[] = {"read", "clear", "live", "info", "vin",
-                                        "freeze", "health", "probe", "ecus"};
+                                        "freeze", "health", "probe", "ecus", "uds"};
     bool isKnown = false;
     for (const char* k : known) isKnown = isKnown || command == k;
     if (!isKnown) {
@@ -752,6 +939,12 @@ int main(int argc, char** argv) {
     }
 
     std::string error;
+    std::vector<EcuDefinition> udsList;
+    if (command == "uds") {
+        if (udsIds.empty()) udsList = defaultUdsList();
+        else if (!parseUdsIds(udsIds, udsList, error)) return fail(asJson, error, 1);
+    }
+
     std::unique_ptr<ITransport> transport;
     if (demo) {
         // Ten minutes after ignition on: the engine is warm and the demo car
@@ -807,6 +1000,8 @@ int main(int argc, char** argv) {
         const std::vector<LiveValue> frame = obd.readFreezeFrame(trigger);
         if (!trigger.empty()) std::printf("Freeze frame for code %s:\n", trigger.c_str());
         for (const LiveValue& v : frame) printValue(v);
+    } else if (command == "uds") {
+        result = commandUds(elm, udsList, asJson);
     } else if (command == "ecus") {
         // Everything per control unit: headers on, so every answer keeps
         // its sender.

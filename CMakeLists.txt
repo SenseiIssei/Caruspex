@@ -31,6 +31,7 @@ add_library(caruspex_core STATIC
     src/core/Elm327.cpp
     src/core/EcuAddress.cpp
     src/core/Obd2.cpp
+    src/core/Uds.cpp
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
     src/core/Kwp1281.cpp
@@ -206,6 +207,7 @@ if(CARUSPEX_TESTS)
         tests/test_dtc.cpp
         tests/test_vehicles.cpp
         tests/test_ecus.cpp
+        tests/test_uds.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
