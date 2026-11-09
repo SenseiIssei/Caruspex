@@ -7,6 +7,8 @@
 //   caruspex_cli health --demo --json
 //   caruspex_cli ecus --tcp 127.0.0.1:35000   (per control unit, all live values)
 //   caruspex_cli uds --demo --ids 760,737      (UDS: identification and faults per ECU)
+//   caruspex_cli read --port COM5 --record car.jsonl   (record the session)
+//   caruspex_cli read --replay car.jsonl               (play it back without a car)
 //
 // `caruspex_cli help` lists every command and option.
 
@@ -28,6 +30,7 @@
 #include "core/KLineStream.h"
 #include "core/Lang.h"
 #include "core/Obd2.h"
+#include "core/Recording.h"
 #include "core/Timing.h"
 #include "core/Transport.h"
 #include "core/Uds.h"
@@ -64,6 +67,7 @@ const char* const kUsage =
     "  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out\n"
     "  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)\n"
     "  --baud N            baud rate of the serial port, 38400 if left out\n"
+    "  --replay FILE       play back a recording instead of talking to an adapter\n"
     "\n"
     "Options:\n"
     "  --json              machine-readable output for read, vin, health, probe, freeze, uds\n"
@@ -71,6 +75,10 @@ const char* const kUsage =
     "  --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit\n"
     "                      ids like 18DA28F1 answer on 18DAF128); the demo car's six\n"
     "                      control units if left out\n"
+    "  --record FILE       record the whole session with the adapter into FILE\n"
+    "                      (JSON Lines, replayable with --replay)\n"
+    "  --fast-timing       aggressive adaptive timing (ATAT2), back to ATAT1 if the\n"
+    "                      adapter refuses it or answers go missing\n"
     "  -v                  log every command sent to the adapter\n";
 
 void printPorts() {
@@ -895,7 +903,8 @@ int main(int argc, char** argv) {
     bool verbose = false;
     bool demo = false;
     bool asJson = false;
-    std::string udsIds;
+    bool fastTiming = false;
+    std::string udsIds, recordPath, replayPath;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
         try {
@@ -904,6 +913,9 @@ int main(int argc, char** argv) {
             else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
             else if (arg == "--seconds" && i + 1 < argc) seconds = std::stoi(argv[++i]);
             else if (arg == "--ids" && i + 1 < argc) udsIds = argv[++i];
+            else if (arg == "--record" && i + 1 < argc) recordPath = argv[++i];
+            else if (arg == "--replay" && i + 1 < argc) replayPath = argv[++i];
+            else if (arg == "--fast-timing") fastTiming = true;
             else if (arg == "--demo") demo = true;
             else if (arg == "--json") asJson = true;
             else if (arg == "-v") verbose = true;
@@ -946,7 +958,16 @@ int main(int argc, char** argv) {
     }
 
     std::unique_ptr<ITransport> transport;
-    if (demo) {
+    std::string protocolOrder = demo ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst;
+    if (!replayPath.empty()) {
+        auto replay = std::make_unique<ReplayTransport>(replayPath);
+        if (!replay->isOpen()) return fail(asJson, replay->error(), 2);
+        if (!asJson) std::printf("%s\n", recordingSummary(replay->info()).c_str());
+        // The recorded protocol first, so the replay does not have to step
+        // through the ones the car never answered on.
+        protocolOrder = replay->protocolOrder(protocolOrder);
+        transport = std::move(replay);
+    } else if (demo) {
         // Ten minutes after ignition on: the engine is warm and the demo car
         // is out on its drive cycle, so the live values say something.
         DemoOptions options;
@@ -960,18 +981,32 @@ int main(int argc, char** argv) {
     }
     if (!transport) return fail(asJson, "Connection failed: " + error, 2);
 
+    RecordingTransport* recording = nullptr;
+    if (!recordPath.empty()) {
+        auto wrapped = std::make_unique<RecordingTransport>(std::move(transport), recordPath);
+        if (!wrapped->isRecording()) return fail(asJson, wrapped->error(), 2);
+        recording = wrapped.get();
+        transport = std::move(wrapped);
+    }
+
     Elm327 elm;
+    if (fastTiming) elm.setAdaptiveTiming(AdaptiveTiming::Aggressive);
     if (verbose) {
         // With --json the log goes to stderr so stdout stays parseable.
         elm.setLog([asJson](const std::string& m) { std::fprintf(asJson ? stderr : stdout, "%s\n", m.c_str()); });
     }
-    if (!elm.connect(std::move(transport), demo ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst, error)) {
+    if (!elm.connect(std::move(transport), protocolOrder, error)) {
         return fail(asJson, error, 3);
     }
     if (!asJson) {
         std::printf("Adapter    : %s\n", elm.version().c_str());
+        if (elm.isStn()) std::printf("STN chip   : %s\n", elm.stnId().c_str());
         std::printf("Connection : %s\n", elm.transportName().c_str());
-        std::printf("Protocol   : %s\n\n", elm.protocolText().c_str());
+        std::printf("Protocol   : %s\n", elm.protocolText().c_str());
+        if (elm.adaptiveTimingLevel() > 0)
+            std::printf("Timing     : ATAT%d\n", elm.adaptiveTimingLevel());
+        if (recording) std::printf("Recording  : %s\n", recording->path().c_str());
+        std::printf("\n");
     }
 
     Obd2 obd(elm);
