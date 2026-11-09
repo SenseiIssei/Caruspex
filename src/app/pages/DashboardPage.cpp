@@ -13,6 +13,8 @@
 #include "app/Icons.h"
 #include "app/Theme.h"
 #include "app/Widgets.h"
+#include "app/pages/FaultsPage.h"
+#include "data/DtcDatabase.h"
 #include "data/DtcLocation.h"
 
 namespace caruspex {
@@ -204,6 +206,11 @@ GaugeWidget* DashboardPage::gauge(int pid) {
     return it == gauges_.end() ? nullptr : it.value();
 }
 
+void DashboardPage::setBrand(const QString& brand) {
+    brand_ = brand;
+    rebuildFindings();
+}
+
 void DashboardPage::setVehicle(const QString& title, const QString& subtitle, BodyStyle body) {
     vehicleName_ = title;
     car_->setBodyStyle(body);
@@ -392,12 +399,17 @@ void DashboardPage::rebuildFindings() {
     int score = 100;
     QVector<Finding> findings;
     for (const FaultRow& f : faults_) {
-        const int minus = f.stored ? 18 : 8;
+        // Weight by how urgent the code is; a pending code counts half.
+        const DtcInfo info = lookupDtc(f.code.toStdString(), brand_.toStdString());
+        static const int weight[] = {3, 6, 12, 20, 30};
+        int minus = weight[static_cast<int>(info.severity)];
+        if (!f.stored) minus = (minus + 1) / 2;
         score -= minus;
         const ZoneInfo where = locateDtc(f.code.toStdString());
-        findings.push_back({QStringLiteral("alert"), f.stored ? color::bad : color::warn,
-                            QStringLiteral("%1  %2").arg(f.code, f.text),
-                            QStringLiteral("%1 · %2").arg(f.kind, QString::fromStdString(where.name)),
+        findings.push_back({QStringLiteral("alert"), severityColour(static_cast<int>(info.severity)),
+                            QStringLiteral("%1  %2").arg(f.code, info.known ? QString::fromStdString(info.text) : f.text),
+                            QStringLiteral("%1 · %2 · %3").arg(QString::fromUtf8(severityLabel(info.severity)), f.kind,
+                                                                QString::fromStdString(where.name)),
                             QStringLiteral("−%1").arg(minus)});
     }
     if (haveStatus_ && mil_) {

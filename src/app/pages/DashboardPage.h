@@ -37,6 +37,8 @@ public:
     };
     void setHealth(int score, const QString& caption, const QVector<Finding>& findings);
     int score() const { return score_; }
+    // Brand of the connected car, for brand-specific fault meanings.
+    void setBrand(const QString& brand);
     QString scoreCaption() const { return caption_; }
     const QVector<Finding>& findings() const { return findings_; }
 
@@ -94,6 +96,7 @@ private:
     QVector<FaultRow> faults_;
     bool externalHealth_ = false;
     QString vehicleName_;
+    QString brand_;
     int score_ = -1;
     QString caption_;
     QVector<Finding> findings_;

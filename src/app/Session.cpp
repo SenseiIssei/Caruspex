@@ -15,6 +15,7 @@
 #include "core/Serial.h"
 #include "core/Timing.h"
 #include "core/Transport.h"
+#include "data/DtcDatabase.h"
 #include "data/Pids.h"
 
 namespace caruspex {
@@ -707,8 +708,14 @@ void Worker::runHealthCheck(int seconds) {
     }
     emit faults(faultRows);
     input.faultLevel = [](const Fault& f) {
-        // Confirmed codes weigh more than pending ones.
-        return isStoredKind(f.kind) ? Level::Warning : Level::Info;
+        // The database knows how urgent a code is; pending codes count one
+        // step lower, they may still disappear on their own.
+        const Severity severity = lookupDtc(f.code).severity;
+        Level level = Level::Info;
+        if (severity == Severity::Critical) level = Level::Critical;
+        else if (severity == Severity::High || severity == Severity::Medium) level = Level::Warning;
+        if (!isStoredKind(f.kind) && level == Level::Warning) level = Level::Info;
+        return level;
     };
 
     emit healthProgress(tr("Bauteilprüfung (Modus 06)"), 18);
