@@ -128,7 +128,7 @@ Reine Elektroautos müssen kein OBD-II für die Abgasüberwachung anbieten. Manc
 
 ## Welcher Adapter kann was
 
-Unterstützt wird jeder **ELM327**-kompatible Adapter (USB, klassisches Bluetooth unter Windows über den COM-Port des gekoppelten Adapters, **Bluetooth LE** wie Vgate iCar Pro BLE, vLinker, OBDLink CX oder Veepeak BLE ohne Koppeln, oder WLAN), ein **ENET-Kabel** für BMW und Mini ab der F-Baureihe (Caruspex findet das Auto im Netzwerk und liest alle Steuergeräte über Ethernet, ohne Adapterchip; Codieren und Flashen bleiben bei E-Sys, ISTA oder den Tuning-Werkzeugen) sowie jedes **KKL-Kabel nach VAG 409.1**. Adapter mit FTDI- oder CP2102-Chip sind auf der K-Line deutlich zuverlässiger als die ganz billigen Klone, für KWP1281 sollte es ein echter FTDI FT232RL sein.
+Unterstützt wird jeder **ELM327**-kompatible Adapter (USB, klassisches Bluetooth nach dem Koppeln direkt über RFCOMM unter Windows und Linux oder über seinen COM-Port, **Bluetooth LE** wie Vgate iCar Pro BLE, vLinker, OBDLink CX oder Veepeak BLE ohne Koppeln, oder WLAN), ein **ENET-Kabel** für BMW und Mini ab der F-Baureihe (Caruspex findet das Auto im Netzwerk und liest alle Steuergeräte über Ethernet, ohne Adapterchip; Codieren und Flashen bleiben bei E-Sys, ISTA oder den Tuning-Werkzeugen) sowie jedes **KKL-Kabel nach VAG 409.1**. Adapter mit FTDI- oder CP2102-Chip sind auf der K-Line deutlich zuverlässiger als die ganz billigen Klone, für KWP1281 sollte es ein echter FTDI FT232RL sein.
 
 Nicht kompatibel sind herstellereigene Interfaces wie Delphi DS150E, Autocom oder VAS 5054A. Die sprechen kein ELM327, sondern ihr eigenes Protokoll.
 

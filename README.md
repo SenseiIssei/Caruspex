@@ -172,7 +172,7 @@ Pure electric cars do not have to offer OBD-II emissions data. Some answer partl
 
 ## Supported adapters
 
-- Any **ELM327**-compatible adapter: USB, classic Bluetooth (on Windows through the COM port of a paired adapter), **Bluetooth LE**
+- Any **ELM327**-compatible adapter: USB, classic Bluetooth (directly over RFCOMM on Windows and Linux once paired, or through its COM port), **Bluetooth LE**
   (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE and other adapters with the usual GATT services; found by a
   scan, no pairing) or Wi-Fi via TCP
 - An **ENET cable** (OBD to RJ45) for BMW and Mini from the F series on: Caruspex finds the car on the network
