@@ -157,6 +157,8 @@ QWidget* ConnectPage::buildAdapter() {
     QPushButton* demo = makeModeChip(QStringLiteral("sparkles"), tr("Demo-Auto"));
     QPushButton* replay = makeModeChip(QStringLiteral("play"), tr("Aufnahme"));
     QPushButton* ble = makeModeChip(QStringLiteral("bluetooth"), tr("Bluetooth"));
+    QPushButton* enet = makeModeChip(QStringLiteral("ethernet"), tr("BMW ENET"));
+    modes_->addButton(enet, int(Mode::Enet));
     modes_->addButton(ble, int(Mode::Ble));
     modes_->addButton(cable, int(Mode::Cable));
     modes_->addButton(wifi, int(Mode::Wifi));
@@ -170,6 +172,7 @@ QWidget* ConnectPage::buildAdapter() {
     ble->setVisible(false);
 #endif
     chips->addWidget(wifi);
+    chips->addWidget(enet);
     chips->addWidget(demo);
     chips->addWidget(replay);
     chips->addStretch();
@@ -294,6 +297,24 @@ QWidget* ConnectPage::buildAdapter() {
             bleNote_->setText(tr("Suche Bluetooth-Geräte, das dauert bis zu einer halben Minute ..."));
             emit bleScanRequested();
         });
+        modeStack_->addWidget(page);
+    }
+    // BMW ENET
+    {
+        auto* page = new QWidget;
+        auto* v = new QVBoxLayout(page);
+        v->setContentsMargins(0, 0, 0, 0);
+        v->setSpacing(8);
+        enetEdit_ = new QLineEdit;
+        enetEdit_->setPlaceholderText(tr("Automatisch suchen, oder die Adresse des Autos (169.254.x.x)"));
+        enetEdit_->setMinimumHeight(38);
+        v->addWidget(enetEdit_);
+        v->addWidget(makeLabel(tr("Für BMW und Mini ab der F-Baureihe (etwa ab 2007) mit einem ENET-Kabel "
+                                  "zwischen OBD-Buchse und Netzwerkanschluss. Zündung an. Nach dem "
+                                  "Einstecken braucht der Rechner bis zu einer Minute für seine "
+                                  "automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören "
+                                  "in die Werkstattsoftware."),
+                               "Hint", true));
         modeStack_->addWidget(page);
     }
     layout->addWidget(modeStack_);
@@ -441,6 +462,10 @@ bool ConnectPage::selectPort(const QString& device) {
 
 void ConnectPage::setWifiAddress(const QString& address) { addressEdit_->setText(address); }
 
+void ConnectPage::setEnetAddress(const QString& host) {
+    enetEdit_->setText(host.compare(QStringLiteral("auto"), Qt::CaseInsensitive) == 0 ? QString() : host);
+}
+
 void ConnectPage::selectBluetooth(const QString& id) {
     if (!bleBox_) return;
     int index = bleBox_->findData(id);
@@ -584,6 +609,9 @@ void ConnectPage::startConnect() {
         }
         case Mode::Demo:
             emit demoRequested(order);
+            break;
+        case Mode::Enet:
+            emit enetRequested(enetEdit_->text().trimmed(), order);
             break;
         case Mode::Ble:
             emit bleRequested(bleBox_->currentData().toString(),

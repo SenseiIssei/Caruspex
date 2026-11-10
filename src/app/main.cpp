@@ -93,6 +93,13 @@ int main(int argc, char** argv) {
 #ifdef CARUSPEX_HAS_BLE
     parser.addOption(bluetoothOption);
 #endif
+    QCommandLineOption enetOption(
+        QStringList() << QStringLiteral("enet"),
+        QCoreApplication::translate("main",
+                                    "BMW oder Mini über ein ENET-Kabel verbinden, über die Adresse "
+                                    "oder auto für die Suche"),
+        QStringLiteral("address|auto"));
+    parser.addOption(enetOption);
     QCommandLineOption reportOption(
         QStringList() << QStringLiteral("report"),
         QCoreApplication::translate("main",
@@ -283,11 +290,11 @@ int main(int argc, char** argv) {
     if (parser.isSet(reportOption)) {
         const bool connects = parser.isSet(tcpOption) || parser.isSet(demoOption) ||
                               parser.isSet(replayOption) || parser.isSet(portOption) ||
-                              parser.isSet(bluetoothOption);
+                              parser.isSet(bluetoothOption) || parser.isSet(enetOption);
         if (!connects) {
             std::fprintf(stderr, "%s\n",
                          QCoreApplication::translate("main", "--report braucht eine Verbindung: --demo, "
-                                                             "--port, --tcp, --bluetooth oder --replay")
+                                                             "--port, --tcp, --enet, --bluetooth oder --replay")
                              .toLocal8Bit()
                              .constData());
             return 2;
@@ -295,6 +302,7 @@ int main(int argc, char** argv) {
         window.reportAndQuit(parser.value(reportOption), parser.value(reportWaitOption).toInt());
     }
     if (parser.isSet(portOption)) window.autoConnectSerial(parser.value(portOption));
+    if (parser.isSet(enetOption)) window.autoConnectEnet(parser.value(enetOption));
 #ifdef CARUSPEX_HAS_BLE
     if (parser.isSet(bluetoothOption)) window.autoConnectBluetooth(parser.value(bluetoothOption));
 #endif

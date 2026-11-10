@@ -566,7 +566,7 @@ std::vector<UdsEcu> scanEcus(Elm327& elm, const std::vector<EcuDefinition>& ecus
             if (!ecu.present) {
                 // Some ECUs ignore 3E outside an extended session but do
                 // answer the identification.
-                ecu.present = exchange(elm, {0x22, 0xF1, 0x87}, kShortRequestMs).answered;
+                ecu.present = exchange(elm, {0x22, 0xF1, 0x87}, kShortRequestMs, def.extendedAddress).answered;
             }
             if (!ecu.present) {
                 ecu.note = L("Keine Antwort: nicht verbaut, oder das Gateway lässt die Anfrage nicht durch.",

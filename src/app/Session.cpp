@@ -14,6 +14,7 @@
 #include "core/AdapterProbe.h"
 #include "core/Uds.h"
 #include "core/DemoTransport.h"
+#include "core/Enet.h"
 #include "core/Recording.h"
 #include "data/PidPacks.h"
 
@@ -242,6 +243,27 @@ void Worker::openBle(const QString& id, const QString& name, int kinds, const QS
     emit failed(QString::fromStdString(error));
 }
 #endif
+
+void Worker::openEnet(const QString& host, const QString& protocolOrder) {
+    Q_UNUSED(protocolOrder);   // ENET is always CAN behind the front end
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    if (host.isEmpty()) emit logLine(tr("Suche das Auto im Netzwerk (ENET) ..."));
+    std::string error;
+    hsfz::VehicleIdent ident;
+    std::unique_ptr<ITransport> transport = caruspex::openEnet(host.toStdString(), error, &ident);
+    if (!transport) {
+        emit busy(false);
+        emit failed(QString::fromStdString(error));
+        return;
+    }
+    emit logLine(tr("Auto gefunden unter %1%2")
+                     .arg(QString::fromStdString(ident.address),
+                          ident.vin.empty() ? QString() : QStringLiteral(", VIN ") + QString::fromStdString(ident.vin)));
+    const bool ok = finishConnect(std::move(transport), QStringLiteral("6"), true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
 
 void Worker::openDemo(const QString& protocolOrder) {
     // The demo car speaks CAN; the K-line protocols would only cost seconds.
@@ -1229,6 +1251,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openSerialRequested, worker_, &Worker::openSerial);
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
+    connect(this, &Session::openEnetRequested, worker_, &Worker::openEnet);
 #ifdef CARUSPEX_HAS_BLE
     connect(this, &Session::scanBleRequested, worker_, &Worker::scanBle);
     connect(this, &Session::openBleRequested, worker_, &Worker::openBle);
