@@ -392,3 +392,25 @@ TEST_CASE("Enum texts exist in both languages", "[catalog]") {
         REQUIRE_FALSE(locationText(all[i], 0).empty());
     }
 }
+
+TEST_CASE("New brands are recognised from the VIN and found in the catalog", "[vehicles][vin]") {
+    // WMI after the Wikibooks list; the rest of each VIN is made up.
+    const std::pair<const char*, const char*> cases[] = {
+        {"HXMAA1234R0000001", "Xiaomi"},  {"L1NSPGHB5PA000001", "Xpeng"},
+        {"LJ1EEAUU6P0000001", "NIO"},     {"LW433B1A0P0000001", "Li Auto"},
+        {"LFZ63AL55RD000001", "Leapmotor"}, {"LM8F7G1A5PA000001", "Aito"},
+        {"LDP95H961PE000001", "Voyah"},   {"LS6A3E0A5PB000001", "Avatr"},
+        {"SC6GM1CA5PE000001", "INEOS"},   {"YSMYKEAE5PB000001", "Polestar"},
+        {"LSH14J7C5PA000001", "Maxus"},   {"LFPH4ACP5P1000001", "Hongqi"},
+    };
+    for (const auto& [vin, brand] : cases) {
+        INFO(vin);
+        const VinInfo v = decodeVin(vin, 2026);
+        REQUIRE(v.brand == brand);
+        REQUIRE_FALSE(catalog::models(brand).empty());
+    }
+    // A code shared by several brands of one group lists all of them.
+    const VinInfo chery = decodeVin("LVVDB21B5PD000001", 2026);
+    REQUIRE(std::find(chery.brandCandidates.begin(), chery.brandCandidates.end(), "Jaecoo") !=
+            chery.brandCandidates.end());
+}

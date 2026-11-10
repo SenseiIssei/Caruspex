@@ -405,9 +405,209 @@ ElmResult Elm327::at(const std::string& command, int timeoutMs) {
 }
 
 ElmResult Elm327::request(const std::string& command, int expectedService, int timeoutMs) {
+    if (obdOnUds_) return requestOnUds(command, expectedService, timeoutMs);
     ElmResult raw = send(command, timeoutMs);
     if (raw.status == ElmStatus::AdapterError) return raw;
     return decodeMessages(raw.lines, expectedService, headerFormat());
+}
+
+// ---------------------------------------------------------------------------
+// OBD on UDS (SAE J1979-2)
+//
+//   01 pp      ->  22 F4 pp       PIDs of service 01 as data identifiers
+//   09 ii      ->  22 F8 ii       vehicle information
+//   03         ->  19 42 33 08 FF confirmed emission DTCs (WWH-OBD format)
+//   07         ->  19 42 33 04 FF pending
+//   0A         ->  19 55 33       permanent
+//   04         ->  14 FF FF 33    clear the emission group
+// ---------------------------------------------------------------------------
+
+ElmResult Elm327::udsRequest(const std::string& command, int timeoutMs) {
+    const int sid = std::stoi(command.substr(0, 2), nullptr, 16);
+    ElmResult result;
+    // A unit that is still busy says 7F xx 78; ask again, as UDS allows.
+    for (int round = 0; round < 10; ++round) {
+        ElmResult raw = send(command, timeoutMs);
+        if (raw.status == ElmStatus::AdapterError) return raw;
+        bool pending = false;
+        for (const std::string& line : raw.lines) {
+            const std::string compact = toUpper(stripSpaces(line));
+            char needle[8];
+            std::snprintf(needle, sizeof(needle), "7F%02X78", sid);
+            if (compact.find(needle) != std::string::npos) pending = true;
+        }
+        result = decodeMessages(raw.lines, sid, headerFormat());
+        if (result.ok() || !pending) return result;
+        sleepMs(50);
+    }
+    return result;
+}
+
+ElmResult Elm327::requestOnUds(const std::string& command, int expectedService, int timeoutMs) {
+    std::string hex = toUpper(stripSpaces(command));
+    if (hex.size() % 2 == 1) hex.pop_back();   // "expected answers" digit
+    std::vector<int> bytes;
+    for (size_t i = 0; i + 1 < hex.size(); i += 2) bytes.push_back(std::stoi(hex.substr(i, 2), nullptr, 16));
+    ElmResult none;
+    none.status = ElmStatus::NoData;
+    none.message = L("Im Modus OBD über UDS nicht verfügbar.", "Not available in OBD on UDS mode.");
+    if (bytes.empty()) return none;
+    (void)expectedService;
+
+    // Collects the translated payloads per sending unit, in order.
+    std::vector<std::string> order;
+    std::vector<std::vector<int>> payloads;
+    auto add = [&](const std::string& source, const std::vector<int>& data) {
+        auto it = std::find(order.begin(), order.end(), source);
+        if (it == order.end()) {
+            order.push_back(source);
+            payloads.push_back(data);
+        } else {
+            auto& p = payloads[static_cast<size_t>(it - order.begin())];
+            p.insert(p.end(), data.begin(), data.end());
+        }
+    };
+    auto finish = [&](const ElmResult& last) {
+        if (payloads.empty()) return last.ok() ? none : last;
+        ElmResult out;
+        out.messages = payloads;
+        out.sources = order;
+        return out;
+    };
+    char cmd[32];
+    ElmResult last;
+
+    switch (bytes[0]) {
+        case 0x01:
+        case 0x09: {
+            // One identifier per request; several PIDs are joined back into
+            // one multi-PID answer per unit.
+            const int high = bytes[0] == 0x01 ? 0xF4 : 0xF8;
+            for (size_t i = 1; i < bytes.size(); ++i) {
+                std::snprintf(cmd, sizeof(cmd), "22%02X%02X", high, bytes[i]);
+                last = udsRequest(cmd, timeoutMs);
+                if (!last.ok()) continue;
+                for (size_t m = 0; m < last.messages.size(); ++m) {
+                    const std::vector<int>& d = last.messages[m];
+                    if (d.size() < 2 || d[0] != high || d[1] != bytes[i]) continue;
+                    std::vector<int> classic(d.begin() + 1, d.end());
+                    // Service 09 had a count byte in front of these items.
+                    if (bytes[0] == 0x09 && (bytes[i] == 0x02 || bytes[i] == 0x0A)) classic.insert(classic.begin() + 1, 1);
+                    add(m < last.sources.size() ? last.sources[m] : std::string(), classic);
+                }
+            }
+            return finish(last);
+        }
+        case 0x03:
+        case 0x07:
+        case 0x0A: {
+            const bool permanent = bytes[0] == 0x0A;
+            last = udsRequest(permanent ? "195533" : (bytes[0] == 0x03 ? "19423308FF" : "19423304FF"), timeoutMs);
+            if (!last.ok()) return last;
+            for (size_t m = 0; m < last.messages.size(); ++m) {
+                const std::vector<int>& d = last.messages[m];
+                // 42: sub, group, status mask, severity mask, format, then
+                // severity + DTC (3) + status. 55: sub, group, status mask,
+                // format, then DTC (3) + status.
+                const size_t start = permanent ? 4 : 5;
+                const size_t step = permanent ? 4 : 5;
+                const size_t dtcAt = permanent ? 0 : 1;
+                if (d.size() < start) continue;
+                std::vector<int> classic = {0};   // count first, as on CAN
+                for (size_t i = start; i + step <= d.size(); i += step) {
+                    classic.push_back(d[i + dtcAt]);
+                    classic.push_back(d[i + dtcAt + 1]);
+                }
+                classic[0] = static_cast<int>((classic.size() - 1) / 2);
+                add(m < last.sources.size() ? last.sources[m] : std::string(), classic);
+            }
+            return finish(last);
+        }
+        case 0x04: {
+            last = udsRequest("14FFFF33", timeoutMs);
+            if (!last.ok()) return last;
+            ElmResult out;
+            out.messages.assign(last.messages.size(), {});
+            out.sources = last.sources;
+            return out;
+        }
+        default:
+            return none;   // 02, 05, 06, 08 have no simple counterpart
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Listening to the bus
+// ---------------------------------------------------------------------------
+
+std::vector<std::string> Elm327::monitorLines(int durationMs, int maxLines) {
+    std::vector<std::string> lines;
+    if (!transport_) return lines;
+    transport_->flushInput();
+    transport_->write("ATMA\r");
+    std::string buffer;
+    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(std::max(0, durationMs));
+    auto complete = [&buffer] { return static_cast<int>(std::count(buffer.begin(), buffer.end(), '\r')); };
+    while (nowMs() < deadline && complete() <= maxLines) {
+        buffer += transport_->read(50);
+        if (buffer.find('>') != std::string::npos) break;   // stopped by itself (BUFFER FULL)
+    }
+    if (buffer.find('>') == std::string::npos) {
+        // Any character ends the monitor; the prompt follows.
+        transport_->write("\r");
+        const std::uint64_t stop = nowMs() + 1500;
+        while (nowMs() < stop) {
+            buffer += transport_->read(50);
+            if (buffer.find('>') != std::string::npos) break;
+        }
+    }
+    std::string line;
+    auto take = [&] {
+        const std::string t = trim(line);
+        line.clear();
+        if (t.empty()) return;
+        const std::string up = toUpper(t);
+        for (const char* skip : {"ATMA", "STOPPED", "BUFFER FULL", "?", "SEARCHING...", "NO DATA",
+                                 "CAN ERROR", "OK"}) {
+            if (up == skip) return;
+        }
+        lines.push_back(t);
+    };
+    for (char c : buffer) {
+        if (c == '\r' || c == '\n' || c == '>') take();
+        else line += c;
+    }
+    take();
+    if (static_cast<int>(lines.size()) > maxLines) lines.resize(static_cast<size_t>(maxLines));
+    return lines;
+}
+
+std::vector<std::vector<int>> Elm327::captureFrames(int canId, int durationMs, int maxFrames) {
+    std::vector<std::vector<int>> frames;
+    if (!transport_) return frames;
+    char filter[16];
+    std::snprintf(filter, sizeof(filter), "CRA%03X", canId & 0x7FF);
+    // Raw data bytes: without auto formatting the first byte is not taken
+    // for an ISO-TP PCI.
+    at("CAF0");
+    at(filter);
+    for (const std::string& line : monitorLines(durationMs, maxFrames)) {
+        std::string hex = stripSpaces(toUpper(line));
+        if (headers_) {
+            if (hex.size() < 3) continue;
+            hex = hex.substr(3);
+        }
+        if (hex.empty() || hex.size() % 2 != 0 || hex.size() > 16 ||
+            !std::all_of(hex.begin(), hex.end(), [](unsigned char c) { return std::isxdigit(c); })) {
+            continue;
+        }
+        std::vector<int> bytes;
+        for (size_t i = 0; i < hex.size(); i += 2) bytes.push_back(std::stoi(hex.substr(i, 2), nullptr, 16));
+        frames.push_back(std::move(bytes));
+    }
+    at("CAF1");
+    if (!answeredOk(at("CRA"))) at("AR");
+    return frames;
 }
 
 bool Elm327::setHeaders(bool on) {
@@ -491,6 +691,8 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
     stn_ = false;
     stnId_.clear();
     timingLevel_ = 0;
+    obdOnUds_ = false;
+    listenOnly_ = false;
     drainGreeting();
 
     ElmResult banner = at("Z", 6000);
@@ -524,6 +726,18 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
         const int timeout = (proto >= '3' && proto <= '5') ? 12000 : 8000;
         for (int attempt = 0; attempt < 2; ++attempt) {
             ElmResult probe = request("0100", 0x01, timeout);
+            if (!probe.ok() && probe.status != ElmStatus::AdapterError && proto >= '6' && proto <= '9') {
+                // Newer cars may know the emission services only over UDS.
+                ElmResult uds = udsRequest("22F400", timeout);
+                if (uds.ok() && !uds.messages.empty() && uds.messages.front().size() >= 2 &&
+                    uds.messages.front()[0] == 0xF4 && uds.messages.front()[1] == 0x00) {
+                    obdOnUds_ = true;
+                    probe = uds;
+                    if (log_)
+                        log_(L("  Das Auto spricht OBD über UDS (SAE J1979-2).",
+                               "  The car speaks OBD on UDS (SAE J1979-2)."));
+                }
+            }
             if (probe.ok()) {
                 ElmResult dp = at("DP");
                 protocolText_ = dp.lines.empty() ? protocolName(proto) : dp.lines.front();
@@ -537,6 +751,29 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
                 return false;
             }
             sleepMs(400);
+        }
+    }
+
+    // No answer to OBD at all. If there is traffic on CAN 500 kbit, the car
+    // may still broadcast its values (Tesla has no OBD responder at all).
+    if (protocolOrder.find('6') != std::string::npos) {
+        at("SP6");
+        at("CRA");
+        int frames = 0;
+        for (const std::string& line : monitorLines(800, 12)) {
+            const std::string hex = stripSpaces(line);
+            if (hex.size() >= 4 && std::all_of(hex.begin(), hex.end(), [](unsigned char c) { return std::isxdigit(c); }))
+                ++frames;
+        }
+        if (frames >= 3) {
+            listenOnly_ = true;
+            connected_ = true;
+            protocolId_ = '6';
+            protocolText_ = std::string("ISO 15765-4 (CAN 11/500), ") + L("nur Mithören", "listen only");
+            if (log_)
+                log_(L("  Kein OBD, aber Verkehr auf dem CAN-Bus: verbunden zum Mithören.",
+                       "  No OBD, but traffic on the CAN bus: connected for listening."));
+            return true;
         }
     }
 
@@ -558,6 +795,8 @@ void Elm327::disconnect() {
     connected_ = false;
     headers_ = false;
     stn_ = false;
+    obdOnUds_ = false;
+    listenOnly_ = false;
     stnId_.clear();
     timingLevel_ = 0;
     protocolId_ = '0';

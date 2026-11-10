@@ -85,6 +85,17 @@ public:
     // Sends and decodes the response to the expected service (e.g. 0x03 -> 0x43).
     ElmResult request(const std::string& command, int expectedService, int timeoutMs = 6000);
 
+    // Listens on the bus (ATMA) for up to durationMs or maxLines lines and
+    // stops the adapter again. The lines as printed, status lines removed.
+    std::vector<std::string> monitorLines(int durationMs, int maxLines);
+    // Frames with this 11-bit id that the cars sends by itself, raw data
+    // bytes, at most maxFrames. Restores CAN auto formatting and the receive
+    // filter afterwards.
+    std::vector<std::vector<int>> captureFrames(int canId, int durationMs, int maxFrames);
+    // Connected only for listening: the car does not answer OBD, but there
+    // is traffic on CAN 500 kbit (Tesla). Values come from broadcast frames.
+    bool listenOnly() const { return listenOnly_; }
+
     const std::string& version() const { return version_; }
     const std::string& protocolText() const { return protocolText_; }
     std::string transportName() const { return transport_ ? transport_->name() : ""; }
@@ -108,6 +119,13 @@ public:
     // answers with its firmware ("STN1130 v5.6.19") and anything else with
     // "?".
     bool isStn() const { return stn_; }
+    // The car answers the emission services only over UDS (SAE J1979-2,
+    // "OBD on UDS", required in the US from model year 2027 and already in
+    // some newer cars). request() then translates the classic services
+    // (01, 03, 04, 07, 09, 0A) to UDS and the answers back, so the rest of
+    // the program does not notice. Freeze frames (02) and test results (06)
+    // are not available in this mode.
+    bool obdOnUds() const { return obdOnUds_; }
     const std::string& stnId() const { return stnId_; }
 
     // Protocol number as the adapter counts ('1' to '9'), '0' if unknown.
@@ -125,6 +143,8 @@ public:
     }
 
 private:
+    ElmResult requestOnUds(const std::string& command, int expectedService, int timeoutMs);
+    ElmResult udsRequest(const std::string& command, int timeoutMs);
     ElmResult at(const std::string& command, int timeoutMs = 5000);
     void drainGreeting();
     void detectStn();
@@ -137,6 +157,8 @@ private:
     AdaptiveTiming adaptiveTiming_ = AdaptiveTiming::Standard;
     int timingLevel_ = 0;
     bool stn_ = false;
+    bool obdOnUds_ = false;
+    bool listenOnly_ = false;
     std::string stnId_;
     std::string version_ = "?";
     std::string protocolText_ = L("unbekannt", "unknown");

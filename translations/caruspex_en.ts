@@ -467,16 +467,16 @@ Protocol: %3</translation>
         <translation>No Bluetooth device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.</translation>
     </message>
     <message>
-        <source>BMW ENET</source>
-        <translation>BMW ENET</translation>
-    </message>
-    <message>
         <source>Automatisch suchen, oder die Adresse des Autos (169.254.x.x)</source>
         <translation>Search automatically, or the car&apos;s address (169.254.x.x)</translation>
     </message>
     <message>
-        <source>Für BMW und Mini ab der F-Baureihe (etwa ab 2007) mit einem ENET-Kabel zwischen OBD-Buchse und Netzwerkanschluss. Zündung an. Nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören in die Werkstattsoftware.</source>
-        <translation>For BMW and Mini from the F series on (about 2007) with an ENET cable between the OBD socket and the network port. Ignition on. After plugging in, the computer needs up to a minute for its automatic address. Caruspex only reads; coding and flashing belong in the workshop software.</translation>
+        <source>Netzwerkkabel</source>
+        <translation>Network cable</translation>
+    </message>
+    <message>
+        <source>Für ein ENET-Kabel (BMW und Mini ab der F-Baureihe) oder ein DoIP-Kabel (viele neuere Autos) zwischen OBD-Buchse und Netzwerkanschluss. Caruspex erkennt selbst, was das Auto spricht. Zündung an; nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören in die Werkstattsoftware.</source>
+        <translation>For an ENET cable (BMW and Mini from the F series on) or a DoIP cable (many newer cars) between the OBD socket and the network port. Caruspex works out by itself what the car speaks. Ignition on; after plugging in, the computer needs up to a minute for its automatic address. Caruspex only reads; coding and flashing belong in the workshop software.</translation>
     </message>
 </context>
 <context>
@@ -827,10 +827,6 @@ Protocol: %3</translation>
         <translation>Read continuously</translation>
     </message>
     <message>
-        <source>Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf. Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.</source>
-        <translation>For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe and Nissan Leaf. Other electric cars can be added through custom values on the Live values page.</translation>
-    </message>
-    <message>
         <source>Akkugesundheit</source>
         <translation>Battery health</translation>
     </message>
@@ -956,6 +952,10 @@ Protocol: %3</translation>
     <message>
         <source>Die Zellen sind ungleich geladen. Einmal langsam auf 100 % laden und einige Stunden stehen lassen hilft dem Ausgleich; bleibt es so, in die Werkstatt.</source>
         <translation>The cells are unevenly charged. Charging slowly to 100 % once and leaving the car for a few hours helps them balance; if it stays like this, see a workshop.</translation>
+    </message>
+    <message>
+        <source>Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören, mit Adapterkabel an der Diagnosebuchse). Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.</source>
+        <translation>For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening, with an adapter cable on the diagnostic connector). Other electric cars can be added through custom values on the Live values page.</translation>
     </message>
 </context>
 <context>
@@ -4225,12 +4225,12 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <translation>Connecting to %1 over classic Bluetooth ...</translation>
     </message>
     <message>
-        <source>Suche das Auto im Netzwerk (ENET) ...</source>
-        <translation>Searching for the car on the network (ENET) ...</translation>
+        <source>Suche das Auto im Netzwerk (ENET und DoIP) ...</source>
+        <translation>Searching for the car on the network (ENET and DoIP) ...</translation>
     </message>
     <message>
-        <source>Auto gefunden unter %1%2</source>
-        <translation>Car found at %1%2</translation>
+        <source>Verbunden über %1: %2%3</source>
+        <translation>Connected over %1: %2%3</translation>
     </message>
 </context>
 <context>

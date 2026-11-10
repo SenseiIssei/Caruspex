@@ -122,6 +122,17 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [ ] Windows-Programm signieren. Mittel, hängt an einem Zertifikat
 - [ ] Mehr Sprachen. Der Kern kennt heute nur Deutsch und Englisch (Text{de, en}), das bräuchte einen Umbau auf Schlüssel und Kataloge. Groß
 
+## Phase 12: Alle Marken, alle Wege ins Auto
+
+- [x] Katalog um Great Wall (Haval, WEY, Tank), Chery, Jaecoo, Hongqi, Maxus, Xiaomi, Li Auto, Aito, Voyah, Avatr, Wuling, Mahindra, Tata, Proton, Holden, Alpina und INEOS ergänzt, neue Modelle bei Xpeng, Leapmotor und KGM; VIN-Kennungen nach der WMI-Liste auf Wikibooks (111 Marken, 2242 Generationen)
+- [x] OBD über UDS (SAE J1979-2): wird beim Verbinden erkannt, wenn das Auto die klassischen Dienste ablehnt; 01, 03, 04, 07, 09 und 0A werden übersetzt. Freeze Frame und Modus 06 gibt es in dieser Form nicht
+- [x] DoIP (ISO 13400-2): Fahrzeugsuche, Freigabe, Diagnose mit Bestätigung und Lebenszeichen; OBD über die funktionale Adresse 0xE400. Der Netzwerkanschluss probiert ENET und DoIP selbst
+- [x] Mithören am CAN-Bus mit DBC-Signalen (auch Multiplexer); Autos ohne OBD-Antwort, aber mit Verkehr, werden zum Mithören verbunden. Tesla Model 3 und Y aus dem MIT-lizenzierten DBC von joshwardell, VIN aus 0x405
+- [ ] Steuergerätelisten für DoIP-Autos (VW MEB, Volvo, Mercedes ab MBUX): keine belastbaren öffentlichen Adresslisten, kommt erst mit Mitschnitten
+- [ ] Tesla Model S und X, BYD, Xpeng, NIO: eigene Signale nur mit belastbarer, frei nutzbarer Quelle
+- [ ] Mercedes-Adressliste (siehe Phase 6)
+- [ ] Ältere BMW (E-Reihe vor 2007) über K-Line mit DS2/KWP2000 braucht ein K+DCAN-Kabel im K-Line-Modus und Tests am Auto
+
 ## Phase 11: Am echten Auto prüfen
 
 - [ ] Testrunde mit dem A2 (K-Line und KKL), einem CAN-VAG, einem Japaner und einem E-Auto

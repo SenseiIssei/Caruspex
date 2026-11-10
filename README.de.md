@@ -95,8 +95,12 @@ Jedes Fahrzeug mit OBD-II oder EOBD, in Europa also Benziner ab Baujahr 2001 und
 | 1996 bis etwa 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, Golf IV, Toyota, Renault |
 | ab etwa 2004 | CAN (ISO 15765-4) | Audi A4 B7, Golf V, moderne Japaner |
 | USA bis etwa 2005 | J1850 PWM und VPW | Ford, Chevrolet |
+| neueste Autos | OBD über UDS (SAE J1979-2) | in den USA ab Modelljahr 2027 Pflicht, bei manchen neueren Autos schon jetzt; wird erkannt und automatisch übersetzt |
+| BMW und Mini ab F-Baureihe | ENET (HSFZ über Ethernet) oder D-CAN mit 6F1-Adressierung | alle Steuergeräte |
+| viele Autos ab etwa 2016 | DoIP (ISO 13400) mit DoIP-Kabel | OBD über Ethernet, automatisch gefunden |
+| Tesla Model 3 und Y | kein OBD: CAN-Rundfunk | Akku, Zellen, Temperaturen, Tempo, Kilometerstand per Mithören (Adapterkabel an die Diagnosebuchse) |
 
-Reine Elektroautos müssen kein OBD-II für die Abgasüberwachung anbieten. Manche antworten trotzdem teilweise, Tesla gar nicht über den Standardweg. Caruspex sagt das, statt es zu versuchen.
+Reine Elektroautos müssen kein OBD-II für die Abgasüberwachung anbieten. Manche antworten trotzdem teilweise; bei Autos ganz ohne Antwort, aber mit Verkehr auf dem Bus, verbindet sich Caruspex zum Mithören und liest, was die eingebauten Pakete kennen (bisher Tesla Model 3 und Y).
 
 ## Welcher Adapter kann was
 

@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "core/CanSignals.h"
 #include "core/CustomPids.h"
 #include "core/Lang.h"
 #include "core/Obd2.h"
@@ -808,12 +809,26 @@ TEST_CASE("Built-in packs load and every equation parses", "[custom][packs]") {
         REQUIRE(counted == all.size());
         for (const CustomPid& p : all) {
             INFO(p.pack << ": " << p.name << " = " << p.equation);
-            const TorqueEquation eq(p.equation);
-            REQUIRE(eq.ok());
-            REQUIRE(eq.bytesNeeded() <= 80);
-            std::vector<int> request;
-            REQUIRE(parseRequestHex(p.request, request));
-            REQUIRE(request.size() >= 2);
+            int canId = 0;
+            const bool broadcast = parseMonitorRequest(p.request, canId);
+            if (broadcast) {
+                // Listened for: a DBC signal, no addressing.
+                CanSignal signal;
+                std::string why;
+                REQUIRE(parseCanSignal(p.equation, signal, why));
+                REQUIRE(p.header.empty());
+                REQUIRE(p.response.empty());
+            } else {
+                const TorqueEquation eq(p.equation);
+                REQUIRE(eq.ok());
+                REQUIRE(eq.bytesNeeded() <= 80);
+                std::vector<int> request;
+                REQUIRE(parseRequestHex(p.request, request));
+                REQUIRE(request.size() >= 2);
+                double value = 0.0;
+                std::string error;
+                REQUIRE(eq.evaluate(std::vector<int>(80, 0), value, error));
+            }
             REQUIRE(keys.insert(p.key).second);
             REQUIRE(isCustomKey(p.key));
             REQUIRE(p.key >= kPackKeyBase);
@@ -827,10 +842,6 @@ TEST_CASE("Built-in packs load and every equation parses", "[custom][packs]") {
                 REQUIRE(text.find("\xE2\x80\x94") == std::string::npos);   // em dash
                 REQUIRE(text.find("\xE2\x80\x93") == std::string::npos);   // en dash
             }
-            // With every byte at zero the equation must not fail.
-            double value = 0.0;
-            std::string error;
-            REQUIRE(eq.evaluate(std::vector<int>(80, 0), value, error));
         }
     }
     setLanguage(Language::German);

@@ -248,18 +248,17 @@ void Worker::openEnet(const QString& host, const QString& protocolOrder) {
     Q_UNUSED(protocolOrder);   // ENET is always CAN behind the front end
     emit busy(true);
     elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
-    if (host.isEmpty()) emit logLine(tr("Suche das Auto im Netzwerk (ENET) ..."));
-    std::string error;
-    hsfz::VehicleIdent ident;
-    std::unique_ptr<ITransport> transport = caruspex::openEnet(host.toStdString(), error, &ident);
+    if (host.isEmpty()) emit logLine(tr("Suche das Auto im Netzwerk (ENET und DoIP) ..."));
+    std::string error, kind, vin;
+    std::unique_ptr<ITransport> transport = caruspex::openNetworkCar(host.toStdString(), error, kind, vin);
     if (!transport) {
         emit busy(false);
         emit failed(QString::fromStdString(error));
         return;
     }
-    emit logLine(tr("Auto gefunden unter %1%2")
-                     .arg(QString::fromStdString(ident.address),
-                          ident.vin.empty() ? QString() : QStringLiteral(", VIN ") + QString::fromStdString(ident.vin)));
+    emit logLine(tr("Verbunden über %1: %2%3")
+                     .arg(QString::fromStdString(kind), QString::fromStdString(transport->name()),
+                          vin.empty() ? QString() : QStringLiteral(", VIN ") + QString::fromStdString(vin)));
     const bool ok = finishConnect(std::move(transport), QStringLiteral("6"), true);
     emit busy(false);
     if (ok) refreshStatusAndFaults();
