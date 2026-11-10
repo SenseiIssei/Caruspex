@@ -29,7 +29,7 @@ class ConnectPage : public QWidget {
 
 public:
     // The values are the pages of the mode stack, Ble was added last.
-    enum class Mode { Cable, Wifi, Demo, Replay, Ble };
+    enum class Mode { Cable, Wifi, Demo, Replay, Ble, Enet };
 
     explicit ConnectPage(QWidget* parent = nullptr);
 
@@ -40,6 +40,7 @@ public:
     bool selectPort(const QString& device);
     void setWifiAddress(const QString& address);
     void setReplayPath(const QString& path);
+    void setEnetAddress(const QString& host);
     // Selects a Bluetooth device by id, empty means automatic search.
     void selectBluetooth(const QString& id);
     void setMode(Mode mode);
@@ -75,6 +76,8 @@ signals:
     // kinds: 1 = Bluetooth LE, 2 = classic, 3 = both.
     void bleRequested(const QString& id, const QString& name, int kinds, const QString& protocolOrder);
     void bleScanRequested();
+    // BMW over ENET, host empty means: look for the car.
+    void enetRequested(const QString& host, const QString& protocolOrder);
     void disconnectRequested();
     void vehicleChoiceChanged();
 
@@ -95,6 +98,7 @@ private:
     QPushButton* bleScan_ = nullptr;
     QLabel* bleNote_ = nullptr;
     QLineEdit* addressEdit_ = nullptr;
+    QLineEdit* enetEdit_ = nullptr;
     QLineEdit* replayPath_ = nullptr;
     QCheckBox* replayRealTime_ = nullptr;
     QLineEdit* vehicleEdit_ = nullptr;

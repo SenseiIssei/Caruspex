@@ -466,6 +466,18 @@ Protocol: %3</translation>
         <source>Kein Bluetooth-Gerät gefunden. Steckt der Adapter im Auto, und ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach einem Druck auf ihren Knopf wieder auf.</source>
         <translation>No Bluetooth device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.</translation>
     </message>
+    <message>
+        <source>BMW ENET</source>
+        <translation>BMW ENET</translation>
+    </message>
+    <message>
+        <source>Automatisch suchen, oder die Adresse des Autos (169.254.x.x)</source>
+        <translation>Search automatically, or the car&apos;s address (169.254.x.x)</translation>
+    </message>
+    <message>
+        <source>Für BMW und Mini ab der F-Baureihe (etwa ab 2007) mit einem ENET-Kabel zwischen OBD-Buchse und Netzwerkanschluss. Zündung an. Nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören in die Werkstattsoftware.</source>
+        <translation>For BMW and Mini from the F series on (about 2007) with an ENET cable between the OBD socket and the network port. Ignition on. After plugging in, the computer needs up to a minute for its automatic address. Caruspex only reads; coding and flashing belong in the workshop software.</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2293,6 +2305,14 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>No connection after two minutes, cancelled.</translation>
+    </message>
+    <message>
+        <source>Suche den BMW über ENET ...</source>
+        <translation>Searching for the BMW over ENET ...</translation>
+    </message>
+    <message>
+        <source>Verbinde über ENET mit %1 ...</source>
+        <translation>Connecting to %1 over ENET ...</translation>
     </message>
 </context>
 <context>
@@ -4204,6 +4224,14 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Verbinde mit %1 über klassisches Bluetooth ...</source>
         <translation>Connecting to %1 over classic Bluetooth ...</translation>
     </message>
+    <message>
+        <source>Suche das Auto im Netzwerk (ENET) ...</source>
+        <translation>Searching for the car on the network (ENET) ...</translation>
+    </message>
+    <message>
+        <source>Auto gefunden unter %1%2</source>
+        <translation>Car found at %1%2</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4260,8 +4288,12 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <translation>After connecting, write a diagnostic report (PDF, or HTML for .html) and quit</translation>
     </message>
     <message>
-        <source>--report braucht eine Verbindung: --demo, --port, --tcp, --bluetooth oder --replay</source>
-        <translation>--report needs a connection: --demo, --port, --tcp, --bluetooth or --replay</translation>
+        <source>BMW oder Mini über ein ENET-Kabel verbinden, über die Adresse oder auto für die Suche</source>
+        <translation>Connect a BMW or Mini over an ENET cable, by its address or auto to search</translation>
+    </message>
+    <message>
+        <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
+        <translation>--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay</translation>
     </message>
 </context>
 </TS>

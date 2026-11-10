@@ -140,6 +140,10 @@ Pure electric cars do not have to offer OBD-II emissions data. Some answer partl
 - Any **ELM327**-compatible adapter: USB, classic Bluetooth (paired, appears as a serial port), **Bluetooth LE**
   (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE and other adapters with the usual GATT services; found by a
   scan, no pairing) or Wi-Fi via TCP
+- An **ENET cable** (OBD to RJ45) for BMW and Mini from the F series on: Caruspex finds the car on the network
+  (HSFZ, ports 6811 and 6801) and reads every control unit over Ethernet, no adapter chip in between. The computer
+  needs an automatic address (169.254.x.x), which Windows, macOS and Linux assign by themselves when no DHCP answers.
+  Caruspex only reads here as well; coding and flashing stay with E-Sys, ISTA or the tuning tools.
 - Any **KKL cable (VAG 409.1)**. FTDI or CP2102 based cables are far more reliable on the K-Line than the
   cheapest clones; for KWP1281 a genuine FTDI FT232RL is recommended.
 
@@ -351,6 +355,7 @@ build/bin/Release/caruspex_cli.exe read --tcp 127.0.0.1:35000
 | `health` | Health check: faults, readiness, mode 06 and a live series (`--seconds N`, 15 by default) |
 | `probe` | Adapter test: what the ELM327 really is, which commands it knows, round trip times |
 | `live`, `info`, `clear`, `ecus`, `ports`, `kklcheck` | Live values, VIN and first freeze frame, clearing, all per control unit, serial ports, KKL cable self-test |
+| `enet` | Looks for BMW and Mini cars on the network (ENET cable); connect to one with `--enet HOST` or `--enet auto` |
 
 `--json` prints `read`, `vin`, `health`, `probe` and `freeze` as JSON for scripts, `-v` logs every adapter
 command (to stderr together with `--json`). `caruspex_cli help` lists everything.

@@ -373,6 +373,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
                 emit session_.openBleRequested(id, name, kinds, order);
             });
     connect(connect_, &ConnectPage::bleScanRequested, this, [this] { emit session_.scanBleRequested(8000); });
+    connect(connect_, &ConnectPage::enetRequested, this, [this](const QString& host, const QString& order) {
+        appendLog(host.isEmpty() ? tr("Suche den BMW über ENET ...") : tr("Verbinde über ENET mit %1 ...").arg(host));
+        titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+        emit session_.openEnetRequested(host, order);
+    });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
     connect(worker, &Worker::recordingState, this,
             [this](bool active, const QString& path, int exchanges, const QString& error) {
@@ -1031,6 +1036,12 @@ void MainWindow::autoConnectReplay(const QString& path) {
 
 void MainWindow::autoConnectDemo() {
     connect_->setMode(ConnectPage::Mode::Demo);
+    connect_->startConnect();
+}
+
+void MainWindow::autoConnectEnet(const QString& host) {
+    connect_->setMode(ConnectPage::Mode::Enet);
+    connect_->setEnetAddress(host);
     connect_->startConnect();
 }
 

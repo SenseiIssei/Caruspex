@@ -38,6 +38,7 @@ add_library(caruspex_core STATIC
     src/core/DemoTransport.cpp
     src/core/AdapterProbe.cpp
     src/core/BleProfile.cpp
+    src/core/Enet.cpp
     src/core/Recording.cpp
     src/core/Kwp1281.cpp
     src/core/Kwp2000.cpp
@@ -280,6 +281,7 @@ if(CARUSPEX_TESTS)
         tests/test_uds.cpp
         tests/test_custom_pids.cpp
         tests/test_ble_profile.cpp
+        tests/test_enet.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

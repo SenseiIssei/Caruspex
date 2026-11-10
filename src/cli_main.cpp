@@ -30,6 +30,7 @@
 #include "core/CustomPids.h"
 #include "core/DemoTransport.h"
 #include "core/Elm327.h"
+#include "core/Enet.h"
 #include "core/JsonWriter.h"
 #include "core/KLineStream.h"
 #include "core/Lang.h"
@@ -66,12 +67,14 @@ const char* const kUsage =
     "  ecus        everything per control unit (headers on)\n"
     "  uds         UDS on CAN: identification and fault memory of every control unit\n"
     "  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once\n"
+    "  enet        look for BMW and Mini cars on the network (ENET cable)\n"
     "  version     the version of this program\n"
     "  help        this text\n"
     "\n"
     "Connection (one of them):\n"
     "  --demo              built-in demo car, warm and on the road\n"
     "  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out\n"
+    "  --enet HOST|auto    BMW or Mini (F series on) over an ENET cable, auto finds the car\n"
     "  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)\n"
     "  --baud N            baud rate of the serial port, 38400 if left out\n"
     "  --replay FILE       play back a recording instead of talking to an adapter\n"
@@ -81,8 +84,9 @@ const char* const kUsage =
     "                      custom\n"
     "  --seconds N         length of the live series of health, 15 if left out\n"
     "  --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit\n"
-    "                      ids like 18DA28F1 answer on 18DAF128); the demo car's six\n"
-    "                      control units if left out\n"
+    "                      ids like 18DA28F1 answer on 18DAF128; b12 is the BMW unit\n"
+    "                      with diagnostic address 12); if left out, the address list\n"
+    "                      of the brand from the VIN, else the demo car's six units\n"
     "  --record FILE       record the whole session with the adapter into FILE\n"
     "                      (JSON Lines, replayable with --replay)\n"
     "  --fast-timing       aggressive adaptive timing (ATAT2), back to ATAT1 if the\n"
@@ -751,8 +755,9 @@ std::vector<EcuDefinition> defaultUdsList() {
     return out;
 }
 
-// "760,737,18DA28F1" -> definitions. 11-bit ids answer on request + 8,
-// 29-bit ids (18DA<target><source>) with target and source swapped.
+// "760,737,18DA28F1,b29" -> definitions. 11-bit ids answer on request + 8,
+// 29-bit ids (18DA<target><source>) with target and source swapped, "b"
+// plus two digits is a BMW unit by its diagnostic address (over 6F1).
 bool parseUdsIds(const std::string& text, std::vector<EcuDefinition>& out, std::string& error) {
     size_t start = 0;
     for (;;) {
@@ -760,6 +765,26 @@ bool parseUdsIds(const std::string& text, std::vector<EcuDefinition>& out, std::
         std::string item =
             text.substr(start, comma == std::string::npos ? std::string::npos : comma - start);
         if (item.rfind("0x", 0) == 0 || item.rfind("0X", 0) == 0) item = item.substr(2);
+        if (item.size() == 3 && (item[0] == 'b' || item[0] == 'B')) {
+            try {
+                size_t used = 0;
+                const int address = std::stoi(item.substr(1), &used, 16);
+                if (used != 2) throw std::invalid_argument(item);
+                EcuDefinition d = ecuFromIds(0x6F1, 0x600u + static_cast<std::uint32_t>(address), false, "");
+                for (const EcuDefinition& known : ecuDefinitions("BMW"))
+                    if (known.extendedAddress == address) d.name = known.name;
+                if (d.name.empty()) {
+                    char name[24];
+                    std::snprintf(name, sizeof(name), "BMW unit %02X", static_cast<unsigned>(address));
+                    d.name = name;
+                }
+                out.push_back(d);
+            } catch (const std::exception&) {
+                error = "Not a BMW address: " + item;
+                return false;
+            }
+            item.clear();
+        }
         if (!item.empty()) {
             std::uint32_t id = 0;
             try {
@@ -1027,12 +1052,13 @@ int main(int argc, char** argv) {
     bool demo = false;
     bool asJson = false;
     bool fastTiming = false;
-    std::string udsIds, recordPath, replayPath;
+    std::string udsIds, recordPath, replayPath, enet;
     std::string pack, csvPath;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
         try {
             if (arg == "--tcp" && i + 1 < argc) tcp = argv[++i];
+            else if (arg == "--enet" && i + 1 < argc) enet = argv[++i];
             else if (arg == "--port" && i + 1 < argc) port = argv[++i];
             else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
             else if (arg == "--seconds" && i + 1 < argc) seconds = std::stoi(argv[++i]);
@@ -1068,6 +1094,19 @@ int main(int argc, char** argv) {
         printPorts();
         return 0;
     }
+    if (command == "enet") {
+        std::string error;
+        const std::vector<hsfz::VehicleIdent> cars = discoverEnet(3000, error);
+        if (cars.empty()) {
+            std::printf("No car answered on the network%s%s.\n", error.empty() ? "" : ": ", error.c_str());
+            return 2;
+        }
+        for (const hsfz::VehicleIdent& car : cars) {
+            std::printf("%-16s VIN %-17s MAC %s\n", car.address.c_str(),
+                        car.vin.empty() ? "?" : car.vin.c_str(), car.mac.c_str());
+        }
+        return 0;
+    }
     if (command == "kklcheck") {
         return kklCheck(port);
     }
@@ -1084,8 +1123,8 @@ int main(int argc, char** argv) {
     std::string error;
     std::vector<EcuDefinition> udsList;
     if (command == "uds") {
-        if (udsIds.empty()) udsList = defaultUdsList();
-        else if (!parseUdsIds(udsIds, udsList, error)) return fail(asJson, error, 1);
+        // Without --ids the list is chosen after connecting, by the VIN.
+        if (!udsIds.empty() && !parseUdsIds(udsIds, udsList, error)) return fail(asJson, error, 1);
     }
     std::vector<CustomPid> customPids;
     std::string customTitle;
@@ -1097,7 +1136,7 @@ int main(int argc, char** argv) {
     }
 
     std::unique_ptr<ITransport> transport;
-    std::string protocolOrder = demo ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst;
+    std::string protocolOrder = demo || !enet.empty() ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst;
     if (!replayPath.empty()) {
         auto replay = std::make_unique<ReplayTransport>(replayPath);
         if (!replay->isOpen()) return fail(asJson, replay->error(), 2);
@@ -1115,6 +1154,8 @@ int main(int argc, char** argv) {
             return 600.0 + std::chrono::duration<double>(std::chrono::steady_clock::now() - origin).count();
         };
         transport = std::make_unique<DemoTransport>(options);
+    } else if (!enet.empty()) {
+        transport = openEnet(enet, error);
     } else {
         transport = makeTransport(tcp, port, baud, error);
     }
@@ -1175,6 +1216,15 @@ int main(int argc, char** argv) {
         if (!trigger.empty()) std::printf("Freeze frame for code %s:\n", trigger.c_str());
         for (const LiveValue& v : frame) printValue(v);
     } else if (command == "uds") {
+        if (udsList.empty()) {
+            // The list of the brand, by the VIN; the demo list otherwise.
+            Obd2 obd(elm);
+            const std::string vin = obd.readVin();
+            const std::string family = vin.empty() ? std::string() : brandFamily(decodeVin(vin).brand);
+            udsList = family.empty() ? std::vector<EcuDefinition>() : ecuDefinitions(family);
+            if (udsList.empty()) udsList = defaultUdsList();
+            else if (!asJson) std::printf("Address list %s (from the VIN)\n", brandFamilyLabel(family).c_str());
+        }
         result = commandUds(elm, udsList, asJson);
     } else if (command == "custom") {
         result = commandCustom(elm, customPids, customTitle, customWarnings, asJson);
