@@ -3996,7 +3996,7 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     </message>
     <message>
         <source>Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?</source>
-        <translation type="unfinished"></translation>
+        <translation>V okolí nebyl nalezen žádný adaptér Bluetooth. Je zapojený do auta a je zapnuté zapalování?</translation>
     </message>
     <message>
         <source>Verbinde mit %1 über Bluetooth LE ...</source>
@@ -4008,15 +4008,15 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     </message>
     <message>
         <source>Verbinde mit %1 über klassisches Bluetooth ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojuji se k %1 přes klasický Bluetooth ...</translation>
     </message>
     <message>
         <source>Suche das Auto im Netzwerk (ENET und DoIP) ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hledám auto v síti (ENET a DoIP) ...</translation>
     </message>
     <message>
         <source>Verbunden über %1: %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojeno přes %1: %2%3</translation>
     </message>
     <message>
         <source>Erst verbinden.</source>
@@ -4223,63 +4223,63 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <name>main</name>
     <message>
         <source>Fahrzeugdiagnose über EOBD mit ELM327-kompatiblen Adaptern</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagnostika vozidla přes EOBD s adaptéry kompatibilními s ELM327</translation>
     </message>
     <message>
         <source>WLAN-Adapter direkt verbinden, z.B. 192.168.0.10:35000</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit přímo adaptér Wi-Fi, např. 192.168.0.10:35000</translation>
     </message>
     <message>
         <source>host:port</source>
-        <translation type="unfinished"></translation>
+        <translation>host:port</translation>
     </message>
     <message>
         <source>Adapter am seriellen Anschluss verbinden, z.B. COM3 oder /dev/ttyUSB0, auto sucht an allen</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit adaptér na sériovém portu, např. COM3 nebo /dev/ttyUSB0, auto prohledá všechny</translation>
     </message>
     <message>
         <source>Bluetooth-Adapter verbinden, über die Adresse oder auto für die Suche</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit adaptér Bluetooth podle jeho adresy, nebo auto pro vyhledání</translation>
     </message>
     <message>
         <source>BMW oder Mini über ein ENET-Kabel verbinden, über die Adresse oder auto für die Suche</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit BMW nebo Mini přes kabel ENET podle jeho adresy, nebo auto pro vyhledání</translation>
     </message>
     <message>
         <source>Nach dem Verbinden einen Prüfbericht schreiben (PDF, oder HTML bei .html) und beenden</source>
-        <translation type="unfinished"></translation>
+        <translation>Po připojení vytvořit diagnostickou zprávu (PDF, nebo HTML u .html) a skončit</translation>
     </message>
     <message>
         <source>Sprache für diesen Start: de oder en</source>
-        <translation type="unfinished"></translation>
+        <translation>Jazyk pro tento běh: de nebo en</translation>
     </message>
     <message>
         <source>Gleich mit dem eingebauten Demo-Auto verbinden</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit se rovnou k vestavěnému ukázkovému autu</translation>
     </message>
     <message>
         <source>Eine aufgezeichnete Sitzung abspielen</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrát zaznamenanou relaci</translation>
     </message>
     <message>
         <source>Mit dieser Seite starten, z.B. faults oder live</source>
-        <translation type="unfinished"></translation>
+        <translation>Začít na této stránce, např. faults nebo live</translation>
     </message>
     <message>
         <source>Nach ein paar Sekunden ein Bild des Fensters speichern und beenden (für Dokumentation)</source>
-        <translation type="unfinished"></translation>
+        <translation>Po několika sekundách uložit snímek okna a skončit (pro dokumentaci)</translation>
     </message>
     <message>
         <source>Fenstergröße, z.B. 1440x920</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost okna, např. 1440x920</translation>
     </message>
     <message>
         <source>Erscheinungsbild für diesen Start: dark oder light</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzhled pro tento běh: dark nebo light</translation>
     </message>
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
-        <translation type="unfinished"></translation>
+        <translation>--report potřebuje připojení: --demo, --port, --tcp, --enet, --bluetooth nebo --replay</translation>
     </message>
 </context>
 </TS>
