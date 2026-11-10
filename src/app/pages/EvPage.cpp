@@ -65,8 +65,9 @@ EvPage::EvPage(QWidget* parent) : QWidget(parent) {
     bar->addWidget(read_);
     bar->addWidget(live_);
     root->addLayout(bar);
-    status_ = makeLabel(tr("Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf. Andere "
-                           "E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen."),
+    status_ = makeLabel(tr("Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 "
+                           "und Y (per Mithören, mit Adapterkabel an der Diagnosebuchse). Andere E-Autos lassen "
+                           "sich über eigene Werte auf der Seite Live-Werte ergänzen."),
                         "Hint", true);
     root->addWidget(status_);
 

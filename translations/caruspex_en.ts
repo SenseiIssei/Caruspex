@@ -827,10 +827,6 @@ Protocol: %3</translation>
         <translation>Read continuously</translation>
     </message>
     <message>
-        <source>Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf. Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.</source>
-        <translation>For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe and Nissan Leaf. Other electric cars can be added through custom values on the Live values page.</translation>
-    </message>
-    <message>
         <source>Akkugesundheit</source>
         <translation>Battery health</translation>
     </message>
@@ -956,6 +952,10 @@ Protocol: %3</translation>
     <message>
         <source>Die Zellen sind ungleich geladen. Einmal langsam auf 100 % laden und einige Stunden stehen lassen hilft dem Ausgleich; bleibt es so, in die Werkstatt.</source>
         <translation>The cells are unevenly charged. Charging slowly to 100 % once and leaving the car for a few hours helps them balance; if it stays like this, see a workshop.</translation>
+    </message>
+    <message>
+        <source>Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören, mit Adapterkabel an der Diagnosebuchse). Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.</source>
+        <translation>For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening, with an adapter cable on the diagnostic connector). Other electric cars can be added through custom values on the Live values page.</translation>
     </message>
 </context>
 <context>
