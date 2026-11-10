@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 # Without this the app would need the macOS version of the build machine.
 set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Oldest macOS the app runs on")
-project(Caruspex VERSION 0.4.0 LANGUAGES CXX)
+project(Caruspex VERSION 0.5.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
