@@ -157,7 +157,7 @@ QWidget* ConnectPage::buildAdapter() {
     QPushButton* demo = makeModeChip(QStringLiteral("sparkles"), tr("Demo-Auto"));
     QPushButton* replay = makeModeChip(QStringLiteral("play"), tr("Aufnahme"));
     QPushButton* ble = makeModeChip(QStringLiteral("bluetooth"), tr("Bluetooth"));
-    QPushButton* enet = makeModeChip(QStringLiteral("ethernet"), tr("BMW ENET"));
+    QPushButton* enet = makeModeChip(QStringLiteral("ethernet"), tr("Netzwerkkabel"));
     modes_->addButton(enet, int(Mode::Enet));
     modes_->addButton(ble, int(Mode::Ble));
     modes_->addButton(cable, int(Mode::Cable));
@@ -309,8 +309,9 @@ QWidget* ConnectPage::buildAdapter() {
         enetEdit_->setPlaceholderText(tr("Automatisch suchen, oder die Adresse des Autos (169.254.x.x)"));
         enetEdit_->setMinimumHeight(38);
         v->addWidget(enetEdit_);
-        v->addWidget(makeLabel(tr("Für BMW und Mini ab der F-Baureihe (etwa ab 2007) mit einem ENET-Kabel "
-                                  "zwischen OBD-Buchse und Netzwerkanschluss. Zündung an. Nach dem "
+        v->addWidget(makeLabel(tr("Für ein ENET-Kabel (BMW und Mini ab der F-Baureihe) oder ein DoIP-Kabel "
+                                  "(viele neuere Autos) zwischen OBD-Buchse und Netzwerkanschluss. "
+                                  "Caruspex erkennt selbst, was das Auto spricht. Zündung an; nach dem "
                                   "Einstecken braucht der Rechner bis zu einer Minute für seine "
                                   "automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören "
                                   "in die Werkstattsoftware."),

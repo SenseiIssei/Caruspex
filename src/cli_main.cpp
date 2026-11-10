@@ -67,14 +67,14 @@ const char* const kUsage =
     "  ecus        everything per control unit (headers on)\n"
     "  uds         UDS on CAN: identification and fault memory of every control unit\n"
     "  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once\n"
-    "  enet        look for BMW and Mini cars on the network (ENET cable)\n"
+    "  enet        look for cars on the network (ENET cable for BMW and Mini, DoIP)\n"
     "  version     the version of this program\n"
     "  help        this text\n"
     "\n"
     "Connection (one of them):\n"
     "  --demo              built-in demo car, warm and on the road\n"
     "  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out\n"
-    "  --enet HOST|auto    BMW or Mini (F series on) over an ENET cable, auto finds the car\n"
+    "  --enet HOST|auto    network cable: BMW ENET (HSFZ) or DoIP, auto finds the car\n"
     "  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)\n"
     "  --baud N            baud rate of the serial port, 38400 if left out\n"
     "  --replay FILE       play back a recording instead of talking to an adapter\n"
@@ -1097,13 +1097,18 @@ int main(int argc, char** argv) {
     if (command == "enet") {
         std::string error;
         const std::vector<hsfz::VehicleIdent> cars = discoverEnet(3000, error);
-        if (cars.empty()) {
+        const std::vector<doip::Entity> entities = discoverDoip(3000, error);
+        if (cars.empty() && entities.empty()) {
             std::printf("No car answered on the network%s%s.\n", error.empty() ? "" : ": ", error.c_str());
             return 2;
         }
         for (const hsfz::VehicleIdent& car : cars) {
-            std::printf("%-16s VIN %-17s MAC %s\n", car.address.c_str(),
+            std::printf("ENET  %-16s VIN %-17s MAC %s\n", car.address.c_str(),
                         car.vin.empty() ? "?" : car.vin.c_str(), car.mac.c_str());
+        }
+        for (const doip::Entity& e : entities) {
+            std::printf("DoIP  %-16s VIN %-17s address %04X\n", e.address.c_str(),
+                        e.vin.empty() ? "?" : e.vin.c_str(), static_cast<unsigned>(e.logicalAddress & 0xFFFF));
         }
         return 0;
     }
@@ -1155,7 +1160,8 @@ int main(int argc, char** argv) {
         };
         transport = std::make_unique<DemoTransport>(options);
     } else if (!enet.empty()) {
-        transport = openEnet(enet, error);
+        std::string kind, vin;
+        transport = openNetworkCar(enet, error, kind, vin);
     } else {
         transport = makeTransport(tcp, port, baud, error);
     }

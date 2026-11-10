@@ -122,10 +122,95 @@ private:
     bool closed_ = false;
 };
 
+// ---------------------------------------------------------------------------
+// DoIP (ISO 13400-2), the open standard for diagnosis over Ethernet in newer
+// cars (many makers from about 2016, with a DoIP cable that bridges the
+// activation pin 8). Port 13400 for discovery (UDP) and diagnosis (TCP).
+//
+// Header: protocol version, its inverse, payload type (2 bytes), payload
+// length (4 bytes), all big endian. The tester first asks for routing
+// (0x0005, answer 0x0006 with code 0x10 = granted), then sends diagnostic
+// messages (0x8001: source, target, UDS), which the entity acknowledges
+// (0x8002, or 0x8003 if not) before the unit answers with a 0x8001 of its
+// own. Alive checks (0x0007) are answered with 0x0008.
+// Logical addresses are 16 bit; testers use 0x0E00 to 0x0FFF, and 0xE400 is
+// the functional address of the legislated OBD units.
+// ---------------------------------------------------------------------------
+
+namespace doip {
+
+constexpr int kPort = 13400;
+constexpr int kTester = 0x0E80;
+constexpr int kObdFunctional = 0xE400;
+constexpr std::uint8_t kVersion = 0x02;   // ISO 13400-2:2012
+
+enum PayloadType : int {
+    GenericNack = 0x0000,
+    VehicleIdentRequest = 0x0001,
+    VehicleAnnouncement = 0x0004,
+    RoutingActivationRequest = 0x0005,
+    RoutingActivationResponse = 0x0006,
+    AliveCheckRequest = 0x0007,
+    AliveCheckResponse = 0x0008,
+    DiagnosticMessage = 0x8001,
+    DiagnosticAck = 0x8002,
+    DiagnosticNack = 0x8003,
+};
+
+struct Message {
+    int type = 0;
+    ByteVector payload;
+};
+
+ByteVector encode(int type, const ByteVector& payload, std::uint8_t version = kVersion);
+
+class Parser {
+public:
+    void feed(const std::uint8_t* data, std::size_t size);
+    bool next(Message& message);
+    bool broken() const { return broken_; }
+
+private:
+    ByteVector buffer_;
+    bool broken_ = false;
+};
+
+struct Entity {
+    std::string address;   // IP
+    std::string vin;
+    int logicalAddress = -1;
+};
+
+// The vehicle announcement (0x0004): VIN, logical address, EID, GID, ...
+bool parseAnnouncement(const ByteVector& payload, Entity& out);
+
+}  // namespace doip
+
+class DoipSession : public DiagLink {
+public:
+    explicit DoipSession(std::unique_ptr<ByteStream> stream, int tester = doip::kTester);
+    // Asks the entity for routing. False with the reason (code) in error.
+    bool activate(std::string& error);
+    bool request(int target, const ByteVector& data, int timeoutMs, std::vector<DiagAnswer>& answers,
+                 std::string& error) override;
+
+private:
+    bool readMessage(doip::Message& message, std::uint64_t deadline);
+
+    std::unique_ptr<ByteStream> stream_;
+    doip::Parser parser_;
+    int tester_;
+    bool closed_ = false;
+};
+
 // An ELM327 as far as Caruspex uses one, on top of a DiagLink.
 class EnetElm : public ITransport {
 public:
-    EnetElm(std::unique_ptr<DiagLink> link, std::string name);
+    // Bmw: HSFZ with the BMW addresses (DME 12, EGS 18) and the 6F1 raw
+    // frames. Doip: OBD to the functional OBD address, answers numbered
+    // 7E8, 7E9, ... in the order the units first answer.
+    enum class Flavor { Bmw, Doip };
+    EnetElm(std::unique_ptr<DiagLink> link, std::string name, Flavor flavor = Flavor::Bmw);
     bool write(const std::string& data) override;
     std::string read(int timeoutMs) override;
     void flushInput() override { pending_.clear(); }
@@ -142,6 +227,8 @@ private:
 
     std::unique_ptr<DiagLink> link_;
     std::string name_;
+    Flavor flavor_ = Flavor::Bmw;
+    std::vector<int> learned_;            // DoIP: logical address per 7E8 + n
     std::string pending_;
     bool echo_ = true, linefeeds_ = false, spaces_ = true, headers_ = false, autoFormat_ = true;
     int header_ = 0x7DF;
@@ -158,5 +245,15 @@ std::vector<hsfz::VehicleIdent> discoverEnet(int timeoutMs, std::string& error);
 // ELM front end, or nullptr with the reason in error.
 std::unique_ptr<ITransport> openEnet(const std::string& host, std::string& error,
                                      hsfz::VehicleIdent* found = nullptr);
+
+// DoIP entities on the local network (vehicle identification on 13400).
+std::vector<doip::Entity> discoverDoip(int timeoutMs, std::string& error);
+std::unique_ptr<ITransport> openDoip(const std::string& host, std::string& error, doip::Entity* found = nullptr);
+
+// Whatever the network cable leads to: BMW ENET (HSFZ) or DoIP, found
+// automatically when host is empty or "auto", otherwise tried in that order.
+// kind says which one it was ("ENET" or "DoIP").
+std::unique_ptr<ITransport> openNetworkCar(const std::string& host, std::string& error, std::string& kind,
+                                           std::string& vin);
 
 }  // namespace caruspex

@@ -132,8 +132,12 @@ Any vehicle with OBD-II or EOBD: in Europe petrol cars from 2001 and diesels fro
 | 1996 to about 2003 | K-Line (ISO 9141-2, KWP2000) | Audi A2, VW Golf IV, Toyota, Renault |
 | from about 2004 | CAN (ISO 15765-4) | Audi A4 B7, VW Golf V, modern Japanese cars |
 | US until about 2005 | SAE J1850 PWM and VPW | Ford, Chevrolet |
+| newest cars | OBD on UDS (SAE J1979-2) | required in the US from model year 2027, already in some newer cars; detected and translated automatically |
+| BMW and Mini from the F series | ENET (HSFZ over Ethernet) or D-CAN with 6F1 addressing | every control unit |
+| many cars from about 2016 | DoIP (ISO 13400) with a DoIP cable | OBD over Ethernet, found automatically |
+| Tesla Model 3 and Y | no OBD: broadcast CAN frames | battery, cells, temperatures, speed, odometer by listening (adapter cable to the diagnostic connector) |
 
-Pure electric cars do not have to offer OBD-II emissions data. Some answer partly anyway, Tesla not at all through the standard route. Caruspex says so instead of trying.
+Pure electric cars do not have to offer OBD-II emissions data. Some answer partly anyway; for cars without any answer but with traffic on the bus, Caruspex connects for listening and reads what the built-in packs know (Tesla Model 3 and Y so far).
 
 ## Supported adapters
 

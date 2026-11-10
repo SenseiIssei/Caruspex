@@ -276,3 +276,184 @@ TEST_CASE("ENET front end: Elm327, OBD and BMW units over a scripted car", "[ene
         REQUIRE_FALSE(car->asked.empty());
     }
 }
+
+// ---------------------------------------------------------------------------
+// DoIP (ISO 13400-2)
+
+namespace {
+
+class FakeDoipVehicle : public ByteStream {
+public:
+    int routingCode = 0x10;
+    std::vector<doip::Message> sent;
+    std::function<std::vector<doip::Message>(int target, const ByteVector& uds)> respond;
+
+    bool send(const ByteVector& data) override {
+        parser_.feed(data.data(), data.size());
+        doip::Message m;
+        while (parser_.next(m)) {
+            sent.push_back(m);
+            std::vector<doip::Message> out;
+            if (m.type == doip::RoutingActivationRequest) {
+                out.push_back({doip::RoutingActivationResponse,
+                               {m.payload[0], m.payload[1], 0x10, 0x10, static_cast<std::uint8_t>(routingCode), 0, 0, 0, 0}});
+                out.push_back({doip::AliveCheckRequest, {}});
+            } else if (m.type == doip::DiagnosticMessage && respond) {
+                const int target = (m.payload[2] << 8) | m.payload[3];
+                out.push_back({doip::DiagnosticAck, {m.payload[2], m.payload[3], m.payload[0], m.payload[1], 0x00}});
+                for (const doip::Message& r : respond(target, ByteVector(m.payload.begin() + 4, m.payload.end())))
+                    out.push_back(r);
+            }
+            for (const doip::Message& o : out) {
+                const ByteVector bytes = doip::encode(o.type, o.payload);
+                inbound_.insert(inbound_.end(), bytes.begin(), bytes.end());
+            }
+        }
+        return true;
+    }
+    int receive(std::uint8_t* buffer, int size, int) override {
+        const int n = std::min<int>(size, std::min<int>(7, static_cast<int>(inbound_.size())));
+        for (int i = 0; i < n; ++i) {
+            buffer[i] = inbound_.front();
+            inbound_.pop_front();
+        }
+        return n;
+    }
+
+private:
+    doip::Parser parser_;
+    std::deque<std::uint8_t> inbound_;
+};
+
+doip::Message diag(int source, const ByteVector& uds) {
+    ByteVector p = {static_cast<std::uint8_t>(source >> 8), static_cast<std::uint8_t>(source),
+                    static_cast<std::uint8_t>(doip::kTester >> 8), static_cast<std::uint8_t>(doip::kTester & 0xFF)};
+    p.insert(p.end(), uds.begin(), uds.end());
+    return {doip::DiagnosticMessage, p};
+}
+
+// A newer car behind DoIP: engine 0x1001, gearbox 0x1002; the engine only
+// speaks OBD on UDS when classic is false.
+class FakeDoipCar : public DiagLink {
+public:
+    bool classic = true;
+    bool request(int target, const ByteVector& data, int, std::vector<DiagAnswer>& answers, std::string& error) override {
+        answers.clear();
+        const bool functional = target == doip::kObdFunctional;
+        auto answer = [&](int source, const ByteVector& d) {
+            if (functional || target == source) answers.push_back({source, d});
+        };
+        if (classic) {
+            if (data == ByteVector{0x01, 0x00}) {
+                answer(0x1001, {0x41, 0x00, 0xBE, 0x3F, 0xA8, 0x13});
+                answer(0x1002, {0x41, 0x00, 0x80, 0x00, 0x00, 0x01});
+            }
+            if (data == ByteVector{0x03}) answer(0x1001, {0x43, 0x01, 0x04, 0x20});
+            if (data == ByteVector{0x09, 0x02}) answer(0x1001, vinAnswer({0x49, 0x02, 0x01}));
+            if (data == ByteVector{0x01, 0x42}) answer(0x1001, {0x41, 0x42, 0x31, 0x9C});
+        } else {
+            if (data[0] == 0x01) answer(0x1001, {0x7F, 0x01, 0x11});
+            if (data == ByteVector{0x22, 0xF4, 0x00}) answer(0x1001, {0x62, 0xF4, 0x00, 0xBE, 0x3F, 0xA8, 0x13});
+            if (data == ByteVector{0x22, 0xF8, 0x02}) answer(0x1001, vinAnswer({0x62, 0xF8, 0x02}));
+        }
+        if (answers.empty()) error = "no answer";
+        return !answers.empty();
+    }
+};
+
+}  // namespace
+
+TEST_CASE("DoIP frames and the vehicle announcement", "[doip]") {
+    const ByteVector f = doip::encode(doip::DiagnosticMessage, {0x0E, 0x80, 0x10, 0x01, 0x3E, 0x00});
+    REQUIRE(f == ByteVector{0x02, 0xFD, 0x80, 0x01, 0, 0, 0, 6, 0x0E, 0x80, 0x10, 0x01, 0x3E, 0x00});
+    REQUIRE(doip::encode(doip::VehicleIdentRequest, {}, 0xFF) == ByteVector{0xFF, 0x00, 0x00, 0x01, 0, 0, 0, 0});
+
+    doip::Parser parser;
+    doip::Message m;
+    parser.feed(f.data(), 5);
+    REQUIRE_FALSE(parser.next(m));
+    parser.feed(f.data() + 5, f.size() - 5);
+    REQUIRE(parser.next(m));
+    REQUIRE(m.type == doip::DiagnosticMessage);
+    REQUIRE(m.payload.size() == 6);
+
+    doip::Parser bad;
+    const ByteVector junk = {0x02, 0x02, 0x80, 0x01, 0, 0, 0, 0};
+    bad.feed(junk.data(), junk.size());
+    REQUIRE_FALSE(bad.next(m));
+    REQUIRE(bad.broken());
+
+    ByteVector announcement = bytesOf(kVin);
+    for (std::uint8_t b : {0x10, 0x10, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 0x00}) announcement.push_back(b);
+    doip::Entity e;
+    REQUIRE(doip::parseAnnouncement(announcement, e));
+    REQUIRE(e.vin == kVin);
+    REQUIRE(e.logicalAddress == 0x1010);
+    REQUIRE_FALSE(doip::parseAnnouncement(ByteVector(10, 0), e));
+}
+
+TEST_CASE("DoIP session: routing, acknowledgement, alive check, functional and refusals", "[doip]") {
+    auto stream = std::make_unique<FakeDoipVehicle>();
+    FakeDoipVehicle* car = stream.get();
+    car->respond = [](int target, const ByteVector& uds) -> std::vector<doip::Message> {
+        if (target == 0x1001 && uds == ByteVector{0x22, 0xF1, 0x90})
+            return {diag(0x1001, {0x7F, 0x22, 0x78}), diag(0x1001, vinAnswer({0x62, 0xF1, 0x90}))};
+        if (target == doip::kObdFunctional && uds == ByteVector{0x01, 0x00})
+            return {diag(0x1001, {0x41, 0x00, 0xBE}), diag(0x1002, {0x41, 0x00, 0x80})};
+        if (target == 0x2000) return {{doip::DiagnosticNack, {0x20, 0x00, 0x0E, 0x80, 0x03}}};
+        return {};
+    };
+    DoipSession session(std::move(stream));
+    std::string error;
+    REQUIRE(session.activate(error));
+    REQUIRE(car->sent.front().type == doip::RoutingActivationRequest);
+    REQUIRE(car->sent.front().payload[0] == 0x0E);
+
+    std::vector<DiagAnswer> answers;
+    REQUIRE(session.request(0x1001, {0x22, 0xF1, 0x90}, 500, answers, error));
+    REQUIRE(answers.size() == 1);
+    REQUIRE(answers[0].data[0] == 0x62);
+    // The alive check after the routing answer was answered with our address.
+    bool alive = false;
+    for (const doip::Message& m : car->sent)
+        if (m.type == doip::AliveCheckResponse && m.payload == ByteVector{0x0E, 0x80}) alive = true;
+    REQUIRE(alive);
+
+    REQUIRE(session.request(doip::kObdFunctional, {0x01, 0x00}, 500, answers, error));
+    REQUIRE(answers.size() == 2);
+
+    REQUIRE_FALSE(session.request(0x2000, {0x3E, 0x00}, 500, answers, error));
+    REQUIRE(error.find("0x03") != std::string::npos);
+    REQUIRE_FALSE(session.request(0x3000, {0x3E, 0x00}, 100, answers, error));
+
+    // Routing denied (0x06: unsupported activation type).
+    auto denying = std::make_unique<FakeDoipVehicle>();
+    denying->routingCode = 0x06;
+    DoipSession refused(std::move(denying));
+    REQUIRE_FALSE(refused.activate(error));
+    REQUIRE(error.find("0x06") != std::string::npos);
+}
+
+TEST_CASE("DoIP front end: OBD through the functional address, also on UDS", "[doip]") {
+    setLanguage(Language::English);
+    for (bool classic : {true, false}) {
+        INFO("classic " << classic);
+        auto car = std::make_unique<FakeDoipCar>();
+        car->classic = classic;
+        Elm327 elm;
+        std::string error;
+        REQUIRE(elm.connect(std::make_unique<EnetElm>(std::move(car), "DoIP test", EnetElm::Flavor::Doip), "6", error));
+        REQUIRE(elm.obdOnUds() == !classic);
+        REQUIRE(elm.setHeaders(true));
+        Obd2 obd(elm);
+        REQUIRE(obd.readVin() == kVin);
+        if (classic) {
+            const std::vector<Fault> faults = obd.readFaults(error);
+            REQUIRE(faults.size() == 1);
+            REQUIRE(faults[0].code == "P0420");
+            REQUIRE(faults[0].ecuSource == "7E8");
+            const ElmResult volts = elm.send("ATRV", 2000);
+            REQUIRE(volts.lines.front() == "12.7V");
+        }
+    }
+}

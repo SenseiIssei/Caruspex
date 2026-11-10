@@ -241,7 +241,8 @@ bool startsWith(const std::string& s, const char* prefix) { return s.rfind(prefi
 
 }  // namespace
 
-EnetElm::EnetElm(std::unique_ptr<DiagLink> link, std::string name) : link_(std::move(link)), name_(std::move(name)) {}
+EnetElm::EnetElm(std::unique_ptr<DiagLink> link, std::string name, Flavor flavor)
+    : link_(std::move(link)), name_(std::move(name)), flavor_(flavor) {}
 
 void EnetElm::reset() {
     echo_ = true;
@@ -333,7 +334,8 @@ std::vector<std::string> EnetElm::at(const std::string& c) {
         // No voltage pin in the cable: the engine unit's own reading (PID 42).
         std::vector<DiagAnswer> answers;
         std::string error;
-        if (link_->request(hsfz::kEngine, {0x01, 0x42}, kRequestTimeoutMs, answers, error) &&
+        const int engine = flavor_ == Flavor::Doip ? doip::kObdFunctional : hsfz::kEngine;
+        if (link_->request(engine, {0x01, 0x42}, kRequestTimeoutMs, answers, error) && !answers.empty() &&
             answers.front().data.size() >= 4 && answers.front().data[0] == 0x41) {
             const ByteVector& d = answers.front().data;
             char volts[16];
@@ -356,8 +358,17 @@ std::vector<std::string> EnetElm::obd(const ByteVector& bytes) {
     if (bytes.empty() || bytes.size() > 7) return {"?"};
     int target = -1;
     const bool functional = header_ == 0x7DF;
-    if (functional || header_ == 0x7E0) target = hsfz::kEngine;
-    else if (header_ == 0x7E1) target = hsfz::kGearbox;
+    if (flavor_ == Flavor::Doip) {
+        // Functional to all OBD units; 7E0 + n to the unit that answered as
+        // 7E8 + n before.
+        if (functional) target = doip::kObdFunctional;
+        else if (header_ >= 0x7E0 && header_ <= 0x7E7 && static_cast<size_t>(header_ - 0x7E0) < learned_.size())
+            target = learned_[static_cast<size_t>(header_ - 0x7E0)];
+    } else if (functional || header_ == 0x7E0) {
+        target = hsfz::kEngine;
+    } else if (header_ == 0x7E1) {
+        target = hsfz::kGearbox;
+    }
     if (target < 0) return {"NO DATA"};
 
     std::vector<DiagAnswer> answers;
@@ -368,7 +379,16 @@ std::vector<std::string> EnetElm::obd(const ByteVector& bytes) {
     for (const DiagAnswer& a : answers) {
         // Functional requests get no refusals, as on the bus.
         if (functional && !a.data.empty() && a.data[0] == 0x7F) continue;
-        const int id = a.source == hsfz::kGearbox ? 0x7E9 : 0x7E8;
+        int id = a.source == hsfz::kGearbox ? 0x7E9 : 0x7E8;
+        if (flavor_ == Flavor::Doip) {
+            auto known = std::find(learned_.begin(), learned_.end(), a.source);
+            if (known == learned_.end()) {
+                if (learned_.size() >= 8) continue;
+                learned_.push_back(a.source);
+                known = learned_.end() - 1;
+            }
+            id = 0x7E8 + static_cast<int>(known - learned_.begin());
+        }
         if (receiveFilter_ >= 0 && receiveFilter_ != id) continue;
         const ByteVector& d = a.data;
         if (d.size() <= 7) {
@@ -416,7 +436,7 @@ std::vector<std::string> EnetElm::obd(const ByteVector& bytes) {
 // CAN auto formatting off with ATSH 6F1: BMW style extended addressing,
 // the ISO-TP frames come from the tester as they would go on the bus.
 std::vector<std::string> EnetElm::raw(const ByteVector& bytes) {
-    if (header_ != 0x6F1 || bytes.size() < 2) return {"NO DATA"};
+    if (flavor_ != Flavor::Bmw || header_ != 0x6F1 || bytes.size() < 2) return {"NO DATA"};
     const int target = bytes[0];
     const int pci = bytes[1];
     const int responseId = 0x600 | target;
@@ -464,6 +484,158 @@ std::vector<std::string> EnetElm::raw(const ByteVector& bytes) {
     }
     rawTarget_ = target;
     return {line(first)};
+}
+
+// ---------------------------------------------------------------------------
+// DoIP
+// ---------------------------------------------------------------------------
+
+namespace doip {
+
+ByteVector encode(int type, const ByteVector& payload, std::uint8_t version) {
+    const auto size = static_cast<std::uint32_t>(payload.size());
+    ByteVector out = {version, static_cast<std::uint8_t>(~version), static_cast<std::uint8_t>(type >> 8),
+                      static_cast<std::uint8_t>(type), static_cast<std::uint8_t>(size >> 24),
+                      static_cast<std::uint8_t>(size >> 16), static_cast<std::uint8_t>(size >> 8),
+                      static_cast<std::uint8_t>(size)};
+    out.insert(out.end(), payload.begin(), payload.end());
+    return out;
+}
+
+void Parser::feed(const std::uint8_t* data, std::size_t size) { buffer_.insert(buffer_.end(), data, data + size); }
+
+bool Parser::next(Message& message) {
+    if (broken_ || buffer_.size() < 8) return false;
+    if (static_cast<std::uint8_t>(buffer_[0] ^ buffer_[1]) != 0xFF) {
+        broken_ = true;   // the inverse version does not match: not DoIP
+        return false;
+    }
+    const std::uint32_t length = (std::uint32_t(buffer_[4]) << 24) | (std::uint32_t(buffer_[5]) << 16) |
+                                 (std::uint32_t(buffer_[6]) << 8) | std::uint32_t(buffer_[7]);
+    if (length > 0x10000) {
+        broken_ = true;
+        return false;
+    }
+    if (buffer_.size() < 8 + length) return false;
+    message.type = (buffer_[2] << 8) | buffer_[3];
+    message.payload.assign(buffer_.begin() + 8, buffer_.begin() + 8 + static_cast<long>(length));
+    buffer_.erase(buffer_.begin(), buffer_.begin() + 8 + static_cast<long>(length));
+    return true;
+}
+
+bool parseAnnouncement(const ByteVector& p, Entity& out) {
+    if (p.size() < 32) return false;   // VIN 17, address 2, EID 6, GID 6, further action 1
+    out.vin.clear();
+    for (std::size_t i = 0; i < 17; ++i)
+        if (std::isalnum(p[i])) out.vin += static_cast<char>(p[i]);
+    if (out.vin.size() != 17) out.vin.clear();
+    out.logicalAddress = (p[17] << 8) | p[18];
+    return true;
+}
+
+}  // namespace doip
+
+DoipSession::DoipSession(std::unique_ptr<ByteStream> stream, int tester) : stream_(std::move(stream)), tester_(tester) {}
+
+bool DoipSession::readMessage(doip::Message& message, std::uint64_t deadline) {
+    std::uint8_t buffer[4096];
+    while (!parser_.next(message)) {
+        if (parser_.broken()) {
+            closed_ = true;
+            return false;
+        }
+        const std::uint64_t now = nowMs();
+        if (now >= deadline) return false;
+        const int got = stream_->receive(buffer, sizeof(buffer), static_cast<int>(deadline - now));
+        if (got < 0) {
+            closed_ = true;
+            return false;
+        }
+        if (got > 0) parser_.feed(buffer, static_cast<std::size_t>(got));
+        // The entity may ask whether we are still there at any time.
+    }
+    if (message.type == doip::AliveCheckRequest) {
+        stream_->send(doip::encode(doip::AliveCheckResponse,
+                                   {static_cast<std::uint8_t>(tester_ >> 8), static_cast<std::uint8_t>(tester_)}));
+    }
+    return true;
+}
+
+bool DoipSession::activate(std::string& error) {
+    const ByteVector request = {static_cast<std::uint8_t>(tester_ >> 8), static_cast<std::uint8_t>(tester_), 0x00,
+                                0x00, 0x00, 0x00, 0x00};
+    if (!stream_->send(doip::encode(doip::RoutingActivationRequest, request))) {
+        error = L("Senden über DoIP ging nicht.", "Sending over DoIP failed.");
+        return false;
+    }
+    const std::uint64_t deadline = nowMs() + 3000;
+    doip::Message in;
+    while (readMessage(in, deadline)) {
+        if (in.type == doip::GenericNack) {
+            error = L("Das Fahrzeug lehnt die DoIP-Nachricht ab.", "The vehicle rejects the DoIP message.");
+            return false;
+        }
+        if (in.type != doip::RoutingActivationResponse || in.payload.size() < 5) continue;
+        const int code = in.payload[4];
+        if (code == 0x10) return true;
+        char text[8];
+        std::snprintf(text, sizeof(text), "0x%02X", code);
+        error = std::string(L("Das Fahrzeug gibt die Diagnose nicht frei (Code ", "The vehicle does not grant routing (code ")) +
+                text + L("). Manche Hersteller verlangen dafür eine Anmeldung in ihrer Software.",
+                         "). Some makers require a login in their own software for it.");
+        return false;
+    }
+    error = L("Keine Antwort auf die DoIP-Freigabe.", "No answer to the DoIP routing activation.");
+    return false;
+}
+
+bool DoipSession::request(int target, const ByteVector& data, int timeoutMs, std::vector<DiagAnswer>& answers,
+                          std::string& error) {
+    answers.clear();
+    error.clear();
+    if (closed_) {
+        error = L("Die DoIP-Verbindung zum Auto ist getrennt.", "The DoIP connection to the car is gone.");
+        return false;
+    }
+    ByteVector payload = {static_cast<std::uint8_t>(tester_ >> 8), static_cast<std::uint8_t>(tester_),
+                          static_cast<std::uint8_t>(target >> 8), static_cast<std::uint8_t>(target)};
+    payload.insert(payload.end(), data.begin(), data.end());
+    if (!stream_->send(doip::encode(doip::DiagnosticMessage, payload))) {
+        closed_ = true;
+        error = L("Senden über DoIP ging nicht.", "Sending over DoIP failed.");
+        return false;
+    }
+    const bool functional = target >= 0xE000;
+    const std::uint64_t start = nowMs();
+    std::uint64_t deadline = start + static_cast<std::uint64_t>(std::max(timeoutMs, 300));
+    doip::Message in;
+    while (readMessage(in, deadline)) {
+        if (in.type == doip::DiagnosticNack) {
+            char text[8];
+            std::snprintf(text, sizeof(text), "0x%02X", in.payload.size() > 4 ? in.payload[4] : 0);
+            error = std::string(L("Das Fahrzeug nimmt die Anfrage nicht an (DoIP ", "The vehicle refuses the request (DoIP ")) +
+                    text + ").";
+            return false;
+        }
+        if (in.type != doip::DiagnosticMessage || in.payload.size() < 5) continue;
+        const int source = (in.payload[0] << 8) | in.payload[1];
+        const int dest = (in.payload[2] << 8) | in.payload[3];
+        if (dest != tester_) continue;
+        if (!functional && source != target) continue;
+        DiagAnswer answer{source, ByteVector(in.payload.begin() + 4, in.payload.end())};
+        const ByteVector& d = answer.data;
+        if (d.size() >= 3 && d[0] == 0x7F && d[2] == 0x78) {
+            deadline = std::min(nowMs() + kPendingExtraMs, start + kPendingLimitMs);
+            continue;
+        }
+        answers.push_back(std::move(answer));
+        if (!functional) return true;
+        deadline = std::min(deadline, nowMs() + kFunctionalQuietMs);
+    }
+    if (!answers.empty()) return true;
+    error = closed_ ? L("Das Auto hat die DoIP-Verbindung getrennt.", "The car closed the DoIP connection.")
+                    : L("Keine Antwort vom Steuergerät.", "No answer from the control unit.");
+    return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -609,6 +781,109 @@ std::vector<hsfz::VehicleIdent> discoverEnet(int timeoutMs, std::string& error) 
     }
     closeSocket(s);
     return found;
+}
+
+std::vector<doip::Entity> discoverDoip(int timeoutMs, std::string& error) {
+    std::vector<doip::Entity> found;
+    if (!startNetwork()) {
+        error = L("Netzwerk lässt sich nicht starten.", "Cannot start networking.");
+        return found;
+    }
+    const Socket s = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (s == kNoSocket) return found;
+    int one = 1;
+    ::setsockopt(s, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char*>(&one), sizeof(one));
+    sockaddr_in local{};
+    local.sin_family = AF_INET;
+    ::bind(s, reinterpret_cast<sockaddr*>(&local), sizeof(local));
+    // Version 0xFF is the "any version" the standard asks for here.
+    const ByteVector request = doip::encode(doip::VehicleIdentRequest, {}, 0xFF);
+    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(timeoutMs);
+    for (int attempt = 0; attempt < 3 && found.empty(); ++attempt) {
+        for (const char* target : {"255.255.255.255", "169.254.255.255"}) {
+            sockaddr_in to{};
+            to.sin_family = AF_INET;
+            to.sin_port = htons(doip::kPort);
+            ::inet_pton(AF_INET, target, &to.sin_addr);
+            ::sendto(s, reinterpret_cast<const char*>(request.data()), static_cast<int>(request.size()), 0,
+                     reinterpret_cast<sockaddr*>(&to), sizeof(to));
+        }
+        const std::uint64_t round = std::min(deadline, nowMs() + static_cast<std::uint64_t>(timeoutMs / 3 + 1));
+        while (nowMs() < round) {
+            if (!waitFor(s, static_cast<int>(round - nowMs()), false)) break;
+            std::uint8_t buffer[512];
+            sockaddr_in from{};
+            socklen_t fromLength = sizeof(from);
+            const auto got = ::recvfrom(s, reinterpret_cast<char*>(buffer), sizeof(buffer), 0,
+                                        reinterpret_cast<sockaddr*>(&from), &fromLength);
+            if (got <= 0) continue;
+            doip::Parser parser;
+            parser.feed(buffer, static_cast<std::size_t>(got));
+            doip::Message message;
+            if (!parser.next(message) || message.type != doip::VehicleAnnouncement) continue;
+            doip::Entity entity;
+            if (!doip::parseAnnouncement(message.payload, entity)) continue;
+            char text[INET_ADDRSTRLEN] = {};
+            ::inet_ntop(AF_INET, &from.sin_addr, text, sizeof(text));
+            entity.address = text;
+            const bool known = std::any_of(found.begin(), found.end(),
+                                           [&](const doip::Entity& e) { return e.address == entity.address; });
+            if (!known) found.push_back(entity);
+        }
+    }
+    closeSocket(s);
+    return found;
+}
+
+std::unique_ptr<ITransport> openDoip(const std::string& host, std::string& error, doip::Entity* found) {
+    if (!startNetwork()) {
+        error = L("Netzwerk lässt sich nicht starten.", "Cannot start networking.");
+        return nullptr;
+    }
+    doip::Entity entity;
+    std::string address = host;
+    if (address.empty() || address == "auto") {
+        const std::vector<doip::Entity> cars = discoverDoip(2500, error);
+        if (cars.empty()) {
+            if (error.empty())
+                error = L("Kein Fahrzeug mit DoIP im Netzwerk gefunden.", "No vehicle with DoIP found on the network.");
+            return nullptr;
+        }
+        entity = cars.front();
+        address = entity.address;
+    } else {
+        entity.address = address;
+    }
+    const Socket s = connectTcp(address, doip::kPort, 5000);
+    if (s == kNoSocket) {
+        error = L("Keine DoIP-Verbindung zu ", "No DoIP connection to ") + address + ":" + std::to_string(doip::kPort);
+        return nullptr;
+    }
+    auto session = std::make_unique<DoipSession>(std::make_unique<TcpStream>(s));
+    if (!session->activate(error)) return nullptr;
+    if (found) *found = entity;
+    std::string name = "DoIP " + address;
+    if (!entity.vin.empty()) name += " (" + entity.vin + ")";
+    return std::make_unique<EnetElm>(std::move(session), name, EnetElm::Flavor::Doip);
+}
+
+std::unique_ptr<ITransport> openNetworkCar(const std::string& host, std::string& error, std::string& kind,
+                                           std::string& vin) {
+    std::string enetError, doipError;
+    hsfz::VehicleIdent ident;
+    if (auto t = openEnet(host, enetError, &ident)) {
+        kind = "ENET";
+        vin = ident.vin;
+        return t;
+    }
+    doip::Entity entity;
+    if (auto t = openDoip(host, doipError, &entity)) {
+        kind = "DoIP";
+        vin = entity.vin;
+        return t;
+    }
+    error = enetError + "\n" + doipError;
+    return nullptr;
 }
 
 std::unique_ptr<ITransport> openEnet(const std::string& host, std::string& error, hsfz::VehicleIdent* found) {
