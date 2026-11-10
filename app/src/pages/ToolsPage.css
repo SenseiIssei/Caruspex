@@ -1,0 +1,8 @@
+/* Prüfen und AU: three stacked cards, tables that scroll inside their frame. */
+
+.tools-load { min-height: 40px; }
+.tools-table { max-height: 320px; min-height: 120px; }
+.tools-state { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.tools-raw-line { display: flex; gap: 8px; align-items: center; }
+.tools-raw-line .input { min-height: 38px; }
+.tools-replies { min-height: 150px; height: 180px; width: 100%; line-height: 1.5; }

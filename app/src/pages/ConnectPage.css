@@ -1,0 +1,141 @@
+/* The connect page: the steps on the left, the adapter card on the right
+   (5 to 6 like the Qt layout), stacked when the window gets narrow. */
+
+.connect-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: stretch;
+}
+.connect-steps { flex: 5 1 320px; }
+.connect-adapter { flex: 6 1 380px; gap: 14px; }
+
+/* --- Steps ----------------------------------------------------------------- */
+
+.connect-step { display: flex; gap: 14px; padding: 6px 0; align-items: flex-start; }
+.connect-step-number {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent-hover);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+}
+.connect-step-texts { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.connect-step-head { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+
+/* --- Adapter --------------------------------------------------------------- */
+
+.connect-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.connect-chips .chip { min-height: 34px; padding-inline: 14px; }
+
+.connect-mode { display: flex; flex-direction: column; gap: 8px; min-height: 92px; }
+.connect-demo-text { padding-top: 4px; }
+
+.connect-line { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.connect-line .select,
+.connect-field,
+.connect-tall { min-height: 38px; }
+.connect-field { width: 100%; }
+.connect-rate { flex: none; width: 140px; }
+.connect-refresh { flex: none; width: 40px; height: 38px; padding: 0; }
+
+/* --- Vehicle --------------------------------------------------------------- */
+
+.connect-vehicle-title { display: flex; align-items: baseline; gap: 10px; }
+.connect-vehicle-row { flex-wrap: wrap; }
+.connect-vehicle-row .connect-search { flex: 1 1 240px; }
+
+.connect-search { position: relative; }
+.connect-search .input { padding-inline-end: 34px; }
+.connect-clear {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface-high);
+  color: var(--text-muted);
+}
+.connect-clear:hover { color: var(--text); background: var(--surface-hover); }
+
+.connect-suggestions {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: 360px;
+  overflow-y: auto;
+  background: var(--surface-high);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow);
+}
+.connect-suggestions li {
+  display: flex;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.connect-suggestions li.on { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--text); }
+
+.connect-year {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 38px;
+  min-width: 140px;
+  padding-block: 0;
+}
+.connect-year input {
+  width: 64px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 0;
+}
+.connect-year input:focus { outline: none; }
+.connect-year:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+
+/* --- Connect button and state ---------------------------------------------- */
+
+.connect-button { min-height: 48px; width: 100%; font-size: 15px; }
+.connect-button.pulse:not(:disabled) { animation: connect-glow 2.4s ease-in-out infinite; }
+@keyframes connect-glow {
+  0%, 100% { box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 22%, transparent); }
+  50% { box-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 55%, transparent); }
+}
+
+.connect-state { display: flex; align-items: center; gap: 8px; }
+.connect-state-label { font-weight: 600; transition: color 200ms var(--ease); }
+.connect-state-label.muted { color: var(--text-muted); }
+.connect-state-label.warn { color: var(--warn); }
+.connect-state-label.good { color: var(--good); font-weight: 700; }
+.connect-state-label.bad { color: var(--bad); }
+.connect-details { line-height: 1.55; }
+
+.connect-error {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bad) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent);
+}
+.connect-error-head { font-weight: 700; color: var(--bad); }

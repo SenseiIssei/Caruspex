@@ -1,0 +1,78 @@
+/* The car drawing (VehicleDiagram.cpp). Width driven: the height follows at
+   0.42 of the width, never below 360 by 170. */
+
+.vehicle-diagram {
+  position: relative;
+  width: 100%;
+  min-width: min(360px, 100%);
+  aspect-ratio: 1 / 0.42;
+  min-height: 170px;
+  user-select: none;
+}
+
+.vehicle-diagram > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.vehicle-diagram .vd-labels { pointer-events: none; }
+
+/* The body fades smoothly when the see-through mode switches. */
+.vd-body { transition: opacity 260ms var(--ease); }
+
+.vd-shape,
+.vd-tubefill,
+.vd-line {
+  transition: fill-opacity 160ms ease, stroke-opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.vd-hit { cursor: pointer; pointer-events: visiblePainted; }
+
+/* The part in focus breathes: the fill and a soft glow around it, the
+   2.3 second wave of the C++ timer (0.09 rad every 33 ms). */
+.vd-part.pulsing .vd-shape { animation: vd-pulse-fill 2.3s ease-in-out infinite; }
+.vd-part.pulsing .vd-tubefill { animation: vd-pulse-stroke 2.3s ease-in-out infinite; }
+.vd-halo { animation: vd-halo 2.3s ease-in-out infinite; }
+
+@keyframes vd-pulse-fill {
+  0%, 100% { fill-opacity: 0.3; }
+  50% { fill-opacity: 0.65; }
+}
+@keyframes vd-pulse-stroke {
+  0%, 100% { stroke-opacity: 0.3; }
+  50% { stroke-opacity: 0.65; }
+}
+@keyframes vd-halo {
+  0%, 100% { stroke-width: calc(10px + var(--halo-extra, 0px)); stroke-opacity: 0.12; }
+  50% { stroke-width: calc(18px + var(--halo-extra, 0px)); stroke-opacity: 0.24; }
+}
+
+/* The light band: about ten seconds per pass while idle, under three while
+   something is read (0.006 and 0.022 of the car per 33 ms tick). */
+.vd-sweep { animation: vd-sweep 9.9s linear infinite; }
+.vehicle-diagram.scanning .vd-sweep { animation-duration: 2.7s; }
+@keyframes vd-sweep {
+  from { transform: translateX(var(--sweep-from)); }
+  to { transform: translateX(var(--sweep-to)); }
+}
+
+.vd-chip-text {
+  fill: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Hidden pages do not animate. */
+.vehicle-diagram.paused *,
+.vehicle-diagram.paused { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vd-sweep { animation: none; opacity: 0; }
+  .vd-part.pulsing .vd-shape,
+  .vd-part.pulsing .vd-tubefill,
+  .vd-halo { animation-duration: 6s; }
+}

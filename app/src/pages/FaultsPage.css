@@ -1,0 +1,99 @@
+/* Fault memory page (FaultsPage.cpp). */
+
+/* The colour of a critical code; the other severities use the palette. */
+:root { --critical: #ff4d6a; }
+:root[data-theme="light"] { --critical: #c8143c; }
+
+.faults-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.faults-actions .btn { min-height: 40px; }
+.faults-summary { white-space: nowrap; }
+
+.faults-throttle { color: var(--warn); }
+
+.faults-clear-log {
+  margin: 0;
+  max-height: 110px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  border-radius: var(--radius-flat);
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.faults-columns { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.faults-list-card { flex: 5 1 340px; padding: 12px; }
+.faults-detail, .faults-empty { flex: 6 1 380px; }
+.faults-empty { min-height: 320px; justify-content: center; }
+.faults-empty-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 32px 16px; }
+.faults-empty-inner .subtle { max-width: 420px; }
+
+/* --- The list: severity bar, code, text, a small pill ------------------------- */
+
+.faults-list { display: flex; flex-direction: column; gap: 2px; min-height: 120px; }
+
+.fault-item {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  text-align: start;
+  padding: 10px 12px 10px 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  transition: background 140ms var(--ease), border-color 140ms var(--ease);
+}
+.fault-item:hover { background: color-mix(in srgb, var(--text) 4%, transparent); }
+.fault-item.selected {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.fault-bar { flex: none; width: 4px; border-radius: 2px; background: var(--tone); margin: 2px 0; }
+.fault-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.fault-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.fault-code { flex: none; min-width: 72px; color: var(--tone); font-size: 16px; font-weight: 700; }
+.fault-text { flex: 1 1 auto; min-width: 0; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fault-pill {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 15%, transparent);
+}
+.fault-meta { color: var(--text-faint); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- The detail ------------------------------------------------------------------- */
+
+.faults-detail { padding: 24px; }
+.faults-detail-inner { display: flex; flex-direction: column; gap: 12px; }
+.faults-detail-head { display: flex; align-items: center; gap: 12px; }
+.faults-detail-code { color: var(--tone); font-size: 26px; font-weight: 700; line-height: 1.1; }
+
+.faults-advice {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tone) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.faults-diagram { min-height: 190px; }
+
+.faults-section { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
+.faults-section .eyebrow { margin-bottom: 2px; }
+.faults-cause { white-space: pre-wrap; }
+.faults-check { display: flex; align-items: flex-start; gap: 8px; }
+.faults-check-icon { color: var(--accent); margin-top: 3px; }
+.faults-frame-row { display: flex; align-items: baseline; gap: 12px; padding: 2px 0; border-bottom: 1px solid var(--row-line); }
+.faults-frame-row:last-child { border-bottom: 0; }
+
+.faults-footer { line-height: 1.5; }

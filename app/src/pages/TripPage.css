@@ -1,0 +1,19 @@
+/* Trip computer: the hero with the live consumption and the eco ring, then
+   the tiles. */
+
+.trip-hero { padding: 26px; }
+.trip-hero-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
+.trip-live { flex: 3 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.trip-value-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.trip-value { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
+.trip-unit { color: var(--text-muted); font-size: 18px; font-weight: 600; }
+.trip-note { max-width: 620px; }
+.trip-controls { margin-top: 10px; }
+.trip-controls .btn { min-height: 44px; }
+.trip-setup { margin-top: 6px; }
+.trip-setup .select { width: auto; min-width: 130px; }
+.trip-setup .number-input .input { width: 110px; }
+.trip-eco { flex: 2 1 240px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.trip-eco-text { max-width: 320px; text-align: center; }
+
+.trip-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }

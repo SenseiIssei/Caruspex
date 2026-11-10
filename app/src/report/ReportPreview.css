@@ -1,0 +1,21 @@
+/* The report preview: the document as a white sheet on the window's canvas,
+   in both themes, because that is how it prints. */
+
+.report-sheet {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+  height: min(72vh, 900px);
+  min-height: 320px;
+}
+
+.report-frame {
+  width: min(860px, 100%);
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.report-loading { display: grid; place-items: center; width: 100%; height: 100%; }

@@ -1,0 +1,22 @@
+/* Bauteilprüfung: the explanation, the button bar with the status on the
+   other side, the identity line and the results as a grouped table. */
+
+.monitor-hint { margin: 0; max-width: 980px; font-size: 13px; }
+.monitor-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.monitor-button { min-height: 40px; }
+.monitor-status { text-align: end; }
+.monitor-identity { display: flex; flex-wrap: wrap; gap: 6px 28px; }
+
+.monitor-table { min-height: 240px; flex: 1 1 auto; }
+.monitor-group td {
+  cursor: pointer;
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border);
+}
+.monitor-group:hover td { background: var(--surface-high) !important; }
+.monitor-group-title { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); }
+.monitor-chevron { color: var(--text-faint); }
+:root[dir="rtl"] .monitor-chevron { transform: scaleX(-1); }
+.monitor-child td:first-child { padding-inline-start: 30px; }
+.monitor-verdict { font-weight: 600; white-space: nowrap; }
+.monitor-empty { height: 180px; }

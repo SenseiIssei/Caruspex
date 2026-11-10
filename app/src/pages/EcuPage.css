@@ -1,0 +1,60 @@
+/* All control units: the address list choice with its buttons, then the
+   units on the left and the chosen one on the right (4 to 6, like the Qt
+   columns), one under the other on narrow windows. */
+
+.ecu-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ecu-bar .ecu-family { flex: 1 1 320px; min-height: 40px; }
+.ecu-bar .btn { min-height: 40px; }
+.ecu-status { margin-top: -6px; }
+
+.ecu-columns {
+  display: grid;
+  grid-template-columns: minmax(240px, 4fr) minmax(0, 6fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .ecu-columns { grid-template-columns: minmax(0, 1fr); }
+}
+
+.ecu-list-card { padding: 12px; min-height: 320px; max-height: calc(100vh - 330px); overflow-y: auto; }
+.ecu-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.ecu-list li + li { border-top: 1px solid var(--row-line); }
+.ecu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  text-align: start;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.ecu-item:hover { background: var(--surface-high); }
+.ecu-item.on {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.ecu-item-icon { flex: none; display: grid; place-items: center; width: 22px; }
+.ecu-item-text { display: flex; flex-direction: column; min-width: 0; }
+.ecu-item-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ecu-item-sub { color: var(--text-muted); font-size: 13px; white-space: pre; }
+
+.ecu-detail { padding: 24px; gap: 14px; }
+.ecu-name { overflow-wrap: anywhere; }
+.ecu-facts {
+  display: grid;
+  grid-template-columns: minmax(110px, 130px) minmax(0, 1fr);
+  gap: 3px 14px;
+  align-items: baseline;
+}
+.ecu-facts:empty { display: none; }
+.ecu-fact-value { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; user-select: text; }
+.ecu-faults { display: flex; flex-direction: column; }
+.ecu-clear { max-width: 320px; }
+
+.ecu-empty { min-height: 320px; justify-content: center; }
+.ecu-empty-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 32px; }
+.ecu-empty-inner .subtle { max-width: 420px; }

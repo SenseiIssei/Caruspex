@@ -1,0 +1,17 @@
+/* Statistics: six key figures, the table with a trend per row, and the
+   spread of the chosen row. */
+
+.stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stats-card { padding: 12px 16px; gap: 2px; }
+.stats-card-value { color: var(--accent); font-family: var(--font-display); font-size: 22px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stats-card-caption { font-size: 13px; }
+
+.stats-table { max-height: 560px; min-height: 160px; }
+.stats-row { cursor: pointer; }
+.stats-row td { vertical-align: middle; }
+.stats-trend { width: 126px; }
+.stats-trend .range-bar { margin-top: 2px; }
+.stats-trend-head { width: 126px; }
+@media (max-width: 860px) {
+  .stats-trend, .stats-trend-head { display: none; }
+}

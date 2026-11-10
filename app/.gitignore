@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# Generated before dev and build
+src/i18n/generated/
+public/fonts/
+src-tauri/gen/

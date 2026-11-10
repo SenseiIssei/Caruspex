@@ -1,0 +1,37 @@
+[
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Schließen",
+  "en": "Close"
+ },
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Drucken",
+  "en": "Print"
+ },
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Als PDF speichern",
+  "en": "Save as PDF"
+ },
+ {
+  "context": "caruspex::VehiclesPage",
+  "de": "Alle Modelle",
+  "en": "All models"
+ },
+ {
+  "context": "caruspex::GaragePage",
+  "de": "Punkte der Prüfungen",
+  "en": "Check scores"
+ },
+ {
+  "context": "caruspex::GaragePage",
+  "de": "Wartung bearbeiten",
+  "en": "Edit service item"
+ },
+ {
+  "context": "QPlatformTheme",
+  "de": "OK",
+  "en": "OK"
+ }
+]

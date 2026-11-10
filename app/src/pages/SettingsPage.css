@@ -1,0 +1,20 @@
+/* Settings: one card per group, label and control side by side, explanations
+   across the whole width. The connection group carries the accent glow of
+   the Qt page. */
+
+.settings-group { gap: 16px; }
+.settings-group.glow {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  box-shadow: var(--shadow-soft), 0 0 28px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.settings-form { grid-template-columns: minmax(150px, 280px) minmax(0, 1fr); }
+.settings-control { display: flex; align-items: center; min-width: 0; }
+.settings-control .select { width: 100%; max-width: 440px; }
+.settings-note { margin-top: -4px; max-width: 760px; }
+.settings-path { display: flex; gap: 8px; width: 100%; max-width: 640px; align-items: center; }
+.settings-path .input { flex: 1 1 auto; min-width: 0; }
+
+@media (max-width: 720px) {
+  .settings-form { grid-template-columns: minmax(0, 1fr); gap: 6px 0; }
+  .settings-form .form-label { margin-top: 8px; }
+}
