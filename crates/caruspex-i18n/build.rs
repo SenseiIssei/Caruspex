@@ -30,7 +30,8 @@ fn main() {
 
     let mut en_by_id: BTreeMap<String, String> = BTreeMap::new();
     for file in json_files(&root.join("source"), "core_") {
-        let items: serde_json::Value = serde_json::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
+        let items: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
         for item in items.as_array().expect("source file is a list") {
             let id = item["id"].as_str().unwrap().to_string();
             let en = item["en"].as_str().unwrap_or("").to_string();
@@ -44,12 +45,13 @@ fn main() {
     for code in CODES {
         let mut map = serde_json::Map::new();
         for file in json_files(&root.join(code), "core_") {
-            let texts: serde_json::Value = serde_json::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
+            let texts: serde_json::Value =
+                serde_json::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
             for (id, text) in texts.as_object().expect("language file is an object") {
-                if let (Some(en), Some(text)) = (en_by_id.get(id), text.as_str()) {
-                    if !text.is_empty() {
-                        map.insert(en.clone(), serde_json::Value::String(text.to_string()));
-                    }
+                if let (Some(en), Some(text)) = (en_by_id.get(id), text.as_str())
+                    && !text.is_empty()
+                {
+                    map.insert(en.clone(), serde_json::Value::String(text.to_string()));
                 }
             }
         }

@@ -41,24 +41,114 @@ pub struct LanguageInfo {
 }
 
 const TABLE: [LanguageInfo; 18] = [
-    LanguageInfo { id: Language::German, code: "de", native_name: "Deutsch", right_to_left: false },
-    LanguageInfo { id: Language::English, code: "en", native_name: "English", right_to_left: false },
-    LanguageInfo { id: Language::Spanish, code: "es", native_name: "Español", right_to_left: false },
-    LanguageInfo { id: Language::French, code: "fr", native_name: "Français", right_to_left: false },
-    LanguageInfo { id: Language::Portuguese, code: "pt", native_name: "Português", right_to_left: false },
-    LanguageInfo { id: Language::Italian, code: "it", native_name: "Italiano", right_to_left: false },
-    LanguageInfo { id: Language::Dutch, code: "nl", native_name: "Nederlands", right_to_left: false },
-    LanguageInfo { id: Language::Polish, code: "pl", native_name: "Polski", right_to_left: false },
-    LanguageInfo { id: Language::Czech, code: "cs", native_name: "Čeština", right_to_left: false },
-    LanguageInfo { id: Language::Russian, code: "ru", native_name: "Русский", right_to_left: false },
-    LanguageInfo { id: Language::Ukrainian, code: "uk", native_name: "Українська", right_to_left: false },
-    LanguageInfo { id: Language::Turkish, code: "tr", native_name: "Türkçe", right_to_left: false },
-    LanguageInfo { id: Language::Arabic, code: "ar", native_name: "العربية", right_to_left: true },
-    LanguageInfo { id: Language::Chinese, code: "zh", native_name: "中文", right_to_left: false },
-    LanguageInfo { id: Language::Japanese, code: "ja", native_name: "日本語", right_to_left: false },
-    LanguageInfo { id: Language::Korean, code: "ko", native_name: "한국어", right_to_left: false },
-    LanguageInfo { id: Language::Hindi, code: "hi", native_name: "हिन्दी", right_to_left: false },
-    LanguageInfo { id: Language::Indonesian, code: "id", native_name: "Bahasa Indonesia", right_to_left: false },
+    LanguageInfo {
+        id: Language::German,
+        code: "de",
+        native_name: "Deutsch",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::English,
+        code: "en",
+        native_name: "English",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Spanish,
+        code: "es",
+        native_name: "Español",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::French,
+        code: "fr",
+        native_name: "Français",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Portuguese,
+        code: "pt",
+        native_name: "Português",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Italian,
+        code: "it",
+        native_name: "Italiano",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Dutch,
+        code: "nl",
+        native_name: "Nederlands",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Polish,
+        code: "pl",
+        native_name: "Polski",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Czech,
+        code: "cs",
+        native_name: "Čeština",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Russian,
+        code: "ru",
+        native_name: "Русский",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Ukrainian,
+        code: "uk",
+        native_name: "Українська",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Turkish,
+        code: "tr",
+        native_name: "Türkçe",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Arabic,
+        code: "ar",
+        native_name: "العربية",
+        right_to_left: true,
+    },
+    LanguageInfo {
+        id: Language::Chinese,
+        code: "zh",
+        native_name: "中文",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Japanese,
+        code: "ja",
+        native_name: "日本語",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Korean,
+        code: "ko",
+        native_name: "한국어",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Hindi,
+        code: "hi",
+        native_name: "हिन्दी",
+        right_to_left: false,
+    },
+    LanguageInfo {
+        id: Language::Indonesian,
+        code: "id",
+        native_name: "Bahasa Indonesia",
+        right_to_left: false,
+    },
 ];
 
 /// All languages, in the order the settings list them.
@@ -72,8 +162,16 @@ pub fn language_info(language: Language) -> &'static LanguageInfo {
 
 /// By code ("fr", also "fr_FR" or "pt-BR"); English if the code is unknown.
 pub fn language_from_code(code: &str) -> Language {
-    let short: String = code.chars().take_while(|c| c.is_ascii_alphabetic()).collect::<String>().to_ascii_lowercase();
-    TABLE.iter().find(|i| i.code == short).map(|i| i.id).unwrap_or(Language::English)
+    let short: String = code
+        .chars()
+        .take_while(|c| c.is_ascii_alphabetic())
+        .collect::<String>()
+        .to_ascii_lowercase();
+    TABLE
+        .iter()
+        .find(|i| i.code == short)
+        .map(|i| i.id)
+        .unwrap_or(Language::English)
 }
 
 // German stays the default so the CLI and the tests behave as before unless
@@ -176,11 +274,21 @@ mod tests {
     #[test]
     fn catalog_has_every_language() {
         for info in languages().iter().skip(2) {
-            assert!(catalog().get(info.code).map(|m| m.len()).unwrap_or(0) > 3000, "{}", info.code);
+            assert!(
+                catalog().get(info.code).map(|m| m.len()).unwrap_or(0) > 3000,
+                "{}",
+                info.code
+            );
         }
         let text = Text::new("Zündkerzen", "Spark plugs");
         assert_eq!(with_language(Language::German, || text.get()), "Zündkerzen");
-        assert_eq!(with_language(Language::English, || text.get()), "Spark plugs");
-        assert_eq!(translate_core(Language::Spanish, "no such text 123"), "no such text 123");
+        assert_eq!(
+            with_language(Language::English, || text.get()),
+            "Spark plugs"
+        );
+        assert_eq!(
+            translate_core(Language::Spanish, "no such text 123"),
+            "no such text 123"
+        );
     }
 }

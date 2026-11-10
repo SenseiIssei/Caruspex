@@ -7,5 +7,4 @@ license.workspace = true
 
 [dependencies]
 caruspex-i18n.workspace = true
-caruspex-data.workspace = true
 caruspex-link.workspace = true
