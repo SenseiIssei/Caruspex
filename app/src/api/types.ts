@@ -1,7 +1,7 @@
 // Data the backend hands to the interface. Each type mirrors a struct of the
-// C++ interface layer (src/app/Session.h, Settings.h, Garage.h, Report.h,
-// VehicleState.h) or of the core headers they use. Field names are the C++
-// names in camelCase; the Rust side serialises with
+// backend (app/src-tauri/src: worker, settings, garage, report; ported from
+// the Qt version) or of the crates they use. Field names follow the Rust
+// names in camelCase; the backend serialises with
 // #[serde(rename_all = "camelCase")]. Texts arrive in the active language.
 
 // --- Session.h ----------------------------------------------------------------

@@ -1,4 +1,4 @@
-// The line icons of src/app/Icons.cpp: 24 x 24, drawn with the current text
+// The line icons of the Qt version: 24 x 24, drawn with the current text
 // colour, round caps and joins. Crisp at every size because they stay SVG.
 import type { CSSProperties } from "react";
 

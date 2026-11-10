@@ -1,4 +1,4 @@
-// The demo car of src/core/DemoTransport.cpp, as a pure function of the time
+// The demo car of crates/caruspex-demo, as a pure function of the time
 // since "ignition on": the engine starts after a few seconds, warms up at idle
 // and then repeats a drive cycle (accelerate, cruise, brake, stand). Faults,
 // freeze frames, readiness and the monitors follow the same rules as the C++

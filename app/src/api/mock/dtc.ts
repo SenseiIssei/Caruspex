@@ -1,7 +1,7 @@
 // Fault code knowledge for the demo backend: the generic SAE tables, the
-// plain-language help and the zone ranges of the C++ data (data/dtc.json is
-// extracted from src/data/DtcGeneric*.gen.cpp, DtcDetails.gen.cpp and
-// DtcLocation.cpp). Manufacturer tables are left out; the real backend has
+// plain-language help and the zone ranges of the core data (data/dtc.json is
+// extracted from the tables in crates/caruspex-data: dtc and
+// dtc_location). Manufacturer tables are left out; the real backend has
 // them.
 import type { CostClass, DtcInfo, DtcLexiconEntry, Severity, ZoneInfo } from "../types";
 import { CarZone } from "../types";

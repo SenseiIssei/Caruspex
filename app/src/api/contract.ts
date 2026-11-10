@@ -4,7 +4,7 @@
 // camelCase keys, which Tauri maps to the snake_case parameters of the Rust
 // function). Events are emitted by the backend with app.emit(name, payload).
 //
-// Most commands mirror a slot of the C++ Worker (src/app/Session.h) and most
+// Most commands mirror a job of the backend worker (app/src-tauri/src/worker.rs) and most
 // events one of its signals; long running work answers through events, the
 // command itself returns at once. Commands below "Knowledge" are plain
 // lookups into the core data and return their result directly.

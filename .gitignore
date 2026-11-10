@@ -1,19 +1,22 @@
-build/
-out/
-CMakeUserPresets.json
-CMakeSettings.json
+# Rust and the interface
+target/
+node_modules/
+app/dist/
+crates/caruspex-net/fake-j2534/Cargo.lock
+
+# Packages and checks from tools/package.sh and tools/smoke_test.sh
+package/
+dist/
+smoke/
+
+# Editors
 .vs/
 .vscode/
 .idea/
 *.user
 __pycache__/
 *.pyc
-conan.lock
-package/
-dist/
-smoke/
-aqtinstall.log
-target/
-node_modules/
-app/dist/
-crates/caruspex-net/fake-j2534/Cargo.lock
+
+# Leftovers of the C++ build up to 0.8 in older checkouts
+build/
+CMakeUserPresets.json

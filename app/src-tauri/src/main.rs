@@ -1,5 +1,5 @@
 // Caruspex desktop app: the frameless main window with the web interface,
-// and behind it the worker thread that talks to the car (src/app of the Qt
+// and behind it the worker thread that talks to the car (worker.rs, ported from the Qt
 // version). The commands and events are the ones of app/src/api/contract.ts.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![deny(unsafe_code)]
