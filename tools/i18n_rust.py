@@ -2,6 +2,7 @@
 
     py -I tools/i18n_rust.py            list them
     py -I tools/i18n_rust.py --write    append them to translations/source/core_x2.json
+    py -I tools/i18n_rust.py --strict   also fail when a text or a translation is missing (CI)
 
 The Rust core writes texts as l("de", "en"), Text::new("de", "en") or
 Text { de: "de", en: "en" }. The other 16 languages are looked up by the
@@ -73,7 +74,34 @@ def main() -> int:
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(items, f, ensure_ascii=False, indent=1)
             f.write("\n")
+    if "--strict" in sys.argv:
+        gaps = missing_translations()
+        for line in gaps:
+            print(line)
+        if missing or gaps:
+            print("Translate the new texts (translations/TRANSLATING.md), see --write.", file=sys.stderr)
+            return 1
     return 0
+
+
+def missing_translations() -> list[str]:
+    """Ids of translations/source/core_*.json without a text in some language."""
+    source_dir = os.path.join(ROOT, "translations", "source")
+    ids: set[str] = set()
+    for path in glob.glob(os.path.join(source_dir, "core_*.json")):
+        ids |= {item["id"] for item in json.load(open(path, encoding="utf-8"))}
+    gaps = []
+    for lang_dir in sorted(glob.glob(os.path.join(ROOT, "translations", "*", ""))):
+        code = os.path.basename(os.path.dirname(lang_dir))
+        if code == "source":
+            continue
+        have: set[str] = set()
+        for path in glob.glob(os.path.join(lang_dir, "core_*.json")):
+            have |= {k for k, v in json.load(open(path, encoding="utf-8")).items() if v}
+        lost = ids - have
+        if lost:
+            gaps.append(f"{code}: {len(lost)} core texts without translation")
+    return gaps
 
 
 if __name__ == "__main__":

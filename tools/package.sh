@@ -1,49 +1,52 @@
 #!/usr/bin/env bash
-# Builds the downloadable packages from an existing Release build:
+# Builds the release packages of this system into dist/:
 #
-#   Windows  dist/Caruspex-<v>-windows-x64-setup.exe  (Inno Setup)
-#            dist/Caruspex-<v>-windows-x64.zip        (portable)
+#   Windows  dist/Caruspex-<v>-windows-x64-setup.exe  (Inno Setup, same AppId as before,
+#                                                      so it updates an installed 0.8 in place)
+#            dist/Caruspex-<v>-windows-x64.zip        (portable, needs the WebView2 runtime)
+#            dist/caruspex_cli-<v>-windows-x64.zip
 #   Linux    dist/Caruspex-<v>-linux-x86_64.AppImage
+#            dist/Caruspex-<v>-linux-amd64.deb
 #            dist/caruspex_cli-<v>-linux-x86_64.tar.gz
 #   macOS    dist/Caruspex-<v>-macos.dmg
+#            dist/caruspex_cli-<v>-macos.tar.gz
 #
-# Usage: bash tools/package.sh [build-dir]
-# QT_ROOT_DIR points at the Qt installation (the CI sets it). On Windows the
-# installer needs Inno Setup 6; without it only the zip is made, unless
-# REQUIRE_INSTALLER=1 (CI) turns that into an error.
+# Usage: bash tools/package.sh
+# REQUIRE_INSTALLER=1 fails instead of skipping the Windows installer when
+# Inno Setup is missing.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
-BUILD=${1:-build}
-VERSION=$(sed -n 's/^project(Caruspex VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
-[ -n "$VERSION" ] || { echo "no version in CMakeLists.txt" >&2; exit 1; }
+VERSION=$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\([0-9.]*\)"/\1/p' Cargo.toml)
+[ -n "$VERSION" ] || { echo "no version in Cargo.toml" >&2; exit 1; }
 echo "Caruspex $VERSION"
 
+export CARGO_TARGET_DIR="$ROOT/target"
 STAGE="$ROOT/package"
 DIST="$ROOT/dist"
+RELEASE="$CARGO_TARGET_DIR/release"
 rm -rf "$STAGE" "$DIST"
 mkdir -p "$STAGE" "$DIST"
 
+[ -d app/node_modules ] || npm --prefix app ci
+cargo build --release -p caruspex-cli
+
 case "$(uname -s)" in
 MINGW* | MSYS* | CYGWIN*)
-    QT_ROOT_DIR=${QT_ROOT_DIR:-C:/Qt/6.8.3/msvc2022_64}
-    BIN="$BUILD/bin/Release"
-    cp "$BIN/caruspex.exe" "$BIN/caruspex_cli.exe" LICENSE "$STAGE/"
-    "$QT_ROOT_DIR/bin/windeployqt.exe" --release --no-translations \
-        --no-system-d3d-compiler --no-opengl-sw "$STAGE/caruspex.exe"
-
-    # The Visual C++ runtime goes next to the programs (app-local), so
-    # nothing has to be installed system wide.
-    VSWHERE="/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
-    VS=$("$VSWHERE" -latest -products '*' -property installationPath | tr -d '\r')
-    CRT=$(ls -d "$(cygpath -u "$VS")"/VC/Redist/MSVC/*/x64/Microsoft.VC14*.CRT 2>/dev/null | sort -V | tail -1)
-    [ -n "$CRT" ] || { echo "Visual C++ runtime not found under $VS" >&2; exit 1; }
-    cp "$CRT"/*.dll "$STAGE/"
-    echo "runtime from $CRT"
+    npm --prefix app run tauri -- build --no-bundle
+    cp "$RELEASE/caruspex.exe" "$RELEASE/caruspex_cli.exe" LICENSE "$STAGE/"
 
     (cd "$STAGE" && powershell -NoProfile -Command \
-        "Compress-Archive -Path * -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
+        "Compress-Archive -Path caruspex.exe,caruspex_cli.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
+    (cd "$STAGE" && powershell -NoProfile -Command \
+        "Compress-Archive -Path caruspex_cli.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\caruspex_cli-$VERSION-windows-x64.zip'")
+
+    # Microsoft's small WebView2 bootstrapper: the installer runs it only on
+    # the rare Windows without the runtime.
+    BOOT="$ROOT/target/MicrosoftEdgeWebview2Setup.exe"
+    [ -s "$BOOT" ] || curl -fsSL -o "$BOOT" "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
+    cp "$BOOT" "$STAGE/"
 
     ISCC=$(command -v iscc || true)
     for candidate in "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" \
@@ -62,56 +65,25 @@ MINGW* | MSYS* | CYGWIN*)
     ;;
 
 Linux)
-    QT_ROOT_DIR=${QT_ROOT_DIR:?set QT_ROOT_DIR to the Qt installation}
-    APPDIR="$STAGE/AppDir"
-    cmake --install "$BUILD" --prefix "$APPDIR/usr"
-
-    TOOLS="$BUILD/linuxdeploy"
-    mkdir -p "$TOOLS"
-    for tool in linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
-                linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage; do
-        file="$TOOLS/$(basename "$tool")"
-        [ -f "$file" ] || curl -fsSL -o "$file" "https://github.com/linuxdeploy/$tool"
-        chmod +x "$file"
-    done
-
-    # No FUSE on build machines; the offscreen plugin lets the package be
-    # started without a display for the smoke test.
     export APPIMAGE_EXTRACT_AND_RUN=1
-    export QMAKE="$QT_ROOT_DIR/bin/qmake"
-    export EXTRA_PLATFORM_PLUGINS="libqoffscreen.so"
-    export LDAI_OUTPUT="$DIST/Caruspex-$VERSION-linux-x86_64.AppImage"
-    export OUTPUT="$LDAI_OUTPUT"
-    PATH="$TOOLS:$PATH" "$TOOLS/linuxdeploy-x86_64.AppImage" \
-        --appdir "$APPDIR" \
-        --executable "$APPDIR/usr/bin/caruspex" \
-        --executable "$APPDIR/usr/bin/caruspex_cli" \
-        --desktop-file "$APPDIR/usr/share/applications/caruspex.desktop" \
-        --icon-file resources/icons/caruspex.png \
-        --plugin qt --output appimage
-
+    npm --prefix app run tauri -- build --bundles appimage,deb
+    cp "$RELEASE"/bundle/appimage/*.AppImage "$DIST/Caruspex-$VERSION-linux-x86_64.AppImage"
+    cp "$RELEASE"/bundle/deb/*.deb "$DIST/Caruspex-$VERSION-linux-amd64.deb"
     tar -czf "$DIST/caruspex_cli-$VERSION-linux-x86_64.tar.gz" \
-        -C "$BUILD/bin" caruspex_cli -C "$ROOT" LICENSE
+        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE
     ;;
 
 Darwin)
-    QT_ROOT_DIR=${QT_ROOT_DIR:?set QT_ROOT_DIR to the Qt installation}
-    cp -R "$BUILD/bin/caruspex.app" "$STAGE/Caruspex.app"
-    "$QT_ROOT_DIR/bin/macdeployqt" "$STAGE/Caruspex.app"
-    # Not notarised: an ad-hoc signature keeps Apple Silicon starting it,
-    # Gatekeeper still asks once (right click, Open).
-    codesign --force --deep --sign - "$STAGE/Caruspex.app"
-    cp "$BUILD/bin/caruspex_cli" LICENSE "$STAGE/"
-    ln -s /Applications "$STAGE/Applications"
-    hdiutil create -volname "Caruspex $VERSION" -srcfolder "$STAGE" -ov -format UDZO \
-        "$DIST/Caruspex-$VERSION-macos.dmg"
+    npm --prefix app run tauri -- build --bundles dmg
+    cp "$RELEASE"/bundle/dmg/*.dmg "$DIST/Caruspex-$VERSION-macos.dmg"
+    tar -czf "$DIST/caruspex_cli-$VERSION-macos.tar.gz" \
+        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE
     ;;
 
 *)
-    echo "unknown system $(uname -s)" >&2
+    echo "unsupported system $(uname -s)" >&2
     exit 1
     ;;
 esac
 
-echo
 ls -l "$DIST"

@@ -1,5 +1,5 @@
 ; Windows installer, built by tools/package.sh with Inno Setup 6:
-;   iscc /DAppVersion=0.4.0 /DSourceDir=..\..\package /DOutputDir=..\..\dist caruspex.iss
+;   iscc /DAppVersion=0.9.0 /DSourceDir=..\..\package /DOutputDir=..\..\dist caruspex.iss
 ; Installs for the current user without admin rights by default; the first
 ; page offers an installation for all users instead.
 
@@ -54,13 +54,39 @@ de.CliPath=Kommandozeile caruspex_cli zum Suchpfad hinzufügen
 en.CliPath=Add the command line tool caruspex_cli to the search path
 de.Launch=Caruspex starten
 en.Launch=Start Caruspex
+de.WebView2=Microsoft WebView2 wird eingerichtet ...
+en.WebView2=Setting up Microsoft WebView2 ...
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:DesktopIcon}"; Flags: unchecked
 Name: "clipath"; Description: "{cm:CliPath}"; Flags: unchecked
 
 [Files]
-Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceDir}\*"; DestDir: "{app}"; Excludes: "MicrosoftEdgeWebview2Setup.exe"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Microsoft's WebView2 bootstrapper, only unpacked and run when the runtime is missing.
+Source: "{#SourceDir}\MicrosoftEdgeWebview2Setup.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: NeedsWebView2
+
+[InstallDelete]
+; Up to 0.8 Caruspex was a Qt program. An update over such an installation
+; removes the Qt libraries and plug-ins it no longer needs.
+Type: files; Name: "{app}\Qt6*.dll"
+Type: files; Name: "{app}\msvcp140*.dll"
+Type: files; Name: "{app}cruntime140*.dll"
+Type: files; Name: "{app}\concrt140.dll"
+Type: files; Name: "{app}ccorlib140.dll"
+Type: files; Name: "{app}\D3Dcompiler_47.dll"
+Type: files; Name: "{app}\opengl32sw.dll"
+Type: files; Name: "{app}\*.qm"
+Type: filesandordirs; Name: "{app}\platforms"
+Type: filesandordirs; Name: "{app}\styles"
+Type: filesandordirs; Name: "{app}\imageformats"
+Type: filesandordirs; Name: "{app}\iconengines"
+Type: filesandordirs; Name: "{app}	ls"
+Type: filesandordirs; Name: "{app}\generic"
+Type: filesandordirs; Name: "{app}
+etworkinformation"
+Type: filesandordirs; Name: "{app}\printsupport"
+Type: filesandordirs; Name: "{app}	ranslations"
 
 [Icons]
 Name: "{autoprograms}\Caruspex"; Filename: "{app}\caruspex.exe"
@@ -72,9 +98,27 @@ Root: HKA; Subkey: "{code:EnvKey}"; ValueType: expandsz; ValueName: "Path"; \
     ValueData: "{olddata};{app}"; Tasks: clipath; Check: NeedsPathEntry(ExpandConstant('{app}'))
 
 [Run]
+Filename: "{tmp}\MicrosoftEdgeWebview2Setup.exe"; Parameters: "/silent /install"; StatusMsg: "{cm:WebView2}"; Check: NeedsWebView2; Flags: waituntilterminated
 Filename: "{app}\caruspex.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
 
 [Code]
+// The interface runs in Microsoft's WebView2, part of Windows 10 and 11 in
+// almost every case. Installed per machine or per user, its version sits here.
+function NeedsWebView2: Boolean;
+var
+  Version: String;
+  Key: String;
+begin
+  Key := 'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+  Result := True;
+  if RegQueryStringValue(HKLM, 'SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}', 'pv', Version) and (Version <> '') and (Version <> '0.0.0.0') then
+    Result := False
+  else if RegQueryStringValue(HKLM, Key, 'pv', Version) and (Version <> '') and (Version <> '0.0.0.0') then
+    Result := False
+  else if RegQueryStringValue(HKCU, Key, 'pv', Version) and (Version <> '') and (Version <> '0.0.0.0') then
+    Result := False;
+end;
+
 function EnvKey(Param: String): String;
 begin
   if IsAdminInstallMode then

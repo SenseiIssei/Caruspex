@@ -1,7 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Caruspex",
-  "version": "0.9.0",
   "identifier": "dev.senseiissei.caruspex",
   "build": {
     "beforeDevCommand": "npm run dev",

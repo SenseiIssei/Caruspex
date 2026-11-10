@@ -58,6 +58,7 @@ for (const entry of newTexts) {
 writeFileSync(join(out, "en.json"), JSON.stringify(english));
 
 let summary = `en ${Object.keys(english).length}`;
+let totalMissing = 0;
 for (const code of languages) {
   const byId = {};
   for (const file of uiFiles(join(root, code))) Object.assign(byId, read(file));
@@ -79,6 +80,7 @@ for (const code of languages) {
     else if (!text && !(k in catalog)) missing++;
   }
   writeFileSync(join(out, `${code}.json`), JSON.stringify(catalog));
+  totalMissing += missing;
   summary += `, ${code} ${Object.keys(catalog).length}${missing ? ` (${missing} missing)` : ""}`;
 }
 
@@ -106,3 +108,10 @@ for (const code of languages) {
 // The list of languages with a catalog, for the settings page and the loader.
 writeFileSync(join(out, "languages.json"), JSON.stringify(["de", "en", ...languages]));
 console.log(`i18n: ${source.length} texts, ${newTexts.length} new; ${summary}; core ${coreSource.length}`);
+
+// In the CI (I18N_STRICT=1) a missing translation fails the build, so new
+// interface texts get translated before they reach main.
+if (process.env.I18N_STRICT === "1" && totalMissing > 0) {
+  console.error(`i18n: ${totalMissing} interface translations are missing, see src/i18n/new-texts.json`);
+  process.exit(1);
+}
