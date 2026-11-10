@@ -477,6 +477,22 @@ Protokoll: %3</source>
 リンク: %2
 プロトコル: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN インターフェース</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>生の CAN メッセージを出力するデバイス向けです: J2534 PassThru (Tactrix OpenPort、Mongoose、VCX Nano、Scanmatik など多数。メーカーの 64 ビットドライバーを使用)、SLCAN スティック (CANable、USBtin、CANUSB)、Linux では SocketCAN。CAN 上の OBD を使う車は 500 kbit/s で動作します。</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>32 ビットドライバーのみ</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>CAN インターフェースが見つかりません。ドライバーはインストールされ、デバイスは接続されていますか?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2295,6 +2311,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>2 分たっても接続できなかったため、キャンセルしました。</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>CAN インターフェース %1 経由で接続中 ...</translation>
     </message>
 </context>
 <context>
@@ -4213,6 +4233,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>コンポーネント監視を読み取りました: %1 件のテスト、O2 センサーのテスト %2 件。</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>%1 に SLCAN アダプターが見つかりました</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN インターフェースを開きました: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4275,6 +4303,10 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report には接続が必要です: --demo、--port、--tcp、--enet、--bluetooth、--replay のいずれか</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>CAN インターフェースに接続: j2534:&lt;ドライバー.dll&gt;、slcan:COM5、または socketcan:can0。ビットレートは @250000 で指定</translation>
     </message>
 </context>
 </TS>

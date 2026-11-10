@@ -478,6 +478,22 @@ Protocol: %3</translation>
         <source>Für ein ENET-Kabel (BMW und Mini ab der F-Baureihe) oder ein DoIP-Kabel (viele neuere Autos) zwischen OBD-Buchse und Netzwerkanschluss. Caruspex erkennt selbst, was das Auto spricht. Zündung an; nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören in die Werkstattsoftware.</source>
         <translation>For an ENET cable (BMW and Mini from the F series on) or a DoIP cable (many newer cars) between the OBD socket and the network port. Caruspex works out by itself what the car speaks. Ignition on; after plugging in, the computer needs up to a minute for its automatic address. Caruspex only reads; coding and flashing belong in the workshop software.</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2313,6 +2329,10 @@ Ignition on, engine off. With the engine running, most control units refuse the 
     <message>
         <source>Verbinde über ENET mit %1 ...</source>
         <translation>Connecting to %1 over ENET ...</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4232,6 +4252,14 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
         <source>Verbunden über %1: %2%3</source>
         <translation>Connected over %1: %2%3</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4294,6 +4322,10 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

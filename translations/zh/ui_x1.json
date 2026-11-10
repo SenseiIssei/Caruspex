@@ -1,0 +1,10 @@
+{
+ "u1019": "CAN 接口",
+ "u1020": "适用于提供原始 CAN 报文的设备:J2534 PassThru(Tactrix OpenPort、Mongoose、VCX Nano、Scanmatik 等等,需配合厂商的 64 位驱动程序)、SLCAN 适配器(CANable、USBtin、CANUSB),以及 Linux 下的 SocketCAN。采用 CAN 上 OBD 的汽车以 500 kbit/s 运行。",
+ "u1021": "仅有 32 位驱动程序",
+ "u1022": "未找到 CAN 接口。驱动程序已安装、设备已插好吗?",
+ "u1023": "正在通过 CAN 接口 %1 连接 ...",
+ "u1024": "在 %1 上找到 SLCAN 适配器",
+ "u1025": "CAN 接口已打开:%1",
+ "u1026": "连接 CAN 接口:j2534:<驱动.dll>、slcan:COM5 或 socketcan:can0,用 @250000 指定波特率"
+}

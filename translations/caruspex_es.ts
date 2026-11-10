@@ -478,6 +478,22 @@ Protokoll: %3</source>
 Enlace: %2
 Protocolo: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>Interfaz CAN</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Para dispositivos que entregan mensajes CAN en bruto: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik y muchos más, con el controlador de 64 bits del fabricante), adaptadores SLCAN (CANable, USBtin, CANUSB) y, en Linux, SocketCAN. Los coches con OBD sobre CAN funcionan a 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>solo controlador de 32 bits</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>No se encontró ninguna interfaz CAN. ¿Controlador instalado y dispositivo conectado?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2313,6 +2329,10 @@ Contacto puesto, motor apagado. Con el motor en marcha, la mayoría de las unida
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Sin conexión tras dos minutos, cancelado.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Conectando mediante la interfaz CAN %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4232,6 +4252,14 @@ El bloque de valores medidos depende del motor: 060 para inyección en el colect
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Supervisión de componentes leída: %1 pruebas, %2 pruebas del sensor de O2.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>Adaptador SLCAN encontrado en %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>Interfaz CAN abierta: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4294,6 +4322,10 @@ El bloque de valores medidos depende del motor: 060 para inyección en el colect
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report necesita una conexión: --demo, --port, --tcp, --enet, --bluetooth o --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>Conectar interfaz CAN: j2534:&lt;controlador.dll&gt;, slcan:COM5 o socketcan:can0, con @250000 para la velocidad de transmisión</translation>
     </message>
 </context>
 </TS>

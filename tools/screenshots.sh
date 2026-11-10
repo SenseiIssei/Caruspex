@@ -30,6 +30,9 @@ shot live live-run 16000 &
 wait
 shot health health-run 22000 &
 shot adapter adapter-run 20000 &
+shot connect connect 4000 &
+shot ecus ecus-run 30000 &
+shot battery ev-run 9000 &
 "$app" --theme dark --language "$lang" --page vehicles:WVWZZZ1JZ3W386752 --shot "$out/screenshot-vehicles.png" \
     --shot-delay 2500 --size "$size" &
 wait

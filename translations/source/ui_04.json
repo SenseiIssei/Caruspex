@@ -131,5 +131,61 @@
   "de": "--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay",
   "en": "--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay",
   "plural": false
+ },
+ {
+  "id": "u1019",
+  "context": "caruspex::ConnectPage",
+  "de": "CAN-Interface",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1020",
+  "context": "caruspex::ConnectPage",
+  "de": "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1021",
+  "context": "caruspex::ConnectPage",
+  "de": "nur 32-Bit-Treiber",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1022",
+  "context": "caruspex::ConnectPage",
+  "de": "Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1023",
+  "context": "caruspex::MainWindow",
+  "de": "Verbinde über das CAN-Interface %1 ...",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1024",
+  "context": "caruspex::Worker",
+  "de": "SLCAN-Adapter an %1 gefunden",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1025",
+  "context": "caruspex::Worker",
+  "de": "CAN-Schnittstelle offen: %1",
+  "en": "",
+  "plural": false
+ },
+ {
+  "id": "u1026",
+  "context": "main",
+  "de": "CAN-Interface verbinden: j2534:<treiber.dll>, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate",
+  "en": "",
+  "plural": false
  }
 ]

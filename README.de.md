@@ -57,6 +57,25 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Schreibt nichts in den Adapter
 ![Adaptertest](docs/de/screenshot-adapter.png)
 
+**Jedes Kabel, jeder Weg ins Auto**
+
+Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
+
+| Schnittstelle | Beispiele | Wie |
+|---|---|---|
+| ELM327 über USB, Bluetooth, Bluetooth LE, WLAN | günstige ELM327, Vgate, vLinker, Veepeak | serieller Anschluss, gekoppelt oder direkt per BLE, TCP |
+| STN-Chips | OBDLink SX, EX, MX+, CX | wie ELM327, mit schnellerer Taktung |
+| SAE J2534 PassThru | Tactrix OpenPort 2.0, Mongoose, VCX Nano, Scanmatik, Godiag, VAS 5054A im J2534-Modus | 64-Bit-Treiber des Herstellers, CAN mit ISO-TP in Caruspex |
+| SLCAN / Lawicel | CANable, USBtin, CANUSB | serieller Anschluss, die automatische Suche findet sie |
+| SocketCAN (Linux) | PEAK PCAN-USB, Kvaser, CANable mit candleLight, CAN-Aufsätze für den Raspberry Pi | can0 und Co. |
+| KKL-Kabel (VAG 409.1) | Kabel mit FTDI oder CP2102 | K-Line, KWP1281 und KWP2000 |
+| ENET-Kabel | BMW und Mini ab F-Baureihe | HSFZ über Ethernet |
+| DoIP-Kabel | viele Autos ab etwa 2016 | ISO 13400 über Ethernet |
+
+Über alle laufen dieselben Funktionen: OBD-II und OBD über UDS, alle Steuergeräte über UDS, BMW-Adressierung, Mithören von Rundfunkwerten (Tesla), Aufzeichnen und Abspielen.
+
+![Verbinden](docs/de/screenshot-connect.png)
+
 **Alle Steuergeräte über CAN (UDS)**
 - Mit einem normalen ELM327 fragt Caruspex jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr, bei den meisten Autos ab etwa 2008
 - Fehlerspeicher je Steuergerät mit Fehlerart (Kurzschluss, Unterbrechung, unplausibel ...), Teilenummer, Software- und Hardwarestand
@@ -64,14 +83,18 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - BMW und Mini ab der F-Baureihe mit der BMW-eigenen Adressierung über 6F1, dazu ein Suchlauf über alle 128 Diagnoseadressen; Fehlercodes im BMW-Format wie in ISTA (z.B. 480A10)
 - Löschen je Steuergerät mit Warnung
 
+![Alle Steuergeräte](docs/de/screenshot-ecus.png)
+
 **VW und Audi über KKL-Kabel (KWP1281 und KWP2000)**
 - Drosselklappe anlernen: echte Grundeinstellung im Messwertblock 060 oder 098
 - Alle Steuergeräte durchsuchen, auch ABS, Airbag, Kombi und Komfort, mit Prüfbericht
 - Anpassungskanäle lesen und Stellglieddiagnose, bewusst nur lesend
 
 **Herstellerwerte und eigene Werte**
-- Akku von E-Autos: Akkugesundheit, Ladestand, Zellspannungen mit Spreizung, Temperaturen, für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe und Nissan Leaf; jeder Wert mit belegter Quelle
+- Akku von E-Autos: Akkugesundheit, Ladestand, Zellspannungen mit Spreizung, Temperaturen, für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören am CAN-Bus); jeder Wert mit belegter Quelle
 - Eigene Messwerte im verbreiteten Torque-CSV-Format laden, mit vollständigem Rechner für die Torque-Gleichungen
+
+![E-Auto-Akku](docs/de/screenshot-battery.png)
 
 **Aufzeichnen und Abspielen**
 - Eine Sitzung mit dem Auto in eine Datei aufzeichnen und später ohne Auto abspielen, hilfreich bei der Fehlersuche

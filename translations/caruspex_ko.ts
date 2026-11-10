@@ -477,6 +477,22 @@ Protokoll: %3</source>
 링크: %2
 프로토콜: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN 인터페이스</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>원시 CAN 메시지를 제공하는 장치용입니다: J2534 PassThru(Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik 등 다수, 제조사의 64비트 드라이버 사용), SLCAN 스틱(CANable, USBtin, CANUSB), 그리고 Linux에서는 SocketCAN. CAN 기반 OBD를 쓰는 자동차는 500 kbit/s로 동작합니다.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>32비트 드라이버만 있음</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>CAN 인터페이스를 찾을 수 없습니다. 드라이버가 설치되어 있고 장치가 연결되어 있나요?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2295,6 +2311,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>2분이 지나도 연결되지 않아 취소했습니다.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>CAN 인터페이스 %1을(를) 통해 연결하는 중 ...</translation>
     </message>
 </context>
 <context>
@@ -4213,6 +4233,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>부품 모니터링을 읽었습니다: 시험 %1개, O2 센서 시험 %2개.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>%1에서 SLCAN 어댑터를 찾았습니다</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN 인터페이스 열림: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4275,6 +4303,10 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report에는 연결이 필요합니다: --demo, --port, --tcp, --enet, --bluetooth 또는 --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>CAN 인터페이스 연결: j2534:&lt;드라이버.dll&gt;, slcan:COM5 또는 socketcan:can0, 비트레이트는 @250000으로 지정</translation>
     </message>
 </context>
 </TS>

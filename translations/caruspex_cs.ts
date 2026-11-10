@@ -479,6 +479,22 @@ Protokoll: %3</source>
 Spojení: %2
 Protokol: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>Rozhraní CAN</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Pro zařízení, která dodávají surové zprávy CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik a mnoho dalších, s 64bitovým ovladačem výrobce), klíčenky SLCAN (CANable, USBtin, CANUSB) a v Linuxu SocketCAN. Auta s OBD přes CAN jezdí rychlostí 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>jen 32bitový ovladač</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>Nenalezeno žádné rozhraní CAN. Je ovladač nainstalovaný a zařízení připojené?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2331,6 +2347,10 @@ Zapalování zapnuto, motor vypnutý. Při běžícím motoru většina řídic�
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Po dvou minutách žádné spojení, přerušeno.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Připojování přes rozhraní CAN %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4251,6 +4271,14 @@ Měřicí blok závisí na motoru: 060 u vícebodového vstřikování, 098 u p�
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Monitorování komponent přečteno: %1 testů, %2 testů lambda sond.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>Adaptér SLCAN nalezen na %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>Rozhraní CAN otevřeno: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4313,6 +4341,10 @@ Měřicí blok závisí na motoru: 060 u vícebodového vstřikování, 098 u p�
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report potřebuje připojení: --demo, --port, --tcp, --enet, --bluetooth nebo --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>Připojit rozhraní CAN: j2534:&lt;ovladač.dll&gt;, slcan:COM5 nebo socketcan:can0, s @250000 pro přenosovou rychlost</translation>
     </message>
 </context>
 </TS>

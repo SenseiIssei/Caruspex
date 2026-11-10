@@ -40,6 +40,9 @@ add_library(caruspex_core STATIC
     src/core/AdapterProbe.cpp
     src/core/BleProfile.cpp
     src/core/CanSignals.cpp
+    src/core/CanBus.cpp
+    src/core/J2534.cpp
+    src/core/SocketCan.cpp
     src/core/Enet.cpp
     src/core/Recording.cpp
     src/core/Kwp1281.cpp
@@ -306,10 +309,20 @@ if(CARUSPEX_TESTS)
         tests/test_obd_on_uds.cpp
         tests/test_can_signals.cpp
         tests/test_lang.cpp
+        tests/test_can_bus.cpp
+        tests/test_j2534.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
     target_include_directories(caruspex_tests PRIVATE tests)
     target_link_libraries(caruspex_tests PRIVATE caruspex_core Catch2::Catch2WithMain)
     add_test(NAME protocol COMMAND caruspex_tests)
+    # A J2534 driver DLL without hardware, loaded by the J2534 test.
+    if(WIN32)
+        add_library(fake_j2534 SHARED tests/fake_j2534.cpp)
+        set_target_properties(fake_j2534 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+        add_dependencies(caruspex_tests fake_j2534)
+        target_compile_definitions(caruspex_tests PRIVATE
+            CARUSPEX_FAKE_J2534="$<TARGET_FILE:fake_j2534>")
+    endif()
 endif()

@@ -478,6 +478,22 @@ Protokoll: %3</source>
 Bağlantı: %2
 Protokol: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN arayüzü</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Ham CAN mesajları veren cihazlar için: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik ve çok daha fazlası, üreticinin 64 bit sürücüsüyle), SLCAN çubukları (CANable, USBtin, CANUSB) ve Linux&apos;ta SocketCAN. CAN üzerinden OBD kullanan arabalar 500 kbit/s ile çalışır.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>yalnızca 32 bit sürücü</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>CAN arayüzü bulunamadı. Sürücü yüklü ve cihaz takılı mı?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2313,6 +2329,10 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>İki dakika sonra bağlantı yok, iptal edildi.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>CAN arayüzü %1 üzerinden bağlanılıyor ...</translation>
     </message>
 </context>
 <context>
@@ -4232,6 +4252,14 @@ Kontrol ünitesi hangi protokolü konuştuğunu uyandırma adresinden sonra bell
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Bileşen izleme okundu: %1 test, %2 O2 sensörü testi.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>%1 üzerinde SLCAN adaptörü bulundu</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN arayüzü açık: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4294,6 +4322,10 @@ Kontrol ünitesi hangi protokolü konuştuğunu uyandırma adresinden sonra bell
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report bir bağlantı gerektirir: --demo, --port, --tcp, --enet, --bluetooth veya --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>CAN arayüzünü bağla: j2534:&lt;sürücü.dll&gt;, slcan:COM5 veya socketcan:can0, bit hızı için @250000 ile</translation>
     </message>
 </context>
 </TS>

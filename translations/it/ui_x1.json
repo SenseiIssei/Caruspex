@@ -1,0 +1,10 @@
+{
+ "u1019": "Interfaccia CAN",
+ "u1020": "Per dispositivi che forniscono messaggi CAN grezzi: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik e molti altri, con il driver a 64 bit del produttore), chiavette SLCAN (CANable, USBtin, CANUSB) e, su Linux, SocketCAN. Le auto con OBD su CAN viaggiano a 500 kbit/s.",
+ "u1021": "solo driver a 32 bit",
+ "u1022": "Nessuna interfaccia CAN trovata. Driver installato e dispositivo collegato?",
+ "u1023": "Connessione tramite l'interfaccia CAN %1 ...",
+ "u1024": "Adattatore SLCAN trovato su %1",
+ "u1025": "Interfaccia CAN aperta: %1",
+ "u1026": "Collega l'interfaccia CAN: j2534:<driver.dll>, slcan:COM5 oppure socketcan:can0, con @250000 per la velocità di trasmissione"
+}

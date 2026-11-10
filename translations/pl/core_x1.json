@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex jest programem 64-bitowym i potrzebuje sterownika 64-bitowego).",
+ "c3440": ". Najpierw go skonfiguruj: ip link set can0 up type can bitrate 500000",
+ "c3441": "Nie można połączyć CAN na urządzeniu J2534: ",
+ "c3442": "Urządzenia J2534 istnieją tylko w systemie Windows.",
+ "c3443": "Nie skonfigurowano urządzenia J2534. Czy sterownik producenta jest zainstalowany?",
+ "c3444": "Nie ma takiego interfejsu CAN: ",
+ "c3445": "SLCAN nie zna tej prędkości transmisji.",
+ "c3446": "SocketCAN istnieje tylko w systemie Linux.",
+ "c3447": "SocketCAN jest niedostępny.",
+ "c3448": "Nie można otworzyć kanału CAN.",
+ "c3449": "Nie można otworzyć interfejsu CAN: ",
+ "c3450": "Urządzenie J2534 nie odpowiada: ",
+ "c3451": "Nie można załadować sterownika J2534: ",
+ "c3452": "Adapter odrzuca tę prędkość transmisji.",
+ "c3453": "Port nie odpowiada jak adapter SLCAN (CANable, USBtin, CANUSB).",
+ "c3454": "Filtr odbioru w urządzeniu J2534 nie zadziałał: ",
+ "c3455": "To nie jest kompletny sterownik J2534.",
+ "c3456": "Nieznany interfejs CAN: "
+}

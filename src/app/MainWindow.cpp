@@ -378,6 +378,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
         titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
         emit session_.openEnetRequested(host, order);
     });
+    connect(connect_, &ConnectPage::canRequested, this, [this](const QString& spec, const QString& order) {
+        appendLog(tr("Verbinde über das CAN-Interface %1 ...").arg(spec));
+        titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+        emit session_.openCanRequested(spec, order);
+    });
     connect(connect_, &ConnectPage::disconnectRequested, &session_, &Session::closeRequested);
     connect(worker, &Worker::recordingState, this,
             [this](bool active, const QString& path, int exchanges, const QString& error) {
@@ -1037,6 +1042,14 @@ void MainWindow::autoConnectReplay(const QString& path) {
 void MainWindow::autoConnectDemo() {
     connect_->setMode(ConnectPage::Mode::Demo);
     connect_->startConnect();
+}
+
+void MainWindow::autoConnectCan(const QString& spec) {
+    connect_->setMode(ConnectPage::Mode::Can);
+    appendLog(tr("Verbinde über das CAN-Interface %1 ...").arg(spec));
+    titleBar_->setConnection(TitleBar::Link::Connecting, tr("Verbinde ..."));
+    connect_->onConnecting();
+    emit session_.openCanRequested(spec, QStringLiteral("67"));
 }
 
 void MainWindow::autoConnectEnet(const QString& host) {

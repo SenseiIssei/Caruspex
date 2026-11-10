@@ -218,6 +218,9 @@ public slots:
     void openDemo(const QString& protocolOrder);
     // BMW or Mini over an ENET cable; an empty host looks for the car.
     void openEnet(const QString& host, const QString& protocolOrder);
+    // A raw CAN interface: "j2534:<dll>", "slcan:COM5", "socketcan:can0",
+    // with "@<bitrate>".
+    void openCan(const QString& spec, const QString& protocolOrder);
 #ifdef CARUSPEX_HAS_BLE
     // Looks for Bluetooth LE devices; answers with bleScanFinished.
     void scanBle(int milliseconds);
@@ -386,6 +389,7 @@ signals:
     void openTcpRequested(const QString& host, int port, const QString& protocolOrder);
     void openDemoRequested(const QString& protocolOrder);
     void openEnetRequested(const QString& host, const QString& protocolOrder);
+    void openCanRequested(const QString& spec, const QString& protocolOrder);
     void scanBleRequested(int milliseconds);
     void openBleRequested(const QString& id, const QString& name, int kinds, const QString& protocolOrder);
     void openReplayRequested(const QString& path, bool realTime, const QString& protocolOrder);

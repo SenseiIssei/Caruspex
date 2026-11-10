@@ -1,0 +1,10 @@
+{
+ "u1019": "CAN arayüzü",
+ "u1020": "Ham CAN mesajları veren cihazlar için: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik ve çok daha fazlası, üreticinin 64 bit sürücüsüyle), SLCAN çubukları (CANable, USBtin, CANUSB) ve Linux'ta SocketCAN. CAN üzerinden OBD kullanan arabalar 500 kbit/s ile çalışır.",
+ "u1021": "yalnızca 32 bit sürücü",
+ "u1022": "CAN arayüzü bulunamadı. Sürücü yüklü ve cihaz takılı mı?",
+ "u1023": "CAN arayüzü %1 üzerinden bağlanılıyor ...",
+ "u1024": "%1 üzerinde SLCAN adaptörü bulundu",
+ "u1025": "CAN arayüzü açık: %1",
+ "u1026": "CAN arayüzünü bağla: j2534:<sürücü.dll>, slcan:COM5 veya socketcan:can0, bit hızı için @250000 ile"
+}

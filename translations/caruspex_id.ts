@@ -477,6 +477,22 @@ Protokoll: %3</source>
 Tautan: %2
 Protokol: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>Antarmuka CAN</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Untuk perangkat yang memberikan pesan CAN mentah: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik dan banyak lagi, dengan driver 64-bit dari pabrikan), stik SLCAN (CANable, USBtin, CANUSB) dan di Linux SocketCAN. Mobil dengan OBD lewat CAN berjalan pada 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>hanya driver 32-bit</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>Antarmuka CAN tidak ditemukan. Apakah driver sudah terpasang dan perangkat sudah dicolokkan?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2295,6 +2311,10 @@ Kunci kontak menyala, mesin mati. Saat mesin menyala, kebanyakan unit kontrol me
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Tidak ada koneksi setelah dua menit, dibatalkan.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Menghubungkan lewat antarmuka CAN %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4213,6 +4233,14 @@ Blok pengukuran tergantung mesin: 060 untuk injeksi di port, 098 untuk injeksi l
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Pemantauan komponen dibaca: %1 tes, %2 tes sensor O2.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>Adaptor SLCAN ditemukan di %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>Antarmuka CAN terbuka: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4275,6 +4303,10 @@ Blok pengukuran tergantung mesin: 060 untuk injeksi di port, 098 untuk injeksi l
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report butuh koneksi: --demo, --port, --tcp, --enet, --bluetooth, atau --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>Hubungkan antarmuka CAN: j2534:&lt;driver.dll&gt;, slcan:COM5 atau socketcan:can0, dengan @250000 untuk bit rate</translation>
     </message>
 </context>
 </TS>

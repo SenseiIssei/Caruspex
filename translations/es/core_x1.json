@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex es un programa de 64 bits y necesita un controlador de 64 bits).",
+ "c3440": ". Primero configúrala: ip link set can0 up type can bitrate 500000",
+ "c3441": "No se puede conectar CAN en el dispositivo J2534: ",
+ "c3442": "Los dispositivos J2534 solo existen en Windows.",
+ "c3443": "No hay ningún dispositivo J2534 configurado. ¿Está instalado el controlador del fabricante?",
+ "c3444": "No existe esa interfaz CAN: ",
+ "c3445": "SLCAN no reconoce esta velocidad de transmisión.",
+ "c3446": "SocketCAN solo existe en Linux.",
+ "c3447": "SocketCAN no está disponible.",
+ "c3448": "No se puede abrir el canal CAN.",
+ "c3449": "No se puede abrir la interfaz CAN: ",
+ "c3450": "El dispositivo J2534 no responde: ",
+ "c3451": "No se puede cargar el controlador J2534: ",
+ "c3452": "El adaptador rechaza la velocidad de transmisión.",
+ "c3453": "El puerto no responde como un adaptador SLCAN (CANable, USBtin, CANUSB).",
+ "c3454": "Falló el filtro de recepción en el dispositivo J2534: ",
+ "c3455": "Este no es un controlador J2534 completo.",
+ "c3456": "Interfaz CAN desconocida: "
+}

@@ -479,6 +479,22 @@ Protokoll: %3</source>
 Связь: %2
 Протокол: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>Интерфейс CAN</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Для устройств, которые отдают необработанные сообщения CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik и многие другие, с 64-разрядным драйвером производителя), SLCAN-адаптеры (CANable, USBtin, CANUSB) и в Linux SocketCAN. Автомобили с OBD по CAN работают на скорости 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>только 32-разрядный драйвер</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>Интерфейс CAN не найден. Драйвер установлен, устройство подключено?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2331,6 +2347,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Соединения нет после двух минут, отменено.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Подключение через интерфейс CAN %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4251,6 +4271,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Мониторинг компонентов прочитан: тестов %1, тестов датчиков O2 %2.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>Адаптер SLCAN найден на %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>Интерфейс CAN открыт: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4313,6 +4341,10 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report требует подключения: --demo, --port, --tcp, --enet, --bluetooth или --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>Подключить интерфейс CAN: j2534:&lt;драйвер.dll&gt;, slcan:COM5 или socketcan:can0, с @250000 для скорости передачи</translation>
     </message>
 </context>
 </TS>

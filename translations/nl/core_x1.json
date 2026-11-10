@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex is een 64-bitprogramma en heeft een 64-bitstuurprogramma nodig).",
+ "c3440": ". Stel het eerst in: ip link set can0 up type can bitrate 500000",
+ "c3441": "CAN kan niet worden verbonden op het J2534-apparaat: ",
+ "c3442": "J2534-apparaten bestaan alleen onder Windows.",
+ "c3443": "Geen J2534-apparaat ingesteld. Is het stuurprogramma van de fabrikant geïnstalleerd?",
+ "c3444": "Deze CAN-interface bestaat niet: ",
+ "c3445": "SLCAN kent deze bitsnelheid niet.",
+ "c3446": "SocketCAN bestaat alleen onder Linux.",
+ "c3447": "SocketCAN is niet beschikbaar.",
+ "c3448": "Het CAN-kanaal kan niet worden geopend.",
+ "c3449": "De CAN-interface kan niet worden geopend: ",
+ "c3450": "Het J2534-apparaat antwoordt niet: ",
+ "c3451": "Het J2534-stuurprogramma kan niet worden geladen: ",
+ "c3452": "De adapter weigert de bitsnelheid.",
+ "c3453": "De poort antwoordt niet als een SLCAN-adapter (CANable, USBtin, CANUSB).",
+ "c3454": "Het ontvangstfilter op het J2534-apparaat is mislukt: ",
+ "c3455": "Dit is geen volledig J2534-stuurprogramma.",
+ "c3456": "Onbekende CAN-interface: "
+}
