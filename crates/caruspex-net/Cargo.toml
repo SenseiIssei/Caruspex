@@ -1,0 +1,13 @@
+[package]
+name = "caruspex-net"
+description = "Network and raw CAN: BMW ENET (HSFZ), DoIP, SLCAN, SocketCAN, J2534"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-link.workspace = true
+caruspex-protocols.workspace = true
+libloading.workspace = true
+log.workspace = true

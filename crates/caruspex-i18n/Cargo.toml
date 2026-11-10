@@ -1,0 +1,12 @@
+[package]
+name = "caruspex-i18n"
+description = "Languages of Caruspex: German and English in the code, every other language from translations/"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+
+[build-dependencies]
+serde_json.workspace = true

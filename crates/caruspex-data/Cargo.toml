@@ -1,0 +1,9 @@
+[package]
+name = "caruspex-data"
+description = "Static data: VIN decoding, vehicle catalog, trouble codes, PIDs, control unit addresses"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true

@@ -1,0 +1,23 @@
+[package]
+name = "caruspex-cli"
+description = "caruspex_cli: the command line tool"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-vehicles.workspace = true
+caruspex-data.workspace = true
+caruspex-link.workspace = true
+caruspex-protocols.workspace = true
+caruspex-net.workspace = true
+caruspex-record.workspace = true
+caruspex-analysis.workspace = true
+caruspex-demo.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+
+[[bin]]
+name = "caruspex_cli"
+path = "src/main.rs"

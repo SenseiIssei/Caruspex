@@ -1,0 +1,14 @@
+[package]
+name = "caruspex-record"
+description = "Recordings, replay and custom PIDs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-data.workspace = true
+caruspex-link.workspace = true
+caruspex-protocols.workspace = true
+serde.workspace = true
+serde_json.workspace = true

@@ -1,0 +1,11 @@
+[package]
+name = "caruspex-link"
+description = "Ways to the adapter (serial, TCP, Bluetooth LE) and the ELM327 driver"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+serialport.workspace = true
+log.workspace = true

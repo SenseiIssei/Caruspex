@@ -1,0 +1,11 @@
+[package]
+name = "caruspex-analysis"
+description = "Health check, battery test, readiness, trip computer, performance timer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-data.workspace = true
+caruspex-protocols.workspace = true

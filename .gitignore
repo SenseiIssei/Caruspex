@@ -13,3 +13,6 @@ package/
 dist/
 smoke/
 aqtinstall.log
+target/
+node_modules/
+app/dist/
