@@ -434,6 +434,7 @@ fn scanning_the_demo_car_finds_all_six_uds_control_units() {
         // Normal OBD works afterwards: mode 03 over the functional address.
         let codes: Vec<String> = Obd2::new(&mut rig.elm)
             .read_faults()
+            .expect("faults")
             .into_iter()
             .map(|f| f.code)
             .collect();
@@ -483,8 +484,8 @@ fn clearing_one_uds_control_unit_leaves_the_others_alone() {
         uds.clear_dtcs().expect("cleared");
     }
     let mut obd = Obd2::new(&mut rig.elm);
-    assert_eq!(obd.read_faults().len(), 2); // only the permanent codes stay
-    for f in obd.read_faults() {
+    assert_eq!(obd.read_faults().expect("faults").len(), 2); // only the permanent codes stay
+    for f in obd.read_faults().expect("faults") {
         assert_eq!(f.kind, "permanent");
     }
 }

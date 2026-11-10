@@ -777,8 +777,8 @@ impl Worker {
             } else {
                 d.name.clone()
             };
-            // Bluetooth LE first. Classic Bluetooth is a COM port (Windows)
-            // or /dev/rfcommN (Linux) and goes through the cable mode.
+            // Bluetooth LE first, a dual-mode adapter then also gets the
+            // classic serial port as a second try.
             let mut transport: Option<Box<dyn Transport>> = None;
             if d.low_energy {
                 self.log(args(
@@ -796,6 +796,22 @@ impl Worker {
                         ));
                         transport = Some(t);
                     }
+                    Err(e) => {
+                        self.log(e.clone());
+                        error = e;
+                    }
+                }
+            }
+            if transport.is_none() && d.classic {
+                self.log(args(
+                    &w(
+                        "Verbinde mit %1 über klassisches Bluetooth ...",
+                        "Connecting to %1 over classic Bluetooth ...",
+                    ),
+                    &[&shown],
+                ));
+                match ble::open_classic(&d) {
+                    Ok(t) => transport = Some(t),
                     Err(e) => {
                         self.log(e.clone());
                         error = e;
@@ -972,6 +988,7 @@ impl Worker {
 
         let rows: Vec<FaultRow> = self
             .with_obd(|o| o.read_faults())
+            .unwrap_or_default()
             .iter()
             .map(fault_row)
             .collect();
@@ -1227,9 +1244,12 @@ impl Worker {
         self.emit("status", json!({ "row": status_row(&st) }));
 
         progress(self, w("Fehlerspeicher", "Fault memory"), 10);
-        let faults = self.with_obd(|o| o.read_faults());
+        let read = self.with_obd(|o| o.read_faults());
+        // "Not read" is a different finding from "no faults" (faultsRead =
+        // error.empty() in Session.cpp).
+        input.faults_read = read.is_ok();
+        let faults = read.unwrap_or_default();
         input.faults = faults.iter().map(analysis_fault).collect();
-        input.faults_read = self.elm.connected();
         let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
         self.emit("faults", json!({ "rows": rows }));
         input.fault_level = Some(Arc::new(|f: &ai::Fault| {
@@ -1441,7 +1461,7 @@ impl Worker {
             }
             sleep_ms(600);
 
-            let left = self.with_obd(|o| o.read_faults());
+            let left = self.with_obd(|o| o.read_faults()).unwrap_or_default();
             remaining = left.len();
             if left.is_empty() {
                 self.emit(
@@ -2164,15 +2184,19 @@ impl Worker {
     }
 }
 
-/// Bluetooth LE through caruspex-link, as the worker needs it.
+/// Bluetooth LE and classic Bluetooth through caruspex-link, as the worker
+/// needs it.
 mod ble {
     use caruspex_link::Transport;
-    use caruspex_link::ble::{BleDevice, BleTransport, bluetooth_kinds, scan_ble_devices};
+    use caruspex_link::ble::BleTransport;
+    use caruspex_link::bluetooth::{BleDevice, bluetooth_kinds, scan_bluetooth_devices};
+    use caruspex_link::bt_classic::RfcommTransport;
 
     use crate::rows::BleDeviceRow;
 
+    /// LE and classic devices (paired or in range), OBD adapters first.
     pub fn scan(milliseconds: i32) -> (Vec<BleDeviceRow>, String) {
-        match scan_ble_devices(milliseconds.max(0) as u64) {
+        match scan_bluetooth_devices(milliseconds.max(0) as u64) {
             Ok(devices) => (
                 devices
                     .iter()
@@ -2191,7 +2215,7 @@ mod ble {
 
     /// The devices of a six second search that look like OBD adapters.
     pub fn candidates() -> Result<Vec<BleDevice>, String> {
-        Ok(scan_ble_devices(6000)?
+        Ok(scan_bluetooth_devices(6000)?
             .into_iter()
             .filter(|d| d.score >= 3)
             .collect())
@@ -2215,6 +2239,11 @@ mod ble {
         let transport = BleTransport::open(d)?;
         let profile = transport.profile().to_string();
         Ok((Box::new(transport), profile))
+    }
+
+    /// The serial port of a classic adapter (RFCOMM), without a COM port.
+    pub fn open_classic(d: &BleDevice) -> Result<Box<dyn Transport>, String> {
+        Ok(Box::new(RfcommTransport::open(d)?))
     }
 
     pub fn kinds(d: &BleDevice) -> i32 {

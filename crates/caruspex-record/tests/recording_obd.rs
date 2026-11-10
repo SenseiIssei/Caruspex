@@ -48,6 +48,7 @@ fn read_everything(elm: &mut Elm327) -> Readout {
     let mut obd = Obd2::new(elm);
     let faults = obd
         .read_faults()
+        .expect("faults")
         .iter()
         .map(|f| format!("{}|{}|{}", f.code, f.kind, f.ecu))
         .collect();
@@ -151,6 +152,7 @@ fn a_recording_started_in_a_running_session_replays_on_its_own_with_obd() {
         assert!(elm.headers_on());
         faults = Obd2::new(&mut elm)
             .read_faults()
+            .expect("faults")
             .iter()
             .map(|f| format!("{}|{}", f.code, f.ecu))
             .collect();
@@ -178,6 +180,7 @@ fn a_recording_started_in_a_running_session_replays_on_its_own_with_obd() {
         assert!(elm.set_headers(true));
         let again: Vec<String> = Obd2::new(&mut elm)
             .read_faults()
+            .expect("faults")
             .iter()
             .map(|f| format!("{}|{}", f.code, f.ecu))
             .collect();

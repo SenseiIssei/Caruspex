@@ -73,5 +73,15 @@
  "c3528": "Inggris Raya dan Tiongkok",
  "c3529": "Hingga sekitar 2000 hanya ada konektor bulat 20 pin di ruang mesin.",
  "c3530": "Teknik sama dengan VW Caddy V.",
- "c3531": "Teknik sama dengan VW ID.4."
+ "c3531": "Teknik sama dengan VW ID.4.",
+ "c3532": "Caruspex tidak diizinkan memakai Bluetooth. Izinkan di pengaturan sistem pada bagian privasi.",
+ "c3533": "Bluetooth klasik butuh alamat perangkat.",
+ "c3534": "Tidak bisa tersambung ke %1",
+ "c3535": "Tidak bisa tersambung ke %1. Apakah adaptor sudah dipasangkan di sistem (PIN biasanya 1234 atau 0000)?",
+ "c3537": "Tidak ada kanal serial untuk OBD di perangkat ini. Apakah ini adaptor OBD dengan Bluetooth LE?",
+ "c3539": "Perangkat tidak melaporkan layanannya.",
+ "c3541": "Komputer ini tidak punya Bluetooth LE yang bisa dipakai Caruspex.",
+ "c3536": "Bluetooth klasik langsung tidak didukung di sistem ini. Hubungkan adaptor yang sudah dipasangkan melalui port serialnya (kabel).",
+ "c3538": "Adaptor tidak menjawab, jadi tidak dapat diuji.",
+ "c3540": "Perangkat ini tidak terlihat seperti adaptor OBD. Caruspex tidak mengirim apa pun ke perangkat yang tidak dikenal."
 }

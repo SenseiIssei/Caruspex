@@ -54,16 +54,25 @@ struct TauriSink {
     log_file: Arc<Mutex<Option<(PathBuf, File)>>>,
 }
 
+/// One line into the log file, if one is open, stamped like
+/// MainWindow::appendLog. Used for the worker's lines and for the ones the
+/// interface logs itself (the write_log command).
+pub fn write_log_line(log_file: &Mutex<Option<(PathBuf, File)>>, line: &str) {
+    if let Ok(mut file) = log_file.lock()
+        && let Some((_, file)) = file.as_mut()
+    {
+        let stamped = format!("{}  {line}\n", chrono::Local::now().format("%H:%M:%S"));
+        let _ = file.write_all(stamped.as_bytes());
+        let _ = file.flush();
+    }
+}
+
 impl Sink for TauriSink {
     fn emit(&self, event: &str, payload: Value) {
         if event == "log_line"
             && let Some(line) = payload["line"].as_str()
-            && let Ok(mut file) = self.log_file.lock()
-            && let Some((_, file)) = file.as_mut()
         {
-            let stamped = format!("{}  {line}\n", chrono::Local::now().format("%H:%M:%S"));
-            let _ = file.write_all(stamped.as_bytes());
-            let _ = file.flush();
+            write_log_line(&self.log_file, line);
         }
         commands::on_worker_event(&self.app, event, &payload);
         let _ = self.app.emit(event, payload);
@@ -198,6 +207,7 @@ fn main() {
             commands::load_settings,
             commands::save_settings,
             commands::open_config_location,
+            commands::write_log,
             commands::save_text_file,
             commands::save_pdf,
             commands::write_report,

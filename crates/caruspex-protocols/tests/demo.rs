@@ -129,7 +129,7 @@ fn demo_faults_read_clear_and_come_back() {
     let intermittent = l("sporadisch", "intermittent");
     let permanent = l("dauerhaft", "permanent");
 
-    let faults = obd.read_faults();
+    let faults = obd.read_faults().expect("faults");
     assert!(has_code(&faults, "P0171", stored));
     assert!(has_code(&faults, "P0420", stored));
     assert!(has_code(&faults, "P0300", intermittent));
@@ -150,7 +150,7 @@ fn demo_faults_read_clear_and_come_back() {
 
     // Stored and pending are gone; permanent codes stay until the monitors
     // pass again, exactly what mode 0A is for.
-    let faults = obd.read_faults();
+    let faults = obd.read_faults().expect("faults");
     assert_eq!(faults.len(), 2);
     assert!(has_code(&faults, "P0171", permanent));
     assert!(has_code(&faults, "P0420", permanent));
@@ -167,7 +167,7 @@ fn demo_faults_read_clear_and_come_back() {
 
     // After a while of driving the causes are still there.
     clock.advance(700.0);
-    let faults = obd.read_faults();
+    let faults = obd.read_faults().expect("faults");
     assert!(has_code(&faults, "P0171", stored));
     assert!(has_code(&faults, "P0300", intermittent));
     assert!(has_code(&faults, "P0420", intermittent));

@@ -159,6 +159,14 @@ pub fn open_config_location(app: AppHandle, state: State<'_, AppState>) -> Resul
     }
 }
 
+/// A log line of the interface itself into the log file. The worker's lines
+/// (log_line) are written on their way out, so the interface only sends the
+/// ones it makes; in Qt all of them went through MainWindow::appendLog.
+#[tauri::command]
+pub fn write_log(state: State<'_, AppState>, line: String) {
+    crate::write_log_line(&state.log_file, &line);
+}
+
 /// Opens, switches or closes the log file (MainWindow::applySettings).
 pub fn open_log_file(app: &AppHandle, values: &AppSettings) {
     let state = app.state::<AppState>();
@@ -888,10 +896,13 @@ fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
         } else {
             id.clone()
         };
+        // A device given by address: offer both ways, Bluetooth LE first,
+        // then classic RFCOMM (ConnectPage::selectBluetooth). The search
+        // (auto) finds both kinds itself.
         Some(Job::OpenBle {
             id,
             name: String::new(),
-            kinds: 1,
+            kinds: 3,
             protocol_order: values.protocol_order.clone(),
         })
     } else {

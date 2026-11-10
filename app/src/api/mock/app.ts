@@ -88,6 +88,8 @@ export const appHandlers: PartialHandlers = {
     writeJson(SETTINGS_KEY, values);
     applyPollInterval(values.pollIntervalMs);
   },
+  // The browser preview has no log file.
+  write_log: () => undefined,
   save_text_file: ({ suggestedName, content }) => {
     download(suggestedName, content);
     return suggestedName;

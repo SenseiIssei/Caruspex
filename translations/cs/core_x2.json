@@ -73,5 +73,15 @@
  "c3528": "Spojené království a Čína",
  "c3529": "Zhruba do roku 2000 jen 20pinová kulatá zástrčka v motorovém prostoru.",
  "c3530": "Stejná technika jako u VW Caddy V.",
- "c3531": "Stejná technika jako u VW ID.4."
+ "c3531": "Stejná technika jako u VW ID.4.",
+ "c3532": "Caruspex nesmí používat Bluetooth. Povolte to prosím v nastavení systému v části soukromí.",
+ "c3533": "Klasický Bluetooth potřebuje adresu zařízení.",
+ "c3534": "Připojení k %1 se nepodařilo",
+ "c3535": "K %1 se nepodařilo připojit. Je adaptér spárovaný v systému (PIN bývá 1234 nebo 0000)?",
+ "c3537": "Na tomto zařízení nebyl nalezen žádný sériový kanál pro OBD. Je to OBD adaptér s Bluetooth LE?",
+ "c3539": "Zařízení nenahlásilo své služby.",
+ "c3541": "Tento počítač nemá Bluetooth LE, které by Caruspex mohl použít.",
+ "c3536": "Přímé klasické Bluetooth není v tomto systému podporováno. Připojte spárovaný adaptér přes jeho sériový port (kabel).",
+ "c3538": "Adaptér neodpovídá, takže ho nelze otestovat.",
+ "c3540": "Zařízení nevypadá jako adaptér OBD. Caruspex neposílá nic neznámým zařízením."
 }

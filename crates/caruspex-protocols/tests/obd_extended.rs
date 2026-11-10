@@ -296,7 +296,7 @@ fn faults_and_status_per_control_unit() {
     {
         let mut obd = Obd2::new(&mut elm);
         // Headers off: the codes are found, but nobody knows from whom.
-        let faults = obd.read_faults();
+        let faults = obd.read_faults().expect("faults");
         assert_eq!(faults.len(), 3);
         assert!(faults[0].ecu.is_empty());
     }
@@ -305,7 +305,7 @@ fn faults_and_status_per_control_unit() {
     assert!(elm.headers_on());
     {
         let mut obd = Obd2::new(&mut elm);
-        let faults = obd.read_faults();
+        let faults = obd.read_faults().expect("faults");
         assert_eq!(faults.len(), 3);
         assert_eq!(faults[0].code, "P0133");
         assert_eq!(faults[0].ecu, "Motor (7E8)");

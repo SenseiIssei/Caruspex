@@ -753,7 +753,12 @@ impl<'a> Obd2<'a> {
 
     /// Stored (03), pending (07) and permanent (0A) codes of every control
     /// unit that answers, each code once per control unit.
-    pub fn read_faults(&mut self) -> Vec<Fault> {
+    ///
+    /// Shaped like the other readers so callers can tell "not read" apart
+    /// from "no faults" (HealthInput::faults_read). Like the C++ version
+    /// (Obd2::readFaults clears its error and never sets it), a service that
+    /// does not answer only contributes no codes, so this is `Ok` today.
+    pub fn read_faults(&mut self) -> Result<Vec<Fault>, String> {
         let mut all = self.read_codes("03", 0x03, l("gespeichert", "stored"));
         let extra = [
             ("07", 0x07, l("sporadisch", "intermittent")),
@@ -769,7 +774,7 @@ impl<'a> Obd2<'a> {
                 }
             }
         }
-        all
+        Ok(all)
     }
 
     /// Mode 04. On a silent acknowledgement the codes are read back; `Err`
@@ -783,7 +788,8 @@ impl<'a> Obd2<'a> {
             return Err(result.message);
         }
         // Some control units acknowledge silently: check whether it worked.
-        if self.read_faults().is_empty() {
+        // The read error is ignored there too: nothing read counts as empty.
+        if self.read_faults().unwrap_or_default().is_empty() {
             Ok(())
         } else {
             Err(String::new())

@@ -1,6 +1,6 @@
 [package]
 name = "caruspex-link"
-description = "Ways to the adapter (serial, TCP, Bluetooth LE) and the ELM327 driver"
+description = "Ways to the adapter (serial, TCP, Bluetooth LE, classic Bluetooth) and the ELM327 driver"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -15,8 +15,19 @@ futures = { version = "0.3.31", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.55"
+windows-sys = { version = "0.61.2", optional = true, features = [
+    "Win32_Foundation",
+    "Win32_Devices_Bluetooth",
+    "Win32_Networking_WinSock",
+] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = { version = "0.2.191", optional = true }
 
 [features]
-default = ["ble"]
+default = ["ble", "bt-classic"]
 # Bluetooth LE through btleplug. Needs the D-Bus development files on Linux.
 ble = ["dep:btleplug", "dep:tokio", "dep:futures"]
+# Classic Bluetooth (RFCOMM serial port) straight through the system's
+# sockets: Winsock on Windows, BlueZ on Linux. Not supported on macOS.
+bt-classic = ["dep:windows-sys", "dep:libc"]

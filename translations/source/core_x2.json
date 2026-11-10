@@ -373,5 +373,55 @@
   "id": "c3531",
   "de": "Technik vom VW ID.4.",
   "en": "VW ID.4 technology."
+ },
+ {
+  "id": "c3532",
+  "de": "Caruspex darf Bluetooth nicht verwenden. Bitte in den Systemeinstellungen unter Datenschutz erlauben.",
+  "en": "Caruspex is not allowed to use Bluetooth. Please allow it in the system settings under privacy."
+ },
+ {
+  "id": "c3533",
+  "de": "Klassisches Bluetooth braucht die Adresse des Geräts.",
+  "en": "Classic Bluetooth needs the address of the device."
+ },
+ {
+  "id": "c3534",
+  "de": "Verbindung zu %1 kam nicht zustande",
+  "en": "Could not connect to %1"
+ },
+ {
+  "id": "c3535",
+  "de": "Verbindung zu %1 kam nicht zustande. Ist der Adapter im System gekoppelt (PIN meist 1234 oder 0000)?",
+  "en": "Could not connect to %1. Is the adapter paired in the system (PIN usually 1234 or 0000)?"
+ },
+ {
+  "id": "c3536",
+  "de": "Klassisches Bluetooth direkt wird auf diesem System nicht unterstützt. Einen gekoppelten Adapter über seinen seriellen Anschluss (Kabel) verbinden.",
+  "en": "Direct classic Bluetooth is not supported on this system. Connect a paired adapter through its serial port (cable) instead."
+ },
+ {
+  "id": "c3537",
+  "de": "Auf diesem Gerät wurde kein serieller Kanal für OBD gefunden. Ist es ein OBD-Adapter mit Bluetooth LE?",
+  "en": "No serial channel for OBD was found on this device. Is it an OBD adapter with Bluetooth LE?"
+ },
+ {
+  "id": "c3538",
+  "de": "Der Adapter antwortet nicht. Ein Test ist so nicht möglich.",
+  "en": "The adapter does not answer, so it cannot be tested."
+ },
+ {
+  "id": "c3539",
+  "de": "Das Gerät hat seine Dienste nicht gemeldet.",
+  "en": "The device did not report its services."
+ },
+ {
+  "id": "c3540",
+  "de": "Das Gerät sieht nicht wie ein OBD-Adapter aus. An unbekannte Geräte sendet Caruspex nichts.",
+  "en": "The device does not look like an OBD adapter. Caruspex sends nothing to unknown devices."
+ },
+ {
+  "id": "c3541",
+  "de": "Dieser Rechner hat kein Bluetooth LE, das Caruspex nutzen kann.",
+  "en": "This computer has no Bluetooth LE that Caruspex can use."
  }
 ]

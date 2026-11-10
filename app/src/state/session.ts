@@ -150,7 +150,16 @@ export async function applySettings(values: AppSettings): Promise<void> {
 
 export const logStore = createStore<{ lines: string[] }>({ lines: [] });
 
+// A line the interface logs itself: shown and, like everything in
+// MainWindow::appendLog, written to the log file when one is open.
 export function appendLog(line: string): void {
+  showLog(line);
+  void call("write_log", { line }).catch(() => undefined);
+}
+
+// Only shows the line. The worker's own lines (log_line) are already in the
+// log file when they arrive.
+function showLog(line: string): void {
   const now = new Date();
   const p = (n: number) => String(n).padStart(2, "0");
   const stamped = `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}  ${line}`;
@@ -268,7 +277,7 @@ export function startSession(): void {
   if (started) return;
   started = true;
 
-  on("log_line", ({ line }) => appendLog(line));
+  on("log_line", ({ line }) => showLog(line));
   on("busy", ({ active }) => session.set({ busy: active }));
 
   on("connected", ({ adapter, transport, protocol }) => {

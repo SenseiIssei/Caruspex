@@ -73,5 +73,15 @@
  "c3528": "Regno Unito e Cina",
  "c3529": "Fino a circa il 2000 solo la spina tonda a 20 poli nel vano motore.",
  "c3530": "Stessa tecnica di VW Caddy V.",
- "c3531": "Stessa tecnica di VW ID.4."
+ "c3531": "Stessa tecnica di VW ID.4.",
+ "c3532": "Caruspex non ha il permesso di usare il Bluetooth. Consentilo nelle impostazioni di sistema, alla voce privacy.",
+ "c3533": "Il Bluetooth classico ha bisogno dell'indirizzo del dispositivo.",
+ "c3534": "Impossibile collegarsi a %1",
+ "c3535": "Impossibile collegarsi a %1. L'adattatore è accoppiato nel sistema (PIN di solito 1234 o 0000)?",
+ "c3537": "Su questo dispositivo non è stato trovato nessun canale seriale per OBD. È un adattatore OBD con Bluetooth LE?",
+ "c3539": "Il dispositivo non ha comunicato i suoi servizi.",
+ "c3541": "Questo computer non ha un Bluetooth LE utilizzabile da Caruspex.",
+ "c3536": "Il Bluetooth classico diretto non è supportato su questo sistema. Collega un adattatore associato tramite la sua porta seriale (cavo).",
+ "c3538": "L'adattatore non risponde, quindi non può essere testato.",
+ "c3540": "Il dispositivo non sembra un adattatore OBD. Caruspex non invia nulla a dispositivi sconosciuti."
 }

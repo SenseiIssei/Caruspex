@@ -73,5 +73,15 @@
  "c3528": "Verenigd Koninkrijk en China",
  "c3529": "Tot ongeveer 2000 alleen de ronde 20-polige stekker in de motorruimte.",
  "c3530": "Techniek van VW Caddy V.",
- "c3531": "Techniek van VW ID.4."
+ "c3531": "Techniek van VW ID.4.",
+ "c3532": "Caruspex mag geen Bluetooth gebruiken. Sta dit toe in de systeeminstellingen onder privacy.",
+ "c3533": "Klassiek Bluetooth heeft het adres van het apparaat nodig.",
+ "c3534": "Kon geen verbinding maken met %1",
+ "c3535": "Kon geen verbinding maken met %1. Is de adapter gekoppeld in het systeem (pincode meestal 1234 of 0000)?",
+ "c3537": "Op dit apparaat is geen seriële OBD-kanaal gevonden. Is het een OBD-adapter met Bluetooth LE?",
+ "c3539": "Het apparaat heeft zijn diensten niet gemeld.",
+ "c3541": "Deze computer heeft geen Bluetooth LE dat Caruspex kan gebruiken.",
+ "c3536": "Klassieke Bluetooth direct wordt op dit systeem niet ondersteund. Verbind een gekoppelde adapter via zijn seriële poort (kabel).",
+ "c3538": "De adapter antwoordt niet, dus hij kan niet getest worden.",
+ "c3540": "Het apparaat lijkt geen OBD-adapter. Caruspex stuurt niets naar onbekende apparaten."
 }

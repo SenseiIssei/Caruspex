@@ -577,9 +577,11 @@ dependencies = [
  "btleplug",
  "caruspex-i18n",
  "futures",
+ "libc",
  "log",
  "serialport",
  "tokio",
+ "windows-sys 0.61.2",
  "winreg 0.55.0",
 ]
 

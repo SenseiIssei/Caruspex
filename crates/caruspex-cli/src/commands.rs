@@ -257,8 +257,10 @@ fn number_or_null(json: &mut JsonWriter, positive: bool, value: i32) {
 pub fn read(elm: &mut Elm327, as_json: bool) -> i32 {
     let mut obd = Obd2::new(elm);
     let status = obd.read_status();
-    let faults = obd.read_faults();
-    let err = String::new();
+    let (faults, err) = match obd.read_faults() {
+        Ok(faults) => (faults, String::new()),
+        Err(err) => (Vec::new(), err),
+    };
     let vin = read_vin_context(&mut obd);
 
     if as_json {
@@ -600,7 +602,11 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
     });
 
     progress("Reading the fault memory ...");
-    let faults = obd.read_faults();
+    let read = obd.read_faults();
+    // "Not read" and "no faults" are different findings (faultsRead =
+    // error.empty() in the C++ version).
+    input.faults_read = read.is_ok();
+    let faults = read.unwrap_or_default();
     input.faults = faults
         .iter()
         .map(|f| inputs::Fault {
@@ -610,7 +616,6 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
             throttle_related: f.throttle_related,
         })
         .collect();
-    input.faults_read = true;
     let vin = read_vin_context(&mut obd);
     let brand = vin.brand.clone();
     let level_brand = brand.clone();
@@ -952,7 +957,7 @@ pub fn ecus(elm: &mut Elm327) -> i32 {
             }
         ));
     }
-    for f in obd.read_faults() {
+    for f in obd.read_faults().unwrap_or_default() {
         say(&format!("  {} [{}] {}\n", f.code, f.kind, f.ecu));
     }
     for e in obd.read_ecu_info() {

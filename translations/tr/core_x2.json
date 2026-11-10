@@ -73,5 +73,15 @@
  "c3528": "Birleşik Krallık ve Çin",
  "c3529": "Yaklaşık 2000'e kadar yalnızca motor bölmesindeki 20 pinli yuvarlak fiş.",
  "c3530": "VW Caddy V ile aynı teknik.",
- "c3531": "VW ID.4 ile aynı teknik."
+ "c3531": "VW ID.4 ile aynı teknik.",
+ "c3532": "Caruspex'in Bluetooth kullanmasına izin verilmiyor. Lütfen sistem ayarlarında gizlilik bölümünden izin verin.",
+ "c3533": "Klasik Bluetooth cihazın adresine ihtiyaç duyar.",
+ "c3534": "%1 adaptörüne bağlanılamadı",
+ "c3535": "%1 adaptörüne bağlanılamadı. Adaptör sistemde eşleştirilmiş mi (PIN genellikle 1234 veya 0000)?",
+ "c3537": "Bu cihazda OBD için seri kanal bulunamadı. Bluetooth LE'li bir OBD adaptörü mü?",
+ "c3539": "Cihaz hizmetlerini bildirmedi.",
+ "c3541": "Bu bilgisayarda Caruspex'in kullanabileceği Bluetooth LE yok.",
+ "c3536": "Bu sistemde doğrudan klasik Bluetooth desteklenmiyor. Eşleştirilmiş bir adaptörü seri bağlantı noktası (kablo) üzerinden bağlayın.",
+ "c3538": "Adaptör yanıt vermiyor, bu yüzden test edilemiyor.",
+ "c3540": "Cihaz bir OBD adaptörüne benzemiyor. Caruspex bilinmeyen cihazlara hiçbir şey göndermez."
 }

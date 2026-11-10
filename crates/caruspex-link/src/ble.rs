@@ -11,10 +11,9 @@
 //! adapter, not even the descriptor write that switches notifications on.
 //! Other devices (lamps, headphones, watches) are at most looked at.
 //!
-//! Classic Bluetooth (RFCOMM) is not part of btleplug. On Windows a paired
-//! SPP adapter is a COM port and on Linux an `rfcomm bind` gives
-//! /dev/rfcommN, so [`crate::serial`] covers both; a direct RFCOMM socket
-//! without a COM port, as the Qt version had, does not exist here.
+//! Classic Bluetooth (RFCOMM) is not part of btleplug; it lives in
+//! [`crate::bt_classic`], and [`crate::bluetooth::scan_bluetooth_devices`]
+//! scans for both kinds at once.
 
 use std::future::Future;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -37,26 +36,7 @@ use crate::ble_profile::{
 };
 use crate::transport::Transport;
 
-/// One adapter seen by a scan.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct BleDevice {
-    /// Address on Windows, the BlueZ path on Linux, a UUID on macOS.
-    pub id: String,
-    pub name: String,
-    pub rssi: i32,
-    /// [`obd_adapter_name_score`]
-    pub score: i32,
-    /// Offers Bluetooth LE.
-    pub low_energy: bool,
-    /// Offers classic Bluetooth (RFCOMM serial port). Always false here:
-    /// btleplug only scans for Bluetooth LE.
-    pub classic: bool,
-}
-
-/// Bit mask for passing the two flags around: 1 = LE, 2 = classic.
-pub fn bluetooth_kinds(d: &BleDevice) -> i32 {
-    i32::from(d.low_energy) | (i32::from(d.classic) << 1)
-}
+pub use crate::bluetooth::{BleDevice, bluetooth_kinds, sort_devices};
 
 /// What a device offers, as seen without writing anything to it.
 #[derive(Clone, Debug, Default)]
@@ -154,16 +134,6 @@ async fn device_of(p: &Peripheral) -> Option<BleDevice> {
         low_energy: true,
         classic: false,
     })
-}
-
-/// OBD adapters first, then named devices, then by signal strength.
-pub fn sort_devices(devices: &mut [BleDevice]) {
-    devices.sort_by(|a, b| {
-        b.score
-            .cmp(&a.score)
-            .then_with(|| a.name.is_empty().cmp(&b.name.is_empty()))
-            .then_with(|| b.rssi.cmp(&a.rssi))
-    });
 }
 
 async fn scan_async(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
@@ -549,12 +519,13 @@ impl Drop for BleTransport {
     }
 }
 
-/// Developer aid behind `--ble-probe id|auto`: lists the Bluetooth LE
-/// devices, connects to the given one (or the first adapter), sends ATZ and
-/// prints everything. Devices that are not OBD adapters are only looked at.
+/// Developer aid behind `--ble-probe id|auto`: lists the Bluetooth devices,
+/// connects to the given one (or the first adapter) over LE or, failing
+/// that, classic Bluetooth, sends ATZ and prints everything. Devices that
+/// are not OBD adapters are only looked at.
 /// Returns the exit code: 0 fine, 1 failed, 2 nothing to connect to.
 pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
-    let (devices, error) = match scan_ble_devices(5000) {
+    let (devices, error) = match crate::bluetooth::scan_bluetooth_devices(5000) {
         Ok(list) => (list, String::new()),
         Err(e) => (Vec::new(), e),
     };
@@ -600,8 +571,14 @@ pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
     }
     let _ = writeln!(out, "connecting to {} ...", target.id);
 
-    // Only adapters get a command; other devices are just looked at.
+    // Only adapters get a command; other devices are just looked at. A
+    // classic device has nothing to look at without connecting, so it is
+    // left alone entirely.
     if target.score < 3 {
+        if !target.low_energy {
+            let _ = writeln!(out, "not an OBD adapter by name, nothing sent");
+            return 0;
+        }
         return match inspect_ble_device(&target) {
             Ok(seen) => {
                 let _ = writeln!(
@@ -622,15 +599,32 @@ pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
             }
         };
     }
-    let mut transport = match BleTransport::open(&target) {
-        Ok(t) => {
-            let _ = writeln!(out, "LE channel {}", t.profile());
-            t
+    let mut transport: Option<Box<dyn Transport>> = None;
+    if target.low_energy || !target.classic {
+        match BleTransport::open(&target) {
+            Ok(t) => {
+                let _ = writeln!(out, "LE channel {}", t.profile());
+                transport = Some(Box::new(t));
+            }
+            Err(e) => {
+                let _ = writeln!(out, "LE open failed: {e}");
+            }
         }
-        Err(e) => {
-            let _ = writeln!(out, "LE open failed: {e}");
-            return 1;
+    }
+    #[cfg(feature = "bt-classic")]
+    if transport.is_none() && target.classic {
+        match crate::bt_classic::RfcommTransport::open(&target) {
+            Ok(t) => {
+                let _ = writeln!(out, "classic serial port open");
+                transport = Some(Box::new(t));
+            }
+            Err(e) => {
+                let _ = writeln!(out, "classic open failed: {e}");
+            }
         }
+    }
+    let Some(mut transport) = transport else {
+        return 1;
     };
     let _ = writeln!(out, "sending ATZ");
     transport.write(b"ATZ\r");
@@ -647,39 +641,8 @@ pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    // The device list tests (order, kinds) live in crate::bluetooth.
     use super::*;
-
-    fn dev(name: &str, score: i32, rssi: i32) -> BleDevice {
-        BleDevice {
-            id: name.to_string(),
-            name: name.to_string(),
-            rssi,
-            score,
-            low_energy: true,
-            classic: false,
-        }
-    }
-
-    #[test]
-    fn scan_list_order() {
-        let mut list = vec![
-            dev("", 0, -40),
-            dev("Lamp", 0, -90),
-            dev("OBDII", 3, -80),
-            dev("BLE x", 1, -70),
-        ];
-        sort_devices(&mut list);
-        let names: Vec<&str> = list.iter().map(|d| d.name.as_str()).collect();
-        assert_eq!(names, ["OBDII", "BLE x", "Lamp", ""]);
-    }
-
-    #[test]
-    fn kinds_mask() {
-        let mut d = dev("x", 0, 0);
-        assert_eq!(bluetooth_kinds(&d), 1);
-        d.classic = true;
-        assert_eq!(bluetooth_kinds(&d), 3);
-    }
 
     #[test]
     fn connect_error_text() {

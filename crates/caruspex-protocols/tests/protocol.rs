@@ -23,7 +23,7 @@ fn fault_elm() -> Elm327 {
 
 fn read_test_faults() -> Vec<Fault> {
     let mut elm = fault_elm();
-    Obd2::new(&mut elm).read_faults()
+    Obd2::new(&mut elm).read_faults().expect("faults")
 }
 
 #[test]
@@ -114,7 +114,12 @@ fn obd_on_uds_detected_at_connect_classic_results_from_uds_answers() {
 
         assert_eq!(obd.read_vin(), "WAUZZZ8V5LA012345");
 
-        let codes: Vec<String> = obd.read_faults().into_iter().map(|f| f.code).collect();
+        let codes: Vec<String> = obd
+            .read_faults()
+            .expect("faults")
+            .into_iter()
+            .map(|f| f.code)
+            .collect();
         assert!(codes.iter().any(|c| c == "P0171"));
         assert!(codes.iter().any(|c| c == "P0420"));
         assert!(codes.iter().any(|c| c == "P0300")); // permanent

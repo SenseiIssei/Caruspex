@@ -64,6 +64,9 @@ export interface Commands {
   save_settings: Cmd<{ values: AppSettings }, void>;
   // Opens the folder that holds the settings file (SettingsPage "Ablageort öffnen").
   open_config_location: Cmd<None, void>;
+  // A log line of the interface into the log file (if logging to a file).
+  // The worker's log_line events are written by the backend itself.
+  write_log: Cmd<{ line: string }, void>;
 
   // --- Files -----------------------------------------------------------------
   // Shows a save dialog and writes the text. Returns the path, null if cancelled.

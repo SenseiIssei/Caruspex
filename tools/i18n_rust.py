@@ -22,10 +22,13 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STR = r'"((?:[^"\\]|\\.)*)"'
 PATTERNS = [
-    re.compile(r"\bl\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
-    re.compile(r"Text::new\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
+    # rustfmt adds a trailing comma when a call spans several lines.
+    re.compile(r"\bl\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
+    re.compile(r"Text::new\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
     re.compile(r"\bde:\s*" + STR + r"\s*,\s*en:\s*" + STR, re.S),
-    re.compile(r"\bt\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
+    re.compile(r"\bt\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
+    # Small local helpers that take the German and the English text.
+    re.compile(r"\b(?:bi|tr|text|txt|both|de_en|bilingual)\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
 ]
 
 
