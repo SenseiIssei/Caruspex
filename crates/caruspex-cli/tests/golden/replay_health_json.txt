@@ -1,0 +1,190 @@
+{
+  "adapter": {
+    "version": "ELM327 v1.5",
+    "connection": "Recording: demo.jsonl",
+    "protocol": "ISO 15765-4 (CAN 11/500)",
+    "can": true
+  },
+  "score": 25,
+  "grade": "yellow",
+  "summary": "6 points should be looked at soon. None of them is an immediate danger. 6 checks were not possible for lack of data.",
+  "checksRun": 5,
+  "fuel": "petrol",
+  "brand": "",
+  "liveSeries": {
+    "seconds": 0,
+    "snapshots": 0,
+    "pids": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      12,
+      13,
+      15,
+      16,
+      20,
+      21,
+      31,
+      33,
+      48,
+      49,
+      60,
+      66,
+      92
+    ]
+  },
+  "findings": [
+    {
+      "id": "fault:P0171",
+      "level": "warning",
+      "area": "faults",
+      "title": "P0171 System too lean - bank 1",
+      "explanation": "This fault is stored.",
+      "advice": "Have it checked when convenient. The fault list shows typical causes."
+    },
+    {
+      "id": "fault:P0420",
+      "level": "warning",
+      "area": "faults",
+      "title": "P0420 Catalyst system efficiency below threshold - bank 1",
+      "explanation": "This fault is stored.",
+      "advice": "Have it checked when convenient. The fault list shows typical causes."
+    },
+    {
+      "id": "mil",
+      "level": "warning",
+      "area": "faults",
+      "title": "Check engine lamp on",
+      "explanation": "The control unit has switched on the yellow check engine lamp. It has found a fault that can make the emissions worse. With the lamp on, a car fails the emissions test in many countries.",
+      "advice": "The fault list shows the reason. If the lamp flashes while driving, ease off at once and stop soon: that means heavy misfires that can destroy the catalytic converter."
+    },
+    {
+      "id": "readiness",
+      "level": "warning",
+      "area": "readiness",
+      "title": "2 readiness monitors not complete",
+      "explanation": "Not complete yet: Evaporative system, EGR / variable valve timing. The car has not finished these self-tests since the fault memory was last cleared (or since the battery was disconnected). That alone is not a defect, as long as no faults are stored.",
+      "advice": "As a rule of thumb for the emissions test: a petrol car is often accepted with one incomplete monitor (that is the US EPA rule for model year 2001 and later), with several usually not. The exact rules depend on the country and the testing station. The safest way is to do the matching drives first (see the drive cycle help) and check again afterwards."
+    },
+    {
+      "id": "mode06:21:80",
+      "level": "warning",
+      "area": "monitoring",
+      "title": "Test failed: Catalyst bank 1: Test 0x80 (manufacturer-specific)",
+      "explanation": "The control unit measured this value outside its limits. A fault code usually follows soon. Measured 0.820 , allowed 0.000 to 0.602.",
+      "advice": "Have the component checked before the warning lamp comes on."
+    },
+    {
+      "id": "misfire",
+      "level": "warning",
+      "area": "misfire",
+      "title": "Misfires detected",
+      "explanation": "Misfires counted: cylinder 1: 1, cylinder 3: 41, cylinder 4: 2. A few misfires happen, for example on a cold start or with poor fuel. Many of them shake the engine and harm the catalytic converter. Each manufacturer decides itself when a fault is set. Almost all misfires come from cylinder 3. That points to a part of exactly this cylinder: spark plug, ignition coil or injector. A simple test: swap the coil with a neighbouring cylinder and see whether the fault moves with it.",
+      "advice": "Have the spark plugs and ignition coils checked."
+    },
+    {
+      "id": "fault:P0300",
+      "level": "info",
+      "area": "faults",
+      "title": "P0300 Random/multiple cylinder misfire detected",
+      "explanation": "This fault is only pending: the control unit noticed it once but has not confirmed it yet. If it shows up again on the next trips, it gets stored for good.",
+      "advice": "Keep an eye on it. If it comes back after clearing, look into it more closely."
+    }
+  ],
+  "notChecked": [
+    {
+      "id": "cleared_recently",
+      "title": "Last cleared",
+      "reason": "Warm-ups and distance since clearing (PID 30 and 31) are missing."
+    },
+    {
+      "id": "fuel_trim_bank1",
+      "title": "Mixture control (bank 1)",
+      "reason": "The fuel trims (PID 06 and 07) were not read."
+    },
+    {
+      "id": "o2_switching",
+      "title": "Oxygen sensors",
+      "reason": "No oxygen sensor voltages (PID 14 to 1B). Cars with wideband sensors report them differently, and then this check is not possible here."
+    },
+    {
+      "id": "charging",
+      "title": "Charging voltage",
+      "reason": "The voltage (PID 42) was not read."
+    },
+    {
+      "id": "battery_rest",
+      "title": "Battery with engine off",
+      "reason": "The voltage (PID 42) was not read."
+    },
+    {
+      "id": "thermostat",
+      "title": "Thermostat and operating temperature",
+      "reason": "The coolant temperature (PID 05) was not read."
+    }
+  ],
+  "status": {
+    "milOn": true,
+    "faultCount": 2,
+    "diesel": false,
+    "readiness": [
+      {
+        "name": "Misfire",
+        "ready": true
+      },
+      {
+        "name": "Fuel system",
+        "ready": true
+      },
+      {
+        "name": "Comprehensive components",
+        "ready": true
+      },
+      {
+        "name": "Catalyst",
+        "ready": true
+      },
+      {
+        "name": "Evaporative system",
+        "ready": false
+      },
+      {
+        "name": "Oxygen sensor",
+        "ready": true
+      },
+      {
+        "name": "Oxygen sensor heater",
+        "ready": true
+      },
+      {
+        "name": "EGR system",
+        "ready": false
+      }
+    ]
+  },
+  "faults": [
+    {
+      "code": "P0171",
+      "kind": "stored",
+      "text": "System too lean - bank 1",
+      "severity": "Medium",
+      "system": "Fuel and mixture"
+    },
+    {
+      "code": "P0420",
+      "kind": "stored",
+      "text": "Catalyst system efficiency below threshold - bank 1",
+      "severity": "Medium",
+      "system": "Exhaust: oxygen sensors and catalytic converter"
+    },
+    {
+      "code": "P0300",
+      "kind": "intermittent",
+      "text": "Random/multiple cylinder misfire detected",
+      "severity": "High",
+      "system": "Ignition and combustion"
+    }
+  ]
+}

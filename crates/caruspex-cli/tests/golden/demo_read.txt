@@ -1,0 +1,23 @@
+Adapter    : ELM327 v1.5
+Connection : Demo vehicle (built-in)
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+VIN: YCXDE15C7MC048217
+MIL: ON   reported faults: 2
+   Misfire                    ready
+   Fuel system                ready
+   Comprehensive components   ready
+   Catalyst                   ready
+   Evaporative system         not ready
+   Oxygen sensor              ready
+   Oxygen sensor heater       ready
+   EGR system                 not ready
+
+3 fault(s) found:
+  P0171 [stored]
+      System too lean - bank 1
+  P0420 [stored]
+      Catalyst system efficiency below threshold - bank 1
+  P0300 [intermittent]
+      Random/multiple cylinder misfire detected

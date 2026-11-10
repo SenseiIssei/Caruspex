@@ -1,0 +1,50 @@
+Unknown option: --bogus
+
+Usage: caruspex_cli <command> [options]
+
+Commands:
+  ports       list the serial ports
+  kklcheck    self-test of a KKL cable (needs --port, not plugged into the car)
+  read        warning lamp, readiness and fault codes
+  clear       clear the fault memory
+  live        one snapshot of the usual live values
+  info        VIN and the first freeze frame
+  vin         VIN, what it says, and the matching car from the catalog
+  freeze      every freeze frame, one per stored fault
+  health      health check: faults, readiness, mode 06 and a live series
+  probe       adapter test: what the ELM327 really is and can do
+  ecus        everything per control unit (headers on)
+  uds         UDS on CAN: identification and fault memory of every control unit
+  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once
+  enet        look for cars on the network (ENET cable for BMW and Mini, DoIP)
+  interfaces  the CAN interfaces of this computer (J2534 drivers, SocketCAN)
+  version     the version of this program
+  help        this text
+
+Connection (one of them):
+  --demo              built-in demo car, warm and on the road
+  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out
+  --enet HOST|auto    network cable: BMW ENET (HSFZ) or DoIP, auto finds the car
+  --can SPEC          raw CAN interface: j2534:<driver.dll>, slcan:COM5, socketcan:can0,
+                      optionally @250000 for the bit rate (500000 if left out)
+  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)
+  --baud N            baud rate of the serial port, 38400 if left out
+  --replay FILE       play back a recording instead of talking to an adapter
+
+Options:
+  --json              machine-readable output for read, vin, health, probe, freeze, uds,
+                      custom
+  --seconds N         length of the live series of health, 15 if left out
+  --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit
+                      ids like 18DA28F1 answer on 18DAF128; b12 is the BMW unit
+                      with diagnostic address 12); if left out, the address list
+                      of the brand from the VIN, else the demo car's six units
+  --record FILE       record the whole session with the adapter into FILE
+                      (JSON Lines, replayable with --replay)
+  --fast-timing       aggressive adaptive timing (ATAT2), back to ATAT1 if the
+                      adapter refuses it or answers go missing
+  --pack NAME         built-in pack for custom (the demo car's pack with --demo if
+                      left out); an unknown name lists the packs
+  --csv FILE          Torque CSV for custom (Name,ShortName,ModeAndPID,Equation,
+                      Min Value,Max Value,Units,Header), instead of a pack
+  -v                  log every command sent to the adapter

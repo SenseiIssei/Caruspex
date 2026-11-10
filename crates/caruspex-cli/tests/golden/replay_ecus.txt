@@ -1,0 +1,32 @@
+Duration: 2.6 s
+Commands: 73
+Adapter: ELM327 v1.5
+Protocol: ISO 15765-4 (CAN 11/500)
+Connection: Demo vehicle (built-in)
+Recorded: 2026-11-10T23:10:59Z
+
+Adapter    : ELM327 v1.5
+Connection : Recording: demo.jsonl
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Adapter refused headers (ATH1).
+                     MIL ON, 2 code(s), spark ignition
+                     MIL off, 0 code(s), spark ignition
+  P0171 [stored] 
+  P0420 [stored] 
+  P0300 [intermittent] 
+
+: 
+  VIN  YCXDE15C7MC048217
+
+  Whole engine: 38 misfires in the current trip, on average 44.0 per trip over the last 10 trips.
+  Cylinder 1: 1 misfires in the current trip, on average 1.0 per trip over the last 10 trips.
+  Cylinder 2: no misfires in the current trip, on average 0.0 per trip over the last 10 trips.
+  Cylinder 3: 35 misfires in the current trip, on average 41.0 per trip over the last 10 trips.
+  Cylinder 4: 2 misfires in the current trip, on average 2.0 per trip over the last 10 trips.
+
+  001 Check engine light (MIL)                           on
+  101 Number of stored trouble codes                           2.00 
+  201 Engine type reported by the ECU                    Gasoline (spark ignition)
+  051 Fuel type                                          Gasoline

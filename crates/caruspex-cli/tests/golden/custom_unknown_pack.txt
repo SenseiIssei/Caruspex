@@ -1,0 +1,7 @@
+Unknown pack: nope. Built-in packs:
+  caruspex-demo  (Caruspex demo)
+  hyundai-ioniq-28  (Hyundai Ioniq Electric 28 kWh (2016 to 2019))
+  hyundai-kona-niro-ev  (Hyundai Kona Electric and Kia e-Niro (2018 to 2022))
+  nissan-leaf-ze0-aze0  (Nissan Leaf first generation (2011 to 2017))
+  renault-zoe-ph1  (Renault Zoe phase 1 (2013 to 2019))
+  tesla-model3-y  (Tesla Model 3 and Model Y (listening on the CAN bus))

@@ -1,0 +1,72 @@
+{
+  "adapter": {
+    "version": "ELM327 v1.5",
+    "connection": "Demo vehicle (built-in)",
+    "protocol": "ISO 15765-4 (CAN 11/500)",
+    "can": true
+  },
+  "vin": "YCXDE15C7MC048217",
+  "brand": "",
+  "status": {
+    "milOn": true,
+    "faultCount": 2,
+    "diesel": false,
+    "readiness": [
+      {
+        "name": "Misfire",
+        "ready": true
+      },
+      {
+        "name": "Fuel system",
+        "ready": true
+      },
+      {
+        "name": "Comprehensive components",
+        "ready": true
+      },
+      {
+        "name": "Catalyst",
+        "ready": true
+      },
+      {
+        "name": "Evaporative system",
+        "ready": false
+      },
+      {
+        "name": "Oxygen sensor",
+        "ready": true
+      },
+      {
+        "name": "Oxygen sensor heater",
+        "ready": true
+      },
+      {
+        "name": "EGR system",
+        "ready": false
+      }
+    ]
+  },
+  "faults": [
+    {
+      "code": "P0171",
+      "kind": "stored",
+      "text": "System too lean - bank 1",
+      "severity": "Medium",
+      "system": "Fuel and mixture"
+    },
+    {
+      "code": "P0420",
+      "kind": "stored",
+      "text": "Catalyst system efficiency below threshold - bank 1",
+      "severity": "Medium",
+      "system": "Exhaust: oxygen sensors and catalytic converter"
+    },
+    {
+      "code": "P0300",
+      "kind": "intermittent",
+      "text": "Random/multiple cylinder misfire detected",
+      "severity": "High",
+      "system": "Ignition and combustion"
+    }
+  ]
+}

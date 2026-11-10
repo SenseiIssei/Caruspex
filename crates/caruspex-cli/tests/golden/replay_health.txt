@@ -1,0 +1,51 @@
+Duration: 2.6 s
+Commands: 73
+Adapter: ELM327 v1.5
+Protocol: ISO 15765-4 (CAN 11/500)
+Connection: Demo vehicle (built-in)
+Recorded: 2026-11-10T23:10:59Z
+
+Adapter    : ELM327 v1.5
+Connection : Recording: demo.jsonl
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Reading readiness and warning lamp ...
+Reading the fault memory ...
+Reading component monitoring (mode 06) ...
+Collecting 18 live values for 0 s ...
+0 snapshots of 18 values.
+
+Score 25/100 (yellow), 5 checks run
+6 points should be looked at soon. None of them is an immediate danger. 6 checks were not possible for lack of data.
+
+Findings:
+  [warning] P0171 System too lean - bank 1
+      This fault is stored.
+      Advice: Have it checked when convenient. The fault list shows typical causes.
+  [warning] P0420 Catalyst system efficiency below threshold - bank 1
+      This fault is stored.
+      Advice: Have it checked when convenient. The fault list shows typical causes.
+  [warning] Check engine lamp on
+      The control unit has switched on the yellow check engine lamp. It has found a fault that can make the emissions worse. With the lamp on, a car fails the emissions test in many countries.
+      Advice: The fault list shows the reason. If the lamp flashes while driving, ease off at once and stop soon: that means heavy misfires that can destroy the catalytic converter.
+  [warning] 2 readiness monitors not complete
+      Not complete yet: Evaporative system, EGR / variable valve timing. The car has not finished these self-tests since the fault memory was last cleared (or since the battery was disconnected). That alone is not a defect, as long as no faults are stored.
+      Advice: As a rule of thumb for the emissions test: a petrol car is often accepted with one incomplete monitor (that is the US EPA rule for model year 2001 and later), with several usually not. The exact rules depend on the country and the testing station. The safest way is to do the matching drives first (see the drive cycle help) and check again afterwards.
+  [warning] Test failed: Catalyst bank 1: Test 0x80 (manufacturer-specific)
+      The control unit measured this value outside its limits. A fault code usually follows soon. Measured 0.820 , allowed 0.000 to 0.602.
+      Advice: Have the component checked before the warning lamp comes on.
+  [warning] Misfires detected
+      Misfires counted: cylinder 1: 1, cylinder 3: 41, cylinder 4: 2. A few misfires happen, for example on a cold start or with poor fuel. Many of them shake the engine and harm the catalytic converter. Each manufacturer decides itself when a fault is set. Almost all misfires come from cylinder 3. That points to a part of exactly this cylinder: spark plug, ignition coil or injector. A simple test: swap the coil with a neighbouring cylinder and see whether the fault moves with it.
+      Advice: Have the spark plugs and ignition coils checked.
+  [info] P0300 Random/multiple cylinder misfire detected
+      This fault is only pending: the control unit noticed it once but has not confirmed it yet. If it shows up again on the next trips, it gets stored for good.
+      Advice: Keep an eye on it. If it comes back after clearing, look into it more closely.
+
+Not checked:
+  Last cleared: Warm-ups and distance since clearing (PID 30 and 31) are missing.
+  Mixture control (bank 1): The fuel trims (PID 06 and 07) were not read.
+  Oxygen sensors: No oxygen sensor voltages (PID 14 to 1B). Cars with wideband sensors report them differently, and then this check is not possible here.
+  Charging voltage: The voltage (PID 42) was not read.
+  Battery with engine off: The voltage (PID 42) was not read.
+  Thermostat and operating temperature: The coolant temperature (PID 05) was not read.

@@ -1,0 +1,219 @@
+{
+  "adapter": {
+    "version": "ELM327 v1.5",
+    "connection": "Demo vehicle (built-in)",
+    "protocol": "ISO 15765-4 (CAN 11/500)",
+    "can": true
+  },
+  "brand": "",
+  "frames": [
+    {
+      "frame": 0,
+      "dtc": "P0171",
+      "text": "System too lean - bank 1",
+      "values": [
+        {
+          "pid": 3,
+          "key": 3,
+          "sub": 0,
+          "name": "Fuel system status",
+          "value": 2,
+          "unit": "",
+          "text": "closed loop (normal)"
+        },
+        {
+          "pid": 4,
+          "key": 4,
+          "sub": 0,
+          "name": "Calculated engine load",
+          "value": 60.78431373,
+          "unit": "%"
+        },
+        {
+          "pid": 5,
+          "key": 5,
+          "sub": 0,
+          "name": "Coolant temperature",
+          "value": 89,
+          "unit": "°C"
+        },
+        {
+          "pid": 6,
+          "key": 6,
+          "sub": 0,
+          "name": "Short-term fuel trim bank 1",
+          "value": 7.03125,
+          "unit": "%"
+        },
+        {
+          "pid": 7,
+          "key": 7,
+          "sub": 0,
+          "name": "Long-term fuel trim bank 1",
+          "value": 17.1875,
+          "unit": "%"
+        },
+        {
+          "pid": 11,
+          "key": 11,
+          "sub": 0,
+          "name": "Intake manifold pressure",
+          "value": 70,
+          "unit": "kPa"
+        },
+        {
+          "pid": 12,
+          "key": 12,
+          "sub": 0,
+          "name": "Engine speed",
+          "value": 2261.75,
+          "unit": "1/min"
+        },
+        {
+          "pid": 13,
+          "key": 13,
+          "sub": 0,
+          "name": "Vehicle speed",
+          "value": 100,
+          "unit": "km/h"
+        },
+        {
+          "pid": 14,
+          "key": 14,
+          "sub": 0,
+          "name": "Ignition timing advance",
+          "value": 16,
+          "unit": "deg BTDC"
+        },
+        {
+          "pid": 15,
+          "key": 15,
+          "sub": 0,
+          "name": "Intake air temperature",
+          "value": 19,
+          "unit": "°C"
+        },
+        {
+          "pid": 16,
+          "key": 16,
+          "sub": 0,
+          "name": "Mass air flow (MAF)",
+          "value": 19.93,
+          "unit": "g/s"
+        },
+        {
+          "pid": 17,
+          "key": 17,
+          "sub": 0,
+          "name": "Throttle position",
+          "value": 47.84313725,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "dtc": "P0300",
+      "text": "Random/multiple cylinder misfire detected",
+      "values": [
+        {
+          "pid": 3,
+          "key": 3,
+          "sub": 0,
+          "name": "Fuel system status",
+          "value": 2,
+          "unit": "",
+          "text": "closed loop (normal)"
+        },
+        {
+          "pid": 4,
+          "key": 4,
+          "sub": 0,
+          "name": "Calculated engine load",
+          "value": 28.62745098,
+          "unit": "%"
+        },
+        {
+          "pid": 5,
+          "key": 5,
+          "sub": 0,
+          "name": "Coolant temperature",
+          "value": 91,
+          "unit": "°C"
+        },
+        {
+          "pid": 6,
+          "key": 6,
+          "sub": 0,
+          "name": "Short-term fuel trim bank 1",
+          "value": -3.125,
+          "unit": "%"
+        },
+        {
+          "pid": 7,
+          "key": 7,
+          "sub": 0,
+          "name": "Long-term fuel trim bank 1",
+          "value": 17.1875,
+          "unit": "%"
+        },
+        {
+          "pid": 11,
+          "key": 11,
+          "sub": 0,
+          "name": "Intake manifold pressure",
+          "value": 44,
+          "unit": "kPa"
+        },
+        {
+          "pid": 12,
+          "key": 12,
+          "sub": 0,
+          "name": "Engine speed",
+          "value": 1341,
+          "unit": "1/min"
+        },
+        {
+          "pid": 13,
+          "key": 13,
+          "sub": 0,
+          "name": "Vehicle speed",
+          "value": 49,
+          "unit": "km/h"
+        },
+        {
+          "pid": 14,
+          "key": 14,
+          "sub": 0,
+          "name": "Ignition timing advance",
+          "value": 25,
+          "unit": "deg BTDC"
+        },
+        {
+          "pid": 15,
+          "key": 15,
+          "sub": 0,
+          "name": "Intake air temperature",
+          "value": 20,
+          "unit": "°C"
+        },
+        {
+          "pid": 16,
+          "key": 16,
+          "sub": 0,
+          "name": "Mass air flow (MAF)",
+          "value": 5.55,
+          "unit": "g/s"
+        },
+        {
+          "pid": 17,
+          "key": 17,
+          "sub": 0,
+          "name": "Throttle position",
+          "value": 26.66666667,
+          "unit": "%"
+        }
+      ]
+    }
+  ]
+}

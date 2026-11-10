@@ -1,0 +1,16 @@
+Adapter    : ELM327 v1.5
+Connection : Demo vehicle (built-in)
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+VIN: YCXDE15C7MC048217
+Freeze frame for code P0171:
+  Engine speed                                2261.75 1/min
+  Vehicle speed                                100.00 km/h
+  Coolant temperature                           89.00 °C
+  Calculated engine load                        60.78 %
+  Throttle position                             47.84 %
+  Intake air temperature                        19.00 °C
+  Mass air flow (MAF)                           19.93 g/s
+  Intake manifold pressure                      70.00 kPa
+  Fuel system status                       closed loop (normal)
