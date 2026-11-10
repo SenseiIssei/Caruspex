@@ -9,7 +9,6 @@
 "u257": "Kendiniz kontrol edin",
 "u258": "Henüz bir şey okunmadı. Bağlandıktan sonra kayıtlar burada bir açıklamayla görünür.",
 "u259": [
-"%n kayıt",
 "%n kayıt"
 ],
 "u260": "Kayıtlı arıza yok. İyi.",
@@ -26,11 +25,9 @@
 "u271": "%1 km kaldı",
 "u272": "%1 km gecikti",
 "u273": [
-"%n gün kaldı",
 "%n gün kaldı"
 ],
 "u274": [
-"%n gün gecikti",
 "%n gün gecikti"
 ],
 "u275": "Periyodik bakım",
@@ -42,7 +39,6 @@
 "u281": "Soğutma suyu",
 "u282": "Lastik değişimi (yazlık/kışlık)",
 "u283": [
-"yaklaşık %n ay kaldı",
 "yaklaşık %n ay kaldı"
 ],
 "u284": "Garaj",
@@ -66,7 +62,6 @@
 "u302": "Kayıtlı arıza yok.",
 "u303": "Motor arıza lambası yanıyor.",
 "u304": [
-"%n hazır olma monitörü tamamlanmadı.",
 "%n hazır olma monitörü tamamlanmadı."
 ],
 "u305": "%1 puan",
@@ -77,7 +72,6 @@
 "u310": "Yedekleme başarısız oldu.",
 "u311": "Yükleme başarısız oldu: %1",
 "u312": [
-"%n araç devralındı, hiçbir şey silinmedi.",
 "%n araç devralındı, hiçbir şey silinmedi."
 ],
 "u313": "Neyin ne zaman gerektiği, mesafeye veya zamana göre, hangisi önce gelirse.",
@@ -95,7 +89,6 @@
 "u325": "%1 tarihinde %2 km gösteriyordu, %3 tarihinde yalnızca %4 km. Bu değiştirilmiş bir gösterge paneli olabilir, ama geri sarılmış bir kilometre sayacı da olabilir. İkinci el araç alırken bunu sorun.",
 "u326": "her %1 km'de",
 "u327": [
-"her ay",
 "her %n ayda bir"
 ],
 "u328": " veya ",
@@ -162,7 +155,6 @@
 "u389": "Önce bağlanın.",
 "u390": "Kontrol ediliyor ...",
 "u391": [
-"%n kontrol yapıldı.",
 "%n kontrol yapıldı."
 ],
 "u392": "İyi durumda",
@@ -174,11 +166,9 @@
 "u398": "Araç hiçbir hazır olma monitörü bildirmedi.",
 "u399": "Tüm monitörler tamamlandı. Burada emisyon testinin önünde duran bir şey yok.",
 "u400": [
-"%n monitör hâlâ tamamlanmadı. Dizelde emisyon testi için hepsinin tamamlanmış olması idealdir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.",
 "%n monitör hâlâ tamamlanmadı. Dizelde emisyon testi için hepsinin tamamlanmış olması idealdir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir."
 ],
 "u401": [
-"%n monitör hâlâ tamamlanmadı. Benzinli araçta bir tamamlanmamış monitör çoğu zaman kabul edilir, ama önceden muayene istasyonuna sormak daha güvenlidir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.",
 "%n monitör hâlâ tamamlanmadı. Benzinli araçta bir tamamlanmamış monitör çoğu zaman kabul edilir, ama önceden muayene istasyonuna sormak daha güvenlidir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir."
 ],
 "u402": "tamam",
@@ -245,7 +235,6 @@
 "u463": "Kontrol ünitesinin sürekli ölçtüğü her şey, alana göre sıralı. Soldan işaretleyin, üstten başlatın.",
 "u464": "Değer ara, örn. yağ veya lambda",
 "u465": [
-"%n değer",
 "%n değer"
 ],
 "u466": "aralığın yüzdesi",
@@ -255,11 +244,9 @@
 "u470": "Kaynak: %1",
 "u471": "Özel değerler",
 "u472": [
-"%n değer yüklendi.",
 "%n değer yüklendi."
 ],
 "u473": [
-"%n satır atlandı: %1",
 "%n satır atlandı: %1"
 ],
 "u474": "Caruspex - Araç Teşhisi",

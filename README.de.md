@@ -107,6 +107,7 @@ Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
 - Neue Oberfläche im Stil von Odysync: ruhig, dunkel, mit weichen Übergängen
 - Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse
 - 18 Sprachen für Oberfläche und alle Fehlertexte: Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Italienisch, Niederländisch, Polnisch, Tschechisch, Russisch, Ukrainisch, Türkisch, Arabisch (von rechts nach links), Chinesisch, Japanisch, Koreanisch, Hindi und Indonesisch. Folgt der Systemsprache, umschaltbar in den Einstellungen, Einstellungen wirken sofort
+- Meldet neue Versionen: beim Start fragt die App nur GitHub nach dem neuesten Release, sonst nichts (keine Daten über dich oder das Auto), abschaltbar in den Einstellungen
 
 ## Welche Autos
 

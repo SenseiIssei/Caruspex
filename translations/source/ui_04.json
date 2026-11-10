@@ -187,5 +187,33 @@
   "de": "CAN-Interface verbinden: j2534:<treiber.dll>, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate",
   "en": "",
   "plural": false
+ },
+ {
+  "id": "u1027",
+  "context": "caruspex::MainWindow",
+  "de": "Neue Version verfügbar: %1",
+  "en": "New version available: %1",
+  "plural": false
+ },
+ {
+  "id": "u1028",
+  "context": "caruspex::SettingsPage",
+  "de": "Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)",
+  "en": "Check for a new version at start (asks only GitHub, nothing else)",
+  "plural": false
+ },
+ {
+  "id": "u1029",
+  "context": "caruspex::TitleBar",
+  "de": "Version %1 ist da",
+  "en": "Version %1 is out",
+  "plural": false
+ },
+ {
+  "id": "u1030",
+  "context": "caruspex::TitleBar",
+  "de": "Öffnet die Seite mit dem Download und der Änderungsliste",
+  "en": "Opens the page with the download and the list of changes",
+  "plural": false
  }
 ]

@@ -60,8 +60,15 @@ $python_bin tools/gen_i18n.py --check --strict
 if [ -x build/bin/Release/caruspex_tests.exe ]; then build/bin/Release/caruspex_tests.exe; else build/bin/caruspex_tests; fi
 REQUIRE_INSTALLER=1 bash tools/package.sh build
 bash tools/smoke_test.sh smoke
+rm -rf package dist smoke
 
-git add CMakeLists.txt "$notes"
+# Fresh README images, so they show this version (taken here with the real
+# fonts, not on a headless CI machine).
+[ -d /c/Qt/6.8.3/msvc2022_64/bin ] && export PATH="/c/Qt/6.8.3/msvc2022_64/bin:$PATH"
+bash tools/screenshots.sh de
+bash tools/screenshots.sh en
+
+git add CMakeLists.txt "$notes" docs/*.png docs/de/*.png
 git commit -q -m "Version $version mit Aenderungsliste auf Deutsch und Englisch"
 echo
 echo "Release $version is ready on branch release-$version. Next, after a go:"

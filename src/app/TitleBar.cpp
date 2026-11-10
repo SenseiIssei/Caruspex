@@ -114,6 +114,8 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent) {
     update_->setObjectName("Primary");
     update_->setCursor(Qt::PointingHandCursor);
     update_->setVisible(false);
+    update_->setFixedHeight(30);
+    update_->setStyleSheet(QStringLiteral("padding: 0 14px; font-size: 12px;"));
     layout->addWidget(update_);
     log_ = makeToolButton(QStringLiteral("terminal"), tr("Protokoll ein- oder ausblenden"));
     log_->setCheckable(true);

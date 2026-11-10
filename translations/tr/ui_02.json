@@ -3,7 +3,6 @@
 "u501": "%1:%2 adresine bağlanılıyor ...",
 "u502": "Demo araç başlatılıyor ...",
 "u503": [
-"%n port bulundu.",
 "%n port bulundu."
 ],
 "u504": "Caruspex hazır. Adaptörü takın, kontağı açın, sonra bağlanın.",
@@ -39,7 +38,6 @@
 "u534": "Kaydet",
 "u535": "%1 dosyasına kaydediliyor",
 "u536": [
-"Kayıt kaydedildi: %1 (%n istek)",
 "Kayıt kaydedildi: %1 (%n istek)"
 ],
 "u537": "Elektrikli araç aküsü",

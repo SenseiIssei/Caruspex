@@ -19,7 +19,6 @@
         <source>zuletzt %n Fehler</source>
         <translation>
             <numerusform>son kontrol: %n arıza</numerusform>
-            <numerusform>son kontrol: %n arıza</numerusform>
         </translation>
     </message>
     <message>
@@ -748,7 +747,6 @@ Protokol: %3</translation>
         <source>%n Fehler</source>
         <translation>
             <numerusform>%n arıza</numerusform>
-            <numerusform>%n arıza</numerusform>
         </translation>
     </message>
     <message>
@@ -922,7 +920,6 @@ Protokol: %3</translation>
         <source>%n Wert(e) gelesen.</source>
         <translation>
             <numerusform>%n değer okundu.</numerusform>
-            <numerusform>%n değer okundu.</numerusform>
         </translation>
     </message>
     <message>
@@ -1031,7 +1028,6 @@ Protokol: %3</translation>
     <message numerus="yes">
         <source>%n Einträge</source>
         <translation>
-            <numerusform>%n kayıt</numerusform>
             <numerusform>%n kayıt</numerusform>
         </translation>
     </message>
@@ -1170,20 +1166,17 @@ Hazır olma monitörleri de sıfırlanır.</translation>
         <source>noch etwa %n Monat(e)</source>
         <translation>
             <numerusform>yaklaşık %n ay kaldı</numerusform>
-            <numerusform>yaklaşık %n ay kaldı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>noch %n Tag(e)</source>
         <translation>
             <numerusform>%n gün kaldı</numerusform>
-            <numerusform>%n gün kaldı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>seit %n Tag(en) überfällig</source>
         <translation>
-            <numerusform>%n gün gecikti</numerusform>
             <numerusform>%n gün gecikti</numerusform>
         </translation>
     </message>
@@ -1261,7 +1254,6 @@ Hazır olma monitörleri de sıfırlanır.</translation>
     <message numerus="yes">
         <source>%n Auto(s) übernommen, nichts wurde gelöscht.</source>
         <translation>
-            <numerusform>%n araç devralındı, hiçbir şey silinmedi.</numerusform>
             <numerusform>%n araç devralındı, hiçbir şey silinmedi.</numerusform>
         </translation>
     </message>
@@ -1401,7 +1393,6 @@ Hazır olma monitörleri de sıfırlanır.</translation>
         <source>%n Bereitschaftstest(s) offen.</source>
         <translation>
             <numerusform>%n hazır olma monitörü tamamlanmadı.</numerusform>
-            <numerusform>%n hazır olma monitörü tamamlanmadı.</numerusform>
         </translation>
     </message>
     <message>
@@ -1415,7 +1406,6 @@ Hazır olma monitörleri de sıfırlanır.</translation>
     <message numerus="yes">
         <source>alle %n Monat(e)</source>
         <translation>
-            <numerusform>her ay</numerusform>
             <numerusform>her %n ayda bir</numerusform>
         </translation>
     </message>
@@ -1666,7 +1656,6 @@ Hazır olma monitörleri de sıfırlanır.</translation>
         <source>%n Prüfungen ausgeführt.</source>
         <translation>
             <numerusform>%n kontrol yapıldı.</numerusform>
-            <numerusform>%n kontrol yapıldı.</numerusform>
         </translation>
     </message>
     <message>
@@ -1705,13 +1694,11 @@ Hazır olma monitörleri de sıfırlanır.</translation>
         <source>%n Test(s) noch offen. Beim Diesel sollten für die AU möglichst alle abgeschlossen sein. Unten steht, wie man sie fährt.</source>
         <translation>
             <numerusform>%n monitör hâlâ tamamlanmadı. Dizelde emisyon testi için hepsinin tamamlanmış olması idealdir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.</numerusform>
-            <numerusform>%n monitör hâlâ tamamlanmadı. Dizelde emisyon testi için hepsinin tamamlanmış olması idealdir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n Test(s) noch offen. Beim Benziner wird ein offener Test oft akzeptiert, sicherer ist es, vorher die Prüfstelle zu fragen. Unten steht, wie man sie fährt.</source>
         <translation>
-            <numerusform>%n monitör hâlâ tamamlanmadı. Benzinli araçta bir tamamlanmamış monitör çoğu zaman kabul edilir, ama önceden muayene istasyonuna sormak daha güvenlidir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.</numerusform>
             <numerusform>%n monitör hâlâ tamamlanmadı. Benzinli araçta bir tamamlanmamış monitör çoğu zaman kabul edilir, ama önceden muayene istasyonuna sormak daha güvenlidir. Tamamlanana kadar nasıl sürüleceği aşağıda gösterilir.</numerusform>
         </translation>
     </message>
@@ -1964,7 +1951,6 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
         <source>%n Werte</source>
         <translation>
             <numerusform>%n değer</numerusform>
-            <numerusform>%n değer</numerusform>
         </translation>
     </message>
     <message>
@@ -1979,13 +1965,11 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
         <source>%n Wert(e) geladen.</source>
         <translation>
             <numerusform>%n değer yüklendi.</numerusform>
-            <numerusform>%n değer yüklendi.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n Zeile(n) übersprungen: %1</source>
         <translation>
-            <numerusform>%n satır atlandı: %1</numerusform>
             <numerusform>%n satır atlandı: %1</numerusform>
         </translation>
     </message>
@@ -2116,7 +2100,6 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
         <source>Aufzeichnung gespeichert: %1 (%n Anfragen)</source>
         <translation>
             <numerusform>Kayıt kaydedildi: %1 (%n istek)</numerusform>
-            <numerusform>Kayıt kaydedildi: %1 (%n istek)</numerusform>
         </translation>
     </message>
     <message>
@@ -2126,7 +2109,6 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
     <message numerus="yes">
         <source>%n Anschluss/Anschlüsse gefunden.</source>
         <translation>
-            <numerusform>%n port bulundu.</numerusform>
             <numerusform>%n port bulundu.</numerusform>
         </translation>
     </message>
@@ -2333,6 +2315,10 @@ Kontak açık, motor kapalı. Motor çalışırken çoğu kontrol ünitesi servi
     <message>
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>CAN arayüzü %1 üzerinden bağlanılıyor ...</translation>
+    </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Yeni sürüm mevcut: %1</translation>
     </message>
 </context>
 <context>
@@ -3264,6 +3250,10 @@ Kontak açık, motor kapalı. Tarama birkaç dakika sürer.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Kayıt dosyası (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Başlangıçta yeni sürüm ara (yalnızca GitHub&apos;a sorar, başka hiçbir şeye değil)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3568,14 @@ Kontrol ünitesi hangi protokolü konuştuğunu uyandırma adresinden sonra bell
     <message>
         <source>Wiederherstellen</source>
         <translation>Geri yükle</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Sürüm %1 çıktı</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>İndirme ve değişiklik listesinin bulunduğu sayfayı açar</translation>
     </message>
 </context>
 <context>
@@ -3933,7 +3931,6 @@ Kontrol ünitesi hangi protokolü konuştuğunu uyandırma adresinden sonra bell
     <message numerus="yes">
         <source>%n Treffer</source>
         <translation>
-            <numerusform>%n eşleşme</numerusform>
             <numerusform>%n eşleşme</numerusform>
         </translation>
     </message>

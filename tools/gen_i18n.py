@@ -33,7 +33,7 @@ TARGET = os.path.join(ROOT, "src", "core", "Catalog.gen.cpp")
 
 # Code -> number of plural forms Qt expects in the .ts file.
 LANGUAGES = {
-    "es": 2, "fr": 2, "pt": 2, "it": 2, "nl": 2, "pl": 3, "cs": 3, "ru": 3, "uk": 3, "tr": 2,
+    "es": 2, "fr": 2, "pt": 2, "it": 2, "nl": 2, "pl": 3, "cs": 3, "ru": 3, "uk": 3, "tr": 1,
     "ar": 6, "zh": 1, "ja": 1, "ko": 1, "hi": 2, "id": 1,
 }
 

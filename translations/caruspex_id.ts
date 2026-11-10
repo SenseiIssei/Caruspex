@@ -2316,6 +2316,10 @@ Kunci kontak menyala, mesin mati. Saat mesin menyala, kebanyakan unit kontrol me
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Menghubungkan lewat antarmuka CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Versi baru tersedia: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3246,6 +3250,10 @@ Kunci kontak menyala, mesin mati. Prosesnya butuh beberapa menit.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Berkas log (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Cari versi baru saat mulai (hanya bertanya ke GitHub, tidak ada yang lain)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3560,6 +3568,14 @@ Blok pengukuran tergantung mesin: 060 untuk injeksi di port, 098 untuk injeksi l
     <message>
         <source>Wiederherstellen</source>
         <translation>Pulihkan</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Versi %1 sudah keluar</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Membuka halaman unduhan dan daftar perubahan</translation>
     </message>
 </context>
 <context>

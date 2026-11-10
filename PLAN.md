@@ -156,13 +156,13 @@ Datenquellen, die wir nutzen dürfen:
 
 Damit nichts veraltet, ohne dass jemand daran denken muss.
 
-- [ ] Übersetzungen in der CI prüfen: `tools/gen_i18n.py --check` läuft in jedem Lauf und schlägt fehl, wenn ein Text in einer Sprache fehlt. Neue Texte fallen dann sofort auf. Klein, Nutzen hoch
-- [ ] Marken-Prüfung als Test: jede Katalogmarke braucht eine VIN-Kennung, jede Generation gültige Jahre (das Audit aus 0.8.0 als dauerhafter Test). Klein
-- [ ] Monatlicher Datencheck per geplantem CI-Lauf: neue Einträge in der Wikibooks-WMI-Liste, neue OBDb-Fahrzeuge, Änderungen an opendbc und model3dbc. Ergebnis als Issue mit der Liste, was neu ist. Mittel
-- [ ] Dependabot für die GitHub Actions und die Conan-Abhängigkeiten; Qt beim nächsten LTS-Stand gezielt anheben. Klein
-- [ ] Update-Hinweis in der App: beim Start (abschaltbar) die neueste Version auf GitHub abfragen, Hinweis mit Änderungsliste in der eigenen Sprache. Später ein Ein-Klick-Update über den Installer, sobald signiert wird. Mittel
-- [ ] Release-Skript: Version setzen, Gerüst für die Änderungsliste in Deutsch und Englisch anlegen, Tests und Übersetzungs-Check laufen lassen. Ein Befehl statt fünf Handgriffe. Klein
-- [ ] README-Bilder aus der CI: `tools/screenshots.sh` läuft beim Release mit, damit die Bilder immer zur Version passen. Klein
+- [x] Übersetzungen in der CI prüfen: der Linux-Lauf zieht die Texte neu aus dem Code (`update_translations`, `tools/i18n_extract.py`), bricht ab, wenn die Quelldateien nicht eingecheckt sind, und `tools/gen_i18n.py --check --strict` schlägt fehl, sobald in einer Sprache ein Text fehlt
+- [x] Marken-Prüfung als Test: jede Katalogmarke muss aus der VIN erkannt werden, jede Generation hat gültige Jahre (`tests/test_vehicles.cpp`)
+- [x] Monatlicher Datencheck (`.github/workflows/data-check.yml`, `tools/check_sources.py`): neue VIN-Kennungen auf Wikibooks, Zahl der OBDb-Fahrzeuge, neue Stände von opendbc und model3dbc. Gibt es etwas Neues, legt der Lauf ein Issue mit der Liste an. Der Ausgangsstand liegt in `data/sources.json` und `data/wmi_seen.txt`
+- [x] Dependabot für die GitHub Actions (monatlich). Conan kennt Dependabot nicht; Catch2 und Qt werden weiter gezielt angehoben
+- [x] Update-Hinweis in der App: beim Start (in den Einstellungen abschaltbar) fragt die App nur GitHub nach der neuesten Version, bei einer neueren erscheint in der Titelleiste "Version X ist da" und öffnet die Seite mit Download und Änderungsliste. Offen: Ein-Klick-Update über den Installer, sobald signiert wird
+- [x] Release-Skript `tools/release.sh <version>`: Zweig, Version, Gerüst für die Änderungsliste in Deutsch und Englisch (prüft Platzhalter und lange Gedankenstriche), Übersetzungs-Check, Build, Tests, Pakete und Rauchtest, Commit. Push, Merge und Tag bleiben Handarbeit nach einem Ja
+- [x] README-Bilder pro Release: das Release-Skript nimmt die Bilder in beiden Sprachen neu auf, damit sie zur Version passen. Bewusst auf Windows mit den echten Schriften statt in der CI
 
 ## Phase 14: Leichter zu verstehen und zu bedienen
 

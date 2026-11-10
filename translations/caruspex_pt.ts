@@ -2334,6 +2334,10 @@ Ignição ligada, motor desligado. Com o motor funcionando, a maioria das centra
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>A ligar através da interface CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Nova versão disponível: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Ignição ligada, motor desligado. A varredura leva alguns minutos.</translation
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Arquivo de registro (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Procurar uma nova versão ao iniciar (consulta apenas o GitHub, mais nada)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ O bloco de medição depende do motor: 060 para injeção multiponto, 098 para i
     <message>
         <source>Wiederherstellen</source>
         <translation>Restaurar</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>A versão %1 já saiu</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Abre a página com a transferência e a lista de alterações</translation>
     </message>
 </context>
 <context>

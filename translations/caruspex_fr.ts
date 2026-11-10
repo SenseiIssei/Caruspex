@@ -2334,6 +2334,10 @@ Contact mis, moteur coupé. Moteur en marche, la plupart des calculateurs refuse
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Connexion via l&apos;interface CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Nouvelle version disponible : %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Contact mis, moteur coupé. Le passage prend quelques minutes.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Fichier journal (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Rechercher une nouvelle version au démarrage (interroge uniquement GitHub, rien d&apos;autre)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ Le bloc de mesure dépend du moteur : 060 pour l&apos;injection indirecte, 098 p
     <message>
         <source>Wiederherstellen</source>
         <translation>Restaurer</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>La version %1 est sortie</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Ouvre la page avec le téléchargement et la liste des modifications</translation>
     </message>
 </context>
 <context>

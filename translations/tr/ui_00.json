@@ -3,7 +3,6 @@
 "u1": "henüz kontrol edilmedi",
 "u2": "son kontrol: arıza yok",
 "u3": [
-"son kontrol: %n arıza",
 "son kontrol: %n arıza"
 ],
 "u4": "bağlı",
@@ -177,7 +176,6 @@
 "u172": "%1 bilinen kontrol ünitesine soruluyor.",
 "u173": "%1 soruluyor (%2 / %3)",
 "u174": [
-"%n arıza",
 "%n arıza"
 ],
 "u175": "Tamam",
@@ -222,7 +220,6 @@
 "u214": "Akü yönetim ünitesinden yanıt yok: %1. Paket araca uyuyor mu ve kontak açık mı?",
 "u215": "%1 değer okundu, %2 tanesi yanıtsız.",
 "u216": [
-"%n değer okundu.",
 "%n değer okundu."
 ],
 "u217": "Sıfır gibi",
