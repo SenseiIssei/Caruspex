@@ -4,8 +4,25 @@
 //! [`Transport`] carries the text dialogue with an ELM327 (or anything that
 //! emulates one, like the ENET and CAN front ends and the demo car), and
 //! [`ByteStream`] carries single bytes on a K-line for KWP1281 and KWP2000.
+#![forbid(unsafe_code)]
 
+pub mod adapter_probe;
+#[cfg(feature = "ble")]
+pub mod ble;
+pub mod ble_profile;
+pub mod elm327;
+pub mod kline_stream;
+pub mod serial;
+pub mod tcp;
 pub mod timing;
 pub mod transport;
 
+pub use adapter_probe::{AdapterReport, BilingualText, CommandCheck, probe_adapter};
+pub use elm327::{
+    AdaptiveTiming, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat, decode_messages,
+    header_format_for, hex_to_bytes, protocol_name, split_messages,
+};
+pub use kline_stream::KLineStream;
+pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
+pub use tcp::TcpTransport;
 pub use transport::{ByteStream, LogFn, Transport};

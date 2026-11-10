@@ -9,3 +9,14 @@ license.workspace = true
 caruspex-i18n.workspace = true
 serialport.workspace = true
 log.workspace = true
+btleplug = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+futures = { version = "0.3.31", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
+
+[features]
+default = ["ble"]
+# Bluetooth LE through btleplug. Needs the D-Bus development files on Linux.
+ble = ["dep:btleplug", "dep:tokio", "dep:futures"]
