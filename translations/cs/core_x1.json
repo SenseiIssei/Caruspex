@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex je 64bitový program a potřebuje 64bitový ovladač).",
+ "c3440": ". Nejdřív ho nastavte: ip link set can0 up type can bitrate 500000",
+ "c3441": "CAN se na zařízení J2534 nedá připojit: ",
+ "c3442": "Zařízení J2534 existují jen ve Windows.",
+ "c3443": "Není nastaveno žádné zařízení J2534. Je nainstalovaný ovladač výrobce?",
+ "c3444": "Takové rozhraní CAN neexistuje: ",
+ "c3445": "SLCAN tuto přenosovou rychlost nezná.",
+ "c3446": "SocketCAN existuje jen v Linuxu.",
+ "c3447": "SocketCAN není k dispozici.",
+ "c3448": "Kanál CAN se nedá otevřít.",
+ "c3449": "Rozhraní CAN se nedá otevřít: ",
+ "c3450": "Zařízení J2534 neodpovídá: ",
+ "c3451": "Ovladač J2534 se nedá načíst: ",
+ "c3452": "Adaptér tuto přenosovou rychlost odmítá.",
+ "c3453": "Port neodpovídá jako adaptér SLCAN (CANable, USBtin, CANUSB).",
+ "c3454": "Přijímací filtr na zařízení J2534 selhal: ",
+ "c3455": "Toto není úplný ovladač J2534.",
+ "c3456": "Neznámé rozhraní CAN: "
+}

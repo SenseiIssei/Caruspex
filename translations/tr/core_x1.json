@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex 64 bit bir programdır ve 64 bit bir sürücüye ihtiyaç duyar).",
+ "c3440": ". Önce kurun: ip link set can0 up type can bitrate 500000",
+ "c3441": "CAN, J2534 cihazında bağlanamıyor: ",
+ "c3442": "J2534 cihazları yalnızca Windows'ta bulunur.",
+ "c3443": "Hiç J2534 cihazı kurulmamış. Üreticinin sürücüsü yüklü mü?",
+ "c3444": "Böyle bir CAN arayüzü yok: ",
+ "c3445": "SLCAN bu bit hızını tanımıyor.",
+ "c3446": "SocketCAN yalnızca Linux'ta bulunur.",
+ "c3447": "SocketCAN kullanılamıyor.",
+ "c3448": "CAN kanalı açılamıyor.",
+ "c3449": "CAN arayüzü açılamıyor: ",
+ "c3450": "J2534 cihazı yanıt vermiyor: ",
+ "c3451": "J2534 sürücüsü yüklenemiyor: ",
+ "c3452": "Adaptör bit hızını kabul etmiyor.",
+ "c3453": "Bağlantı noktası bir SLCAN adaptörü gibi yanıt vermiyor (CANable, USBtin, CANUSB).",
+ "c3454": "J2534 cihazındaki alma filtresi çalışmadı: ",
+ "c3455": "Bu eksiksiz bir J2534 sürücüsü değil.",
+ "c3456": "Bilinmeyen CAN arayüzü: "
+}

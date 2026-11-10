@@ -478,6 +478,22 @@ Protokoll: %3</source>
 लिंक: %2
 प्रोटोकॉल: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN इंटरफ़ेस</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>उन डिवाइस के लिए जो कच्चे CAN संदेश देते हैं: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik और कई अन्य, निर्माता के 64-बिट ड्राइवर के साथ), SLCAN स्टिक (CANable, USBtin, CANUSB) और Linux पर SocketCAN। CAN पर OBD वाली गाड़ियाँ 500 kbit/s पर चलती हैं।</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>सिर्फ़ 32-बिट ड्राइवर</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>कोई CAN इंटरफ़ेस नहीं मिला। क्या ड्राइवर इंस्टॉल है और डिवाइस लगा है?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2313,6 +2329,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>दो मिनट बाद भी कनेक्शन नहीं हुआ, रद्द किया।</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>CAN इंटरफ़ेस %1 से कनेक्ट हो रहा है ...</translation>
     </message>
 </context>
 <context>
@@ -4232,6 +4252,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>कंपोनेंट मॉनिटरिंग पढ़ी: %1 टेस्ट, %2 O2 सेंसर टेस्ट।</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>%1 पर SLCAN अडैप्टर मिला</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN इंटरफ़ेस खुला: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4294,6 +4322,10 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report के लिए कनेक्शन चाहिए: --demo, --port, --tcp, --enet, --bluetooth या --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>CAN इंटरफ़ेस कनेक्ट करें: j2534:&lt;ड्राइवर.dll&gt;, slcan:COM5 या socketcan:can0, बिट रेट के लिए @250000 के साथ</translation>
     </message>
 </context>
 </TS>

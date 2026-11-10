@@ -1,0 +1,10 @@
+{
+ "u1019": "Rozhraní CAN",
+ "u1020": "Pro zařízení, která dodávají surové zprávy CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik a mnoho dalších, s 64bitovým ovladačem výrobce), klíčenky SLCAN (CANable, USBtin, CANUSB) a v Linuxu SocketCAN. Auta s OBD přes CAN jezdí rychlostí 500 kbit/s.",
+ "u1021": "jen 32bitový ovladač",
+ "u1022": "Nenalezeno žádné rozhraní CAN. Je ovladač nainstalovaný a zařízení připojené?",
+ "u1023": "Připojování přes rozhraní CAN %1 ...",
+ "u1024": "Adaptér SLCAN nalezen na %1",
+ "u1025": "Rozhraní CAN otevřeno: %1",
+ "u1026": "Připojit rozhraní CAN: j2534:<ovladač.dll>, slcan:COM5 nebo socketcan:can0, s @250000 pro přenosovou rychlost"
+}

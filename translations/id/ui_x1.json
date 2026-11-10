@@ -1,0 +1,10 @@
+{
+ "u1019": "Antarmuka CAN",
+ "u1020": "Untuk perangkat yang memberikan pesan CAN mentah: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik dan banyak lagi, dengan driver 64-bit dari pabrikan), stik SLCAN (CANable, USBtin, CANUSB) dan di Linux SocketCAN. Mobil dengan OBD lewat CAN berjalan pada 500 kbit/s.",
+ "u1021": "hanya driver 32-bit",
+ "u1022": "Antarmuka CAN tidak ditemukan. Apakah driver sudah terpasang dan perangkat sudah dicolokkan?",
+ "u1023": "Menghubungkan lewat antarmuka CAN %1 ...",
+ "u1024": "Adaptor SLCAN ditemukan di %1",
+ "u1025": "Antarmuka CAN terbuka: %1",
+ "u1026": "Hubungkan antarmuka CAN: j2534:<driver.dll>, slcan:COM5 atau socketcan:can0, dengan @250000 untuk bit rate"
+}

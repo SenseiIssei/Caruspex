@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex est un programme 64 bits et il lui faut un pilote 64 bits).",
+ "c3440": ". Commencez par la configurer : ip link set can0 up type can bitrate 500000",
+ "c3441": "Impossible de connecter le CAN sur l'appareil J2534 : ",
+ "c3442": "Les appareils J2534 n'existent que sous Windows.",
+ "c3443": "Aucun appareil J2534 configuré. Le pilote du fabricant est-il installé ?",
+ "c3444": "Cette interface CAN n'existe pas : ",
+ "c3445": "SLCAN ne connaît pas ce débit.",
+ "c3446": "SocketCAN n'existe que sous Linux.",
+ "c3447": "SocketCAN n'est pas disponible.",
+ "c3448": "Impossible d'ouvrir le canal CAN.",
+ "c3449": "Impossible d'ouvrir l'interface CAN : ",
+ "c3450": "L'appareil J2534 ne répond pas : ",
+ "c3451": "Impossible de charger le pilote J2534 : ",
+ "c3452": "L'adaptateur refuse le débit.",
+ "c3453": "Le port ne répond pas comme un adaptateur SLCAN (CANable, USBtin, CANUSB).",
+ "c3454": "Le filtre de réception de l'appareil J2534 a échoué : ",
+ "c3455": "Ce n'est pas un pilote J2534 complet.",
+ "c3456": "Interface CAN inconnue : "
+}

@@ -29,7 +29,7 @@ class ConnectPage : public QWidget {
 
 public:
     // The values are the pages of the mode stack, Ble was added last.
-    enum class Mode { Cable, Wifi, Demo, Replay, Ble, Enet };
+    enum class Mode { Cable, Wifi, Demo, Replay, Ble, Enet, Can };
 
     explicit ConnectPage(QWidget* parent = nullptr);
 
@@ -41,6 +41,8 @@ public:
     void setWifiAddress(const QString& address);
     void setReplayPath(const QString& path);
     void setEnetAddress(const QString& host);
+    // Lists the CAN interfaces of this computer again.
+    void refreshCanDevices();
     // Selects a Bluetooth device by id, empty means automatic search.
     void selectBluetooth(const QString& id);
     void setMode(Mode mode);
@@ -78,6 +80,8 @@ signals:
     void bleScanRequested();
     // BMW over ENET, host empty means: look for the car.
     void enetRequested(const QString& host, const QString& protocolOrder);
+    // A raw CAN interface (J2534, SLCAN, SocketCAN), see openCanInterface.
+    void canRequested(const QString& spec, const QString& protocolOrder);
     void disconnectRequested();
     void vehicleChoiceChanged();
 
@@ -99,6 +103,8 @@ private:
     QLabel* bleNote_ = nullptr;
     QLineEdit* addressEdit_ = nullptr;
     QLineEdit* enetEdit_ = nullptr;
+    QComboBox* canDevice_ = nullptr;
+    QComboBox* canRate_ = nullptr;
     QLineEdit* replayPath_ = nullptr;
     QCheckBox* replayRealTime_ = nullptr;
     QLineEdit* vehicleEdit_ = nullptr;

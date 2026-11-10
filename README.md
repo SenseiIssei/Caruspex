@@ -97,6 +97,25 @@ forced per run with `--language fr` and so on. How translations are made and che
 
 ![Adapter check](docs/screenshot-adapter.png)
 
+### Every cable, every way into the car
+Caruspex finds out by itself what is plugged in and what the car speaks.
+
+| Interface | Examples | How |
+|---|---|---|
+| ELM327 over USB, Bluetooth, Bluetooth LE, Wi-Fi | cheap ELM327, Vgate, vLinker, Veepeak | serial port, paired or direct BLE, TCP |
+| STN chips | OBDLink SX, EX, MX+, CX | as ELM327, with faster timing |
+| SAE J2534 PassThru | Tactrix OpenPort 2.0, Mongoose, VCX Nano, Scanmatik, Godiag, VAS 5054A in J2534 mode | the maker's 64-bit driver, CAN with ISO-TP done by Caruspex |
+| SLCAN / Lawicel | CANable, USBtin, CANUSB | serial port, found by the automatic port search |
+| SocketCAN (Linux) | PEAK PCAN-USB, Kvaser, CANable with candleLight, Raspberry Pi CAN hats | can0 and friends |
+| KKL cable (VAG 409.1) | FTDI or CP2102 cables | K-Line, KWP1281 and KWP2000 |
+| ENET cable | BMW and Mini from the F series | HSFZ over Ethernet |
+| DoIP cable | many cars from about 2016 | ISO 13400 over Ethernet |
+
+On every one of them the same functions work: OBD-II and OBD on UDS, every control unit over UDS, BMW
+addressing, listening to broadcast values (Tesla), recording and replay.
+
+![Connect](docs/screenshot-connect.png)
+
 ### All control units over CAN (UDS)
 - With a plain ELM327, Caruspex asks every control unit one by one: engine, gearbox, ABS, airbag, instrument cluster, climate and more, on most cars from about 2008.
 - Fault memory per unit with the failure type (short circuit, open circuit, implausible ...), part number, software and hardware version.
@@ -104,14 +123,18 @@ forced per run with `--language fr` and so on. How translations are made and che
 - BMW and Mini from the F series on with BMW's own extended addressing over 6F1, plus a sweep over all 128 diagnostic addresses; fault codes in BMW's format as ISTA shows them (e.g. 480A10).
 - Clearing per unit, with a warning.
 
+![All control units](docs/screenshot-ecus.png)
+
 ### VW and Audi over a KKL cable (KWP1281 and KWP2000)
 - Throttle body adaptation: the real basic setting in measuring block 060 or 098.
 - Scan every control unit, including ABS, airbag, instrument cluster and comfort, with a printable report.
 - Adaptation channels and output tests, deliberately read-only.
 
 ### Manufacturer and custom values
-- Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe and Nissan Leaf; every value with a documented source.
+- Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening on the CAN bus); every value with a documented source.
 - Load your own values in the widely used Torque CSV format, with a complete evaluator for Torque equations.
+
+![EV battery](docs/screenshot-battery.png)
 
 ### Record and replay
 - Record a session with the car into a file and play it back later without the car, handy for troubleshooting.

@@ -1,0 +1,10 @@
+{
+ "u1019": "CAN-interface",
+ "u1020": "Voor apparaten die ruwe CAN-berichten leveren: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik en nog veel meer, met het 64-bitstuurprogramma van de fabrikant), SLCAN-sticks (CANable, USBtin, CANUSB) en onder Linux SocketCAN. Auto's met OBD via CAN rijden op 500 kbit/s.",
+ "u1021": "alleen 32-bitstuurprogramma",
+ "u1022": "Geen CAN-interface gevonden. Stuurprogramma geïnstalleerd en apparaat aangesloten?",
+ "u1023": "Verbinden via CAN-interface %1 ...",
+ "u1024": "SLCAN-adapter gevonden op %1",
+ "u1025": "CAN-interface geopend: %1",
+ "u1026": "CAN-interface verbinden: j2534:<stuurprogramma.dll>, slcan:COM5 of socketcan:can0, met @250000 voor de bitsnelheid"
+}

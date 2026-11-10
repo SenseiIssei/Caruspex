@@ -477,6 +477,22 @@ Protokoll: %3</source>
 连接方式：%2
 协议：%3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN 接口</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>适用于提供原始 CAN 报文的设备:J2534 PassThru(Tactrix OpenPort、Mongoose、VCX Nano、Scanmatik 等等,需配合厂商的 64 位驱动程序)、SLCAN 适配器(CANable、USBtin、CANUSB),以及 Linux 下的 SocketCAN。采用 CAN 上 OBD 的汽车以 500 kbit/s 运行。</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>仅有 32 位驱动程序</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>未找到 CAN 接口。驱动程序已安装、设备已插好吗?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2295,6 +2311,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>两分钟后仍无连接，已取消。</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>正在通过 CAN 接口 %1 连接 ...</translation>
     </message>
 </context>
 <context>
@@ -4213,6 +4233,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>组件监测已读取：%1 项测试，%2 项氧传感器测试。</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>在 %1 上找到 SLCAN 适配器</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN 接口已打开:%1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4275,6 +4303,10 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report 需要一个连接：--demo、--port、--tcp、--enet、--bluetooth 或 --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>连接 CAN 接口:j2534:&lt;驱动.dll&gt;、slcan:COM5 或 socketcan:can0,用 @250000 指定波特率</translation>
     </message>
 </context>
 </TS>

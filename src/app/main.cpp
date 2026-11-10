@@ -105,6 +105,12 @@ int main(int argc, char** argv) {
                                     "oder auto für die Suche"),
         QStringLiteral("address|auto"));
     parser.addOption(enetOption);
+    QCommandLineOption canOption(
+        QStringList() << QStringLiteral("can"),
+        QCoreApplication::translate("main", "CAN-Interface verbinden: j2534:<treiber.dll>, slcan:COM5 oder "
+                                            "socketcan:can0, mit @250000 für die Bitrate"),
+        QStringLiteral("spec"));
+    parser.addOption(canOption);
     QCommandLineOption reportOption(
         QStringList() << QStringLiteral("report"),
         QCoreApplication::translate("main",
@@ -295,7 +301,7 @@ int main(int argc, char** argv) {
     if (parser.isSet(reportOption)) {
         const bool connects = parser.isSet(tcpOption) || parser.isSet(demoOption) ||
                               parser.isSet(replayOption) || parser.isSet(portOption) ||
-                              parser.isSet(bluetoothOption) || parser.isSet(enetOption);
+                              parser.isSet(bluetoothOption) || parser.isSet(enetOption) || parser.isSet(canOption);
         if (!connects) {
             std::fprintf(stderr, "%s\n",
                          QCoreApplication::translate("main", "--report braucht eine Verbindung: --demo, "
@@ -308,6 +314,7 @@ int main(int argc, char** argv) {
     }
     if (parser.isSet(portOption)) window.autoConnectSerial(parser.value(portOption));
     if (parser.isSet(enetOption)) window.autoConnectEnet(parser.value(enetOption));
+    if (parser.isSet(canOption)) window.autoConnectCan(parser.value(canOption));
 #ifdef CARUSPEX_HAS_BLE
     if (parser.isSet(bluetoothOption)) window.autoConnectBluetooth(parser.value(bluetoothOption));
 #endif

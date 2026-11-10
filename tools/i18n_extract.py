@@ -108,6 +108,36 @@ def pairs_in(text: str):
             yield first[0], second[0]
 
 
+def previous(prefix: str) -> dict:
+    """Ids of the last run, so that existing translations keep their id."""
+    out = {}
+    for path in glob.glob(os.path.join(OUT, prefix + "_*.json")):
+        for item in json.load(open(path, encoding="utf-8")):
+            key = item["en"] if prefix == "core" else (item["context"], item["de"])
+            out[key if isinstance(key, (str, tuple)) else str(key)] = item["id"]
+    return out
+
+
+def stable_ids(items: list[dict], prefix: str, letter: str, key) -> list[dict]:
+    old = previous(prefix)
+    used = {int(v[1:]) for v in old.values()}
+    nxt = max(used) + 1 if used else 0
+    keep, new = [], []
+    for item in items:
+        k = key(item)
+        if k in old:
+            item["id"] = old[k]
+            keep.append(item)
+        else:
+            new.append(item)
+    for item in new:
+        item["id"] = f"{letter}{nxt}"
+        nxt += 1
+    out = keep + new
+    out.sort(key=lambda i: int(i["id"][1:]))
+    return out
+
+
 def core_texts() -> list[dict]:
     seen: dict[str, str] = {}
     files = sorted(glob.glob(os.path.join(ROOT, "src", "core", "**", "*.cpp"), recursive=True) +
@@ -155,8 +185,8 @@ def write_chunks(prefix: str, items: list[dict]) -> int:
 
 def main() -> None:
     os.makedirs(OUT, exist_ok=True)
-    core = core_texts()
-    ui = ui_texts()
+    core = stable_ids(core_texts(), "core", "c", lambda i: i["en"])
+    ui = stable_ids(ui_texts(), "ui", "u", lambda i: (i["context"], i["de"]))
     nc = write_chunks("core", core)
     nu = write_chunks("ui", ui)
     chars = sum(len(c["en"]) for c in core) + sum(len(u["de"]) for u in ui)

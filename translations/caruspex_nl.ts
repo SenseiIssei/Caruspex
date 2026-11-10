@@ -478,6 +478,22 @@ Protokoll: %3</source>
 Verbinding: %2
 Protocol: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>CAN-interface</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Voor apparaten die ruwe CAN-berichten leveren: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik en nog veel meer, met het 64-bitstuurprogramma van de fabrikant), SLCAN-sticks (CANable, USBtin, CANUSB) en onder Linux SocketCAN. Auto&apos;s met OBD via CAN rijden op 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>alleen 32-bitstuurprogramma</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>Geen CAN-interface gevonden. Stuurprogramma geïnstalleerd en apparaat aangesloten?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2313,6 +2329,10 @@ Contact aan, motor uit. Bij draaiende motor weigeren de meeste regeleenheden de 
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Na twee minuten nog geen verbinding, geannuleerd.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Verbinden via CAN-interface %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4232,6 +4252,14 @@ Het meetblok hangt af van de motor: 060 voor meerpuntsinspuiting, 098 voor direc
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Componentbewaking uitgelezen: %1 tests, %2 O2-sensortests.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>SLCAN-adapter gevonden op %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>CAN-interface geopend: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4294,6 +4322,10 @@ Het meetblok hangt af van de motor: 060 voor meerpuntsinspuiting, 098 voor direc
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report heeft een verbinding nodig: --demo, --port, --tcp, --enet, --bluetooth of --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>CAN-interface verbinden: j2534:&lt;stuurprogramma.dll&gt;, slcan:COM5 of socketcan:can0, met @250000 voor de bitsnelheid</translation>
     </message>
 </context>
 </TS>

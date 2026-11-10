@@ -102,6 +102,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 
 ## Phase 8: Adapter und Anschluss
 
+- [x] Rohe CAN-Schnittstellen mit eigenem ISO-TP und ELM327-Vorbau (`src/core/CanBus`): SAE J2534 PassThru über den Herstellertreiber (nur 64-Bit-Treiber ladbar, 32-Bit-Treiber werden angezeigt), SLCAN/Lawicel (die automatische Suche findet die Sticks), SocketCAN unter Linux. Geprüft mit einem nachgebauten Steuergerät, einem SLCAN-Stick im Test und einer J2534-Test-DLL; am echten Gerät noch ungeprüft. Offen: K-Line über J2534, eine 32-Bit-Brücke für alte Treiber
 - [x] BMW ENET (HSFZ über Ethernet, Ports 6811/6801): Fahrzeugsuche per Broadcast, Sitzung mit Bestätigung, Lebenszeichen und 7F xx 78, darüber ein ELM327-Vorbau, damit OBD, Gesundheitscheck und der BMW-Suchlauf unverändert laufen. Geprüft mit einem nachgebauten Gateway über echtes TCP; am echten BMW noch ungeprüft
 - [x] Bluetooth Low Energy (vLinker, OBDLink CX, Veepeak BLE) über Qt Bluetooth: Suche, automatische Wahl des Adapters, Kanalwahl nach bekannten GATT-Profilen (FFF0, 18F0, FFE0, E781, Nordic UART) mit Rückfall auf jeden Herstellerdienst. Ohne das Modul qtconnectivity wird wie bisher gebaut. Am echten OBD-Adapter noch ungeprüft, Suche und Verbindungsaufbau unter Windows an einem anderen BLE-Gerät geprüft
 - [x] Adaptive Taktung ATAT2 mit Rückfall, wahlweise nur auf STN-Adaptern; STN wird erkannt. STPX und STBR bewusst weggelassen, weil nicht nachprüfbar oder dauerhaft speichernd. Klein

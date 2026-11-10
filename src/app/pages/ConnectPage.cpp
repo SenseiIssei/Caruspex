@@ -7,6 +7,8 @@
 #include <QCompleter>
 #include <QDate>
 #include <QSettings>
+
+#include "core/CanBus.h"
 #include <QStringListModel>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -158,6 +160,8 @@ QWidget* ConnectPage::buildAdapter() {
     QPushButton* replay = makeModeChip(QStringLiteral("play"), tr("Aufnahme"));
     QPushButton* ble = makeModeChip(QStringLiteral("bluetooth"), tr("Bluetooth"));
     QPushButton* enet = makeModeChip(QStringLiteral("ethernet"), tr("Netzwerkkabel"));
+    QPushButton* can = makeModeChip(QStringLiteral("cpu"), tr("CAN-Interface"));
+    modes_->addButton(can, int(Mode::Can));
     modes_->addButton(enet, int(Mode::Enet));
     modes_->addButton(ble, int(Mode::Ble));
     modes_->addButton(cable, int(Mode::Cable));
@@ -165,18 +169,26 @@ QWidget* ConnectPage::buildAdapter() {
     modes_->addButton(demo, int(Mode::Demo));
     modes_->addButton(replay, int(Mode::Replay));
     cable->setChecked(true);
+#ifndef CARUSPEX_HAS_BLE
+    ble->setVisible(false);
+#endif
+    // Two rows, so the card keeps its width in every language: the cables
+    // first, then the ways without one.
+    auto* second = new QHBoxLayout;
+    second->setSpacing(8);
     chips->addWidget(cable);
 #ifdef CARUSPEX_HAS_BLE
     chips->addWidget(ble);
-#else
-    ble->setVisible(false);
 #endif
     chips->addWidget(wifi);
     chips->addWidget(enet);
-    chips->addWidget(demo);
-    chips->addWidget(replay);
     chips->addStretch();
+    second->addWidget(can);
+    second->addWidget(demo);
+    second->addWidget(replay);
+    second->addStretch();
     layout->addLayout(chips);
+    layout->addLayout(second);
 
     modeStack_ = new QStackedWidget;
     // Cable / Bluetooth
@@ -317,6 +329,37 @@ QWidget* ConnectPage::buildAdapter() {
                                   "in die Werkstattsoftware."),
                                "Hint", true));
         modeStack_->addWidget(page);
+    }
+    // CAN interfaces: J2534, SLCAN, SocketCAN
+    {
+        auto* page = new QWidget;
+        auto* v = new QVBoxLayout(page);
+        v->setContentsMargins(0, 0, 0, 0);
+        v->setSpacing(8);
+        auto* row = new QHBoxLayout;
+        row->setSpacing(8);
+        canDevice_ = new QComboBox;
+        canDevice_->setMinimumHeight(38);
+        canRate_ = new QComboBox;
+        canRate_->setMinimumHeight(38);
+        for (int rate : {500000, 250000, 125000, 1000000})
+            canRate_->addItem(QStringLiteral("%1 kbit/s").arg(rate / 1000), rate);
+        auto* rescan = new QPushButton;
+        rescan->setIcon(icons::icon(QStringLiteral("refresh"), color::textMuted, color::text, 18));
+        rescan->setFixedSize(40, 38);
+        rescan->setStyleSheet(QStringLiteral("QPushButton { padding: 0; }"));
+        row->addWidget(canDevice_, 1);
+        row->addWidget(canRate_);
+        row->addWidget(rescan);
+        v->addLayout(row);
+        v->addWidget(makeLabel(tr("Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, "
+                                  "Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des "
+                                  "Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. "
+                                  "Autos mit OBD über CAN fahren mit 500 kbit/s."),
+                               "Hint", true));
+        connect(rescan, &QPushButton::clicked, this, [this] { refreshCanDevices(); });
+        modeStack_->addWidget(page);
+        refreshCanDevices();
     }
     layout->addWidget(modeStack_);
     connect(modes_, &QButtonGroup::idClicked, this, [this](int id) {
@@ -462,6 +505,24 @@ bool ConnectPage::selectPort(const QString& device) {
 }
 
 void ConnectPage::setWifiAddress(const QString& address) { addressEdit_->setText(address); }
+
+void ConnectPage::refreshCanDevices() {
+    const QString previous = canDevice_->currentData().toString();
+    canDevice_->clear();
+    for (const J2534Device& d : j2534Devices()) {
+        QString text = QStringLiteral("J2534 · %1").arg(QString::fromStdString(d.name));
+        if (!d.usable) text += QStringLiteral(" · ") + tr("nur 32-Bit-Treiber");
+        canDevice_->addItem(text, d.usable ? QStringLiteral("j2534:") + QString::fromStdString(d.library) : QString());
+    }
+    for (const std::string& name : socketCanInterfaces())
+        canDevice_->addItem(QStringLiteral("SocketCAN · %1").arg(QString::fromStdString(name)),
+                            QStringLiteral("socketcan:") + QString::fromStdString(name));
+    for (const PortInfo& p : enumeratePorts())
+        canDevice_->addItem(QStringLiteral("SLCAN · %1").arg(QString::fromStdString(p.device)),
+                            QStringLiteral("slcan:") + QString::fromStdString(p.device));
+    const int keep = canDevice_->findData(previous);
+    if (keep >= 0) canDevice_->setCurrentIndex(keep);
+}
 
 void ConnectPage::setEnetAddress(const QString& host) {
     enetEdit_->setText(host.compare(QStringLiteral("auto"), Qt::CaseInsensitive) == 0 ? QString() : host);
@@ -611,6 +672,15 @@ void ConnectPage::startConnect() {
         case Mode::Demo:
             emit demoRequested(order);
             break;
+        case Mode::Can: {
+            const QString device = canDevice_->currentData().toString();
+            if (device.isEmpty()) {
+                showError(tr("Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?"));
+                return;
+            }
+            emit canRequested(QStringLiteral("%1@%2").arg(device).arg(canRate_->currentData().toInt()), order);
+            break;
+        }
         case Mode::Enet:
             emit enetRequested(enetEdit_->text().trimmed(), order);
             break;

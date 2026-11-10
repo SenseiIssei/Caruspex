@@ -30,6 +30,7 @@
 #include "core/CustomPids.h"
 #include "core/DemoTransport.h"
 #include "core/Elm327.h"
+#include "core/CanBus.h"
 #include "core/Enet.h"
 #include "core/JsonWriter.h"
 #include "core/KLineStream.h"
@@ -68,6 +69,7 @@ const char* const kUsage =
     "  uds         UDS on CAN: identification and fault memory of every control unit\n"
     "  custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once\n"
     "  enet        look for cars on the network (ENET cable for BMW and Mini, DoIP)\n"
+    "  interfaces  the CAN interfaces of this computer (J2534 drivers, SocketCAN)\n"
     "  version     the version of this program\n"
     "  help        this text\n"
     "\n"
@@ -75,6 +77,8 @@ const char* const kUsage =
     "  --demo              built-in demo car, warm and on the road\n"
     "  --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out\n"
     "  --enet HOST|auto    network cable: BMW ENET (HSFZ) or DoIP, auto finds the car\n"
+    "  --can SPEC          raw CAN interface: j2534:<driver.dll>, slcan:COM5, socketcan:can0,\n"
+    "                      optionally @250000 for the bit rate (500000 if left out)\n"
     "  --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)\n"
     "  --baud N            baud rate of the serial port, 38400 if left out\n"
     "  --replay FILE       play back a recording instead of talking to an adapter\n"
@@ -1052,13 +1056,14 @@ int main(int argc, char** argv) {
     bool demo = false;
     bool asJson = false;
     bool fastTiming = false;
-    std::string udsIds, recordPath, replayPath, enet;
+    std::string udsIds, recordPath, replayPath, enet, canSpec;
     std::string pack, csvPath;
     for (int i = 2; i < argc; ++i) {
         const std::string arg = argv[i];
         try {
             if (arg == "--tcp" && i + 1 < argc) tcp = argv[++i];
             else if (arg == "--enet" && i + 1 < argc) enet = argv[++i];
+            else if (arg == "--can" && i + 1 < argc) canSpec = argv[++i];
             else if (arg == "--port" && i + 1 < argc) port = argv[++i];
             else if (arg == "--baud" && i + 1 < argc) baud = std::stoi(argv[++i]);
             else if (arg == "--seconds" && i + 1 < argc) seconds = std::stoi(argv[++i]);
@@ -1092,6 +1097,15 @@ int main(int argc, char** argv) {
     }
     if (command == "ports") {
         printPorts();
+        return 0;
+    }
+    if (command == "interfaces") {
+        const auto devices = j2534Devices();
+        for (const J2534Device& d : devices)
+            std::printf("j2534:%s   %s%s\n", d.library.c_str(), d.name.c_str(), d.usable ? "" : "  (32-bit driver, not usable)");
+        for (const std::string& n : socketCanInterfaces()) std::printf("socketcan:%s\n", n.c_str());
+        if (devices.empty() && socketCanInterfaces().empty())
+            std::printf("No J2534 driver and no SocketCAN interface found. SLCAN sticks: slcan:<port>.\n");
         return 0;
     }
     if (command == "enet") {
@@ -1142,6 +1156,7 @@ int main(int argc, char** argv) {
 
     std::unique_ptr<ITransport> transport;
     std::string protocolOrder = demo || !enet.empty() ? kProtocolOrderCanFirst : kProtocolOrderKLineFirst;
+    if (!canSpec.empty()) protocolOrder = "67";
     if (!replayPath.empty()) {
         auto replay = std::make_unique<ReplayTransport>(replayPath);
         if (!replay->isOpen()) return fail(asJson, replay->error(), 2);
@@ -1159,6 +1174,8 @@ int main(int argc, char** argv) {
             return 600.0 + std::chrono::duration<double>(std::chrono::steady_clock::now() - origin).count();
         };
         transport = std::make_unique<DemoTransport>(options);
+    } else if (!canSpec.empty()) {
+        transport = openCanInterface(canSpec, error);
     } else if (!enet.empty()) {
         std::string kind, vin;
         transport = openNetworkCar(enet, error, kind, vin);

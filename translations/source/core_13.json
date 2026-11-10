@@ -943,5 +943,95 @@
   "id": "c3438",
   "de": "falsche Einbaulage",
   "en": "wrong mounting position"
+ },
+ {
+  "id": "c3439",
+  "de": " (Caruspex ist ein 64-Bit-Programm und braucht einen 64-Bit-Treiber).",
+  "en": " (Caruspex is a 64-bit program and needs a 64-bit driver)."
+ },
+ {
+  "id": "c3440",
+  "de": ". Erst einrichten: ip link set can0 up type can bitrate 500000",
+  "en": ". Set it up first: ip link set can0 up type can bitrate 500000"
+ },
+ {
+  "id": "c3441",
+  "de": "CAN lässt sich am J2534-Gerät nicht verbinden: ",
+  "en": "CAN cannot be connected on the J2534 device: "
+ },
+ {
+  "id": "c3442",
+  "de": "J2534-Geräte gibt es nur unter Windows.",
+  "en": "J2534 devices exist on Windows only."
+ },
+ {
+  "id": "c3443",
+  "de": "Kein J2534-Gerät eingerichtet. Ist der Treiber des Herstellers installiert?",
+  "en": "No J2534 device set up. Is the maker's driver installed?"
+ },
+ {
+  "id": "c3444",
+  "de": "Die CAN-Schnittstelle gibt es nicht: ",
+  "en": "No such CAN interface: "
+ },
+ {
+  "id": "c3445",
+  "de": "Diese Bitrate kennt SLCAN nicht.",
+  "en": "SLCAN does not know this bit rate."
+ },
+ {
+  "id": "c3446",
+  "de": "SocketCAN gibt es nur unter Linux.",
+  "en": "SocketCAN exists on Linux only."
+ },
+ {
+  "id": "c3447",
+  "de": "SocketCAN ist nicht verfügbar.",
+  "en": "SocketCAN is not available."
+ },
+ {
+  "id": "c3448",
+  "de": "Der CAN-Kanal lässt sich nicht öffnen.",
+  "en": "The CAN channel cannot be opened."
+ },
+ {
+  "id": "c3449",
+  "de": "Die CAN-Schnittstelle lässt sich nicht öffnen: ",
+  "en": "The CAN interface cannot be opened: "
+ },
+ {
+  "id": "c3450",
+  "de": "Das J2534-Gerät antwortet nicht: ",
+  "en": "The J2534 device does not answer: "
+ },
+ {
+  "id": "c3451",
+  "de": "Der J2534-Treiber lässt sich nicht laden: ",
+  "en": "The J2534 driver cannot be loaded: "
+ },
+ {
+  "id": "c3452",
+  "de": "Der Adapter nimmt die Bitrate nicht an.",
+  "en": "The adapter refuses the bit rate."
+ },
+ {
+  "id": "c3453",
+  "de": "Der Anschluss antwortet nicht wie ein SLCAN-Adapter (CANable, USBtin, CANUSB).",
+  "en": "The port does not answer like an SLCAN adapter (CANable, USBtin, CANUSB)."
+ },
+ {
+  "id": "c3454",
+  "de": "Der Empfangsfilter am J2534-Gerät ging nicht: ",
+  "en": "The receive filter on the J2534 device failed: "
+ },
+ {
+  "id": "c3455",
+  "de": "Das ist kein vollständiger J2534-Treiber.",
+  "en": "This is not a complete J2534 driver."
+ },
+ {
+  "id": "c3456",
+  "de": "Unbekannte CAN-Schnittstelle: ",
+  "en": "Unknown CAN interface: "
  }
 ]

@@ -1,0 +1,20 @@
+{
+ "c3439": " (Caruspex adalah program 64-bit dan memerlukan driver 64-bit).",
+ "c3440": ". Atur dulu: ip link set can0 up type can bitrate 500000",
+ "c3441": "CAN tidak bisa dihubungkan pada perangkat J2534: ",
+ "c3442": "Perangkat J2534 hanya ada di Windows.",
+ "c3443": "Belum ada perangkat J2534 yang diatur. Apakah driver pabrikan sudah terpasang?",
+ "c3444": "Antarmuka CAN itu tidak ada: ",
+ "c3445": "SLCAN tidak mengenali bit rate ini.",
+ "c3446": "SocketCAN hanya ada di Linux.",
+ "c3447": "SocketCAN tidak tersedia.",
+ "c3448": "Kanal CAN tidak bisa dibuka.",
+ "c3449": "Antarmuka CAN tidak bisa dibuka: ",
+ "c3450": "Perangkat J2534 tidak menjawab: ",
+ "c3451": "Driver J2534 tidak bisa dimuat: ",
+ "c3452": "Adaptor menolak bit rate tersebut.",
+ "c3453": "Port tidak menjawab seperti adaptor SLCAN (CANable, USBtin, CANUSB).",
+ "c3454": "Filter penerimaan pada perangkat J2534 gagal: ",
+ "c3455": "Ini bukan driver J2534 yang lengkap.",
+ "c3456": "Antarmuka CAN tidak dikenal: "
+}

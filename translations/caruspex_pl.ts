@@ -479,6 +479,22 @@ Protokoll: %3</source>
 Łącze: %2
 Protokół: %3</translation>
     </message>
+    <message>
+        <source>CAN-Interface</source>
+        <translation>Interfejs CAN</translation>
+    </message>
+    <message>
+        <source>Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.</source>
+        <translation>Dla urządzeń, które dostarczają surowe komunikaty CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik i wiele innych, ze 64-bitowym sterownikiem producenta), kluczyki SLCAN (CANable, USBtin, CANUSB) oraz w systemie Linux SocketCAN. Samochody z OBD przez CAN jeżdżą z prędkością 500 kbit/s.</translation>
+    </message>
+    <message>
+        <source>nur 32-Bit-Treiber</source>
+        <translation>tylko sterownik 32-bitowy</translation>
+    </message>
+    <message>
+        <source>Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?</source>
+        <translation>Nie znaleziono interfejsu CAN. Czy sterownik jest zainstalowany, a urządzenie podłączone?</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::DashboardPage</name>
@@ -2331,6 +2347,10 @@ Zapłon włączony, silnik wyłączony. Przy pracującym silniku większość st
     <message>
         <source>Keine Verbindung nach zwei Minuten, abgebrochen.</source>
         <translation>Brak połączenia po dwóch minutach, anulowano.</translation>
+    </message>
+    <message>
+        <source>Verbinde über das CAN-Interface %1 ...</source>
+        <translation>Łączenie przez interfejs CAN %1 ...</translation>
     </message>
 </context>
 <context>
@@ -4251,6 +4271,14 @@ Blok pomiarowy zależy od silnika: 060 dla wtrysku wielopunktowego, 098 dla wtry
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
         <translation>Monitorowanie komponentów odczytane: testów %1, testów sondy O2 %2.</translation>
     </message>
+    <message>
+        <source>SLCAN-Adapter an %1 gefunden</source>
+        <translation>Znaleziono adapter SLCAN na %1</translation>
+    </message>
+    <message>
+        <source>CAN-Schnittstelle offen: %1</source>
+        <translation>Interfejs CAN otwarty: %1</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -4313,6 +4341,10 @@ Blok pomiarowy zależy od silnika: 060 dla wtrysku wielopunktowego, 098 dla wtry
     <message>
         <source>--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay</source>
         <translation>--report wymaga połączenia: --demo, --port, --tcp, --enet, --bluetooth lub --replay</translation>
+    </message>
+    <message>
+        <source>CAN-Interface verbinden: j2534:&lt;treiber.dll&gt;, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate</source>
+        <translation>Połącz interfejs CAN: j2534:&lt;sterownik.dll&gt;, slcan:COM5 lub socketcan:can0, z @250000 dla prędkości transmisji</translation>
     </message>
 </context>
 </TS>

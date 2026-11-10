@@ -14,6 +14,7 @@
 #include "core/AdapterProbe.h"
 #include "core/Uds.h"
 #include "core/DemoTransport.h"
+#include "core/CanBus.h"
 #include "core/Enet.h"
 #include "core/Recording.h"
 #include "data/PidPacks.h"
@@ -132,6 +133,24 @@ void Worker::openSerial(const QString& device, int baud, const QString& protocol
                 return;
             }
             if (!searching) break;
+        }
+        if (searching) {
+            // No ELM327 here; perhaps a CAN stick with the SLCAN protocol.
+            auto serial = std::make_unique<SerialTransport>();
+            std::string version, slcanError;
+            if (serial->open(candidateDevice.toStdString(), 115200, slcanError) && probeSlcan(*serial, version)) {
+                emit logLine(tr("SLCAN-Adapter an %1 gefunden").arg(candidateDevice));
+                auto link = std::make_unique<SlcanLink>(std::move(serial));
+                if (link->open(500000, slcanError)) {
+                    auto front = std::make_unique<CanElm>(std::move(link), "SLCAN " + candidateDevice.toStdString(), 500000);
+                    if (finishConnect(std::move(front), QStringLiteral("67"), true)) {
+                        emit adapterFound(candidateDevice);
+                        emit busy(false);
+                        refreshStatusAndFaults();
+                        return;
+                    }
+                }
+            }
         }
         if (!searching) {
             emit busy(false);
@@ -260,6 +279,24 @@ void Worker::openEnet(const QString& host, const QString& protocolOrder) {
                      .arg(QString::fromStdString(kind), QString::fromStdString(transport->name()),
                           vin.empty() ? QString() : QStringLiteral(", VIN ") + QString::fromStdString(vin)));
     const bool ok = finishConnect(std::move(transport), QStringLiteral("6"), true);
+    emit busy(false);
+    if (ok) refreshStatusAndFaults();
+}
+
+void Worker::openCan(const QString& spec, const QString& protocolOrder) {
+    Q_UNUSED(protocolOrder);
+    emit busy(true);
+    elm_.setLog([this](const std::string& m) { emit logLine(QString::fromStdString(m)); });
+    std::string error;
+    std::unique_ptr<ITransport> transport = openCanInterface(spec.toStdString(), error);
+    if (!transport) {
+        emit busy(false);
+        emit failed(QString::fromStdString(error));
+        return;
+    }
+    emit logLine(tr("CAN-Schnittstelle offen: %1").arg(QString::fromStdString(transport->name())));
+    // 11 bit first, then 29 bit; a car that answers neither is listened to.
+    const bool ok = finishConnect(std::move(transport), QStringLiteral("67"), true);
     emit busy(false);
     if (ok) refreshStatusAndFaults();
 }
@@ -1251,6 +1288,7 @@ Session::Session(QObject* parent) : QObject(parent) {
     connect(this, &Session::openTcpRequested, worker_, &Worker::openTcp);
     connect(this, &Session::openDemoRequested, worker_, &Worker::openDemo);
     connect(this, &Session::openEnetRequested, worker_, &Worker::openEnet);
+    connect(this, &Session::openCanRequested, worker_, &Worker::openCan);
 #ifdef CARUSPEX_HAS_BLE
     connect(this, &Session::scanBleRequested, worker_, &Worker::scanBle);
     connect(this, &Session::openBleRequested, worker_, &Worker::openBle);
