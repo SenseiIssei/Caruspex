@@ -108,6 +108,13 @@ public:
     // answers with its firmware ("STN1130 v5.6.19") and anything else with
     // "?".
     bool isStn() const { return stn_; }
+    // The car answers the emission services only over UDS (SAE J1979-2,
+    // "OBD on UDS", required in the US from model year 2027 and already in
+    // some newer cars). request() then translates the classic services
+    // (01, 03, 04, 07, 09, 0A) to UDS and the answers back, so the rest of
+    // the program does not notice. Freeze frames (02) and test results (06)
+    // are not available in this mode.
+    bool obdOnUds() const { return obdOnUds_; }
     const std::string& stnId() const { return stnId_; }
 
     // Protocol number as the adapter counts ('1' to '9'), '0' if unknown.
@@ -125,6 +132,8 @@ public:
     }
 
 private:
+    ElmResult requestOnUds(const std::string& command, int expectedService, int timeoutMs);
+    ElmResult udsRequest(const std::string& command, int timeoutMs);
     ElmResult at(const std::string& command, int timeoutMs = 5000);
     void drainGreeting();
     void detectStn();
@@ -137,6 +146,7 @@ private:
     AdaptiveTiming adaptiveTiming_ = AdaptiveTiming::Standard;
     int timingLevel_ = 0;
     bool stn_ = false;
+    bool obdOnUds_ = false;
     std::string stnId_;
     std::string version_ = "?";
     std::string protocolText_ = L("unbekannt", "unknown");

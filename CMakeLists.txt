@@ -282,6 +282,7 @@ if(CARUSPEX_TESTS)
         tests/test_custom_pids.cpp
         tests/test_ble_profile.cpp
         tests/test_enet.cpp
+        tests/test_obd_on_uds.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )
