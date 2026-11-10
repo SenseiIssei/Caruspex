@@ -146,7 +146,9 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 ### Look and feel
 - A new interface in the style of Odysync: calm, dark, with smooth transitions.
 - Step-by-step connecting with an automatic search over all ports.
-- English and German; settings apply immediately.
+- 18 languages; settings apply immediately.
+- Tells you when a new version is out: at start it asks GitHub for the newest release and nothing else (no data
+  about you or the car); can be switched off in the settings.
 
 ## Supported vehicles
 

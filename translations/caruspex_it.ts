@@ -2334,6 +2334,10 @@ Quadro acceso, motore spento. A motore acceso la maggior parte delle centraline 
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Connessione tramite l&apos;interfaccia CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Nuova versione disponibile: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Quadro acceso, motore spento. Il giro dura alcuni minuti.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>File di registro (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Cerca una nuova versione all&apos;avvio (interroga solo GitHub, nient&apos;altro)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ Il blocco di misura dipende dal motore: 060 per l&apos;iniezione nel collettore,
     <message>
         <source>Wiederherstellen</source>
         <translation>Ripristina</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>È uscita la versione %1</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Apre la pagina con il download e l&apos;elenco delle modifiche</translation>
     </message>
 </context>
 <context>

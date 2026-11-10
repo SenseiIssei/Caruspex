@@ -61,6 +61,7 @@ private:
     QPushButton* logBrowse_ = nullptr;
 
     QCheckBox* rememberGeometry_ = nullptr;
+    QCheckBox* checkUpdates_ = nullptr;
     QComboBox* language_ = nullptr;
     QComboBox* timing_ = nullptr;
     QComboBox* appearance_ = nullptr;

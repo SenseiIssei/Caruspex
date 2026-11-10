@@ -95,7 +95,7 @@ target_compile_definitions(caruspex_cli PRIVATE CARUSPEX_VERSION="${PROJECT_VERS
 # Graphical application (Qt 6 Widgets and Charts)
 # ---------------------------------------------------------------------------
 if(CARUSPEX_GUI)
-    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts Svg PrintSupport LinguistTools)
+    find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Charts Svg PrintSupport Network LinguistTools)
     qt_standard_project_setup()
 
     # The prebuilt Qt 6.8 still links the AGL framework on macOS, which the
@@ -201,7 +201,7 @@ if(CARUSPEX_GUI)
         src/app/Settings.h
     )
     target_link_libraries(caruspex PRIVATE caruspex_core Qt6::Widgets Qt6::Charts Qt6::Svg
-                                           Qt6::PrintSupport)
+                                           Qt6::PrintSupport Qt6::Network)
 
     # Bluetooth LE adapters need the Qt module qtconnectivity. Without it the
     # app is built as before, only the Bluetooth LE choice is missing.

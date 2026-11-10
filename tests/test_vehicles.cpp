@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstring>
 #include <initializer_list>
+#include <set>
 #include <string>
 
 #include "core/Lang.h"
@@ -413,4 +414,31 @@ TEST_CASE("New brands are recognised from the VIN and found in the catalog", "[v
     const VinInfo chery = decodeVin("LVVDB21B5PD000001", 2026);
     REQUIRE(std::find(chery.brandCandidates.begin(), chery.brandCandidates.end(), "Jaecoo") !=
             chery.brandCandidates.end());
+}
+
+TEST_CASE("Every catalog brand can be recognised from the VIN", "[vehicles][vin]") {
+    std::size_t count = 0;
+    const WmiEntry* table = wmiTable(count);
+    std::set<std::string> known;
+    for (std::size_t i = 0; i < count; ++i) {
+        std::string brands = table[i].brands;
+        std::size_t start = 0;
+        for (;;) {
+            const std::size_t bar = brands.find('|', start);
+            known.insert(brands.substr(start, bar == std::string::npos ? std::string::npos : bar - start));
+            if (bar == std::string::npos) break;
+            start = bar + 1;
+        }
+    }
+    for (const std::string& brand : catalog::brands()) {
+        INFO(brand);
+        REQUIRE(known.count(brand) == 1);
+        // Every generation has sensible years.
+        for (const std::string& model : catalog::models(brand)) {
+            for (const VehicleGeneration* g : catalog::generations(brand, model)) {
+                REQUIRE(g->yearFrom >= 1900);
+                REQUIRE((g->yearTo == 0 || g->yearTo >= g->yearFrom));
+            }
+        }
+    }
 }

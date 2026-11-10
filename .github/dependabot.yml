@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # The actions used by the CI (checkout, setup-python, install-qt, upload
+  # and download of artifacts). Conan and Qt are raised by hand.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: CI

@@ -208,6 +208,8 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     auto* windowBox = makeGroup(tr("Fenster und Sprache"), form);
     rememberGeometry_ = new QCheckBox(tr("Größe und Position beim Beenden merken"));
     form->addRow(rememberGeometry_);
+    checkUpdates_ = new QCheckBox(tr("Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)"));
+    form->addRow(checkUpdates_);
 
     language_ = new QComboBox;
     language_->addItem(tr("Wie das System"), QStringLiteral("auto"));
@@ -262,6 +264,7 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
     connect(logRaw_, &QCheckBox::toggled, this, onCheck);
     connect(logToFile_, &QCheckBox::toggled, this, onCheck);
     connect(rememberGeometry_, &QCheckBox::toggled, this, onCheck);
+    connect(checkUpdates_, &QCheckBox::toggled, this, onCheck);
     connect(logPath_, &QLineEdit::editingFinished, this, [this] { emitChange(); });
 
     showValues(AppSettings{});
@@ -295,6 +298,7 @@ void SettingsPage::showValues(const AppSettings& v) {
     logPath_->setText(v.logPath);
 
     rememberGeometry_->setChecked(v.rememberGeometry);
+    checkUpdates_->setChecked(v.checkUpdates);
     const int languageIndex = language_->findData(v.language);
     language_->setCurrentIndex(languageIndex >= 0 ? languageIndex : 0);
     const int appearanceIndex = appearance_->findData(v.appearance);
@@ -327,6 +331,7 @@ AppSettings SettingsPage::values() const {
     v.logPath = logPath_->text().trimmed();
 
     v.rememberGeometry = rememberGeometry_->isChecked();
+    v.checkUpdates = checkUpdates_->isChecked();
     v.language = language_->currentData().toString();
     v.appearance = appearance_->currentData().toString();
     return v;

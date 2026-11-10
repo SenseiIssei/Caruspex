@@ -2334,6 +2334,10 @@ Contact aan, motor uit. Bij draaiende motor weigeren de meeste regeleenheden de 
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Verbinden via CAN-interface %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Nieuwe versie beschikbaar: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Contact aan, motor uit. De run duurt een paar minuten.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Logbestand (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Bij het starten naar een nieuwe versie zoeken (vraagt alleen GitHub, verder niets)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ Het meetblok hangt af van de motor: 060 voor meerpuntsinspuiting, 098 voor direc
     <message>
         <source>Wiederherstellen</source>
         <translation>Herstellen</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Versie %1 is uit</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Opent de pagina met de download en de lijst met wijzigingen</translation>
     </message>
 </context>
 <context>

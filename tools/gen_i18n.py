@@ -2,6 +2,7 @@
 
     py -I tools/gen_i18n.py            check, write the catalog and fill the .ts files
     py -I tools/gen_i18n.py --check    only check and report
+    py -I tools/gen_i18n.py --check --strict   and fail when any text is missing or refused (CI)
 
 Input: translations/source/ (from tools/i18n_extract.py) and, per language,
 translations/<code>/core_NN.json and ui_NN.json, each {"id": "text"} (a list
@@ -32,7 +33,7 @@ TARGET = os.path.join(ROOT, "src", "core", "Catalog.gen.cpp")
 
 # Code -> number of plural forms Qt expects in the .ts file.
 LANGUAGES = {
-    "es": 2, "fr": 2, "pt": 2, "it": 2, "nl": 2, "pl": 3, "cs": 3, "ru": 3, "uk": 3, "tr": 2,
+    "es": 2, "fr": 2, "pt": 2, "it": 2, "nl": 2, "pl": 3, "cs": 3, "ru": 3, "uk": 3, "tr": 1,
     "ar": 6, "zh": 1, "ja": 1, "ko": 1, "hi": 2, "id": 1,
 }
 
@@ -215,6 +216,8 @@ def fill_ts(code: str, good: dict, forms: int) -> int:
 
 def main() -> int:
     check_only = "--check" in sys.argv
+    strict = "--strict" in sys.argv
+    incomplete = []
     core_src = load_source("core")
     ui_src = load_source("ui")
     catalogs = {}
@@ -227,6 +230,8 @@ def main() -> int:
               + (f", {len(core_bad) + len(ui_bad)} refused" if core_bad or ui_bad else ""))
         for line in (core_bad + ui_bad)[:8]:
             print("    " + line)
+        if len(core) < core_total or len(ui) < ui_total:
+            incomplete.append(code)
         if not check_only:
             n = fill_ts(code, ui, forms)
             if n < 0:
@@ -234,6 +239,11 @@ def main() -> int:
                 failed = True
     if not check_only:
         write_catalog(catalogs)
+    if strict and incomplete:
+        print("Missing translations in: " + ", ".join(incomplete) +
+              ". Run tools/i18n_extract.py, translate the new ids (translations/TRANSLATING.md), "
+              "then tools/gen_i18n.py.")
+        return 1
     return 1 if failed else 0
 
 

@@ -2352,6 +2352,10 @@ Zapalování zapnuto, motor vypnutý. Při běžícím motoru většina řídic�
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Připojování přes rozhraní CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>K dispozici je nová verze: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3282,6 +3286,10 @@ Zapalování zapnuto, motor vypnutý. Průchod trvá několik minut.</translatio
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Soubor protokolu (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Při spuštění hledat novou verzi (ptá se jen GitHubu, nic jiného)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3596,6 +3604,14 @@ Měřicí blok závisí na motoru: 060 u vícebodového vstřikování, 098 u p�
     <message>
         <source>Wiederherstellen</source>
         <translation>Obnovit</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Verze %1 je venku</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Otevře stránku se stažením a seznamem změn</translation>
     </message>
 </context>
 <context>

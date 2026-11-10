@@ -51,6 +51,7 @@ struct AppSettings {
 
     // --- Window --------------------------------------------------------------
     bool rememberGeometry = true;
+    bool checkUpdates = true;   // ask GitHub for a newer version at start
 
     // --- Language ------------------------------------------------------------
     // "auto" follows the system language, otherwise "de" or "en".

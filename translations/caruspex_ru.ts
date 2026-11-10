@@ -2352,6 +2352,10 @@ Zündung an, Motor aus. Beim laufenden Motor verweigern die meisten Steuergerät
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Подключение через интерфейс CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Доступна новая версия: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3282,6 +3286,10 @@ Zündung an, Motor aus. Der Durchlauf dauert einige Minuten.</source>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Файл журнала (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Проверять новую версию при запуске (запрос только к GitHub, больше ничего)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3596,6 +3604,14 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     <message>
         <source>Wiederherstellen</source>
         <translation>Восстановить</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Вышла версия %1</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Открывает страницу с загрузкой и списком изменений</translation>
     </message>
 </context>
 <context>

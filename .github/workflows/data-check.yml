@@ -1,0 +1,49 @@
+name: Data check
+
+# Once a month: are there new VIN codes, new OBDb vehicles or new DBC files
+# upstream? If so, one issue lists what is new. After working it in, run
+# `python tools/check_sources.py --update` and commit data/sources.json and
+# data/wmi_seen.txt, so the next check starts from there.
+on:
+  schedule:
+    - cron: "17 6 3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compare the sources
+        id: compare
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python tools/check_sources.py > report.md
+          code=$?
+          set -e
+          cat report.md
+          if [ "$code" -ne 0 ] && [ "$code" -ne 10 ]; then exit "$code"; fi
+          echo "changed=$([ "$code" -eq 10 ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
+      - name: Open an issue with what is new
+        if: steps.compare.outputs.changed == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            cat report.md
+            echo
+            echo "After working it in: \`python tools/check_sources.py --update\`, then commit data/sources.json and data/wmi_seen.txt."
+          } > body.md
+          gh issue create --title "Datencheck $(date +%Y-%m)" --body-file body.md

@@ -2352,6 +2352,10 @@ Zapłon włączony, silnik wyłączony. Przy pracującym silniku większość st
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Łączenie przez interfejs CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Dostępna nowa wersja: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3282,6 +3286,10 @@ Zapłon włączony, silnik wyłączony. Przebieg trwa kilka minut.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Plik dziennika (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Sprawdzaj przy starcie, czy jest nowa wersja (pyta tylko GitHub, nic więcej)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3596,6 +3604,14 @@ Blok pomiarowy zależy od silnika: 060 dla wtrysku wielopunktowego, 098 dla wtry
     <message>
         <source>Wiederherstellen</source>
         <translation>Przywróć</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Jest wersja %1</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Otwiera stronę z plikiem do pobrania i listą zmian</translation>
     </message>
 </context>
 <context>

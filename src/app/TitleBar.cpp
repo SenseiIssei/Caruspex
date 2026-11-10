@@ -1,5 +1,8 @@
 #include "app/TitleBar.h"
 
+#include <QDesktopServices>
+#include <QUrl>
+
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -107,6 +110,13 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent) {
     layout->addWidget(capsule_);
     layout->addStretch(1);
 
+    update_ = new QPushButton;
+    update_->setObjectName("Primary");
+    update_->setCursor(Qt::PointingHandCursor);
+    update_->setVisible(false);
+    update_->setFixedHeight(30);
+    update_->setStyleSheet(QStringLiteral("padding: 0 14px; font-size: 12px;"));
+    layout->addWidget(update_);
     log_ = makeToolButton(QStringLiteral("terminal"), tr("Protokoll ein- oder ausblenden"));
     log_->setCheckable(true);
     layout->addWidget(log_);
@@ -154,6 +164,14 @@ void TitleBar::setConnection(Link state, const QString& text) {
 }
 
 void TitleBar::setLogOpen(bool open) { log_->setChecked(open); }
+
+void TitleBar::setUpdateAvailable(const QString& version, const QString& url) {
+    update_->setText(tr("Version %1 ist da").arg(version));
+    update_->setToolTip(tr("Öffnet die Seite mit dem Download und der Änderungsliste"));
+    update_->disconnect();
+    connect(update_, &QPushButton::clicked, this, [url] { QDesktopServices::openUrl(QUrl(url)); });
+    update_->setVisible(true);
+}
 
 void TitleBar::updateMaximiseState(bool maximised) {
     maximise_->setIcon(icons::icon(maximised ? QStringLiteral("restore") : QStringLiteral("maximise"),

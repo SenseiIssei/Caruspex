@@ -2334,6 +2334,10 @@ Contacto puesto, motor apagado. Con el motor en marcha, la mayoría de las unida
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation>Conectando mediante la interfaz CAN %1 ...</translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>Nueva versión disponible: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Contacto puesto, motor apagado. La pasada dura unos minutos.</translation>
         <source>Protokolldatei (*.log *.txt)</source>
         <translation>Archivo de registro (*.log *.txt)</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Buscar una versión nueva al iniciar (solo consulta a GitHub, nada más)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ El bloque de valores medidos depende del motor: 060 para inyección en el colect
     <message>
         <source>Wiederherstellen</source>
         <translation>Restaurar</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Ya está la versión %1</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Abre la página con la descarga y la lista de cambios</translation>
     </message>
 </context>
 <context>

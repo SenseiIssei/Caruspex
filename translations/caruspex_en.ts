@@ -2334,6 +2334,10 @@ Ignition on, engine off. With the engine running, most control units refuse the 
         <source>Verbinde über das CAN-Interface %1 ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Neue Version verfügbar: %1</source>
+        <translation>New version available: %1</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::MonitorPage</name>
@@ -3264,6 +3268,10 @@ Ignition on, engine off. The run takes a few minutes.</translation>
         <source>Taktung</source>
         <translation>Timing</translation>
     </message>
+    <message>
+        <source>Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)</source>
+        <translation>Check for a new version at start (asks only GitHub, nothing else)</translation>
+    </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
@@ -3578,6 +3586,14 @@ The measuring block depends on the engine: 060 for port fuel injection, 098 for 
     <message>
         <source>Verbindung öffnen</source>
         <translation>Open connection</translation>
+    </message>
+    <message>
+        <source>Version %1 ist da</source>
+        <translation>Version %1 is out</translation>
+    </message>
+    <message>
+        <source>Öffnet die Seite mit dem Download und der Änderungsliste</source>
+        <translation>Opens the page with the download and the list of changes</translation>
     </message>
 </context>
 <context>

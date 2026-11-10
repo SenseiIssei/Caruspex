@@ -100,6 +100,20 @@ jobs:
       - name: Tests
         run: ctest --test-dir build -C Release --output-on-failure
 
+      # Every text in every language: new texts in the code must be
+      # translated before they reach main (see translations/TRANSLATING.md).
+      - name: Translations are complete (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          cmake --build build --target update_translations
+          python tools/i18n_extract.py
+          if ! git diff --quiet -- translations/source; then
+            echo "::error::New or changed texts. Run the update_translations target and tools/i18n_extract.py, translate the new ids and run tools/gen_i18n.py."
+            git diff --stat -- translations/source
+            exit 1
+          fi
+          python tools/gen_i18n.py --check --strict
+
       # --- Packages ------------------------------------------------------------
       - name: Inno Setup (Windows only)
         if: runner.os == 'Windows'
