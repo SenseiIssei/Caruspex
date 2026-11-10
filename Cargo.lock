@@ -492,6 +492,7 @@ name = "caruspex-protocols"
 version = "0.9.0"
 dependencies = [
  "caruspex-data",
+ "caruspex-demo",
  "caruspex-i18n",
  "caruspex-link",
  "log",
@@ -501,12 +502,9 @@ dependencies = [
 name = "caruspex-record"
 version = "0.9.0"
 dependencies = [
- "caruspex-data",
+ "caruspex-demo",
  "caruspex-i18n",
  "caruspex-link",
- "caruspex-protocols",
- "serde",
- "serde_json",
 ]
 
 [[package]]

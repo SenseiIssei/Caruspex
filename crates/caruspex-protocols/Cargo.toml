@@ -10,3 +10,6 @@ caruspex-i18n.workspace = true
 caruspex-data.workspace = true
 caruspex-link.workspace = true
 log.workspace = true
+
+[dev-dependencies]
+caruspex-demo.workspace = true

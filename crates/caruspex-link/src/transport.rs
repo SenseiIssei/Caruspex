@@ -33,6 +33,21 @@ pub trait ByteStream: Send {
     }
 }
 
+impl<T: ByteStream + ?Sized> ByteStream for Box<T> {
+    fn write_byte(&mut self, value: u8) -> bool {
+        (**self).write_byte(value)
+    }
+    fn read_byte(&mut self, timeout_ms: u64) -> Option<u8> {
+        (**self).read_byte(timeout_ms)
+    }
+    fn slow_init(&mut self, address: u8) -> bool {
+        (**self).slow_init(address)
+    }
+    fn echoes_own_bytes(&self) -> bool {
+        (**self).echoes_own_bytes()
+    }
+}
+
 impl<T: Transport + ?Sized> Transport for Box<T> {
     fn write(&mut self, data: &[u8]) -> bool {
         (**self).write(data)
