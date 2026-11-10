@@ -4,8 +4,12 @@
 
 mod common;
 
+use caruspex_link::ByteStream;
 use caruspex_protocols::kwp1281::{Ecu, Kwp1281, decode_measurement, ecu_name, known_ecus};
+use caruspex_protocols::kwp2000::{KLineProtocol, Kwp2000, wake_up_kline};
+use caruspex_protocols::vag_kline::VagKLine;
 use common::fake_ecu::FakeEcu;
+use common::fake_ecu2000::FakeEcu2000;
 use common::{approx, german};
 
 fn connected(ecu: FakeEcu) -> Kwp1281<FakeEcu> {
@@ -150,8 +154,10 @@ fn control_unit_names_are_known() {
     assert_eq!(ecu_name(Ecu::Engine), "01 Motor");
     assert_eq!(ecu_name(Ecu::Abs), "03 Bremsenelektronik (ABS)");
     assert!(known_ecus().len() >= 10);
-    assert_eq!(Ecu::from_address(0x17), Some(Ecu::InstrumentCluster));
-    assert_eq!(Ecu::from_address(0x99), None);
+    assert_eq!(Ecu::from_address(0x17), Ecu::InstrumentCluster);
+    // Unknown addresses keep their number and get the fallback name.
+    assert_eq!(Ecu::from_address(0x99).address(), 0x99);
+    assert_eq!(ecu_name(Ecu(0x99)), "unbekannt");
 }
 
 #[test]
@@ -201,4 +207,34 @@ fn vag_fault_numbers_get_plain_text() {
     assert!(faults[0].text.contains("Luftmassenmesser"));
     assert_eq!(faults[1].code, 561);
     assert!(faults[1].text.contains("Gemischadaption"));
+}
+
+#[test]
+fn an_unknown_address_is_woken_as_given() {
+    let _lang = german();
+    let mut protocol = Kwp1281::new(FakeEcu::default(), None);
+    protocol.connect(Ecu::from_address(0x37)).expect("connects");
+    assert_eq!(protocol.stream().woken_address(), 0x37);
+    assert!(protocol.connected());
+}
+
+#[test]
+fn the_k_line_protocols_take_a_boxed_stream() {
+    let _lang = german();
+    let boxed: Box<dyn ByteStream> = Box::new(FakeEcu::default());
+    let mut old = Kwp1281::new(boxed, None);
+    old.connect(Ecu::Engine).expect("connects");
+    assert_eq!(old.read_group(1).expect("values").len(), 4);
+
+    let boxed: Box<dyn ByteStream> = Box::new(FakeEcu2000::default());
+    let mut line = VagKLine::new(boxed, None);
+    line.connect(Ecu::Engine).expect("connects");
+    assert_eq!(line.protocol(), KLineProtocol::Kwp2000);
+    let mut stream = line.into_stream();
+
+    let (key1, key2, protocol) = wake_up_kline(&mut stream, Ecu::Engine, None).expect("awake");
+    assert_eq!(protocol, KLineProtocol::Kwp2000);
+    let mut modern = Kwp2000::new(stream, None);
+    modern.start(Ecu::Engine, key1, key2).expect("started");
+    assert_eq!(modern.read_faults().expect("faults").len(), 2);
 }

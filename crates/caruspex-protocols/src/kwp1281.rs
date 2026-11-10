@@ -21,35 +21,36 @@ use caruspex_link::timing::sleep_ms;
 /// because `VagKLine` hands the same one to whichever protocol it starts.
 pub type KLineLog = Arc<dyn Fn(&str) + Send + Sync>;
 
-/// Control unit addresses, the same ones VCDS uses.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-#[repr(u8)]
-pub enum Ecu {
-    Engine = 0x01,
-    Gearbox = 0x02,
-    Abs = 0x03,
-    Airbag = 0x15,
-    InstrumentCluster = 0x17,
-    CentralElectrics = 0x09,
-    ComfortSystem = 0x46,
-    Immobilizer = 0x25,
-    AirConditioning = 0x08,
-    SteeringWheel = 0x16,
-    Radio = 0x56,
+/// A control unit address on the K-line, the same numbers VCDS uses. Any
+/// address can be woken; the known units have names below.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct Ecu(pub u8);
+
+// The names of the known units keep the spelling of the former enum variants.
+#[allow(non_upper_case_globals)]
+impl Ecu {
+    pub const Engine: Ecu = Ecu(0x01);
+    pub const Gearbox: Ecu = Ecu(0x02);
+    pub const Abs: Ecu = Ecu(0x03);
+    pub const Airbag: Ecu = Ecu(0x15);
+    pub const InstrumentCluster: Ecu = Ecu(0x17);
+    pub const CentralElectrics: Ecu = Ecu(0x09);
+    pub const ComfortSystem: Ecu = Ecu(0x46);
+    pub const Immobilizer: Ecu = Ecu(0x25);
+    pub const AirConditioning: Ecu = Ecu(0x08);
+    pub const SteeringWheel: Ecu = Ecu(0x16);
+    pub const Radio: Ecu = Ecu(0x56);
 }
 
 impl Ecu {
     /// The address sent as the 5-baud wake-up.
     pub fn address(self) -> u8 {
-        self as u8
+        self.0
     }
 
-    /// The control unit with this address, if it is one of [`known_ecus`].
-    pub fn from_address(address: u8) -> Option<Ecu> {
-        known_ecus()
-            .iter()
-            .copied()
-            .find(|e| e.address() == address)
+    /// Any address, known or not.
+    pub fn from_address(address: u8) -> Ecu {
+        Ecu(address)
     }
 }
 
@@ -66,6 +67,7 @@ pub fn ecu_name(ecu: Ecu) -> &'static str {
         Ecu::Immobilizer => l("25 Wegfahrsperre", "25 Immobilizer"),
         Ecu::ComfortSystem => l("46 Komfortsystem", "46 Comfort system"),
         Ecu::Radio => "56 Radio",
+        _ => l("unbekannt", "unknown"),
     }
 }
 
