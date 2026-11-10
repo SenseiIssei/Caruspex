@@ -1,12 +1,12 @@
 # Caruspex
 
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
-![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)
-![Qt 6](https://img.shields.io/badge/Qt-6-41cd52)
+![Rust](https://img.shields.io/badge/Rust-2024-orange)
+![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
 ![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Open-source vehicle diagnostics for Windows, Linux and macOS, written in C++20 with Qt 6.
+Open-source vehicle diagnostics for Windows, Linux and macOS, written in Rust with a Tauri 2 interface.
 One cable or dongle, one application: read and clear trouble codes, watch live sensor data,
 check emission readiness, and talk to VW/Audi control units at the byte level over a K-Line cable.
 
@@ -30,12 +30,15 @@ forced per run with `--language fr` and so on. How translations are made and che
   scheduling jitter does not accumulate across the ten bits.
 - **Automatic protocol detection**: after the wake-up, the ECU's two key bytes tell whether it speaks
   KWP1281 or KWP2000 (ISO 14230); Caruspex switches accordingly.
-- **Portable, Qt-free core**: transport, adapter drivers, protocols and data live in a plain C++20 library
-  using `std::chrono`. Only the serial port is OS-specific (`Serial_win.cpp` / `Serial_posix.cpp`).
-- **Tested without a car**: a simulated ECU (`tests/FakeEcu.cpp`, `tests/FakeEcu2000.cpp`) reproduces the
-  byte-by-byte handshake, plus a Python ELM327 simulator for end-to-end runs of the GUI.
-- **Bilingual without Qt in the core**: the GUI uses Qt Linguist (`translations/caruspex_en.ts`), while the
-  Qt-free core resolves its texts (trouble codes, PID names, protocol messages) through a tiny `L(de, en)` helper.
+- **Modular Rust workspace**: one crate per area (adapter links, protocols, network and CAN, vehicles, data,
+  recordings, analysis, demo car, command-line tool), and the Tauri application on top. The core knows nothing
+  about the interface, so the app and the command-line tool run on exactly the same code.
+- **Tested without a car**: simulated ECUs (`crates/caruspex-protocols/tests/common/`) reproduce the
+  byte-by-byte handshake, fake gateways stand in for ENET and DoIP, a fake J2534 driver covers the PassThru path,
+  and a Python ELM327 simulator allows end-to-end runs of the app.
+- **One set of translations**: the core and the interface share the same translation files in
+  `translations/<code>/`, in 18 languages. The core looks its texts up by the English text, the interface builds
+  its catalogs from the same files.
 - **Recognises every car**: a VIN decoder with 365 manufacturer codes and a catalog of more than 2,100
   model generations since 1980 tell which car is connected and what works with it.
 - **Built-in demo car**: an in-process ELM327 with an engine and a gearbox on CAN, so everything can be tried
@@ -169,7 +172,7 @@ Pure electric cars do not have to offer OBD-II emissions data. Some answer partl
 
 ## Supported adapters
 
-- Any **ELM327**-compatible adapter: USB, classic Bluetooth (paired, appears as a serial port), **Bluetooth LE**
+- Any **ELM327**-compatible adapter: USB, classic Bluetooth (on Windows through the COM port of a paired adapter), **Bluetooth LE**
   (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE and other adapters with the usual GATT services; found by a
   scan, no pairing) or Wi-Fi via TCP
 - An **ENET cable** (OBD to RJ45) for BMW and Mini from the F series on: Caruspex finds the car on the network
@@ -209,13 +212,14 @@ Not yet implemented: manufacturer diagnostics over CAN with VW TP 2.0 (vehicles 
 
 | Area | Technology |
 |---|---|
-| Language | C++20 |
-| GUI | Qt 6 Widgets and Qt Charts, frameless window with custom title bar |
-| Localization | Qt Linguist for the GUI, `L(de, en)` text pairs in the core |
-| Build | CMake 3.21+, Conan 2 |
-| Tests | Catch2 3, simulated ECUs, CTest |
-| Tooling | Python 3 (code generator, ELM327 simulator) |
-| Platforms | Windows (MSVC 2022), Linux (GCC 12+), macOS (Clang 15+) |
+| Language | Rust (edition 2024) |
+| Interface | Tauri 2 with React 19 and TypeScript, built with Vite |
+| Libraries | `serialport` (serial ports), `btleplug` (Bluetooth LE), `libloading` (J2534 drivers) |
+| Localization | One set of JSON files in `translations/` for core and interface, 18 languages |
+| Build | Cargo workspace, npm for the interface |
+| Tests | `cargo test` against simulated ECUs, fake gateways and a fake J2534 driver |
+| Tooling | Python 3 (code and table generators, translation checks, ELM327 simulator) |
+| Platforms | Windows 10 and 11, Linux, macOS |
 
 ## Download
 
@@ -223,82 +227,52 @@ Ready-made packages are on the [releases page](https://github.com/SenseiIssei/Ca
 
 | System | File | Notes |
 |---|---|---|
-| Windows 10 and 11, 64-bit | `Caruspex-<version>-windows-x64-setup.exe` | Installs without admin rights and can put `caruspex_cli` on the search path. A portable `.zip` is there as well |
-| macOS 13 and newer, Apple Silicon | `Caruspex-<version>-macos.dmg` | Drag the app to Applications, `caruspex_cli` is next to it |
-| Linux, x86_64 | `Caruspex-<version>-linux-x86_64.AppImage` | `chmod +x` and start it. The command-line tool alone is in `caruspex_cli-<version>-linux-x86_64.tar.gz` |
+| Windows 10 and 11, 64-bit | `Caruspex-<version>-windows-x64-setup.exe` | Installs without admin rights and can put `caruspex_cli` on the search path. It updates an installed 0.8 in place and installs the WebView2 runtime only if it is missing |
+| Windows 10 and 11, 64-bit | `Caruspex-<version>-windows-x64.zip` | Portable, unzip and start. Needs the WebView2 runtime, which Windows 10 and 11 already have |
+| macOS 13 and newer, Apple Silicon | `Caruspex-<version>-macos.dmg` | Drag the app to Applications |
+| Linux, x86_64 | `Caruspex-<version>-linux-x86_64.AppImage` | `chmod +x` and start it |
+| Debian and Ubuntu, 64-bit | `Caruspex-<version>-linux-amd64.deb` | Install with `sudo apt install ./Caruspex-<version>-linux-amd64.deb` |
+| Command-line tool only | `caruspex_cli-<version>-windows-x64.zip`, `caruspex_cli-<version>-linux-x86_64.tar.gz`, `caruspex_cli-<version>-macos.tar.gz` | For scripts and servers, no interface |
 
 The packages are not signed yet. Windows SmartScreen asks on the first start ("More info", "Run anyway"); on macOS
 open the app the first time with right click and "Open".
 
 ## Building
 
-Requirements: a C++20 compiler (MSVC 2022, GCC 12 or Clang 15 and newer), CMake 3.21+, Python 3,
-and Qt 6.5+ with the Charts module.
-
-The quickest way to get Qt is `aqtinstall` (building Qt through Conan compiles it from source and takes hours):
+Requirements: the stable Rust toolchain (edition 2024, Rust 1.85 or newer), Node 24 with npm, and Python 3 for
+the generators and translation checks. On Linux the system packages the interface and the adapter links need
+(Debian and Ubuntu names):
 
 ```bash
-pip install aqtinstall conan
+sudo apt-get install libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config
 ```
 
-### 1. Install Qt
+Windows needs the WebView2 runtime (part of Windows 10 and 11), macOS needs nothing extra.
 
-Windows:
-
-```bash
-python -m aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 -m qtcharts -O C:/Qt
-```
-
-Linux:
+Install the interface dependencies once, then build the command-line tool and the application:
 
 ```bash
-python -m aqt install-qt linux desktop 6.8.3 linux_gcc_64 -m qtcharts -O ~/Qt
-```
-
-macOS:
-
-```bash
-python -m aqt install-qt mac desktop 6.8.3 clang_64 -m qtcharts -O ~/Qt
-```
-
-On Linux, Qt also needs the usual OpenGL and XCB system packages, for example on Ubuntu:
-
-```bash
-sudo apt-get install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1
-```
-
-### 2. Dependencies and build (same on every platform)
-
-```bash
-conan profile detect --force
+npm --prefix app ci
 ```
 
 ```bash
-conan install . --output-folder=build/conan --build=missing -s compiler.cppstd=20
-```
-
-Point `CMAKE_PREFIX_PATH` at your Qt installation:
-`C:/Qt/6.8.3/msvc2022_64` on Windows, `~/Qt/6.8.3/gcc_64` on Linux, `~/Qt/6.8.3/macos` on macOS.
-
-```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+cargo build --release -p caruspex-cli
 ```
 
 ```bash
-cmake --build build --config Release
+npm --prefix app run tauri -- build
 ```
 
-`cmake` must be on the `PATH`, otherwise Conan cannot build its packages.
+`npm --prefix app run tauri -- dev` starts the application with live reload while you work on it. The
+interface alone, without the Tauri window, runs in a normal browser with the built-in demo car:
 
-To run the application outside the build tree, deploy the Qt libraries next to it with `windeployqt`
-(Windows) or `macdeployqt` (macOS).
+```bash
+npm --prefix app run dev
+```
 
-CMake options:
-
-| Option | Default | Meaning |
-|---|---|---|
-| `CARUSPEX_GUI` | `ON` | Build the Qt application (`OFF` builds only the core and the CLI, no Qt needed) |
-| `CARUSPEX_TESTS` | `OFF` | Build the Catch2 test suite |
+Open `http://localhost:5287/?demo` to connect to the demo car at once. `?lang=de` picks a language and
+`?theme=light` the light theme, for example `?demo&lang=de&theme=light`. Without the Tauri shell there is no
+adapter access, so the browser version only knows the demo car.
 
 ### Serial port permissions on Linux
 
@@ -314,47 +288,74 @@ Then log out and back in.
 
 | Output | Description |
 |---|---|
-| `caruspex` / `caruspex.exe` / `caruspex.app` | GUI application |
-| `caruspex_cli` / `caruspex_cli.exe` | Scriptable command-line tool on the same core, see [Command-line tool](#command-line-tool) |
+| `target/release/caruspex` / `caruspex.exe` | The application with the Tauri interface (`tauri build` also writes the installers and bundles to `target/release/bundle/`) |
+| `target/release/caruspex_cli` / `caruspex_cli.exe` | Scriptable command-line tool on the same core, see [Command-line tool](#command-line-tool) |
 
 ### Packages and releases
 
-After a Release build, `bash tools/package.sh` writes the packages of the current system into `dist/`: the installer
-and a zip on Windows (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php) for the installer), the dmg on macOS,
-the AppImage on Linux. `bash tools/smoke_test.sh` then installs them like a user would, starts both programs and
-removes them again. The CI does both on every run.
+`bash tools/package.sh` builds the packages of the current system into `dist/`: the installer and two zips on
+Windows (the installer needs [Inno Setup 6](https://jrsoftware.org/isinfo.php)), the dmg and the command-line archive
+on macOS, the AppImage, the `.deb` and the command-line archive on Linux. `bash tools/smoke_test.sh` then installs or
+opens them like a user would, starts both programs and removes them again. The CI does both on every run.
 
-A release comes from a tag: set the version in `CMakeLists.txt`, write `changelog/<version>.md` (German and
-English), tag `v<version>` and push the tag. The CI builds all three systems and publishes the release with the
-packages and the change list.
+A release comes from a tag. `bash tools/release.sh <version>` prepares it on its own branch without pushing anything:
+it sets the version in `Cargo.toml` and `app/package.json`, creates `changelog/<version>.md` (German and English),
+runs the checks, tests, packages and smoke test, and refreshes the README screenshots (`tools/screenshots.sh de` and
+`tools/screenshots.sh en`). After the pull request is merged, tag `v<version>` and push the tag. The CI builds all
+three systems and publishes the release with the packages and the change list.
 
-The app icon is drawn in code (`src/app/AppIcon.cpp`). After changing it, `caruspex --render-icon build/icon` and
-`python tools/gen_icons.py build/icon` refresh the files in `resources/icons/`.
+The CI (`.github/workflows/build.yml`) first runs formatting, the generated-table check, the translation check, the
+interface build and clippy on Linux, then tests, packages and smoke-tests Windows, Linux and macOS.
+A second workflow (`.github/workflows/data-check.yml`) looks once a month for new VIN codes, vehicles and DBC files
+upstream and opens an issue with what is new.
 
 ## Tests
 
 ```bash
-cmake -S . -B build -DCARUSPEX_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=build/conan/conan_toolchain.cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+cargo test --workspace
+```
+
+About 370 tests run in a few seconds, all without a car. They cover the ELM327 response parser, trouble-code
+decoding, PID conversion, vehicle profiles and the VIN decoder, the OBD-II and UDS services against the demo car,
+full KWP1281 and KWP2000 sessions against simulated control units, ENET (HSFZ) and DoIP against fake gateways,
+SLCAN and the J2534 path against a fake driver, recordings and replay, and the analysis (health check, battery test,
+trip computer, performance timer). The command-line tests run the built `caruspex_cli` and compare its output with
+the golden files in `crates/caruspex-cli/tests/golden/`, which hold what the earlier C++ version printed for the same
+commands, so any difference to the old tool shows up.
+
+The checks the CI runs besides the tests:
+
+```bash
+cargo fmt --all --check
 ```
 
 ```bash
-cmake --build build --config Release
+cargo clippy --workspace --all-targets -- -D warnings
 ```
 
 ```bash
-ctest --test-dir build -C Release --output-on-failure
+python tools/i18n_rust.py --strict
 ```
 
-The suite covers the ELM327 response parser, trouble-code decoding, PID conversion, vehicle profiles,
-settings, and full KWP1281/KWP2000 sessions against simulated control units. No car required.
+```bash
+npm --prefix app run build
+```
+
+The first two are formatting and lints. `tools/i18n_rust.py --strict` fails when a text in the core is missing from
+the translation files or a translation is missing in one of the 18 languages; the interface build checks its own
+texts the same way when `I18N_STRICT=1` is set. Run `python tools/gen_dtc.py`, `gen_vehicles.py`, `gen_ecus.py` and
+`gen_pids.py` to refresh the generated tables; the CI fails if they differ from what is checked in.
 
 ## Try it without a car
 
 The quickest way is the built-in demo car: pick "Demo car" on the Connect page, or start with
 
 ```bash
-build/bin/Release/caruspex.exe --demo --language en
+target/release/caruspex --demo --language en
 ```
+
+`caruspex --help` lists every option of the application: `--tcp`, `--port`, `--bluetooth`, `--enet`, `--can`,
+`--replay`, `--report`, `--language`, `--theme`, `--page`, `--shot` and `--size`.
 
 The Python simulator plays either the Audi A2 engine on the K-Line or, with `--can`, a CAN car with engine
 and gearbox (headers, ISO-TP, modes 06 and 09 per control unit):
@@ -363,21 +364,22 @@ and gearbox (headers, ISO-TP, modes 06 and 09 per control unit):
 python tools/mock_elm327.py --can
 ```
 
-Then connect the GUI (Windows path shown; on Linux and macOS the binary is in `build/bin/`):
+Then connect the application (on Windows the binary is `target/release/caruspex.exe`):
 
 ```bash
-build/bin/Release/caruspex.exe --tcp 127.0.0.1:35000 --language en
+target/release/caruspex --tcp 127.0.0.1:35000 --language en
 ```
 
 The command-line tool works against the simulator as well:
 
 ```bash
-build/bin/Release/caruspex_cli.exe read --tcp 127.0.0.1:35000
+target/release/caruspex_cli read --tcp 127.0.0.1:35000
 ```
 
 ### Command-line tool
 
-`caruspex_cli <command>` with `--demo`, `--tcp HOST[:PORT]` or `--port NAME [--baud N]`:
+`caruspex_cli <command>` with `--demo`, `--tcp HOST[:PORT]`, `--port NAME [--baud N]`, `--enet HOST|auto`,
+`--can SPEC` or `--replay FILE`:
 
 | Command | What it does |
 |---|---|
@@ -386,36 +388,49 @@ build/bin/Release/caruspex_cli.exe read --tcp 127.0.0.1:35000
 | `freeze` | Every freeze frame, one per stored fault |
 | `health` | Health check: faults, readiness, mode 06 and a live series (`--seconds N`, 15 by default) |
 | `probe` | Adapter test: what the ELM327 really is, which commands it knows, round trip times |
+| `uds` | UDS on CAN: identification and fault memory of every control unit (`--ids A,B,...` for your own addresses) |
+| `custom` | Maker and custom values of a built-in pack (`--pack NAME`) or a Torque CSV (`--csv FILE`), once |
 | `live`, `info`, `clear`, `ecus`, `ports`, `kklcheck` | Live values, VIN and first freeze frame, clearing, all per control unit, serial ports, KKL cable self-test |
-| `enet` | Looks for BMW and Mini cars on the network (ENET cable); connect to one with `--enet HOST` or `--enet auto` |
+| `enet`, `interfaces` | Looks for BMW and Mini cars and DoIP cars on the network; lists the CAN interfaces of this computer (J2534 drivers, SocketCAN) |
+| `version`, `help` | Version of the program, the full list of commands and options |
 
-`--json` prints `read`, `vin`, `health`, `probe` and `freeze` as JSON for scripts, `-v` logs every adapter
-command (to stderr together with `--json`). `caruspex_cli help` lists everything.
+`--json` prints `read`, `vin`, `health`, `probe`, `freeze`, `uds` and `custom` as JSON for scripts, `--record FILE`
+saves the whole session with the adapter for `--replay`, `--fast-timing` switches the adapter to aggressive adaptive
+timing, `-v` logs every adapter command (to stderr together with `--json`). `caruspex_cli help` lists everything.
 
 ```bash
-build/bin/Release/caruspex_cli.exe health --demo --json > health.json
+target/release/caruspex_cli health --demo --json > health.json
 ```
 
 The screenshots on this page come from the demo car, taken by the app itself:
 `--demo --page faults --shot shot.png --size 1440x920` opens a page, saves a picture of the window after a
-few seconds and quits.
+few seconds and quits (`tools/screenshots.sh` takes the whole set).
 
 ## Project structure
 
 ```
-src/core/           Transport, ELM327 driver, OBD services, KWP1281, KWP2000, demo car, adapter check. No Qt.
-src/core/analysis/  Health check, drive cycle guide, trip computer, performance timer, battery test
-src/data/           Trouble codes, PIDs, VIN decoder, vehicle catalog, code-to-component mapping
-src/app/            Qt 6 user interface (Widgets, Charts, Svg, PrintSupport)
-src/cli_main.cpp    Command-line tool on the same core
-data/vehicles/      The vehicle catalog as hand-maintained CSV
-translations/       Qt Linguist translation of the GUI (German source, English target)
-tools/              Generators for trouble codes and the catalog, ELM327 simulator
-tests/              Catch2 tests and simulated ECUs
+crates/caruspex-i18n/       Languages: German and English in the code, the other 16 from translations/
+crates/caruspex-vehicles/   VIN decoder and the vehicle catalog (brands, models, generations, sockets, buses)
+crates/caruspex-data/       Trouble codes, PIDs, control unit addresses, code-to-component mapping
+crates/caruspex-link/       Ways to the adapter (serial, TCP, Bluetooth LE), ELM327 driver, adapter check
+crates/caruspex-protocols/  OBD-II, UDS, KWP2000 and KWP1281 (K-Line, byte by byte)
+crates/caruspex-net/        BMW ENET (HSFZ), DoIP, SLCAN, SocketCAN, J2534 PassThru
+crates/caruspex-record/     Recordings and replay, custom values (Torque CSV, PID packs), JSON writer
+crates/caruspex-analysis/   Health check, drive cycle guide, trip computer, performance timer, battery test
+crates/caruspex-demo/       The built-in demo car: an ELM327 with simulated control units
+crates/caruspex-cli/        The command-line tool, with its golden-file tests
+app/src/                    The interface: React 19 and TypeScript (pages, shell, state, report, i18n)
+app/src-tauri/              The Tauri application: window, commands, update check, command-line options
+translations/               Shared translation files for core and interface, 18 languages
+data/                       The vehicle catalog as hand-maintained CSV, control unit and PID sources
+tools/                      Generators, translation checks, packaging, release and screenshot scripts, ELM327 simulator
+docs/                       Screenshots of the README
+packaging/                  Windows installer script, Linux desktop file, macOS Info.plist
+changelog/                  Release notes per version, German and English
 ```
 
 The trouble-code database is generated: `tools/gen_dtc.py` expands the regular EOBD code families and the
-curated lists in `tools/dtc/` into `src/data/*.gen.cpp`. Re-run it after changing the data:
+curated lists in `tools/dtc/` into `crates/caruspex-data/src/generated/*.rs`. Re-run it after changing the data:
 
 ```bash
 python tools/gen_dtc.py
@@ -427,11 +442,9 @@ The vehicle catalog works the same way: edit the CSV files in `data/vehicles/`, 
 python tools/gen_vehicles.py
 ```
 
-After changing GUI strings, refresh the translation file and fill in the new entries (e.g. with Qt Linguist):
-
-```bash
-cmake --build build --target update_translations
-```
+Control unit addresses and PID packs have `tools/gen_ecus.py` and `tools/gen_pids.py`. Translations are described
+in [translations/TRANSLATING.md](translations/TRANSLATING.md); after adding a text in the code,
+`python tools/i18n_rust.py` lists what still needs translating.
 
 ## A note on clearing codes
 
