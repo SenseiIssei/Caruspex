@@ -3,18 +3,22 @@
 name,country_de,country_en,group,market
 Abarth,Italien,Italy,,eu
 Acura,Japan,Japan,,na
+Aito,China,China,,eu
 Aiways,China,China,,eu
 Alfa Romeo,Italien,Italy,,eu
+Alpina,Deutschland,Germany,bmw,eu
 Alpine,Frankreich,France,,eu
 Aston Martin,Vereinigtes Königreich,United Kingdom,,eu
 Audi,Deutschland,Germany,vag,eu
 Austin,Vereinigtes Königreich,United Kingdom,,eu
+Avatr,China,China,,eu
 Bentley,Vereinigtes Königreich,United Kingdom,,eu
 BMW,Deutschland,Germany,bmw,eu
 Bugatti,Frankreich,France,,eu
 Buick,USA,USA,gm,na
 BYD,China,China,,eu
 Cadillac,USA,USA,gm,na
+Chery,China,China,,eu
 Chevrolet,USA,USA,gm,na
 Chrysler,USA,USA,chrysler,na
 Citroën,Frankreich,France,,eu
@@ -32,11 +36,16 @@ Ford,USA,USA,ford,na
 Geely,China,China,,eu
 Genesis,Südkorea,South Korea,,eu
 GMC,USA,USA,gm,na
+Great Wall,China,China,,eu
+Holden,Australien,Australia,,eu
 Honda,Japan,Japan,,eu
+Hongqi,China,China,,eu
 Hummer,USA,USA,gm,na
 Hyundai,Südkorea,South Korea,,eu
+INEOS,Vereinigtes Königreich,United Kingdom,,eu
 Infiniti,Japan,Japan,,na
 Isuzu,Japan,Japan,,eu
+Jaecoo,China,China,,eu
 Jaguar,Vereinigtes Königreich,United Kingdom,,eu
 Jeep,USA,USA,chrysler,na
 Kia,Südkorea,South Korea,,eu
@@ -46,12 +55,15 @@ Lancia,Italien,Italy,,eu
 Land Rover,Vereinigtes Königreich,United Kingdom,,eu
 Leapmotor,China,China,,eu
 Lexus,Japan,Japan,,eu
+Li Auto,China,China,,eu
 Lincoln,USA,USA,ford,na
 Lotus,Vereinigtes Königreich,United Kingdom,,eu
 Lucid,USA,USA,,na
 Lynk & Co,China,China,,eu
-Matra,Frankreich,France,,eu
+Mahindra,Indien,India,,eu
 Maserati,Italien,Italy,,eu
+Matra,Frankreich,France,,eu
+Maxus,China,China,,eu
 Maybach,Deutschland,Germany,mb,eu
 Mazda,Japan,Japan,,eu
 McLaren,Vereinigtes Königreich,United Kingdom,,eu
@@ -71,6 +83,7 @@ Plymouth,USA,USA,chrysler,na
 Polestar,Schweden und China,Sweden and China,,eu
 Pontiac,USA,USA,gm,na
 Porsche,Deutschland,Germany,,eu
+Proton,Malaysia,Malaysia,,eu
 Ram,USA,USA,chrysler,na
 Renault,Frankreich,France,,eu
 Rivian,USA,USA,,na
@@ -80,18 +93,22 @@ Saab,Schweden,Sweden,,eu
 Saturn,USA,USA,gm,na
 Scion,Japan,Japan,,na
 SEAT,Spanien,Spain,vag,eu
-Škoda,Tschechien,Czech Republic,vag,eu
 Smart,Deutschland,Germany,mb,eu
 SsangYong,Südkorea,South Korea,,eu
 Subaru,Japan,Japan,,eu
 Suzuki,Japan,Japan,,eu
 Talbot,Frankreich,France,,eu
+Tata,Indien,India,,eu
 Tesla,USA,USA,,na
 Toyota,Japan,Japan,,eu
 Trabant,Deutschland (DDR),Germany (GDR),,eu
 VinFast,Vietnam,Vietnam,,eu
 Volkswagen,Deutschland,Germany,vag,eu
 Volvo,Schweden,Sweden,,eu
+Voyah,China,China,,eu
 Wartburg,Deutschland (DDR),Germany (GDR),,eu
+Wuling,China,China,,eu
+Xiaomi,China,China,,eu
 Xpeng,China,China,,eu
 Zeekr,China,China,,eu
+Škoda,Tschechien,Czech Republic,vag,eu
