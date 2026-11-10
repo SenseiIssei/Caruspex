@@ -71,6 +71,13 @@ for (const code of languages) {
     }
     catalog[key(entry)] = text;
   }
+  // New texts carry their translations along: {"context", "de", "en", "tr": {"es": ...}}.
+  for (const entry of newTexts) {
+    const k = key(entry);
+    const text = entry.tr?.[code];
+    if (text && !(k in catalog)) catalog[k] = text;
+    else if (!text && !(k in catalog)) missing++;
+  }
   writeFileSync(join(out, `${code}.json`), JSON.stringify(catalog));
   summary += `, ${code} ${Object.keys(catalog).length}${missing ? ` (${missing} missing)` : ""}`;
 }
