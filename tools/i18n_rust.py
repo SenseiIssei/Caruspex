@@ -1,0 +1,80 @@
+"""Finds core texts in the Rust crates that have no translation yet.
+
+    py -I tools/i18n_rust.py            list them
+    py -I tools/i18n_rust.py --write    append them to translations/source/core_x2.json
+
+The Rust core writes texts as l("de", "en"), Text::new("de", "en") or
+Text { de: "de", en: "en" }. The other 16 languages are looked up by the
+English text, so every English text must be in translations/source/core_*.json.
+New ones are appended with fresh ids; translators then fill
+translations/<code>/core_x2.json for those ids.
+"""
+
+from __future__ import annotations
+
+import glob
+import json
+import os
+import re
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STR = r'"((?:[^"\\]|\\.)*)"'
+PATTERNS = [
+    re.compile(r"\bl\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
+    re.compile(r"Text::new\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
+    re.compile(r"\bde:\s*" + STR + r"\s*,\s*en:\s*" + STR, re.S),
+    re.compile(r"\bt\(\s*" + STR + r"\s*,\s*" + STR + r"\s*\)", re.S),
+]
+
+
+def unescape(text: str) -> str:
+    return json.loads('"' + text + '"')
+
+
+def rust_texts() -> dict[str, str]:
+    out: dict[str, str] = {}
+    files = glob.glob(os.path.join(ROOT, "crates", "**", "*.rs"), recursive=True)
+    files += glob.glob(os.path.join(ROOT, "app", "src-tauri", "src", "**", "*.rs"), recursive=True)
+    for path in files:
+        if any(f"{os.sep}{part}{os.sep}" in path for part in ("tests", "target", "caruspex-i18n")):
+            continue
+        text = open(path, encoding="utf-8").read()
+        for pattern in PATTERNS:
+            for de, en in pattern.findall(text):
+                try:
+                    de, en = unescape(de), unescape(en)
+                except json.JSONDecodeError:
+                    continue
+                if en.strip():
+                    out.setdefault(en, de)
+    return out
+
+
+def main() -> int:
+    source_dir = os.path.join(ROOT, "translations", "source")
+    known: set[str] = set()
+    ids: list[int] = []
+    for path in sorted(glob.glob(os.path.join(source_dir, "core_*.json"))):
+        for item in json.load(open(path, encoding="utf-8")):
+            known.add(item["en"])
+            ids.append(int(item["id"][1:]))
+    missing = {en: de for en, de in rust_texts().items() if en not in known}
+    for en, de in sorted(missing.items()):
+        print(f"{de!r} / {en!r}")
+    print(f"{len(missing)} texts without translation", file=sys.stderr)
+    if "--write" in sys.argv and missing:
+        path = os.path.join(source_dir, "core_x2.json")
+        items = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else []
+        next_id = max(ids) + 1
+        for en, de in sorted(missing.items()):
+            items.append({"id": f"c{next_id}", "de": de, "en": en})
+            next_id += 1
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(items, f, ensure_ascii=False, indent=1)
+            f.write("\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
