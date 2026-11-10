@@ -9,6 +9,11 @@
 #endif
 
 #include <QApplication>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QVersionNumber>
 #include <QButtonGroup>
 #include <QCloseEvent>
 #include <QDateTime>
@@ -1042,6 +1047,31 @@ void MainWindow::autoConnectReplay(const QString& path) {
 void MainWindow::autoConnectDemo() {
     connect_->setMode(ConnectPage::Mode::Demo);
     connect_->startConnect();
+}
+
+void MainWindow::checkForUpdates() {
+    if (!settings_.checkUpdates) return;
+    // Only this one request, without anything about the car or the user.
+    auto* manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(QUrl(QStringLiteral("https://api.github.com/repos/SenseiIssei/Caruspex/releases/latest")));
+    request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("Caruspex/%1").arg(QStringLiteral(CARUSPEX_VERSION)));
+    request.setTransferTimeout(8000);
+    QNetworkReply* reply = manager->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, manager] {
+        reply->deleteLater();
+        manager->deleteLater();
+        if (reply->error() != QNetworkReply::NoError) return;   // offline: say nothing
+        const QJsonObject release = QJsonDocument::fromJson(reply->readAll()).object();
+        const QString tag = release.value(QStringLiteral("tag_name")).toString();
+        const QString url = release.value(QStringLiteral("html_url")).toString();
+        if (tag.isEmpty() || url.isEmpty()) return;
+        const QVersionNumber newest = QVersionNumber::fromString(tag.startsWith(QLatin1Char('v')) ? tag.mid(1) : tag);
+        const QVersionNumber mine = QVersionNumber::fromString(QStringLiteral(CARUSPEX_VERSION));
+        if (newest > mine) {
+            titleBar_->setUpdateAvailable(newest.toString(), url);
+            appendLog(tr("Neue Version verfügbar: %1").arg(newest.toString()));
+        }
+    });
 }
 
 void MainWindow::autoConnectCan(const QString& spec) {

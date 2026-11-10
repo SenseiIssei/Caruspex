@@ -62,6 +62,8 @@ public:
     // BMW over ENET, "auto" looks for the car.
     void autoConnectEnet(const QString& host);
     void autoConnectCan(const QString& spec);
+    // Asks GitHub for the newest release once, if the setting allows it.
+    void checkForUpdates();
     // Serial adapter by port name, "auto" searches every port.
     void autoConnectSerial(const QString& device);
     // Bluetooth adapter by address, "auto" searches.

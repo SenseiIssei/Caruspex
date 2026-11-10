@@ -28,6 +28,8 @@ public:
     // The capsule in the middle: state colour and a short text.
     void setConnection(Link state, const QString& text);
     void setLogOpen(bool open);
+    // A newer version exists: a small button that opens its release page.
+    void setUpdateAvailable(const QString& version, const QString& url);
 
 signals:
     void minimiseRequested();
@@ -49,6 +51,7 @@ private:
     QPushButton* capsule_ = nullptr;
     Spinner* capsuleSpinner_ = nullptr;
     QPushButton* log_ = nullptr;
+    QPushButton* update_ = nullptr;
     QPushButton* sidebar_ = nullptr;
     QPushButton* minimise_ = nullptr;
     QPushButton* maximise_ = nullptr;

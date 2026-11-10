@@ -55,6 +55,7 @@ AppSettings loadSettings() {
 
     s.beginGroup(QStringLiteral("fenster"));
     v.rememberGeometry = s.value(QStringLiteral("merken"), v.rememberGeometry).toBool();
+    v.checkUpdates = s.value(QStringLiteral("updates"), v.checkUpdates).toBool();
     s.endGroup();
 
     v.language = s.value(QStringLiteral("sprache"), v.language).toString();
@@ -117,6 +118,7 @@ void saveSettings(const AppSettings& v) {
 
     s.beginGroup(QStringLiteral("fenster"));
     s.setValue(QStringLiteral("merken"), v.rememberGeometry);
+    s.setValue(QStringLiteral("updates"), v.checkUpdates);
     s.endGroup();
 
     s.setValue(QStringLiteral("sprache"), v.language);

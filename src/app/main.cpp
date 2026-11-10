@@ -312,6 +312,9 @@ int main(int argc, char** argv) {
         }
         window.reportAndQuit(parser.value(reportOption), parser.value(reportWaitOption).toInt());
     }
+    // No network request for screenshots, reports and other unattended runs.
+    if ((!parser.isSet(shotOption) && !parser.isSet(reportOption)) || qEnvironmentVariableIsSet("CARUSPEX_CHECK_UPDATES"))
+        window.checkForUpdates();
     if (parser.isSet(portOption)) window.autoConnectSerial(parser.value(portOption));
     if (parser.isSet(enetOption)) window.autoConnectEnet(parser.value(enetOption));
     if (parser.isSet(canOption)) window.autoConnectCan(parser.value(canOption));
