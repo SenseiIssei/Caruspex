@@ -141,6 +141,98 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [ ] Herstellercodes für BMW, Opel, Renault, PSA, Fiat und Volvo ergänzen, nur mit Quelle
 - [ ] Genaue Lage der OBD-Buchse für die häufigsten 200 Modelle
 
+# Großer Ausbauplan ab 0.8.0
+
+Stand 10.11.2026, nach Version 0.8.0. Aufwand: Klein (Tage), Mittel (eine bis zwei Wochen), Groß (mehrere Wochen). Nutzen: wie viele Leute es merken. Jede Phase bekommt ihren eigenen Zweig, Push und PR nur nach Jakobs Ja.
+
+Datenquellen, die wir nutzen dürfen:
+- opendbc (comma.ai, MIT): DBC-Dateien für viele Marken, Rundfunkwerte zum Mithören
+- OBDb (898 Fahrzeuge, CC BY-SA 4.0): Signale über Modus 22 und 01 je Modell; nutzbar als eigenes Datenpaket mit Namensnennung und gleicher Lizenz für die Daten
+- model3dbc (MIT): schon im Einsatz für Tesla
+- WMI-Liste auf Wikibooks: schon im Einsatz für die Erkennung
+- Nur als Protokollwissen, ohne Code oder Daten zu übernehmen: EdiabasLib (GPL), CanZE und OVMS (Lizenz unklar)
+
+## Phase 13: Immer aktuell bleiben
+
+Damit nichts veraltet, ohne dass jemand daran denken muss.
+
+- [ ] Übersetzungen in der CI prüfen: `tools/gen_i18n.py --check` läuft in jedem Lauf und schlägt fehl, wenn ein Text in einer Sprache fehlt. Neue Texte fallen dann sofort auf. Klein, Nutzen hoch
+- [ ] Marken-Prüfung als Test: jede Katalogmarke braucht eine VIN-Kennung, jede Generation gültige Jahre (das Audit aus 0.8.0 als dauerhafter Test). Klein
+- [ ] Monatlicher Datencheck per geplantem CI-Lauf: neue Einträge in der Wikibooks-WMI-Liste, neue OBDb-Fahrzeuge, Änderungen an opendbc und model3dbc. Ergebnis als Issue mit der Liste, was neu ist. Mittel
+- [ ] Dependabot für die GitHub Actions und die Conan-Abhängigkeiten; Qt beim nächsten LTS-Stand gezielt anheben. Klein
+- [ ] Update-Hinweis in der App: beim Start (abschaltbar) die neueste Version auf GitHub abfragen, Hinweis mit Änderungsliste in der eigenen Sprache. Später ein Ein-Klick-Update über den Installer, sobald signiert wird. Mittel
+- [ ] Release-Skript: Version setzen, Gerüst für die Änderungsliste in Deutsch und Englisch anlegen, Tests und Übersetzungs-Check laufen lassen. Ein Befehl statt fünf Handgriffe. Klein
+- [ ] README-Bilder aus der CI: `tools/screenshots.sh` läuft beim Release mit, damit die Bilder immer zur Version passen. Klein
+
+## Phase 14: Leichter zu verstehen und zu bedienen
+
+Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
+
+- [ ] Einrichtungs-Assistent beim ersten Start: Welcher Adapter (mit Bildern der üblichen Bauformen), wo ist die Buchse bei diesem Auto (Lage aus dem Katalog, mit Skizze), Zündung an, fertig. Groß, Nutzen sehr hoch
+- [ ] Seite "Was soll ich jetzt tun?": aus Fehlern, Bereitschaft und Werten eine Liste in drei Stufen (sofort anhalten, bald in die Werkstatt, kann warten) mit grober Kostenspanne und einem Satz Begründung. Mittel
+- [ ] Gebrauchtwagen-Check als eigener Ablauf: VIN gegen Katalog, Kilometerstand aus mehreren Steuergeräten vergleichen (wo die Kennungen belegt sind), Zeit und Strecke seit dem letzten Löschen (PID 31 und 4E), Bereitschaft, Akkuzustand bei E-Autos; Ergebnis als PDF für den Kauf. Mittel, Nutzen sehr hoch
+- [ ] Verbindungs-Assistent bei Fehlschlägen: statt einer Meldung eine kurze Prüfliste je Schnittstelle (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat. Mittel
+- [ ] Einsteiger- und Profimodus: Einsteiger sehen Start, Fehler, Gesundheit, Akku, Garage; KKL, Anpassung, Rohbefehle und Adressen erst im Profimodus. Klein
+- [ ] Erklärungen direkt am Begriff: kurzer Hinweis beim Darüberfahren für Fachwörter (Bereitschaft, Freeze Frame, Langzeitkorrektur), ein Glossar in allen Sprachen. Mittel
+- [ ] Fahrmodus mit großer Schrift und wenigen Werten, für den Halter am Armaturenbrett; Warnung, nicht während der Fahrt zu bedienen. Klein
+- [ ] Barrierefreiheit: Namen für Bildschirmleser, Tastaturbedienung überall, hoher Kontrast, Schriftgröße einstellbar. Mittel
+- [ ] Bericht teilen: QR-Code mit der Zusammenfassung, damit der Bericht aufs Handy oder zur Werkstatt kommt, ohne Konto und ohne Server. Klein
+- [ ] Übersetzungen von Muttersprachlern gegenlesen lassen; Knopf "Übersetzung verbessern", der zur Anleitung führt. Laufend
+
+## Phase 15: Mehr Autos und mehr Daten
+
+- [ ] OBDb einbinden: Generator, der die Signale der 898 Fahrzeuge in Herstellerpakete übersetzt (Modus 22 und 01, Akku, Reifendruck, Ölstand, Kilometerstand je Modell). Damit E-Auto-Akku und Herstellerwerte für hunderte Modelle statt fünf. Groß, Nutzen sehr hoch
+- [ ] opendbc einbinden: Rundfunkwerte zum Mithören für Toyota, Honda, Hyundai/Kia, GM, Ford, VW, Nissan, Subaru, Tesla Model S und X und weitere. Ehrlich dazu: viele dieser Busse liegen hinter dem Gateway und sind an der OBD-Buchse nicht zu hören. Mittel
+- [ ] Mehr Steuergerätelisten über Mitschnitte: Knopf "Mitschnitt teilen", der eine Aufnahme ohne VIN-Endziffern und ohne Standortdaten als Datei für ein GitHub-Issue packt. So kommen Mercedes, Volvo, Stellantis und DoIP-Autos ins Projekt, belegt am echten Auto. Mittel
+- [ ] Herstellercodes (P1, B, C, U) für weitere Marken, nur aus frei nutzbaren Quellen oder eigenen Mitschnitten. Laufend
+- [ ] Lage der OBD-Buchse mit Skizze für die 200 häufigsten Modelle. Mittel
+- [ ] Motorräder: OBD nach Euro 5 (ISO 14230 und 15765) an den gängigen Diagnosesteckern, mit Adapterkabel. Mittel
+- [ ] Lkw und Transporter über SAE J1939 (29 Bit, 250 oder 500 kbit/s, Diagnosebuchse 9-polig): Fehlercodes (DM1, DM2) und Grundwerte. Groß
+- [ ] Katalog: Motorkennbuchstaben je Generation, damit Sollwerte (Leerlauf, Temperatur) zum Motor passen. Mittel
+
+## Phase 16: Mehr Kommunikationswege
+
+- [ ] VAG TP 2.0 über die rohen CAN-Schnittstellen (J2534, SLCAN, SocketCAN): damit alle Steuergeräte bei VW, Audi, Seat und Skoda von etwa 2004 bis 2012, was mit dem ELM327 nicht ging. Groß, Nutzen hoch
+- [ ] K-Line über J2534 (ISO 9141 und 14230 als eigene Protokolle der PassThru-Geräte), damit ältere Autos auch mit Profi-Interfaces gehen. Mittel
+- [ ] 32-Bit-Brücke für alte J2534-Treiber: ein kleines 32-Bit-Hilfsprogramm, das über eine Pipe mit Caruspex spricht. Mittel
+- [ ] GM Single-Wire-CAN und Ford MS-CAN über OBDLink (STN-Befehle), damit Karosseriesteuergeräte dieser Marken erreichbar werden. Mittel
+- [ ] Ältere BMW (E-Reihe) über K+DCAN-Kabel im K-Line-Modus (DS2 und KWP2000 nach BMW-Art), Protokollwissen aus EdiabasLib, Test am Auto Pflicht. Groß
+- [ ] Schnellere Live-Werte mit STN-Geräten: Filter und Sammelabfragen über die STN-Befehle, Rundfunkwerte mit STMA statt ATMA. Mittel
+- [ ] CAN FD bei den rohen Schnittstellen, die es können (SocketCAN, neuere J2534-Geräte), für die neuesten Autos. Mittel
+- [ ] PCAN-Basic (PEAK) und Kvaser CANlib unter Windows direkt, für Leute ohne J2534-Treiber. Mittel
+
+## Phase 17: Optimieren
+
+- [ ] Steuergeräte-Suchlauf parallel über rohe CAN-Schnittstellen: mehrere ISO-TP-Sitzungen gleichzeitig, aus Minuten werden Sekunden. Mittel
+- [ ] Gemeinsamer ELM-Vorbau: EnetElm und CanElm teilen viel Code (AT-Befehle, Formatierung); eine Basisklasse spart Doppeltes und Fehler. Mittel
+- [ ] Übersetzungskatalog kleiner: die 6 MB Texte gepackt als Ressource je Sprache und erst bei Bedarf laden; Programm und Start werden schlanker. Mittel
+- [ ] Schneller verbinden: letzter funktionierender Weg (Adapter, Protokoll, Bitrate) je VIN merken und zuerst probieren. Klein
+- [ ] Große Dateien aufteilen (MainWindow, Session), damit Änderungen überschaubar bleiben. Mittel
+- [ ] Robustheit: Fuzzing für alle Parser (ELM-Antworten, HSFZ, DoIP, DBC, Torque-CSV, Aufnahmen), Linux-Lauf mit AddressSanitizer und UndefinedBehaviorSanitizer in der CI. Mittel
+- [ ] Kurven: bei langen Aufzeichnungen ausdünnen, damit die Live-Seite auch nach einer Stunde flüssig bleibt. Klein
+
+## Phase 18: Vertrauen und Qualität
+
+- [ ] Testprogramm am echten Auto mit der Gemeinschaft: Rückmeldung aus der App (Aufnahme plus Modell, VIN gekürzt) als Issue-Vorlage, Liste "geprüft mit" je Marke und Schnittstelle in der README. Mittel
+- [ ] Signieren unter Windows (Zertifikat) und Notarisieren unter macOS (Apple-Entwicklerkonto), damit keine Warnungen mehr kommen. Klein, braucht Geld
+- [ ] Absturzberichte nur auf Wunsch, ohne Fahrzeugdaten. Mittel
+- [ ] Dokumentation als Website (GitHub Pages) in allen Sprachen, mit Bildern und einer Seite je Schnittstelle. Mittel
+
+## Phase 19: Mehr Plattformen
+
+- [ ] Android-App mit Qt: Bluetooth LE und klassisches Bluetooth sind schon da, das Handy ist im Auto sowieso dabei. Groß, Nutzen sehr hoch
+- [ ] Verteilen über winget, Homebrew, Flathub und Snap, damit Installieren und Aktualisieren ein Befehl ist. Klein bis Mittel
+- [ ] iOS später: nur Bluetooth LE und WLAN, App Store braucht ein Entwicklerkonto. Groß
+
+## Empfohlene Reihenfolge
+
+1. Phase 13 (aktuell bleiben): klein, schützt alles Weitere
+2. Gebrauchtwagen-Check, "Was soll ich jetzt tun?" und Einsteigermodus aus Phase 14: der größte Nutzen für normale Halter
+3. OBDb aus Phase 15: Herstellerwerte und Akku für hunderte Modelle
+4. VAG TP 2.0 und K-Line über J2534 aus Phase 16
+5. Mitschnitte teilen (Phase 15) und das Testprogramm (Phase 18) zusammen: daraus kommen Mercedes, DoIP-Listen und die Bestätigung am echten Auto
+6. Android (Phase 19)
+
 ## Was bewusst nicht kommt
 
 - Schreiben in Anpassungskanäle oder Codierung: ein falscher Wert legt das Auto lahm, das bleibt nur lesend. Löschen von Fehlern ist die einzige schreibende Aktion
