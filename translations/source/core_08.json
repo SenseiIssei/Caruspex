@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c2000",
+  "de": "MIL-Anforderung aktiv (Fehler in einem anderen Steuergerät)",
+  "en": "MIL request active (fault in another control unit)"
+ },
+ {
+  "id": "c2001",
+  "de": "MIL-Anforderung vom Getriebesteuergerät (Getriebespeicher auslesen)",
+  "en": "MIL request from transmission control module (read the transmission fault memory)"
+ },
+ {
+  "id": "c2002",
+  "de": "MIL-Anforderung Getriebesteuergerät - Kurzschluss nach Masse",
+  "en": "MIL request from transmission control unit - short to ground"
+ },
+ {
+  "id": "c2003",
+  "de": "Van (MPV)",
+  "en": "MPV"
+ },
+ {
+  "id": "c2004",
+  "de": "Magnetkupplung der Drosselklappe - Stromkreis",
+  "en": "Magnetic clutch circuit"
+ },
+ {
+  "id": "c2005",
+  "de": "Hauptkatalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "Main catalyst efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c2006",
+  "de": "Hauptkatalysator Bank 2 - Wirkungsgrad zu gering",
+  "en": "Main catalyst efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c2007",
+  "de": "Schütz",
+  "en": "Main relay"
+ },
+ {
+  "id": "c2008",
+  "de": "Hauptschütz geschlossen (1 = ja)",
+  "en": "Main relay closed (1 = yes)"
+ },
+ {
+  "id": "c2009",
+  "de": "Fußmatte richtig befestigen\nMesswerte beider Pedalgeber ansehen: sie müssen beim Treten gleichmäßig zusammen steigen",
+  "en": "Make sure the floor mat is fastened properly\nLook at both pedal sensor values: they must rise smoothly together as you press"
+ },
+ {
+  "id": "c2010",
+  "de": "Malaysia",
+  "en": "Malaysia"
+ },
+ {
+  "id": "c2011",
+  "de": "Motorkontrollleuchte (MIL) - Steuerkreis",
+  "en": "Malfunction indicator lamp (MIL) control circuit"
+ },
+ {
+  "id": "c2012",
+  "de": "Motorkontrollleuchte - Fehlfunktion",
+  "en": "Malfunction indicator lamp - malfunction"
+ },
+ {
+  "id": "c2013",
+  "de": "Fehlerlampe K83",
+  "en": "Malfunction indicator lamp K83"
+ },
+ {
+  "id": "c2014",
+  "de": "Saugrohrdruck und Luftdruck passen nicht zusammen",
+  "en": "Manifold absolute pressure - barometric pressure correlation"
+ },
+ {
+  "id": "c2015",
+  "de": "Saugrohrdruck-/Luftdrucksensor - Stromkreis",
+  "en": "Manifold absolute pressure/barometric pressure sensor - circuit"
+ },
+ {
+  "id": "c2016",
+  "de": "Saugrohrdruck-/Luftdrucksensor - Signal zu hoch",
+  "en": "Manifold absolute pressure/barometric pressure sensor - circuit high"
+ },
+ {
+  "id": "c2017",
+  "de": "Saugrohrdruck-/Luftdrucksensor - Signal setzt zeitweise aus",
+  "en": "Manifold absolute pressure/barometric pressure sensor - circuit intermittent"
+ },
+ {
+  "id": "c2018",
+  "de": "Saugrohrdruck-/Luftdrucksensor - Signal zu niedrig",
+  "en": "Manifold absolute pressure/barometric pressure sensor - circuit low"
+ },
+ {
+  "id": "c2019",
+  "de": "Saugrohrdruck-/Luftdrucksensor - Signal unplausibel",
+  "en": "Manifold absolute pressure/barometric pressure sensor - circuit range/performance"
+ },
+ {
+  "id": "c2020",
+  "de": "Saugrohr-Differenzdrucksensor - Stromkreis",
+  "en": "Manifold differential pressure sensor circuit"
+ },
+ {
+  "id": "c2021",
+  "de": "Oberflächentemperatur Krümmer",
+  "en": "Manifold surface temperature"
+ },
+ {
+  "id": "c2022",
+  "de": "Schaltgetriebe, Gang",
+  "en": "Manual transmission gear"
+ },
+ {
+  "id": "c2023",
+  "de": "Hersteller und eigene Werte",
+  "en": "Manufacturer and custom values"
+ },
+ {
+  "id": "c2024",
+  "de": "Herstellereigener Diagnoseanschluss statt der genormten OBD-II-Buchse. Ein ELM327 kann damit nicht ohne Weiteres sprechen.",
+  "en": "Manufacturer diagnostic connector instead of the standard OBD-II socket. An ELM327 cannot simply talk to it."
+ },
+ {
+  "id": "c2025",
+  "de": "Herstellereigener Diagnosestecker, falls vorhanden. Ein ELM327 kann damit nicht sprechen, oft lassen sich aber Blinkcodes auslesen.",
+  "en": "Manufacturer diagnostic plug, if fitted. An ELM327 cannot talk to it, but blink codes can often be read."
+ },
+ {
+  "id": "c2026",
+  "de": "Herstellerstecker, meist im Motorraum oder unter dem Armaturenbrett.",
+  "en": "Manufacturer plug, usually in the engine bay or under the dashboard."
+ },
+ {
+  "id": "c2027",
+  "de": "Luftmasse (LMM)",
+  "en": "Mass air flow (MAF)"
+ },
+ {
+  "id": "c2028",
+  "de": "Luftmasse Sensor A",
+  "en": "Mass air flow sensor A"
+ },
+ {
+  "id": "c2029",
+  "de": "Luftmasse Sensor B",
+  "en": "Mass air flow sensor B"
+ },
+ {
+  "id": "c2030",
+  "de": "Luftmassenmesser G70",
+  "en": "Mass air flow sensor G70"
+ },
+ {
+  "id": "c2031",
+  "de": "Luftmassenmesser G70: Signal zu klein",
+  "en": "Mass air flow sensor G70: signal too low"
+ },
+ {
+  "id": "c2032",
+  "de": "Luftmassenmesser im Ansaugrohr",
+  "en": "Mass air flow sensor in the intake duct"
+ },
+ {
+  "id": "c2033",
+  "de": "Luftmassenmesser A und B",
+  "en": "Mass air flow sensors A and B"
+ },
+ {
+  "id": "c2034",
+  "de": "Luftmassenmesser - Stromkreis",
+  "en": "Mass or volume air flow sensor A - circuit"
+ },
+ {
+  "id": "c2035",
+  "de": "Luftmassenmesser - Signal zu hoch",
+  "en": "Mass or volume air flow sensor A - circuit high"
+ },
+ {
+  "id": "c2036",
+  "de": "Luftmassenmesser - Signal setzt zeitweise aus",
+  "en": "Mass or volume air flow sensor A - circuit intermittent"
+ },
+ {
+  "id": "c2037",
+  "de": "Luftmassenmesser - Signal zu niedrig",
+  "en": "Mass or volume air flow sensor A - circuit low"
+ },
+ {
+  "id": "c2038",
+  "de": "Luftmassenmesser - Signal unplausibel",
+  "en": "Mass or volume air flow sensor A - circuit range/performance"
+ },
+ {
+  "id": "c2039",
+  "de": "Max. Laden",
+  "en": "Max charge"
+ },
+ {
+  "id": "c2040",
+  "de": "Max. Leistung",
+  "en": "Max power"
+ },
+ {
+  "id": "c2041",
+  "de": "Höchstwert Lambdasondenstrom",
+  "en": "Maximum O2 sensor current"
+ },
+ {
+  "id": "c2042",
+  "de": "Höchstwert Lambdasondenspannung",
+  "en": "Maximum O2 sensor voltage"
+ },
+ {
+  "id": "c2043",
+  "de": "Höchste Zellspannung",
+  "en": "Maximum cell voltage"
+ },
+ {
+  "id": "c2044",
+  "de": "Höchste Ladeleistung",
+  "en": "Maximum charge power"
+ },
+ {
+  "id": "c2045",
+  "de": "Maximale Motordrehzahl überschritten",
+  "en": "Maximum engine speed exceeded"
+ },
+ {
+  "id": "c2046",
+  "de": "Höchstwert Saugrohrdruck",
+  "en": "Maximum intake manifold pressure"
+ },
+ {
+  "id": "c2047",
+  "de": "Höchstwert Lambda",
+  "en": "Maximum lambda"
+ },
+ {
+  "id": "c2048",
+  "de": "Höchstwert Luftmasse",
+  "en": "Maximum mass air flow"
+ },
+ {
+  "id": "c2049",
+  "de": "Höchstzulässige Motordrehzahl überschritten",
+  "en": "Maximum permissible engine speed exceeded"
+ },
+ {
+  "id": "c2050",
+  "de": "Skalierungsgrenzen",
+  "en": "Maximum scaling values"
+ },
+ {
+  "id": "c2051",
+  "de": "höchste Sondenspannung",
+  "en": "Maximum sensor voltage"
+ },
+ {
+  "id": "c2052",
+  "de": "höchste Spannung im Regelbetrieb",
+  "en": "Maximum voltage in closed loop"
+ },
+ {
+  "id": "c2053",
+  "de": "Mazda",
+  "en": "Mazda"
+ },
+ {
+  "id": "c2054",
+  "de": "Ruhespannung messen, nachdem das Auto einige Stunden stand: gesund sind etwa 12,4 bis 12,7 Volt\nBei laufendem Motor sollten es etwa 13,8 bis 14,7 Volt sein, manche neueren Autos laden zeitweise weniger\nPolklemmen auf festen Sitz und Korrosion prüfen\nWie alt ist die Batterie? Nach 5 bis 6 Jahren ist sie oft am Ende",
+  "en": "Measure the resting voltage after the car has stood for a few hours: about 12.4 to 12.7 volts is healthy\nWith the engine running it should be about 13.8 to 14.7 volts; some newer cars charge less at times\nCheck the terminals for a firm fit and corrosion\nHow old is the battery? After 5 to 6 years it is often worn out"
+ },
+ {
+  "id": "c2055",
+  "de": "Spannung bei laufendem Motor messen: über etwa 15 Volt ist zu viel\nMassebänder an Motor und Karosserie prüfen",
+  "en": "Measure the voltage with the engine running: above about 15 volts is too much\nCheck the ground straps on the engine and body"
+ },
+ {
+  "id": "c2056",
+  "de": "Messwertblock ",
+  "en": "Measuring block "
+ },
+ {
+  "id": "c2057",
+  "de": "Mittel",
+  "en": "Medium"
+ },
+ {
+  "id": "c2058",
+  "de": "Medium-Speed-CAN-Bus - Leitung High - Spannung zu hoch",
+  "en": "Medium speed CAN - bus (+) high"
+ },
+ {
+  "id": "c2059",
+  "de": "Medium-Speed-CAN-Bus - Leitung High - Spannung zu niedrig",
+  "en": "Medium speed CAN - bus (+) low"
+ },
+ {
+  "id": "c2060",
+  "de": "Medium-Speed-CAN-Bus - Leitung High - Unterbrechung",
+  "en": "Medium speed CAN - bus (+) open"
+ },
+ {
+  "id": "c2061",
+  "de": "Medium-Speed-CAN-Bus - Leitung Low - Spannung zu hoch",
+  "en": "Medium speed CAN - bus (-) high"
+ },
+ {
+  "id": "c2062",
+  "de": "Medium-Speed-CAN-Bus - Leitung Low - Spannung zu niedrig",
+  "en": "Medium speed CAN - bus (-) low"
+ },
+ {
+  "id": "c2063",
+  "de": "Medium-Speed-CAN-Bus - Leitung Low - Unterbrechung",
+  "en": "Medium speed CAN - bus (-) open"
+ },
+ {
+  "id": "c2064",
+  "de": "Medium-Speed-CAN-Bus - Leitung Low hat Kurzschluss zu Leitung High",
+  "en": "Medium speed CAN - bus (-) shorted to bus (+)"
+ },
+ {
+  "id": "c2065",
+  "de": "Medium-Speed-CAN-Bus - Fehlfunktion",
+  "en": "Medium speed CAN - communication bus"
+ },
+ {
+  "id": "c2066",
+  "de": "Medium-Speed-CAN-Bus - Funktion",
+  "en": "Medium speed CAN - communication bus performance"
+ },
+ {
+  "id": "c2067",
+  "de": "Mercedes-Rundstecker mit 38 Polen im Motorraum. Ein ELM327 versteht ihn nicht, dafür braucht es ein Mercedes-Diagnosegerät.",
+  "en": "Mercedes round 38-pin plug in the engine bay. An ELM327 does not understand it, that takes a Mercedes diagnostic tool."
+ },
+ {
+  "id": "c2068",
+  "de": "Mercedes-Rundstecker, 38 Pole",
+  "en": "Mercedes round plug, 38 pins"
+ },
+ {
+  "id": "c2069",
+  "de": "Mercedes-Benz/Smart",
+  "en": "Mercedes-Benz/Smart"
+ },
+ {
+  "id": "c2070",
+  "de": "Nachricht hat eine unmögliche Länge",
+  "en": "Message has an impossible length"
+ },
+ {
+  "id": "c2071",
+  "de": "Mexiko",
+  "en": "Mexico"
+ },
+ {
+  "id": "c2072",
+  "de": "Kleinstwagen",
+  "en": "Microcar"
+ },
+ {
+  "id": "c2073",
+  "de": "Min. Zelle",
+  "en": "Min det"
+ },
+ {
+  "id": "c2074",
+  "de": "Min oder Max ist keine Zahl.",
+  "en": "Min or max is not a number."
+ },
+ {
+  "id": "c2075",
+  "de": "Schwächste Zelle (Gesundheit)",
+  "en": "Minimum cell deterioration"
+ },
+ {
+  "id": "c2076",
+  "de": "Niedrigste Zellspannung",
+  "en": "Minimum cell voltage"
+ },
+ {
+  "id": "c2077",
+  "de": "tiefste Sondenspannung",
+  "en": "Minimum sensor voltage"
+ },
+ {
+  "id": "c2078",
+  "de": "tiefste Spannung im Regelbetrieb",
+  "en": "Minimum voltage in closed loop"
+ },
+ {
+  "id": "c2079",
+  "de": "Verbrennungsaussetzer",
+  "en": "Misfire"
+ },
+ {
+  "id": "c2080",
+  "de": "Verbrennungsaussetzer Zylinder ",
+  "en": "Misfire cylinder "
+ },
+ {
+  "id": "c2081",
+  "de": "Aussetzer erkannt - keine Verbindung zum ABS-Steuergerät",
+  "en": "Misfire detected - no communication with brake control module"
+ },
+ {
+  "id": "c2082",
+  "de": "Aussetzer erkannt - Schlechtwegdaten nicht verfügbar",
+  "en": "Misfire detected - rough road data not available"
+ },
+ {
+  "id": "c2083",
+  "de": "Verbrennungsaussetzer bei niedrigem Tankinhalt",
+  "en": "Misfire detected with low fuel"
+ },
+ {
+  "id": "c2084",
+  "de": "Aussetzererkennung nicht aktiv",
+  "en": "Misfire detection monitor not enabled"
+ },
+ {
+  "id": "c2085",
+  "de": "Verbrennungsaussetzer, Zähler Zylinder 1",
+  "en": "Misfire, counter cylinder 1"
+ },
+ {
+  "id": "c2086",
+  "de": "Verbrennungsaussetzer, Zähler Zylinder 2",
+  "en": "Misfire, counter cylinder 2"
+ },
+ {
+  "id": "c2087",
+  "de": "Verbrennungsaussetzer, Zähler Zylinder 3",
+  "en": "Misfire, counter cylinder 3"
+ },
+ {
+  "id": "c2088",
+  "de": "Verbrennungsaussetzer, Zähler Zylinder 4",
+  "en": "Misfire, counter cylinder 4"
+ },
+ {
+  "id": "c2089",
+  "de": "Verbrennungsaussetzer, ganzer Motor",
+  "en": "Misfire, whole engine"
+ },
+ {
+  "id": "c2090",
+  "de": "Aussetzer in der aktuellen Fahrt",
+  "en": "Misfires in the current trip"
+ },
+ {
+  "id": "c2091",
+  "de": "Aussetzer im Schnitt der letzten 10 Fahrten",
+  "en": "Misfires, average of the last 10 trips"
+ },
+ {
+  "id": "c2092",
+  "de": "Verbrennungsaussetzer: Kerzen, Spulen, Kompression, Einspritzventil",
+  "en": "Misfires: spark plugs, coils, compression, injector"
+ },
+ {
+  "id": "c2093",
+  "de": "Schließende Klammer fehlt",
+  "en": "Missing closing brace"
+ },
+ {
+  "id": "c2094",
+  "de": "Schließende Klammer fehlt",
+  "en": "Missing closing parenthesis"
+ },
+ {
+  "id": "c2095",
+  "de": "Mitsubishi",
+  "en": "Mitsubishi"
+ },
+ {
+  "id": "c2096",
+  "de": "Gemischadaption: Regelgrenze überschritten",
+  "en": "Mixture adaptation: limit exceeded"
+ },
+ {
+  "id": "c2097",
+  "de": "Gemischbildung: Falschluft, Schläuche, Kurbelgehäuseentlüftung",
+  "en": "Mixture formation: vacuum leaks, hoses, crankcase ventilation"
+ },
+ {
+  "id": "c2098",
+  "de": "Modul 1",
+  "en": "Mod 1 T"
+ },
+ {
+  "id": "c2099",
+  "de": "Modul 10",
+  "en": "Mod 10 T"
+ },
+ {
+  "id": "c2100",
+  "de": "Modul 11",
+  "en": "Mod 11 T"
+ },
+ {
+  "id": "c2101",
+  "de": "Modul 12",
+  "en": "Mod 12 T"
+ },
+ {
+  "id": "c2102",
+  "de": "Modul 2",
+  "en": "Mod 2 T"
+ },
+ {
+  "id": "c2103",
+  "de": "Modul 3",
+  "en": "Mod 3 T"
+ },
+ {
+  "id": "c2104",
+  "de": "Modul 4",
+  "en": "Mod 4 T"
+ },
+ {
+  "id": "c2105",
+  "de": "Modul 5",
+  "en": "Mod 5 T"
+ },
+ {
+  "id": "c2106",
+  "de": "Modul 6",
+  "en": "Mod 6 T"
+ },
+ {
+  "id": "c2107",
+  "de": "Modul 7",
+  "en": "Mod 7 T"
+ },
+ {
+  "id": "c2108",
+  "de": "Modul 8",
+  "en": "Mod 8 T"
+ },
+ {
+  "id": "c2109",
+  "de": "Modul 9",
+  "en": "Mod 9 T"
+ },
+ {
+  "id": "c2110",
+  "de": "ModeAndPID fehlt.",
+  "en": "ModeAndPID is missing."
+ },
+ {
+  "id": "c2111",
+  "de": "ModeAndPID ist keine Anfrage in Hex: ",
+  "en": "ModeAndPID is no hex request: "
+ },
+ {
+  "id": "c2112",
+  "de": "ModeAndPID braucht Dienst und Kennung, z. B. 220101.",
+  "en": "ModeAndPID needs service and identifier, e.g. 220101."
+ },
+ {
+  "id": "c2113",
+  "de": "Modellcode und Baujahr aus der Fahrgestellnummer passen zu dieser Generation.",
+  "en": "Model code and model year from the VIN match this generation."
+ },
+ {
+  "id": "c2114",
+  "de": "Feuchtigkeit oder Schaden an Hochvoltleitungen\nElektrischer Klimakompressor oder Wechselrichter mit Isolationsschaden\nHochvoltbatterie",
+  "en": "Moisture or damage on high-voltage cables\nElectric A/C compressor or inverter with insulation damage\nHigh-voltage battery"
+ },
+ {
+  "id": "c2115",
+  "de": "Überwachung ",
+  "en": "Monitor "
+ },
+ {
+  "id": "c2116",
+  "de": "Marokko",
+  "en": "Morocco"
+ },
+ {
+  "id": "c2117",
+  "de": "Wegfahrsperre (NATS) - Motorsteuergerät fehlerhaft",
+  "en": "NATS ECM"
+ },
+ {
+  "id": "c2118",
+  "de": "Wegfahrsperre (NATS) - Kennung zwischen Wegfahrsperre und Motorsteuergerät passt nicht",
+  "en": "NATS ID discord, IMMU-ECM"
+ },
+ {
+  "id": "c2119",
+  "de": "Wegfahrsperre (NATS) - Verbindung Motorsteuergerät zur Wegfahrsperre gestört",
+  "en": "NATS chain of ECM-IMMU"
+ },
+ {
+  "id": "c2120",
+  "de": "Wegfahrsperre (NATS) - Verbindung zum Schlüssel gestört",
+  "en": "NATS chain of IMMU-key"
+ },
+ {
+  "id": "c2121",
+  "de": "Wegfahrsperre (NATS) - Schlüssel nicht erkannt",
+  "en": "NATS difference of key"
+ },
+ {
+  "id": "c2122",
+  "de": "Wegfahrsperre (NATS) - Sperrmodus",
+  "en": "NATS lock mode"
+ },
+ {
+  "id": "c2123",
+  "de": "Oxidationskatalysator (NMHC)",
+  "en": "NMHC catalyst"
+ },
+ {
+  "id": "c2124",
+  "de": "Stickoxid-Kontrollbereich (NTE)",
+  "en": "NOx NTE control area status"
+ },
+ {
+  "id": "c2125",
+  "de": "NOx-Speicherkatalysator",
+  "en": "NOx adsorber"
+ },
+ {
+  "id": "c2126",
+  "de": "NOx-Speicherkat Entschwefelung",
+  "en": "NOx adsorber desulfurization"
+ },
+ {
+  "id": "c2127",
+  "de": "NOx-Speicherkatalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "NOx adsorber efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c2128",
+  "de": "NOx-Speicherkatalysator Bank 2 - Wirkungsgrad zu gering",
+  "en": "NOx adsorber efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c2129",
+  "de": "NOx-Speicherkat Regeneration",
+  "en": "NOx adsorber regeneration"
+ },
+ {
+  "id": "c2130",
+  "de": "Stickoxid-Nachbehandlung (NOx/SCR)",
+  "en": "NOx aftertreatment (SCR)"
+ },
+ {
+  "id": "c2131",
+  "de": "Stickoxid-Katalysator (SCR)",
+  "en": "NOx catalyst (SCR)"
+ },
+ {
+  "id": "c2132",
+  "de": "NOx-Grenzwert überschritten - Abgasrückführung abgeschaltet",
+  "en": "NOx exceedance - deactivation of EGR"
+ },
+ {
+  "id": "c2133",
+  "de": "NOx-Grenzwert überschritten - AdBlue-Tank leer",
+  "en": "NOx exceedance - empty reagent tank"
+ },
+ {
+  "id": "c2134",
+  "de": "NOx-Grenzwert überschritten - AdBlue-Qualität unzureichend",
+  "en": "NOx exceedance - insufficient reagent quality"
+ },
+ {
+  "id": "c2135",
+  "de": "AdBlue-System",
+  "en": "NOx reagent system (AdBlue)"
+ },
+ {
+  "id": "c2136",
+  "de": "NOx-Sensor Bank 1 - Stromkreis",
+  "en": "NOx sensor bank 1 - circuit"
+ },
+ {
+  "id": "c2137",
+  "de": "NOx-Sensor Bank 1 - Signal zu hoch",
+  "en": "NOx sensor bank 1 - circuit high"
+ },
+ {
+  "id": "c2138",
+  "de": "NOx-Sensor Bank 1 - Signal setzt zeitweise aus",
+  "en": "NOx sensor bank 1 - circuit intermittent"
+ },
+ {
+  "id": "c2139",
+  "de": "NOx-Sensor Bank 1 - Signal zu niedrig",
+  "en": "NOx sensor bank 1 - circuit low"
+ },
+ {
+  "id": "c2140",
+  "de": "NOx-Sensor Bank 1 - Signal unplausibel",
+  "en": "NOx sensor bank 1 - circuit range/performance"
+ },
+ {
+  "id": "c2141",
+  "de": "NOx-Sensor Bank 1 Heizung - Steuerkreis Spannung zu hoch",
+  "en": "NOx sensor heater bank 1 - control circuit high"
+ },
+ {
+  "id": "c2142",
+  "de": "NOx-Sensor Bank 1 Heizung - Steuerkreis Spannung zu niedrig",
+  "en": "NOx sensor heater bank 1 - control circuit low"
+ },
+ {
+  "id": "c2143",
+  "de": "NOx-Sensor Bank 1 Heizung - Steuerkreis oder Unterbrechung",
+  "en": "NOx sensor heater bank 1 - control circuit/open"
+ },
+ {
+  "id": "c2144",
+  "de": "Stickoxidsensoren",
+  "en": "NOx sensors"
+ },
+ {
+  "id": "c2145",
+  "de": "Stickoxidsensoren, korrigiert",
+  "en": "NOx sensors, corrected"
+ },
+ {
+  "id": "c2146",
+  "de": "Zeit mit AdBlue-Warnung",
+  "en": "NOx warning indicator time"
+ },
+ {
+  "id": "c2147",
+  "de": "Name fehlt.",
+  "en": "Name is missing."
+ },
+ {
+  "id": "c2148",
+  "de": "Niederlande",
+  "en": "Netherlands"
+ },
+ {
+  "id": "c2149",
+  "de": "Datenbus (von SAE reserviert)",
+  "en": "Network (reserved by SAE)"
+ },
+ {
+  "id": "c2150",
+  "de": "Datenbus und Vernetzung",
+  "en": "Network and vehicle communication"
+ },
+ {
+  "id": "c2151",
+  "de": "Datenbus: Leitungen und Busfunktion",
+  "en": "Network: wiring and bus operation"
+ },
+ {
+  "id": "c2152",
+  "de": "Neuseeland",
+  "en": "New Zealand"
+ },
+ {
+  "id": "c2153",
+  "de": "Nigeria",
+  "en": "Nigeria"
+ },
+ {
+  "id": "c2154",
+  "de": "Nissan Leaf erste Generation (2011 bis 2017)",
+  "en": "Nissan Leaf first generation (2011 to 2017)"
+ },
+ {
+  "id": "c2155",
+  "de": "Nissan/Infiniti",
+  "en": "Nissan/Infiniti"
+ },
+ {
+  "id": "c2156",
+  "de": "Kein BMW über ENET gefunden. Steckt das ENET-Kabel im Auto und am Netzwerkanschluss, und ist die Zündung an? Nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse (169.254.x.x), dann noch einmal versuchen.",
+  "en": "No BMW found over ENET. Is the ENET cable plugged into the car and the network port, and is the ignition on? After plugging in, the computer needs up to a minute for its automatic address (169.254.x.x); then try again."
+ },
+ {
+  "id": "c2157",
+  "de": "Keine DoIP-Verbindung zu ",
+  "en": "No DoIP connection to "
+ },
+ {
+  "id": "c2158",
+  "de": "Kein UDP-Socket für die Fahrzeugsuche.",
+  "en": "No UDP socket for the vehicle search."
+ },
+ {
+  "id": "c2159",
+  "de": "Keine Fahrgestellnummer angegeben.",
+  "en": "No VIN given."
+ },
+ {
+  "id": "c2160",
+  "de": "Kein Adapter verbunden.",
+  "en": "No adapter connected."
+ },
+ {
+  "id": "c2161",
+  "de": "Keine Antwort vom Steuergerät (NO DATA).",
+  "en": "No answer from the control unit (NO DATA)."
+ },
+ {
+  "id": "c2162",
+  "de": "Keine Antwort vom Steuergerät.",
+  "en": "No answer from the control unit."
+ },
+ {
+  "id": "c2163",
+  "de": "Keine Antwort auf die DoIP-Freigabe.",
+  "en": "No answer to the DoIP routing activation."
+ },
+ {
+  "id": "c2164",
+  "de": "Keine Antwort: nicht verbaut, oder das Gateway lässt die Anfrage nicht durch.",
+  "en": "No answer: not fitted, or the gateway does not pass the request on."
+ },
+ {
+  "id": "c2165",
+  "de": "Kein sauberes Echo auf die Antwort",
+  "en": "No clean echo of the reply"
+ },
+ {
+  "id": "c2166",
+  "de": "Keine Verbindung zu ",
+  "en": "No connection to "
+ },
+ {
+  "id": "c2167",
+  "de": "Keine Verbindung zum Adapter.",
+  "en": "No connection to the adapter."
+ },
+ {
+  "id": "c2168",
+  "de": "Kein Kontakt zum Steuergerät.\n  - Zündung an? (Motor darf aus sein)\n  - Stecker fest im OBD-Port?\n  - Manche Adapter brauchen einen zweiten Anlauf: abziehen, 10 s warten, neu stecken.",
+  "en": "No contact with the control unit.\n  - Ignition on? (The engine may be off)\n  - Plug firmly seated in the OBD port?\n  - Some adapters need a second attempt: unplug, wait 10 s, plug back in."
+ },
+ {
+  "id": "c2169",
+  "de": "Kein Kurbelwellensignal bei laufendem Motor",
+  "en": "No crankshaft position sensor signal - engine running"
+ },
+ {
+  "id": "c2170",
+  "de": "Kein Diagnosestecker.",
+  "en": "No diagnostic connector."
+ },
+ {
+  "id": "c2171",
+  "de": "Kein Echo auf ",
+  "en": "No echo for "
+ },
+ {
+  "id": "c2172",
+  "de": "Keine Antwort des Adapters auf '",
+  "en": "No response from the adapter to '"
+ },
+ {
+  "id": "c2173",
+  "de": "Keine Sitzung offen",
+  "en": "No session open"
+ },
+ {
+  "id": "c2174",
+  "de": "Kein Synchronbyte 0x55 vom Steuergerät (bekommen ",
+  "en": "No sync byte 0x55 from the control unit (got "
+ },
+ {
+  "id": "c2175",
+  "de": "Keine verwertbare Antwort erhalten.",
+  "en": "No usable response received."
+ },
+ {
+  "id": "c2176",
+  "de": "Kein Fahrzeug mit DoIP im Netzwerk gefunden.",
+  "en": "No vehicle with DoIP found on the network."
+ },
+ {
+  "id": "c2177",
+  "de": "Schalter Normal/Sport - Stromkreis",
+  "en": "Normal/performance switch circuit"
+ },
+ {
+  "id": "c2178",
+  "de": "Beladung bis zur nächsten Regeneration",
+  "en": "Normalized trigger for regeneration"
+ },
+ {
+  "id": "c2179",
+  "de": "Nordamerika",
+  "en": "North America"
+ },
+ {
+  "id": "c2180",
+  "de": "Norwegen",
+  "en": "Norway"
+ },
+ {
+  "id": "c2181",
+  "de": "Kein Fehler im eigentlichen Sinn, Weiterfahren ist in Ordnung.",
+  "en": "Not a fault as such, it is fine to keep driving."
+ },
+ {
+  "id": "c2182",
+  "de": "Kein Fehler. Die Eigendiagnosen sind seit dem letzten Löschen noch nicht alle gelaufen. Normal weiterfahren, der Code verschwindet von selbst.",
+  "en": "Not a fault. The self-tests have not all run since the codes were last cleared. Keep driving normally and the code will go away by itself."
+ },
+ {
+  "id": "c2183",
+  "de": "Kein gültiges CAN-Signal (erwartet z.B. DBC:0|16@1+(0.01,0)): ",
+  "en": "Not a valid CAN signal (expected e.g. DBC:0|16@1+(0.01,0)): "
+ },
+ {
+  "id": "c2184",
+  "de": "Im Modus OBD über UDS nicht verfügbar.",
+  "en": "Not available in OBD on UDS mode."
+ },
+ {
+  "id": "c2185",
+  "de": "Nicht verbunden",
+  "en": "Not connected"
+ },
+ {
+  "id": "c2186",
+  "de": "Hinweis",
+  "en": "Note"
+ },
+ {
+  "id": "c2187",
+  "de": "Anzahl gespeicherter Fehlercodes",
+  "en": "Number of stored trouble codes"
+ },
+ {
+  "id": "c2188",
+  "de": "Lambdakorrektur hinter Katalysator Bank 1 - Regelgrenze erreicht",
+  "en": "O2 correction behind catalyst, bank 1 - limit attained"
+ },
+ {
+  "id": "c2189",
+  "de": "Lambdasonde ",
+  "en": "O2 sensor "
+ },
+ {
+  "id": "c2190",
+  "de": "Lambdasonde Bank 1 Sonde 1, Spannungsschwelle mager nach fett",
+  "en": "O2 sensor bank 1 sensor 1, lean-to-rich threshold voltage"
+ },
+ {
+  "id": "c2191",
+  "de": "Lambdasonde Bank 1 Sonde 1, höchste Spannung",
+  "en": "O2 sensor bank 1 sensor 1, maximum voltage"
+ },
+ {
+  "id": "c2192",
+  "de": "Lambdasonde Bank 1 Sonde 1, tiefste Spannung",
+  "en": "O2 sensor bank 1 sensor 1, minimum voltage"
+ },
+ {
+  "id": "c2193",
+  "de": "Lambdasonde Bank 1 Sonde 1, Periodendauer",
+  "en": "O2 sensor bank 1 sensor 1, period"
+ },
+ {
+  "id": "c2194",
+  "de": "Lambdasonde Bank 1 Sonde 1, Spannungsschwelle fett nach mager",
+  "en": "O2 sensor bank 1 sensor 1, rich-to-lean threshold voltage"
+ },
+ {
+  "id": "c2195",
+  "de": "Lambdasonde Bank 1 Sonde 1, Umschaltzeit",
+  "en": "O2 sensor bank 1 sensor 1, switch time"
+ },
+ {
+  "id": "c2196",
+  "de": "Lambdasonde Bank 1 Sonde 2, Spannungsschwelle mager nach fett",
+  "en": "O2 sensor bank 1 sensor 2, lean-to-rich threshold voltage"
+ },
+ {
+  "id": "c2197",
+  "de": "Lambdasonde Bank 1 Sonde 2, höchste Spannung",
+  "en": "O2 sensor bank 1 sensor 2, maximum voltage"
+ },
+ {
+  "id": "c2198",
+  "de": "Lambdasonde Bank 1 Sonde 2, tiefste Spannung",
+  "en": "O2 sensor bank 1 sensor 2, minimum voltage"
+ },
+ {
+  "id": "c2199",
+  "de": "Lambdasonde Bank 1 Sonde 2, Spannungsschwelle fett nach mager",
+  "en": "O2 sensor bank 1 sensor 2, rich-to-lean threshold voltage"
+ },
+ {
+  "id": "c2200",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Stromkreis",
+  "en": "O2 sensor circuit - bank 1 sensor 1"
+ },
+ {
+  "id": "c2201",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Stromkreis",
+  "en": "O2 sensor circuit - bank 1 sensor 2"
+ },
+ {
+  "id": "c2202",
+  "de": "Lambdasonde Bank 1, Sonde 3 - Stromkreis",
+  "en": "O2 sensor circuit - bank 1 sensor 3"
+ },
+ {
+  "id": "c2203",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Stromkreis",
+  "en": "O2 sensor circuit - bank 2 sensor 1"
+ },
+ {
+  "id": "c2204",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Stromkreis",
+  "en": "O2 sensor circuit - bank 2 sensor 2"
+ },
+ {
+  "id": "c2205",
+  "de": "Lambdasonde Bank 2, Sonde 3 - Stromkreis",
+  "en": "O2 sensor circuit - bank 2 sensor 3"
+ },
+ {
+  "id": "c2206",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 1 sensor 1"
+ },
+ {
+  "id": "c2207",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 1 sensor 2"
+ },
+ {
+  "id": "c2208",
+  "de": "Lambdasonde Bank 1, Sonde 3 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 1 sensor 3"
+ },
+ {
+  "id": "c2209",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 2 sensor 1"
+ },
+ {
+  "id": "c2210",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 2 sensor 2"
+ },
+ {
+  "id": "c2211",
+  "de": "Lambdasonde Bank 2, Sonde 3 - Spannung zu hoch",
+  "en": "O2 sensor circuit high voltage - bank 2 sensor 3"
+ },
+ {
+  "id": "c2212",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 1 sensor 1"
+ },
+ {
+  "id": "c2213",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 1 sensor 2"
+ },
+ {
+  "id": "c2214",
+  "de": "Lambdasonde Bank 1, Sonde 3 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 1 sensor 3"
+ },
+ {
+  "id": "c2215",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 2 sensor 1"
+ },
+ {
+  "id": "c2216",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 2 sensor 2"
+ },
+ {
+  "id": "c2217",
+  "de": "Lambdasonde Bank 2, Sonde 3 - Spannung zu niedrig",
+  "en": "O2 sensor circuit low voltage - bank 2 sensor 3"
+ },
+ {
+  "id": "c2218",
+  "de": "Lambdasonde Bank 1, Sonde 1 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 1 sensor 1"
+ },
+ {
+  "id": "c2219",
+  "de": "Lambdasonde Bank 1, Sonde 2 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 1 sensor 2"
+ },
+ {
+  "id": "c2220",
+  "de": "Lambdasonde Bank 1, Sonde 3 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 1 sensor 3"
+ },
+ {
+  "id": "c2221",
+  "de": "Lambdasonde Bank 2, Sonde 1 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 2 sensor 1"
+ },
+ {
+  "id": "c2222",
+  "de": "Lambdasonde Bank 2, Sonde 2 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 2 sensor 2"
+ },
+ {
+  "id": "c2223",
+  "de": "Lambdasonde Bank 2, Sonde 3 - keine Aktivität",
+  "en": "O2 sensor circuit no activity detected - bank 2 sensor 3"
+ },
+ {
+  "id": "c2224",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Signal unplausibel (hoch)",
+  "en": "O2 sensor circuit range/performance (high) - bank 1 sensor 1"
+ },
+ {
+  "id": "c2225",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Signal unplausibel (niedrig)",
+  "en": "O2 sensor circuit range/performance (low) - bank 1 sensor 1"
+ },
+ {
+  "id": "c2226",
+  "de": "Lambdasonde Bank 1, Sonde 1 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 1 sensor 1"
+ },
+ {
+  "id": "c2227",
+  "de": "Lambdasonde Bank 1, Sonde 2 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 1 sensor 2"
+ },
+ {
+  "id": "c2228",
+  "de": "Lambdasonde Bank 1, Sonde 3 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 1 sensor 3"
+ },
+ {
+  "id": "c2229",
+  "de": "Lambdasonde Bank 2, Sonde 1 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 2 sensor 1"
+ },
+ {
+  "id": "c2230",
+  "de": "Lambdasonde Bank 2, Sonde 2 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 2 sensor 2"
+ },
+ {
+  "id": "c2231",
+  "de": "Lambdasonde Bank 2, Sonde 3 - reagiert zu langsam",
+  "en": "O2 sensor circuit slow response - bank 2 sensor 3"
+ },
+ {
+  "id": "c2232",
+  "de": "Lambdasonde Bank 1, Sonde 1 - reagiert verzögert von mager nach fett",
+  "en": "O2 sensor delayed response - lean to rich - bank 1 sensor 1"
+ },
+ {
+  "id": "c2233",
+  "de": "Lambdasonde Bank 1, Sonde 2 - reagiert verzögert von mager nach fett",
+  "en": "O2 sensor delayed response - lean to rich - bank 1 sensor 2"
+ },
+ {
+  "id": "c2234",
+  "de": "Lambdasonde Bank 2, Sonde 1 - reagiert verzögert von mager nach fett",
+  "en": "O2 sensor delayed response - lean to rich - bank 2 sensor 1"
+ },
+ {
+  "id": "c2235",
+  "de": "Lambdasonde Bank 2, Sonde 2 - reagiert verzögert von mager nach fett",
+  "en": "O2 sensor delayed response - lean to rich - bank 2 sensor 2"
+ },
+ {
+  "id": "c2236",
+  "de": "Lambdasonde Bank 1, Sonde 1 - reagiert verzögert von fett nach mager",
+  "en": "O2 sensor delayed response - rich to lean - bank 1 sensor 1"
+ },
+ {
+  "id": "c2237",
+  "de": "Lambdasonde Bank 1, Sonde 2 - reagiert verzögert von fett nach mager",
+  "en": "O2 sensor delayed response - rich to lean - bank 1 sensor 2"
+ },
+ {
+  "id": "c2238",
+  "de": "Lambdasonde Bank 2, Sonde 1 - reagiert verzögert von fett nach mager",
+  "en": "O2 sensor delayed response - rich to lean - bank 2 sensor 1"
+ },
+ {
+  "id": "c2239",
+  "de": "Lambdasonde Bank 2, Sonde 2 - reagiert verzögert von fett nach mager",
+  "en": "O2 sensor delayed response - rich to lean - bank 2 sensor 2"
+ },
+ {
+  "id": "c2240",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Abgasprobe fehlerhaft (Undichtigkeit?)",
+  "en": "O2 sensor exhaust sample error - bank 1 sensor 1"
+ },
+ {
+  "id": "c2241",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Abgasprobe fehlerhaft (Undichtigkeit?)",
+  "en": "O2 sensor exhaust sample error - bank 2 sensor 1"
+ },
+ {
+  "id": "c2242",
+  "de": "Lambdasondenheizung ",
+  "en": "O2 sensor heater "
+ },
+ {
+  "id": "c2243",
+  "de": "Lambdasondenheizung Bank 1 Sonde 1",
+  "en": "O2 sensor heater bank 1 sensor 1"
+ },
+ {
+  "id": "c2244",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - elektrischer Fehler",
+  "en": "O2 sensor heater bank 1 sensor 1 - electrical malfunction"
+ },
+ {
+  "id": "c2245",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - Kurzschluss nach Plus",
+  "en": "O2 sensor heater bank 1 sensor 1 - short to positive"
+ },
+ {
+  "id": "c2246",
+  "de": "Lambdasondenheizung Bank 1 Sonde 2",
+  "en": "O2 sensor heater bank 1 sensor 2"
+ },
+ {
+  "id": "c2247",
+  "de": "Lambdasondenheizung Bank 1, Sonde 2 - Kurzschluss nach Plus",
+  "en": "O2 sensor heater bank 1 sensor 2 - short to positive"
+ },
+ {
+  "id": "c2248",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 1 sensor 1"
+ },
+ {
+  "id": "c2249",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 1 sensor 2"
+ }
+]

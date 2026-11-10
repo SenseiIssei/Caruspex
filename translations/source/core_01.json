@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c250",
+  "de": "Nockenwelle B (Auslass) Bank 1 - Verstellung reagiert zu langsam",
+  "en": "B camshaft position (exhaust) bank 1 - slow response"
+ },
+ {
+  "id": "c251",
+  "de": "Nockenwelle B (Auslass) Bank 1 - Steuerzeit zu früh oder Systemfunktion",
+  "en": "B camshaft position (exhaust) bank 1 - timing over-advanced or system performance"
+ },
+ {
+  "id": "c252",
+  "de": "Nockenwelle B (Auslass) Bank 1 - Steuerzeit zu spät",
+  "en": "B camshaft position (exhaust) bank 1 - timing over-retarded"
+ },
+ {
+  "id": "c253",
+  "de": "Nockenwelle B (Auslass) Bank 2 - Verstellung reagiert zu langsam",
+  "en": "B camshaft position (exhaust) bank 2 - slow response"
+ },
+ {
+  "id": "c254",
+  "de": "Nockenwelle B (Auslass) Bank 2 - Steuerzeit zu früh oder Systemfunktion",
+  "en": "B camshaft position (exhaust) bank 2 - timing over-advanced or system performance"
+ },
+ {
+  "id": "c255",
+  "de": "Nockenwelle B (Auslass) Bank 2 - Steuerzeit zu spät",
+  "en": "B camshaft position (exhaust) bank 2 - timing over-retarded"
+ },
+ {
+  "id": "c256",
+  "de": "Nockenwellenversteller B (Auslass) Bank 1 - Stromkreis",
+  "en": "B camshaft position actuator (exhaust) bank 1 - circuit"
+ },
+ {
+  "id": "c257",
+  "de": "Nockenwellenversteller B (Auslass) Bank 2 - Stromkreis",
+  "en": "B camshaft position actuator (exhaust) bank 2 - circuit"
+ },
+ {
+  "id": "c258",
+  "de": "Nockenwellenversteller B Bank 1 - Steuerkreis Spannung zu hoch",
+  "en": "B camshaft position actuator control circuit high - bank 1"
+ },
+ {
+  "id": "c259",
+  "de": "Nockenwellenversteller B Bank 2 - Steuerkreis Spannung zu hoch",
+  "en": "B camshaft position actuator control circuit high - bank 2"
+ },
+ {
+  "id": "c260",
+  "de": "Nockenwellenversteller B Bank 1 - Steuerkreis Spannung zu niedrig",
+  "en": "B camshaft position actuator control circuit low - bank 1"
+ },
+ {
+  "id": "c261",
+  "de": "Nockenwellenversteller B Bank 2 - Steuerkreis Spannung zu niedrig",
+  "en": "B camshaft position actuator control circuit low - bank 2"
+ },
+ {
+  "id": "c262",
+  "de": "Luftdrucksensor - Stromkreis",
+  "en": "BARO sensor circuit"
+ },
+ {
+  "id": "c263",
+  "de": "Luftdrucksensor - Signal zu hoch",
+  "en": "BARO sensor circuit high input"
+ },
+ {
+  "id": "c264",
+  "de": "Luftdrucksensor - Signal zu niedrig",
+  "en": "BARO sensor circuit low input"
+ },
+ {
+  "id": "c265",
+  "de": "Luftdrucksensor - Signal unplausibel",
+  "en": "BARO sensor circuit range/performance"
+ },
+ {
+  "id": "c266",
+  "de": "BMW-Fehlercode. Die genaue Beschreibung steht in der Werkstattsoftware (ISTA); mit dem Code findet man sie auch in Foren und Fehlerlisten.",
+  "en": "BMW fault code. The exact description is in the workshop software (ISTA); forums and fault lists find it by the code as well."
+ },
+ {
+  "id": "c267",
+  "de": "BMW-Rundstecker mit 20 Polen im Motorraum. Ein ELM327 versteht ihn nicht, dafür braucht es ein BMW-Diagnosegerät.",
+  "en": "BMW round 20-pin plug in the engine bay. An ELM327 does not understand it, that takes a BMW diagnostic tool."
+ },
+ {
+  "id": "c268",
+  "de": "BMW-Rundstecker, 20 Pole",
+  "en": "BMW round plug, 20 pins"
+ },
+ {
+  "id": "c269",
+  "de": "BMW/Mini",
+  "en": "BMW/Mini"
+ },
+ {
+  "id": "c270",
+  "de": "BOL kWh",
+  "en": "BOL kWh"
+ },
+ {
+  "id": "c271",
+  "de": "Pufferspannung (Dauerplus) - Fehlfunktion",
+  "en": "Back-up voltage circuit malfunction"
+ },
+ {
+  "id": "c272",
+  "de": "Luftdruck (barometrisch)",
+  "en": "Barometric pressure"
+ },
+ {
+  "id": "c273",
+  "de": "Luftdrucksensor - Stromkreis",
+  "en": "Barometric pressure - circuit"
+ },
+ {
+  "id": "c274",
+  "de": "Luftdrucksensor - Signal zu hoch",
+  "en": "Barometric pressure - circuit high"
+ },
+ {
+  "id": "c275",
+  "de": "Luftdrucksensor - Signal setzt zeitweise aus",
+  "en": "Barometric pressure - circuit intermittent"
+ },
+ {
+  "id": "c276",
+  "de": "Luftdrucksensor - Signal zu niedrig",
+  "en": "Barometric pressure - circuit low"
+ },
+ {
+  "id": "c277",
+  "de": "Luftdrucksensor - Signal unplausibel",
+  "en": "Barometric pressure - circuit range/performance"
+ },
+ {
+  "id": "c278",
+  "de": "Luftdruck zu niedrig",
+  "en": "Barometric pressure too low"
+ },
+ {
+  "id": "c279",
+  "de": "Grundeinstellung ",
+  "en": "Basic settings "
+ },
+ {
+  "id": "c280",
+  "de": "Strom",
+  "en": "Batt A"
+ },
+ {
+  "id": "c281",
+  "de": "Akku Temp.",
+  "en": "Batt T"
+ },
+ {
+  "id": "c282",
+  "de": "Temp. Mittel",
+  "en": "Batt T avg"
+ },
+ {
+  "id": "c283",
+  "de": "Temp. max",
+  "en": "Batt T max"
+ },
+ {
+  "id": "c284",
+  "de": "Temp. min",
+  "en": "Batt T min"
+ },
+ {
+  "id": "c285",
+  "de": "Fühler 1",
+  "en": "Batt T1"
+ },
+ {
+  "id": "c286",
+  "de": "Fühler 2",
+  "en": "Batt T2"
+ },
+ {
+  "id": "c287",
+  "de": "Fühler 4",
+  "en": "Batt T4"
+ },
+ {
+  "id": "c288",
+  "de": "Spannung",
+  "en": "Batt V"
+ },
+ {
+  "id": "c289",
+  "de": "Zulauf",
+  "en": "Batt inlet T"
+ },
+ {
+  "id": "c290",
+  "de": "Leistung",
+  "en": "Batt kW"
+ },
+ {
+  "id": "c291",
+  "de": "Batterie",
+  "en": "Battery"
+ },
+ {
+  "id": "c292",
+  "de": "Batterie und Lichtmaschine",
+  "en": "Battery and charging"
+ },
+ {
+  "id": "c293",
+  "de": "Pufferleitung Batterie (Dauerplus) - Fehlfunktion",
+  "en": "Battery back-up line malfunction"
+ },
+ {
+  "id": "c294",
+  "de": "Akkukapazität",
+  "en": "Battery capacity"
+ },
+ {
+  "id": "c295",
+  "de": "Batteriesteuerung (LBC)",
+  "en": "Battery controller (LBC)"
+ },
+ {
+  "id": "c296",
+  "de": "Batteriestrom",
+  "en": "Battery current"
+ },
+ {
+  "id": "c297",
+  "de": "Batteriestrom (positiv = Entladen)",
+  "en": "Battery current (positive = discharge)"
+ },
+ {
+  "id": "c298",
+  "de": "Temperatur der Akkuheizung",
+  "en": "Battery heater temperature"
+ },
+ {
+  "id": "c299",
+  "de": "Akkutemperatur Kühlmittelzulauf",
+  "en": "Battery inlet temperature"
+ },
+ {
+  "id": "c300",
+  "de": "Batteriemanagement (BMS)",
+  "en": "Battery management (BMS)"
+ },
+ {
+  "id": "c301",
+  "de": "Akkumodul 1 Temperatur",
+  "en": "Battery module 1 temperature"
+ },
+ {
+  "id": "c302",
+  "de": "Akkumodul 10 Temperatur",
+  "en": "Battery module 10 temperature"
+ },
+ {
+  "id": "c303",
+  "de": "Akkumodul 11 Temperatur",
+  "en": "Battery module 11 temperature"
+ },
+ {
+  "id": "c304",
+  "de": "Akkumodul 12 Temperatur",
+  "en": "Battery module 12 temperature"
+ },
+ {
+  "id": "c305",
+  "de": "Akkumodul 2 Temperatur",
+  "en": "Battery module 2 temperature"
+ },
+ {
+  "id": "c306",
+  "de": "Akkumodul 3 Temperatur",
+  "en": "Battery module 3 temperature"
+ },
+ {
+  "id": "c307",
+  "de": "Akkumodul 4 Temperatur",
+  "en": "Battery module 4 temperature"
+ },
+ {
+  "id": "c308",
+  "de": "Akkumodul 5 Temperatur",
+  "en": "Battery module 5 temperature"
+ },
+ {
+  "id": "c309",
+  "de": "Akkumodul 6 Temperatur",
+  "en": "Battery module 6 temperature"
+ },
+ {
+  "id": "c310",
+  "de": "Akkumodul 7 Temperatur",
+  "en": "Battery module 7 temperature"
+ },
+ {
+  "id": "c311",
+  "de": "Akkumodul 8 Temperatur",
+  "en": "Battery module 8 temperature"
+ },
+ {
+  "id": "c312",
+  "de": "Akkumodul 9 Temperatur",
+  "en": "Battery module 9 temperature"
+ },
+ {
+  "id": "c313",
+  "de": "Batterieleistung (positiv = Entladen)",
+  "en": "Battery power (positive = discharge)"
+ },
+ {
+  "id": "c314",
+  "de": "Akkutemperatur (EVC)",
+  "en": "Battery temperature (EVC)"
+ },
+ {
+  "id": "c315",
+  "de": "Akkutemperatur Mittel (Batteriesteuerung)",
+  "en": "Battery temperature average (battery controller)"
+ },
+ {
+  "id": "c316",
+  "de": "Akkutemperatur höchste",
+  "en": "Battery temperature maximum"
+ },
+ {
+  "id": "c317",
+  "de": "Akkutemperatur niedrigste",
+  "en": "Battery temperature minimum"
+ },
+ {
+  "id": "c318",
+  "de": "Batterietemperatursensor - Stromkreis",
+  "en": "Battery temperature sensor - circuit"
+ },
+ {
+  "id": "c319",
+  "de": "Batterietemperatursensor - Signal zu hoch",
+  "en": "Battery temperature sensor - circuit high"
+ },
+ {
+  "id": "c320",
+  "de": "Batterietemperatursensor - Signal zu niedrig",
+  "en": "Battery temperature sensor - circuit low"
+ },
+ {
+  "id": "c321",
+  "de": "Akkutemperatur Fühler 1",
+  "en": "Battery temperature sensor 1"
+ },
+ {
+  "id": "c322",
+  "de": "Akkutemperatur Fühler 2",
+  "en": "Battery temperature sensor 2"
+ },
+ {
+  "id": "c323",
+  "de": "Akkutemperatur Fühler 4",
+  "en": "Battery temperature sensor 4"
+ },
+ {
+  "id": "c324",
+  "de": "Batterietemperatursensor - Signal unplausibel",
+  "en": "Battery temperature sensor circuit range/performance"
+ },
+ {
+  "id": "c325",
+  "de": "Batteriespannung",
+  "en": "Battery voltage"
+ },
+ {
+  "id": "c326",
+  "de": "Batteriespannung zu hoch",
+  "en": "Battery voltage high"
+ },
+ {
+  "id": "c327",
+  "de": "Batteriespannung zu niedrig",
+  "en": "Battery voltage low"
+ },
+ {
+  "id": "c328",
+  "de": "Bordspannung Klemme 30: Spannung zu klein",
+  "en": "Battery voltage terminal 30: voltage too low"
+ },
+ {
+  "id": "c329",
+  "de": "Bordspannung: Batterie und Lichtmaschine",
+  "en": "Battery voltage: battery and alternator"
+ },
+ {
+  "id": "c330",
+  "de": "Baudrate ",
+  "en": "Baud rate "
+ },
+ {
+  "id": "c331",
+  "de": "Hinter oder unter dem Aschenbecher in der Mittelkonsole.",
+  "en": "Behind or below the ashtray in the centre console."
+ },
+ {
+  "id": "c332",
+  "de": "Belarus",
+  "en": "Belarus"
+ },
+ {
+  "id": "c333",
+  "de": "Belgien",
+  "en": "Belgium"
+ },
+ {
+  "id": "c334",
+  "de": "Zünder für Gurtstraffer Fahrerseite N153",
+  "en": "Belt tensioner igniter, driver side N153"
+ },
+ {
+  "id": "c335",
+  "de": "Zünder für Gurtstraffer Beifahrerseite N154",
+  "en": "Belt tensioner igniter, passenger side N154"
+ },
+ {
+  "id": "c336",
+  "de": "Bifuel, fährt mit CNG",
+  "en": "Bifuel running CNG"
+ },
+ {
+  "id": "c337",
+  "de": "Bifuel, fährt mit LPG",
+  "en": "Bifuel running LPG"
+ },
+ {
+  "id": "c338",
+  "de": "Bifuel, fährt mit Diesel",
+  "en": "Bifuel running diesel"
+ },
+ {
+  "id": "c339",
+  "de": "Bifuel, elektrisch und Verbrenner",
+  "en": "Bifuel running electric and combustion"
+ },
+ {
+  "id": "c340",
+  "de": "Bifuel, fährt elektrisch",
+  "en": "Bifuel running electricity"
+ },
+ {
+  "id": "c341",
+  "de": "Bifuel, fährt mit Ethanol",
+  "en": "Bifuel running ethanol"
+ },
+ {
+  "id": "c342",
+  "de": "Bifuel, fährt mit Benzin",
+  "en": "Bifuel running gasoline"
+ },
+ {
+  "id": "c343",
+  "de": "Bifuel, fährt mit Methanol",
+  "en": "Bifuel running methanol"
+ },
+ {
+  "id": "c344",
+  "de": "Bifuel, fährt mit Propan",
+  "en": "Bifuel running propane"
+ },
+ {
+  "id": "c345",
+  "de": "Bitnummer erwartet",
+  "en": "Bit number expected"
+ },
+ {
+  "id": "c346",
+  "de": "Bitnummer zu groß",
+  "en": "Bit number too large"
+ },
+ {
+  "id": "c347",
+  "de": "Bitmuster",
+  "en": "Bit pattern"
+ },
+ {
+  "id": "c348",
+  "de": "Blockende fehlt, stattdessen ",
+  "en": "Block end missing, got "
+ },
+ {
+  "id": "c349",
+  "de": "Karosserie (von SAE reserviert)",
+  "en": "Body (reserved by SAE)"
+ },
+ {
+  "id": "c350",
+  "de": "Karosserie und Komfort",
+  "en": "Body and comfort"
+ },
+ {
+  "id": "c351",
+  "de": "Karosserie und Komfortelektronik",
+  "en": "Body and comfort electronics"
+ },
+ {
+  "id": "c352",
+  "de": "Bordnetzrechner (BSI)",
+  "en": "Body computer (BSI)"
+ },
+ {
+  "id": "c353",
+  "de": "Bordnetzsteuergerät (BCM)",
+  "en": "Body control (BCM)"
+ },
+ {
+  "id": "c354",
+  "de": "Zentralelektronik",
+  "en": "Body electronics"
+ },
+ {
+  "id": "c355",
+  "de": "Karosserieelektronik (FEM/BDC)",
+  "en": "Body electronics (FEM/BDC)"
+ },
+ {
+  "id": "c356",
+  "de": "Karosserie, Komfort und Rückhaltesysteme",
+  "en": "Body, comfort and restraint systems"
+ },
+ {
+  "id": "c357",
+  "de": "Ladedruck",
+  "en": "Boost pressure"
+ },
+ {
+  "id": "c358",
+  "de": "Ladedruck - Regeldifferenz",
+  "en": "Boost pressure - control deviation"
+ },
+ {
+  "id": "c359",
+  "de": "Ladedruck A",
+  "en": "Boost pressure A"
+ },
+ {
+  "id": "c360",
+  "de": "Ladedruck B",
+  "en": "Boost pressure B"
+ },
+ {
+  "id": "c361",
+  "de": "Ladedruckregelung",
+  "en": "Boost pressure control"
+ },
+ {
+  "id": "c362",
+  "de": "Ladedruckregelung - Regelgrenze überschritten",
+  "en": "Boost pressure control - above control limit"
+ },
+ {
+  "id": "c363",
+  "de": "Ladedruckregelung - Regelgrenze unterschritten",
+  "en": "Boost pressure control - below control limit"
+ },
+ {
+  "id": "c364",
+  "de": "Ladedruckregelung A",
+  "en": "Boost pressure control A"
+ },
+ {
+  "id": "c365",
+  "de": "Ladedruckregelung B",
+  "en": "Boost pressure control B"
+ },
+ {
+  "id": "c366",
+  "de": "Magnetventil für Ladedruckbegrenzung N75",
+  "en": "Boost pressure control valve N75"
+ },
+ {
+  "id": "c367",
+  "de": "Ladedruck-Magnetventil - Kurzschluss nach Masse",
+  "en": "Boost pressure solenoid valve - short to ground"
+ },
+ {
+  "id": "c368",
+  "de": "Ladedruck-Magnetventil - Kurzschluss nach Plus",
+  "en": "Boost pressure solenoid valve - short to positive"
+ },
+ {
+  "id": "c369",
+  "de": "Ladedruck-Obergrenze überschritten",
+  "en": "Boost pressure upper limit exceeded"
+ },
+ {
+  "id": "c370",
+  "de": "Bremskraftverstärker-Drucksensor - Stromkreis",
+  "en": "Brake booster pressure sensor - circuit"
+ },
+ {
+  "id": "c371",
+  "de": "Bremskraftverstärker-Drucksensor - Signal zu hoch",
+  "en": "Brake booster pressure sensor - circuit high"
+ },
+ {
+  "id": "c372",
+  "de": "Bremskraftverstärker-Drucksensor - Signal setzt zeitweise aus",
+  "en": "Brake booster pressure sensor - circuit intermittent"
+ },
+ {
+  "id": "c373",
+  "de": "Bremskraftverstärker-Drucksensor - Signal zu niedrig",
+  "en": "Brake booster pressure sensor - circuit low"
+ },
+ {
+  "id": "c374",
+  "de": "Bremskraftverstärker-Drucksensor - Signal unplausibel",
+  "en": "Brake booster pressure sensor - circuit range/performance"
+ },
+ {
+  "id": "c375",
+  "de": "Bremsensteuergerät: keine Verbindung",
+  "en": "Brake control unit: no communication"
+ },
+ {
+  "id": "c376",
+  "de": "Bremslichtschalter F",
+  "en": "Brake light switch F"
+ },
+ {
+  "id": "c377",
+  "de": "Bremslichtschalter am Pedal defekt oder verstellt\nStecker am Schalter\nBremslichtlampen durchgebrannt",
+  "en": "Brake light switch at the pedal faulty or misadjusted\nSwitch connector\nBurnt-out brake light bulbs"
+ },
+ {
+  "id": "c378",
+  "de": "Bremspedal und Gaspedal gleichzeitig betätigt (unplausibel)",
+  "en": "Brake pedal position / accelerator pedal position incompatible"
+ },
+ {
+  "id": "c379",
+  "de": "Bremsdruckgeber 1 G201",
+  "en": "Brake pressure sensor 1 G201"
+ },
+ {
+  "id": "c380",
+  "de": "Bremsschalter - Fehlfunktion",
+  "en": "Brake switch"
+ },
+ {
+  "id": "c381",
+  "de": "Bremslichtschalter A - Stromkreis",
+  "en": "Brake switch A - circuit"
+ },
+ {
+  "id": "c382",
+  "de": "Bremslichtschalter A - Signal zu hoch",
+  "en": "Brake switch A - circuit high"
+ },
+ {
+  "id": "c383",
+  "de": "Bremslichtschalter A - Signal zu niedrig",
+  "en": "Brake switch A - circuit low"
+ },
+ {
+  "id": "c384",
+  "de": "Bremslichtschalter A und B passen nicht zusammen",
+  "en": "Brake switch A/B correlation"
+ },
+ {
+  "id": "c385",
+  "de": "Bremsschalter B - Stromkreis",
+  "en": "Brake switch B circuit"
+ },
+ {
+  "id": "c386",
+  "de": "Bremsschalter B - Signal zu hoch",
+  "en": "Brake switch B circuit high"
+ },
+ {
+  "id": "c387",
+  "de": "Bremsschalter B - Signal zu niedrig",
+  "en": "Brake switch B circuit low"
+ },
+ {
+  "id": "c388",
+  "de": "Bremsen und ABS",
+  "en": "Brakes and ABS"
+ },
+ {
+  "id": "c389",
+  "de": "Bremsen und ESC",
+  "en": "Brakes and ESC"
+ },
+ {
+  "id": "c390",
+  "de": "Bremsen und ESP",
+  "en": "Brakes and ESP"
+ },
+ {
+  "id": "c391",
+  "de": "Bremsen, ABS und ESP",
+  "en": "Brakes, ABS and stability control"
+ },
+ {
+  "id": "c392",
+  "de": "Brasilien",
+  "en": "Brazil"
+ },
+ {
+  "id": "c393",
+  "de": "Brasilien OBD Phase 1",
+  "en": "Brazil OBD phase 1"
+ },
+ {
+  "id": "c394",
+  "de": "Brasilien OBD Phase 2",
+  "en": "Brazil OBD phase 2"
+ },
+ {
+  "id": "c395",
+  "de": "Bulgarien",
+  "en": "Bulgaria"
+ },
+ {
+  "id": "c396",
+  "de": "Glühkerze durchgebrannt\nStecker an der Glühkerze lose\nKabel beschädigt\nGlühzeitsteuergerät",
+  "en": "Burnt-out glow plug\nLoose glow plug connector\nDamaged wiring\nGlow plug control module"
+ },
+ {
+  "id": "c397",
+  "de": "Heizelement der Sonde durchgebrannt, die Sonde muss getauscht werden\nSicherung der Sondenheizung\nStecker korrodiert oder Kabel durchgescheuert",
+  "en": "Burnt-out sensor heater, the sensor has to be replaced\nOxygen sensor heater fuse\nCorroded connector or chafed wire"
+ },
+ {
+  "id": "c398",
+  "de": "Byte wie A oder AB erwartet",
+  "en": "Byte like A or AB expected"
+ },
+ {
+  "id": "c399",
+  "de": "Ab 2003 durchgängig CAN.",
+  "en": "CAN throughout from 2003."
+ },
+ {
+  "id": "c400",
+  "de": "CAN, ab Werk EOBD-konform.",
+  "en": "CAN, EOBD compliant from the factory."
+ },
+ {
+  "id": "c401",
+  "de": "CAN, EOBD nur eingeschränkt.",
+  "en": "CAN, EOBD only partly supported."
+ },
+ {
+  "id": "c402",
+  "de": "CAN.",
+  "en": "CAN."
+ },
+ {
+  "id": "c403",
+  "de": "CNG (Erdgas)",
+  "en": "CNG (natural gas)"
+ },
+ {
+  "id": "c404",
+  "de": "Innenraum",
+  "en": "Cabin"
+ },
+ {
+  "id": "c405",
+  "de": "Innenraum: Airbag, Gurtstraffer, Komfortelektronik",
+  "en": "Cabin: airbags, seat belt pretensioners, comfort electronics"
+ },
+ {
+  "id": "c406",
+  "de": "Motorlast berechnet",
+  "en": "Calculated engine load"
+ },
+ {
+  "id": "c407",
+  "de": "Kamera-Fahrerassistenz (KAFAS)",
+  "en": "Camera driver assistance (KAFAS)"
+ },
+ {
+  "id": "c408",
+  "de": "Nockenwellenversteller und Steuertrieb, Kette oder Riemen prüfen",
+  "en": "Camshaft adjusters and timing drive, check the chain or belt"
+ },
+ {
+  "id": "c409",
+  "de": "Ventil für Nockenwellenverstellung N205",
+  "en": "Camshaft adjustment valve N205"
+ },
+ {
+  "id": "c410",
+  "de": "Nockenwellengeber A Bank 1 - Stromkreis",
+  "en": "Camshaft position sensor A bank 1 (or single sensor) - circuit"
+ },
+ {
+  "id": "c411",
+  "de": "Nockenwellengeber A Bank 1 - Signal zu hoch",
+  "en": "Camshaft position sensor A bank 1 (or single sensor) - circuit high"
+ },
+ {
+  "id": "c412",
+  "de": "Nockenwellengeber A Bank 1 - Signal setzt zeitweise aus",
+  "en": "Camshaft position sensor A bank 1 (or single sensor) - circuit intermittent"
+ },
+ {
+  "id": "c413",
+  "de": "Nockenwellengeber A Bank 1 - Signal zu niedrig",
+  "en": "Camshaft position sensor A bank 1 (or single sensor) - circuit low"
+ },
+ {
+  "id": "c414",
+  "de": "Nockenwellengeber A Bank 1 - Signal unplausibel",
+  "en": "Camshaft position sensor A bank 1 (or single sensor) - circuit range/performance"
+ },
+ {
+  "id": "c415",
+  "de": "Nockenwellengeber A Bank 2 - Stromkreis",
+  "en": "Camshaft position sensor A bank 2 - circuit"
+ },
+ {
+  "id": "c416",
+  "de": "Nockenwellengeber A Bank 2 - Signal zu hoch",
+  "en": "Camshaft position sensor A bank 2 - circuit high"
+ },
+ {
+  "id": "c417",
+  "de": "Nockenwellengeber A Bank 2 - Signal setzt zeitweise aus",
+  "en": "Camshaft position sensor A bank 2 - circuit intermittent"
+ },
+ {
+  "id": "c418",
+  "de": "Nockenwellengeber A Bank 2 - Signal zu niedrig",
+  "en": "Camshaft position sensor A bank 2 - circuit low"
+ },
+ {
+  "id": "c419",
+  "de": "Nockenwellengeber A Bank 2 - Signal unplausibel",
+  "en": "Camshaft position sensor A bank 2 - circuit range/performance"
+ },
+ {
+  "id": "c420",
+  "de": "Nockenwellengeber B Bank 1 - Stromkreis",
+  "en": "Camshaft position sensor B bank 1 - circuit"
+ },
+ {
+  "id": "c421",
+  "de": "Nockenwellengeber B Bank 1 - Signal zu hoch",
+  "en": "Camshaft position sensor B bank 1 - circuit high"
+ },
+ {
+  "id": "c422",
+  "de": "Nockenwellengeber B Bank 1 - Signal setzt zeitweise aus",
+  "en": "Camshaft position sensor B bank 1 - circuit intermittent"
+ },
+ {
+  "id": "c423",
+  "de": "Nockenwellengeber B Bank 1 - Signal zu niedrig",
+  "en": "Camshaft position sensor B bank 1 - circuit low"
+ },
+ {
+  "id": "c424",
+  "de": "Nockenwellengeber B Bank 1 - Signal unplausibel",
+  "en": "Camshaft position sensor B bank 1 - circuit range/performance"
+ },
+ {
+  "id": "c425",
+  "de": "Nockenwellengeber B Bank 2 - Stromkreis",
+  "en": "Camshaft position sensor B bank 2 - circuit"
+ },
+ {
+  "id": "c426",
+  "de": "Nockenwellengeber B Bank 2 - Signal zu hoch",
+  "en": "Camshaft position sensor B bank 2 - circuit high"
+ },
+ {
+  "id": "c427",
+  "de": "Nockenwellengeber B Bank 2 - Signal setzt zeitweise aus",
+  "en": "Camshaft position sensor B bank 2 - circuit intermittent"
+ },
+ {
+  "id": "c428",
+  "de": "Nockenwellengeber B Bank 2 - Signal zu niedrig",
+  "en": "Camshaft position sensor B bank 2 - circuit low"
+ },
+ {
+  "id": "c429",
+  "de": "Nockenwellengeber B Bank 2 - Signal unplausibel",
+  "en": "Camshaft position sensor B bank 2 - circuit range/performance"
+ },
+ {
+  "id": "c430",
+  "de": "Nockenwellengeber G40",
+  "en": "Camshaft position sensor G40"
+ },
+ {
+  "id": "c431",
+  "de": "Nockenwellensignal-Ausgang - Stromkreis oder Unterbrechung",
+  "en": "Camshaft position signal output circuit/open"
+ },
+ {
+  "id": "c432",
+  "de": "Kanada",
+  "en": "Canada"
+ },
+ {
+  "id": "c433",
+  "de": "Spülmengen-Magnetventil Aktivkohlefilter - Fehlfunktion",
+  "en": "Canister purge volume control solenoid valve"
+ },
+ {
+  "id": "c434",
+  "de": "Schnittstelle lässt sich nicht einstellen: ",
+  "en": "Cannot configure the port: "
+ },
+ {
+  "id": "c435",
+  "de": "Die Aufnahme lässt sich nicht anlegen: ",
+  "en": "Cannot create the recording: "
+ },
+ {
+  "id": "c436",
+  "de": "Die Aufnahme lässt sich nicht öffnen: ",
+  "en": "Cannot open the recording: "
+ },
+ {
+  "id": "c437",
+  "de": "Adresse ",
+  "en": "Cannot resolve address "
+ },
+ {
+  "id": "c438",
+  "de": "Quittung lässt sich nicht senden",
+  "en": "Cannot send acknowledgement"
+ },
+ {
+  "id": "c439",
+  "de": "Blockende lässt sich nicht senden",
+  "en": "Cannot send block end"
+ },
+ {
+  "id": "c440",
+  "de": "Antwort auf die Schlüsselbytes lässt sich nicht senden",
+  "en": "Cannot send the reply to the key bytes"
+ },
+ {
+  "id": "c441",
+  "de": "Baudrate lässt sich nach der Weckadresse nicht setzen",
+  "en": "Cannot set the baud rate after the wake-up address"
+ },
+ {
+  "id": "c442",
+  "de": "Netzwerk lässt sich nicht starten",
+  "en": "Cannot start networking"
+ },
+ {
+  "id": "c443",
+  "de": "Netzwerk lässt sich nicht starten.",
+  "en": "Cannot start networking."
+ },
+ {
+  "id": "c444",
+  "de": "Kapazität",
+  "en": "Capacity"
+ },
+ {
+  "id": "c445",
+  "de": "Caruspex Demo",
+  "en": "Caruspex demo"
+ },
+ {
+  "id": "c446",
+  "de": "Katalysator",
+  "en": "Catalyst"
+ },
+ {
+  "id": "c447",
+  "de": "Katalysator Bank 1",
+  "en": "Catalyst bank 1"
+ },
+ {
+  "id": "c448",
+  "de": "Katalysator Bank 1, Wirkungsgrad",
+  "en": "Catalyst bank 1, efficiency"
+ },
+ {
+  "id": "c449",
+  "de": "Katalysator Bank 2",
+  "en": "Catalyst bank 2"
+ },
+ {
+  "id": "c450",
+  "de": "Katalysator Bank 2, Wirkungsgrad",
+  "en": "Catalyst bank 2, efficiency"
+ },
+ {
+  "id": "c451",
+  "de": "Katalysatorheizung Bank 1 - Steuerkreis",
+  "en": "Catalyst heater control circuit - bank 1"
+ },
+ {
+  "id": "c452",
+  "de": "Katalysatorheizung Bank 2 - Steuerkreis",
+  "en": "Catalyst heater control circuit - bank 2"
+ },
+ {
+  "id": "c453",
+  "de": "Katalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "Catalyst system efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c454",
+  "de": "Katalysator Bank 2 - Wirkungsgrad zu gering",
+  "en": "Catalyst system efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c455",
+  "de": "Katalysatortemperatur Bank 1 Sonde 1",
+  "en": "Catalyst temperature bank 1 sensor 1"
+ },
+ {
+  "id": "c456",
+  "de": "Katalysatortemperatur Bank 1 Sonde 2",
+  "en": "Catalyst temperature bank 1 sensor 2"
+ },
+ {
+  "id": "c457",
+  "de": "Katalysatortemperatur Bank 2 Sonde 1",
+  "en": "Catalyst temperature bank 2 sensor 1"
+ },
+ {
+  "id": "c458",
+  "de": "Katalysatortemperatur Bank 2 Sonde 2",
+  "en": "Catalyst temperature bank 2 sensor 2"
+ },
+ {
+  "id": "c459",
+  "de": "Katalysator-Temperatursensor Bank 1 - Stromkreis",
+  "en": "Catalyst temperature sensor bank 1 - circuit"
+ },
+ {
+  "id": "c460",
+  "de": "Katalysator-Temperatursensor Bank 1 - Signal zu hoch",
+  "en": "Catalyst temperature sensor bank 1 - circuit high"
+ },
+ {
+  "id": "c461",
+  "de": "Katalysator-Temperatursensor Bank 1 - Signal zu niedrig",
+  "en": "Catalyst temperature sensor bank 1 - circuit low"
+ },
+ {
+  "id": "c462",
+  "de": "Katalysator-Temperatursensor Bank 1 - Signal unplausibel",
+  "en": "Catalyst temperature sensor bank 1 - circuit range/performance"
+ },
+ {
+  "id": "c463",
+  "de": "Katalysator-Temperatursensor Bank 2 - Stromkreis",
+  "en": "Catalyst temperature sensor bank 2 - circuit"
+ },
+ {
+  "id": "c464",
+  "de": "Katalysator-Temperatursensor Bank 2 - Signal zu hoch",
+  "en": "Catalyst temperature sensor bank 2 - circuit high"
+ },
+ {
+  "id": "c465",
+  "de": "Katalysator-Temperatursensor Bank 2 - Signal zu niedrig",
+  "en": "Catalyst temperature sensor bank 2 - circuit low"
+ },
+ {
+  "id": "c466",
+  "de": "Katalysator-Temperatursensor Bank 2 - Signal unplausibel",
+  "en": "Catalyst temperature sensor bank 2 - circuit range/performance"
+ },
+ {
+  "id": "c467",
+  "de": "Katalysator und die Sonden davor und dahinter",
+  "en": "Catalytic converter and the sensors before and after it"
+ },
+ {
+  "id": "c468",
+  "de": "Spreizung",
+  "en": "Cell V diff"
+ },
+ {
+  "id": "c469",
+  "de": "Zelle max",
+  "en": "Cell V max"
+ },
+ {
+  "id": "c470",
+  "de": "Zelle min",
+  "en": "Cell V min"
+ },
+ {
+  "id": "c471",
+  "de": "Nr. max",
+  "en": "Cell no max"
+ },
+ {
+  "id": "c472",
+  "de": "Nr. min",
+  "en": "Cell no min"
+ },
+ {
+  "id": "c473",
+  "de": "Spreizung der Zellspannungen",
+  "en": "Cell voltage spread"
+ },
+ {
+  "id": "c474",
+  "de": "Zelle mit der höchsten Spannung",
+  "en": "Cell with the highest voltage"
+ },
+ {
+  "id": "c475",
+  "de": "Zelle mit der niedrigsten Spannung",
+  "en": "Cell with the lowest voltage"
+ },
+ {
+  "id": "c476",
+  "de": "Zentralelektronik",
+  "en": "Central electronics"
+ },
+ {
+  "id": "c477",
+  "de": "Zentralelektronik (UCH)",
+  "en": "Central electronics (UCH)"
+ },
+ {
+  "id": "c478",
+  "de": "Zentralverriegelung Fahrertür",
+  "en": "Central locking, driver door"
+ },
+ {
+  "id": "c479",
+  "de": "Zentralverriegelung Beifahrertür",
+  "en": "Central locking, passenger door"
+ },
+ {
+  "id": "c480",
+  "de": "Ladeluftkühler",
+  "en": "Charge air cooler temperature"
+ },
+ {
+  "id": "c481",
+  "de": "Ladelufttemperatur Bank 1 Sensor 1",
+  "en": "Charge air temperature bank 1 sensor 1"
+ },
+ {
+  "id": "c482",
+  "de": "Ladelufttemperatur Bank 1 Sensor 2",
+  "en": "Charge air temperature bank 1 sensor 2"
+ },
+ {
+  "id": "c483",
+  "de": "Ladelufttemperatur Bank 2 Sensor 1",
+  "en": "Charge air temperature bank 2 sensor 1"
+ },
+ {
+  "id": "c484",
+  "de": "Ladelufttemperatur Bank 2 Sensor 2",
+  "en": "Charge air temperature bank 2 sensor 2"
+ },
+ {
+  "id": "c485",
+  "de": "Geladen Ah",
+  "en": "Charged Ah"
+ },
+ {
+  "id": "c486",
+  "de": "Geladen kWh",
+  "en": "Charged kWh"
+ },
+ {
+  "id": "c487",
+  "de": "Ladegerät",
+  "en": "Charger"
+ },
+ {
+  "id": "c488",
+  "de": "Lädt",
+  "en": "Charging"
+ },
+ {
+  "id": "c489",
+  "de": "Lädt (1 = ja)",
+  "en": "Charging (1 = yes)"
+ },
+ {
+  "id": "c490",
+  "de": "Ladespannung - Fehlfunktion",
+  "en": "Charging system voltage"
+ },
+ {
+  "id": "c491",
+  "de": "Ladespannung zu hoch",
+  "en": "Charging system voltage high"
+ },
+ {
+  "id": "c492",
+  "de": "Ladespannung zu niedrig",
+  "en": "Charging system voltage low"
+ },
+ {
+  "id": "c493",
+  "de": "Fahrwerk",
+  "en": "Chassis"
+ },
+ {
+  "id": "c494",
+  "de": "Fahrwerk (von SAE reserviert)",
+  "en": "Chassis (reserved by SAE)"
+ },
+ {
+  "id": "c495",
+  "de": "Fahrwerk: Bremsen, ABS, ESP, Lenkung",
+  "en": "Chassis: brakes, ABS, stability control, steering"
+ },
+ {
+  "id": "c496",
+  "de": "Motorkontrollleuchte",
+  "en": "Check engine light (MIL)"
+ },
+ {
+  "id": "c497",
+  "de": "Schlüsselbytes beim K-Line-Aufbau prüfen (Standardwert)",
+  "en": "Check key words on K-Line init (default value)"
+ },
+ {
+  "id": "c498",
+  "de": "12-Volt-Batterie prüfen\nKühlmittelstand im eigenen Behälter für den Wechselrichter ansehen\nIst noch genug Kraftstoff im Tank?",
+  "en": "Check the 12 volt battery\nLook at the coolant level in the separate inverter reservoir\nIs there enough fuel in the tank?"
+ },
+ {
+  "id": "c499",
+  "de": "Sicherungen für ABS prüfen\nBatteriespannung prüfen",
+  "en": "Check the ABS fuses\nCheck the battery voltage"
+ }
+]

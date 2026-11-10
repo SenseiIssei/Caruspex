@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c1500",
+  "de": "Nutzfahrzeug-OBD (HD OBD)",
+  "en": "Heavy duty OBD (HD OBD)"
+ },
+ {
+  "id": "c1501",
+  "de": "Nutzfahrzeug-OBD, teilweise (HD OBD-C)",
+  "en": "Heavy duty OBD, partial (HD OBD-C)"
+ },
+ {
+  "id": "c1502",
+  "de": "Hoch",
+  "en": "High"
+ },
+ {
+  "id": "c1503",
+  "de": "High-Speed-CAN-Bus - Leitung High - Spannung zu hoch",
+  "en": "High speed CAN - bus (+) high"
+ },
+ {
+  "id": "c1504",
+  "de": "High-Speed-CAN-Bus - Leitung High - Spannung zu niedrig",
+  "en": "High speed CAN - bus (+) low"
+ },
+ {
+  "id": "c1505",
+  "de": "High-Speed-CAN-Bus - Leitung High - Unterbrechung",
+  "en": "High speed CAN - bus (+) open"
+ },
+ {
+  "id": "c1506",
+  "de": "High-Speed-CAN-Bus - Leitung Low - Spannung zu hoch",
+  "en": "High speed CAN - bus (-) high"
+ },
+ {
+  "id": "c1507",
+  "de": "High-Speed-CAN-Bus - Leitung Low - Spannung zu niedrig",
+  "en": "High speed CAN - bus (-) low"
+ },
+ {
+  "id": "c1508",
+  "de": "High-Speed-CAN-Bus - Leitung Low - Unterbrechung",
+  "en": "High speed CAN - bus (-) open"
+ },
+ {
+  "id": "c1509",
+  "de": "High-Speed-CAN-Bus - Leitung Low hat Kurzschluss zu Leitung High",
+  "en": "High speed CAN - bus (-) shorted to bus (+)"
+ },
+ {
+  "id": "c1510",
+  "de": "High-Speed-CAN-Bus - Fehlfunktion",
+  "en": "High speed CAN - communication bus"
+ },
+ {
+  "id": "c1511",
+  "de": "High-Speed-CAN-Bus - Funktion",
+  "en": "High speed CAN - communication bus performance"
+ },
+ {
+  "id": "c1512",
+  "de": "Hochvoltbatterie (BECM)",
+  "en": "High voltage battery (BECM)"
+ },
+ {
+  "id": "c1513",
+  "de": "Hochvolt-Sicherheitsschleife (Interlock) - Stromkreis",
+  "en": "High voltage system interlock circuit"
+ },
+ {
+  "id": "c1514",
+  "de": "Hochvolt-Sicherheitsschleife (Interlock) - Spannung zu hoch",
+  "en": "High voltage system interlock circuit high"
+ },
+ {
+  "id": "c1515",
+  "de": "Höchste Zelltemperatur",
+  "en": "Highest cell temperature"
+ },
+ {
+  "id": "c1516",
+  "de": "Höchste Zellspannung",
+  "en": "Highest cell voltage"
+ },
+ {
+  "id": "c1517",
+  "de": "Honda/Acura",
+  "en": "Honda/Acura"
+ },
+ {
+  "id": "c1518",
+  "de": "Schläuche zum Differenzdrucksensor gerissen, abgerutscht oder verstopft\nDifferenzdrucksensor defekt\nStecker oder Kabel\nFilter beschädigt oder ausgebaut",
+  "en": "Hoses to the differential pressure sensor split, detached or blocked\nFaulty differential pressure sensor\nConnector or wiring\nFilter damaged or removed"
+ },
+ {
+  "id": "c1519",
+  "de": "Stunden",
+  "en": "Hours"
+ },
+ {
+  "id": "c1520",
+  "de": "Ungarn",
+  "en": "Hungary"
+ },
+ {
+  "id": "c1521",
+  "de": "Hybrid",
+  "en": "Hybrid"
+ },
+ {
+  "id": "c1522",
+  "de": "Hybrid und Elektro",
+  "en": "Hybrid and EV"
+ },
+ {
+  "id": "c1523",
+  "de": "Hybrid- und Elektroantrieb",
+  "en": "Hybrid and electric drive"
+ },
+ {
+  "id": "c1524",
+  "de": "Hybrid- und Elektroantrieb",
+  "en": "Hybrid and electric propulsion"
+ },
+ {
+  "id": "c1525",
+  "de": "Hybridbatterie",
+  "en": "Hybrid battery"
+ },
+ {
+  "id": "c1526",
+  "de": "Hybridbatterie - Alterung",
+  "en": "Hybrid battery pack deterioration"
+ },
+ {
+  "id": "c1527",
+  "de": "Hybridbatterie - Übertemperatur",
+  "en": "Hybrid battery pack over temperature"
+ },
+ {
+  "id": "c1528",
+  "de": "Restkapazität Hybridbatterie",
+  "en": "Hybrid battery remaining life"
+ },
+ {
+  "id": "c1529",
+  "de": "Hybridbatterie - Isolationsfehler im Hochvoltsystem",
+  "en": "Hybrid battery voltage system isolation fault"
+ },
+ {
+  "id": "c1530",
+  "de": "Hybridsteuerung",
+  "en": "Hybrid control"
+ },
+ {
+  "id": "c1531",
+  "de": "Hybrid elektrisch",
+  "en": "Hybrid electric"
+ },
+ {
+  "id": "c1532",
+  "de": "Hybrid Benzin",
+  "en": "Hybrid gasoline"
+ },
+ {
+  "id": "c1533",
+  "de": "Hybrid, Rückgewinnung",
+  "en": "Hybrid regenerative"
+ },
+ {
+  "id": "c1534",
+  "de": "Hybrid, elektrisch und Verbrenner",
+  "en": "Hybrid running electric and combustion"
+ },
+ {
+  "id": "c1535",
+  "de": "Antriebsbatterie",
+  "en": "Hybrid/EV battery"
+ },
+ {
+  "id": "c1536",
+  "de": "Strom Antriebsbatterie",
+  "en": "Hybrid/EV battery current"
+ },
+ {
+  "id": "c1537",
+  "de": "Spannung Antriebsbatterie",
+  "en": "Hybrid/EV battery voltage"
+ },
+ {
+  "id": "c1538",
+  "de": "Hyundai Ioniq Elektro 28 kWh (2016 bis 2019)",
+  "en": "Hyundai Ioniq Electric 28 kWh (2016 to 2019)"
+ },
+ {
+  "id": "c1539",
+  "de": "Hyundai Kona Elektro und Kia e-Niro (2018 bis 2022)",
+  "en": "Hyundai Kona Electric and Kia e-Niro (2018 to 2022)"
+ },
+ {
+  "id": "c1540",
+  "de": "Hyundai/Kia",
+  "en": "Hyundai/Kia"
+ },
+ {
+  "id": "c1541",
+  "de": "Ansauglufttemperatursensor - Signal zeitweise zu hoch",
+  "en": "IAT sensor circuit intermittent high voltage"
+ },
+ {
+  "id": "c1542",
+  "de": "Ansauglufttemperatursensor - Signal zeitweise zu niedrig",
+  "en": "IAT sensor circuit intermittent low voltage"
+ },
+ {
+  "id": "c1543",
+  "de": "Ansauglufttemperatursensor - Signal setzt zeitweise aus",
+  "en": "IAT sensor intermittent"
+ },
+ {
+  "id": "c1544",
+  "de": "ISO 14230-4 KWP (5-Baud-Init)",
+  "en": "ISO 14230-4 KWP (5-baud init)"
+ },
+ {
+  "id": "c1545",
+  "de": "ISO 14230-4 KWP (Fast-Init)",
+  "en": "ISO 14230-4 KWP (fast init)"
+ },
+ {
+  "id": "c1546",
+  "de": "ISO 15765-4 CAN (11 Bit, 250 kBaud)",
+  "en": "ISO 15765-4 CAN (11 bit, 250 kbaud)"
+ },
+ {
+  "id": "c1547",
+  "de": "ISO 15765-4 CAN (11 Bit, 500 kBaud)",
+  "en": "ISO 15765-4 CAN (11 bit, 500 kbaud)"
+ },
+ {
+  "id": "c1548",
+  "de": "ISO 15765-4 CAN (29 Bit, 250 kBaud)",
+  "en": "ISO 15765-4 CAN (29 bit, 250 kbaud)"
+ },
+ {
+  "id": "c1549",
+  "de": "ISO 15765-4 CAN (29 Bit, 500 kBaud)",
+  "en": "ISO 15765-4 CAN (29 bit, 500 kbaud)"
+ },
+ {
+  "id": "c1550",
+  "de": "ISO 9141-2 (K-Line, 5-Baud-Init)",
+  "en": "ISO 9141-2 (K-Line, 5-baud init)"
+ },
+ {
+  "id": "c1551",
+  "de": "ISO 9141-2, teils BMW-eigen.",
+  "en": "ISO 9141-2, partly BMW-specific."
+ },
+ {
+  "id": "c1552",
+  "de": "ISO 9141-2, teils KWP.",
+  "en": "ISO 9141-2, partly KWP."
+ },
+ {
+  "id": "c1553",
+  "de": "ISO 9141-2.",
+  "en": "ISO 9141-2."
+ },
+ {
+  "id": "c1554",
+  "de": "Leerlaufsteller",
+  "en": "Idle actuator"
+ },
+ {
+  "id": "c1555",
+  "de": "Leerlaufsteller: Regelgrenze",
+  "en": "Idle actuator: control limit"
+ },
+ {
+  "id": "c1556",
+  "de": "Leerlaufsteller - Stromkreis",
+  "en": "Idle air control circuit"
+ },
+ {
+  "id": "c1557",
+  "de": "Leerlaufsteller - Signal setzt zeitweise aus",
+  "en": "Idle air control circuit intermittent"
+ },
+ {
+  "id": "c1558",
+  "de": "Leerlaufregelung - Drehzahl zu hoch",
+  "en": "Idle air control overspeed error"
+ },
+ {
+  "id": "c1559",
+  "de": "Leerlaufsteller - Anpassung am Anschlag",
+  "en": "Idle air control system at adaptive clip"
+ },
+ {
+  "id": "c1560",
+  "de": "Leerlaufsteller - Stromkreis Spannung zu hoch",
+  "en": "Idle air control system circuit high"
+ },
+ {
+  "id": "c1561",
+  "de": "Leerlaufsteller - Stromkreis Spannung zu niedrig",
+  "en": "Idle air control system circuit low"
+ },
+ {
+  "id": "c1562",
+  "de": "Leerlaufregelung - Funktion",
+  "en": "Idle air control system performance"
+ },
+ {
+  "id": "c1563",
+  "de": "Leerlaufregelung - Drehzahl zu niedrig",
+  "en": "Idle air control underspeed error"
+ },
+ {
+  "id": "c1564",
+  "de": "Leerlaufsteller - Stromkreis",
+  "en": "Idle air control valve circuit failure"
+ },
+ {
+  "id": "c1565",
+  "de": "Leerlaufsteller Spule 1 - Signal zu hoch",
+  "en": "Idle charge actuator signal high (coil 1)"
+ },
+ {
+  "id": "c1566",
+  "de": "Leerlaufsteller Spule 2 - Signal zu hoch",
+  "en": "Idle charge actuator signal high (coil 2)"
+ },
+ {
+  "id": "c1567",
+  "de": "Leerlaufsteller Spule 1 - Signal zu niedrig",
+  "en": "Idle charge actuator signal low (coil 1)"
+ },
+ {
+  "id": "c1568",
+  "de": "Leerlaufsteller Spule 2 - Signal zu niedrig",
+  "en": "Idle charge actuator signal low (coil 2)"
+ },
+ {
+  "id": "c1569",
+  "de": "Leerlaufregelung - mechanische Fehlfunktion (Drosselklappe klemmt)",
+  "en": "Idle control - mechanical malfunction (throttle body sticking)"
+ },
+ {
+  "id": "c1570",
+  "de": "Leerlaufregelung - Fehlfunktion",
+  "en": "Idle control system"
+ },
+ {
+  "id": "c1571",
+  "de": "Leerlaufdrehzahl höher als erwartet (Falschluft oder Drosselklappe nicht angelernt)",
+  "en": "Idle control system RPM higher than expected (vacuum leak or throttle body not adapted)"
+ },
+ {
+  "id": "c1572",
+  "de": "Leerlaufdrehzahl niedriger als erwartet",
+  "en": "Idle control system RPM lower than expected"
+ },
+ {
+  "id": "c1573",
+  "de": "Leerlaufregelung - Fehlfunktion (Notlauf)",
+  "en": "Idle control system malfunction (fail-safe)"
+ },
+ {
+  "id": "c1574",
+  "de": "Leerlaufregelung, Drosselklappe verschmutzt?",
+  "en": "Idle control, is the throttle body dirty?"
+ },
+ {
+  "id": "c1575",
+  "de": "Leerlaufdrehzahlregelung - Drosselklappenanpassung fehlerhaft (anlernen)",
+  "en": "Idle speed control - throttle body adaptation failed (run the adaptation)"
+ },
+ {
+  "id": "c1576",
+  "de": "Leerlaufregelung: Regelgrenze erreicht",
+  "en": "Idle speed control: limit reached"
+ },
+ {
+  "id": "c1577",
+  "de": "Leerlaufschalter F60",
+  "en": "Idle switch F60"
+ },
+ {
+  "id": "c1578",
+  "de": "Blinkt die Motorkontrollleuchte, sofort Gas wegnehmen und bald anhalten: unverbrannter Kraftstoff kann den Katalysator in kurzer Zeit zerstören. Leuchtet sie nur dauerhaft, behutsam und ohne Volllast zur Werkstatt fahren.",
+  "en": "If the check engine light is flashing, ease off at once and stop soon: unburnt fuel can destroy the catalytic converter within a short time. If it is only lit steadily, drive gently and without full load to a workshop."
+ },
+ {
+  "id": "c1579",
+  "de": "Schaltet das Getriebe hart, rutscht es oder bleibt es in einem Gang, nur noch behutsam fahren: die Kupplungen im Getriebe können Schaden nehmen. Bald in eine Fachwerkstatt.",
+  "en": "If the gearbox shifts harshly, slips or stays in one gear, drive gently only: the clutches inside can be damaged. Go to a specialist soon."
+ },
+ {
+  "id": "c1580",
+  "de": "Leuchtet die Öldrucklampe oder ist der Ölstand niedrig: sofort anhalten und den Motor abstellen. Ohne Öldruck ist der Motor in kurzer Zeit zerstört.",
+  "en": "If the oil pressure light is on or the oil level is low, stop at once and switch off the engine. Without oil pressure the engine is destroyed within a short time."
+ },
+ {
+  "id": "c1581",
+  "de": "Riecht es nach Kraftstoff oder tropft etwas: nicht weiterfahren, Brandgefahr. Motor abstellen, nicht rauchen und den Pannendienst rufen.",
+  "en": "If you smell fuel or see drips, do not drive on: risk of fire. Switch off the engine, do not smoke and call roadside assistance."
+ },
+ {
+  "id": "c1582",
+  "de": "Zündverstärker Nr. 1 - Stromkreis",
+  "en": "Igniter circuit malfunction (No. 1)"
+ },
+ {
+  "id": "c1583",
+  "de": "Zündverstärker Nr. 2 - Stromkreis",
+  "en": "Igniter circuit malfunction (No. 2)"
+ },
+ {
+  "id": "c1584",
+  "de": "Zündung und Verbrennung",
+  "en": "Ignition and combustion"
+ },
+ {
+  "id": "c1585",
+  "de": "Zündspule A (meist Zylinder 1) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil A (usually cylinder 1) primary control circuit high"
+ },
+ {
+  "id": "c1586",
+  "de": "Zündspule A (meist Zylinder 1) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil A (usually cylinder 1) primary control circuit low"
+ },
+ {
+  "id": "c1587",
+  "de": "Zündspule A (meist Zylinder 1) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil A (usually cylinder 1) primary/secondary circuit"
+ },
+ {
+  "id": "c1588",
+  "de": "Zündspule A (meist Zylinder 1) - Sekundärkreis",
+  "en": "Ignition coil A (usually cylinder 1) secondary circuit"
+ },
+ {
+  "id": "c1589",
+  "de": "Zündspule B (meist Zylinder 2) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil B (usually cylinder 2) primary control circuit high"
+ },
+ {
+  "id": "c1590",
+  "de": "Zündspule B (meist Zylinder 2) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil B (usually cylinder 2) primary control circuit low"
+ },
+ {
+  "id": "c1591",
+  "de": "Zündspule B (meist Zylinder 2) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil B (usually cylinder 2) primary/secondary circuit"
+ },
+ {
+  "id": "c1592",
+  "de": "Zündspule B (meist Zylinder 2) - Sekundärkreis",
+  "en": "Ignition coil B (usually cylinder 2) secondary circuit"
+ },
+ {
+  "id": "c1593",
+  "de": "Zündspule C (meist Zylinder 3) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil C (usually cylinder 3) primary control circuit high"
+ },
+ {
+  "id": "c1594",
+  "de": "Zündspule C (meist Zylinder 3) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil C (usually cylinder 3) primary control circuit low"
+ },
+ {
+  "id": "c1595",
+  "de": "Zündspule C (meist Zylinder 3) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil C (usually cylinder 3) primary/secondary circuit"
+ },
+ {
+  "id": "c1596",
+  "de": "Zündspule C (meist Zylinder 3) - Sekundärkreis",
+  "en": "Ignition coil C (usually cylinder 3) secondary circuit"
+ },
+ {
+  "id": "c1597",
+  "de": "Zündspule D (meist Zylinder 4) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil D (usually cylinder 4) primary control circuit high"
+ },
+ {
+  "id": "c1598",
+  "de": "Zündspule D (meist Zylinder 4) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil D (usually cylinder 4) primary control circuit low"
+ },
+ {
+  "id": "c1599",
+  "de": "Zündspule D (meist Zylinder 4) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil D (usually cylinder 4) primary/secondary circuit"
+ },
+ {
+  "id": "c1600",
+  "de": "Zündspule D (meist Zylinder 4) - Sekundärkreis",
+  "en": "Ignition coil D (usually cylinder 4) secondary circuit"
+ },
+ {
+  "id": "c1601",
+  "de": "Zündspule E (meist Zylinder 5) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil E (usually cylinder 5) primary control circuit high"
+ },
+ {
+  "id": "c1602",
+  "de": "Zündspule E (meist Zylinder 5) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil E (usually cylinder 5) primary control circuit low"
+ },
+ {
+  "id": "c1603",
+  "de": "Zündspule E (meist Zylinder 5) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil E (usually cylinder 5) primary/secondary circuit"
+ },
+ {
+  "id": "c1604",
+  "de": "Zündspule E (meist Zylinder 5) - Sekundärkreis",
+  "en": "Ignition coil E (usually cylinder 5) secondary circuit"
+ },
+ {
+  "id": "c1605",
+  "de": "Zündspule F (meist Zylinder 6) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil F (usually cylinder 6) primary control circuit high"
+ },
+ {
+  "id": "c1606",
+  "de": "Zündspule F (meist Zylinder 6) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil F (usually cylinder 6) primary control circuit low"
+ },
+ {
+  "id": "c1607",
+  "de": "Zündspule F (meist Zylinder 6) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil F (usually cylinder 6) primary/secondary circuit"
+ },
+ {
+  "id": "c1608",
+  "de": "Zündspule F (meist Zylinder 6) - Sekundärkreis",
+  "en": "Ignition coil F (usually cylinder 6) secondary circuit"
+ },
+ {
+  "id": "c1609",
+  "de": "Zündspule G (meist Zylinder 7) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil G (usually cylinder 7) primary control circuit high"
+ },
+ {
+  "id": "c1610",
+  "de": "Zündspule G (meist Zylinder 7) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil G (usually cylinder 7) primary control circuit low"
+ },
+ {
+  "id": "c1611",
+  "de": "Zündspule G (meist Zylinder 7) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil G (usually cylinder 7) primary/secondary circuit"
+ },
+ {
+  "id": "c1612",
+  "de": "Zündspule G (meist Zylinder 7) - Sekundärkreis",
+  "en": "Ignition coil G (usually cylinder 7) secondary circuit"
+ },
+ {
+  "id": "c1613",
+  "de": "Zündspule H (meist Zylinder 8) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil H (usually cylinder 8) primary control circuit high"
+ },
+ {
+  "id": "c1614",
+  "de": "Zündspule H (meist Zylinder 8) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil H (usually cylinder 8) primary control circuit low"
+ },
+ {
+  "id": "c1615",
+  "de": "Zündspule H (meist Zylinder 8) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil H (usually cylinder 8) primary/secondary circuit"
+ },
+ {
+  "id": "c1616",
+  "de": "Zündspule H (meist Zylinder 8) - Sekundärkreis",
+  "en": "Ignition coil H (usually cylinder 8) secondary circuit"
+ },
+ {
+  "id": "c1617",
+  "de": "Zündspule I (meist Zylinder 9) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil I (usually cylinder 9) primary control circuit high"
+ },
+ {
+  "id": "c1618",
+  "de": "Zündspule I (meist Zylinder 9) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil I (usually cylinder 9) primary control circuit low"
+ },
+ {
+  "id": "c1619",
+  "de": "Zündspule I (meist Zylinder 9) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil I (usually cylinder 9) primary/secondary circuit"
+ },
+ {
+  "id": "c1620",
+  "de": "Zündspule I (meist Zylinder 9) - Sekundärkreis",
+  "en": "Ignition coil I (usually cylinder 9) secondary circuit"
+ },
+ {
+  "id": "c1621",
+  "de": "Zündspule J (meist Zylinder 10) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil J (usually cylinder 10) primary control circuit high"
+ },
+ {
+  "id": "c1622",
+  "de": "Zündspule J (meist Zylinder 10) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil J (usually cylinder 10) primary control circuit low"
+ },
+ {
+  "id": "c1623",
+  "de": "Zündspule J (meist Zylinder 10) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil J (usually cylinder 10) primary/secondary circuit"
+ },
+ {
+  "id": "c1624",
+  "de": "Zündspule J (meist Zylinder 10) - Sekundärkreis",
+  "en": "Ignition coil J (usually cylinder 10) secondary circuit"
+ },
+ {
+  "id": "c1625",
+  "de": "Zündspule K (meist Zylinder 11) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil K (usually cylinder 11) primary control circuit high"
+ },
+ {
+  "id": "c1626",
+  "de": "Zündspule K (meist Zylinder 11) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil K (usually cylinder 11) primary control circuit low"
+ },
+ {
+  "id": "c1627",
+  "de": "Zündspule K (meist Zylinder 11) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil K (usually cylinder 11) primary/secondary circuit"
+ },
+ {
+  "id": "c1628",
+  "de": "Zündspule K (meist Zylinder 11) - Sekundärkreis",
+  "en": "Ignition coil K (usually cylinder 11) secondary circuit"
+ },
+ {
+  "id": "c1629",
+  "de": "Zündspule L (meist Zylinder 12) - Primärkreis Spannung zu hoch",
+  "en": "Ignition coil L (usually cylinder 12) primary control circuit high"
+ },
+ {
+  "id": "c1630",
+  "de": "Zündspule L (meist Zylinder 12) - Primärkreis Spannung zu niedrig",
+  "en": "Ignition coil L (usually cylinder 12) primary control circuit low"
+ },
+ {
+  "id": "c1631",
+  "de": "Zündspule L (meist Zylinder 12) - Primär- oder Sekundärkreis",
+  "en": "Ignition coil L (usually cylinder 12) primary/secondary circuit"
+ },
+ {
+  "id": "c1632",
+  "de": "Zündspule L (meist Zylinder 12) - Sekundärkreis",
+  "en": "Ignition coil L (usually cylinder 12) secondary circuit"
+ },
+ {
+  "id": "c1633",
+  "de": "Zündspule - Primär- oder Sekundärkreis",
+  "en": "Ignition coil primary/secondary circuit"
+ },
+ {
+  "id": "c1634",
+  "de": "Zündspulen und Zündkerzen",
+  "en": "Ignition coils and spark plugs"
+ },
+ {
+  "id": "c1635",
+  "de": "Zündsteuerung - Spannung zu hoch",
+  "en": "Ignition control circuit high voltage"
+ },
+ {
+  "id": "c1636",
+  "de": "Zündsteuerung - Spannung zu niedrig",
+  "en": "Ignition control circuit low voltage"
+ },
+ {
+  "id": "c1637",
+  "de": "Zündüberwachung (IDM) - Eingangssignal fehlerhaft",
+  "en": "Ignition diagnostic monitor input circuit"
+ },
+ {
+  "id": "c1638",
+  "de": "Zündsignal - Fehlfunktion",
+  "en": "Ignition signal"
+ },
+ {
+  "id": "c1639",
+  "de": "Zündsignal: Endstufe",
+  "en": "Ignition signal: output stage"
+ },
+ {
+  "id": "c1640",
+  "de": "Zündanlage",
+  "en": "Ignition system"
+ },
+ {
+  "id": "c1641",
+  "de": "Zündanlage oder Verbrennungsaussetzer",
+  "en": "Ignition system or misfire"
+ },
+ {
+  "id": "c1642",
+  "de": "Zündwinkel",
+  "en": "Ignition timing"
+ },
+ {
+  "id": "c1643",
+  "de": "Zündzeitpunkt",
+  "en": "Ignition timing advance"
+ },
+ {
+  "id": "c1644",
+  "de": "Zünd-/Motordrehzahlsignal - Stromkreis",
+  "en": "Ignition/distributor engine speed input - circuit"
+ },
+ {
+  "id": "c1645",
+  "de": "Zünd-/Motordrehzahlsignal - Signal setzt zeitweise aus",
+  "en": "Ignition/distributor engine speed input - circuit intermittent"
+ },
+ {
+  "id": "c1646",
+  "de": "Zünd-/Motordrehzahlsignal - kein Signal",
+  "en": "Ignition/distributor engine speed input - circuit no signal"
+ },
+ {
+  "id": "c1647",
+  "de": "Zünd-/Motordrehzahlsignal - Signal unplausibel",
+  "en": "Ignition/distributor engine speed input - circuit range/performance"
+ },
+ {
+  "id": "c1648",
+  "de": "Wegfahrsperre",
+  "en": "Immobilizer"
+ },
+ {
+  "id": "c1649",
+  "de": "Schlüssel im Motorsteuergerät nicht angelernt (Wegfahrsperre)",
+  "en": "Immobilizer key not programmed - ECM/PCM"
+ },
+ {
+  "id": "c1650",
+  "de": "Wegfahrsperrenleuchte - Steuerkreis",
+  "en": "Immobilizer lamp control circuit"
+ },
+ {
+  "id": "c1651",
+  "de": "Wegfahrsperre: SMARTRA-Modul antwortet nicht",
+  "en": "Immobilizer: SMARTRA no response"
+ },
+ {
+  "id": "c1652",
+  "de": "Wegfahrsperre: keine Freigabe",
+  "en": "Immobilizer: not enabled"
+ },
+ {
+  "id": "c1653",
+  "de": "Unsinnige Blocklänge ",
+  "en": "Implausible block length "
+ },
+ {
+  "id": "c1654",
+  "de": "Wichtig: Die genauen Bedingungen legt jeder Hersteller selbst fest, oft sogar je Motor. Die Fahrmuster hier funktionieren bei den meisten Autos, sind aber keine Werksvorgabe. Wenn ein Test nach mehreren Tagen normaler Fahrt nicht fertig wird, lohnt ein Blick in die Werkstattunterlagen oder eine Frage an die Werkstatt.",
+  "en": "Important: the exact conditions are set by each manufacturer, often even per engine. The patterns here work on most cars but are not a factory specification. If a test is still not complete after several days of normal driving, check the workshop documentation or ask a garage."
+ },
+ {
+  "id": "c1655",
+  "de": "In der Mittelkonsole hinter einer Abdeckung vor dem Schalthebel.",
+  "en": "In the centre console behind a cover in front of the gear lever."
+ },
+ {
+  "id": "c1656",
+  "de": "Im Fahrerfußraum hinter einer Abdeckung.",
+  "en": "In the driver's footwell behind a cover."
+ },
+ {
+  "id": "c1657",
+  "de": "Im Motorraum, meist unter einer runden Kappe.",
+  "en": "In the engine bay, usually under a round cap."
+ },
+ {
+  "id": "c1658",
+  "de": "Falsche Kraftstoffzusammensetzung",
+  "en": "Incorrect fuel composition"
+ },
+ {
+  "id": "c1659",
+  "de": "Falsche Übersetzung",
+  "en": "Incorrect gear ratio"
+ },
+ {
+  "id": "c1660",
+  "de": "Indien",
+  "en": "India"
+ },
+ {
+  "id": "c1661",
+  "de": "Indien OBD I",
+  "en": "India OBD I"
+ },
+ {
+  "id": "c1662",
+  "de": "Indien OBD II",
+  "en": "India OBD II"
+ },
+ {
+  "id": "c1663",
+  "de": "Indonesien",
+  "en": "Indonesia"
+ },
+ {
+  "id": "c1664",
+  "de": "Einspritzdruck A",
+  "en": "Injection control pressure A"
+ },
+ {
+  "id": "c1665",
+  "de": "Einspritzdruck B",
+  "en": "Injection control pressure B"
+ },
+ {
+  "id": "c1666",
+  "de": "Einspritzdruckregelung",
+  "en": "Injection pressure control system"
+ },
+ {
+  "id": "c1667",
+  "de": "Einspritzpumpe Mengenregelung A - Spannung zu hoch",
+  "en": "Injection pump fuel metering control A - high"
+ },
+ {
+  "id": "c1668",
+  "de": "Einspritzpumpe Mengenregelung A - Signal setzt zeitweise aus",
+  "en": "Injection pump fuel metering control A - intermittent"
+ },
+ {
+  "id": "c1669",
+  "de": "Einspritzpumpe Mengenregelung A - Spannung zu niedrig",
+  "en": "Injection pump fuel metering control A - low"
+ },
+ {
+  "id": "c1670",
+  "de": "Einspritzpumpe Mengenregelung A - Fehlfunktion",
+  "en": "Injection pump fuel metering control A - malfunction"
+ },
+ {
+  "id": "c1671",
+  "de": "Einspritzpumpe Mengenregelung A - Funktion",
+  "en": "Injection pump fuel metering control A - range/performance"
+ },
+ {
+  "id": "c1672",
+  "de": "Einspritzpumpe Mengenregelung B - Spannung zu hoch",
+  "en": "Injection pump fuel metering control B - high"
+ },
+ {
+  "id": "c1673",
+  "de": "Einspritzpumpe Mengenregelung B - Signal setzt zeitweise aus",
+  "en": "Injection pump fuel metering control B - intermittent"
+ },
+ {
+  "id": "c1674",
+  "de": "Einspritzpumpe Mengenregelung B - Spannung zu niedrig",
+  "en": "Injection pump fuel metering control B - low"
+ },
+ {
+  "id": "c1675",
+  "de": "Einspritzpumpe Mengenregelung B - Fehlfunktion",
+  "en": "Injection pump fuel metering control B - malfunction"
+ },
+ {
+  "id": "c1676",
+  "de": "Einspritzpumpe Mengenregelung B - Funktion",
+  "en": "Injection pump fuel metering control B - range/performance"
+ },
+ {
+  "id": "c1677",
+  "de": "Einspritzmenge",
+  "en": "Injection quantity"
+ },
+ {
+  "id": "c1678",
+  "de": "Einspritzventile - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open"
+ },
+ {
+  "id": "c1679",
+  "de": "Einspritzventil Zylinder 1 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 1"
+ },
+ {
+  "id": "c1680",
+  "de": "Einspritzventil Zylinder 10 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 10"
+ },
+ {
+  "id": "c1681",
+  "de": "Einspritzventil Zylinder 11 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 11"
+ },
+ {
+  "id": "c1682",
+  "de": "Einspritzventil Zylinder 12 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 12"
+ },
+ {
+  "id": "c1683",
+  "de": "Einspritzventil Zylinder 2 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 2"
+ },
+ {
+  "id": "c1684",
+  "de": "Einspritzventil Zylinder 3 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 3"
+ },
+ {
+  "id": "c1685",
+  "de": "Einspritzventil Zylinder 4 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 4"
+ },
+ {
+  "id": "c1686",
+  "de": "Einspritzventil Zylinder 5 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 5"
+ },
+ {
+  "id": "c1687",
+  "de": "Einspritzventil Zylinder 6 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 6"
+ },
+ {
+  "id": "c1688",
+  "de": "Einspritzventil Zylinder 7 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 7"
+ },
+ {
+  "id": "c1689",
+  "de": "Einspritzventil Zylinder 8 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 8"
+ },
+ {
+  "id": "c1690",
+  "de": "Einspritzventil Zylinder 9 - Stromkreis oder Unterbrechung",
+  "en": "Injector circuit/open - cylinder 9"
+ },
+ {
+  "id": "c1691",
+  "de": "Einspritzventil Zylinder 1 N30",
+  "en": "Injector cylinder 1 N30"
+ },
+ {
+  "id": "c1692",
+  "de": "Einspritzventil Zylinder 2 N31",
+  "en": "Injector cylinder 2 N31"
+ },
+ {
+  "id": "c1693",
+  "de": "Einspritzventil Zylinder 3 N32",
+  "en": "Injector cylinder 3 N32"
+ },
+ {
+  "id": "c1694",
+  "de": "Einspritzventil Zylinder 4 N33",
+  "en": "Injector cylinder 4 N33"
+ },
+ {
+  "id": "c1695",
+  "de": "Einspritzventil Zylinder 5 N83",
+  "en": "Injector cylinder 5 N83"
+ },
+ {
+  "id": "c1696",
+  "de": "Einspritzventil Zylinder 6 N84",
+  "en": "Injector cylinder 6 N84"
+ },
+ {
+  "id": "c1697",
+  "de": "Einspritzzeitpunkt-Steuerung - Stromkreis",
+  "en": "Injector/injection timing control circuit"
+ },
+ {
+  "id": "c1698",
+  "de": "Einspritzventile am Zylinderkopf",
+  "en": "Injectors on the cylinder head"
+ },
+ {
+  "id": "c1699",
+  "de": "Einspritzventile, Zylinder einzeln",
+  "en": "Injectors, individual cylinders"
+ },
+ {
+  "id": "c1700",
+  "de": "Einspritzventile: Regelabweichung",
+  "en": "Injectors: control deviation"
+ },
+ {
+  "id": "c1701",
+  "de": "Einlassventil vorne links N101",
+  "en": "Inlet valve front left N101"
+ },
+ {
+  "id": "c1702",
+  "de": "Einlassventil vorne rechts N99",
+  "en": "Inlet valve front right N99"
+ },
+ {
+  "id": "c1703",
+  "de": "Eingangsdrehzahlsensor (Primär) - Fehlfunktion",
+  "en": "Input speed sensor (primary speed sensor)"
+ },
+ {
+  "id": "c1704",
+  "de": "Turbinen-/Eingangsdrehzahlsensor A - Stromkreis",
+  "en": "Input/turbine speed sensor A - circuit"
+ },
+ {
+  "id": "c1705",
+  "de": "Turbinen-/Eingangsdrehzahlsensor A - Signal setzt zeitweise aus",
+  "en": "Input/turbine speed sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1706",
+  "de": "Turbinen-/Eingangsdrehzahlsensor A - kein Signal",
+  "en": "Input/turbine speed sensor A - circuit no signal"
+ },
+ {
+  "id": "c1707",
+  "de": "Turbinen-/Eingangsdrehzahlsensor A - Signal unplausibel",
+  "en": "Input/turbine speed sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1708",
+  "de": "Kabelbaum auf Scheuerstellen und Bissspuren prüfen\nIn der Werkstatt die Sensoren einzeln abstecken lassen: verschwindet der Fehler, ist der Schuldige gefunden",
+  "en": "Inspect the harness for chafing and bite marks\nHave the workshop unplug the sensors one by one: when the fault disappears, the culprit is found"
+ },
+ {
+  "id": "c1709",
+  "de": "Kombiinstrument",
+  "en": "Instrument cluster"
+ },
+ {
+  "id": "c1710",
+  "de": "Kombiinstrument (IPC)",
+  "en": "Instrument cluster (IPC)"
+ },
+ {
+  "id": "c1711",
+  "de": "Kombiinstrument (KOMBI)",
+  "en": "Instrument cluster (KOMBI)"
+ },
+ {
+  "id": "c1712",
+  "de": "Kombiinstrument: Datenbus",
+  "en": "Instrument cluster: data bus"
+ },
+ {
+  "id": "c1713",
+  "de": "Kombiinstrument: keine Verbindung",
+  "en": "Instrument cluster: no communication"
+ },
+ {
+  "id": "c1714",
+  "de": "Kühlmittel zu kalt für die Gemischregelung",
+  "en": "Insufficient coolant temperature for closed loop fuel control"
+ },
+ {
+  "id": "c1715",
+  "de": "Kühlmittel zu kalt für stabilen Betrieb",
+  "en": "Insufficient coolant temperature for stable operation"
+ },
+ {
+  "id": "c1716",
+  "de": "Isolationsfehler im Hochvoltsystem: nicht weiterfahren und das Auto bei sichtbaren Schäden nicht berühren. Pannendienst oder Hybrid-Fachwerkstatt rufen.",
+  "en": "Insulation fault in the high-voltage system: do not drive on and do not touch the car if there is visible damage. Call roadside assistance or a hybrid specialist."
+ },
+ {
+  "id": "c1717",
+  "de": "Ansaugluftklappe A Stellung",
+  "en": "Intake air flow position A"
+ },
+ {
+  "id": "c1718",
+  "de": "Ansaugluftklappe B Stellung",
+  "en": "Intake air flow position B"
+ },
+ {
+  "id": "c1719",
+  "de": "Ansaugluftheizung A - Stromkreis",
+  "en": "Intake air heater A - circuit"
+ },
+ {
+  "id": "c1720",
+  "de": "Ansaugluftheizung A - Spannung zu hoch",
+  "en": "Intake air heater A - circuit high"
+ },
+ {
+  "id": "c1721",
+  "de": "Ansaugluftheizung A - Spannung zu niedrig",
+  "en": "Intake air heater A - circuit low"
+ },
+ {
+  "id": "c1722",
+  "de": "Ansaugluftheizung A - Unterbrechung",
+  "en": "Intake air heater A - circuit open"
+ },
+ {
+  "id": "c1723",
+  "de": "Ansaugluftheizung - Steuerkreis",
+  "en": "Intake air heater control circuit"
+ },
+ {
+  "id": "c1724",
+  "de": "Ansaugsystem undicht (Falschluft)",
+  "en": "Intake air system leak"
+ },
+ {
+  "id": "c1725",
+  "de": "Ansauglufttemperatur",
+  "en": "Intake air temperature"
+ },
+ {
+  "id": "c1726",
+  "de": "Ansauglufttemperaturgeber",
+  "en": "Intake air temperature sensor"
+ },
+ {
+  "id": "c1727",
+  "de": "Ansauglufttemperatursensor 1 - Stromkreis",
+  "en": "Intake air temperature sensor 1 - circuit"
+ },
+ {
+  "id": "c1728",
+  "de": "Ansauglufttemperatursensor 1 - Signal zu hoch",
+  "en": "Intake air temperature sensor 1 - circuit high"
+ },
+ {
+  "id": "c1729",
+  "de": "Ansauglufttemperatursensor 1 - Signal setzt zeitweise aus",
+  "en": "Intake air temperature sensor 1 - circuit intermittent"
+ },
+ {
+  "id": "c1730",
+  "de": "Ansauglufttemperatursensor 1 - Signal zu niedrig",
+  "en": "Intake air temperature sensor 1 - circuit low"
+ },
+ {
+  "id": "c1731",
+  "de": "Ansauglufttemperatursensor 1 - Signal unplausibel",
+  "en": "Intake air temperature sensor 1 - circuit range/performance"
+ },
+ {
+  "id": "c1732",
+  "de": "Ansauglufttemperatursensor 1 und 2 passen nicht zusammen",
+  "en": "Intake air temperature sensor 1/2 correlation"
+ },
+ {
+  "id": "c1733",
+  "de": "Ansauglufttemperatursensor 2 - Stromkreis",
+  "en": "Intake air temperature sensor 2 - circuit"
+ },
+ {
+  "id": "c1734",
+  "de": "Ansauglufttemperatursensor 2 - Signal zu hoch",
+  "en": "Intake air temperature sensor 2 - circuit high"
+ },
+ {
+  "id": "c1735",
+  "de": "Ansauglufttemperatursensor 2 - Signal setzt zeitweise aus",
+  "en": "Intake air temperature sensor 2 - circuit intermittent"
+ },
+ {
+  "id": "c1736",
+  "de": "Ansauglufttemperatursensor 2 - Signal zu niedrig",
+  "en": "Intake air temperature sensor 2 - circuit low"
+ },
+ {
+  "id": "c1737",
+  "de": "Ansauglufttemperatursensor 2 - Signal unplausibel",
+  "en": "Intake air temperature sensor 2 - circuit range/performance"
+ },
+ {
+  "id": "c1738",
+  "de": "Ansauglufttemperaturgeber G42",
+  "en": "Intake air temperature sensor G42"
+ },
+ {
+  "id": "c1739",
+  "de": "Ansauglufttemperaturgeber G72",
+  "en": "Intake air temperature sensor G72"
+ },
+ {
+  "id": "c1740",
+  "de": "Ansauglufttemperatur (Sensoren)",
+  "en": "Intake air temperature sensors"
+ },
+ {
+  "id": "c1741",
+  "de": "Ansauglufttemperatur zu hoch",
+  "en": "Intake air temperature too high"
+ },
+ {
+  "id": "c1742",
+  "de": "Ventil für Saugrohrumschaltung N156",
+  "en": "Intake manifold change-over valve N156"
+ },
+ {
+  "id": "c1743",
+  "de": "Saugrohrdruck",
+  "en": "Intake manifold pressure"
+ },
+ {
+  "id": "c1744",
+  "de": "Saugrohrdruck - Signal zu klein",
+  "en": "Intake manifold pressure - signal too low"
+ },
+ {
+  "id": "c1745",
+  "de": "Saugrohrdruck A",
+  "en": "Intake manifold pressure A"
+ },
+ {
+  "id": "c1746",
+  "de": "Saugrohrdruck A und B",
+  "en": "Intake manifold pressure A and B"
+ },
+ {
+  "id": "c1747",
+  "de": "Saugrohrdruck B",
+  "en": "Intake manifold pressure B"
+ },
+ {
+  "id": "c1748",
+  "de": "Saugrohrdrucksensor",
+  "en": "Intake manifold pressure sensor"
+ },
+ {
+  "id": "c1749",
+  "de": "Saugrohrdruck: Regelgrenze",
+  "en": "Intake manifold pressure: control limit"
+ }
+]

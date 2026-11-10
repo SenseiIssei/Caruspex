@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c500",
+  "de": "Stecker am AGR-Ventil prüfen\nUnterdruckschläuche auf Risse prüfen",
+  "en": "Check the EGR valve connector\nCheck the vacuum hoses for cracks"
+ },
+ {
+  "id": "c501",
+  "de": "Lüftungsöffnung der Batteriekühlung auf Staub und Tierhaare prüfen, oft an den Rücksitzen\nWird die Ladeanzeige auffällig schnell voll oder leer?",
+  "en": "Check the battery cooling intake for dust and pet hair, often near the rear seats\nDoes the charge display fill up or drop unusually fast?"
+ },
+ {
+  "id": "c502",
+  "de": "Batteriespannung prüfen\nFehler löschen und schauen, ob er wiederkommt\nSicherung des genannten Steuergeräts prüfen",
+  "en": "Check the battery voltage\nClear the code and see whether it returns\nCheck the fuse of the named control unit"
+ },
+ {
+  "id": "c503",
+  "de": "Batteriespannung prüfen\nFehler löschen und beobachten, ob er wiederkommt\nIn der Werkstatt nach Software-Updates fragen",
+  "en": "Check the battery voltage\nClear the code and watch whether it returns\nAsk the workshop about software updates"
+ },
+ {
+  "id": "c504",
+  "de": "Batteriespannung prüfen\nNachgerüstete Geräte abstecken\nNach Wasser im Fußraum oder Kofferraum schauen, dort liegen oft Steuergeräte und Stecker",
+  "en": "Check the battery voltage\nUnplug aftermarket devices\nLook for water in the footwells or boot, where control units and connectors often sit"
+ },
+ {
+  "id": "c505",
+  "de": "Bremslichter mit einer zweiten Person oder vor einer spiegelnden Fläche prüfen\nSitz des Schalters am Bremspedal prüfen",
+  "en": "Check the brake lights with a helper or in front of a reflective surface\nCheck how the switch sits at the brake pedal"
+ },
+ {
+  "id": "c506",
+  "de": "Bremslichter prüfen, der Tempomat hängt oft am Bremslichtschalter",
+  "en": "Check the brake lights, cruise control often depends on the brake light switch"
+ },
+ {
+  "id": "c507",
+  "de": "Ladeluftschläuche und Ladeluftkühler auf Risse und Ölspuren prüfen\nBeim Beschleunigen auf Zischen oder Pfeifen achten\nSoll- und Istladedruck als Messwert vergleichen",
+  "en": "Check the charge air hoses and intercooler for cracks and oil traces\nListen for hissing or whistling when accelerating\nCompare desired and actual boost as live values"
+ },
+ {
+  "id": "c508",
+  "de": "Stecker an den Zündspulen auf festen Sitz und Korrosion prüfen\nSpule mit einem Nachbarzylinder tauschen und schauen, ob der Fehler mitwandert",
+  "en": "Check the coil connectors for a firm fit and corrosion\nSwap the coil with a neighbouring cylinder and see whether the fault follows it"
+ },
+ {
+  "id": "c509",
+  "de": "Stecker am Ventil oder Steller prüfen\nUnterdruckschläuche auf Risse prüfen",
+  "en": "Check the connector at the valve or actuator\nCheck the vacuum hoses for cracks"
+ },
+ {
+  "id": "c510",
+  "de": "Kühlmittelstand prüfen und mit dem passenden Kühlmittel auffüllen\nNach Spuren unter dem Auto und an den Schläuchen schauen",
+  "en": "Check the coolant level and top up with the correct coolant\nLook for traces under the car and at the hoses"
+ },
+ {
+  "id": "c511",
+  "de": "Kühlmittelstand bei kaltem Motor prüfen\nNach langer Standzeit den Messwert mit der Außentemperatur vergleichen",
+  "en": "Check the coolant level with the engine cold\nAfter the car has stood for a long time, compare the reading with the outside temperature"
+ },
+ {
+  "id": "c512",
+  "de": "Sicherungen für Motorsteuerung prüfen\nBatteriespannung und Polklemmen prüfen",
+  "en": "Check the engine management fuses\nCheck the battery voltage and terminals"
+ },
+ {
+  "id": "c513",
+  "de": "Tankdeckel prüfen und fest schließen\nAuf Benzingeruch am Tank und im Motorraum achten",
+  "en": "Check the fuel cap and close it firmly\nSmell for petrol at the tank and in the engine bay"
+ },
+ {
+  "id": "c514",
+  "de": "Ölstand prüfen\nBeim Hersteller nach offenen Rückrufen für die Fahrgestellnummer fragen",
+  "en": "Check the oil level\nAsk the manufacturer about open recalls for the VIN"
+ },
+ {
+  "id": "c515",
+  "de": "Ölstand und Ölwechselintervall prüfen: altes oder falsches Öl stört die Verstellung\nBeim Kaltstart auf Rasseln aus dem Steuertrieb hören\nWechselintervall von Zahnriemen oder Kette im Serviceheft nachsehen",
+  "en": "Check the oil level and service interval: old or wrong oil upsets the adjusters\nListen for rattling from the timing drive on a cold start\nLook up the belt or chain replacement interval in the service book"
+ },
+ {
+  "id": "c516",
+  "de": "Ölstand und vorgeschriebene Ölsorte prüfen",
+  "en": "Check the oil level and the required oil grade"
+ },
+ {
+  "id": "c517",
+  "de": "Ölstand auf ebenem Boden mit dem Messstab prüfen\nNach Ölflecken unter dem Auto schauen\nIst der Ölwechsel überfällig?",
+  "en": "Check the oil level on level ground with the dipstick\nLook for oil stains under the car\nIs the oil change overdue?"
+ },
+ {
+  "id": "c518",
+  "de": "Ölstand mit dem Messstab prüfen\nIst der letzte Ölwechsel überfällig?\nStecker am Magnetventil prüfen",
+  "en": "Check the oil level with the dipstick\nIs the last oil change overdue?\nCheck the solenoid connector"
+ },
+ {
+  "id": "c519",
+  "de": "Sicherung der Lambdasondenheizung prüfen (Belegung im Handbuch)\nStecker der Sonde trennen und auf Korrosion prüfen",
+  "en": "Check the oxygen sensor heater fuse (see the owner's manual for its position)\nUnplug the sensor connector and look for corrosion"
+ },
+ {
+  "id": "c520",
+  "de": "Vor der Abgasuntersuchung die Bereitschaftstests (Readiness) ansehen",
+  "en": "Check the readiness monitors before an emissions test"
+ },
+ {
+  "id": "c521",
+  "de": "Stecker und Kabel am Sensor prüfen",
+  "en": "Check the sensor connector and wiring"
+ },
+ {
+  "id": "c522",
+  "de": "Stecker am Sensor auf Öl und Korrosion prüfen\nAuf längere Startzeiten achten",
+  "en": "Check the sensor connector for oil and corrosion\nWatch out for longer cranking before it starts"
+ },
+ {
+  "id": "c523",
+  "de": "Kabel und Stecker der Sonde prüfen\nAuf Blubbern oder Rußspuren am Auspuff achten",
+  "en": "Check the sensor wiring and connector\nLook for puffing or soot marks along the exhaust"
+ },
+ {
+  "id": "c524",
+  "de": "Kabel und Stecker der Sonde auf Schmelzstellen prüfen\nMesswert ansehen: eine klassische Sprungsonde pendelt bei warmem Motor schnell zwischen etwa 0,1 und 0,9 Volt (bei Breitbandsonden gilt das nicht)\nAuspuff vor der Sonde auf Undichtigkeiten prüfen",
+  "en": "Check the sensor wiring and connector for melted spots\nLook at the live value: a classic switching sensor swings quickly between about 0.1 and 0.9 volts with the engine warm (this does not apply to wideband sensors)\nCheck the exhaust upstream of the sensor for leaks"
+ },
+ {
+  "id": "c525",
+  "de": "Stecker an der Drosselklappe prüfen\nBei ausgeschalteter Zündung den Ansaugschlauch abnehmen und die Klappe auf Ablagerungen ansehen\nNach Reinigung oder Batteriewechsel die Grundeinstellung (Anlernen) durchführen lassen",
+  "en": "Check the throttle body connector\nWith the ignition off, remove the intake hose and look for deposits on the throttle plate\nAfter cleaning or a battery change, have the basic setting (adaptation) carried out"
+ },
+ {
+  "id": "c526",
+  "de": "Stecker am Getriebe auf Öl und Korrosion prüfen",
+  "en": "Check the transmission connectors for oil and corrosion"
+ },
+ {
+  "id": "c527",
+  "de": "Die zwei dünnen Schläuche vom Sensor zum Filter auf Risse und festen Sitz prüfen\nMesswert Differenzdruck bei abgestelltem Motor ansehen: er sollte nahe null liegen",
+  "en": "Check the two thin hoses from the sensor to the filter for cracks and a firm fit\nLook at the differential pressure with the engine off: it should be close to zero"
+ },
+ {
+  "id": "c528",
+  "de": "Unterdruckschläuche zur Ladedruckdose prüfen\nBei kaltem, stehendem Motor prüfen, ob sich das Gestänge am Turbo leicht bewegt",
+  "en": "Check the vacuum hoses to the boost actuator\nWith the engine cold and off, check that the turbo linkage moves freely"
+ },
+ {
+  "id": "c529",
+  "de": "Stecker am Ventil prüfen\nNach dem Abschalten der Zapfpistole nicht weiter nachtanken\nSchläuche auf festen Sitz prüfen",
+  "en": "Check the valve connector\nStop filling once the pump nozzle clicks off\nCheck that the hoses are firmly attached"
+ },
+ {
+  "id": "c530",
+  "de": "Kabel am Auspuff auf Schmelzstellen prüfen\nBei kaltem Motor den Messwert mit der Außentemperatur vergleichen",
+  "en": "Check the wiring along the exhaust for melted spots\nWith the engine cold, compare the reading with the outside temperature"
+ },
+ {
+  "id": "c531",
+  "de": "Prüft, ob der Katalysator die Abgase noch richtig reinigt. Dafür vergleicht das Steuergerät die Lambdasonde vor dem Katalysator mit der dahinter.",
+  "en": "Checks that the catalytic converter still cleans the exhaust properly. To do so, the control unit compares the oxygen sensor in front of the converter with the one behind it."
+ },
+ {
+  "id": "c532",
+  "de": "Prüft, ob das Tanksystem dicht ist, damit keine Benzindämpfe entweichen. Schon ein schlecht geschlossener Tankdeckel kann den Test scheitern lassen.",
+  "en": "Checks that the fuel tank system is sealed so no fuel vapour escapes. Even a fuel cap that is not closed properly can make the test fail."
+ },
+ {
+  "id": "c533",
+  "de": "Prüft, ob die Gemischregelung das Verhältnis von Luft und Kraftstoff im erlaubten Bereich halten kann. Muss sie zu stark nachregeln, stimmt etwas nicht (Falschluft, Einspritzung, Kraftstoffdruck).",
+  "en": "Checks that the mixture control can keep the ratio of air and fuel within its allowed range. If it has to correct too much, something is off (air leak, injection, fuel pressure)."
+ },
+ {
+  "id": "c534",
+  "de": "Prüft, ob in jedem Zylinder das Gemisch sauber zündet. Ein Aussetzer schüttelt den Motor und schickt unverbranntes Benzin in den Katalysator, der davon überhitzen kann.",
+  "en": "Checks that the mixture fires cleanly in every cylinder. A misfire shakes the engine and sends unburnt fuel into the catalytic converter, which can overheat from it."
+ },
+ {
+  "id": "c535",
+  "de": "Prüft, ob die Lambdasonden schnell und richtig auf den Sauerstoff im Abgas reagieren. Sie sind die Augen der Gemischregelung.",
+  "en": "Checks that the oxygen sensors react quickly and correctly to the oxygen in the exhaust. They are the eyes of the mixture control."
+ },
+ {
+  "id": "c536",
+  "de": "Prüft, ob der Turbolader den Ladedruck aufbaut, den das Steuergerät verlangt, und nicht zu viel davon.",
+  "en": "Checks that the turbocharger builds the boost pressure the control unit asks for, and not too much of it."
+ },
+ {
+  "id": "c537",
+  "de": "Prüft den Oxidationskatalysator des Diesels, der Kohlenwasserstoffe und Kohlenmonoxid verbrennt.",
+  "en": "Checks the diesel oxidation catalyst, which burns off hydrocarbons and carbon monoxide."
+ },
+ {
+  "id": "c538",
+  "de": "Prüft den Rußpartikelfilter: ob er dicht ist und ob er sich beim Freibrennen (Regeneration) richtig leert.",
+  "en": "Checks the diesel particulate filter: that it is intact and that it empties properly when it burns off the soot (regeneration)."
+ },
+ {
+  "id": "c539",
+  "de": "Prüft die Sensoren und Stellglieder des Motors auf Kurzschluss, Unterbrechung und unplausible Werte, zum Beispiel Temperaturfühler und Drosselklappe.",
+  "en": "Checks the engine's sensors and actuators for short circuits, open circuits and implausible values, for example temperature sensors and the throttle."
+ },
+ {
+  "id": "c540",
+  "de": "Prüft die Abgasrückführung, die einen Teil des Abgases zurück in den Motor leitet und so Stickoxide senkt. Bei manchen Autos steckt hier auch die Nockenwellenverstellung mit drin.",
+  "en": "Checks the exhaust gas recirculation, which leads part of the exhaust back into the engine to lower nitrogen oxides. On some cars the variable valve timing is checked here as well."
+ },
+ {
+  "id": "c541",
+  "de": "Prüft die Heizung, die den Katalysator nach dem Kaltstart schneller auf Betriebstemperatur bringt. Gibt es nur bei wenigen Autos.",
+  "en": "Checks the heater that brings the catalytic converter up to temperature faster after a cold start. Only a few cars have it."
+ },
+ {
+  "id": "c542",
+  "de": "Prüft die Heizung in den Lambdasonden. Die Sonden messen erst ab etwa 300 Grad richtig, die Heizung bringt sie nach dem Start schnell dahin.",
+  "en": "Checks the heaters inside the oxygen sensors. The sensors only measure properly from about 300 degrees Celsius, and the heater gets them there quickly after starting."
+ },
+ {
+  "id": "c543",
+  "de": "Prüft die Stickoxid-Reinigung, bei den meisten neueren Dieseln mit AdBlue (SCR) oder einem Speicherkatalysator.",
+  "en": "Checks the nitrogen oxide cleaning, on most newer diesels with AdBlue (SCR) or a storage catalyst."
+ },
+ {
+  "id": "c544",
+  "de": "Prüft die Pumpe, die nach dem Kaltstart Frischluft in den Auspuff bläst, damit der Katalysator schneller warm wird.",
+  "en": "Checks the pump that blows fresh air into the exhaust after a cold start so the catalytic converter warms up faster."
+ },
+ {
+  "id": "c545",
+  "de": "Prüft die Sensoren im Abgas des Diesels, etwa Lambda- und NOx-Sensoren.",
+  "en": "Checks the sensors in the diesel exhaust, such as oxygen and NOx sensors."
+ },
+ {
+  "id": "c546",
+  "de": "Prüfsumme stimmt nicht: erwartet ",
+  "en": "Checksum mismatch: expected "
+ },
+ {
+  "id": "c547",
+  "de": "Prüfsumme fehlt",
+  "en": "Checksum missing"
+ },
+ {
+  "id": "c548",
+  "de": "Chile",
+  "en": "Chile"
+ },
+ {
+  "id": "c549",
+  "de": "China",
+  "en": "China"
+ },
+ {
+  "id": "c550",
+  "de": "Klimaanlage",
+  "en": "Climate control"
+ },
+ {
+  "id": "c551",
+  "de": "Klimaanlage (HVAC)",
+  "en": "Climate control (HVAC)"
+ },
+ {
+  "id": "c552",
+  "de": "Klimaautomatik (IHKA)",
+  "en": "Climate control (IHKA)"
+ },
+ {
+  "id": "c553",
+  "de": "Klimasteuergerät: keine Verbindung",
+  "en": "Climate control unit: no communication"
+ },
+ {
+  "id": "c554",
+  "de": "Kraftstofffilter verstopft\nKraftstoffpumpe im Tank oder Hochdruckpumpe schwach\nDruckregler oder Mengenregelventil defekt\nKraftstoffdrucksensor misst falsch",
+  "en": "Clogged fuel filter\nWeak in-tank pump or high-pressure pump\nFaulty pressure regulator or metering valve\nFuel pressure sensor reads wrong"
+ },
+ {
+  "id": "c555",
+  "de": "Lambdaregelung Bank 1 - Fehlfunktion",
+  "en": "Closed loop control - bank 1"
+ },
+ {
+  "id": "c556",
+  "de": "Lambdaregelung Bank 2 - Fehlfunktion",
+  "en": "Closed loop control - bank 2"
+ },
+ {
+  "id": "c557",
+  "de": "Anlernen der geschlossenen Drosselklappenstellung - Funktion",
+  "en": "Closed throttle position learning performance"
+ },
+ {
+  "id": "c558",
+  "de": "Leerlaufschalter (Drosselklappe geschlossen) - Fehlfunktion",
+  "en": "Closed throttle position switch"
+ },
+ {
+  "id": "c559",
+  "de": "Kupplungssteller - Spannung zu hoch",
+  "en": "Clutch actuator - circuit high"
+ },
+ {
+  "id": "c560",
+  "de": "Kupplungssteller - Spannung zu niedrig",
+  "en": "Clutch actuator - circuit low"
+ },
+ {
+  "id": "c561",
+  "de": "Kupplungssteller - Funktion",
+  "en": "Clutch actuator - circuit range/performance"
+ },
+ {
+  "id": "c562",
+  "de": "Kupplungssteller - Stromkreis oder Unterbrechung",
+  "en": "Clutch actuator - circuit/open"
+ },
+ {
+  "id": "c563",
+  "de": "Kupplungspedalschalter A - Stromkreis",
+  "en": "Clutch pedal switch A - circuit"
+ },
+ {
+  "id": "c564",
+  "de": "Kupplungspedalschalter A - Signal zu hoch",
+  "en": "Clutch pedal switch A - circuit high"
+ },
+ {
+  "id": "c565",
+  "de": "Kupplungspedalschalter A - Signal zu niedrig",
+  "en": "Clutch pedal switch A - circuit low"
+ },
+ {
+  "id": "c566",
+  "de": "Kupplungspedalschalter B - Stromkreis",
+  "en": "Clutch pedal switch B - circuit"
+ },
+ {
+  "id": "c567",
+  "de": "Kupplungspedalschalter B - Signal zu hoch",
+  "en": "Clutch pedal switch B - circuit high"
+ },
+ {
+  "id": "c568",
+  "de": "Kupplungspedalschalter B - Signal zu niedrig",
+  "en": "Clutch pedal switch B - circuit low"
+ },
+ {
+  "id": "c569",
+  "de": "Kupplungspositionsregelung - Fehler",
+  "en": "Clutch position control error"
+ },
+ {
+  "id": "c570",
+  "de": "Kupplungspositionssensor - Stromkreis",
+  "en": "Clutch position sensor - circuit"
+ },
+ {
+  "id": "c571",
+  "de": "Kupplungspositionssensor - Signal zu hoch",
+  "en": "Clutch position sensor - circuit high"
+ },
+ {
+  "id": "c572",
+  "de": "Kupplungspositionssensor - Signal setzt zeitweise aus",
+  "en": "Clutch position sensor - circuit intermittent"
+ },
+ {
+  "id": "c573",
+  "de": "Kupplungspositionssensor - Signal zu niedrig",
+  "en": "Clutch position sensor - circuit low"
+ },
+ {
+  "id": "c574",
+  "de": "Kupplungspositionssensor - Signal unplausibel",
+  "en": "Clutch position sensor - circuit range/performance"
+ },
+ {
+  "id": "c575",
+  "de": "Kupplungsschalter",
+  "en": "Clutch switch"
+ },
+ {
+  "id": "c576",
+  "de": "Kupplungsschalter - Eingangssignal",
+  "en": "Clutch switch input circuit malfunction"
+ },
+ {
+  "id": "c577",
+  "de": "Fehlerspeicher gelöscht oder Batterie abgeklemmt\nNoch nicht genug gefahren",
+  "en": "Codes cleared or battery disconnected\nNot driven enough yet"
+ },
+ {
+  "id": "c578",
+  "de": "Saugrohrklappen verkokt oder Gestänge gebrochen\nStellmotor oder Unterdruckdose defekt\nStecker oder Unterdruckschlauch",
+  "en": "Coked intake runner flaps or broken linkage\nFaulty actuator motor or vacuum capsule\nConnector or vacuum hose"
+ },
+ {
+  "id": "c579",
+  "de": "Kaltstart nach mehreren Stunden Standzeit, dann ein bis zwei Minuten im Leerlauf laufen lassen, ohne Gas zu geben. Danach normal losfahren.",
+  "en": "Cold start after several hours parked, then let it idle for one to two minutes without touching the throttle. Then drive off normally."
+ },
+ {
+  "id": "c580",
+  "de": "Kaltstartventil 1 - Fehlfunktion",
+  "en": "Cold start injector 1"
+ },
+ {
+  "id": "c581",
+  "de": "Kaltstartventil 2 - Fehlfunktion",
+  "en": "Cold start injector 2"
+ },
+ {
+  "id": "c582",
+  "de": "Kaltstart, danach ein paar Minuten Leerlauf oder ruhige Fahrt.",
+  "en": "Cold start, then a few minutes of idling or gentle driving."
+ },
+ {
+  "id": "c583",
+  "de": "Kaltstart, danach ein bis zwei Minuten Leerlauf und dann normal losfahren.",
+  "en": "Cold start, then idle for one to two minutes and drive off normally."
+ },
+ {
+  "id": "c584",
+  "de": "Kolumbien",
+  "en": "Colombia"
+ },
+ {
+  "id": "c585",
+  "de": "Doppelpunkt erwartet",
+  "en": "Colon expected"
+ },
+ {
+  "id": "c586",
+  "de": "AdBlue-Dosierung angefordert",
+  "en": "Commanded DEF dosing"
+ },
+ {
+  "id": "c587",
+  "de": "Abgasrückführung angefordert",
+  "en": "Commanded EGR"
+ },
+ {
+  "id": "c588",
+  "de": "Abgasrückführung A angefordert",
+  "en": "Commanded EGR A"
+ },
+ {
+  "id": "c589",
+  "de": "Abgasrückführung B angefordert",
+  "en": "Commanded EGR B"
+ },
+ {
+  "id": "c590",
+  "de": "Turbolader-Leitschaufeln A angefordert",
+  "en": "Commanded VGT A position"
+ },
+ {
+  "id": "c591",
+  "de": "Turbolader-Leitschaufeln B angefordert",
+  "en": "Commanded VGT B position"
+ },
+ {
+  "id": "c592",
+  "de": "Ladedruck A angefordert",
+  "en": "Commanded boost pressure A"
+ },
+ {
+  "id": "c593",
+  "de": "Ladedruck B angefordert",
+  "en": "Commanded boost pressure B"
+ },
+ {
+  "id": "c594",
+  "de": "Tankentlüftung angefordert",
+  "en": "Commanded evaporative purge"
+ },
+ {
+  "id": "c595",
+  "de": "Raildruck A angefordert",
+  "en": "Commanded fuel rail pressure A"
+ },
+ {
+  "id": "c596",
+  "de": "Raildruck B angefordert",
+  "en": "Commanded fuel rail pressure B"
+ },
+ {
+  "id": "c597",
+  "de": "Einspritzdruck A angefordert",
+  "en": "Commanded injection control pressure A"
+ },
+ {
+  "id": "c598",
+  "de": "Einspritzdruck B angefordert",
+  "en": "Commanded injection control pressure B"
+ },
+ {
+  "id": "c599",
+  "de": "Ansaugluftklappe A angefordert",
+  "en": "Commanded intake air flow A"
+ },
+ {
+  "id": "c600",
+  "de": "Ansaugluftklappe B angefordert",
+  "en": "Commanded intake air flow B"
+ },
+ {
+  "id": "c601",
+  "de": "Lambda angefordert",
+  "en": "Commanded lambda"
+ },
+ {
+  "id": "c602",
+  "de": "Drosselklappen-Ansteuerung",
+  "en": "Commanded throttle actuator"
+ },
+ {
+  "id": "c603",
+  "de": "Drosselklappe A angefordert",
+  "en": "Commanded throttle actuator A"
+ },
+ {
+  "id": "c604",
+  "de": "Drosselklappe B angefordert",
+  "en": "Commanded throttle actuator B"
+ },
+ {
+  "id": "c605",
+  "de": "Wastegate A angefordert",
+  "en": "Commanded wastegate A"
+ },
+ {
+  "id": "c606",
+  "de": "Wastegate B angefordert",
+  "en": "Commanded wastegate B"
+ },
+ {
+  "id": "c607",
+  "de": "Befehle: ",
+  "en": "Commands: "
+ },
+ {
+  "id": "c608",
+  "de": "Nutzfahrzeug, teils J1939.",
+  "en": "Commercial vehicle, partly J1939."
+ },
+ {
+  "id": "c609",
+  "de": "Nutzfahrzeug.",
+  "en": "Commercial vehicle."
+ },
+ {
+  "id": "c610",
+  "de": "Baugruppe 0x",
+  "en": "Component 0x"
+ },
+ {
+  "id": "c611",
+  "de": "Bauteilüberwachung",
+  "en": "Comprehensive components"
+ },
+ {
+  "id": "c612",
+  "de": "Druck vor Turbolader A",
+  "en": "Compressor inlet pressure A"
+ },
+ {
+  "id": "c613",
+  "de": "Druck vor Turbolader B",
+  "en": "Compressor inlet pressure B"
+ },
+ {
+  "id": "c614",
+  "de": "Bedingungen stimmen nicht (Motor läuft? Zündung aus?)",
+  "en": "Conditions not correct (engine running? ignition off?)"
+ },
+ {
+  "id": "c615",
+  "de": "Verbindung: ",
+  "en": "Connection: "
+ },
+ {
+  "id": "c616",
+  "de": "Verbrauch",
+  "en": "Consumption"
+ },
+ {
+  "id": "c617",
+  "de": "Enthält I, O oder Q. Diese Buchstaben kommen in Fahrgestellnummern nicht vor, gemeint ist wohl 1 oder 0.",
+  "en": "Contains I, O or Q. These letters never appear in a VIN, probably 1 or 0 is meant."
+ },
+ {
+  "id": "c618",
+  "de": "Enthält Zeichen, die keine Buchstaben oder Ziffern sind.",
+  "en": "Contains characters that are neither letters nor digits."
+ },
+ {
+  "id": "c619",
+  "de": "Steuergerät - Geschwindigkeitsausgang A",
+  "en": "Control module VSS output A"
+ },
+ {
+  "id": "c620",
+  "de": "Steuergerät - Geschwindigkeitsausgang B",
+  "en": "Control module VSS output B"
+ },
+ {
+  "id": "c621",
+  "de": "Steuergerät und Ausgänge",
+  "en": "Control module and outputs"
+ },
+ {
+  "id": "c622",
+  "de": "Steuergeräte-Datenbus A abgeschaltet",
+  "en": "Control module communication bus A off"
+ },
+ {
+  "id": "c623",
+  "de": "Steuergeräte-Datenbus B abgeschaltet",
+  "en": "Control module communication bus B off"
+ },
+ {
+  "id": "c624",
+  "de": "Steuergeräte-Datenbus C abgeschaltet",
+  "en": "Control module communication bus C off"
+ },
+ {
+  "id": "c625",
+  "de": "Steuergerät - Funktion",
+  "en": "Control module performance"
+ },
+ {
+  "id": "c626",
+  "de": "Steuergerät - Prozessorfehler",
+  "en": "Control module processor"
+ },
+ {
+  "id": "c627",
+  "de": "Steuergerät - Programmierfehler",
+  "en": "Control module programming error"
+ },
+ {
+  "id": "c628",
+  "de": "Software oder Codierung eines Steuergeräts passt nicht",
+  "en": "Control module software or coding incompatibility"
+ },
+ {
+  "id": "c629",
+  "de": "Steuergerät - Fahrzeugvarianten-Fehler (Codierung)",
+  "en": "Control module vehicle options error"
+ },
+ {
+  "id": "c630",
+  "de": "Periodendauer der Regelung",
+  "en": "Control period"
+ },
+ {
+  "id": "c631",
+  "de": "Bedienhebel am Lenkrad\nBremslichtschalter\nKabel oder Wickelfeder",
+  "en": "Control stalk at the steering wheel\nBrake light switch\nWiring or clock spring"
+ },
+ {
+  "id": "c632",
+  "de": "Steuergerät",
+  "en": "Control unit"
+ },
+ {
+  "id": "c633",
+  "de": "Steuergerät ",
+  "en": "Control unit "
+ },
+ {
+  "id": "c634",
+  "de": "Steuergerät - interner Klopfsensortest fehlerhaft",
+  "en": "Control unit - internal knock sensor test failed"
+ },
+ {
+  "id": "c635",
+  "de": "Steuergerät EEPROM - Fehler",
+  "en": "Control unit EEPROM - error"
+ },
+ {
+  "id": "c636",
+  "de": "Steuergerät und Peripherie",
+  "en": "Control unit and peripherals"
+ },
+ {
+  "id": "c637",
+  "de": "Steuergerät und angesteuerte Relais",
+  "en": "Control unit and the relays it drives"
+ },
+ {
+  "id": "c638",
+  "de": "Steuergerät beschäftigt, später erneut versuchen",
+  "en": "Control unit busy, try again later"
+ },
+ {
+  "id": "c639",
+  "de": "Steuergerät quittiert ",
+  "en": "Control unit does not acknowledge "
+ },
+ {
+  "id": "c640",
+  "de": "Steuergerät antwortet nicht",
+  "en": "Control unit does not respond"
+ },
+ {
+  "id": "c641",
+  "de": "Steuergerät antwortet nicht sinnvoll",
+  "en": "Control unit does not respond meaningfully"
+ },
+ {
+  "id": "c642",
+  "de": "Steuergerät unterstützt diese Anfrage nicht (NO DATA).",
+  "en": "Control unit does not support this request (NO DATA)."
+ },
+ {
+  "id": "c643",
+  "de": "Steuergerät defekt",
+  "en": "Control unit faulty"
+ },
+ {
+  "id": "c644",
+  "de": "Steuergerät falsch codiert",
+  "en": "Control unit incorrectly coded"
+ },
+ {
+  "id": "c645",
+  "de": "Steuergerät durch Wegfahrsperre gesperrt",
+  "en": "Control unit locked by immobilizer"
+ },
+ {
+  "id": "c646",
+  "de": "Steuergerät - Programmierung nicht abgeschlossen",
+  "en": "Control unit programming not finished"
+ },
+ {
+  "id": "c647",
+  "de": "Steuergerät lehnt ab: ",
+  "en": "Control unit refuses: "
+ },
+ {
+  "id": "c648",
+  "de": "Steuergerät lehnt den Dienst ab (Code 0x",
+  "en": "Control unit rejects the service (code 0x"
+ },
+ {
+  "id": "c649",
+  "de": "Steuergerät bleibt beschäftigt und liefert keine Antwort.",
+  "en": "Control unit stays busy and never delivers the answer."
+ },
+ {
+  "id": "c650",
+  "de": "Steuergerät antwortet nicht mehr",
+  "en": "Control unit stopped responding"
+ },
+ {
+  "id": "c651",
+  "de": "Spannung Steuergerät",
+  "en": "Control unit voltage"
+ },
+ {
+  "id": "c652",
+  "de": "Steuergerät mit 29-Bit-Adresse, das Auto ist aber mit 11 Bit verbunden.",
+  "en": "Control unit with a 29-bit address, but the car is connected with 11 bit."
+ },
+ {
+  "id": "c653",
+  "de": "Steuergerät mit 11-Bit-Adresse, das Auto ist aber mit 29 Bit verbunden.",
+  "en": "Control unit with an 11-bit address, but the car is connected with 29 bit."
+ },
+ {
+  "id": "c654",
+  "de": "Steuergerät: Anpassung",
+  "en": "Control unit: adaptation"
+ },
+ {
+  "id": "c655",
+  "de": "Steuergerät: Endstufe defekt",
+  "en": "Control unit: output stage faulty"
+ },
+ {
+  "id": "c656",
+  "de": "Cabrio",
+  "en": "Convertible"
+ },
+ {
+  "id": "c657",
+  "de": "Kühlmittelverlust durch ein Leck\nNiveaugeber im Ausgleichsbehälter defekt",
+  "en": "Coolant loss through a leak\nFaulty level sensor in the expansion tank"
+ },
+ {
+  "id": "c658",
+  "de": "Kühlmittelverlust durch Leck, Schlauch oder Wasserpumpe\nKühlerlüfter läuft nicht\nThermostat hängt geschlossen\nZylinderkopfdichtung defekt",
+  "en": "Coolant loss through a leak, hose or water pump\nRadiator fan not running\nThermostat stuck closed\nFailed head gasket"
+ },
+ {
+  "id": "c659",
+  "de": "Kühlmittelpumpe A - Steuerkreis Spannung zu hoch",
+  "en": "Coolant pump A - control circuit high"
+ },
+ {
+  "id": "c660",
+  "de": "Kühlmittelpumpe A - Steuerkreis Spannung zu niedrig",
+  "en": "Coolant pump A - control circuit low"
+ },
+ {
+  "id": "c661",
+  "de": "Kühlmittelpumpe A - Funktion",
+  "en": "Coolant pump A - control circuit range/performance"
+ },
+ {
+  "id": "c662",
+  "de": "Kühlmittelpumpe A - Steuerkreis oder Unterbrechung",
+  "en": "Coolant pump A - control circuit/open"
+ },
+ {
+  "id": "c663",
+  "de": "Kühlmitteltemperatur",
+  "en": "Coolant temperature"
+ },
+ {
+  "id": "c664",
+  "de": "Kühlmitteltemperatur Sensor 1",
+  "en": "Coolant temperature sensor 1"
+ },
+ {
+  "id": "c665",
+  "de": "Kühlmitteltemperatur Sensor 2",
+  "en": "Coolant temperature sensor 2"
+ },
+ {
+  "id": "c666",
+  "de": "Kühlmitteltemperaturgeber G62",
+  "en": "Coolant temperature sensor G62"
+ },
+ {
+  "id": "c667",
+  "de": "Kühlmitteltemperaturgeber am Motor",
+  "en": "Coolant temperature sensor on the engine"
+ },
+ {
+  "id": "c668",
+  "de": "Kühlmitteltemperatur (Sensoren)",
+  "en": "Coolant temperature sensors"
+ },
+ {
+  "id": "c669",
+  "de": "Thermostat - Kühlmitteltemperatur unter der Regeltemperatur",
+  "en": "Coolant thermostat (coolant temperature below thermostat regulating temperature)"
+ },
+ {
+  "id": "c670",
+  "de": "Kühlung",
+  "en": "Cooling"
+ },
+ {
+  "id": "c671",
+  "de": "Kühlung",
+  "en": "Cooling system"
+ },
+ {
+  "id": "c672",
+  "de": "Kühlsystem - Fehlfunktion (Thermostat oder Kühlmitteltemperatur)",
+  "en": "Cooling system - malfunction (thermostat or coolant temperature)"
+ },
+ {
+  "id": "c673",
+  "de": "Kühlsystem - Funktion",
+  "en": "Cooling system performance"
+ },
+ {
+  "id": "c674",
+  "de": "Costa Rica",
+  "en": "Costa Rica"
+ },
+ {
+  "id": "c675",
+  "de": "Zähler",
+  "en": "Counter"
+ },
+ {
+  "id": "c676",
+  "de": "Coupé",
+  "en": "Coupe"
+ },
+ {
+  "id": "c677",
+  "de": "Kurbel- und Nockenwellengeber zueinander unplausibel",
+  "en": "Crankshaft and camshaft position sensors implausible relative to each other"
+ },
+ {
+  "id": "c678",
+  "de": "Kurbel- und Nockenwellengeber, Klopfsensoren",
+  "en": "Crankshaft and camshaft position sensors, knock sensors"
+ },
+ {
+  "id": "c679",
+  "de": "Kurbelwelle und Nockenwelle passen nicht zusammen",
+  "en": "Crankshaft position - camshaft position correlation"
+ },
+ {
+  "id": "c680",
+  "de": "Kurbelwelle und Nockenwelle passen nicht zusammen, Bank 1 Geber A",
+  "en": "Crankshaft position - camshaft position correlation, bank 1 sensor A"
+ },
+ {
+  "id": "c681",
+  "de": "Kurbelwelle und Nockenwelle passen nicht zusammen, Bank 1 Geber B",
+  "en": "Crankshaft position - camshaft position correlation, bank 1 sensor B"
+ },
+ {
+  "id": "c682",
+  "de": "Kurbelwelle und Nockenwelle passen nicht zusammen, Bank 2 Geber A",
+  "en": "Crankshaft position - camshaft position correlation, bank 2 sensor A"
+ },
+ {
+  "id": "c683",
+  "de": "Kurbelwelle und Nockenwelle passen nicht zusammen, Bank 2 Geber B",
+  "en": "Crankshaft position - camshaft position correlation, bank 2 sensor B"
+ },
+ {
+  "id": "c684",
+  "de": "Kurbelwellengeber - Signale hoher und niedriger Auflösung passen nicht zusammen",
+  "en": "Crankshaft position high to low resolution frequency correlation"
+ },
+ {
+  "id": "c685",
+  "de": "Kurbelwellengeber (Zahnsignal) - Fehlfunktion",
+  "en": "Crankshaft position sensor (COG)"
+ },
+ {
+  "id": "c686",
+  "de": "Kurbelwellengeber (REF) - Fehlfunktion",
+  "en": "Crankshaft position sensor (REF)"
+ },
+ {
+  "id": "c687",
+  "de": "Kurbelwellengeber A - Stromkreis",
+  "en": "Crankshaft position sensor A - circuit"
+ },
+ {
+  "id": "c688",
+  "de": "Kurbelwellengeber A - Signal zu hoch",
+  "en": "Crankshaft position sensor A - circuit high"
+ },
+ {
+  "id": "c689",
+  "de": "Kurbelwellengeber A - Signal setzt zeitweise aus",
+  "en": "Crankshaft position sensor A - circuit intermittent"
+ },
+ {
+  "id": "c690",
+  "de": "Kurbelwellengeber A - Signal zu niedrig",
+  "en": "Crankshaft position sensor A - circuit low"
+ },
+ {
+  "id": "c691",
+  "de": "Kurbelwellengeber A - Signal unplausibel",
+  "en": "Crankshaft position sensor A - circuit range/performance"
+ },
+ {
+  "id": "c692",
+  "de": "Kurbelwellengeber B - Stromkreis",
+  "en": "Crankshaft position sensor B - circuit"
+ },
+ {
+  "id": "c693",
+  "de": "Kurbelwellengeber B - Signal zu hoch",
+  "en": "Crankshaft position sensor B - circuit high"
+ },
+ {
+  "id": "c694",
+  "de": "Kurbelwellengeber B - Signal setzt zeitweise aus",
+  "en": "Crankshaft position sensor B - circuit intermittent"
+ },
+ {
+  "id": "c695",
+  "de": "Kurbelwellengeber B - Signal zu niedrig",
+  "en": "Crankshaft position sensor B - circuit low"
+ },
+ {
+  "id": "c696",
+  "de": "Kurbelwellengeber B - Signal unplausibel",
+  "en": "Crankshaft position sensor B - circuit range/performance"
+ },
+ {
+  "id": "c697",
+  "de": "Kurbelwellensignal-Ausgang - Stromkreis oder Unterbrechung",
+  "en": "Crankshaft position signal output circuit/open"
+ },
+ {
+  "id": "c698",
+  "de": "Kurbelwellen-Geberrad nicht angelernt",
+  "en": "Crankshaft position system variation not learned"
+ },
+ {
+  "id": "c699",
+  "de": "Crashsensor Fahrerseite G179",
+  "en": "Crash sensor, driver side G179"
+ },
+ {
+  "id": "c700",
+  "de": "Crashsensor Beifahrerseite G180",
+  "en": "Crash sensor, passenger side G180"
+ },
+ {
+  "id": "c701",
+  "de": "Kritisch",
+  "en": "Critical"
+ },
+ {
+  "id": "c702",
+  "de": "Kroatien",
+  "en": "Croatia"
+ },
+ {
+  "id": "c703",
+  "de": "Tempomat - Signal Beschleunigen",
+  "en": "Cruise control accel signal"
+ },
+ {
+  "id": "c704",
+  "de": "Tempomat - Signal Verzögern",
+  "en": "Cruise control coast signal"
+ },
+ {
+  "id": "c705",
+  "de": "Tempomat - Eingangssignal",
+  "en": "Cruise control input circuit"
+ },
+ {
+  "id": "c706",
+  "de": "Tempomat - Eingangssignal zu hoch",
+  "en": "Cruise control input circuit high"
+ },
+ {
+  "id": "c707",
+  "de": "Tempomat - Eingangssignal zu niedrig",
+  "en": "Cruise control input circuit low"
+ },
+ {
+  "id": "c708",
+  "de": "Tempomat-Bedienhebel A - Stromkreis",
+  "en": "Cruise control multi-function input A circuit"
+ },
+ {
+  "id": "c709",
+  "de": "Tempomat-Bedienhebel A - Signal zu hoch",
+  "en": "Cruise control multi-function input A circuit high"
+ },
+ {
+  "id": "c710",
+  "de": "Tempomat-Bedienhebel A - Signal zu niedrig",
+  "en": "Cruise control multi-function input A circuit low"
+ },
+ {
+  "id": "c711",
+  "de": "Tempomat-Bedienhebel A - Signal unplausibel",
+  "en": "Cruise control multi-function input A circuit range/performance"
+ },
+ {
+  "id": "c712",
+  "de": "Tempomat-Bedienhebel A - Signal hängt",
+  "en": "Cruise control multi-function input A circuit stuck"
+ },
+ {
+  "id": "c713",
+  "de": "Tempomat - Signal Aus",
+  "en": "Cruise control off signal"
+ },
+ {
+  "id": "c714",
+  "de": "Tempomat - Signal Ein",
+  "en": "Cruise control on signal"
+ },
+ {
+  "id": "c715",
+  "de": "Tempomat - Signal Wiederaufnahme",
+  "en": "Cruise control resume signal"
+ },
+ {
+  "id": "c716",
+  "de": "Tempomat-Stellglied - Funktion",
+  "en": "Cruise control servo control circuit range/performance"
+ },
+ {
+  "id": "c717",
+  "de": "Tempomat - Signal Setzen",
+  "en": "Cruise control set signal"
+ },
+ {
+  "id": "c718",
+  "de": "Tempomatschalter - Signal unplausibel",
+  "en": "Cruise control switch - signal implausible"
+ },
+ {
+  "id": "c719",
+  "de": "Tempomat - Geschwindigkeit zu hoch",
+  "en": "Cruise control system - vehicle speed too high"
+ },
+ {
+  "id": "c720",
+  "de": "Zylinder ",
+  "en": "Cylinder "
+ },
+ {
+  "id": "c721",
+  "de": "Zylinder 1 - Klopfgrenze überschritten",
+  "en": "Cylinder 1 above knock threshold"
+ },
+ {
+  "id": "c722",
+  "de": "Zylinder 1 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 1 contribution/balance"
+ },
+ {
+  "id": "c723",
+  "de": "Zylinder 1 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 1 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c724",
+  "de": "Zylinder 1 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 1 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c725",
+  "de": "Zylinder 1 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 1 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c726",
+  "de": "Zylinder 1 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 1 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c727",
+  "de": "Zylinder 1 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 1 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c728",
+  "de": "Zylinder 1 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 1 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c729",
+  "de": "Zylinder 1 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 1 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c730",
+  "de": "Zylinder 1 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 1 exhaust valve control - performance"
+ },
+ {
+  "id": "c731",
+  "de": "Glühkerze Zylinder 1 - Stromkreis",
+  "en": "Cylinder 1 glow plug circuit"
+ },
+ {
+  "id": "c732",
+  "de": "Einspritzventil Zylinder 1 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 1 injector circuit high"
+ },
+ {
+  "id": "c733",
+  "de": "Einspritzventil Zylinder 1 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 1 injector circuit low"
+ },
+ {
+  "id": "c734",
+  "de": "Verbrennungsaussetzer Zylinder 1",
+  "en": "Cylinder 1 misfire detected"
+ },
+ {
+  "id": "c735",
+  "de": "Zylinder 10 - Klopfgrenze überschritten",
+  "en": "Cylinder 10 above knock threshold"
+ },
+ {
+  "id": "c736",
+  "de": "Zylinder 10 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 10 contribution/balance"
+ },
+ {
+  "id": "c737",
+  "de": "Glühkerze Zylinder 10 - Stromkreis",
+  "en": "Cylinder 10 glow plug circuit"
+ },
+ {
+  "id": "c738",
+  "de": "Einspritzventil Zylinder 10 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 10 injector circuit high"
+ },
+ {
+  "id": "c739",
+  "de": "Einspritzventil Zylinder 10 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 10 injector circuit low"
+ },
+ {
+  "id": "c740",
+  "de": "Verbrennungsaussetzer Zylinder 10",
+  "en": "Cylinder 10 misfire detected"
+ },
+ {
+  "id": "c741",
+  "de": "Zylinder 11 - Klopfgrenze überschritten",
+  "en": "Cylinder 11 above knock threshold"
+ },
+ {
+  "id": "c742",
+  "de": "Zylinder 11 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 11 contribution/balance"
+ },
+ {
+  "id": "c743",
+  "de": "Glühkerze Zylinder 11 - Stromkreis",
+  "en": "Cylinder 11 glow plug circuit"
+ },
+ {
+  "id": "c744",
+  "de": "Einspritzventil Zylinder 11 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 11 injector circuit high"
+ },
+ {
+  "id": "c745",
+  "de": "Einspritzventil Zylinder 11 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 11 injector circuit low"
+ },
+ {
+  "id": "c746",
+  "de": "Verbrennungsaussetzer Zylinder 11",
+  "en": "Cylinder 11 misfire detected"
+ },
+ {
+  "id": "c747",
+  "de": "Zylinder 12 - Klopfgrenze überschritten",
+  "en": "Cylinder 12 above knock threshold"
+ },
+ {
+  "id": "c748",
+  "de": "Zylinder 12 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 12 contribution/balance"
+ },
+ {
+  "id": "c749",
+  "de": "Glühkerze Zylinder 12 - Stromkreis",
+  "en": "Cylinder 12 glow plug circuit"
+ }
+]

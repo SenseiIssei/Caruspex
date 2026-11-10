@@ -1,5 +1,7 @@
 #include "app/Settings.h"
 
+#include "core/Lang.h"
+
 #include <QGuiApplication>
 #include <QStyleHints>
 
@@ -60,9 +62,9 @@ AppSettings loadSettings() {
     if (v.appearance != QStringLiteral("dark") && v.appearance != QStringLiteral("light")) {
         v.appearance = QStringLiteral("auto");
     }
-    if (v.language != QStringLiteral("de") && v.language != QStringLiteral("en")) {
-        v.language = QStringLiteral("auto");
-    }
+    bool known = false;
+    for (const LanguageInfo& info : languages()) known = known || v.language == QLatin1String(info.code);
+    if (!known) v.language = QStringLiteral("auto");
 
     // Values from an older or hand-edited file could be nonsense. Better to
     // clamp them than to divide by zero later.
@@ -124,11 +126,13 @@ void saveSettings(const AppSettings& v) {
 }
 
 QString effectiveLanguage(const AppSettings& v) {
-    if (v.language == QStringLiteral("de") || v.language == QStringLiteral("en")) {
-        return v.language;
-    }
-    return QLocale::system().language() == QLocale::German ? QStringLiteral("de")
-                                                           : QStringLiteral("en");
+    for (const LanguageInfo& info : languages())
+        if (v.language == QLatin1String(info.code)) return v.language;
+    // The system language if Caruspex has it, English otherwise.
+    const std::string system = QLocale::system().name().toStdString();
+    const Language guess = languageFromCode(system);
+    const QString code = QString::fromLatin1(languageInfo(guess).code);
+    return system.rfind(languageInfo(guess).code, 0) == 0 ? code : QStringLiteral("en");
 }
 
 }  // namespace caruspex

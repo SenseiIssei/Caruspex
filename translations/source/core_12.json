@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c3000",
+  "de": "Getriebeöldrucksensor/-schalter A - Signal zu hoch",
+  "en": "Transmission fluid pressure sensor/switch A - circuit high"
+ },
+ {
+  "id": "c3001",
+  "de": "Getriebeöldrucksensor/-schalter A - Signal setzt zeitweise aus",
+  "en": "Transmission fluid pressure sensor/switch A - circuit intermittent"
+ },
+ {
+  "id": "c3002",
+  "de": "Getriebeöldrucksensor/-schalter A - Signal zu niedrig",
+  "en": "Transmission fluid pressure sensor/switch A - circuit low"
+ },
+ {
+  "id": "c3003",
+  "de": "Getriebeöldrucksensor/-schalter A - Signal unplausibel",
+  "en": "Transmission fluid pressure sensor/switch A - circuit range/performance"
+ },
+ {
+  "id": "c3004",
+  "de": "Getriebeöldrucksensor/-schalter B - Stromkreis",
+  "en": "Transmission fluid pressure sensor/switch B - circuit"
+ },
+ {
+  "id": "c3005",
+  "de": "Getriebeöldrucksensor/-schalter B - Signal zu hoch",
+  "en": "Transmission fluid pressure sensor/switch B - circuit high"
+ },
+ {
+  "id": "c3006",
+  "de": "Getriebeöldrucksensor/-schalter B - Signal setzt zeitweise aus",
+  "en": "Transmission fluid pressure sensor/switch B - circuit intermittent"
+ },
+ {
+  "id": "c3007",
+  "de": "Getriebeöldrucksensor/-schalter B - Signal zu niedrig",
+  "en": "Transmission fluid pressure sensor/switch B - circuit low"
+ },
+ {
+  "id": "c3008",
+  "de": "Getriebeöldrucksensor/-schalter B - Signal unplausibel",
+  "en": "Transmission fluid pressure sensor/switch B - circuit range/performance"
+ },
+ {
+  "id": "c3009",
+  "de": "Getriebeoeltemperatur",
+  "en": "Transmission fluid temperature"
+ },
+ {
+  "id": "c3010",
+  "de": "Getriebeöltemperatursensor A - Stromkreis",
+  "en": "Transmission fluid temperature sensor A - circuit"
+ },
+ {
+  "id": "c3011",
+  "de": "Getriebeöltemperatursensor A - Signal zu hoch",
+  "en": "Transmission fluid temperature sensor A - circuit high"
+ },
+ {
+  "id": "c3012",
+  "de": "Getriebeöltemperatursensor A - Signal setzt zeitweise aus",
+  "en": "Transmission fluid temperature sensor A - circuit intermittent"
+ },
+ {
+  "id": "c3013",
+  "de": "Getriebeöltemperatursensor A - Signal zu niedrig",
+  "en": "Transmission fluid temperature sensor A - circuit low"
+ },
+ {
+  "id": "c3014",
+  "de": "Getriebeöltemperatursensor A - Signal unplausibel",
+  "en": "Transmission fluid temperature sensor A - circuit range/performance"
+ },
+ {
+  "id": "c3015",
+  "de": "Getriebeöltemperatursensor - außerhalb des Selbsttestbereichs",
+  "en": "Transmission fluid temperature sensor out of self-test range"
+ },
+ {
+  "id": "c3016",
+  "de": "Gang",
+  "en": "Transmission gear"
+ },
+ {
+  "id": "c3017",
+  "de": "Getriebe - unbestimmter Fehler (in Neutral geschaltet)",
+  "en": "Transmission indeterminate failure (failed to neutral)"
+ },
+ {
+  "id": "c3018",
+  "de": "Getriebe überhitzt",
+  "en": "Transmission over temperature condition"
+ },
+ {
+  "id": "c3019",
+  "de": "Ganganzeige - Stromkreis",
+  "en": "Transmission range display circuit"
+ },
+ {
+  "id": "c3020",
+  "de": "Getriebebereichssensor A (Wählhebel) - Stromkreis",
+  "en": "Transmission range sensor A (PRNDL input) - circuit"
+ },
+ {
+  "id": "c3021",
+  "de": "Getriebebereichssensor A (Wählhebel) - Signal zu hoch",
+  "en": "Transmission range sensor A (PRNDL input) - circuit high"
+ },
+ {
+  "id": "c3022",
+  "de": "Getriebebereichssensor A (Wählhebel) - Signal setzt zeitweise aus",
+  "en": "Transmission range sensor A (PRNDL input) - circuit intermittent"
+ },
+ {
+  "id": "c3023",
+  "de": "Getriebebereichssensor A (Wählhebel) - Signal zu niedrig",
+  "en": "Transmission range sensor A (PRNDL input) - circuit low"
+ },
+ {
+  "id": "c3024",
+  "de": "Getriebebereichssensor A (Wählhebel) - Signal unplausibel",
+  "en": "Transmission range sensor A (PRNDL input) - circuit range/performance"
+ },
+ {
+  "id": "c3025",
+  "de": "Wählhebelsensor - außerhalb des Selbsttestbereichs (Test nicht in P oder N?)",
+  "en": "Transmission range sensor out of self-test range (test not in P or N?)"
+ },
+ {
+  "id": "c3026",
+  "de": "Weg",
+  "en": "Travel"
+ },
+ {
+  "id": "c3027",
+  "de": "Probiert alle Protokolle der Reihe nach durch. Funktioniert immer, dauert nur ein paar Sekunden länger.",
+  "en": "Tries all protocols one after another. Always works, it just takes a few seconds longer."
+ },
+ {
+  "id": "c3028",
+  "de": "Fehlercode",
+  "en": "Trouble code"
+ },
+ {
+  "id": "c3029",
+  "de": "Mit dem Zweitschlüssel versuchen\nBatterie im Funkschlüssel tauschen\nAndere Transponder-Schlüssel vom Schlüsselbund nehmen",
+  "en": "Try the spare key\nReplace the battery in the remote key\nTake other transponder keys off the key ring"
+ },
+ {
+  "id": "c3030",
+  "de": "Tunesien",
+  "en": "Tunisia"
+ },
+ {
+  "id": "c3031",
+  "de": "Turbinendrehzahlsensor - Fehlfunktion",
+  "en": "Turbine revolution sensor"
+ },
+ {
+  "id": "c3032",
+  "de": "Verstellung des Turboladers (VTG) oder Wastegate klemmt\nMagnetventil der Ladedruckregelung defekt\nUnterdruckschlauch undicht oder vertauscht\nLadedrucksensor misst falsch",
+  "en": "Turbo vane mechanism (VTG) or wastegate sticking\nFaulty boost control solenoid\nLeaking or swapped vacuum hose\nBoost pressure sensor reads wrong"
+ },
+ {
+  "id": "c3033",
+  "de": "Ladedruck zu hoch (Overboost)",
+  "en": "Turbo/super charger A overboost condition"
+ },
+ {
+  "id": "c3034",
+  "de": "Ladedruck zu niedrig (Underboost)",
+  "en": "Turbo/super charger A underboost condition"
+ },
+ {
+  "id": "c3035",
+  "de": "Ladedruckregelung A - Spannung zu hoch",
+  "en": "Turbo/super charger boost control A - circuit high"
+ },
+ {
+  "id": "c3036",
+  "de": "Ladedruckregelung A - Spannung zu niedrig",
+  "en": "Turbo/super charger boost control A - circuit low"
+ },
+ {
+  "id": "c3037",
+  "de": "Ladedruckregelung A - Funktion",
+  "en": "Turbo/super charger boost control A - circuit range/performance"
+ },
+ {
+  "id": "c3038",
+  "de": "Ladedruckregelung A - Stromkreis oder Unterbrechung",
+  "en": "Turbo/super charger boost control A - circuit/open"
+ },
+ {
+  "id": "c3039",
+  "de": "Turbolader - Ladedrucksystem Funktion",
+  "en": "Turbo/super charger boost system performance"
+ },
+ {
+  "id": "c3040",
+  "de": "Schubumluftventil (Turbo-Bypass) - mechanischer Fehler",
+  "en": "Turbo/super charger bypass valve - mechanical"
+ },
+ {
+  "id": "c3041",
+  "de": "Turbolader - Turbine dreht zu schnell",
+  "en": "Turbo/super charger turbine overspeed"
+ },
+ {
+  "id": "c3042",
+  "de": "Ladedruckregelventil A (Wastegate) - Spannung zu hoch",
+  "en": "Turbo/super charger wastegate solenoid A - high"
+ },
+ {
+  "id": "c3043",
+  "de": "Ladedruckregelventil A (Wastegate) - Spannung zu niedrig",
+  "en": "Turbo/super charger wastegate solenoid A - low"
+ },
+ {
+  "id": "c3044",
+  "de": "Ladedruckregelventil A (Wastegate) - Fehlfunktion",
+  "en": "Turbo/super charger wastegate solenoid A - malfunction"
+ },
+ {
+  "id": "c3045",
+  "de": "Ladedruckregelventil A (Wastegate) - Funktion",
+  "en": "Turbo/super charger wastegate solenoid A - range/performance"
+ },
+ {
+  "id": "c3046",
+  "de": "Ladedruckregelventil B (Wastegate) - Spannung zu hoch",
+  "en": "Turbo/super charger wastegate solenoid B - high"
+ },
+ {
+  "id": "c3047",
+  "de": "Ladedruckregelventil B (Wastegate) - Spannung zu niedrig",
+  "en": "Turbo/super charger wastegate solenoid B - low"
+ },
+ {
+  "id": "c3048",
+  "de": "Ladedruckregelventil B (Wastegate) - Fehlfunktion",
+  "en": "Turbo/super charger wastegate solenoid B - malfunction"
+ },
+ {
+  "id": "c3049",
+  "de": "Ladedruckregelventil B (Wastegate) - Funktion",
+  "en": "Turbo/super charger wastegate solenoid B - range/performance"
+ },
+ {
+  "id": "c3050",
+  "de": "Turbolader",
+  "en": "Turbocharger"
+ },
+ {
+  "id": "c3051",
+  "de": "Drehzahl Turbolader A",
+  "en": "Turbocharger A speed"
+ },
+ {
+  "id": "c3052",
+  "de": "Drehzahl Turbolader B",
+  "en": "Turbocharger B speed"
+ },
+ {
+  "id": "c3053",
+  "de": "Turbolader und Ladedruck",
+  "en": "Turbocharger and boost"
+ },
+ {
+  "id": "c3054",
+  "de": "Ladedrucksteller Positionssensor A - Stromkreis",
+  "en": "Turbocharger boost control position sensor A - circuit"
+ },
+ {
+  "id": "c3055",
+  "de": "Ladedrucksteller Positionssensor A - Signal zu hoch",
+  "en": "Turbocharger boost control position sensor A - circuit high"
+ },
+ {
+  "id": "c3056",
+  "de": "Ladedrucksteller Positionssensor A - Signal zu niedrig",
+  "en": "Turbocharger boost control position sensor A - circuit low"
+ },
+ {
+  "id": "c3057",
+  "de": "Ladedrucksteller Positionssensor A - Signal unplausibel",
+  "en": "Turbocharger boost control position sensor A - circuit range/performance"
+ },
+ {
+  "id": "c3058",
+  "de": "Ladedrucksensor A - Stromkreis",
+  "en": "Turbocharger boost sensor A - circuit"
+ },
+ {
+  "id": "c3059",
+  "de": "Ladedrucksensor A - Signal zu hoch",
+  "en": "Turbocharger boost sensor A - circuit high"
+ },
+ {
+  "id": "c3060",
+  "de": "Ladedrucksensor A - Signal zu niedrig",
+  "en": "Turbocharger boost sensor A - circuit low"
+ },
+ {
+  "id": "c3061",
+  "de": "Ladedrucksensor A - Signal unplausibel",
+  "en": "Turbocharger boost sensor A - circuit range/performance"
+ },
+ {
+  "id": "c3062",
+  "de": "Ladedrucksensor B - Stromkreis",
+  "en": "Turbocharger boost sensor B - circuit"
+ },
+ {
+  "id": "c3063",
+  "de": "Ladedrucksensor B - Signal zu hoch",
+  "en": "Turbocharger boost sensor B - circuit high"
+ },
+ {
+  "id": "c3064",
+  "de": "Ladedrucksensor B - Signal zu niedrig",
+  "en": "Turbocharger boost sensor B - circuit low"
+ },
+ {
+  "id": "c3065",
+  "de": "Ladedrucksensor B - Signal unplausibel",
+  "en": "Turbocharger boost sensor B - circuit range/performance"
+ },
+ {
+  "id": "c3066",
+  "de": "Schubumluftventil (Turbo-Bypass) - Steuerkreis",
+  "en": "Turbocharger bypass valve control circuit"
+ },
+ {
+  "id": "c3067",
+  "de": "Schubumluftventil (Turbo-Bypass) - Steuerkreis Spannung zu hoch",
+  "en": "Turbocharger bypass valve control circuit high"
+ },
+ {
+  "id": "c3068",
+  "de": "Schubumluftventil (Turbo-Bypass) - Steuerkreis Spannung zu niedrig",
+  "en": "Turbocharger bypass valve control circuit low"
+ },
+ {
+  "id": "c3069",
+  "de": "Schubumluftventil (Turbo-Bypass) - Funktion",
+  "en": "Turbocharger bypass valve control circuit range/performance"
+ },
+ {
+  "id": "c3070",
+  "de": "Druck vor dem Turbolader",
+  "en": "Turbocharger compressor inlet pressure"
+ },
+ {
+  "id": "c3071",
+  "de": "Turboladerdrehzahl",
+  "en": "Turbocharger speed"
+ },
+ {
+  "id": "c3072",
+  "de": "Lader, Ladedruckdose und Unterdruckschläuche",
+  "en": "Turbocharger, wastegate actuator and vacuum hoses"
+ },
+ {
+  "id": "c3073",
+  "de": "Türkei",
+  "en": "Turkey"
+ },
+ {
+  "id": "c3074",
+  "de": "UDS geht über den ELM327 nur auf CAN; dieses Auto spricht ein anderes Protokoll.",
+  "en": "UDS through the ELM327 needs CAN; this car speaks another protocol."
+ },
+ {
+  "id": "c3075",
+  "de": "USA",
+  "en": "USA"
+ },
+ {
+  "id": "c3076",
+  "de": "Ukraine",
+  "en": "Ukraine"
+ },
+ {
+  "id": "c3077",
+  "de": "Tankentlüftung - Unterdruck im Tank kann nicht abgebaut werden",
+  "en": "Unable to bleed up fuel tank vacuum"
+ },
+ {
+  "id": "c3078",
+  "de": "Unter dem Armaturenbrett auf der Fahrerseite, nahe der Lenksäule.",
+  "en": "Under the dashboard on the driver side, near the steering column."
+ },
+ {
+  "id": "c3079",
+  "de": "Unter dem Armaturenbrett auf der Beifahrerseite.",
+  "en": "Under the dashboard on the passenger side."
+ },
+ {
+  "id": "c3080",
+  "de": "Unerwartete Antwort auf 19 02.",
+  "en": "Unexpected answer to 19 02."
+ },
+ {
+  "id": "c3081",
+  "de": "Unerwartetes Zeichen",
+  "en": "Unexpected character"
+ },
+ {
+  "id": "c3082",
+  "de": "Unerwartetes Formatbyte ",
+  "en": "Unexpected format byte "
+ },
+ {
+  "id": "c3083",
+  "de": "Unerwartete Antwort ",
+  "en": "Unexpected response "
+ },
+ {
+  "id": "c3084",
+  "de": "Vereinigte Arabische Emirate",
+  "en": "United Arab Emirates"
+ },
+ {
+  "id": "c3085",
+  "de": "Vereinigtes Königreich",
+  "en": "United Kingdom"
+ },
+ {
+  "id": "c3086",
+  "de": "Unbekannte Funktion",
+  "en": "Unknown function"
+ },
+ {
+  "id": "c3087",
+  "de": "Unbekannte Schlüsselbytes ",
+  "en": "Unknown key bytes "
+ },
+ {
+  "id": "c3088",
+  "de": "Unbekannter Name",
+  "en": "Unknown name"
+ },
+ {
+  "id": "c3089",
+  "de": "Stecker am Einspritzventil abziehen, auf grüne Korrosion prüfen, wieder fest aufstecken\nKabelbaum auf Scheuerstellen und Marderbiss ansehen",
+  "en": "Unplug the injector connector, look for green corrosion and push it back on firmly\nInspect the harness for chafing and marten bites"
+ },
+ {
+  "id": "c3090",
+  "de": "Nicht lesbare Zeilen übersprungen: ",
+  "en": "Unreadable lines skipped: "
+ },
+ {
+  "id": "c3091",
+  "de": "Schalter Hoch-/Herunterschalten - Stromkreis",
+  "en": "Up and down shift switch circuit"
+ },
+ {
+  "id": "c3092",
+  "de": "Schalter Hoch-/Herunterschalten - Signal zu hoch",
+  "en": "Up and down shift switch circuit high"
+ },
+ {
+  "id": "c3093",
+  "de": "Schalter Hoch-/Herunterschalten - Signal zu niedrig",
+  "en": "Up and down shift switch circuit low"
+ },
+ {
+  "id": "c3094",
+  "de": "Hochschaltschalter - Stromkreis",
+  "en": "Upshift switch circuit"
+ },
+ {
+  "id": "c3095",
+  "de": "Vordere Lambdasonden zwischen den Bänken vertauscht",
+  "en": "Upstream HO2S sensors swapped from bank to bank"
+ },
+ {
+  "id": "c3096",
+  "de": "Uruguay",
+  "en": "Uruguay"
+ },
+ {
+  "id": "c3097",
+  "de": "Wasserablass am Kraftstofffilter nutzen, falls vorhanden\nWann wurde der Filter zuletzt gewechselt?",
+  "en": "Use the water drain on the fuel filter, if fitted\nWhen was the filter last replaced?"
+ },
+ {
+  "id": "c3098",
+  "de": "Meist unter dem Armaturenbrett auf der Fahrerseite, manchmal hinter einer Abdeckung oder in der Mittelkonsole.",
+  "en": "Usually under the dashboard on the driver side, sometimes behind a cover or in the centre console."
+ },
+ {
+  "id": "c3099",
+  "de": "VAG (VW, Audi, Seat, Cupra, Škoda)",
+  "en": "VAG (VW, Audi, Seat, Cupra, Škoda)"
+ },
+ {
+  "id": "c3100",
+  "de": "VAG-Rundstecker (2x2 Pole). Mit einem KKL-Kabel liest Caruspex Fehlerspeicher und Messwerte über KWP1281.",
+  "en": "VAG round plugs (2x2 pins). With a KKL cable Caruspex reads fault memory and live values over KWP1281."
+ },
+ {
+  "id": "c3101",
+  "de": "VAG-Rundstecker (2x2), KKL-Kabel",
+  "en": "VAG round plugs (2x2), KKL cable"
+ },
+ {
+  "id": "c3102",
+  "de": "Turbolader-Regelung A",
+  "en": "VGT A control"
+ },
+ {
+  "id": "c3103",
+  "de": "Turbolader-Leitschaufeln A Stellung",
+  "en": "VGT A position"
+ },
+ {
+  "id": "c3104",
+  "de": "Turbolader-Regelung B",
+  "en": "VGT B control"
+ },
+ {
+  "id": "c3105",
+  "de": "Turbolader-Leitschaufeln B Stellung",
+  "en": "VGT B position"
+ },
+ {
+  "id": "c3106",
+  "de": "Saugrohrumschaltung (VIAS) Magnetventil - Stromkreis",
+  "en": "VIAS control solenoid valve"
+ },
+ {
+  "id": "c3107",
+  "de": "Fahrgestellnummer im Motorsteuergerät nicht programmiert oder falsch",
+  "en": "VIN not programmed or incompatible - ECM/PCM"
+ },
+ {
+  "id": "c3108",
+  "de": "Fahrgestellnummer im Getriebesteuergerät nicht programmiert oder falsch",
+  "en": "VIN not programmed or incompatible - TCM"
+ },
+ {
+  "id": "c3109",
+  "de": "VTEC-System - Fehlfunktion",
+  "en": "VTEC system malfunction"
+ },
+ {
+  "id": "c3110",
+  "de": "Nockenwellenverstellung (VVT) Sensor Bank 1 - Signal unplausibel",
+  "en": "VVT sensor circuit range/performance - bank 1"
+ },
+ {
+  "id": "c3111",
+  "de": "Nockenwellenverstellung (VVT) Bank 1 - Fehlfunktion",
+  "en": "VVT system malfunction - bank 1"
+ },
+ {
+  "id": "c3112",
+  "de": "Bypassventil des Unterdruck-Trennventils - Funktion",
+  "en": "Vacuum cut valve bypass valve"
+ },
+ {
+  "id": "c3113",
+  "de": "Bypassventil des Unterdruck-Trennventils - Stromkreis",
+  "en": "Vacuum cut valve bypass valve circuit"
+ },
+ {
+  "id": "c3114",
+  "de": "Falschluft im Ansaugtrakt\nLuftmassenmesser verschmutzt\nKraftstoffdruck nicht in Ordnung\nLambdasonde gealtert",
+  "en": "Vacuum leak in the intake\nDirty mass air flow sensor\nFuel pressure out of range\nAged oxygen sensor"
+ },
+ {
+  "id": "c3115",
+  "de": "Falschluft: rissige Schläuche, Ansaugkrümmerdichtung, Kurbelgehäuseentlüftung\nLuftmassenmesser verschmutzt oder defekt\nKraftstoffdruck zu niedrig (Pumpe, Filter)\nUndichtigkeit im Auspuff vor der Lambdasonde",
+  "en": "Vacuum leak: cracked hoses, intake manifold gasket, crankcase ventilation\nDirty or faulty mass air flow sensor\nFuel pressure too low (pump, filter)\nExhaust leak upstream of the oxygen sensor"
+ },
+ {
+  "id": "c3116",
+  "de": "Wert",
+  "en": "Value"
+ },
+ {
+  "id": "c3117",
+  "de": "Steuerzeiten und Nockenwelle",
+  "en": "Valve timing and camshaft"
+ },
+ {
+  "id": "c3118",
+  "de": "Steuerzeiten und Drehzahlgeber",
+  "en": "Valve timing and engine speed sensor"
+ },
+ {
+  "id": "c3119",
+  "de": "Transporter",
+  "en": "Van"
+ },
+ {
+  "id": "c3120",
+  "de": "Verstellbarer Turbolader (VTG)",
+  "en": "Variable geometry turbo control"
+ },
+ {
+  "id": "c3121",
+  "de": "Nockenwellenverstellung",
+  "en": "Variable valve timing"
+ },
+ {
+  "id": "c3122",
+  "de": "Nockenwellenverstellung (VTC) - Fehlfunktion bei Frühverstellung",
+  "en": "Variable valve timing control advance malfunction"
+ },
+ {
+  "id": "c3123",
+  "de": "Fahrzeug",
+  "en": "Vehicle"
+ },
+ {
+  "id": "c3124",
+  "de": "Fahrzeugkennungsblock fehlerhaft oder nicht programmiert",
+  "en": "Vehicle ID block corrupted or not programmed"
+ },
+ {
+  "id": "c3125",
+  "de": "Fahrzeugsteuerung (EVC)",
+  "en": "Vehicle control (EVC)"
+ },
+ {
+  "id": "c3126",
+  "de": "Fahrzeugsteuerung (VCM)",
+  "en": "Vehicle control (VCM)"
+ },
+ {
+  "id": "c3127",
+  "de": "Fahrzeugsteuerung (VCU)",
+  "en": "Vehicle control (VCU)"
+ },
+ {
+  "id": "c3128",
+  "de": "Kraftstoffmassenstrom Fahrzeug",
+  "en": "Vehicle fuel rate"
+ },
+ {
+  "id": "c3129",
+  "de": "Fahrzeug zu schnell",
+  "en": "Vehicle overspeed condition"
+ },
+ {
+  "id": "c3130",
+  "de": "Geschwindigkeit",
+  "en": "Vehicle speed"
+ },
+ {
+  "id": "c3131",
+  "de": "Geschwindigkeitssensor (Kombiinstrument) - Fehlfunktion",
+  "en": "Vehicle speed sensor (MTR)"
+ },
+ {
+  "id": "c3132",
+  "de": "Geschwindigkeitssensor A - Signal zu niedrig",
+  "en": "Vehicle speed sensor A - circuit low input"
+ },
+ {
+  "id": "c3133",
+  "de": "Geschwindigkeitssensor A - Signal setzt aus oder zu hoch",
+  "en": "Vehicle speed sensor A - intermittent/erratic/high"
+ },
+ {
+  "id": "c3134",
+  "de": "Geschwindigkeitssensor A - Fehlfunktion",
+  "en": "Vehicle speed sensor A - malfunction"
+ },
+ {
+  "id": "c3135",
+  "de": "Geschwindigkeitssensor A - Signal unplausibel",
+  "en": "Vehicle speed sensor A - range/performance"
+ },
+ {
+  "id": "c3136",
+  "de": "Geschwindigkeitssensor A und B passen nicht zusammen",
+  "en": "Vehicle speed sensor A/B correlation"
+ },
+ {
+  "id": "c3137",
+  "de": "Geschwindigkeitssensor B - Signal zu niedrig",
+  "en": "Vehicle speed sensor B - circuit low"
+ },
+ {
+  "id": "c3138",
+  "de": "Geschwindigkeitssensor B - Signal setzt zeitweise aus",
+  "en": "Vehicle speed sensor B - intermittent/erratic"
+ },
+ {
+  "id": "c3139",
+  "de": "Geschwindigkeitssensor B - Fehlfunktion",
+  "en": "Vehicle speed sensor B - malfunction"
+ },
+ {
+  "id": "c3140",
+  "de": "Geschwindigkeitssensor B - Signal unplausibel",
+  "en": "Vehicle speed sensor B - range/performance"
+ },
+ {
+  "id": "c3141",
+  "de": "Geber für Geschwindigkeit G22",
+  "en": "Vehicle speed sensor G22"
+ },
+ {
+  "id": "c3142",
+  "de": "Geschwindigkeitssignal setzt zeitweise aus",
+  "en": "Vehicle speed sensor intermittent"
+ },
+ {
+  "id": "c3143",
+  "de": "Geschwindigkeitssignal",
+  "en": "Vehicle speed signal"
+ },
+ {
+  "id": "c3144",
+  "de": "Geschwindigkeitssignal von den Raddrehzahlfühlern",
+  "en": "Vehicle speed signal from the wheel speed sensors"
+ },
+ {
+  "id": "c3145",
+  "de": "Geschwindigkeit, Leerlaufregelung, Zusatzeingänge",
+  "en": "Vehicle speed, idle control and auxiliary inputs"
+ },
+ {
+  "id": "c3146",
+  "de": "Venezuela",
+  "en": "Venezuela"
+ },
+ {
+  "id": "c3147",
+  "de": "Belüftungsventil Tankentlüftung - Funktion",
+  "en": "Vent control solenoid valve function problem"
+ },
+ {
+  "id": "c3148",
+  "de": "Vietnam",
+  "en": "Vietnam"
+ },
+ {
+  "id": "c3149",
+  "de": "Spannung",
+  "en": "Voltage"
+ },
+ {
+  "id": "c3150",
+  "de": "Spannungseinbruch durch schwache Batterie oder Starthilfe\nProgrammierung oder Software-Update unterbrochen\nFeuchtigkeit oder Korrosion am Steuergerät\nSteuergerät defekt (selten)",
+  "en": "Voltage drop from a weak battery or a jump start\nInterrupted programming or software update\nMoisture or corrosion at the control unit\nFaulty control unit (rare)"
+ },
+ {
+  "id": "c3151",
+  "de": "Spannungseinbruch beim Starten mit schwacher Batterie, dann oft einmalig und harmlos\nSicherung des betroffenen Steuergeräts\nStecker oder Kabel (Feuchtigkeit, Korrosion)\nSteuergerät defekt",
+  "en": "Voltage drop when cranking with a weak battery, then often one-off and harmless\nFuse of the affected control unit\nConnector or wiring (moisture, corrosion)\nFaulty control unit"
+ },
+ {
+  "id": "c3152",
+  "de": "Volvo",
+  "en": "Volvo"
+ },
+ {
+  "id": "c3153",
+  "de": "Vorkatalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "Warm up catalyst efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c3154",
+  "de": "Vorkatalysator Bank 2 - Wirkungsgrad zu gering",
+  "en": "Warm up catalyst efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c3155",
+  "de": "Warmläufe seit Löschen",
+  "en": "Warm-ups since codes cleared"
+ },
+ {
+  "id": "c3156",
+  "de": "Wastegate A Stellung",
+  "en": "Wastegate A position"
+ },
+ {
+  "id": "c3157",
+  "de": "Wastegate B Stellung",
+  "en": "Wastegate B position"
+ },
+ {
+  "id": "c3158",
+  "de": "Wastegate (Ladedruckventil)",
+  "en": "Wastegate control"
+ },
+ {
+  "id": "c3159",
+  "de": "Auf Ruckeln, Aussetzer und Rauch achten\nBeim Diesel die Mengenabweichung der Injektoren in der Werkstatt messen lassen",
+  "en": "Watch for stumbling, misfires and smoke\nOn a diesel, have the injector quantity deviation measured at a workshop"
+ },
+ {
+  "id": "c3160",
+  "de": "Wasser hat sich im Kraftstofffilter gesammelt\nSchlechter Kraftstoff getankt\nWassersensor defekt",
+  "en": "Water has collected in the fuel filter\nPoor quality fuel\nFaulty water sensor"
+ },
+ {
+  "id": "c3161",
+  "de": "Wasser im Diesel schadet Hochdruckpumpe und Einspritzventilen. Bald den Kraftstofffilter entwässern oder tauschen lassen und bis dahin wenig fahren.",
+  "en": "Water in diesel harms the high-pressure pump and the injectors. Have the fuel filter drained or replaced soon and drive little until then."
+ },
+ {
+  "id": "c3162",
+  "de": "Wasser im Kraftstoff",
+  "en": "Water in fuel condition"
+ },
+ {
+  "id": "c3163",
+  "de": "Wasser-im-Kraftstoff-Sensor - Stromkreis",
+  "en": "Water in fuel sensor - circuit"
+ },
+ {
+  "id": "c3164",
+  "de": "Wasser-im-Kraftstoff-Sensor - Signal zu hoch",
+  "en": "Water in fuel sensor - circuit high"
+ },
+ {
+  "id": "c3165",
+  "de": "Wasser-im-Kraftstoff-Sensor - Signal setzt zeitweise aus",
+  "en": "Water in fuel sensor - circuit intermittent"
+ },
+ {
+  "id": "c3166",
+  "de": "Wasser-im-Kraftstoff-Sensor - Signal zu niedrig",
+  "en": "Water in fuel sensor - circuit low"
+ },
+ {
+  "id": "c3167",
+  "de": "Wasser-im-Kraftstoff-Sensor - Signal unplausibel",
+  "en": "Water in fuel sensor - circuit range/performance"
+ },
+ {
+  "id": "c3168",
+  "de": "Schwache Batterie oder Spannungseinbrüche\nStecker oder Kabel am Datenbus (Feuchtigkeit, Korrosion)\nEin defektes Steuergerät stört den Bus\nNachgerüstete Geräte am Bordnetz",
+  "en": "Weak battery or voltage drops\nConnector or wiring on the data bus (moisture, corrosion)\nA faulty control unit disturbs the bus\nAftermarket devices connected to the vehicle"
+ },
+ {
+  "id": "c3169",
+  "de": "Verschleiß an den Pleuellagern\nZu wenig oder altes Motoröl",
+  "en": "Wear on the connecting rod bearings\nLow or old engine oil"
+ },
+ {
+  "id": "c3170",
+  "de": "Raddrehzahlfühler vorne links G47",
+  "en": "Wheel speed sensor front left G47"
+ },
+ {
+  "id": "c3171",
+  "de": "Raddrehzahlfühler vorne rechts G45",
+  "en": "Wheel speed sensor front right G45"
+ },
+ {
+  "id": "c3172",
+  "de": "Raddrehzahlfühler hinten links G46",
+  "en": "Wheel speed sensor rear left G46"
+ },
+ {
+  "id": "c3173",
+  "de": "Raddrehzahlfühler hinten rechts G44",
+  "en": "Wheel speed sensor rear right G44"
+ },
+ {
+  "id": "c3174",
+  "de": "Raddrehzahlfühler, ABS-Hydraulik und die Bremsen",
+  "en": "Wheel speed sensors, ABS hydraulics and the brakes"
+ },
+ {
+  "id": "c3175",
+  "de": "Räder und Bremsen",
+  "en": "Wheels and brakes"
+ },
+ {
+  "id": "c3176",
+  "de": "Wann wurde der Kraftstofffilter zuletzt gewechselt? Beim Diesel oft alle 2 bis 4 Jahre\nSoll- und Istdruck im Rail als Messwert vergleichen, falls angeboten",
+  "en": "When was the fuel filter last replaced? On diesels often every 2 to 4 years\nCompare desired and actual rail pressure as live values, if available"
+ },
+ {
+  "id": "c3177",
+  "de": "Beim Einschalten der Zündung hört man die Pumpe meist ein bis zwei Sekunden summen\nSicherung der Kraftstoffpumpe prüfen",
+  "en": "When you switch on the ignition you can usually hear the pump hum for a second or two\nCheck the fuel pump fuse"
+ },
+ {
+  "id": "c3178",
+  "de": "Weiße Kristalle am Dosierventil im Auspuff deuten auf ein Problem\nRestreichweite im Kombiinstrument beachten",
+  "en": "White crystals at the dosing valve in the exhaust point to a problem\nWatch the remaining range in the instrument cluster"
+ },
+ {
+  "id": "c3179",
+  "de": "Motor gesamt",
+  "en": "Whole engine"
+ },
+ {
+  "id": "c3180",
+  "de": "Abschaltung der Klimaanlage bei Volllast - Stromkreis",
+  "en": "Wide open throttle A/C cutoff relay circuit"
+ },
+ {
+  "id": "c3181",
+  "de": "Mit einer defekten Zündspule fehlt meist ein Zylinder, der Motor ruckelt. Behutsam zur Werkstatt fahren, bei blinkender Motorkontrollleuchte anhalten.",
+  "en": "With a faulty ignition coil one cylinder usually drops out and the engine stumbles. Drive gently to a workshop and stop if the check engine light flashes."
+ },
+ {
+  "id": "c3182",
+  "de": "Bei kaltem Motor den Kühlmittelstand im Ausgleichsbehälter prüfen\nNach Pfützen oder Spuren unter dem Auto schauen\nLäuft der Lüfter, wenn der Motor heiß ist?",
+  "en": "With the engine cold, check the coolant level in the expansion tank\nLook for puddles or traces under the car\nDoes the fan run when the engine is hot?"
+ },
+ {
+  "id": "c3183",
+  "de": "Bei abgestelltem Motor nach Kraftstoffgeruch und Tropfspuren schauen",
+  "en": "With the engine off, look and smell for fuel leaks"
+ },
+ {
+  "id": "c3184",
+  "de": "Bei warmem Motor im Stand: springt der Lüfter an?\nBei vielen Autos läuft der Lüfter sofort mit, wenn die Klimaanlage an ist\nSicherungen prüfen",
+  "en": "With the engine warm and the car stationary: does the fan come on?\nOn many cars the fan runs as soon as the air conditioning is switched on\nCheck the fuses"
+ },
+ {
+  "id": "c3185",
+  "de": "Bei warmem Motor ein paar Mal in einem mittleren Gang (3. oder 4.) zügig von etwa 50 auf 100 km/h beschleunigen, wo es sicher und erlaubt ist.",
+  "en": "With the engine warm, accelerate briskly a few times in a middle gear (3rd or 4th) from about 50 to 100 km/h (30 to 60 mph), where it is safe and legal."
+ },
+ {
+  "id": "c3186",
+  "de": "Bei kaltem Auspuff vorsichtig gegen den Kat klopfen: Rasseln deutet auf gebrochene Keramik\nAm Krümmer nach Rußspuren suchen\nMesswert der hinteren Lambdasonde ansehen: springt sie wie die vordere, speichert der Kat keinen Sauerstoff mehr",
+  "en": "With the exhaust cold, tap the converter gently: rattling points to broken ceramic\nLook for soot marks at the exhaust manifold\nLook at the rear oxygen sensor: if it switches like the front one, the converter no longer stores oxygen"
+ },
+ {
+  "id": "c3187",
+  "de": "Bei Zündung an und stehendem Motor muss der Sensor etwa den Luftdruck zeigen\nStecker am Sensor prüfen",
+  "en": "With the ignition on and the engine stopped the sensor should read about atmospheric pressure\nCheck the sensor connector"
+ },
+ {
+  "id": "c3188",
+  "de": "Bei Zündung an und stehendem Motor muss der Sensor etwa den Luftdruck zeigen, rund 100 kPa auf Meereshöhe\nSchlauch und Stecker am Sensor prüfen",
+  "en": "With the ignition on and the engine stopped the sensor should read about atmospheric pressure, around 100 kPa at sea level\nCheck the hose and connector at the sensor"
+ },
+ {
+  "id": "c3189",
+  "de": "Reparatur in der Werkstatt grob 200 bis 800 Euro",
+  "en": "Workshop repair roughly 200 to 800 euros"
+ },
+ {
+  "id": "c3190",
+  "de": "Reparatur in der Werkstatt grob über 800 Euro",
+  "en": "Workshop repair roughly above 800 euros"
+ },
+ {
+  "id": "c3191",
+  "de": "Reparatur in der Werkstatt grob unter 200 Euro",
+  "en": "Workshop repair roughly below 200 euros"
+ },
+ {
+  "id": "c3192",
+  "de": "Weltweit harmonisierte OBD (WWH-OBD)",
+  "en": "World wide harmonized OBD (WWH-OBD)"
+ },
+ {
+  "id": "c3193",
+  "de": "Fahrpedalgeber verschlissen\nStecker am Pedal locker oder Kabel gebrochen\nFußmatte drückt auf das Pedal",
+  "en": "Worn accelerator pedal sensor\nLoose pedal connector or broken wire\nFloor mat pressing on the pedal"
+ },
+ {
+  "id": "c3194",
+  "de": "Tankgeber verschlissen (Schleifbahn)\nStecker am Tank korrodiert\nKombiinstrument (selten)",
+  "en": "Worn fuel level sender (track)\nCorroded connector at the tank\nInstrument cluster (rare)"
+ },
+ {
+  "id": "c3195",
+  "de": "Kraftstoffpumpe verschlissen\nRelais oder Sicherung der Pumpe\nStecker an der Pumpe korrodiert, oft unter der Rückbank",
+  "en": "Worn fuel pump\nFuel pump relay or fuse\nCorroded pump connector, often under the rear seat"
+ },
+ {
+  "id": "c3196",
+  "de": "Einspritzventil verschlissen oder verkokt\nZu wenig Kompression an diesem Zylinder\nSchwache Zündung an diesem Zylinder (Benziner)",
+  "en": "Worn or coked injector\nLow compression on this cylinder\nWeak ignition on this cylinder (petrol)"
+ },
+ {
+  "id": "c3197",
+  "de": "Zündkerzen verschlissen\nZündspule defekt\nEinspritzventil undicht oder verstopft\nFalschluft im Ansaugtrakt\nZu wenig Kompression (Ventile, Kolbenringe, Zylinderkopfdichtung)",
+  "en": "Worn spark plugs\nFaulty ignition coil\nLeaking or clogged injector\nVacuum leak in the intake\nLow compression (valves, piston rings, head gasket)"
+ },
+ {
+  "id": "c3198",
+  "de": "Falsche Quittung: erwartet ",
+  "en": "Wrong acknowledgement: expected "
+ },
+ {
+  "id": "c3199",
+  "de": "Falsche Anzahl von Argumenten",
+  "en": "Wrong number of arguments"
+ },
+ {
+  "id": "c3200",
+  "de": "Weiterfahren ist möglich, mit weniger Leistung. Nicht hoch drehen und keinen Anhänger ziehen, bis es geklärt ist.",
+  "en": "You can keep driving with less power. Do not rev hard or tow until it is sorted out."
+ },
+ {
+  "id": "c3201",
+  "de": "Weiterfahren ist möglich, aber prüfen, ob die Bremslichter funktionieren: sonst sieht der Hintermann nicht, dass du bremst. Tempomat und Start-Stopp gehen oft nicht mehr.",
+  "en": "You can keep driving, but check that the brake lights work: otherwise the driver behind cannot see you braking. Cruise control and start-stop often stop working."
+ },
+ {
+  "id": "c3202",
+  "de": "Weiterfahren ist möglich, aber bald in die Werkstatt: Verbrauch, Abgaswerte oder Komfort können leiden.",
+  "en": "You can keep driving, but go to a workshop soon: consumption, emissions or comfort may suffer."
+ },
+ {
+  "id": "c3203",
+  "de": "Weiterfahren ist möglich, doch viele Autos zählen dann eine Restreichweite herunter, nach der der Motor nicht mehr startet. Zeitnah in die Werkstatt.",
+  "en": "You can keep driving, but many cars then count down a remaining range after which the engine will not restart. Go to a workshop soon."
+ },
+ {
+  "id": "c3204",
+  "de": "Weiterfahren ist möglich, aber nicht auf Dauer: ein zu fettes Gemisch erhöht den Verbrauch, verrußt die Zündkerzen und kann den Katalysator überhitzen.",
+  "en": "You can keep driving, but not for long: a rich mixture raises fuel consumption, fouls the spark plugs and can overheat the catalytic converter."
+ },
+ {
+  "id": "c3205",
+  "de": "Weiterfahren ist möglich, aber das Auto springt beim nächsten Mal vielleicht nicht an. Batterie und Ladung prüfen lassen. Leuchtet zusätzlich die Batterielampe, lädt die Lichtmaschine nicht: dann nicht mehr weit fahren.",
+  "en": "You can keep driving, but the car may not start next time. Have the battery and charging checked. If the battery light is also on, the alternator is not charging: do not drive far."
+ },
+ {
+  "id": "c3206",
+  "de": "Weiterfahren ist möglich, aber der Filter wird nicht mehr richtig überwacht und regeneriert eventuell nicht. Bald prüfen lassen.",
+  "en": "You can keep driving, but the filter is no longer monitored properly and may not regenerate. Have it checked soon."
+ },
+ {
+  "id": "c3207",
+  "de": "Weiterfahren ist möglich, oft mit weniger Leistung im Notlauf. Bald prüfen lassen.",
+  "en": "You can keep driving, often with reduced power in limp mode. Have it checked soon."
+ },
+ {
+  "id": "c3208",
+  "de": "Weiterfahren ist möglich. Bald beheben lassen: ein zu mageres Gemisch kann zu Aussetzern führen und auf Dauer Ventile und Katalysator belasten.",
+  "en": "You can keep driving. Have it fixed soon: a lean mixture can cause misfires and in the long run strains the valves and the catalytic converter."
+ },
+ {
+  "id": "c3209",
+  "de": "Weiterfahren ist möglich. Fallen alle Glühkerzen aus, springt der Motor bei Frost unter Umständen gar nicht an.",
+  "en": "You can keep driving. If all glow plugs fail, the engine may not start at all in frost."
+ },
+ {
+  "id": "c3210",
+  "de": "Weiterfahren ist möglich. Bleibt der Fehler, zählen viele Autos eine Restreichweite herunter, nach der der Motor nicht mehr startet. Die Anzeige im Kombiinstrument beachten und zeitnah in die Werkstatt.",
+  "en": "You can keep driving. If the fault stays, many cars count down a remaining range after which the engine will not restart. Watch the message in the instrument cluster and go to a workshop soon."
+ },
+ {
+  "id": "c3211",
+  "de": "Weiterfahren ist möglich. Die Gemischregelung arbeitet ungenauer, der Verbrauch kann steigen. Bald prüfen lassen, bevor der Katalysator leidet.",
+  "en": "You can keep driving. Mixture control is less precise and consumption may rise. Have it checked soon, before the catalytic converter suffers."
+ },
+ {
+  "id": "c3212",
+  "de": "Weiterfahren ist möglich. Der Katalysator reinigt das Abgas nicht mehr gut genug, so wird die Abgasuntersuchung nicht bestanden. Erst die Ursache klären, bevor ein neuer Kat eingebaut wird.",
+  "en": "You can keep driving. The catalytic converter no longer cleans the exhaust well enough, so the car would fail an emissions test. Find the cause before fitting a new converter."
+ },
+ {
+  "id": "c3213",
+  "de": "Weiterfahren ist möglich. Das Steuergerät nimmt vorsichtshalber Zündung zurück, der Motor hat dann etwas weniger Leistung und braucht mehr. Bis zur Klärung keine Volllast.",
+  "en": "You can keep driving. The control unit retards the ignition as a precaution, so the engine has a little less power and uses more fuel. Avoid full load until it is sorted out."
+ },
+ {
+  "id": "c3214",
+  "de": "Weiterfahren ist möglich. Der Motor wird nicht richtig warm: höherer Verbrauch, schwache Heizung, mehr Verschleiß. In den nächsten Wochen beheben.",
+  "en": "You can keep driving. The engine does not warm up properly: higher consumption, weak heating, more wear. Fix it within the next few weeks."
+ },
+ {
+  "id": "c3215",
+  "de": "Weiterfahren ist möglich. Die Gemischregelung stößt an ihre Grenzen, Verbrauch und Abgaswerte können leiden. Bald prüfen lassen.",
+  "en": "You can keep driving. The mixture control is reaching its limits, so consumption and emissions may suffer. Have it checked soon."
+ },
+ {
+  "id": "c3216",
+  "de": "Weiterfahren ist möglich. Tacho, Tempomat, Schaltpunkte oder ABS können betroffen sein.",
+  "en": "You can keep driving. The speedometer, cruise control, shift points or ABS may be affected."
+ },
+ {
+  "id": "c3217",
+  "de": "Weiterfahren ist möglich. Bei verrußtem AGR-Ventil kann der Motor Leistung verlieren oder ruckeln, beim Diesel steigt die Rußmenge. Bald prüfen lassen.",
+  "en": "You can keep driving. With a sooted EGR valve the engine may lose power or stumble, and a diesel produces more soot. Have it checked soon."
+ },
+ {
+  "id": "c3218",
+  "de": "Weiterfahren ist möglich. Ohne gültigen NOx-Wert kann die AdBlue-Dosierung nicht geregelt werden, manche Autos starten dann eine Restreichweiten-Warnung.",
+  "en": "You can keep driving. Without a valid NOx reading the AdBlue dosing cannot be controlled, and some cars then start a remaining range warning."
+ },
+ {
+  "id": "c3219",
+  "de": "Weiterfahren ist möglich. Ohne Temperaturfühler kann der Partikelfilter oft nicht regenerieren, und Turbo und Katalysator werden schlechter geschützt.",
+  "en": "You can keep driving. Without the temperature sensor the particulate filter often cannot regenerate, and the turbo and converter are less well protected."
+ },
+ {
+  "id": "c3220",
+  "de": "Weiterfahren ist meist möglich, der Motor kann aber Leistung verlieren und unrund laufen. Zuerst den Ölstand prüfen, denn die Verstellung arbeitet mit Öldruck.",
+  "en": "You can usually keep driving, but the engine may lose power and run rough. Check the oil level first, because the adjusters work with oil pressure."
+ },
+ {
+  "id": "c3221",
+  "de": "Weiterfahren ist meist möglich, der Motor kann aber unrund laufen oder schwächer ziehen. Bald prüfen lassen.",
+  "en": "You can usually keep driving, but the engine may run rough or pull less. Have it checked soon."
+ },
+ {
+  "id": "c3222",
+  "de": "Weiterfahren ist meist möglich, der Motor kann aber schlechter anspringen oder ins Notlaufprogramm gehen. Bald prüfen lassen.",
+  "en": "You can usually keep driving, but the engine may start poorly or go into limp mode. Have it checked soon."
+ },
+ {
+  "id": "c3223",
+  "de": "Weiterfahren ist meist möglich, das Getriebe kann aber hart schalten oder in einen Notlaufgang wechseln. Bald prüfen lassen.",
+  "en": "You can usually keep driving, but the gearbox may shift harshly or switch to a limp mode gear. Have it checked soon."
+ },
+ {
+  "id": "c3224",
+  "de": "Weiterfahren ist meist möglich, oft mit weniger Leistung. Die Hochvoltbatterie verliert Kapazität oder ihre Zellen driften auseinander. In einer Fachwerkstatt für Hybride prüfen lassen und nicht selbst an orangefarbenen Hochvoltleitungen arbeiten.",
+  "en": "You can usually keep driving, often with less power. The high-voltage battery is losing capacity or its cells are drifting apart. Have it checked by a hybrid specialist and never work on the orange high-voltage cables yourself."
+ },
+ {
+  "id": "c3225",
+  "de": "Weiterfahren ist meist möglich, das Steuergerät rechnet mit Ersatzwerten. Der Motor kann schwächer ziehen oder ruckeln. Bald prüfen lassen.",
+  "en": "You can usually keep driving, the control unit uses substitute values. The engine may pull less or stumble. Have it checked soon."
+ },
+ {
+  "id": "c3226",
+  "de": "Weiterfahren ist meist möglich. Die Zylinderabschaltung zum Spritsparen arbeitet nicht richtig, der Motor kann unrund laufen oder mehr verbrauchen.",
+  "en": "You can usually keep driving. Cylinder deactivation for saving fuel is not working properly, so the engine may run rough or use more fuel."
+ },
+ {
+  "id": "c3227",
+  "de": "wenige Minuten",
+  "en": "a few minutes"
+ },
+ {
+  "id": "c3228",
+  "de": "wenige Minuten nach einem Kaltstart",
+  "en": "a few minutes after a cold start"
+ },
+ {
+  "id": "c3229",
+  "de": "aktiv",
+  "en": "active"
+ },
+ {
+  "id": "c3230",
+  "de": "aktiv (vom Motor ausgelöst)",
+  "en": "active (triggered by the engine)"
+ },
+ {
+  "id": "c3231",
+  "de": "Stellglied rutscht durch",
+  "en": "actuator slipping"
+ },
+ {
+  "id": "c3232",
+  "de": "Stellglied klemmt",
+  "en": "actuator stuck"
+ },
+ {
+  "id": "c3233",
+  "de": "Stellglied klemmt geschlossen",
+  "en": "actuator stuck closed"
+ },
+ {
+  "id": "c3234",
+  "de": "Stellglied klemmt offen",
+  "en": "actuator stuck open"
+ },
+ {
+  "id": "c3235",
+  "de": "Airbag",
+  "en": "airbag"
+ },
+ {
+  "id": "c3236",
+  "de": "Fehler aus einer Berechnung",
+  "en": "algorithm based failure"
+ },
+ {
+  "id": "c3237",
+  "de": "Einstellung oder Ausrichtung falsch",
+  "en": "alignment or adjustment incorrect"
+ },
+ {
+  "id": "c3238",
+  "de": "Botschaftszähler falsch oder nicht aktualisiert",
+  "en": "alive or sequence counter incorrect or not updated"
+ },
+ {
+  "id": "c3239",
+  "de": "Bank ",
+  "en": "bank "
+ },
+ {
+  "id": "c3240",
+  "de": "Bremsen",
+  "en": "brakes"
+ },
+ {
+  "id": "c3241",
+  "de": "Bus abgeschaltet (Bus off)",
+  "en": "bus off"
+ },
+ {
+  "id": "c3242",
+  "de": "Fehler im Bussignal oder in der Botschaft",
+  "en": "bus signal or message failure"
+ },
+ {
+  "id": "c3243",
+  "de": "beschäftigt, bitte wiederholen",
+  "en": "busy, repeat request"
+ },
+ {
+  "id": "c3244",
+  "de": "Fehler im Kalibrier- oder Parameterspeicher",
+  "en": "calibration or parameter memory failure"
+ },
+ {
+  "id": "c3245",
+  "de": "günstig",
+  "en": "cheap"
+ },
+ {
+  "id": "c3246",
+  "de": "Strom über der Schwelle",
+  "en": "circuit current above threshold"
+ },
+ {
+  "id": "c3247",
+  "de": "Strom unter der Schwelle",
+  "en": "circuit current below threshold"
+ },
+ {
+  "id": "c3248",
+  "de": "Strom außerhalb des Bereichs",
+  "en": "circuit current out of range"
+ },
+ {
+  "id": "c3249",
+  "de": "sporadischer Fehler im Stromkreis",
+  "en": "circuit intermittent"
+ }
+]

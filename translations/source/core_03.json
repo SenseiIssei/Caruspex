@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c750",
+  "de": "Einspritzventil Zylinder 12 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 12 injector circuit high"
+ },
+ {
+  "id": "c751",
+  "de": "Einspritzventil Zylinder 12 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 12 injector circuit low"
+ },
+ {
+  "id": "c752",
+  "de": "Verbrennungsaussetzer Zylinder 12",
+  "en": "Cylinder 12 misfire detected"
+ },
+ {
+  "id": "c753",
+  "de": "Zylinder 2 - Klopfgrenze überschritten",
+  "en": "Cylinder 2 above knock threshold"
+ },
+ {
+  "id": "c754",
+  "de": "Zylinder 2 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 2 contribution/balance"
+ },
+ {
+  "id": "c755",
+  "de": "Zylinder 2 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 2 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c756",
+  "de": "Zylinder 2 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 2 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c757",
+  "de": "Zylinder 2 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 2 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c758",
+  "de": "Zylinder 2 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 2 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c759",
+  "de": "Zylinder 2 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 2 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c760",
+  "de": "Zylinder 2 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 2 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c761",
+  "de": "Zylinder 2 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 2 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c762",
+  "de": "Zylinder 2 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 2 exhaust valve control - performance"
+ },
+ {
+  "id": "c763",
+  "de": "Glühkerze Zylinder 2 - Stromkreis",
+  "en": "Cylinder 2 glow plug circuit"
+ },
+ {
+  "id": "c764",
+  "de": "Einspritzventil Zylinder 2 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 2 injector circuit high"
+ },
+ {
+  "id": "c765",
+  "de": "Einspritzventil Zylinder 2 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 2 injector circuit low"
+ },
+ {
+  "id": "c766",
+  "de": "Verbrennungsaussetzer Zylinder 2",
+  "en": "Cylinder 2 misfire detected"
+ },
+ {
+  "id": "c767",
+  "de": "Zylinder 3 - Klopfgrenze überschritten",
+  "en": "Cylinder 3 above knock threshold"
+ },
+ {
+  "id": "c768",
+  "de": "Zylinder 3 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 3 contribution/balance"
+ },
+ {
+  "id": "c769",
+  "de": "Zylinder 3 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 3 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c770",
+  "de": "Zylinder 3 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 3 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c771",
+  "de": "Zylinder 3 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 3 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c772",
+  "de": "Zylinder 3 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 3 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c773",
+  "de": "Zylinder 3 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 3 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c774",
+  "de": "Zylinder 3 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 3 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c775",
+  "de": "Zylinder 3 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 3 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c776",
+  "de": "Zylinder 3 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 3 exhaust valve control - performance"
+ },
+ {
+  "id": "c777",
+  "de": "Glühkerze Zylinder 3 - Stromkreis",
+  "en": "Cylinder 3 glow plug circuit"
+ },
+ {
+  "id": "c778",
+  "de": "Einspritzventil Zylinder 3 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 3 injector circuit high"
+ },
+ {
+  "id": "c779",
+  "de": "Einspritzventil Zylinder 3 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 3 injector circuit low"
+ },
+ {
+  "id": "c780",
+  "de": "Verbrennungsaussetzer Zylinder 3",
+  "en": "Cylinder 3 misfire detected"
+ },
+ {
+  "id": "c781",
+  "de": "Zylinder 4 - Klopfgrenze überschritten",
+  "en": "Cylinder 4 above knock threshold"
+ },
+ {
+  "id": "c782",
+  "de": "Zylinder 4 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 4 contribution/balance"
+ },
+ {
+  "id": "c783",
+  "de": "Zylinder 4 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 4 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c784",
+  "de": "Zylinder 4 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 4 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c785",
+  "de": "Zylinder 4 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 4 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c786",
+  "de": "Zylinder 4 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 4 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c787",
+  "de": "Zylinder 4 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 4 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c788",
+  "de": "Zylinder 4 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 4 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c789",
+  "de": "Zylinder 4 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 4 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c790",
+  "de": "Zylinder 4 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 4 exhaust valve control - performance"
+ },
+ {
+  "id": "c791",
+  "de": "Glühkerze Zylinder 4 - Stromkreis",
+  "en": "Cylinder 4 glow plug circuit"
+ },
+ {
+  "id": "c792",
+  "de": "Einspritzventil Zylinder 4 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 4 injector circuit high"
+ },
+ {
+  "id": "c793",
+  "de": "Einspritzventil Zylinder 4 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 4 injector circuit low"
+ },
+ {
+  "id": "c794",
+  "de": "Verbrennungsaussetzer Zylinder 4",
+  "en": "Cylinder 4 misfire detected"
+ },
+ {
+  "id": "c795",
+  "de": "Zylinder 5 - Klopfgrenze überschritten",
+  "en": "Cylinder 5 above knock threshold"
+ },
+ {
+  "id": "c796",
+  "de": "Zylinder 5 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 5 contribution/balance"
+ },
+ {
+  "id": "c797",
+  "de": "Zylinder 5 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 5 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c798",
+  "de": "Zylinder 5 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 5 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c799",
+  "de": "Zylinder 5 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 5 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c800",
+  "de": "Zylinder 5 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 5 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c801",
+  "de": "Zylinder 5 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 5 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c802",
+  "de": "Zylinder 5 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 5 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c803",
+  "de": "Zylinder 5 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 5 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c804",
+  "de": "Zylinder 5 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 5 exhaust valve control - performance"
+ },
+ {
+  "id": "c805",
+  "de": "Glühkerze Zylinder 5 - Stromkreis",
+  "en": "Cylinder 5 glow plug circuit"
+ },
+ {
+  "id": "c806",
+  "de": "Einspritzventil Zylinder 5 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 5 injector circuit high"
+ },
+ {
+  "id": "c807",
+  "de": "Einspritzventil Zylinder 5 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 5 injector circuit low"
+ },
+ {
+  "id": "c808",
+  "de": "Verbrennungsaussetzer Zylinder 5",
+  "en": "Cylinder 5 misfire detected"
+ },
+ {
+  "id": "c809",
+  "de": "Zylinder 6 - Klopfgrenze überschritten",
+  "en": "Cylinder 6 above knock threshold"
+ },
+ {
+  "id": "c810",
+  "de": "Zylinder 6 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 6 contribution/balance"
+ },
+ {
+  "id": "c811",
+  "de": "Zylinder 6 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 6 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c812",
+  "de": "Zylinder 6 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 6 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c813",
+  "de": "Zylinder 6 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 6 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c814",
+  "de": "Zylinder 6 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 6 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c815",
+  "de": "Zylinder 6 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 6 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c816",
+  "de": "Zylinder 6 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 6 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c817",
+  "de": "Zylinder 6 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 6 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c818",
+  "de": "Zylinder 6 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 6 exhaust valve control - performance"
+ },
+ {
+  "id": "c819",
+  "de": "Glühkerze Zylinder 6 - Stromkreis",
+  "en": "Cylinder 6 glow plug circuit"
+ },
+ {
+  "id": "c820",
+  "de": "Einspritzventil Zylinder 6 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 6 injector circuit high"
+ },
+ {
+  "id": "c821",
+  "de": "Einspritzventil Zylinder 6 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 6 injector circuit low"
+ },
+ {
+  "id": "c822",
+  "de": "Verbrennungsaussetzer Zylinder 6",
+  "en": "Cylinder 6 misfire detected"
+ },
+ {
+  "id": "c823",
+  "de": "Zylinder 7 - Klopfgrenze überschritten",
+  "en": "Cylinder 7 above knock threshold"
+ },
+ {
+  "id": "c824",
+  "de": "Zylinder 7 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 7 contribution/balance"
+ },
+ {
+  "id": "c825",
+  "de": "Zylinder 7 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 7 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c826",
+  "de": "Zylinder 7 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 7 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c827",
+  "de": "Zylinder 7 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 7 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c828",
+  "de": "Zylinder 7 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 7 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c829",
+  "de": "Zylinder 7 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 7 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c830",
+  "de": "Zylinder 7 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 7 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c831",
+  "de": "Zylinder 7 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 7 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c832",
+  "de": "Zylinder 7 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 7 exhaust valve control - performance"
+ },
+ {
+  "id": "c833",
+  "de": "Glühkerze Zylinder 7 - Stromkreis",
+  "en": "Cylinder 7 glow plug circuit"
+ },
+ {
+  "id": "c834",
+  "de": "Einspritzventil Zylinder 7 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 7 injector circuit high"
+ },
+ {
+  "id": "c835",
+  "de": "Einspritzventil Zylinder 7 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 7 injector circuit low"
+ },
+ {
+  "id": "c836",
+  "de": "Verbrennungsaussetzer Zylinder 7",
+  "en": "Cylinder 7 misfire detected"
+ },
+ {
+  "id": "c837",
+  "de": "Zylinder 8 - Klopfgrenze überschritten",
+  "en": "Cylinder 8 above knock threshold"
+ },
+ {
+  "id": "c838",
+  "de": "Zylinder 8 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 8 contribution/balance"
+ },
+ {
+  "id": "c839",
+  "de": "Zylinder 8 Abschaltung/Einlassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 8 deactivation/intake valve control - circuit high"
+ },
+ {
+  "id": "c840",
+  "de": "Zylinder 8 Abschaltung/Einlassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 8 deactivation/intake valve control - circuit low"
+ },
+ {
+  "id": "c841",
+  "de": "Zylinder 8 Abschaltung/Einlassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 8 deactivation/intake valve control - circuit/open"
+ },
+ {
+  "id": "c842",
+  "de": "Zylinder 8 Abschaltung/Einlassventilsteuerung - Funktion",
+  "en": "Cylinder 8 deactivation/intake valve control - performance"
+ },
+ {
+  "id": "c843",
+  "de": "Zylinder 8 Auslassventilsteuerung - Spannung zu hoch",
+  "en": "Cylinder 8 exhaust valve control - circuit high"
+ },
+ {
+  "id": "c844",
+  "de": "Zylinder 8 Auslassventilsteuerung - Spannung zu niedrig",
+  "en": "Cylinder 8 exhaust valve control - circuit low"
+ },
+ {
+  "id": "c845",
+  "de": "Zylinder 8 Auslassventilsteuerung - Stromkreis oder Unterbrechung",
+  "en": "Cylinder 8 exhaust valve control - circuit/open"
+ },
+ {
+  "id": "c846",
+  "de": "Zylinder 8 Auslassventilsteuerung - Funktion",
+  "en": "Cylinder 8 exhaust valve control - performance"
+ },
+ {
+  "id": "c847",
+  "de": "Glühkerze Zylinder 8 - Stromkreis",
+  "en": "Cylinder 8 glow plug circuit"
+ },
+ {
+  "id": "c848",
+  "de": "Einspritzventil Zylinder 8 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 8 injector circuit high"
+ },
+ {
+  "id": "c849",
+  "de": "Einspritzventil Zylinder 8 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 8 injector circuit low"
+ },
+ {
+  "id": "c850",
+  "de": "Verbrennungsaussetzer Zylinder 8",
+  "en": "Cylinder 8 misfire detected"
+ },
+ {
+  "id": "c851",
+  "de": "Zylinder 9 - Klopfgrenze überschritten",
+  "en": "Cylinder 9 above knock threshold"
+ },
+ {
+  "id": "c852",
+  "de": "Zylinder 9 - Beitrag zur Verbrennung oder Laufruhe abweichend",
+  "en": "Cylinder 9 contribution/balance"
+ },
+ {
+  "id": "c853",
+  "de": "Glühkerze Zylinder 9 - Stromkreis",
+  "en": "Cylinder 9 glow plug circuit"
+ },
+ {
+  "id": "c854",
+  "de": "Einspritzventil Zylinder 9 - Stromkreis Spannung zu hoch",
+  "en": "Cylinder 9 injector circuit high"
+ },
+ {
+  "id": "c855",
+  "de": "Einspritzventil Zylinder 9 - Stromkreis Spannung zu niedrig",
+  "en": "Cylinder 9 injector circuit low"
+ },
+ {
+  "id": "c856",
+  "de": "Verbrennungsaussetzer Zylinder 9",
+  "en": "Cylinder 9 misfire detected"
+ },
+ {
+  "id": "c857",
+  "de": "Zylinderabschaltung",
+  "en": "Cylinder deactivation"
+ },
+ {
+  "id": "c858",
+  "de": "Zylinderabschaltung Bank 1 - Fehlfunktion",
+  "en": "Cylinder deactivation system - bank 1"
+ },
+ {
+  "id": "c859",
+  "de": "Zylinderabschaltung Bank 2 - Fehlfunktion",
+  "en": "Cylinder deactivation system - bank 2"
+ },
+ {
+  "id": "c860",
+  "de": "Kraftstoffmenge je Hub",
+  "en": "Cylinder fuel rate"
+ },
+ {
+  "id": "c861",
+  "de": "Zylinderkopf überhitzt - Schutzfunktion aktiv",
+  "en": "Cylinder head over temperature protection active"
+ },
+ {
+  "id": "c862",
+  "de": "Zylinderkopf überhitzt",
+  "en": "Cylinder head over temperature sensed"
+ },
+ {
+  "id": "c863",
+  "de": "Zylinderkopftemperatursensor - Signal zu hoch",
+  "en": "Cylinder head temperature sensor circuit high input"
+ },
+ {
+  "id": "c864",
+  "de": "Zylinderkopftemperatursensor - Signal zu niedrig",
+  "en": "Cylinder head temperature sensor circuit low input"
+ },
+ {
+  "id": "c865",
+  "de": "Zylinderkopftemperatursensor - außerhalb des Selbsttestbereichs",
+  "en": "Cylinder head temperature sensor out of self-test range"
+ },
+ {
+  "id": "c866",
+  "de": "Zylinderpositionsgeber - Signal setzt zeitweise aus",
+  "en": "Cylinder position sensor intermittent interruption"
+ },
+ {
+  "id": "c867",
+  "de": "Zylinderpositionsgeber - kein Signal",
+  "en": "Cylinder position sensor no signal"
+ },
+ {
+  "id": "c868",
+  "de": "Tschechien",
+  "en": "Czech Republic"
+ },
+ {
+  "id": "c869",
+  "de": "DC-Stecker",
+  "en": "DC plug"
+ },
+ {
+  "id": "c870",
+  "de": "Gleichspannungswandler (DC/DC) - Funktion",
+  "en": "DC/DC converter performance"
+ },
+ {
+  "id": "c871",
+  "de": "AGR-Differenzdrucksensor (DPFE) - Signal zu hoch",
+  "en": "DPFE sensor circuit high input"
+ },
+ {
+  "id": "c872",
+  "de": "AGR-Differenzdrucksensor (DPFE) - Signal zu niedrig",
+  "en": "DPFE sensor circuit low input"
+ },
+ {
+  "id": "c873",
+  "de": "AGR-Differenzdrucksensor - unterer Schlauch ab oder verstopft",
+  "en": "DPFE sensor downstream hose off or plugged"
+ },
+ {
+  "id": "c874",
+  "de": "AGR-Differenzdrucksensor - oberer Schlauch ab oder verstopft",
+  "en": "DPFE sensor upstream hose off or plugged"
+ },
+ {
+  "id": "c875",
+  "de": "Dämpferregelung (VDC)",
+  "en": "Damper control (VDC)"
+ },
+ {
+  "id": "c876",
+  "de": "Datenbus",
+  "en": "Data bus"
+ },
+ {
+  "id": "c877",
+  "de": "Datenbus und Vernetzung",
+  "en": "Data bus and networking"
+ },
+ {
+  "id": "c878",
+  "de": "Datenbus zwischen den Steuergeräten, oft nur ein Steckerproblem",
+  "en": "Data bus between the control units, often just a connector problem"
+ },
+ {
+  "id": "c879",
+  "de": "Demo-Fahrzeug (eingebaut)",
+  "en": "Demo vehicle (built-in)"
+ },
+ {
+  "id": "c880",
+  "de": "Dänemark",
+  "en": "Denmark"
+ },
+ {
+  "id": "c881",
+  "de": "Je nach Modell im Sicherungskasten unter dem Armaturenbrett, unter der Schaltkulisse oder im Motorraum.",
+  "en": "Depending on the model in the fuse box under the dashboard, under the gear lever gaiter or in the engine bay."
+ },
+ {
+  "id": "c882",
+  "de": "Diagnose",
+  "en": "Diagnostics"
+ },
+ {
+  "id": "c883",
+  "de": "Den richtigen Kraftstoff getankt? Die Oktanzahl steht meist an der Tankklappe\nStecker am Klopfsensor prüfen",
+  "en": "Did you fill up with the right fuel? The octane rating is usually on the fuel flap\nCheck the knock sensor connector"
+ },
+ {
+  "id": "c884",
+  "de": "Diesel",
+  "en": "Diesel"
+ },
+ {
+  "id": "c885",
+  "de": "Diesel (Selbstzünder)",
+  "en": "Diesel (compression ignition)"
+ },
+ {
+  "id": "c886",
+  "de": "Abgasnachbehandlung (Diesel)",
+  "en": "Diesel aftertreatment status"
+ },
+ {
+  "id": "c887",
+  "de": "AdBlue-Sensor, Füllstand",
+  "en": "Diesel exhaust fluid sensor, level"
+ },
+ {
+  "id": "c888",
+  "de": "Ansaugluftklappe (Diesel)",
+  "en": "Diesel intake air flow control"
+ },
+ {
+  "id": "c889",
+  "de": "Partikelfilter Bank 1 - Differenzdruck zu hoch",
+  "en": "Diesel particulate filter differential pressure too high - bank 1"
+ },
+ {
+  "id": "c890",
+  "de": "Partikelfilter Bank 1 - Differenzdruck zu niedrig",
+  "en": "Diesel particulate filter differential pressure too low - bank 1"
+ },
+ {
+  "id": "c891",
+  "de": "Differenzdrucksensor Partikelfilter A - Stromkreis",
+  "en": "Diesel particulate filter pressure sensor A - circuit"
+ },
+ {
+  "id": "c892",
+  "de": "Differenzdrucksensor Partikelfilter A - Signal zu hoch",
+  "en": "Diesel particulate filter pressure sensor A - circuit high"
+ },
+ {
+  "id": "c893",
+  "de": "Differenzdrucksensor Partikelfilter A - Signal setzt zeitweise aus",
+  "en": "Diesel particulate filter pressure sensor A - circuit intermittent"
+ },
+ {
+  "id": "c894",
+  "de": "Differenzdrucksensor Partikelfilter A - Signal zu niedrig",
+  "en": "Diesel particulate filter pressure sensor A - circuit low"
+ },
+ {
+  "id": "c895",
+  "de": "Differenzdrucksensor Partikelfilter A - Signal unplausibel",
+  "en": "Diesel particulate filter pressure sensor A - circuit range/performance"
+ },
+ {
+  "id": "c896",
+  "de": "Partikelfilter - Regeneration dauert zu lange",
+  "en": "Diesel particulate filter regeneration duration"
+ },
+ {
+  "id": "c897",
+  "de": "Partikelfilter - Regeneration zu häufig",
+  "en": "Diesel particulate filter regeneration frequency"
+ },
+ {
+  "id": "c898",
+  "de": "Partikelfilter - Rußbeladung zu hoch (verstopft)",
+  "en": "Diesel particulate filter restriction - soot accumulation"
+ },
+ {
+  "id": "c899",
+  "de": "Diesel: Partikelfilter, AdBlue, Glühanlage",
+  "en": "Diesel: particulate filter, AdBlue, glow plugs"
+ },
+ {
+  "id": "c900",
+  "de": "Differenz",
+  "en": "Difference"
+ },
+ {
+  "id": "c901",
+  "de": "Direkt unter der Lenksäule.",
+  "en": "Directly below the steering column."
+ },
+ {
+  "id": "c902",
+  "de": "Ladedrucksensor verschmutzt (Öl, Ruß) oder defekt\nStecker oder Kabel\nLadeluftschlauch am Sensor undicht",
+  "en": "Dirty (oil, soot) or faulty boost sensor\nConnector or wiring\nCharge air hose leaking at the sensor"
+ },
+ {
+  "id": "c903",
+  "de": "Luftmassenmesser verschmutzt oder gealtert\nFalschluft zwischen Luftmassenmesser und Motor\nStecker oder Kabel\nLuftfilter verschmutzt oder schief eingesetzt",
+  "en": "Dirty or aged mass air flow sensor\nAir leak between the MAF sensor and the engine\nConnector or wiring\nAir filter dirty or not seated properly"
+ },
+ {
+  "id": "c904",
+  "de": "Raddrehzahlsensor verschmutzt oder defekt\nKabel am Rad beschädigt (Steinschlag, Marder, Bruch beim Einfedern)\nGeberring oder Magnetring im Radlager beschädigt oder verschmutzt\nRadlager mit Spiel",
+  "en": "Dirty or faulty wheel speed sensor\nDamaged cable at the wheel (stone chips, martens, broken by suspension movement)\nDamaged or dirty tone ring or magnetic ring in the wheel bearing\nWorn wheel bearing with play"
+ },
+ {
+  "id": "c905",
+  "de": "Sensor verschmutzt (Ölnebel, beim Diesel Ruß)\nUnterdruckschlauch zum Sensor rissig oder ab\nStecker oder Kabel\nFalschluft",
+  "en": "Dirty sensor (oil mist, soot on diesels)\nCracked or detached vacuum hose to the sensor\nConnector or wiring\nVacuum leak"
+ },
+ {
+  "id": "c906",
+  "de": "Drosselklappe verschmutzt (Ölkohle, Ruß)\nDrosselklappeneinheit verschlissen (Potentiometer)\nStecker oder Kabel\nDrosselklappe nach Reinigung oder Batteriewechsel nicht angelernt",
+  "en": "Dirty throttle body (carbon, soot)\nWorn throttle body (position sensor)\nConnector or wiring\nThrottle body not adapted after cleaning or a battery change"
+ },
+ {
+  "id": "c907",
+  "de": "Drosselklappe oder Leerlaufsteller verschmutzt\nFalschluft\nDrosselklappe nicht angelernt",
+  "en": "Dirty throttle body or idle air control valve\nVacuum leak\nThrottle body not adapted"
+ },
+ {
+  "id": "c908",
+  "de": "Entnommen Ah",
+  "en": "Discharged Ah"
+ },
+ {
+  "id": "c909",
+  "de": "Entnommen kWh",
+  "en": "Discharged kWh"
+ },
+ {
+  "id": "c910",
+  "de": "Strecke",
+  "en": "Distance"
+ },
+ {
+  "id": "c911",
+  "de": "Strecke seit Löschen",
+  "en": "Distance since codes cleared"
+ },
+ {
+  "id": "c912",
+  "de": "Strecke mit Fehlerlampe an",
+  "en": "Distance with MIL on"
+ },
+ {
+  "id": "c913",
+  "de": "Nicht lange weiterfahren. Zu hohe Spannung kann Batterie, Lampen und Steuergeräte schädigen. Bald prüfen lassen.",
+  "en": "Do not drive for long. Excessive voltage can damage the battery, bulbs and control units. Have it checked soon."
+ },
+ {
+  "id": "c914",
+  "de": "Nicht weiterfahren. Anhalten, sobald es sicher geht, Motor abstellen und Hilfe holen.",
+  "en": "Do not drive on. Stop as soon as it is safe, switch off the engine and get help."
+ },
+ {
+  "id": "c915",
+  "de": "Nicht weiterfahren. Motor abstellen, abkühlen lassen und den Kühlmittelstand prüfen. Den Deckel am Kühlsystem nie bei heißem Motor öffnen: Verbrühungsgefahr.",
+  "en": "Do not drive on. Switch off the engine, let it cool down and check the coolant level. Never open the cooling system cap while the engine is hot: risk of scalding."
+ },
+ {
+  "id": "c916",
+  "de": "CAN-Datenlänge nicht anzeigen (Standardwert)",
+  "en": "Do not show the CAN data length (default)"
+ },
+ {
+  "id": "c917",
+  "de": "Steigt beim Beschleunigen die Drehzahl, ohne dass das Auto schneller wird?\nGetriebeöl prüfen lassen",
+  "en": "Do the revs rise when accelerating without the car going faster?\nHave the transmission fluid checked"
+ },
+ {
+  "id": "c918",
+  "de": "Geht der Motor vor allem warm aus und springt nach dem Abkühlen wieder an? Das ist typisch für diesen Sensor\nStecker am Sensor prüfen",
+  "en": "Does the engine cut out mainly when hot and start again after cooling down? That is typical for this sensor\nCheck the sensor connector"
+ },
+ {
+  "id": "c919",
+  "de": "Springt der Motor bei Frost schlechter an, mit weißem oder blauem Rauch?\nWiderstand der Glühkerzen in der Werkstatt messen lassen; festgebackene Kerzen nicht mit Gewalt lösen",
+  "en": "Does the engine start harder in frost, with white or blue smoke?\nHave the glow plug resistance measured at a workshop; do not force seized plugs out"
+ },
+ {
+  "id": "c920",
+  "de": "Braucht der Motor sehr lange, bis er warm ist, oder erreicht er auf der Autobahn keine 90 Grad?\nHeizt die Heizung im Winter schwach?\nKühlmitteltemperatur während der Fahrt als Messwert verfolgen",
+  "en": "Does the engine take very long to warm up or stay below 90 degrees on the motorway?\nIs the heater weak in winter?\nFollow the coolant temperature as a live value while driving"
+ },
+ {
+  "id": "c921",
+  "de": "Springt die Tankanzeige oder zeigt sie Unsinn?",
+  "en": "Does the fuel gauge jump or show nonsense?"
+ },
+ {
+  "id": "c922",
+  "de": "Leuchtet die Vorglühlampe beim Einschalten der Zündung wie gewohnt?\nSicherungen prüfen",
+  "en": "Does the glow plug light come on as usual when you switch on the ignition?\nCheck the fuses"
+ },
+ {
+  "id": "c923",
+  "de": "Funktioniert der Tacho?\nGibt es zugleich ABS-Fehler?",
+  "en": "Does the speedometer work?\nAre there ABS faults at the same time?"
+ },
+ {
+  "id": "c924",
+  "de": "Türsteuergerät Fahrerseite: keine Verbindung",
+  "en": "Door control unit, driver side: no communication"
+ },
+ {
+  "id": "c925",
+  "de": "Türsteuergerät Beifahrerseite: keine Verbindung",
+  "en": "Door control unit, passenger side: no communication"
+ },
+ {
+  "id": "c926",
+  "de": "Türsteuergerät hinten links: keine Verbindung",
+  "en": "Door control unit, rear left: no communication"
+ },
+ {
+  "id": "c927",
+  "de": "Türsteuergerät hinten rechts: keine Verbindung",
+  "en": "Door control unit, rear right: no communication"
+ },
+ {
+  "id": "c928",
+  "de": "Türen",
+  "en": "Doors"
+ },
+ {
+  "id": "c929",
+  "de": "Dosierventil verkristallisiert oder defekt\nAdBlue-Pumpe oder Leitungen (Frost, Kristalle)\nStecker oder Kabel\nHeizung des AdBlue-Systems",
+  "en": "Dosing valve crystallised or faulty\nAdBlue pump or lines (frost, crystals)\nConnector or wiring\nAdBlue system heater"
+ },
+ {
+  "id": "c930",
+  "de": "Herunterschaltschalter - Stromkreis",
+  "en": "Downshift switch circuit"
+ },
+ {
+  "id": "c931",
+  "de": "Hintere Lambdasonden zwischen den Bänken vertauscht",
+  "en": "Downstream HO2S sensors swapped from bank to bank"
+ },
+ {
+  "id": "c932",
+  "de": "Nur noch behutsam fahren, keine Volllast. Zu hoher Ladedruck kann den Motor schädigen, meist schaltet das Auto deshalb in den Notlauf.",
+  "en": "Drive gently and avoid full load. Excessive boost can damage the engine, which is why the car usually switches to limp mode."
+ },
+ {
+  "id": "c933",
+  "de": "Nur noch behutsam und auf kurzen Strecken fahren und in den nächsten Tagen prüfen lassen, sonst können Folgeschäden entstehen.",
+  "en": "Drive gently and only short distances, and have it checked within the next few days, otherwise further damage can follow."
+ },
+ {
+  "id": "c934",
+  "de": "Fahrmotor A - Wechselrichter Funktion",
+  "en": "Drive motor A inverter performance"
+ },
+ {
+  "id": "c935",
+  "de": "Vorsichtig weiterfahren und die Temperaturanzeige im Blick behalten. Ein falscher Wert kann den Lüfter falsch steuern sowie Kaltstart und Verbrauch verschlechtern. Steigt die Temperatur ungewöhnlich, sofort anhalten.",
+  "en": "Drive on carefully and keep an eye on the temperature gauge. A wrong reading can upset the fan control, cold starts and consumption. If the temperature climbs unusually, stop at once."
+ },
+ {
+  "id": "c936",
+  "de": "Vorsichtig weiterfahren und die Temperaturanzeige beobachten, besonders im Stau und im Sommer. Läuft der Lüfter nicht, kann der Motor im Stand überhitzen.",
+  "en": "Drive on carefully and watch the temperature gauge, especially in traffic jams and in summer. If the fan does not run, the engine can overheat when stationary."
+ },
+ {
+  "id": "c937",
+  "de": "Motor ganz warm fahren, dann 5 bis 10 Minuten gleichmäßig zwischen 70 und 100 km/h auf ebener Strecke, mit ruhigem Gasfuß. Danach ein paar Mal vom Gas gehen und ausrollen lassen. Manche Autos brauchen dafür zwei oder drei Fahrten.",
+  "en": "Drive until the engine is fully warm, then 5 to 10 minutes at a steady 70 to 100 km/h (45 to 60 mph) on a level road with a light foot. Afterwards lift off the throttle a few times and let the car coast. Some cars need two or three trips."
+ },
+ {
+  "id": "c938",
+  "de": "Motor warm fahren, gleichmäßig fahren und dazwischen einige Male vom Gas gehen und ausrollen lassen.",
+  "en": "Drive until warm, drive steadily and in between lift off the throttle a few times and let the car coast."
+ },
+ {
+  "id": "c939",
+  "de": "Motor warm fahren, dann 15 bis 20 Minuten über 60 km/h, besser auf der Autobahn. Läuft gerade eine Regeneration (erhöhte Leerlaufdrehzahl, Lüfter läuft nach), die Fahrt nicht unterbrechen.",
+  "en": "Drive until warm, then 15 to 20 minutes above 60 km/h (40 mph), preferably on the motorway. If a regeneration is running (higher idle speed, fan keeps running), do not cut the trip short."
+ },
+ {
+  "id": "c940",
+  "de": "Motor warm fahren, dann einige Minuten gleichmäßig zwischen 50 und 90 km/h. Danach mehrmals vom Gas gehen und von etwa 90 auf 50 km/h ausrollen lassen, ohne zu bremsen. Zum Schluss eine Minute Leerlauf.",
+  "en": "Drive until warm, then a few minutes at a steady 50 to 90 km/h (30 to 55 mph). Afterwards lift off the throttle several times and coast from about 90 down to 50 km/h without braking. Finish with a minute of idling."
+ },
+ {
+  "id": "c941",
+  "de": "Motor warm fahren, dann etwa 20 Minuten gleichmäßig über Land oder Autobahn, zum Beispiel mit 80 bis 110 km/h.",
+  "en": "Drive until warm, then about 20 minutes at a steady pace on country roads or the motorway, for example 80 to 110 km/h (50 to 70 mph)."
+ },
+ {
+  "id": "c942",
+  "de": "Motor warm fahren, dann gleichmäßig um 70 bis 90 km/h fahren und mehrmals vom Gas gehen und lange ausrollen lassen, ohne zu bremsen. Beim Diesel helfen zusätzlich längere Abschnitte mit gleichmäßiger Teillast.",
+  "en": "Drive until warm, then cruise at about 70 to 90 km/h (45 to 55 mph) and lift off the throttle several times, letting the car coast for a long stretch without braking. On diesels, longer stretches at steady part load help as well."
+ },
+ {
+  "id": "c943",
+  "de": "Antriebsstrang-Trennschalter - Eingangssignal",
+  "en": "Driveline disconnect switch input circuit"
+ },
+ {
+  "id": "c944",
+  "de": "Zünder für Fahrerairbag N95",
+  "en": "Driver airbag igniter N95"
+ },
+ {
+  "id": "c945",
+  "de": "Fahrer-Display - serielle Verbindung",
+  "en": "Driver display serial communication circuit"
+ },
+ {
+  "id": "c946",
+  "de": "Tür Fahrer (DDM)",
+  "en": "Driver door (DDM)"
+ },
+ {
+  "id": "c947",
+  "de": "Fahrer-Frontairbag Stufe 1 - Zündkreis",
+  "en": "Driver frontal stage 1 deployment control"
+ },
+ {
+  "id": "c948",
+  "de": "Fahrer-Frontairbag Stufe 2 - Zündkreis",
+  "en": "Driver frontal stage 2 deployment control"
+ },
+ {
+  "id": "c949",
+  "de": "Drehmoment angefordert",
+  "en": "Driver's demand engine torque"
+ },
+ {
+  "id": "c950",
+  "de": "Datenbus Antrieb: gestört",
+  "en": "Drivetrain data bus: malfunction"
+ },
+ {
+  "id": "c951",
+  "de": "Datenbus Antrieb: keine Botschaft",
+  "en": "Drivetrain data bus: no message"
+ },
+ {
+  "id": "c952",
+  "de": "Dauer: ",
+  "en": "Duration: "
+ },
+ {
+  "id": "c953",
+  "de": "ABS-Steuergerät Relais - Stromkreis",
+  "en": "EBCM relay circuit"
+ },
+ {
+  "id": "c954",
+  "de": "Motorsteuergerät - Dauerplus (BATT) fehlerhaft",
+  "en": "ECM BATT malfunction"
+ },
+ {
+  "id": "c955",
+  "de": "Motorsteuergerät - interner Schaltkreis A fehlerhaft",
+  "en": "ECM/PCM internal circuit malfunction A"
+ },
+ {
+  "id": "c956",
+  "de": "Steuergerät - Zeitmesser bei abgestelltem Motor fehlerhaft",
+  "en": "ECM/PCM internal engine off timer performance"
+ },
+ {
+  "id": "c957",
+  "de": "Motorsteuergerät - Spannungseingang - Spannung zu hoch",
+  "en": "ECM/PCM power input signal - high"
+ },
+ {
+  "id": "c958",
+  "de": "Motorsteuergerät - Spannungseingang - Signal setzt zeitweise aus",
+  "en": "ECM/PCM power input signal - intermittent"
+ },
+ {
+  "id": "c959",
+  "de": "Motorsteuergerät - Spannungseingang - Spannung zu niedrig",
+  "en": "ECM/PCM power input signal - low"
+ },
+ {
+  "id": "c960",
+  "de": "Motorsteuergerät - Spannungseingang - Fehlfunktion",
+  "en": "ECM/PCM power input signal - malfunction"
+ },
+ {
+  "id": "c961",
+  "de": "Motorsteuergerät - Spannungseingang - Signal unplausibel",
+  "en": "ECM/PCM power input signal - range/performance"
+ },
+ {
+  "id": "c962",
+  "de": "Hauptrelais Motorsteuergerät - Steuerkreis Spannung zu hoch",
+  "en": "ECM/PCM power relay - control circuit high"
+ },
+ {
+  "id": "c963",
+  "de": "Hauptrelais Motorsteuergerät - Steuerkreis Spannung zu niedrig",
+  "en": "ECM/PCM power relay - control circuit low"
+ },
+ {
+  "id": "c964",
+  "de": "Hauptrelais Motorsteuergerät - Steuerkreis oder Unterbrechung",
+  "en": "ECM/PCM power relay - control circuit/open"
+ },
+ {
+  "id": "c965",
+  "de": "Hauptrelais Motorsteuergerät - Rückmeldung Spannung zu hoch",
+  "en": "ECM/PCM power relay - sense circuit high"
+ },
+ {
+  "id": "c966",
+  "de": "Hauptrelais Motorsteuergerät - Rückmeldung Spannung zu niedrig",
+  "en": "ECM/PCM power relay - sense circuit low"
+ },
+ {
+  "id": "c967",
+  "de": "Hauptrelais Motorsteuergerät - Rückmeldung, Stromkreis oder Unterbrechung",
+  "en": "ECM/PCM power relay - sense circuit/open"
+ },
+ {
+  "id": "c968",
+  "de": "Hauptrelais Motorsteuergerät - Rückmeldung unplausibel",
+  "en": "ECM/PCM power relay sense circuit range/performance"
+ },
+ {
+  "id": "c969",
+  "de": "Motor- und Getriebesteuergerät passen nicht zusammen",
+  "en": "ECM/TCM incompatible"
+ },
+ {
+  "id": "c970",
+  "de": "Kühlmitteltemperatursensor - Signal zeitweise zu hoch",
+  "en": "ECT sensor circuit intermittent high voltage"
+ },
+ {
+  "id": "c971",
+  "de": "Kühlmitteltemperatursensor - Signal zeitweise zu niedrig",
+  "en": "ECT sensor circuit intermittent low voltage"
+ },
+ {
+  "id": "c972",
+  "de": "Kühlmitteltemperatursensor - Signal setzt zeitweise aus",
+  "en": "ECT sensor intermittent"
+ },
+ {
+  "id": "c973",
+  "de": "Kühlmitteltemperatursensor - außerhalb des Selbsttestbereichs",
+  "en": "ECT sensor out of self-test range"
+ },
+ {
+  "id": "c974",
+  "de": "Steuergerät defekt",
+  "en": "ECU is defective"
+ },
+ {
+  "id": "c975",
+  "de": "Abgasrückführung",
+  "en": "EGR"
+ },
+ {
+  "id": "c976",
+  "de": "Abgasrückführung / Nockenwellenverstellung",
+  "en": "EGR / variable valve timing"
+ },
+ {
+  "id": "c977",
+  "de": "Abgasrückführung A Regelabweichung",
+  "en": "EGR A error"
+ },
+ {
+  "id": "c978",
+  "de": "Abgasrückführung B Regelabweichung",
+  "en": "EGR B error"
+ },
+ {
+  "id": "c979",
+  "de": "Abgasrückführung und Nockenwellenverstellung",
+  "en": "EGR and VVT"
+ },
+ {
+  "id": "c980",
+  "de": "Abgasrückführung und Sekundärluft",
+  "en": "EGR and secondary air"
+ },
+ {
+  "id": "c981",
+  "de": "Abgasrückführung Soll und Ist",
+  "en": "EGR commanded and actual"
+ },
+ {
+  "id": "c982",
+  "de": "Abgasrückführung Regelabweichung",
+  "en": "EGR error"
+ },
+ {
+  "id": "c983",
+  "de": "AGR-Durchfluss - außerhalb des Selbsttestbereichs",
+  "en": "EGR flow out of self-test range"
+ },
+ {
+  "id": "c984",
+  "de": "Abgasrückführung - Funktion (offen)",
+  "en": "EGR function (open)"
+ },
+ {
+  "id": "c985",
+  "de": "Magnetventil für Abgasrückführung N18",
+  "en": "EGR solenoid valve N18"
+ },
+ {
+  "id": "c986",
+  "de": "Temperatur Abgasrückführung",
+  "en": "EGR temperature"
+ },
+ {
+  "id": "c987",
+  "de": "Temperatur Abgasrückführung Bank 1 Sensor 1",
+  "en": "EGR temperature bank 1 sensor 1"
+ },
+ {
+  "id": "c988",
+  "de": "Temperatur Abgasrückführung Bank 1 Sensor 2",
+  "en": "EGR temperature bank 1 sensor 2"
+ },
+ {
+  "id": "c989",
+  "de": "Temperatur Abgasrückführung Bank 2 Sensor 1",
+  "en": "EGR temperature bank 2 sensor 1"
+ },
+ {
+  "id": "c990",
+  "de": "Temperatur Abgasrückführung Bank 2 Sensor 2",
+  "en": "EGR temperature bank 2 sensor 2"
+ },
+ {
+  "id": "c991",
+  "de": "AGR-Temperaturgeber",
+  "en": "EGR temperature sensor"
+ },
+ {
+  "id": "c992",
+  "de": "AGR-Unterdruckregler - Stromkreis",
+  "en": "EGR vacuum regulator solenoid circuit"
+ },
+ {
+  "id": "c993",
+  "de": "Ventil für Abgasrückführung N18",
+  "en": "EGR valve N18"
+ },
+ {
+  "id": "c994",
+  "de": "AGR-Ventil - geschlossene Stellung unplausibel",
+  "en": "EGR valve closed position performance"
+ },
+ {
+  "id": "c995",
+  "de": "AGR-Ventil - Hub zu gering",
+  "en": "EGR valve lift insufficient detected"
+ },
+ {
+  "id": "c996",
+  "de": "AGR-Ventil Hubsensor - Spannung zu hoch",
+  "en": "EGR valve lift sensor high voltage"
+ },
+ {
+  "id": "c997",
+  "de": "AGR-Ventil Positionssensor - Stromkreis",
+  "en": "EGR valve pintle position circuit"
+ },
+ {
+  "id": "c998",
+  "de": "AGR-Ventil verrußt oder klemmt, häufig bei Diesel und viel Kurzstrecke\nUnterdruckschlauch oder Steuerventil bei pneumatischen Ventilen\nStecker oder Positionssensor des Ventils\nAGR-Kühler oder Kanäle zugesetzt",
+  "en": "EGR valve sooted or sticking, common on diesels and with many short trips\nVacuum hose or control valve on vacuum-operated valves\nConnector or position sensor of the valve\nClogged EGR cooler or passages"
+ },
+ {
+  "id": "c999",
+  "de": "Abgasrückführung, Durchfluss",
+  "en": "EGR, flow"
+ }
+]
