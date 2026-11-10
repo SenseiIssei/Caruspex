@@ -225,6 +225,17 @@ void EvPage::onCustomRead(int ok, int failed, const QString& firstError) {
 }
 
 void EvPage::refreshTiles() {
+    // Values some cars do not send as such, worked out from what they do send.
+    if (!values_.contains(QStringLiteral("SOH")) && values_.contains(QStringLiteral("Full kWh")) &&
+        values_.value(QStringLiteral("BOL kWh")) > 1.0) {
+        values_.insert(QStringLiteral("SOH"),
+                       100.0 * values_.value(QStringLiteral("Full kWh")) / values_.value(QStringLiteral("BOL kWh")));
+    }
+    if (!values_.contains(QStringLiteral("Batt kW")) && values_.contains(QStringLiteral("Batt V")) &&
+        values_.contains(QStringLiteral("Batt A"))) {
+        values_.insert(QStringLiteral("Batt kW"),
+                       values_.value(QStringLiteral("Batt V")) * values_.value(QStringLiteral("Batt A")) / 1000.0);
+    }
     auto has = [this](const char* key) { return values_.contains(QString::fromLatin1(key)); };
     auto get = [this](const char* key) { return values_.value(QString::fromLatin1(key)); };
     const char* sohKey = has("SOH") ? "SOH" : "SOH LBC";

@@ -8,6 +8,7 @@
 #include <map>
 #include <utility>
 
+#include "core/CanSignals.h"
 #include "core/EcuAddress.h"
 #include "core/Lang.h"
 #include "core/Uds.h"
@@ -772,6 +773,29 @@ std::vector<CustomPid> parseTorqueCsv(const std::string& text, std::vector<std::
         }
         std::vector<int> bytes;
         const std::string request = cell(ColRequest);
+        int canId = -1;
+        if (parseMonitorRequest(request, canId)) {
+            // A value the car broadcasts by itself: "CAN132" with a DBC signal.
+            CanSignal signal;
+            std::string why;
+            if (!parseCanSignal(pid.equation, signal, why)) {
+                reject(std::string(L("Gleichung: ", "Equation: ")) + why);
+                continue;
+            }
+            char id[8];
+            std::snprintf(id, sizeof(id), "CAN%03X", canId);
+            pid.request = id;
+            const std::string minText = cell(ColMin), maxText = cell(ColMax);
+            if ((!minText.empty() && !parseNumber(minText, pid.minValue)) ||
+                (!maxText.empty() && !parseNumber(maxText, pid.maxValue))) {
+                reject(L("Min oder Max ist keine Zahl.", "Min or max is not a number."));
+                continue;
+            }
+            if (pid.shortName.empty()) pid.shortName = pid.name;
+            pid.key = keyBase + static_cast<int>(out.size());
+            out.push_back(std::move(pid));
+            continue;
+        }
         if (!parseRequestHex(request, bytes)) {
             reject(request.empty() ? L("ModeAndPID fehlt.", "ModeAndPID is missing.")
                                    : std::string(L("ModeAndPID ist keine Anfrage in Hex: ",
@@ -858,8 +882,15 @@ namespace {
 
 constexpr int kRequestTimeoutMs = 2000;
 
+// Broadcast values are listened for, not asked ("CAN132").
+bool isMonitored(const CustomPid& pid) {
+    int id = 0;
+    return parseMonitorRequest(pid.request, id);
+}
+
 // Where to ask, as the adapter sees it. Empty for the default addressing.
 std::string addressKey(const CustomPid& pid) {
+    if (isMonitored(pid)) return "listen";
     if (pid.header.empty()) return {};
     return pid.header + "/" + (pid.response.empty() ? defaultResponse(pid.header) : pid.response);
 }
@@ -928,6 +959,47 @@ struct CustomPidReader::Impl {
         return answer;
     }
 
+    std::map<std::string, CanSignal> signals;
+
+    // The frames of one id, for all values that need it. Multiplexed values
+    // need frames with every multiplexer value, so it listens a little
+    // longer for those.
+    std::vector<std::vector<int>> listen(int canId, bool multiplexed) {
+        if (addressed) uds.restoreDefault();
+        addressed = false;
+        current.clear();
+        return elm.captureFrames(canId, multiplexed ? 900 : 400, multiplexed ? 40 : 6);
+    }
+
+    bool decodeMonitored(const CustomPid& pid, const std::vector<std::vector<int>>& frames, LiveValue& out,
+                         std::string& error) {
+        out = LiveValue{};
+        out.key = pid.key;
+        out.name = pid.name;
+        out.unit = pid.unit;
+        out.category = pid.category;
+        out.displayMin = pid.minValue;
+        out.displayMax = pid.maxValue;
+        auto it = signals.find(pid.equation);
+        if (it == signals.end()) {
+            CanSignal sig;
+            if (!parseCanSignal(pid.equation, sig, error)) return false;
+            it = signals.emplace(pid.equation, sig).first;
+        }
+        if (frames.empty()) {
+            error = L("Diese Nachricht ist auf dem Bus nicht zu hören (", "This message is not heard on the bus (") +
+                    pid.request + L("). Steckt das Kabel am richtigen Bus, und ist das Auto wach?",
+                                    "). Is the cable on the right bus, and is the car awake?");
+            return false;
+        }
+        // The newest frame that carries the value.
+        for (auto f = frames.rbegin(); f != frames.rend(); ++f) {
+            if (decodeCanSignal(it->second, *f, out.value)) return true;
+        }
+        error = L("Der Wert kam in den gehörten Nachrichten nicht vor.", "The value was not in the frames heard.");
+        return false;
+    }
+
     const TorqueEquation& equation(const std::string& text) {
         auto it = equations.find(text);
         if (it == equations.end()) it = equations.emplace(text, TorqueEquation(text)).first;
@@ -968,6 +1040,13 @@ void CustomPidReader::restoreDefault() {
 
 bool CustomPidReader::read(const CustomPid& pid, LiveValue& out, std::string& error) {
     error.clear();
+    if (isMonitored(pid)) {
+        int id = 0;
+        parseMonitorRequest(pid.request, id);
+        return impl_->decodeMonitored(pid, impl_->listen(id, pid.equation.find(" m") != std::string::npos ||
+                                                                 pid.equation.find(")m") != std::string::npos),
+                                      out, error);
+    }
     const TorqueEquation& eq = impl_->equation(pid.equation);
     if (!eq.ok()) {
         error = eq.error();
@@ -990,7 +1069,31 @@ std::vector<CustomReading> CustomPidReader::readAll(const std::vector<CustomPid>
     auto here = std::find(order.begin(), order.end(), current);
     if (here != order.end()) std::rotate(order.begin(), here, here + 1);
 
+    // Broadcast values: listen once per id for all values of that id.
+    std::map<int, std::vector<std::vector<int>>> heard;
+    for (size_t i = 0; i < pids.size(); ++i) {
+        if (!isMonitored(pids[i])) continue;
+        int id = 0;
+        parseMonitorRequest(pids[i].request, id);
+        if (heard.count(id)) continue;
+        bool multiplexed = false;
+        for (const CustomPid& other : pids) {
+            int otherId = 0;
+            if (parseMonitorRequest(other.request, otherId) && otherId == id &&
+                other.equation.find('m', 4) != std::string::npos)
+                multiplexed = true;
+        }
+        heard[id] = impl_->listen(id, multiplexed);
+    }
+    for (size_t i = 0; i < pids.size(); ++i) {
+        if (!isMonitored(pids[i])) continue;
+        int id = 0;
+        parseMonitorRequest(pids[i].request, id);
+        out[i].ok = impl_->decodeMonitored(pids[i], heard[id], out[i].value, out[i].error);
+    }
+
     for (const std::string& unit : order) {
+        if (unit == "listen") continue;
         std::map<std::string, Answer> answers;   // by request
         for (size_t i = 0; i < pids.size(); ++i) {
             const CustomPid& pid = pids[i];

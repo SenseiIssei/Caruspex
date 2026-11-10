@@ -1,5 +1,7 @@
 #include "core/Obd2.h"
 
+#include <cctype>
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
@@ -531,6 +533,23 @@ InUsePerformance infoInUsePerformance(int infoType, const std::vector<int>& payl
 }
 
 std::string Obd2::readVin() {
+    if (elm_.listenOnly()) {
+        // Tesla sends the VIN in three parts on 0x405 (multiplexer 0x10,
+        // 0x11, 0x12 in the first byte, seven characters each after it).
+        std::string parts[3];
+        for (const std::vector<int>& f : elm_.captureFrames(0x405, 1500, 60)) {
+            if (f.size() < 2 || f[0] < 0x10 || f[0] > 0x12) continue;
+            std::string text;
+            for (size_t i = 1; i < f.size(); ++i)
+                if (f[i] >= 0x20 && f[i] < 0x7F) text += static_cast<char>(f[i]);
+            parts[f[0] - 0x10] = text;
+        }
+        std::string all = parts[0] + parts[1] + parts[2];
+        std::string compact;
+        for (char c : all)
+            if (std::isalnum(static_cast<unsigned char>(c))) compact += c;
+        return compact.size() >= 17 ? compact.substr(compact.size() - 17) : std::string();
+    }
     ElmResult result = elm_.request("0902", 0x09, 8000);
     if (!result.ok()) return {};
     std::string text;

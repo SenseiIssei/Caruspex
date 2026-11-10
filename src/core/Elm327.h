@@ -85,6 +85,17 @@ public:
     // Sends and decodes the response to the expected service (e.g. 0x03 -> 0x43).
     ElmResult request(const std::string& command, int expectedService, int timeoutMs = 6000);
 
+    // Listens on the bus (ATMA) for up to durationMs or maxLines lines and
+    // stops the adapter again. The lines as printed, status lines removed.
+    std::vector<std::string> monitorLines(int durationMs, int maxLines);
+    // Frames with this 11-bit id that the cars sends by itself, raw data
+    // bytes, at most maxFrames. Restores CAN auto formatting and the receive
+    // filter afterwards.
+    std::vector<std::vector<int>> captureFrames(int canId, int durationMs, int maxFrames);
+    // Connected only for listening: the car does not answer OBD, but there
+    // is traffic on CAN 500 kbit (Tesla). Values come from broadcast frames.
+    bool listenOnly() const { return listenOnly_; }
+
     const std::string& version() const { return version_; }
     const std::string& protocolText() const { return protocolText_; }
     std::string transportName() const { return transport_ ? transport_->name() : ""; }
@@ -147,6 +158,7 @@ private:
     int timingLevel_ = 0;
     bool stn_ = false;
     bool obdOnUds_ = false;
+    bool listenOnly_ = false;
     std::string stnId_;
     std::string version_ = "?";
     std::string protocolText_ = L("unbekannt", "unknown");

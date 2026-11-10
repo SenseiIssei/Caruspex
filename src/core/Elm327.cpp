@@ -536,6 +536,80 @@ ElmResult Elm327::requestOnUds(const std::string& command, int expectedService, 
     }
 }
 
+// ---------------------------------------------------------------------------
+// Listening to the bus
+// ---------------------------------------------------------------------------
+
+std::vector<std::string> Elm327::monitorLines(int durationMs, int maxLines) {
+    std::vector<std::string> lines;
+    if (!transport_) return lines;
+    transport_->flushInput();
+    transport_->write("ATMA\r");
+    std::string buffer;
+    const std::uint64_t deadline = nowMs() + static_cast<std::uint64_t>(std::max(0, durationMs));
+    auto complete = [&buffer] { return static_cast<int>(std::count(buffer.begin(), buffer.end(), '\r')); };
+    while (nowMs() < deadline && complete() <= maxLines) {
+        buffer += transport_->read(50);
+        if (buffer.find('>') != std::string::npos) break;   // stopped by itself (BUFFER FULL)
+    }
+    if (buffer.find('>') == std::string::npos) {
+        // Any character ends the monitor; the prompt follows.
+        transport_->write("\r");
+        const std::uint64_t stop = nowMs() + 1500;
+        while (nowMs() < stop) {
+            buffer += transport_->read(50);
+            if (buffer.find('>') != std::string::npos) break;
+        }
+    }
+    std::string line;
+    auto take = [&] {
+        const std::string t = trim(line);
+        line.clear();
+        if (t.empty()) return;
+        const std::string up = toUpper(t);
+        for (const char* skip : {"ATMA", "STOPPED", "BUFFER FULL", "?", "SEARCHING...", "NO DATA",
+                                 "CAN ERROR", "OK"}) {
+            if (up == skip) return;
+        }
+        lines.push_back(t);
+    };
+    for (char c : buffer) {
+        if (c == '\r' || c == '\n' || c == '>') take();
+        else line += c;
+    }
+    take();
+    if (static_cast<int>(lines.size()) > maxLines) lines.resize(static_cast<size_t>(maxLines));
+    return lines;
+}
+
+std::vector<std::vector<int>> Elm327::captureFrames(int canId, int durationMs, int maxFrames) {
+    std::vector<std::vector<int>> frames;
+    if (!transport_) return frames;
+    char filter[16];
+    std::snprintf(filter, sizeof(filter), "CRA%03X", canId & 0x7FF);
+    // Raw data bytes: without auto formatting the first byte is not taken
+    // for an ISO-TP PCI.
+    at("CAF0");
+    at(filter);
+    for (const std::string& line : monitorLines(durationMs, maxFrames)) {
+        std::string hex = stripSpaces(toUpper(line));
+        if (headers_) {
+            if (hex.size() < 3) continue;
+            hex = hex.substr(3);
+        }
+        if (hex.empty() || hex.size() % 2 != 0 || hex.size() > 16 ||
+            !std::all_of(hex.begin(), hex.end(), [](unsigned char c) { return std::isxdigit(c); })) {
+            continue;
+        }
+        std::vector<int> bytes;
+        for (size_t i = 0; i < hex.size(); i += 2) bytes.push_back(std::stoi(hex.substr(i, 2), nullptr, 16));
+        frames.push_back(std::move(bytes));
+    }
+    at("CAF1");
+    if (!answeredOk(at("CRA"))) at("AR");
+    return frames;
+}
+
 bool Elm327::setHeaders(bool on) {
     ElmResult r = at(on ? "H1" : "H0", 3000);
     if (r.status == ElmStatus::AdapterError) return false;
@@ -618,6 +692,7 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
     stnId_.clear();
     timingLevel_ = 0;
     obdOnUds_ = false;
+    listenOnly_ = false;
     drainGreeting();
 
     ElmResult banner = at("Z", 6000);
@@ -679,6 +754,29 @@ bool Elm327::connect(std::unique_ptr<ITransport> transport, const std::string& p
         }
     }
 
+    // No answer to OBD at all. If there is traffic on CAN 500 kbit, the car
+    // may still broadcast its values (Tesla has no OBD responder at all).
+    if (protocolOrder.find('6') != std::string::npos) {
+        at("SP6");
+        at("CRA");
+        int frames = 0;
+        for (const std::string& line : monitorLines(800, 12)) {
+            const std::string hex = stripSpaces(line);
+            if (hex.size() >= 4 && std::all_of(hex.begin(), hex.end(), [](unsigned char c) { return std::isxdigit(c); }))
+                ++frames;
+        }
+        if (frames >= 3) {
+            listenOnly_ = true;
+            connected_ = true;
+            protocolId_ = '6';
+            protocolText_ = std::string("ISO 15765-4 (CAN 11/500), ") + L("nur Mithören", "listen only");
+            if (log_)
+                log_(L("  Kein OBD, aber Verkehr auf dem CAN-Bus: verbunden zum Mithören.",
+                       "  No OBD, but traffic on the CAN bus: connected for listening."));
+            return true;
+        }
+    }
+
     error = L(
         "Kein Kontakt zum Steuergerät.\n"
         "  - Zündung an? (Motor darf aus sein)\n"
@@ -698,6 +796,7 @@ void Elm327::disconnect() {
     headers_ = false;
     stn_ = false;
     obdOnUds_ = false;
+    listenOnly_ = false;
     stnId_.clear();
     timingLevel_ = 0;
     protocolId_ = '0';

@@ -6,7 +6,10 @@ mode 21) in the Torque Pro format, extended by three columns:
     Name,ShortName,ModeAndPID,Equation,Min Value,Max Value,Units,Header,Response,Name DE,ShortName DE
 
     Name, ShortName   English display name and short name
-    ModeAndPID        request in hex, e.g. 220101 or 2101 (0x prefix allowed)
+    ModeAndPID        request in hex, e.g. 220101 or 2101 (0x prefix allowed),
+                      or CAN plus an 11-bit id (CAN132) for a value the car
+                      broadcasts by itself; Equation is then a DBC signal
+                      like DBC:0|16@1+(0.01,0) (see src/core/CanSignals.h)
     Equation          Torque equation over the data bytes A, B, ... (see
                       src/core/CustomPids.h for what is supported)
     Min/Max Value     sensible gauge range
@@ -65,8 +68,17 @@ def check_text(text: str, where: str) -> None:
             raise DataError(f"{where}: no long dashes in user-visible text")
 
 
+MONITOR = re.compile(r"^CAN[0-9A-F]{3}$")
+DBC = re.compile(r"^DBC:\d+\|\d+@[01][+-]\(-?[0-9.]+(e-?\d+)?,-?[0-9.]+(e-?\d+)?\)"
+                 r"( ?m\d+@\d+\|\d+(@[01])?)?$", re.IGNORECASE)
+
+
 def parse_request(text: str) -> str:
     value = text.upper()
+    if MONITOR.match(value):
+        if int(value[3:], 16) > 0x7FF:
+            raise DataError(f"ModeAndPID {value}: the id does not fit into 11 bits")
+        return value
     if value.startswith("0X"):
         value = value[2:]
     if not HEX.match(value) or len(value) % 2 or not 4 <= len(value) <= 14:
@@ -152,6 +164,11 @@ def load_pack(path: str) -> dict:
                 raise DataError("Header and Response differ in width")
             if header == "7DF":
                 raise DataError("7DF is the functional address; leave Header empty instead")
+            if MONITOR.match(r["ModeAndPID"].upper()):
+                if header or response:
+                    raise DataError("a broadcast value (CANxxx) has no Header or Response")
+                if not DBC.match(r["Equation"]):
+                    raise DataError(f"Equation '{r['Equation']}' is not a DBC signal like DBC:0|16@1+(0.01,0)")
             rows.append({
                 "en": r["Name"], "short_en": r["ShortName"], "de": r["Name DE"],
                 "short_de": r["ShortName DE"], "request": parse_request(r["ModeAndPID"]),

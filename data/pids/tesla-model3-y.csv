@@ -1,0 +1,33 @@
+# Tesla Model 3 and Model Y. These cars have no OBD-II answers at all; the
+# values below are broadcast by the control units on the vehicle CAN bus
+# (500 kbit) and Caruspex only listens. Needed is an adapter cable from the
+# diagnostic connector of the car to an OBD-II socket (Model 3/Y: behind the
+# rear centre console) and an ELM327 or STN adapter.
+#
+# The signal definitions come from the DBC file of the Model 3, taken over
+# verbatim (start bit, length, byte order, sign, factor, offset). Newer car
+# software may move or change single fields; a value that looks wrong then
+# is a sign of that, not of a broken battery.
+#
+# Battery health is not broadcast as such. The page computes it from the
+# full pack energy today (Full kWh) against the energy when new (BOL kWh).
+#
+#@ id: tesla-model3-y
+#@ title_de: Tesla Model 3 und Model Y (Mithören am CAN-Bus)
+#@ title_en: Tesla Model 3 and Model Y (listening on the CAN bus)
+#@ category: hybrid
+Name,ShortName,ModeAndPID,Equation,Min Value,Max Value,Units,Header,Response,Name DE,ShortName DE
+# Source: github.com/joshwardell/model3dbc, Model3CAN.dbc (MIT licence), messages 132, 292, 352, 332, 257, 3B6
+Battery voltage,Batt V,CAN132,"DBC:0|16@1+(0.01,0)",200,500,V,,,Akkuspannung,Batt V
+Battery current,Batt A,CAN132,"DBC:16|16@1-(-0.1,0)",-1000,1000,A,,,Akkustrom,Batt A
+State of charge (display),SOC display,CAN292,"DBC:10|10@1+(0.1,0)",0,100,%,,,Ladestand (Anzeige),SOC display
+State of charge (average),SOC BMS,CAN292,"DBC:30|10@1+(0.1,0)",0,100,%,,,Ladestand (Mittel),SOC BMS
+Energy when new,BOL kWh,CAN292,"DBC:40|10@1+(0.1,0)",0,110,kWh,,,Energie im Neuzustand,BOL kWh
+Full pack energy,Full kWh,CAN352,"DBC:0|11@1+(0.1,0)",0,110,kWh,,,Energie bei voller Ladung,Full kWh
+Energy remaining,Energy kWh,CAN352,"DBC:11|11@1+(0.1,0)",0,110,kWh,,,Energie verbleibend,Energy kWh
+Highest cell voltage,Cell V max,CAN332,"DBC:2|12@1+(0.002,0) m1@0|2",2.5,4.3,V,,,Höchste Zellspannung,Cell V max
+Lowest cell voltage,Cell V min,CAN332,"DBC:16|12@1+(0.002,0) m1@0|2",2.5,4.3,V,,,Niedrigste Zellspannung,Cell V min
+Highest cell temperature,Batt T max,CAN332,"DBC:16|8@1+(0.5,-40) m0@0|2",-30,70,°C,,,Höchste Zelltemperatur,Batt T max
+Lowest cell temperature,Batt T min,CAN332,"DBC:24|8@1+(0.5,-40) m0@0|2",-30,70,°C,,,Niedrigste Zelltemperatur,Batt T min
+Vehicle speed,Speed,CAN257,"DBC:12|12@1+(0.08,-40)",0,250,km/h,,,Geschwindigkeit,Speed
+Odometer,Odometer,CAN3B6,"DBC:0|32@1+(0.001,0)",0,1000000,km,,,Kilometerstand,Odometer
