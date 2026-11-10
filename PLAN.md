@@ -141,6 +141,21 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [ ] Herstellercodes für BMW, Opel, Renault, PSA, Fiat und Volvo ergänzen, nur mit Quelle
 - [ ] Genaue Lage der OBD-Buchse für die häufigsten 200 Modelle
 
+# Neubau in Rust und Tauri (0.9.0)
+
+Erledigt im November 2026: die ganze Anwendung neu, mit gleichem Verhalten.
+
+- [x] Cargo-Workspace mit einem Crate je Bereich (Sprachen, Fahrzeuge, Daten, Adapter, Protokolle, Netzwerk und CAN, Mitschnitte, Auswertungen, Demo-Auto, Kommandozeile), Aufbau in `crates/README.md`
+- [x] Oberfläche mit Tauri 2, React und TypeScript: alle Seiten der Qt-Fassung, Demo-Modus im Browser, Arabisch von rechts nach links
+- [x] Übersetzungen weiterverwendet: 18 Sprachen ohne Neuübersetzung, dazu die Katalog-Hinweise, die in der Qt-Fassung fehlten; `tools/i18n_rust.py` und `I18N_STRICT` in der CI
+- [x] Kommandozeile mit gleicher Ausgabe und gleichem JSON, geprüft gegen Vergleichsdateien der 0.8
+- [x] Garage im alten Format, Einstellungen aus der Registry übernommen, Windows-Installer mit gleicher AppId aktualisiert eine 0.8 an Ort und Stelle
+- [x] Klassisches Bluetooth direkt über RFCOMM (Windows, Linux), Bluetooth LE über btleplug
+- [x] Neue CI: Prüfungen, Tests und Pakete für Windows, Linux (AppImage und .deb) und macOS
+- [ ] PDF-Bericht ohne Druckdialog auch auf macOS und Linux (Windows schreibt direkt über WebView2)
+- [ ] `--shot` für Bilder auch auf macOS und Linux
+- [ ] Übernahme der macOS-Einstellungen (plist) der Qt-Fassung
+
 # Großer Ausbauplan ab 0.8.0
 
 Stand 10.11.2026, nach Version 0.8.0. Aufwand: Klein (Tage), Mittel (eine bis zwei Wochen), Groß (mehrere Wochen). Nutzen: wie viele Leute es merken. Jede Phase bekommt ihren eigenen Zweig, Push und PR nur nach Jakobs Ja.
@@ -242,7 +257,7 @@ Antrieb, Akku und Tank, die Steuergeräte, die der Suchlauf wirklich gefunden
 hat, und die Bussysteme, über die sie verbunden sind. Für einzelne Modelle
 kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 
-- [ ] Eigener 3D-Unterbau auf `QRhiWidget` (Qt GUI, LGPL wie der Rest): Kamera zum Drehen, Zoomen und Schwenken mit Maus, Touch und Tastatur, Glas-Shader mit Fresnel-Rand für die Karosserie, feste Teile darin, Shader zur Bauzeit mit `qsb` gebacken. Qt Quick 3D kommt nicht in Frage, weil es nur unter GPL oder kommerziell zu haben ist. Rückfall auf die 2D-Ansicht ohne Grafikkarte oder über Remote Desktop. Mittel bis Groß
+- [ ] 3D-Unterbau mit Three.js in der Tauri-Oberfläche: Kamera zum Drehen, Zoomen und Schwenken mit Maus, Touch und Tastatur, Glas-Material mit Fresnel-Rand für die Karosserie, feste Teile darin, glTF-Lader schon dabei. Rückfall auf die 2D-Ansicht (SVG) ohne WebGL oder über Remote Desktop. Mittel
 - [ ] Karosserie aus Maßen: ein Formgenerator baut aus Aufbau (`BodyType`), Länge, Breite, Höhe, Radstand und Spurweite eine glatte Karosserie mit Fenstern, Rädern und Radhäusern. Die Maße je Generation kommen aus Wikidata (CC0) in den Katalog, mit Prüfung im Datencheck aus Phase 13. Groß, Nutzen hoch
 - [ ] Antriebslayout je Generation: Motor vorn quer, vorn längs, Mitte oder hinten, Front-, Heck- oder Allradantrieb, Elektro mit Akku im Boden und ein oder zwei Motoren, Hybrid mit beidem. Daraus liegen Motor, Getriebe, Antriebswellen, Tank oder Akku, Auspuffstrang und Kühler an der richtigen Stelle. Quelle Wikidata und der vorhandene Katalog (`powertrains`). Mittel
 - [ ] Steuergeräte und Datenleitungen: jedes Steuergerät aus dem Suchlauf als Baustein an seinem üblichen Einbauort (Motor im Motorraum, Airbag unter der Mittelkonsole, Gateway hinter dem Handschuhfach, Einbauorte je Marke in `data/ecus/*.csv` ergänzt). Die Busse als Leitungen dazwischen: Antriebs-CAN, Komfort-CAN, LIN, FlexRay, Ethernet und die K-Leitung, farbig nach Bus. Beim Lesen laufen Pakete sichtbar über die Leitung zum Gerät, das gerade antwortet. Klick auf ein Gerät öffnet seine Seite. Mittel bis Groß, Nutzen hoch
