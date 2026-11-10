@@ -1,0 +1,21 @@
+{
+"u1000": "Geen Bluetooth-adapter in de buurt gevonden. Zit hij in de auto en staat het contact aan?",
+"u1001": "Verbinden met %1 via klassiek Bluetooth ...",
+"u1002": "Zoeken naar de auto op het netwerk (ENET en DoIP) ...",
+"u1003": "Verbonden via %1: %2%3",
+"u1004": "Voertuigdiagnose via EOBD met ELM327-compatibele adapters",
+"u1005": "Verbind direct een wifi-adapter, bijv. 192.168.0.10:35000",
+"u1006": "host:poort",
+"u1007": "Taal voor deze sessie: de of en",
+"u1008": "Direct verbinden met de ingebouwde demo-auto",
+"u1009": "Op deze pagina beginnen, bijv. faults of live",
+"u1010": "Sla na een paar seconden een afbeelding van het venster op en sluit af (voor documentatie)",
+"u1011": "Venstergrootte, bijv. 1440x920",
+"u1012": "Uiterlijk voor deze sessie: dark of light",
+"u1013": "Een opgenomen sessie afspelen",
+"u1014": "Verbind een adapter op een seriële poort, bijv. COM3 of /dev/ttyUSB0, auto doorzoekt ze allemaal",
+"u1015": "Verbind een Bluetooth-adapter via zijn adres, of auto om te zoeken",
+"u1016": "Schrijf na het verbinden een diagnoserapport (PDF, of HTML voor .html) en sluit af",
+"u1017": "Verbind een BMW of Mini via een ENET-kabel, met zijn adres of auto om te zoeken",
+"u1018": "--report heeft een verbinding nodig: --demo, --port, --tcp, --enet, --bluetooth of --replay"
+}
