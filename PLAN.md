@@ -224,17 +224,47 @@ Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 - [ ] Verteilen über winget, Homebrew, Flathub und Snap, damit Installieren und Aktualisieren ein Befehl ist. Klein bis Mittel
 - [ ] iOS später: nur Bluetooth LE und WLAN, App Store braucht ein Entwicklerkonto. Groß
 
+## Phase 20: 3D-Röntgenansicht des erkannten Autos
+
+Das verbundene Auto als drehbares 3D-Modell, die Karosserie durchsichtig wie
+Glas, darin Motor, Antrieb, Tank oder Akku, Auspuff, die Steuergeräte und die
+Datenleitungen zwischen ihnen. Was Caruspex gerade liest, leuchtet an der
+Stelle, an der es im Auto sitzt: ein Fehler am Katalysator am Katalysator, die
+Kühlmitteltemperatur am Kühler, ein Steuergerät, das nicht antwortet, rot im
+Netz. Die bestehende Seitenansicht mit Durchsicht-Modus (`VehicleDiagram`)
+bleibt als Rückfall und für schwache Rechner.
+
+Ehrlich vorweg: ein 1:1-Nachbau mit jedem einzelnen Kabel geht für kein Auto,
+weil Konstruktionsdaten und Stromlaufpläne den Herstellern gehören (ElsaPro,
+ISTA, XENTRY und so weiter, nur gegen Lizenz). Erreichbar ist ein Modell, das
+zum erkannten Auto passt: richtige Maße und Form, richtige Lage von Motor,
+Antrieb, Akku und Tank, die Steuergeräte, die der Suchlauf wirklich gefunden
+hat, und die Bussysteme, über die sie verbunden sind. Für einzelne Modelle
+kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
+
+- [ ] Eigener 3D-Unterbau auf `QRhiWidget` (Qt GUI, LGPL wie der Rest): Kamera zum Drehen, Zoomen und Schwenken mit Maus, Touch und Tastatur, Glas-Shader mit Fresnel-Rand für die Karosserie, feste Teile darin, Shader zur Bauzeit mit `qsb` gebacken. Qt Quick 3D kommt nicht in Frage, weil es nur unter GPL oder kommerziell zu haben ist. Rückfall auf die 2D-Ansicht ohne Grafikkarte oder über Remote Desktop. Mittel bis Groß
+- [ ] Karosserie aus Maßen: ein Formgenerator baut aus Aufbau (`BodyType`), Länge, Breite, Höhe, Radstand und Spurweite eine glatte Karosserie mit Fenstern, Rädern und Radhäusern. Die Maße je Generation kommen aus Wikidata (CC0) in den Katalog, mit Prüfung im Datencheck aus Phase 13. Groß, Nutzen hoch
+- [ ] Antriebslayout je Generation: Motor vorn quer, vorn längs, Mitte oder hinten, Front-, Heck- oder Allradantrieb, Elektro mit Akku im Boden und ein oder zwei Motoren, Hybrid mit beidem. Daraus liegen Motor, Getriebe, Antriebswellen, Tank oder Akku, Auspuffstrang und Kühler an der richtigen Stelle. Quelle Wikidata und der vorhandene Katalog (`powertrains`). Mittel
+- [ ] Steuergeräte und Datenleitungen: jedes Steuergerät aus dem Suchlauf als Baustein an seinem üblichen Einbauort (Motor im Motorraum, Airbag unter der Mittelkonsole, Gateway hinter dem Handschuhfach, Einbauorte je Marke in `data/ecus/*.csv` ergänzt). Die Busse als Leitungen dazwischen: Antriebs-CAN, Komfort-CAN, LIN, FlexRay, Ethernet und die K-Leitung, farbig nach Bus. Beim Lesen laufen Pakete sichtbar über die Leitung zum Gerät, das gerade antwortet. Klick auf ein Gerät öffnet seine Seite. Mittel bis Groß, Nutzen hoch
+- [ ] Der Hauptkabelbaum als Strang: Batterie, Hauptsicherungen, Masse, Motorkabelbaum, Strang durch den Innenraum zum Heck und die OBD-Buchse an ihrem wirklichen Ort (`SocketLocation`), mit dem gesteckten Adapter darin. Kein Einzeldraht, aber man sieht, wo was entlangläuft und wo man suchen muss. Mittel
+- [ ] Fehler und Live-Werte im Modell: Fehlercodes färben ihre Zone (`locateDtc`) und das zuständige Steuergerät, Live-Werte hängen als Schild am Teil (Ladedruck am Turbo, Lambda am Krümmer, Zellspannungen am Akku), "Auto prüfen" fliegt nacheinander alle gefundenen Stellen an. Mittel
+- [ ] Echte Modelle, wo die Lizenz es erlaubt: glTF-Modelle mit CC0 oder CC BY für einzelne Generationen, nachgeladen bei Bedarf statt im Installer, mit Herkunft und Lizenz in der App. Dazu ein eigenes glTF laden, wer selbst eins hat. Das Innenleben bleibt aus dem Layout, nur die Hülle wird ersetzt. Mittel
+- [ ] Röntgen-Schnitte: Ebenen einzeln ein- und ausblenden (Karosserie, Antrieb, Kühlung, Kraftstoff oder Hochvolt, Elektrik, Netz), Schnittebene durchs Auto ziehen, Explosionsansicht für den Antriebsstrang. Klein bis Mittel
+- [ ] Bilder und Tests: `--shot` und `--render-cars` auch für die 3D-Ansicht, damit README und CI sie zeigen, ein Test, dass jede Katalog-Generation ein gültiges Modell ergibt (keine Lücken, Räder auf dem Boden, Teile innerhalb der Hülle). Klein
+
 ## Empfohlene Reihenfolge
 
 1. Phase 13 (aktuell bleiben): klein, schützt alles Weitere
 2. Gebrauchtwagen-Check, "Was soll ich jetzt tun?" und Einsteigermodus aus Phase 14: der größte Nutzen für normale Halter
 3. OBDb aus Phase 15: Herstellerwerte und Akku für hunderte Modelle
-4. VAG TP 2.0 und K-Line über J2534 aus Phase 16
-5. Mitschnitte teilen (Phase 15) und das Testprogramm (Phase 18) zusammen: daraus kommen Mercedes, DoIP-Listen und die Bestätigung am echten Auto
-6. Android (Phase 19)
+4. 3D-Röntgenansicht aus Phase 20, zuerst Unterbau, Karosserie aus Maßen und Steuergeräte mit Datenleitungen: macht sichtbar, was die Diagnose findet
+5. VAG TP 2.0 und K-Line über J2534 aus Phase 16
+6. Mitschnitte teilen (Phase 15) und das Testprogramm (Phase 18) zusammen: daraus kommen Mercedes, DoIP-Listen und die Bestätigung am echten Auto
+7. Android (Phase 19)
 
 ## Was bewusst nicht kommt
 
 - Schreiben in Anpassungskanäle oder Codierung: ein falscher Wert legt das Auto lahm, das bleibt nur lesend. Löschen von Fehlern ist die einzige schreibende Aktion
 - Wegfahrsperre, Schlüssel anlernen, Kilometerstand verändern: rechtlich heikel und nicht der Zweck dieses Werkzeugs
 - VAG TP 2.0 über ELM327 (siehe Phase 6), dafür bleibt KKL
+- Konstruktionsdaten und Stromlaufpläne der Hersteller im 3D-Modell: sie sind nur gegen Lizenz zu haben, deshalb zeigt Phase 20 Lage, Geräte und Busse statt jedes einzelnen Drahts
