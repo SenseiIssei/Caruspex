@@ -90,7 +90,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [~] Airbag- und ABS-Codes (B und C) mit Klartext: die Normcodes und die Fehlerart sind da, Herstellerbedeutungen fehlen noch (nur mit Quelle). Mittel
 - [x] Demo-Auto bekommt ABS, Airbag und Klima, Tests mit einem nachgebauten UDS-Steuergerät. Mittel
 - Ehrlich bleibt: VAG mit TP 2.0 (etwa 2004 bis 2012) kann ein ELM327 kaum sauber. Dort bleibt es bei OBD-II und, wo vorhanden, KKL
-- Stand: Adresslisten für VAG, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA (77 Steuergeräte). BMW (Adressierung über 6F1) und Mercedes (eigene und 29-Bit-Schemata) fehlen, dort hilft der allgemeine Suchlauf nur teilweise. Ford-Karosseriegeräte auf MS-CAN erreicht ein normaler ELM327 nicht. Alle Adressen sind noch nicht am echten Auto geprüft
+- Stand: Adresslisten für VAG, BMW, Ford, Mazda, GM, Toyota, Nissan, Hyundai/Kia, Renault und PSA (105 Steuergeräte). BMW ab F-Baureihe mit erweiterter Adressierung über 6F1 im Rohmodus (ISO-TP in Caruspex), Suchlauf über alle 128 Adressen, BMW-Fehlercodes sechsstellig; am echten BMW noch ungeprüft. Mercedes (eigene und 29-Bit-Schemata) fehlt, dort hilft der allgemeine Suchlauf nur teilweise. Ford-Karosseriegeräte auf MS-CAN erreicht ein normaler ELM327 nicht. Alle Adressen sind noch nicht am echten Auto geprüft
 
 ## Phase 7: Herstellerwerte (Modus 22) und eigene PIDs
 

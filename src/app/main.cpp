@@ -77,6 +77,35 @@ int main(int argc, char** argv) {
                                     "WLAN-Adapter direkt verbinden, z.B. 192.168.0.10:35000"),
         QCoreApplication::translate("main", "host:port"));
     parser.addOption(tcpOption);
+    QCommandLineOption portOption(
+        QStringList() << QStringLiteral("port"),
+        QCoreApplication::translate("main",
+                                    "Adapter am seriellen Anschluss verbinden, z.B. COM3 oder "
+                                    "/dev/ttyUSB0, auto sucht an allen"),
+        QStringLiteral("port|auto"));
+    parser.addOption(portOption);
+    QCommandLineOption bluetoothOption(
+        QStringList() << QStringLiteral("bluetooth"),
+        QCoreApplication::translate("main",
+                                    "Bluetooth-Adapter verbinden, über die Adresse oder auto für "
+                                    "die Suche"),
+        QStringLiteral("address|auto"));
+#ifdef CARUSPEX_HAS_BLE
+    parser.addOption(bluetoothOption);
+#endif
+    QCommandLineOption reportOption(
+        QStringList() << QStringLiteral("report"),
+        QCoreApplication::translate("main",
+                                    "Nach dem Verbinden einen Prüfbericht schreiben (PDF, oder "
+                                    "HTML bei .html) und beenden"),
+        QStringLiteral("file"));
+    parser.addOption(reportOption);
+    QCommandLineOption reportWaitOption(
+        QStringList() << QStringLiteral("report-wait"),
+        QStringLiteral("Milliseconds between connecting and writing --report"), QStringLiteral("ms"),
+        QStringLiteral("8000"));
+    reportWaitOption.setFlags(QCommandLineOption::HiddenFromHelp);
+    parser.addOption(reportWaitOption);
     QCommandLineOption languageOption(
         QStringList() << QStringLiteral("language"),
         QCoreApplication::translate("main",
@@ -156,8 +185,10 @@ int main(int argc, char** argv) {
         std::printf("%lld device(s)%s%s\n", static_cast<long long>(devices.size()),
                     error.isEmpty() ? "" : ", error: ", error.toUtf8().constData());
         for (const caruspex::BleDevice& d : devices) {
-            std::printf("  %-40s %-30s rssi %4d score %d\n", d.id.toUtf8().constData(),
-                        d.name.toUtf8().constData(), d.rssi, d.score);
+            std::printf("  %-40s %-30s %-8s rssi %4d score %d\n", d.id.toUtf8().constData(),
+                        d.name.toUtf8().constData(),
+                        d.lowEnergy && d.classic ? "LE+BR" : (d.classic ? "classic" : "LE"), d.rssi,
+                        d.score);
         }
         caruspex::BleDevice target;
         const QString wanted = parser.value(bleProbeOption);
@@ -170,19 +201,33 @@ int main(int argc, char** argv) {
         if (target.id.isEmpty() && wanted != QStringLiteral("auto")) target.id = wanted;
         if (target.id.isEmpty()) return 2;
         std::printf("connecting to %s ...\n", target.id.toUtf8().constData());
-        caruspex::BleTransport transport;
         std::string failure;
-        if (!transport.open(target, failure)) {
-            std::printf("open failed: %s\n", failure.c_str());
-            return 1;
+        std::unique_ptr<caruspex::ITransport> transport;
+        if (target.lowEnergy || !target.classic) {
+            auto ble = std::make_unique<caruspex::BleTransport>();
+            if (ble->open(target, failure)) {
+                std::printf("LE channel %s\n", ble->profile().toUtf8().constData());
+                transport = std::move(ble);
+            } else {
+                std::printf("LE open failed: %s\n", failure.c_str());
+            }
         }
-        std::printf("channel %s\n", transport.profile().toUtf8().constData());
+        if (!transport && target.classic) {
+            auto rfcomm = std::make_unique<caruspex::RfcommTransport>();
+            if (rfcomm->open(target, failure)) {
+                std::printf("classic serial port open\n");
+                transport = std::move(rfcomm);
+            } else {
+                std::printf("classic open failed: %s\n", failure.c_str());
+            }
+        }
+        if (!transport) return 1;
         // Only adapters get a command; other devices are just looked at.
         if (target.score < 3) return 0;
         std::printf("sending ATZ\n");
-        transport.write("ATZ\r");
+        transport->write("ATZ\r");
         std::string reply;
-        for (int i = 0; i < 20 && reply.find('>') == std::string::npos; ++i) reply += transport.read(250);
+        for (int i = 0; i < 20 && reply.find('>') == std::string::npos; ++i) reply += transport->read(250);
         std::printf("reply: %s\n", reply.c_str());
         return reply.empty() ? 1 : 0;
     }
@@ -235,6 +280,24 @@ int main(int argc, char** argv) {
         if (parts.size() == 2) window.resize(parts[0].toInt(), parts[1].toInt());
     }
     window.show();
+    if (parser.isSet(reportOption)) {
+        const bool connects = parser.isSet(tcpOption) || parser.isSet(demoOption) ||
+                              parser.isSet(replayOption) || parser.isSet(portOption) ||
+                              parser.isSet(bluetoothOption);
+        if (!connects) {
+            std::fprintf(stderr, "%s\n",
+                         QCoreApplication::translate("main", "--report braucht eine Verbindung: --demo, "
+                                                             "--port, --tcp, --bluetooth oder --replay")
+                             .toLocal8Bit()
+                             .constData());
+            return 2;
+        }
+        window.reportAndQuit(parser.value(reportOption), parser.value(reportWaitOption).toInt());
+    }
+    if (parser.isSet(portOption)) window.autoConnectSerial(parser.value(portOption));
+#ifdef CARUSPEX_HAS_BLE
+    if (parser.isSet(bluetoothOption)) window.autoConnectBluetooth(parser.value(bluetoothOption));
+#endif
     if (parser.isSet(tcpOption)) window.autoConnectTcp(parser.value(tcpOption));
     if (parser.isSet(demoOption)) window.autoConnectDemo();
     if (parser.isSet(replayOption)) window.autoConnectReplay(parser.value(replayOption));

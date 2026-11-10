@@ -10,6 +10,8 @@
 #include <QPageLayout>
 #include <QPageSize>
 #include <QPdfWriter>
+#include <QFileInfo>
+#include <QFile>
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QStandardPaths>
@@ -211,16 +213,28 @@ QString saveReportPdf(QWidget* parent, const VehicleState& state, const ReportEx
     const QString path = QFileDialog::getSaveFileName(parent, QCoreApplication::translate("caruspex::Report", "Prüfbericht speichern"), suggested,
                                                       QCoreApplication::translate("caruspex::Report", "PDF-Dokument (*.pdf)"));
     if (path.isEmpty()) return {};
+    return writeReport(state, extras, path) ? path : QString();
+}
 
-    QPdfWriter writer(path);
-    writer.setPageSize(QPageSize(QPageSize::A4));
-    writer.setPageMargins(QMarginsF(16, 16, 16, 16), QPageLayout::Millimeter);
-    writer.setTitle(QCoreApplication::translate("caruspex::Report", "Prüfbericht"));
-    writer.setCreator(QStringLiteral("Caruspex"));
-    QTextDocument doc;
-    doc.setHtml(reportHtml(state, extras));
-    doc.print(&writer);
-    return path;
+bool writeReport(const VehicleState& state, const ReportExtras& extras, const QString& path) {
+    const QString html = reportHtml(state, extras);
+    if (path.endsWith(QStringLiteral(".html"), Qt::CaseInsensitive) ||
+        path.endsWith(QStringLiteral(".htm"), Qt::CaseInsensitive)) {
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return false;
+        return file.write(html.toUtf8()) >= 0;
+    }
+    {
+        QPdfWriter writer(path);
+        writer.setPageSize(QPageSize(QPageSize::A4));
+        writer.setPageMargins(QMarginsF(16, 16, 16, 16), QPageLayout::Millimeter);
+        writer.setTitle(QCoreApplication::translate("caruspex::Report", "Prüfbericht"));
+        writer.setCreator(QStringLiteral("Caruspex"));
+        QTextDocument doc;
+        doc.setHtml(html);
+        doc.print(&writer);
+    }
+    return QFileInfo(path).size() > 0;
 }
 
 QString garageHtml(const GarageCar& car) {

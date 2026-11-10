@@ -541,3 +541,143 @@ TEST_CASE("Without CAN there is no UDS", "[uds]") {
     REQUIRE_FALSE(ecus[0].present);
     REQUIRE_FALSE(ecus[0].note.empty());
 }
+
+// ---------------------------------------------------------------------------
+// BMW style extended addressing: request 6F1 with the target byte first,
+// answer from 6xx with F1 first. The adapter runs with CAN auto formatting
+// off, so the ISO-TP frames below are the raw eight bytes on the bus.
+
+namespace {
+
+EcuDefinition bmwUnit(int address, const std::string& name) {
+    EcuDefinition d = ecuFromIds(0x6F1, 0x600u + static_cast<std::uint32_t>(address), false, name);
+    return d;
+}
+
+// The headers-on form of a raw BMW frame from unit 12.
+std::string dme(const std::string& bytes) { return "612 " + bytes; }
+
+}  // namespace
+
+TEST_CASE("BMW addressing: ids, raw mode and the way back", "[uds][bmw]") {
+    const EcuDefinition d = bmwUnit(0x12, "DME");
+    REQUIRE(d.extendedAddress == 0x12);
+    REQUIRE(ecuFromIds(0x7E0, 0x7E8, false, "x").extendedAddress == -1);
+    REQUIRE(ecuFromIds(0x6F1, 0x7E8, false, "x").extendedAddress == -1);
+
+    ScriptRig rig;
+    REQUIRE(rig.connected);
+    {
+        Uds uds(rig.elm);
+        std::string error;
+        REQUIRE(uds.select(d, error));
+        REQUIRE(rig.t->count("ATSH6F1") == 1);
+        REQUIRE(rig.t->count("ATCRA612") == 1);
+        REQUIRE(rig.t->count("ATCAF0") == 1);
+    }
+    // Back to normal OBD: auto formatting on, functional header.
+    REQUIRE(rig.t->count("ATCAF1") >= 1);
+    REQUIRE(rig.t->sent.back() == "ATCRA");
+    REQUIRE(std::find(rig.t->sent.rbegin(), rig.t->sent.rend(), "ATSH7DF") != rig.t->sent.rend());
+}
+
+TEST_CASE("BMW addressing: single and multi frame answers", "[uds][bmw]") {
+    for (bool headers : {false, true}) {
+        ScriptRig rig;
+        REQUIRE(rig.connected);
+        if (headers) REQUIRE(rig.elm.setHeaders(true));
+        auto line = [headers](const std::string& bytes) { return headers ? dme(bytes) : bytes; };
+
+        // 3E 00 as a single frame: 12 02 3E 00, padded to eight bytes.
+        rig.t->replies["12023E0000000000"] = {{{"F1 02 7E 00 00 00 00 00"}, {dme("F1 02 7E 00 00 00 00 00")}}};
+        // VIN, 20 bytes: first frame with five, then 6 + 6 + 3.
+        rig.t->replies["120322F190000000"] = {
+            {{"F1 10 14 62 F1 90 57 42"}, {line("F1 10 14 62 F1 90 57 42")}}};
+        rig.t->replies["1230000000000000"] = {
+            {{"F1 21 41 34 4A 31 43 35", "F1 22 30 4B 42 4D 31 32", "F1 23 33 34 35 00 00 00"},
+             {line("F1 21 41 34 4A 31 43 35"), line("F1 22 30 4B 42 4D 31 32"),
+              line("F1 23 33 34 35 00 00 00")}}};
+
+        Uds uds(rig.elm);
+        std::string error;
+        REQUIRE(uds.select(bmwUnit(0x12, "DME"), error));
+        REQUIRE(uds.testerPresent());
+
+        std::vector<int> response;
+        REQUIRE(uds.request({0x22, 0xF1, 0x90}, response, error));
+        REQUIRE(response.size() == 19);
+        REQUIRE(uds.readInfo().vin == "WBA4J1C50KBM12345");
+    }
+}
+
+TEST_CASE("BMW addressing: fault codes in BMW's own format", "[uds][bmw]") {
+    ScriptRig rig;
+    REQUIRE(rig.connected);
+    // 59 02 FF, then 480A10 status 2F and 930B21 status 08: eleven bytes.
+    rig.t->replies["12031902FF000000"] = {{{"F1 10 0B 59 02 FF 48 0A"}, {dme("F1 10 0B 59 02 FF 48 0A")}}};
+    rig.t->replies["1230000000000000"] = {{{"F1 21 10 2F 93 0B 21 08"}, {dme("F1 21 10 2F 93 0B 21 08")}}};
+
+    Uds uds(rig.elm);
+    std::string error;
+    REQUIRE(uds.select(bmwUnit(0x12, "DME"), error));
+    const std::vector<UdsDtc> dtcs = uds.readDtcs(error);
+    REQUIRE(error.empty());
+    REQUIRE(dtcs.size() == 2);
+    REQUIRE(dtcs[0].code == "480A10");
+    REQUIRE(dtcs[0].testFailed);
+    REQUIRE(dtcs[0].confirmed);
+    REQUIRE(dtcs[0].failureText.empty());
+    REQUIRE_FALSE(dtcs[0].text.empty());
+    REQUIRE(dtcs[1].code == "930B21");
+    REQUIRE_FALSE(dtcs[1].testFailed);
+    REQUIRE(dtcs[1].confirmed);
+}
+
+TEST_CASE("BMW addressing: busy, refusals and foreign frames", "[uds][bmw]") {
+    ScriptRig rig;
+    REQUIRE(rig.connected);
+    // First 7F 22 78 (still busy), the second ask gets the answer.
+    rig.t->replies["120322F187000000"] = {{{"F1 03 7F 22 78 00 00 00"}, {}},
+                                          {{"F1 06 62 F1 87 41 42 43"}, {}}};
+    // A refusal: request out of range.
+    rig.t->replies["120322F197000000"] = {{{"F1 03 7F 22 31 00 00 00"}, {}}};
+    // A frame for another tester (F4, an ENET tool) is not ours.
+    rig.t->replies["120322F18C000000"] = {{{"F4 06 62 F1 8C 41 42 43"}, {}}};
+
+    Uds uds(rig.elm);
+    std::string error;
+    REQUIRE(uds.select(bmwUnit(0x12, "DME"), error));
+    std::vector<int> response;
+    REQUIRE(uds.request({0x22, 0xF1, 0x87}, response, error));
+    REQUIRE(response == std::vector<int>{0xF1, 0x87, 0x41, 0x42, 0x43});
+    REQUIRE(rig.t->count("120322F187000000") == 2);
+
+    REQUIRE_FALSE(uds.request({0x22, 0xF1, 0x97}, response, error));
+    REQUIRE_FALSE(error.empty());
+    REQUIRE_FALSE(uds.request({0x22, 0xF1, 0x8C}, response, error));
+
+    // Requests longer than one single frame are refused before sending.
+    REQUIRE_FALSE(uds.request({0x22, 0xF1, 0x90, 0xF1, 0x87, 0xF1, 0x89}, response, error));
+}
+
+TEST_CASE("BMW address list and full sweep", "[uds][bmw]") {
+    const std::vector<EcuDefinition> list = ecuDefinitions("BMW");
+    REQUIRE(list.size() >= 20);
+    REQUIRE(list.front().kind == EcuKind::Engine);
+    REQUIRE(list.front().extendedAddress == 0x12);
+    for (const EcuDefinition& d : list) {
+        REQUIRE(d.request == 0x6F1);
+        REQUIRE(d.response == 0x600u + static_cast<std::uint32_t>(d.extendedAddress));
+        REQUIRE_FALSE(d.extended29);
+    }
+    const std::vector<EcuDefinition> sweep = bmwAddressSweep();
+    REQUIRE(sweep.size() == 128);
+    std::set<int> addresses;
+    for (const EcuDefinition& d : sweep) addresses.insert(d.extendedAddress);
+    REQUIRE(addresses.size() == 128);
+    REQUIRE(*addresses.begin() == 0x00);
+    REQUIRE(*addresses.rbegin() == 0x7F);
+    // The known units keep their names and come first.
+    REQUIRE(sweep.front().extendedAddress == 0x12);
+    REQUIRE(sweep.front().name == list.front().name);
+}

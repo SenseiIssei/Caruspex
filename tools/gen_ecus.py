@@ -10,7 +10,9 @@ Every CSV holds the control units of one or more brand families, one per row:
                charger hybrid other
     request    CAN id the tester sends to, hex without 0x ("7E0", "18DA10F1")
     response   CAN id the control unit answers on, hex
-    bits       11 or 29
+    bits       11, 29, or ext for BMW style extended addressing: 11-bit ids,
+               request 6F1 for every unit, response 6xx, and xx (the unit's
+               diagnostic address) as the first data byte of every frame
     name_de    display name in German
     name_en    display name in English
     note       free text for maintainers (VAG address, model range, ...),
@@ -84,22 +86,27 @@ def build_row(r: dict) -> dict:
         raise DataError(f"unknown family '{r['family']}'")
     if r["kind"] not in KINDS:
         raise DataError(f"unknown kind '{r['kind']}'")
-    if r["bits"] not in ("11", "29"):
-        raise DataError("bits must be 11 or 29")
-    bits = int(r["bits"])
+    if r["bits"] not in ("11", "29", "ext"):
+        raise DataError("bits must be 11, 29 or ext")
+    extended_address = -1
+    bits = 11 if r["bits"] == "ext" else int(r["bits"])
     request = parse_id(r["request"], bits, "request")
     response = parse_id(r["response"], bits, "response")
     if request == response:
         raise DataError("request and response must differ")
     if bits == 11 and request == 0x7DF:
         raise DataError("7DF is the OBD broadcast address, not a control unit")
+    if r["bits"] == "ext":
+        if request != 0x6F1 or (response & 0xF00) != 0x600:
+            raise DataError("extended addressing needs request 6F1 and a response 6xx")
+        extended_address = response & 0xFF
     if not r["name_de"] or not r["name_en"]:
         raise DataError("name needs German and English")
     for col in ("name_de", "name_en", "note"):
         check_text(r[col], col)
     return {
         "family": r["family"], "kind": KINDS[r["kind"]], "request": request,
-        "response": response, "ext": bits == 29, "de": r["name_de"],
+        "response": response, "ext": bits == 29, "xaddr": extended_address, "de": r["name_de"],
         "en": r["name_en"], "note": r["note"],
     }
 
@@ -131,8 +138,11 @@ def load_rows() -> list[dict]:
                     row = build_row(dict(zip(COLUMNS, cells)))
                 except DataError as e:
                     raise DataError(f"{where}: {e}") from None
-                for key in (("request", row["request"], row["ext"]),
-                            ("response", row["response"], row["ext"])):
+                keys = [("response", row["response"], row["ext"])]
+                # With extended addressing every unit shares the request id.
+                if row["xaddr"] < 0:
+                    keys.insert(0, ("request", row["request"], row["ext"]))
+                for key in keys:
                     if (row["family"],) + key in seen:
                         raise DataError(f"{where}: {key[0]} {key[1]:X} twice in {row['family']}")
                     seen.add((row["family"],) + key)
@@ -175,6 +185,7 @@ def main() -> int:
         "    std::uint32_t request;",
         "    std::uint32_t response;",
         "    bool extended29;",
+        "    int extendedAddress;   // -1, or the BMW style target byte",
         "    EcuKind kind;",
         "    Text name;",
         "};",
@@ -188,7 +199,7 @@ def main() -> int:
     width = 8 if any(r["ext"] for r in rows) else 3
     for r in rows:
         line = (f"    {{{cpp(r['family'])}, 0x{r['request']:0{width}X}, 0x{r['response']:0{width}X}, "
-                f"{'true' if r['ext'] else 'false'}, K::{r['kind']}, "
+                f"{'true' if r['ext'] else 'false'}, {r['xaddr'] if r['xaddr'] < 0 else hex(r['xaddr'])}, K::{r['kind']}, "
                 f"{{{cpp(r['de'])}, {cpp(r['en'])}}}}},")
         if r["note"]:
             line += f"  // {r['note']}"

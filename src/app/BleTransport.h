@@ -18,6 +18,7 @@
 
 class QLowEnergyController;
 class QLowEnergyService;
+class QBluetoothSocket;
 
 namespace caruspex {
 
@@ -27,12 +28,41 @@ struct BleDevice {
     QString name;
     int rssi = 0;
     int score = 0;   // obdAdapterNameScore
+    bool lowEnergy = true;   // offers Bluetooth LE
+    bool classic = false;    // offers classic Bluetooth (RFCOMM serial port)
 };
 
-// Scans for Bluetooth LE devices for the given time and returns them, OBD
-// adapters first. Blocks with a local event loop; error is set when the
-// system has no usable Bluetooth.
-QList<BleDevice> scanBleDevices(int milliseconds, QString& error);
+// Bit mask for passing the two flags through signals.
+inline int bluetoothKinds(const BleDevice& d) { return (d.lowEnergy ? 1 : 0) | (d.classic ? 2 : 0); }
+
+// Scans for Bluetooth devices for the given time and returns them, OBD
+// adapters first. With classic set, classic devices (paired or visible) are
+// listed too. Blocks with a local event loop; error is set when the system
+// has no usable Bluetooth.
+QList<BleDevice> scanBleDevices(int milliseconds, QString& error, bool classic = true);
+
+// Classic Bluetooth adapter over an RFCOMM serial port, without a COM port
+// or an rfcomm binding in the system. The adapter has to be paired once in
+// the system settings (PIN usually 1234 or 0000).
+class RfcommTransport : public QObject, public ITransport {
+    Q_OBJECT
+
+public:
+    RfcommTransport();
+    ~RfcommTransport() override;
+
+    bool open(const BleDevice& device, std::string& error);
+    bool write(const std::string& data) override;
+    std::string read(int timeoutMs) override;
+    void flushInput() override;
+    std::string name() const override { return name_; }
+
+private:
+    QBluetoothSocket* socket_ = nullptr;
+    QByteArray buffer_;
+    bool disconnected_ = false;
+    std::string name_;
+};
 
 class BleTransport : public QObject, public ITransport {
     Q_OBJECT

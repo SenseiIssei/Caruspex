@@ -1,0 +1,39 @@
+# BMW and Mini from the F series on (about 2007 to today, F and G models).
+# These cars use extended addressing on the 11-bit D-CAN of the OBD socket:
+# the tester sends every request to 6F1 with the diagnostic address of the
+# unit as the first data byte, the unit answers on 600 plus its address and
+# puts F1 (the tester) in front. The engine also answers normal OBD on 7DF.
+# The gateway passes these requests on to the other buses.
+# Source: community list of F series diagnostic addresses (MY2016 car,
+# github.com/brodee227/bmw-f), EGS 18 from E-Sys and ISTA practice. The list
+# is marked incomplete by its author; the full address sweep (0x00 to 0x7F)
+# finds every unit that answers, also the ones not listed here.
+family,kind,request,response,bits,name_de,name_en,note
+BMW,engine,6F1,612,ext,Motorsteuerung (DME),Engine control (DME),address 12
+BMW,gearbox,6F1,618,ext,Automatikgetriebe (EGS),Automatic gearbox (EGS),address 18
+BMW,brakes,6F1,629,ext,Fahrdynamik und ABS (DSC),Stability control and ABS (DSC),address 29
+BMW,airbag,6F1,601,ext,Airbag (ACSM),Airbag (ACSM),address 01
+BMW,steering,6F1,630,ext,Elektrische Lenkung (EPS),Electric power steering (EPS),address 30
+BMW,gateway,6F1,610,ext,Gateway (FEM/ZGM),Gateway (FEM/ZGM),address 10
+BMW,body,6F1,640,ext,Karosserieelektronik (FEM/BDC),Body electronics (FEM/BDC),address 40
+BMW,instruments,6F1,660,ext,Kombiinstrument (KOMBI),Instrument cluster (KOMBI),address 60
+BMW,climate,6F1,678,ext,Klimaautomatik (IHKA),Climate control (IHKA),address 78
+BMW,infotainment,6F1,663,ext,Head Unit (NBT/CIC),Head unit (NBT/CIC),address 63
+BMW,infotainment,6F1,667,ext,iDrive-Controller (ZBE),iDrive controller (ZBE),address 67
+BMW,infotainment,6F1,661,ext,Telematik (ATM),Telematics (ATM),address 61
+BMW,infotainment,6F1,637,ext,Verstärker (AMP),Amplifier (AMP),address 37
+BMW,infotainment,6F1,63F,ext,Active Sound Design (ASD),Active Sound Design (ASD),address 3F
+BMW,body,6F1,656,ext,Dachfunktionszentrum (FZD),Roof function centre (FZD),address 56
+BMW,body,6F1,672,ext,Heckelektronik (REM),Rear electronics (REM),address 72
+BMW,other,6F1,617,ext,Kraftstoffpumpe (EKPM),Fuel pump control (EKPM),address 17
+BMW,other,6F1,61C,ext,Fahrwerksregelung (ICM),Integrated chassis management (ICM),address 1C
+BMW,other,6F1,676,ext,Dämpferregelung (VDC),Damper control (VDC),address 76
+BMW,other,6F1,60F,ext,Sperrdifferenzial hinten (GHAS),Rear differential lock (GHAS),address 0F
+BMW,other,6F1,65D,ext,Kamera-Fahrerassistenz (KAFAS),Camera driver assistance (KAFAS),address 5D
+BMW,parking,6F1,606,ext,Rückfahr- und Umfeldkamera (TRSVC),Reversing and surround camera (TRSVC),address 06
+BMW,lighting,6F1,641,ext,Scheinwerfer-Treiber (TMS),Headlight driver (TMS),address 41
+BMW,lighting,6F1,642,ext,Scheinwerfer-Treiber 2 (TMS),Headlight driver 2 (TMS),address 42
+BMW,lighting,6F1,643,ext,Lichtmodul (LHM),Light module (LHM),address 43
+BMW,lighting,6F1,644,ext,Lichtmodul 2 (LHM),Light module 2 (LHM),address 44
+BMW,seats,6F1,66D,ext,Sitzmodul Fahrer (SM),Seat module driver (SM),address 6D
+BMW,seats,6F1,66E,ext,Sitzmodul Beifahrer (SM),Seat module passenger (SM),address 6E

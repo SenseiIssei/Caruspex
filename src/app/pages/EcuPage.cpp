@@ -94,6 +94,10 @@ EcuPage::EcuPage(QWidget* parent) : QWidget(parent) {
     for (const std::string& f : ecuFamilies()) {
         family_->addItem(tr("Adressliste %1").arg(QString::fromStdString(brandFamilyLabel(f))),
                          QString::fromStdString(f));
+        if (f == "BMW") {
+            family_->addItem(tr("BMW und Mini: alle 128 Adressen (langsamer, findet alles)"),
+                             QStringLiteral("BMW*"));
+        }
     }
     start_ = new QPushButton(tr("Steuergeräte suchen"));
     start_->setObjectName("Primary");

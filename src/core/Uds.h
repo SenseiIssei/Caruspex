@@ -10,6 +10,9 @@
 //
 // The ELM327 is told whom to talk to with ATSH (request id) and ATCRA
 // (response id); for 29-bit ids ATCP/ATSH and ATCRA work the same way.
+// BMW style extended addressing (one target byte in front of every frame)
+// is done in raw mode (ATCAF0) with the ISO-TP framing in Caruspex itself,
+// because many ELM327 clones handle ATCEA badly or not at all.
 // Afterwards the default OBD addressing is restored.
 #pragma once
 
@@ -83,7 +86,20 @@ public:
 private:
     Elm327& elm_;
     bool addressed_ = false;
+    int extended_ = -1;   // target byte with BMW style addressing, else -1
 };
+
+// One request with BMW style extended addressing, the framing done here:
+// the ISO-TP frames as the raw lines of the adapter (CAN auto formatting
+// off). Exposed for the tests. target is the unit's address, the answer has
+// to start with tester. Requests up to six bytes (one single frame).
+struct ExtendedReply {
+    bool answered = false;
+    std::vector<int> payload;   // reassembled ISO-TP payload, service byte first
+    std::string error;
+};
+ExtendedReply extendedRequest(Elm327& elm, int target, int tester, const std::vector<int>& bytes,
+                              int timeoutMs);
 
 // Asks every ECU of the list once: is it there, what is it, what does it
 // have stored. progress(index, total, name) is called before each ECU;
@@ -95,5 +111,9 @@ std::vector<UdsEcu> scanEcus(Elm327& elm, const std::vector<EcuDefinition>& ecus
 
 // Decodes the three-byte DTC of service 19 ("C0035" plus failure type).
 UdsDtc decodeUdsDtc(int b1, int b2, int b3, int status);
+
+// BMW stores its own codes in the three bytes, shown as six hex digits the
+// way ISTA does ("480A10"), without an SAE meaning or failure type.
+UdsDtc decodeBmwDtc(int b1, int b2, int b3, int status);
 
 }  // namespace caruspex

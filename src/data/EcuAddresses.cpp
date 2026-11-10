@@ -13,6 +13,7 @@ struct EcuRow {
     std::uint32_t request;
     std::uint32_t response;
     bool extended29;
+    int extendedAddress;   // -1, or the BMW style target byte
     EcuKind kind;
     Text name;
 };
@@ -33,6 +34,7 @@ EcuDefinition fromRow(const EcuRow& row) {
     d.request = row.request;
     d.response = row.response;
     d.extended29 = row.extended29;
+    d.extendedAddress = row.extendedAddress;
     d.kind = row.kind;
     d.name = row.name.get();
     d.family = row.family;
@@ -124,6 +126,46 @@ std::vector<EcuDefinition> genericEcuSweep() {
         out.push_back(sweepEntry(id, EcuKind::Other));
     }
     return out;
+}
+
+}  // namespace caruspex
+
+namespace caruspex {
+
+std::vector<EcuDefinition> bmwAddressSweep() {
+    const std::vector<EcuDefinition> known = ecuDefinitions("BMW");
+    std::vector<EcuDefinition> out;
+    // Known units first, in their scan order, then every other address.
+    for (const EcuDefinition& d : known) out.push_back(d);
+    for (int address = 0x00; address <= 0x7F; ++address) {
+        const bool listed = std::any_of(known.begin(), known.end(), [address](const EcuDefinition& d) {
+            return d.extendedAddress == address;
+        });
+        if (listed) continue;
+        EcuDefinition d;
+        d.request = 0x6F1;
+        d.response = 0x600u + static_cast<std::uint32_t>(address);
+        d.extendedAddress = address;
+        d.family = "BMW";
+        char id[8];
+        std::snprintf(id, sizeof(id), "0x%02X", address);
+        d.name = std::string(L("Steuergerät ", "Control unit ")) + id;
+        out.push_back(d);
+    }
+    return out;
+}
+
+EcuDefinition ecuFromIds(std::uint32_t request, std::uint32_t response, bool extended29,
+                         const std::string& name) {
+    EcuDefinition d;
+    d.request = request;
+    d.response = response;
+    d.extended29 = extended29;
+    d.name = name;
+    if (!extended29 && request == 0x6F1 && (response & 0xF00) == 0x600) {
+        d.extendedAddress = static_cast<int>(response & 0xFF);
+    }
+    return d;
 }
 
 }  // namespace caruspex

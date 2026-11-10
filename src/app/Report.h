@@ -32,6 +32,10 @@ QString reportHtml(const VehicleState& state, const ReportExtras& extras);
 // cancelled or writing failed.
 QString saveReportPdf(QWidget* parent, const VehicleState& state, const ReportExtras& extras);
 
+// Writes the report without asking: PDF, or HTML when the path ends in
+// .html or .htm. False if the file cannot be written.
+bool writeReport(const VehicleState& state, const ReportExtras& extras, const QString& path);
+
 // The file of one garage car: checks, service plan, trips and fuel log.
 // Works without a connection.
 QString garageHtml(const struct GarageCar& car);
