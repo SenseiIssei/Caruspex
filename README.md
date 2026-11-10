@@ -12,8 +12,11 @@ check emission readiness, and talk to VW/Audi control units at the byte level ov
 
 The name comes from the *haruspex*, the Roman seer who read omens from the entrails. Caruspex reads the car's.
 
-The application is available in English and German: it follows the system language, can be switched in
-the settings, or forced per run with `--language en` / `--language de`. [Deutsche Fassung dieser Seite](README.de.md)
+The application speaks 18 languages, the interface and every fault code text alike: English, German, Spanish,
+French, Portuguese, Italian, Dutch, Polish, Czech, Russian, Ukrainian, Turkish, Arabic (right to left), Chinese,
+Japanese, Korean, Hindi and Indonesian. It follows the system language, can be switched in the settings, or
+forced per run with `--language fr` and so on. How translations are made and checked is in
+[translations/TRANSLATING.md](translations/TRANSLATING.md). [Deutsche Fassung dieser Seite](README.de.md)
 
 ![Overview with live gauges](docs/screenshot-overview.png)
 

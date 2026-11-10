@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPropertyAnimation>
+#include <QRegularExpression>
 #include <QProxyStyle>
 #include <QStyleOption>
 #include <QStyle>
@@ -195,6 +196,11 @@ void setLight(bool light) {
 }
 
 bool isLight() { return g_light; }
+
+bool spacedLetters() {
+    const Language l = language();
+    return l != Language::Hindi && l != Language::Arabic;
+}
 
 QString sansFamily() { return families().sans; }
 QString displayFamily() { return families().display; }
@@ -526,7 +532,11 @@ void apply(QApplication& app) {
     app.setPalette(palette);
 
     app.setFont(sans(14));
-    app.setStyleSheet(stylesheet());
+    QString sheet = stylesheet();
+    // Spacing between letters tears joined scripts apart (Devanagari, Arabic).
+    if (!spacedLetters()) sheet.replace(QRegularExpression(QStringLiteral("letter-spacing: *[0-9.]+px")),
+                                        QStringLiteral("letter-spacing: 0px"));
+    app.setStyleSheet(sheet);
 }
 
 void addShadow(QWidget* widget, int blur, int offsetY, double alpha) {

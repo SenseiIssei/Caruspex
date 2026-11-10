@@ -305,6 +305,7 @@ if(CARUSPEX_TESTS)
         tests/test_enet.cpp
         tests/test_obd_on_uds.cpp
         tests/test_can_signals.cpp
+        tests/test_lang.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

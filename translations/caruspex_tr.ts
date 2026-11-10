@@ -2974,7 +2974,7 @@ Kontak açık, motor kapalı. Tarama birkaç dakika sürer.</translation>
     <name>caruspex::SettingsPage</name>
     <message>
         <source>PROGRAMM</source>
-        <translation type="unfinished"></translation>
+        <translation>UYGULAMA</translation>
     </message>
     <message>
         <source>Einstellungen</source>
@@ -3022,19 +3022,19 @@ Kontak açık, motor kapalı. Tarama birkaç dakika sürer.</translation>
     </message>
     <message>
         <source>Standard (ATAT1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standart (ATAT1)</translation>
     </message>
     <message>
         <source>Schneller bei OBDLink und anderen STN-Adaptern</source>
-        <translation type="unfinished"></translation>
+        <translation>OBDLink ve diğer STN adaptörlerinde daha hızlı</translation>
     </message>
     <message>
         <source>Immer schneller (ATAT2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Her zaman daha hızlı (ATAT2)</translation>
     </message>
     <message>
         <source>Taktung</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamanlama</translation>
     </message>
     <message>
         <source>Streckt oder kürzt jede Wartezeit. Ein träger Klon braucht mehr, ein gutes FTDI-Kabel kommt mit weniger aus. Die Abstufung bleibt erhalten: Löschen darf länger dauern als eine einzelne Abfrage.</source>
@@ -3174,185 +3174,185 @@ Kontak açık, motor kapalı. Tarama birkaç dakika sürer.</translation>
     </message>
     <message>
         <source>Zusätzlich in eine Datei schreiben</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayrıca bir dosyaya yaz</translation>
     </message>
     <message>
         <source>noch keine Datei gewählt</source>
-        <translation type="unfinished"></translation>
+        <translation>henüz dosya seçilmedi</translation>
     </message>
     <message>
         <source>Wählen ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seç ...</translation>
     </message>
     <message>
         <source>Datei</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <source>Fenster und Sprache</source>
-        <translation type="unfinished"></translation>
+        <translation>Pencere ve dil</translation>
     </message>
     <message>
         <source>Größe und Position beim Beenden merken</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıkışta boyutu ve konumu hatırla</translation>
     </message>
     <message>
         <source>Wie das System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem varsayılanı</translation>
     </message>
     <message>
         <source>Sprache</source>
-        <translation type="unfinished"></translation>
+        <translation>Dil</translation>
     </message>
     <message>
         <source>Dunkel</source>
-        <translation type="unfinished"></translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <source>Hell</source>
-        <translation type="unfinished"></translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <source>Erscheinungsbild</source>
-        <translation type="unfinished"></translation>
+        <translation>Görünüm</translation>
     </message>
     <message>
         <source>Sprache und Erscheinungsbild wechseln beim nächsten Start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dil ve görünüm bir sonraki başlatmada değişir.</translation>
     </message>
     <message>
         <source>Auf Vorgabe zurücksetzen</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılanlara sıfırla</translation>
     </message>
     <message>
         <source>Ablageort öffnen</source>
-        <translation type="unfinished"></translation>
+        <translation>Depolama konumunu aç</translation>
     </message>
     <message>
         <source>Null heißt: so schnell der Adapter mitkommt. Auf der K-Line ist das ohnehin durch das Protokoll begrenzt.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıfır, adaptörün yetişebildiği kadar hızlı demektir. K-Line&apos;da protokol bunu zaten sınırlar.</translation>
     </message>
     <message>
         <source>Etwa %1 Abfragen je Sekunde. Ein sehr kleiner Wert schüttet die Oberfläche mit Signalen zu, ein großer lässt die Diagramme stocken.</source>
-        <translation type="unfinished"></translation>
+        <translation>Saniyede yaklaşık %1 istek. Çok küçük bir değer arayüzü sinyallerle boğar, büyük bir değer grafiklerin takılmasına neden olur.</translation>
     </message>
     <message>
         <source>Protokolldatei wählen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıt dosyasını seç</translation>
     </message>
     <message>
         <source>Protokolldatei (*.log *.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıt dosyası (*.log *.txt)</translation>
     </message>
 </context>
 <context>
     <name>caruspex::StatsPage</name>
     <message>
         <source>MESSEN</source>
-        <translation type="unfinished"></translation>
+        <translation>ÖLÇÜM</translation>
     </message>
     <message>
         <source>Statistik</source>
-        <translation type="unfinished"></translation>
+        <translation>İstatistikler</translation>
     </message>
     <message>
         <source>Zurücksetzen</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıfırla</translation>
     </message>
     <message>
         <source>Als CSV speichern</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV olarak kaydet</translation>
     </message>
     <message>
         <source>Messdauer</source>
-        <translation type="unfinished"></translation>
+        <translation>Süre</translation>
     </message>
     <message>
         <source>Messpunkte</source>
-        <translation type="unfinished"></translation>
+        <translation>Örnekler</translation>
     </message>
     <message>
         <source>Höchste Drehzahl</source>
-        <translation type="unfinished"></translation>
+        <translation>En yüksek motor devri</translation>
     </message>
     <message>
         <source>Höchste Geschwindigkeit</source>
-        <translation type="unfinished"></translation>
+        <translation>En yüksek hız</translation>
     </message>
     <message>
         <source>Verbrauch geschätzt</source>
-        <translation type="unfinished"></translation>
+        <translation>Tahmini yakıt tüketimi</translation>
     </message>
     <message>
         <source>Strecke seit Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıçtan beri mesafe</translation>
     </message>
     <message>
         <source>Messwert</source>
-        <translation type="unfinished"></translation>
+        <translation>Değer</translation>
     </message>
     <message>
         <source>Kleinster</source>
-        <translation type="unfinished"></translation>
+        <translation>Asgari</translation>
     </message>
     <message>
         <source>Mittel</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortalama</translation>
     </message>
     <message>
         <source>Größter</source>
-        <translation type="unfinished"></translation>
+        <translation>Azami</translation>
     </message>
     <message>
         <source>Aktuell</source>
-        <translation type="unfinished"></translation>
+        <translation>Güncel</translation>
     </message>
     <message>
         <source>Einheit</source>
-        <translation type="unfinished"></translation>
+        <translation>Birim</translation>
     </message>
     <message>
         <source>Der Verbrauch wird aus der Luftmasse gerechnet (Luftverhältnis 14,7 zu 1, Dichte 745 Gramm je Liter) und gilt so nur für Benziner. Die Strecke ergibt sich aus dem Geschwindigkeitssignal. Beides sind Schätzungen aus den Messwerten, keine Werte vom Bordcomputer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakıt tüketimi hava kütlesinden hesaplanır (hava-yakıt oranı 14,7&apos;ye 1, yoğunluk litre başına 745 gram) ve bu yüzden yalnızca benzinli motorlar için geçerlidir. Mesafe hız sinyalinden türetilir. İkisi de canlı değerlerden yapılan tahminlerdir, yolculuk bilgisayarının rakamları değildir.</translation>
     </message>
     <message>
         <source>statistik_%1.csv</source>
-        <translation type="unfinished"></translation>
+        <translation>istatistikler_%1.csv</translation>
     </message>
     <message>
         <source>Speichern</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydet</translation>
     </message>
     <message>
         <source>CSV (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV (*.csv)</translation>
     </message>
     <message>
         <source>Fehler</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata</translation>
     </message>
     <message>
         <source>Datei lässt sich nicht schreiben.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya yazılamıyor.</translation>
     </message>
     <message>
         <source>Messwert;Kleinster;Mittel;Größter;Aktuell;Einheit;Messpunkte</source>
-        <translation type="unfinished"></translation>
+        <translation>Değer;Asgari;Ortalama;Azami;Güncel;Birim;Örnekler</translation>
     </message>
 </context>
 <context>
     <name>caruspex::ThrottlePage</name>
     <message>
         <source>WERKSTATT</source>
-        <translation type="unfinished"></translation>
+        <translation>SERVİS</translation>
     </message>
     <message>
         <source>Drosselklappe anlernen</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaz Kelebeği Gövdesi Adaptasyonu</translation>
     </message>
     <message>
         <source>Zwei Wege, je nach Adapter</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptöre göre iki yol</translation>
     </message>
     <message>
         <source>Die Grundeinstellung ist keine EOBD-Funktion. Über einen ELM327-Adapter kommt man nicht daran. Mit einem KKL-Kabel (VAG 409.1) geht es, Caruspex spricht die VAG-Protokolle selbst.
@@ -3362,39 +3362,45 @@ Welches Protokoll das Steuergerät spricht, verrät es nach der Weckadresse selb
   - KWP2000, der Nachfolger. Üblich beim 1.6 FSI mit Bosch MED. Dort wird stattdessen eine andere Sitzungsart eröffnet.
 
 Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkteinspritzung. Meldet das Steuergerät, dass es den Block nicht kennt, nimm den anderen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar bir EOBD işlevi değildir. Bir ELM327 adaptörü onlara ulaşamaz. Bir KKL kablosu (VAG 409.1) ulaşabilir, çünkü Caruspex VAG protokollerini kendisi konuşur.
+
+Kontrol ünitesi hangi protokolü konuştuğunu uyandırma adresinden sonra belli eder ve Caruspex buna göre uyum sağlar:
+  - KWP1281, eski blok protokolü. Çok noktalı yakıt enjeksiyonlu 1.4&apos;te yaygındır. Temel ayarlar için özel bir komutu vardır.
+  - KWP2000, onun halefi. Bosch MED&apos;li 1.6 FSI&apos;da yaygındır. Burada bunun yerine farklı bir oturum türü açılır.
+
+Ölçüm bloğu motora bağlıdır: çok noktalı enjeksiyon için 060, doğrudan enjeksiyon için 098. Kontrol ünitesi bloğu tanımadığını bildirirse diğerini kullanın.</translation>
     </message>
     <message>
         <source>KKL-Kabel verbinden</source>
-        <translation type="unfinished"></translation>
+        <translation>KKL kablosunu bağla</translation>
     </message>
     <message>
         <source>Suchen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ara</translation>
     </message>
     <message>
         <source>Verbinden</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlan</translation>
     </message>
     <message>
         <source>Anschluss:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
     <message>
         <source>nicht verbunden</source>
-        <translation type="unfinished"></translation>
+        <translation>bağlı değil</translation>
     </message>
     <message>
         <source>Kein Anschluss</source>
-        <translation type="unfinished"></translation>
+        <translation>Port yok</translation>
     </message>
     <message>
         <source>Erst ein KKL-Kabel anstecken und auf Suchen drücken.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önce bir KKL kablosu takın ve Ara&apos;ya basın.</translation>
     </message>
     <message>
         <source>Vorher prüfen</source>
-        <translation type="unfinished"></translation>
+        <translation>Önceden kontrol edin</translation>
     </message>
     <message>
         <source>Damit das Anlernen sauber durchläuft, müssen diese Punkte stimmen:
@@ -3403,79 +3409,84 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
   - Lenkrad geradeaus, Getriebe in Leerlauf, Handbremse angezogen
   - Gaspedal nicht antippen, während die Grundeinstellung läuft
   - Fehlerspeicher vorher löschen, sonst bricht das Steuergerät ab</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptasyonun temiz çalışması için şu koşullar sağlanmalıdır:
+  - Motor çalışma sıcaklığında, soğutma suyu en az 80 derece
+  - Tüm tüketiciler kapalı: farlar, fan, klima, arka cam ısıtması
+  - Direksiyon düz, şanzıman boşta, el freni çekili
+  - Temel ayarlar çalışırken gaz pedalına dokunmayın
+  - Önce arıza belleğini silin, aksi halde kontrol ünitesi işlemi yarıda keser</translation>
     </message>
     <message>
         <source>Grundeinstellung starten</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarları başlat</translation>
     </message>
     <message>
         <source>Messwertblock 060 (Saugrohreinspritzung, z.B. 1.4 MPI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm bloğu 060 (çok noktalı enjeksiyon, örn. 1.4 MPI)</translation>
     </message>
     <message>
         <source>Messwertblock 098 (Direkteinspritzung, z.B. 1.6 FSI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm bloğu 098 (doğrudan enjeksiyon, örn. 1.6 FSI)</translation>
     </message>
     <message>
         <source>Messwertblock 001 (nur beobachten, verändert nichts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm bloğu 001 (yalnızca izleme, hiçbir şeyi değiştirmez)</translation>
     </message>
     <message>
         <source>Sitzung 0x85 (Anpassung, üblich)</source>
-        <translation type="unfinished"></translation>
+        <translation>Oturum 0x85 (adaptasyon, olağan)</translation>
     </message>
     <message>
         <source>Sitzung 0x86</source>
-        <translation type="unfinished"></translation>
+        <translation>Oturum 0x86</translation>
     </message>
     <message>
         <source>Sitzung 0x87</source>
-        <translation type="unfinished"></translation>
+        <translation>Oturum 0x87</translation>
     </message>
     <message>
         <source>Sitzung 0x89 (Diagnose, nur lesen)</source>
-        <translation type="unfinished"></translation>
+        <translation>Oturum 0x89 (teşhis, salt okunur)</translation>
     </message>
     <message>
         <source>Sitzungsart:</source>
-        <translation type="unfinished"></translation>
+        <translation>Oturum türü:</translation>
     </message>
     <message>
         <source>Steuergeräte mit KWP2000 kennen keinen eigenen Befehl für die Grundeinstellung. Stattdessen wird eine andere Sitzungsart eröffnet und derselbe Messwertblock gelesen, das Steuergerät regelt dann mit. Welche Sitzungsart es verlangt, steht in keinem öffentlichen Papier. Lehnt es die erste ab, nimm die nächste.</source>
-        <translation type="unfinished"></translation>
+        <translation>KWP2000&apos;li kontrol ünitelerinin temel ayarlar için özel bir komutu yoktur. Bunun yerine farklı bir oturum türü açılır ve aynı ölçüm bloğu okunur; ayarı sonra kontrol ünitesi yapar. Hangi oturum türünü gerektirdiği hiçbir herkese açık belgede yazmaz. İlkini reddederse bir sonrakini deneyin.</translation>
     </message>
     <message>
         <source>Klappenwinkel</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaz kelebeği açısı</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Leerlauf</source>
-        <translation type="unfinished"></translation>
+        <translation>Rölanti</translation>
     </message>
     <message>
         <source>1/min</source>
-        <translation type="unfinished"></translation>
+        <translation>Devir</translation>
     </message>
     <message>
         <source>Feld</source>
-        <translation type="unfinished"></translation>
+        <translation>Alan</translation>
     </message>
     <message>
         <source>Wert</source>
-        <translation type="unfinished"></translation>
+        <translation>Okuma</translation>
     </message>
     <message>
         <source>Einheit</source>
-        <translation type="unfinished"></translation>
+        <translation>Birim</translation>
     </message>
     <message>
         <source>Anlernversuch ohne Tester</source>
-        <translation type="unfinished"></translation>
+        <translation>Teşhis cihazı olmadan adaptasyon denemesi</translation>
     </message>
     <message>
         <source>Wenn kein KKL-Kabel da ist, klappt das bei vielen VAG-Motoren auch so. Garantiert ist es nicht.
@@ -3485,510 +3496,517 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
   3. Zündung an, 30 Sekunden warten, Motor NICHT starten. Die Klappe fährt dabei hörbar ihre Endanschläge ab
   4. Motor starten, 3 bis 5 Minuten im Leerlauf warm laufen lassen, Gaspedal nicht antippen
   5. Fehlerspeicher erneut auslesen</source>
-        <translation type="unfinished"></translation>
+        <translation>KKL kablosu olmadan bu birçok VAG motorunda yine de çalışır. Garanti değildir.
+
+  1. Arıza belleğini silin
+  2. Kontağı kapatın, aküyü 30 dakika ayırın, yeniden bağlayın
+  3. Kontağı açın, 30 saniye bekleyin, motoru ÇALIŞTIRMAYIN. Gaz kelebeği duyulur şekilde uç duraklarına gider
+  4. Motoru çalıştırın, rölantide 3 ila 5 dakika ısınmasını bekleyin, gaz pedalına dokunmayın
+  5. Arıza belleğini yeniden okuyun</translation>
     </message>
     <message>
         <source>kein Anschluss gefunden</source>
-        <translation type="unfinished"></translation>
+        <translation>port bulunamadı</translation>
     </message>
     <message>
         <source>Trennen</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantıyı kes</translation>
     </message>
     <message>
         <source>verbunden mit dem Motorsteuergerät</source>
-        <translation type="unfinished"></translation>
+        <translation>motor kontrol ünitesine bağlı</translation>
     </message>
     <message>
         <source>Grundeinstellung beenden</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarları durdur</translation>
     </message>
     <message>
         <source>Für die echte Grundeinstellung wird ein KKL-Kabel gebraucht. Ohne das Kabel bleibt nur der Anlernversuch weiter unten.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerçek temel ayarlar için KKL kablosu gerekir. Onsuz yalnızca aşağıdaki adaptasyon denemesi kalır.</translation>
     </message>
 </context>
 <context>
     <name>caruspex::TitleBar</name>
     <message>
         <source>Seitenleiste ein- oder ausklappen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenar çubuğunu genişlet veya daralt</translation>
     </message>
     <message>
         <source>Protokoll ein- oder ausblenden</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydı göster veya gizle</translation>
     </message>
     <message>
         <source>Minimieren</source>
-        <translation type="unfinished"></translation>
+        <translation>Küçült</translation>
     </message>
     <message>
         <source>Maximieren</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüt</translation>
     </message>
     <message>
         <source>Schließen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapat</translation>
     </message>
     <message>
         <source>Nicht verbunden</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlı değil</translation>
     </message>
     <message>
         <source>Verbindung öffnen</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantıyı aç</translation>
     </message>
     <message>
         <source>Wiederherstellen</source>
-        <translation type="unfinished"></translation>
+        <translation>Geri yükle</translation>
     </message>
 </context>
 <context>
     <name>caruspex::ToolsPage</name>
     <message>
         <source>DIAGNOSE</source>
-        <translation type="unfinished"></translation>
+        <translation>TEŞHİS</translation>
     </message>
     <message>
         <source>Prüfen und Werkzeuge</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontroller ve Araçlar</translation>
     </message>
     <message>
         <source>Daten vom Fahrzeug holen</source>
-        <translation type="unfinished"></translation>
+        <translation>Araçtan veri al</translation>
     </message>
     <message>
         <source>Bereitschaftstests (Abgasuntersuchung)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hazır olma monitörleri (emisyon testi)</translation>
     </message>
     <message>
         <source>Noch nichts gelesen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Henüz bir şey okunmadı.</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Test</translation>
     </message>
     <message>
         <source>Zustand</source>
-        <translation type="unfinished"></translation>
+        <translation>Durum</translation>
     </message>
     <message>
         <source>Fahrzeug und Umgebungsdaten beim Fehler</source>
-        <translation type="unfinished"></translation>
+        <translation>Araç ve dondurulmuş kare verisi</translation>
     </message>
     <message>
         <source>Fahrgestellnummer: noch nicht gelesen</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN: henüz okunmadı</translation>
     </message>
     <message>
         <source>Messwert</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametre</translation>
     </message>
     <message>
         <source>Wert</source>
-        <translation type="unfinished"></translation>
+        <translation>Değer</translation>
     </message>
     <message>
         <source>Einheit</source>
-        <translation type="unfinished"></translation>
+        <translation>Birim</translation>
     </message>
     <message>
         <source>Adapter direkt ansprechen</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptörle doğrudan konuş</translation>
     </message>
     <message>
         <source>Für Fortgeschrittene: ELM327-Befehle wie ATI, ATDP oder 0100 direkt senden.</source>
-        <translation type="unfinished"></translation>
+        <translation>İleri düzey kullanıcılar için: ATI, ATDP veya 0100 gibi ELM327 komutlarını doğrudan gönderin.</translation>
     </message>
     <message>
         <source>Senden</source>
-        <translation type="unfinished"></translation>
+        <translation>Gönder</translation>
     </message>
     <message>
         <source>bereit</source>
-        <translation type="unfinished"></translation>
+        <translation>hazır</translation>
     </message>
     <message>
         <source>noch nicht bereit</source>
-        <translation type="unfinished"></translation>
+        <translation>henüz hazır değil</translation>
     </message>
     <message>
         <source>Das Steuergerät meldet keine Bereitschaftstests.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrol ünitesi hiçbir hazır olma monitörü bildirmiyor.</translation>
     </message>
     <message>
         <source>Alle %1 Tests sind bereit. Für die Abgasuntersuchung passt das.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm %1 monitör hazır. Emisyon testi için bu yeterli.</translation>
     </message>
     <message>
         <source>%1 von %2 Tests sind bereit. Für die Abgasuntersuchung müssen alle durchlaufen sein, dafür braucht das Auto ein paar vollständige Fahrzyklen.</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 monitörden %1 tanesi hazır. Emisyon testi için hepsinin tamamlanmış olması gerekir, bu da aracın birkaç tam sürüş döngüsüne ihtiyaç duyması demektir.</translation>
     </message>
     <message>
         <source>Fahrgestellnummer: liefert das Steuergerät nicht (bei Fahrzeugen vor etwa 2003 normal)</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN: kontrol ünitesi tarafından sağlanmıyor (yaklaşık 2003 öncesi üretilen araçlarda normal)</translation>
     </message>
     <message>
         <source>Fahrgestellnummer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN: %1</translation>
     </message>
     <message>
         <source>Kein Umgebungsdatensatz gespeichert.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıtlı dondurulmuş kare yok.</translation>
     </message>
     <message>
         <source>Aufgezeichnet beim Auftreten von %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 oluştuğunda kaydedilen:</translation>
     </message>
 </context>
 <context>
     <name>caruspex::TripPage</name>
     <message>
         <source>Messen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölç</translation>
     </message>
     <message>
         <source>Bordcomputer</source>
-        <translation type="unfinished"></translation>
+        <translation>Yolculuk bilgisayarı</translation>
     </message>
     <message>
         <source>Verbrauch, Kosten und Fahrstil, auch bei Autos, die selbst keinen Bordcomputer haben. Am genauesten mit dem Kraftstoffdurchfluss, sonst aus der Luftmasse gerechnet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendi yolculuk bilgisayarı olmayan araçlarda bile tüketim, maliyet ve sürüş tarzı. Yakıt akışı sinyaliyle en doğru, aksi halde hava kütlesinden hesaplanır.</translation>
     </message>
     <message>
         <source>VERBRAUCH JETZT</source>
-        <translation type="unfinished"></translation>
+        <translation>ŞU ANKİ TÜKETİM</translation>
     </message>
     <message>
         <source>Fahrt starten</source>
-        <translation type="unfinished"></translation>
+        <translation>Yolculuğu başlat</translation>
     </message>
     <message>
         <source>Zurücksetzen</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıfırla</translation>
     </message>
     <message>
         <source>Benzin</source>
-        <translation type="unfinished"></translation>
+        <translation>Benzin</translation>
     </message>
     <message>
         <source>Diesel</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizel</translation>
     </message>
     <message>
         <source> €/l</source>
-        <translation type="unfinished"></translation>
+        <translation> €/l</translation>
     </message>
     <message>
         <source> l Hubraum</source>
-        <translation type="unfinished"></translation>
+        <translation> l motor hacmi</translation>
     </message>
     <message>
         <source>Nur nötig, wenn das Auto weder Durchfluss noch Luftmasse meldet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yalnızca araç ne yakıt akışı ne de hava kütlesi bildiriyorsa gerekir.</translation>
     </message>
     <message>
         <source>Fahrstil</source>
-        <translation type="unfinished"></translation>
+        <translation>Sürüş tarzı</translation>
     </message>
     <message>
         <source>noch keine Fahrt</source>
-        <translation type="unfinished"></translation>
+        <translation>henüz yolculuk yok</translation>
     </message>
     <message>
         <source>Strecke</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesafe</translation>
     </message>
     <message>
         <source>Verbrauch im Schnitt</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortalama tüketim</translation>
     </message>
     <message>
         <source>Kraftstoff verbraucht</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanılan yakıt</translation>
     </message>
     <message>
         <source>Kosten</source>
-        <translation type="unfinished"></translation>
+        <translation>Maliyet</translation>
     </message>
     <message>
         <source>CO₂</source>
-        <translation type="unfinished"></translation>
+        <translation>CO₂</translation>
     </message>
     <message>
         <source>Tempo im Schnitt</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortalama hız</translation>
     </message>
     <message>
         <source>Höchsttempo</source>
-        <translation type="unfinished"></translation>
+        <translation>Azami hız</translation>
     </message>
     <message>
         <source>Leerlauf</source>
-        <translation type="unfinished"></translation>
+        <translation>Rölanti</translation>
     </message>
     <message>
         <source>Fahrt anhalten</source>
-        <translation type="unfinished"></translation>
+        <translation>Yolculuğu duraklat</translation>
     </message>
     <message>
         <source>Weiterfahren</source>
-        <translation type="unfinished"></translation>
+        <translation>Devam et</translation>
     </message>
     <message>
         <source>VERBRAUCH IM STAND</source>
-        <translation type="unfinished"></translation>
+        <translation>DURUŞTA TÜKETİM</translation>
     </message>
     <message>
         <source>%1 kg gesamt</source>
-        <translation type="unfinished"></translation>
+        <translation>Toplam %1 kg</translation>
     </message>
     <message>
         <source>%1 l/h im Stand</source>
-        <translation type="unfinished"></translation>
+        <translation>Duruşta %1 l/sa</translation>
     </message>
     <message>
         <source>%1 starke Beschleunigungen</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 sert hızlanma</translation>
     </message>
 </context>
 <context>
     <name>caruspex::VehicleDiagram</name>
     <message>
         <source>Kühlung</source>
-        <translation type="unfinished"></translation>
+        <translation>Soğutma</translation>
     </message>
     <message>
         <source>Ansaugung</source>
-        <translation type="unfinished"></translation>
+        <translation>Emme</translation>
     </message>
     <message>
         <source>Drosselklappe</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaz kelebeği gövdesi</translation>
     </message>
     <message>
         <source>Motor</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor</translation>
     </message>
     <message>
         <source>Einspritzung</source>
-        <translation type="unfinished"></translation>
+        <translation>Enjeksiyon</translation>
     </message>
     <message>
         <source>Zündung</source>
-        <translation type="unfinished"></translation>
+        <translation>Ateşleme</translation>
     </message>
     <message>
         <source>Turbo</source>
-        <translation type="unfinished"></translation>
+        <translation>Turbo</translation>
     </message>
     <message>
         <source>Getriebe</source>
-        <translation type="unfinished"></translation>
+        <translation>Şanzıman</translation>
     </message>
     <message>
         <source>Bordnetz</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrik sistemi</translation>
     </message>
     <message>
         <source>Steuergerät</source>
-        <translation type="unfinished"></translation>
+        <translation>ECU</translation>
     </message>
     <message>
         <source>Abgas</source>
-        <translation type="unfinished"></translation>
+        <translation>Egzoz</translation>
     </message>
     <message>
         <source>Tank</source>
-        <translation type="unfinished"></translation>
+        <translation>Depo</translation>
     </message>
     <message>
         <source>Innenraum</source>
-        <translation type="unfinished"></translation>
+        <translation>Kabin</translation>
     </message>
     <message>
         <source>Datenbus</source>
-        <translation type="unfinished"></translation>
+        <translation>Veri yolu</translation>
     </message>
     <message>
         <source>Räder und ABS</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekerlekler ve ABS</translation>
     </message>
 </context>
 <context>
     <name>caruspex::VehicleIdentity</name>
     <message>
         <source>Baujahr %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Yıl %1</translation>
     </message>
     <message>
         <source>Caruspex Demo-Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Caruspex demo aracı</translation>
     </message>
     <message>
         <source>Baujahr 2021 · 1.4 Benziner · Automatik · simuliert</source>
-        <translation type="unfinished"></translation>
+        <translation>Yıl 2021 · 1.4 benzin · otomatik · simüle</translation>
     </message>
     <message>
         <source>vermutet</source>
-        <translation type="unfinished"></translation>
+        <translation>tahmin edilen</translation>
     </message>
     <message>
         <source>Baujahr etwa %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Yıl yaklaşık %1</translation>
     </message>
     <message>
         <source>Modell nicht eindeutig</source>
-        <translation type="unfinished"></translation>
+        <translation>Model kesin değil</translation>
     </message>
     <message>
         <source>Unbekannter Hersteller</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilinmeyen üretici</translation>
     </message>
     <message>
         <source>Die Fahrgestellnummer passt zu keinem bekannten Hersteller.</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN bilinen hiçbir üreticiyle eşleşmiyor.</translation>
     </message>
 </context>
 <context>
     <name>caruspex::VehiclesPage</name>
     <message>
         <source>Wissen</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi</translation>
     </message>
     <message>
         <source>Fahrzeuge</source>
-        <translation type="unfinished"></translation>
+        <translation>Araçlar</translation>
     </message>
     <message>
         <source>Über %1 Modellgenerationen von %2 Marken, von 1980 bis heute. Zu jeder steht, welchen Diagnosestecker sie hat, wo er sitzt und was Caruspex damit kann.</source>
-        <translation type="unfinished"></translation>
+        <translation>1980&apos;den bugüne %2 markadan %1 üzerinde model nesli. Her biri hangi teşhis konnektörüne sahip olduğunu, nerede olduğunu ve Caruspex&apos;in onunla neler yapabileceğini gösterir.</translation>
     </message>
     <message>
         <source>Fahrgestellnummer prüfen</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN kontrol et</translation>
     </message>
     <message>
         <source>Die 17 Zeichen stehen im Fahrzeugschein unter E, an der Windschutzscheibe unten links und im Motorraum.</source>
-        <translation type="unfinished"></translation>
+        <translation>17 karakter ruhsatta E bölümünün altında, ön camın sol altında ve motor bölmesinde yazar.</translation>
     </message>
     <message>
         <source>Prüfen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrol et</translation>
     </message>
     <message>
         <source>Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...</translation>
     </message>
     <message>
         <source>Baujahr</source>
-        <translation type="unfinished"></translation>
+        <translation>Yıl</translation>
     </message>
     <message>
         <source>Mit diesem Auto verbinden</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu araca bağlan</translation>
     </message>
     <message>
         <source>Beliebte Modelle, oben suchen für alle</source>
-        <translation type="unfinished"></translation>
+        <translation>Popüler modeller, hepsi için yukarıdan arayın</translation>
     </message>
     <message numerus="yes">
         <source>%n Treffer</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n eşleşme</numerusform>
+            <numerusform>%n eşleşme</numerusform>
         </translation>
     </message>
     <message>
         <source>Stecker: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnektör: %1</translation>
     </message>
     <message>
         <source>Wo er sitzt: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nerede: %1</translation>
     </message>
     <message>
         <source>Hersteller</source>
-        <translation type="unfinished"></translation>
+        <translation>Üretici</translation>
     </message>
     <message>
         <source>unbekannt</source>
-        <translation type="unfinished"></translation>
+        <translation>bilinmiyor</translation>
     </message>
     <message>
         <source>Herkunft</source>
-        <translation type="unfinished"></translation>
+        <translation>Menşei</translation>
     </message>
     <message>
         <source>Modelljahr</source>
-        <translation type="unfinished"></translation>
+        <translation>Model yılı</translation>
     </message>
     <message>
         <source>steht nicht in der Nummer</source>
-        <translation type="unfinished"></translation>
+        <translation>numarada yok</translation>
     </message>
     <message>
         <source>%1 (nicht sicher)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (kesin değil)</translation>
     </message>
     <message>
         <source>Modellcode</source>
-        <translation type="unfinished"></translation>
+        <translation>Model kodu</translation>
     </message>
     <message>
         <source>Prüfziffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrol hanesi</translation>
     </message>
     <message>
         <source>wird hier nicht verwendet</source>
-        <translation type="unfinished"></translation>
+        <translation>burada kullanılmıyor</translation>
     </message>
     <message>
         <source>stimmt</source>
-        <translation type="unfinished"></translation>
+        <translation>doğru</translation>
     </message>
     <message>
         <source>stimmt nicht, erwartet wäre %1</source>
-        <translation type="unfinished"></translation>
+        <translation>yanlış, beklenen %1</translation>
     </message>
     <message>
         <source>Seriennummer</source>
-        <translation type="unfinished"></translation>
+        <translation>Seri numarası</translation>
     </message>
     <message>
         <source>Passt zu: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eşleşmeler: %1</translation>
     </message>
     <message>
         <source>Sicherheit %1 von 100. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Güven 100 üzerinden %1. %2</translation>
     </message>
     <message>
         <source>Treffer zur Fahrgestellnummer</source>
-        <translation type="unfinished"></translation>
+        <translation>VIN için eşleşmeler</translation>
     </message>
 </context>
 <context>
     <name>caruspex::Worker</name>
     <message>
         <source>Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?</source>
-        <translation type="unfinished"></translation>
+        <translation>Port bulunamadı. Adaptör bilgisayara takılı mı ve Bluetooth adaptörü eşleştirilmiş mi?</translation>
     </message>
     <message>
         <source>Probiere %1 ...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 deneniyor ...</translation>
     </message>
     <message>
         <source>Anschluss %1 offen bei %2 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>Port %1, %2 baud ile açıldı</translation>
     </message>
     <message>
         <source>An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiçbir portta ELM327 yanıt vermedi. Kontak açık mı ve adaptör düzgün takılı mı?</translation>
     </message>
     <message>
         <source>Suche Bluetooth-Adapter ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth adaptörleri aranıyor ...</translation>
     </message>
     <message>
         <source>Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?</source>
@@ -3996,11 +4014,11 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     </message>
     <message>
         <source>Verbinde mit %1 über Bluetooth LE ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth LE üzerinden %1 adaptörüne bağlanılıyor ...</translation>
     </message>
     <message>
         <source>Kanal gefunden (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanal bulundu (%1)</translation>
     </message>
     <message>
         <source>Verbinde mit %1 über klassisches Bluetooth ...</source>
@@ -4016,203 +4034,203 @@ Der Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkte
     </message>
     <message>
         <source>Erst verbinden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önce bağlanın.</translation>
     </message>
     <message>
         <source>Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu araç CAN konuşmuyor. UDS yalnızca CAN&apos;li araçlarda vardır; eski VW ve Audi&apos;lerde kontrol üniteleri KKL kablosundan geçer.</translation>
     </message>
     <message>
         <source>Fehlerspeicher von %1 gelöscht.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 arıza belleği silindi.</translation>
     </message>
     <message>
         <source>Löschen bei %1 hat nicht geklappt: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 silinemedi: %2</translation>
     </message>
     <message>
         <source>Aufnahme lässt sich nicht öffnen: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıt açılamıyor: %1</translation>
     </message>
     <message>
         <source>Erst verbinden, dann aufzeichnen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önce bağlanın, sonra kaydedin.</translation>
     </message>
     <message>
         <source>Datei lässt sich nicht öffnen: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya açılamıyor: %1</translation>
     </message>
     <message>
         <source>Für den Adaptertest erst verbinden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptör testini çalıştırmak için önce bağlanın.</translation>
     </message>
     <message>
         <source>Fehlerspeicher gelesen: kein Eintrag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arıza belleği okundu: kayıt yok.</translation>
     </message>
     <message>
         <source>Fehlerspeicher gelesen: %1 Einträge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arıza belleği okundu: %1 kayıt.</translation>
     </message>
     <message>
         <source>Fehlerspeicher gelöscht.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arıza belleği silindi.</translation>
     </message>
     <message>
         <source>Löschen fehlgeschlagen: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Silme başarısız oldu: %1</translation>
     </message>
     <message>
         <source>Messung gestartet, %1 Werte im Umlauf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm başladı, %1 değer arasında dönülüyor.</translation>
     </message>
     <message>
         <source>Messung gestoppt.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçüm durduruldu.</translation>
     </message>
     <message>
         <source>(keine Antwort)</source>
-        <translation type="unfinished"></translation>
+        <translation>(yanıt yok)</translation>
     </message>
     <message>
         <source>Wecke das Steuergerät mit der 5-Baud-Adresse, das dauert etwa drei Sekunden ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrol ünitesi 5 baud adresiyle uyandırılıyor, bu yaklaşık üç saniye sürer ...</translation>
     </message>
     <message>
         <source>Verbunden mit %1 über %2. Vor dem Start die Punkte oben prüfen.</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 üzerinden %1 adresine bağlandı. Başlamadan önce yukarıdaki noktaları kontrol edin.</translation>
     </message>
     <message>
         <source>KWP1281 verbunden: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>KWP1281 bağlandı: %1</translation>
     </message>
     <message>
         <source>Erst das KKL-Kabel verbinden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önce KKL kablosunu bağlayın.</translation>
     </message>
     <message>
         <source>Grundeinstellung im Messwertblock %1 läuft. Gaspedal nicht antippen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar ölçüm bloğu %1&apos;de çalışıyor. Gaz pedalına dokunmayın.</translation>
     </message>
     <message>
         <source>Grundeinstellung Block %1 gestartet</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar bloğu %1 başladı</translation>
     </message>
     <message>
         <source>Grundeinstellung beendet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar bitti.</translation>
     </message>
     <message>
         <source>Grundeinstellung beendet</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar bitti</translation>
     </message>
     <message>
         <source>Feld %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Alan %1: %2</translation>
     </message>
     <message>
         <source>meldet sich nicht, vermutlich nicht verbaut</source>
-        <translation type="unfinished"></translation>
+        <translation>yanıt vermiyor, muhtemelen takılı değil</translation>
     </message>
     <message>
         <source>sporadisch</source>
-        <translation type="unfinished"></translation>
+        <translation>kesintili</translation>
     </message>
     <message>
         <source>gespeichert</source>
-        <translation type="unfinished"></translation>
+        <translation>kayıtlı</translation>
     </message>
     <message>
         <source>kein Eintrag</source>
-        <translation type="unfinished"></translation>
+        <translation>kayıt yok</translation>
     </message>
     <message>
         <source>%1 Einträge</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kayıt</translation>
     </message>
     <message>
         <source>%1: lösche, Versuch %2 von %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: siliniyor, deneme %2 / %3</translation>
     </message>
     <message>
         <source>   abgelehnt: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>   reddedildi: %1</translation>
     </message>
     <message>
         <source>gelöscht</source>
-        <translation type="unfinished"></translation>
+        <translation>silindi</translation>
     </message>
     <message>
         <source>   %1: leer</source>
-        <translation type="unfinished"></translation>
+        <translation>   %1: boş</translation>
     </message>
     <message>
         <source>%1 Einträge, Löschen ohne Wirkung</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kayıt, silmenin etkisi olmadı</translation>
     </message>
     <message>
         <source>   %1: bleibt bestehen, die Ursache ist noch da</source>
-        <translation type="unfinished"></translation>
+        <translation>   %1: duruyor, neden hâlâ mevcut</translation>
     </message>
     <message>
         <source>Nicht verbunden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlı değil.</translation>
     </message>
     <message>
         <source>Versuch %1 von %2 ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Deneme %1 / %2 ...</translation>
     </message>
     <message>
         <source>   Steuergerät quittiert nicht: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>   Kontrol ünitesi onaylamıyor: %1</translation>
     </message>
     <message>
         <source>   Speicher ist leer.</source>
-        <translation type="unfinished"></translation>
+        <translation>   Bellek boş.</translation>
     </message>
     <message>
         <source>   noch %1 Einträge</source>
-        <translation type="unfinished"></translation>
+        <translation>   %1 kayıt kaldı</translation>
     </message>
     <message>
         <source>   Verbindung wird neu aufgebaut ...</source>
-        <translation type="unfinished"></translation>
+        <translation>   Bağlantı yeniden kuruluyor ...</translation>
     </message>
     <message>
         <source>Sitzungsart für die Grundeinstellung: 0x%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Temel ayarlar için oturum türü: 0x%1</translation>
     </message>
     <message>
         <source>Anpassungskanal %1 steht auf %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptasyon kanalı %1, %2 olarak ayarlandı.</translation>
     </message>
     <message>
         <source>Für den Gesundheitscheck erst verbinden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sağlık kontrolünü çalıştırmak için önce bağlanın.</translation>
     </message>
     <message>
         <source>Bereitschaft und Fehlerlampe</source>
-        <translation type="unfinished"></translation>
+        <translation>Hazır olma ve motor arıza lambası</translation>
     </message>
     <message>
         <source>Fehlerspeicher</source>
-        <translation type="unfinished"></translation>
+        <translation>Arıza belleği</translation>
     </message>
     <message>
         <source>Bauteilprüfung (Modus 06)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bileşen izleme (mod 06)</translation>
     </message>
     <message>
         <source>Messwerte sammeln, noch %1 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Değerler toplanıyor, %1 sn kaldı</translation>
     </message>
     <message>
         <source>Fertig</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamam</translation>
     </message>
     <message>
         <source>Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bileşen izleme okundu: %1 test, %2 O2 sensörü testi.</translation>
     </message>
 </context>
 <context>

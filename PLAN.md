@@ -120,7 +120,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [x] Installer aus der CI: Windows (Inno Setup, dazu ein Zip), macOS dmg, Linux AppImage. `tools/package.sh` baut sie, `tools/smoke_test.sh` installiert, startet und entfernt sie in jedem CI-Lauf. Eigenes Programmsymbol (`src/app/AppIcon.cpp`, `tools/gen_icons.py`), Versionsangaben in der exe
 - [x] Releases per Tag mit Änderungsliste auf Deutsch und Englisch (`changelog/<version>.md`, Job `release` in der CI). Getaggt und gepusht wird erst nach Jakobs Ja
 - [ ] Windows-Programm signieren. Mittel, hängt an einem Zertifikat
-- [ ] Mehr Sprachen. Der Kern kennt heute nur Deutsch und Englisch (Text{de, en}), das bräuchte einen Umbau auf Schlüssel und Kataloge. Groß
+- [x] Mehr Sprachen: 18 Sprachen für Oberfläche und Kern. Deutsch und Englisch bleiben im Code, alle anderen kommen aus Katalogen (`translations/<code>/`, Schlüssel ist der englische Text, Rückfall Englisch). `tools/i18n_extract.py` sammelt, `tools/gen_i18n.py` prüft Platzhalter, Zeilenumbrüche und Gedankenstriche und baut Katalog und Qt-Dateien. Arabisch von rechts nach links, feste Schrift je Schriftsystem. Neue Texte: extrahieren, nachübersetzen, einbauen (`translations/TRANSLATING.md`)
 
 ## Phase 12: Alle Marken, alle Wege ins Auto
 
