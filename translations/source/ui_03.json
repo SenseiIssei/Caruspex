@@ -1,0 +1,1755 @@
+[
+ {
+  "id": "u750",
+  "context": "caruspex::SettingsPage",
+  "de": "Zusätzlich in eine Datei schreiben",
+  "en": "Also write to a file",
+  "plural": false
+ },
+ {
+  "id": "u751",
+  "context": "caruspex::SettingsPage",
+  "de": "noch keine Datei gewählt",
+  "en": "no file selected yet",
+  "plural": false
+ },
+ {
+  "id": "u752",
+  "context": "caruspex::SettingsPage",
+  "de": "Wählen ...",
+  "en": "Choose ...",
+  "plural": false
+ },
+ {
+  "id": "u753",
+  "context": "caruspex::SettingsPage",
+  "de": "Datei",
+  "en": "File",
+  "plural": false
+ },
+ {
+  "id": "u754",
+  "context": "caruspex::SettingsPage",
+  "de": "Fenster und Sprache",
+  "en": "Window and language",
+  "plural": false
+ },
+ {
+  "id": "u755",
+  "context": "caruspex::SettingsPage",
+  "de": "Größe und Position beim Beenden merken",
+  "en": "Remember size and position on exit",
+  "plural": false
+ },
+ {
+  "id": "u756",
+  "context": "caruspex::SettingsPage",
+  "de": "Wie das System",
+  "en": "System default",
+  "plural": false
+ },
+ {
+  "id": "u757",
+  "context": "caruspex::SettingsPage",
+  "de": "Sprache",
+  "en": "Language",
+  "plural": false
+ },
+ {
+  "id": "u758",
+  "context": "caruspex::SettingsPage",
+  "de": "Auf Vorgabe zurücksetzen",
+  "en": "Reset to defaults",
+  "plural": false
+ },
+ {
+  "id": "u759",
+  "context": "caruspex::SettingsPage",
+  "de": "Ablageort öffnen",
+  "en": "Open storage location",
+  "plural": false
+ },
+ {
+  "id": "u760",
+  "context": "caruspex::SettingsPage",
+  "de": "Null heißt: so schnell der Adapter mitkommt. Auf der K-Line ist das ohnehin durch das Protokoll begrenzt.",
+  "en": "Zero means as fast as the adapter can keep up. On the K-Line the protocol limits this anyway.",
+  "plural": false
+ },
+ {
+  "id": "u761",
+  "context": "caruspex::SettingsPage",
+  "de": "Etwa %1 Abfragen je Sekunde. Ein sehr kleiner Wert schüttet die Oberfläche mit Signalen zu, ein großer lässt die Diagramme stocken.",
+  "en": "About %1 requests per second. A very small value floods the UI with signals, a large one makes the charts stutter.",
+  "plural": false
+ },
+ {
+  "id": "u762",
+  "context": "caruspex::SettingsPage",
+  "de": "Protokolldatei wählen",
+  "en": "Choose log file",
+  "plural": false
+ },
+ {
+  "id": "u763",
+  "context": "caruspex::SettingsPage",
+  "de": "Protokolldatei (*.log *.txt)",
+  "en": "Log file (*.log *.txt)",
+  "plural": false
+ },
+ {
+  "id": "u764",
+  "context": "caruspex::SettingsPage",
+  "de": "PROGRAMM",
+  "en": "APP",
+  "plural": false
+ },
+ {
+  "id": "u765",
+  "context": "caruspex::SettingsPage",
+  "de": "Dunkel",
+  "en": "Dark",
+  "plural": false
+ },
+ {
+  "id": "u766",
+  "context": "caruspex::SettingsPage",
+  "de": "Hell",
+  "en": "Light",
+  "plural": false
+ },
+ {
+  "id": "u767",
+  "context": "caruspex::SettingsPage",
+  "de": "Erscheinungsbild",
+  "en": "Appearance",
+  "plural": false
+ },
+ {
+  "id": "u768",
+  "context": "caruspex::SettingsPage",
+  "de": "Sprache und Erscheinungsbild wechseln beim nächsten Start.",
+  "en": "Language and appearance change on the next start.",
+  "plural": false
+ },
+ {
+  "id": "u769",
+  "context": "caruspex::SettingsPage",
+  "de": "Standard (ATAT1)",
+  "en": "Standard (ATAT1)",
+  "plural": false
+ },
+ {
+  "id": "u770",
+  "context": "caruspex::SettingsPage",
+  "de": "Schneller bei OBDLink und anderen STN-Adaptern",
+  "en": "Faster on OBDLink and other STN adapters",
+  "plural": false
+ },
+ {
+  "id": "u771",
+  "context": "caruspex::SettingsPage",
+  "de": "Immer schneller (ATAT2)",
+  "en": "Always faster (ATAT2)",
+  "plural": false
+ },
+ {
+  "id": "u772",
+  "context": "caruspex::SettingsPage",
+  "de": "Taktung",
+  "en": "Timing",
+  "plural": false
+ },
+ {
+  "id": "u773",
+  "context": "caruspex::StatsPage",
+  "de": "Statistik",
+  "en": "Statistics",
+  "plural": false
+ },
+ {
+  "id": "u774",
+  "context": "caruspex::StatsPage",
+  "de": "Zurücksetzen",
+  "en": "Reset",
+  "plural": false
+ },
+ {
+  "id": "u775",
+  "context": "caruspex::StatsPage",
+  "de": "Als CSV speichern",
+  "en": "Save as CSV",
+  "plural": false
+ },
+ {
+  "id": "u776",
+  "context": "caruspex::StatsPage",
+  "de": "Messdauer",
+  "en": "Duration",
+  "plural": false
+ },
+ {
+  "id": "u777",
+  "context": "caruspex::StatsPage",
+  "de": "Messpunkte",
+  "en": "Samples",
+  "plural": false
+ },
+ {
+  "id": "u778",
+  "context": "caruspex::StatsPage",
+  "de": "Höchste Drehzahl",
+  "en": "Highest engine speed",
+  "plural": false
+ },
+ {
+  "id": "u779",
+  "context": "caruspex::StatsPage",
+  "de": "Höchste Geschwindigkeit",
+  "en": "Highest speed",
+  "plural": false
+ },
+ {
+  "id": "u780",
+  "context": "caruspex::StatsPage",
+  "de": "Verbrauch geschätzt",
+  "en": "Estimated fuel consumption",
+  "plural": false
+ },
+ {
+  "id": "u781",
+  "context": "caruspex::StatsPage",
+  "de": "Strecke seit Start",
+  "en": "Distance since start",
+  "plural": false
+ },
+ {
+  "id": "u782",
+  "context": "caruspex::StatsPage",
+  "de": "Messwert",
+  "en": "Value",
+  "plural": false
+ },
+ {
+  "id": "u783",
+  "context": "caruspex::StatsPage",
+  "de": "Kleinster",
+  "en": "Minimum",
+  "plural": false
+ },
+ {
+  "id": "u784",
+  "context": "caruspex::StatsPage",
+  "de": "Mittel",
+  "en": "Average",
+  "plural": false
+ },
+ {
+  "id": "u785",
+  "context": "caruspex::StatsPage",
+  "de": "Größter",
+  "en": "Maximum",
+  "plural": false
+ },
+ {
+  "id": "u786",
+  "context": "caruspex::StatsPage",
+  "de": "Aktuell",
+  "en": "Current",
+  "plural": false
+ },
+ {
+  "id": "u787",
+  "context": "caruspex::StatsPage",
+  "de": "Einheit",
+  "en": "Unit",
+  "plural": false
+ },
+ {
+  "id": "u788",
+  "context": "caruspex::StatsPage",
+  "de": "Der Verbrauch wird aus der Luftmasse gerechnet (Luftverhältnis 14,7 zu 1, Dichte 745 Gramm je Liter) und gilt so nur für Benziner. Die Strecke ergibt sich aus dem Geschwindigkeitssignal. Beides sind Schätzungen aus den Messwerten, keine Werte vom Bordcomputer.",
+  "en": "Fuel consumption is calculated from the air mass (air-fuel ratio 14.7 to 1, density 745 grams per litre) and is therefore only valid for petrol engines. The distance is derived from the speed signal. Both are estimates from the live values, not figures from the trip computer.",
+  "plural": false
+ },
+ {
+  "id": "u789",
+  "context": "caruspex::StatsPage",
+  "de": "Speichern",
+  "en": "Save",
+  "plural": false
+ },
+ {
+  "id": "u790",
+  "context": "caruspex::StatsPage",
+  "de": "CSV (*.csv)",
+  "en": "CSV (*.csv)",
+  "plural": false
+ },
+ {
+  "id": "u791",
+  "context": "caruspex::StatsPage",
+  "de": "Fehler",
+  "en": "Error",
+  "plural": false
+ },
+ {
+  "id": "u792",
+  "context": "caruspex::StatsPage",
+  "de": "Datei lässt sich nicht schreiben.",
+  "en": "The file cannot be written.",
+  "plural": false
+ },
+ {
+  "id": "u793",
+  "context": "caruspex::StatsPage",
+  "de": "statistik_%1.csv",
+  "en": "statistics_%1.csv",
+  "plural": false
+ },
+ {
+  "id": "u794",
+  "context": "caruspex::StatsPage",
+  "de": "Messwert;Kleinster;Mittel;Größter;Aktuell;Einheit;Messpunkte",
+  "en": "Value;Minimum;Average;Maximum;Current;Unit;Samples",
+  "plural": false
+ },
+ {
+  "id": "u795",
+  "context": "caruspex::StatsPage",
+  "de": "MESSEN",
+  "en": "MEASURE",
+  "plural": false
+ },
+ {
+  "id": "u796",
+  "context": "caruspex::ThrottlePage",
+  "de": "Drosselklappe anlernen",
+  "en": "Throttle Body Adaptation",
+  "plural": false
+ },
+ {
+  "id": "u797",
+  "context": "caruspex::ThrottlePage",
+  "de": "Zwei Wege, je nach Adapter",
+  "en": "Two ways, depending on the adapter",
+  "plural": false
+ },
+ {
+  "id": "u798",
+  "context": "caruspex::ThrottlePage",
+  "de": "Die Grundeinstellung ist keine EOBD-Funktion. Über einen ELM327-Adapter kommt man nicht daran. Mit einem KKL-Kabel (VAG 409.1) geht es, Caruspex spricht die VAG-Protokolle selbst.\n\nWelches Protokoll das Steuergerät spricht, verrät es nach der Weckadresse selbst, und Caruspex richtet sich danach:\n  - KWP1281, das alte Blockprotokoll. Üblich beim 1.4 mit Saugrohreinspritzung. Dort gibt es einen eigenen Befehl für die Grundeinstellung.\n  - KWP2000, der Nachfolger. Üblich beim 1.6 FSI mit Bosch MED. Dort wird stattdessen eine andere Sitzungsart eröffnet.\n\nDer Messwertblock hängt am Motor: 060 bei Saugrohreinspritzung, 098 bei Direkteinspritzung. Meldet das Steuergerät, dass es den Block nicht kennt, nimm den anderen.",
+  "en": "Basic settings are not an EOBD function. An ELM327 adapter cannot reach them. A KKL cable (VAG 409.1) can, since Caruspex speaks the VAG protocols itself.\n\nThe control unit reveals which protocol it speaks after the wake-up address, and Caruspex adapts accordingly:\n  - KWP1281, the old block protocol. Common on the 1.4 with port fuel injection. It has a dedicated command for basic settings.\n  - KWP2000, its successor. Common on the 1.6 FSI with Bosch MED. Here a different session type is opened instead.\n\nThe measuring block depends on the engine: 060 for port fuel injection, 098 for direct injection. If the control unit reports that it does not know the block, use the other one.",
+  "plural": false
+ },
+ {
+  "id": "u799",
+  "context": "caruspex::ThrottlePage",
+  "de": "KKL-Kabel verbinden",
+  "en": "Connect KKL cable",
+  "plural": false
+ },
+ {
+  "id": "u800",
+  "context": "caruspex::ThrottlePage",
+  "de": "Suchen",
+  "en": "Search",
+  "plural": false
+ },
+ {
+  "id": "u801",
+  "context": "caruspex::ThrottlePage",
+  "de": "Verbinden",
+  "en": "Connect",
+  "plural": false
+ },
+ {
+  "id": "u802",
+  "context": "caruspex::ThrottlePage",
+  "de": "Anschluss:",
+  "en": "Port:",
+  "plural": false
+ },
+ {
+  "id": "u803",
+  "context": "caruspex::ThrottlePage",
+  "de": "nicht verbunden",
+  "en": "not connected",
+  "plural": false
+ },
+ {
+  "id": "u804",
+  "context": "caruspex::ThrottlePage",
+  "de": "Kein Anschluss",
+  "en": "No port",
+  "plural": false
+ },
+ {
+  "id": "u805",
+  "context": "caruspex::ThrottlePage",
+  "de": "Vorher prüfen",
+  "en": "Check beforehand",
+  "plural": false
+ },
+ {
+  "id": "u806",
+  "context": "caruspex::ThrottlePage",
+  "de": "Damit das Anlernen sauber durchläuft, müssen diese Punkte stimmen:\n  - Motor betriebswarm, mindestens 80 Grad Kühlmitteltemperatur\n  - Alle Verbraucher aus: Licht, Gebläse, Klima, Heckscheibe\n  - Lenkrad geradeaus, Getriebe in Leerlauf, Handbremse angezogen\n  - Gaspedal nicht antippen, während die Grundeinstellung läuft\n  - Fehlerspeicher vorher löschen, sonst bricht das Steuergerät ab",
+  "en": "For the adaptation to run cleanly, these conditions must be met:\n  - Engine at operating temperature, coolant at least 80 degrees\n  - All consumers off: lights, blower, air conditioning, rear window heater\n  - Steering wheel straight, transmission in neutral, handbrake applied\n  - Do not touch the accelerator pedal while basic settings are running\n  - Clear the fault memory first, otherwise the control unit aborts",
+  "plural": false
+ },
+ {
+  "id": "u807",
+  "context": "caruspex::ThrottlePage",
+  "de": "Grundeinstellung starten",
+  "en": "Start basic settings",
+  "plural": false
+ },
+ {
+  "id": "u808",
+  "context": "caruspex::ThrottlePage",
+  "de": "Messwertblock 060 (Saugrohreinspritzung, z.B. 1.4 MPI)",
+  "en": "Measuring block 060 (port fuel injection, e.g. 1.4 MPI)",
+  "plural": false
+ },
+ {
+  "id": "u809",
+  "context": "caruspex::ThrottlePage",
+  "de": "Messwertblock 098 (Direkteinspritzung, z.B. 1.6 FSI)",
+  "en": "Measuring block 098 (direct injection, e.g. 1.6 FSI)",
+  "plural": false
+ },
+ {
+  "id": "u810",
+  "context": "caruspex::ThrottlePage",
+  "de": "Messwertblock 001 (nur beobachten, verändert nichts)",
+  "en": "Measuring block 001 (observe only, changes nothing)",
+  "plural": false
+ },
+ {
+  "id": "u811",
+  "context": "caruspex::ThrottlePage",
+  "de": "Sitzung 0x85 (Anpassung, üblich)",
+  "en": "Session 0x85 (adaptation, usual)",
+  "plural": false
+ },
+ {
+  "id": "u812",
+  "context": "caruspex::ThrottlePage",
+  "de": "Sitzung 0x86",
+  "en": "Session 0x86",
+  "plural": false
+ },
+ {
+  "id": "u813",
+  "context": "caruspex::ThrottlePage",
+  "de": "Sitzung 0x87",
+  "en": "Session 0x87",
+  "plural": false
+ },
+ {
+  "id": "u814",
+  "context": "caruspex::ThrottlePage",
+  "de": "Sitzung 0x89 (Diagnose, nur lesen)",
+  "en": "Session 0x89 (diagnostics, read only)",
+  "plural": false
+ },
+ {
+  "id": "u815",
+  "context": "caruspex::ThrottlePage",
+  "de": "Sitzungsart:",
+  "en": "Session type:",
+  "plural": false
+ },
+ {
+  "id": "u816",
+  "context": "caruspex::ThrottlePage",
+  "de": "Steuergeräte mit KWP2000 kennen keinen eigenen Befehl für die Grundeinstellung. Stattdessen wird eine andere Sitzungsart eröffnet und derselbe Messwertblock gelesen, das Steuergerät regelt dann mit. Welche Sitzungsart es verlangt, steht in keinem öffentlichen Papier. Lehnt es die erste ab, nimm die nächste.",
+  "en": "Control units with KWP2000 have no dedicated command for basic settings. Instead, a different session type is opened and the same measuring block is read; the control unit then performs the adjustment. Which session type it requires is not in any public document. If it refuses the first one, try the next.",
+  "plural": false
+ },
+ {
+  "id": "u817",
+  "context": "caruspex::ThrottlePage",
+  "de": "Klappenwinkel",
+  "en": "Throttle angle",
+  "plural": false
+ },
+ {
+  "id": "u818",
+  "context": "caruspex::ThrottlePage",
+  "de": "%",
+  "en": "%",
+  "plural": false
+ },
+ {
+  "id": "u819",
+  "context": "caruspex::ThrottlePage",
+  "de": "Leerlauf",
+  "en": "Idle",
+  "plural": false
+ },
+ {
+  "id": "u820",
+  "context": "caruspex::ThrottlePage",
+  "de": "1/min",
+  "en": "RPM",
+  "plural": false
+ },
+ {
+  "id": "u821",
+  "context": "caruspex::ThrottlePage",
+  "de": "Feld",
+  "en": "Field",
+  "plural": false
+ },
+ {
+  "id": "u822",
+  "context": "caruspex::ThrottlePage",
+  "de": "Wert",
+  "en": "Reading",
+  "plural": false
+ },
+ {
+  "id": "u823",
+  "context": "caruspex::ThrottlePage",
+  "de": "Einheit",
+  "en": "Unit",
+  "plural": false
+ },
+ {
+  "id": "u824",
+  "context": "caruspex::ThrottlePage",
+  "de": "Anlernversuch ohne Tester",
+  "en": "Adaptation attempt without a scan tool",
+  "plural": false
+ },
+ {
+  "id": "u825",
+  "context": "caruspex::ThrottlePage",
+  "de": "Wenn kein KKL-Kabel da ist, klappt das bei vielen VAG-Motoren auch so. Garantiert ist es nicht.\n\n  1. Fehlerspeicher löschen\n  2. Zündung aus, Batterie 30 Minuten abklemmen, wieder anklemmen\n  3. Zündung an, 30 Sekunden warten, Motor NICHT starten. Die Klappe fährt dabei hörbar ihre Endanschläge ab\n  4. Motor starten, 3 bis 5 Minuten im Leerlauf warm laufen lassen, Gaspedal nicht antippen\n  5. Fehlerspeicher erneut auslesen",
+  "en": "Without a KKL cable this works on many VAG engines anyway. It is not guaranteed.\n\n  1. Clear the fault memory\n  2. Ignition off, disconnect the battery for 30 minutes, reconnect it\n  3. Ignition on, wait 30 seconds, do NOT start the engine. The throttle audibly moves to its end stops\n  4. Start the engine, let it warm up at idle for 3 to 5 minutes, do not touch the accelerator pedal\n  5. Read the fault memory again",
+  "plural": false
+ },
+ {
+  "id": "u826",
+  "context": "caruspex::ThrottlePage",
+  "de": "kein Anschluss gefunden",
+  "en": "no port found",
+  "plural": false
+ },
+ {
+  "id": "u827",
+  "context": "caruspex::ThrottlePage",
+  "de": "Trennen",
+  "en": "Disconnect",
+  "plural": false
+ },
+ {
+  "id": "u828",
+  "context": "caruspex::ThrottlePage",
+  "de": "verbunden mit dem Motorsteuergerät",
+  "en": "connected to the engine control unit",
+  "plural": false
+ },
+ {
+  "id": "u829",
+  "context": "caruspex::ThrottlePage",
+  "de": "Grundeinstellung beenden",
+  "en": "Stop basic settings",
+  "plural": false
+ },
+ {
+  "id": "u830",
+  "context": "caruspex::ThrottlePage",
+  "de": "Für die echte Grundeinstellung wird ein KKL-Kabel gebraucht. Ohne das Kabel bleibt nur der Anlernversuch weiter unten.",
+  "en": "Real basic settings require a KKL cable. Without it, only the adaptation attempt further down remains.",
+  "plural": false
+ },
+ {
+  "id": "u831",
+  "context": "caruspex::ThrottlePage",
+  "de": "Erst ein KKL-Kabel anstecken und auf Suchen drücken.",
+  "en": "Plug in a KKL cable first and press Search.",
+  "plural": false
+ },
+ {
+  "id": "u832",
+  "context": "caruspex::ThrottlePage",
+  "de": "WERKSTATT",
+  "en": "WORKSHOP",
+  "plural": false
+ },
+ {
+  "id": "u833",
+  "context": "caruspex::TitleBar",
+  "de": "Minimieren",
+  "en": "Minimise",
+  "plural": false
+ },
+ {
+  "id": "u834",
+  "context": "caruspex::TitleBar",
+  "de": "Maximieren",
+  "en": "Maximise",
+  "plural": false
+ },
+ {
+  "id": "u835",
+  "context": "caruspex::TitleBar",
+  "de": "Schließen",
+  "en": "Close",
+  "plural": false
+ },
+ {
+  "id": "u836",
+  "context": "caruspex::TitleBar",
+  "de": "Wiederherstellen",
+  "en": "Restore",
+  "plural": false
+ },
+ {
+  "id": "u837",
+  "context": "caruspex::TitleBar",
+  "de": "Seitenleiste ein- oder ausklappen",
+  "en": "Expand or collapse the sidebar",
+  "plural": false
+ },
+ {
+  "id": "u838",
+  "context": "caruspex::TitleBar",
+  "de": "Protokoll ein- oder ausblenden",
+  "en": "Show or hide the log",
+  "plural": false
+ },
+ {
+  "id": "u839",
+  "context": "caruspex::TitleBar",
+  "de": "Nicht verbunden",
+  "en": "Not connected",
+  "plural": false
+ },
+ {
+  "id": "u840",
+  "context": "caruspex::TitleBar",
+  "de": "Verbindung öffnen",
+  "en": "Open connection",
+  "plural": false
+ },
+ {
+  "id": "u841",
+  "context": "caruspex::ToolsPage",
+  "de": "Prüfen und Werkzeuge",
+  "en": "Checks and Tools",
+  "plural": false
+ },
+ {
+  "id": "u842",
+  "context": "caruspex::ToolsPage",
+  "de": "Daten vom Fahrzeug holen",
+  "en": "Fetch data from vehicle",
+  "plural": false
+ },
+ {
+  "id": "u843",
+  "context": "caruspex::ToolsPage",
+  "de": "Bereitschaftstests (Abgasuntersuchung)",
+  "en": "Readiness monitors (emissions test)",
+  "plural": false
+ },
+ {
+  "id": "u844",
+  "context": "caruspex::ToolsPage",
+  "de": "Noch nichts gelesen.",
+  "en": "Nothing read yet.",
+  "plural": false
+ },
+ {
+  "id": "u845",
+  "context": "caruspex::ToolsPage",
+  "de": "Test",
+  "en": "Test",
+  "plural": false
+ },
+ {
+  "id": "u846",
+  "context": "caruspex::ToolsPage",
+  "de": "Zustand",
+  "en": "Status",
+  "plural": false
+ },
+ {
+  "id": "u847",
+  "context": "caruspex::ToolsPage",
+  "de": "Fahrzeug und Umgebungsdaten beim Fehler",
+  "en": "Vehicle and freeze frame data",
+  "plural": false
+ },
+ {
+  "id": "u848",
+  "context": "caruspex::ToolsPage",
+  "de": "Fahrgestellnummer: noch nicht gelesen",
+  "en": "VIN: not read yet",
+  "plural": false
+ },
+ {
+  "id": "u849",
+  "context": "caruspex::ToolsPage",
+  "de": "Messwert",
+  "en": "Parameter",
+  "plural": false
+ },
+ {
+  "id": "u850",
+  "context": "caruspex::ToolsPage",
+  "de": "Wert",
+  "en": "Value",
+  "plural": false
+ },
+ {
+  "id": "u851",
+  "context": "caruspex::ToolsPage",
+  "de": "Einheit",
+  "en": "Unit",
+  "plural": false
+ },
+ {
+  "id": "u852",
+  "context": "caruspex::ToolsPage",
+  "de": "Adapter direkt ansprechen",
+  "en": "Talk to the adapter directly",
+  "plural": false
+ },
+ {
+  "id": "u853",
+  "context": "caruspex::ToolsPage",
+  "de": "Für Fortgeschrittene: ELM327-Befehle wie ATI, ATDP oder 0100 direkt senden.",
+  "en": "For advanced users: send ELM327 commands such as ATI, ATDP or 0100 directly.",
+  "plural": false
+ },
+ {
+  "id": "u854",
+  "context": "caruspex::ToolsPage",
+  "de": "Senden",
+  "en": "Send",
+  "plural": false
+ },
+ {
+  "id": "u855",
+  "context": "caruspex::ToolsPage",
+  "de": "bereit",
+  "en": "ready",
+  "plural": false
+ },
+ {
+  "id": "u856",
+  "context": "caruspex::ToolsPage",
+  "de": "noch nicht bereit",
+  "en": "not ready yet",
+  "plural": false
+ },
+ {
+  "id": "u857",
+  "context": "caruspex::ToolsPage",
+  "de": "Das Steuergerät meldet keine Bereitschaftstests.",
+  "en": "The control unit reports no readiness monitors.",
+  "plural": false
+ },
+ {
+  "id": "u858",
+  "context": "caruspex::ToolsPage",
+  "de": "Alle %1 Tests sind bereit. Für die Abgasuntersuchung passt das.",
+  "en": "All %1 monitors are ready. That is fine for the emissions test.",
+  "plural": false
+ },
+ {
+  "id": "u859",
+  "context": "caruspex::ToolsPage",
+  "de": "%1 von %2 Tests sind bereit. Für die Abgasuntersuchung müssen alle durchlaufen sein, dafür braucht das Auto ein paar vollständige Fahrzyklen.",
+  "en": "%1 of %2 monitors are ready. For the emissions test all of them must have completed, which takes the car a few complete drive cycles.",
+  "plural": false
+ },
+ {
+  "id": "u860",
+  "context": "caruspex::ToolsPage",
+  "de": "Fahrgestellnummer: liefert das Steuergerät nicht (bei Fahrzeugen vor etwa 2003 normal)",
+  "en": "VIN: not provided by the control unit (normal for vehicles built before about 2003)",
+  "plural": false
+ },
+ {
+  "id": "u861",
+  "context": "caruspex::ToolsPage",
+  "de": "Fahrgestellnummer: %1",
+  "en": "VIN: %1",
+  "plural": false
+ },
+ {
+  "id": "u862",
+  "context": "caruspex::ToolsPage",
+  "de": "Kein Umgebungsdatensatz gespeichert.",
+  "en": "No freeze frame stored.",
+  "plural": false
+ },
+ {
+  "id": "u863",
+  "context": "caruspex::ToolsPage",
+  "de": "Aufgezeichnet beim Auftreten von %1:",
+  "en": "Recorded when %1 occurred:",
+  "plural": false
+ },
+ {
+  "id": "u864",
+  "context": "caruspex::ToolsPage",
+  "de": "DIAGNOSE",
+  "en": "DIAGNOSTICS",
+  "plural": false
+ },
+ {
+  "id": "u865",
+  "context": "caruspex::TripPage",
+  "de": "Messen",
+  "en": "Measure",
+  "plural": false
+ },
+ {
+  "id": "u866",
+  "context": "caruspex::TripPage",
+  "de": "Bordcomputer",
+  "en": "Trip computer",
+  "plural": false
+ },
+ {
+  "id": "u867",
+  "context": "caruspex::TripPage",
+  "de": "Verbrauch, Kosten und Fahrstil, auch bei Autos, die selbst keinen Bordcomputer haben. Am genauesten mit dem Kraftstoffdurchfluss, sonst aus der Luftmasse gerechnet.",
+  "en": "Consumption, cost and driving style, even on cars that have no trip computer of their own. Most accurate with the fuel flow signal, otherwise calculated from the air mass.",
+  "plural": false
+ },
+ {
+  "id": "u868",
+  "context": "caruspex::TripPage",
+  "de": "VERBRAUCH JETZT",
+  "en": "CONSUMPTION NOW",
+  "plural": false
+ },
+ {
+  "id": "u869",
+  "context": "caruspex::TripPage",
+  "de": "Fahrt starten",
+  "en": "Start trip",
+  "plural": false
+ },
+ {
+  "id": "u870",
+  "context": "caruspex::TripPage",
+  "de": "Zurücksetzen",
+  "en": "Reset",
+  "plural": false
+ },
+ {
+  "id": "u871",
+  "context": "caruspex::TripPage",
+  "de": "Benzin",
+  "en": "Petrol",
+  "plural": false
+ },
+ {
+  "id": "u872",
+  "context": "caruspex::TripPage",
+  "de": "Diesel",
+  "en": "Diesel",
+  "plural": false
+ },
+ {
+  "id": "u873",
+  "context": "caruspex::TripPage",
+  "de": " €/l",
+  "en": " €/l",
+  "plural": false
+ },
+ {
+  "id": "u874",
+  "context": "caruspex::TripPage",
+  "de": " l Hubraum",
+  "en": " l displacement",
+  "plural": false
+ },
+ {
+  "id": "u875",
+  "context": "caruspex::TripPage",
+  "de": "Nur nötig, wenn das Auto weder Durchfluss noch Luftmasse meldet.",
+  "en": "Only needed if the car reports neither fuel flow nor air mass.",
+  "plural": false
+ },
+ {
+  "id": "u876",
+  "context": "caruspex::TripPage",
+  "de": "Fahrstil",
+  "en": "Driving style",
+  "plural": false
+ },
+ {
+  "id": "u877",
+  "context": "caruspex::TripPage",
+  "de": "noch keine Fahrt",
+  "en": "no trip yet",
+  "plural": false
+ },
+ {
+  "id": "u878",
+  "context": "caruspex::TripPage",
+  "de": "Strecke",
+  "en": "Distance",
+  "plural": false
+ },
+ {
+  "id": "u879",
+  "context": "caruspex::TripPage",
+  "de": "Verbrauch im Schnitt",
+  "en": "Average consumption",
+  "plural": false
+ },
+ {
+  "id": "u880",
+  "context": "caruspex::TripPage",
+  "de": "Kraftstoff verbraucht",
+  "en": "Fuel used",
+  "plural": false
+ },
+ {
+  "id": "u881",
+  "context": "caruspex::TripPage",
+  "de": "Kosten",
+  "en": "Cost",
+  "plural": false
+ },
+ {
+  "id": "u882",
+  "context": "caruspex::TripPage",
+  "de": "CO₂",
+  "en": "CO₂",
+  "plural": false
+ },
+ {
+  "id": "u883",
+  "context": "caruspex::TripPage",
+  "de": "Tempo im Schnitt",
+  "en": "Average speed",
+  "plural": false
+ },
+ {
+  "id": "u884",
+  "context": "caruspex::TripPage",
+  "de": "Höchsttempo",
+  "en": "Top speed",
+  "plural": false
+ },
+ {
+  "id": "u885",
+  "context": "caruspex::TripPage",
+  "de": "Leerlauf",
+  "en": "Idle",
+  "plural": false
+ },
+ {
+  "id": "u886",
+  "context": "caruspex::TripPage",
+  "de": "Fahrt anhalten",
+  "en": "Pause trip",
+  "plural": false
+ },
+ {
+  "id": "u887",
+  "context": "caruspex::TripPage",
+  "de": "Weiterfahren",
+  "en": "Resume",
+  "plural": false
+ },
+ {
+  "id": "u888",
+  "context": "caruspex::TripPage",
+  "de": "VERBRAUCH IM STAND",
+  "en": "CONSUMPTION AT STANDSTILL",
+  "plural": false
+ },
+ {
+  "id": "u889",
+  "context": "caruspex::TripPage",
+  "de": "%1 kg gesamt",
+  "en": "%1 kg in total",
+  "plural": false
+ },
+ {
+  "id": "u890",
+  "context": "caruspex::TripPage",
+  "de": "%1 l/h im Stand",
+  "en": "%1 l/h at standstill",
+  "plural": false
+ },
+ {
+  "id": "u891",
+  "context": "caruspex::TripPage",
+  "de": "%1 starke Beschleunigungen",
+  "en": "%1 hard accelerations",
+  "plural": false
+ },
+ {
+  "id": "u892",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Drosselklappe",
+  "en": "Throttle body",
+  "plural": false
+ },
+ {
+  "id": "u893",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Turbo",
+  "en": "Turbo",
+  "plural": false
+ },
+ {
+  "id": "u894",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Motor",
+  "en": "Engine",
+  "plural": false
+ },
+ {
+  "id": "u895",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Zündung",
+  "en": "Ignition",
+  "plural": false
+ },
+ {
+  "id": "u896",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Einspritzung",
+  "en": "Injection",
+  "plural": false
+ },
+ {
+  "id": "u897",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Kühlung",
+  "en": "Cooling",
+  "plural": false
+ },
+ {
+  "id": "u898",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Steuergerät",
+  "en": "ECU",
+  "plural": false
+ },
+ {
+  "id": "u899",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Bordnetz",
+  "en": "Electrical system",
+  "plural": false
+ },
+ {
+  "id": "u900",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Datenbus",
+  "en": "Data bus",
+  "plural": false
+ },
+ {
+  "id": "u901",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Innenraum",
+  "en": "Cabin",
+  "plural": false
+ },
+ {
+  "id": "u902",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Getriebe",
+  "en": "Transmission",
+  "plural": false
+ },
+ {
+  "id": "u903",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Tank",
+  "en": "Tank",
+  "plural": false
+ },
+ {
+  "id": "u904",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Abgas",
+  "en": "Exhaust",
+  "plural": false
+ },
+ {
+  "id": "u905",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Ansaugung",
+  "en": "Intake",
+  "plural": false
+ },
+ {
+  "id": "u906",
+  "context": "caruspex::VehicleDiagram",
+  "de": "Räder und ABS",
+  "en": "Wheels and ABS",
+  "plural": false
+ },
+ {
+  "id": "u907",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Baujahr %1",
+  "en": "Year %1",
+  "plural": false
+ },
+ {
+  "id": "u908",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Caruspex Demo-Auto",
+  "en": "Caruspex demo car",
+  "plural": false
+ },
+ {
+  "id": "u909",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Baujahr 2021 · 1.4 Benziner · Automatik · simuliert",
+  "en": "Year 2021 · 1.4 petrol · automatic · simulated",
+  "plural": false
+ },
+ {
+  "id": "u910",
+  "context": "caruspex::VehicleIdentity",
+  "de": "vermutet",
+  "en": "guessed",
+  "plural": false
+ },
+ {
+  "id": "u911",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Baujahr etwa %1",
+  "en": "Year about %1",
+  "plural": false
+ },
+ {
+  "id": "u912",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Modell nicht eindeutig",
+  "en": "Model not certain",
+  "plural": false
+ },
+ {
+  "id": "u913",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Unbekannter Hersteller",
+  "en": "Unknown manufacturer",
+  "plural": false
+ },
+ {
+  "id": "u914",
+  "context": "caruspex::VehicleIdentity",
+  "de": "Die Fahrgestellnummer passt zu keinem bekannten Hersteller.",
+  "en": "The VIN does not match any known manufacturer.",
+  "plural": false
+ },
+ {
+  "id": "u915",
+  "context": "caruspex::VehiclesPage",
+  "de": "Wissen",
+  "en": "Knowledge",
+  "plural": false
+ },
+ {
+  "id": "u916",
+  "context": "caruspex::VehiclesPage",
+  "de": "Fahrzeuge",
+  "en": "Vehicles",
+  "plural": false
+ },
+ {
+  "id": "u917",
+  "context": "caruspex::VehiclesPage",
+  "de": "Über %1 Modellgenerationen von %2 Marken, von 1980 bis heute. Zu jeder steht, welchen Diagnosestecker sie hat, wo er sitzt und was Caruspex damit kann.",
+  "en": "Over %1 model generations from %2 brands, from 1980 to today. Each one shows which diagnostic connector it has, where it is and what Caruspex can do with it.",
+  "plural": false
+ },
+ {
+  "id": "u918",
+  "context": "caruspex::VehiclesPage",
+  "de": "Fahrgestellnummer prüfen",
+  "en": "Check VIN",
+  "plural": false
+ },
+ {
+  "id": "u919",
+  "context": "caruspex::VehiclesPage",
+  "de": "Die 17 Zeichen stehen im Fahrzeugschein unter E, an der Windschutzscheibe unten links und im Motorraum.",
+  "en": "The 17 characters are on the registration certificate under E, at the bottom left of the windscreen and in the engine bay.",
+  "plural": false
+ },
+ {
+  "id": "u920",
+  "context": "caruspex::VehiclesPage",
+  "de": "Prüfen",
+  "en": "Check",
+  "plural": false
+ },
+ {
+  "id": "u921",
+  "context": "caruspex::VehiclesPage",
+  "de": "Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...",
+  "en": "Golf 4, A2, E46, W203, Octavia 2008, Model 3 ...",
+  "plural": false
+ },
+ {
+  "id": "u922",
+  "context": "caruspex::VehiclesPage",
+  "de": "Baujahr",
+  "en": "Year",
+  "plural": false
+ },
+ {
+  "id": "u923",
+  "context": "caruspex::VehiclesPage",
+  "de": "Mit diesem Auto verbinden",
+  "en": "Connect to this car",
+  "plural": false
+ },
+ {
+  "id": "u924",
+  "context": "caruspex::VehiclesPage",
+  "de": "Beliebte Modelle, oben suchen für alle",
+  "en": "Popular models, search above for all",
+  "plural": false
+ },
+ {
+  "id": "u925",
+  "context": "caruspex::VehiclesPage",
+  "de": "%n Treffer",
+  "en": [
+   "%n match",
+   "%n matches"
+  ],
+  "plural": true
+ },
+ {
+  "id": "u926",
+  "context": "caruspex::VehiclesPage",
+  "de": "Stecker: %1",
+  "en": "Connector: %1",
+  "plural": false
+ },
+ {
+  "id": "u927",
+  "context": "caruspex::VehiclesPage",
+  "de": "Wo er sitzt: %1",
+  "en": "Where it is: %1",
+  "plural": false
+ },
+ {
+  "id": "u928",
+  "context": "caruspex::VehiclesPage",
+  "de": "Hersteller",
+  "en": "Manufacturer",
+  "plural": false
+ },
+ {
+  "id": "u929",
+  "context": "caruspex::VehiclesPage",
+  "de": "unbekannt",
+  "en": "unknown",
+  "plural": false
+ },
+ {
+  "id": "u930",
+  "context": "caruspex::VehiclesPage",
+  "de": "Herkunft",
+  "en": "Origin",
+  "plural": false
+ },
+ {
+  "id": "u931",
+  "context": "caruspex::VehiclesPage",
+  "de": "Modelljahr",
+  "en": "Model year",
+  "plural": false
+ },
+ {
+  "id": "u932",
+  "context": "caruspex::VehiclesPage",
+  "de": "steht nicht in der Nummer",
+  "en": "not in the number",
+  "plural": false
+ },
+ {
+  "id": "u933",
+  "context": "caruspex::VehiclesPage",
+  "de": "%1 (nicht sicher)",
+  "en": "%1 (not certain)",
+  "plural": false
+ },
+ {
+  "id": "u934",
+  "context": "caruspex::VehiclesPage",
+  "de": "Modellcode",
+  "en": "Model code",
+  "plural": false
+ },
+ {
+  "id": "u935",
+  "context": "caruspex::VehiclesPage",
+  "de": "Prüfziffer",
+  "en": "Check digit",
+  "plural": false
+ },
+ {
+  "id": "u936",
+  "context": "caruspex::VehiclesPage",
+  "de": "wird hier nicht verwendet",
+  "en": "not used here",
+  "plural": false
+ },
+ {
+  "id": "u937",
+  "context": "caruspex::VehiclesPage",
+  "de": "stimmt",
+  "en": "correct",
+  "plural": false
+ },
+ {
+  "id": "u938",
+  "context": "caruspex::VehiclesPage",
+  "de": "stimmt nicht, erwartet wäre %1",
+  "en": "incorrect, expected %1",
+  "plural": false
+ },
+ {
+  "id": "u939",
+  "context": "caruspex::VehiclesPage",
+  "de": "Seriennummer",
+  "en": "Serial number",
+  "plural": false
+ },
+ {
+  "id": "u940",
+  "context": "caruspex::VehiclesPage",
+  "de": "Passt zu: %1",
+  "en": "Matches: %1",
+  "plural": false
+ },
+ {
+  "id": "u941",
+  "context": "caruspex::VehiclesPage",
+  "de": "Sicherheit %1 von 100. %2",
+  "en": "Confidence %1 of 100. %2",
+  "plural": false
+ },
+ {
+  "id": "u942",
+  "context": "caruspex::VehiclesPage",
+  "de": "Treffer zur Fahrgestellnummer",
+  "en": "Matches for the VIN",
+  "plural": false
+ },
+ {
+  "id": "u943",
+  "context": "caruspex::Worker",
+  "de": "Anschluss %1 offen bei %2 Baud",
+  "en": "Port %1 open at %2 baud",
+  "plural": false
+ },
+ {
+  "id": "u944",
+  "context": "caruspex::Worker",
+  "de": "Fehlerspeicher gelesen: kein Eintrag.",
+  "en": "Fault memory read: no entries.",
+  "plural": false
+ },
+ {
+  "id": "u945",
+  "context": "caruspex::Worker",
+  "de": "Fehlerspeicher gelesen: %1 Einträge.",
+  "en": "Fault memory read: %1 entries.",
+  "plural": false
+ },
+ {
+  "id": "u946",
+  "context": "caruspex::Worker",
+  "de": "Fehlerspeicher gelöscht.",
+  "en": "Fault memory cleared.",
+  "plural": false
+ },
+ {
+  "id": "u947",
+  "context": "caruspex::Worker",
+  "de": "Löschen fehlgeschlagen: %1",
+  "en": "Clearing failed: %1",
+  "plural": false
+ },
+ {
+  "id": "u948",
+  "context": "caruspex::Worker",
+  "de": "Messung gestartet, %1 Werte im Umlauf.",
+  "en": "Measurement started, cycling through %1 values.",
+  "plural": false
+ },
+ {
+  "id": "u949",
+  "context": "caruspex::Worker",
+  "de": "Messung gestoppt.",
+  "en": "Measurement stopped.",
+  "plural": false
+ },
+ {
+  "id": "u950",
+  "context": "caruspex::Worker",
+  "de": "(keine Antwort)",
+  "en": "(no reply)",
+  "plural": false
+ },
+ {
+  "id": "u951",
+  "context": "caruspex::Worker",
+  "de": "Wecke das Steuergerät mit der 5-Baud-Adresse, das dauert etwa drei Sekunden ...",
+  "en": "Waking the control unit with the 5-baud address, this takes about three seconds ...",
+  "plural": false
+ },
+ {
+  "id": "u952",
+  "context": "caruspex::Worker",
+  "de": "Verbunden mit %1 über %2. Vor dem Start die Punkte oben prüfen.",
+  "en": "Connected to %1 via %2. Check the points above before starting.",
+  "plural": false
+ },
+ {
+  "id": "u953",
+  "context": "caruspex::Worker",
+  "de": "KWP1281 verbunden: %1",
+  "en": "KWP1281 connected: %1",
+  "plural": false
+ },
+ {
+  "id": "u954",
+  "context": "caruspex::Worker",
+  "de": "Erst das KKL-Kabel verbinden.",
+  "en": "Connect the KKL cable first.",
+  "plural": false
+ },
+ {
+  "id": "u955",
+  "context": "caruspex::Worker",
+  "de": "Grundeinstellung im Messwertblock %1 läuft. Gaspedal nicht antippen.",
+  "en": "Basic settings running in measuring block %1. Don't touch the accelerator pedal.",
+  "plural": false
+ },
+ {
+  "id": "u956",
+  "context": "caruspex::Worker",
+  "de": "Grundeinstellung Block %1 gestartet",
+  "en": "Basic settings block %1 started",
+  "plural": false
+ },
+ {
+  "id": "u957",
+  "context": "caruspex::Worker",
+  "de": "Grundeinstellung beendet.",
+  "en": "Basic settings finished.",
+  "plural": false
+ },
+ {
+  "id": "u958",
+  "context": "caruspex::Worker",
+  "de": "Grundeinstellung beendet",
+  "en": "Basic settings finished",
+  "plural": false
+ },
+ {
+  "id": "u959",
+  "context": "caruspex::Worker",
+  "de": "Feld %1: %2",
+  "en": "Field %1: %2",
+  "plural": false
+ },
+ {
+  "id": "u960",
+  "context": "caruspex::Worker",
+  "de": "meldet sich nicht, vermutlich nicht verbaut",
+  "en": "does not respond, probably not fitted",
+  "plural": false
+ },
+ {
+  "id": "u961",
+  "context": "caruspex::Worker",
+  "de": "sporadisch",
+  "en": "intermittent",
+  "plural": false
+ },
+ {
+  "id": "u962",
+  "context": "caruspex::Worker",
+  "de": "gespeichert",
+  "en": "stored",
+  "plural": false
+ },
+ {
+  "id": "u963",
+  "context": "caruspex::Worker",
+  "de": "kein Eintrag",
+  "en": "no entries",
+  "plural": false
+ },
+ {
+  "id": "u964",
+  "context": "caruspex::Worker",
+  "de": "%1 Einträge",
+  "en": "%1 entries",
+  "plural": false
+ },
+ {
+  "id": "u965",
+  "context": "caruspex::Worker",
+  "de": "%1: lösche, Versuch %2 von %3",
+  "en": "%1: clearing, attempt %2 of %3",
+  "plural": false
+ },
+ {
+  "id": "u966",
+  "context": "caruspex::Worker",
+  "de": "   abgelehnt: %1",
+  "en": "   rejected: %1",
+  "plural": false
+ },
+ {
+  "id": "u967",
+  "context": "caruspex::Worker",
+  "de": "gelöscht",
+  "en": "cleared",
+  "plural": false
+ },
+ {
+  "id": "u968",
+  "context": "caruspex::Worker",
+  "de": "   %1: leer",
+  "en": "   %1: empty",
+  "plural": false
+ },
+ {
+  "id": "u969",
+  "context": "caruspex::Worker",
+  "de": "%1 Einträge, Löschen ohne Wirkung",
+  "en": "%1 entries, clearing had no effect",
+  "plural": false
+ },
+ {
+  "id": "u970",
+  "context": "caruspex::Worker",
+  "de": "   %1: bleibt bestehen, die Ursache ist noch da",
+  "en": "   %1: remains, the cause is still present",
+  "plural": false
+ },
+ {
+  "id": "u971",
+  "context": "caruspex::Worker",
+  "de": "Nicht verbunden.",
+  "en": "Not connected.",
+  "plural": false
+ },
+ {
+  "id": "u972",
+  "context": "caruspex::Worker",
+  "de": "Versuch %1 von %2 ...",
+  "en": "Attempt %1 of %2 ...",
+  "plural": false
+ },
+ {
+  "id": "u973",
+  "context": "caruspex::Worker",
+  "de": "   Steuergerät quittiert nicht: %1",
+  "en": "   Control unit does not acknowledge: %1",
+  "plural": false
+ },
+ {
+  "id": "u974",
+  "context": "caruspex::Worker",
+  "de": "   Speicher ist leer.",
+  "en": "   Memory is empty.",
+  "plural": false
+ },
+ {
+  "id": "u975",
+  "context": "caruspex::Worker",
+  "de": "   noch %1 Einträge",
+  "en": "   %1 entries left",
+  "plural": false
+ },
+ {
+  "id": "u976",
+  "context": "caruspex::Worker",
+  "de": "   Verbindung wird neu aufgebaut ...",
+  "en": "   Re-establishing the connection ...",
+  "plural": false
+ },
+ {
+  "id": "u977",
+  "context": "caruspex::Worker",
+  "de": "Sitzungsart für die Grundeinstellung: 0x%1",
+  "en": "Session type for basic settings: 0x%1",
+  "plural": false
+ },
+ {
+  "id": "u978",
+  "context": "caruspex::Worker",
+  "de": "Anpassungskanal %1 steht auf %2.",
+  "en": "Adaptation channel %1 is set to %2.",
+  "plural": false
+ },
+ {
+  "id": "u979",
+  "context": "caruspex::Worker",
+  "de": "Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.",
+  "en": "Component monitoring read: %1 tests, %2 O2 sensor tests.",
+  "plural": false
+ },
+ {
+  "id": "u980",
+  "context": "caruspex::Worker",
+  "de": "Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?",
+  "en": "No port found. Is the adapter plugged into the computer, and is the Bluetooth adapter paired?",
+  "plural": false
+ },
+ {
+  "id": "u981",
+  "context": "caruspex::Worker",
+  "de": "Probiere %1 ...",
+  "en": "Trying %1 ...",
+  "plural": false
+ },
+ {
+  "id": "u982",
+  "context": "caruspex::Worker",
+  "de": "An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?",
+  "en": "No ELM327 answered on any port. Is the ignition on and the adapter properly plugged in?",
+  "plural": false
+ },
+ {
+  "id": "u983",
+  "context": "caruspex::Worker",
+  "de": "Für den Adaptertest erst verbinden.",
+  "en": "Connect first to run the adapter test.",
+  "plural": false
+ },
+ {
+  "id": "u984",
+  "context": "caruspex::Worker",
+  "de": "Für den Gesundheitscheck erst verbinden.",
+  "en": "Connect first to run the health check.",
+  "plural": false
+ },
+ {
+  "id": "u985",
+  "context": "caruspex::Worker",
+  "de": "Bereitschaft und Fehlerlampe",
+  "en": "Readiness and check engine light",
+  "plural": false
+ },
+ {
+  "id": "u986",
+  "context": "caruspex::Worker",
+  "de": "Fehlerspeicher",
+  "en": "Fault memory",
+  "plural": false
+ },
+ {
+  "id": "u987",
+  "context": "caruspex::Worker",
+  "de": "Bauteilprüfung (Modus 06)",
+  "en": "Component monitoring (mode 06)",
+  "plural": false
+ },
+ {
+  "id": "u988",
+  "context": "caruspex::Worker",
+  "de": "Messwerte sammeln, noch %1 s",
+  "en": "Collecting values, %1 s left",
+  "plural": false
+ },
+ {
+  "id": "u989",
+  "context": "caruspex::Worker",
+  "de": "Fertig",
+  "en": "Done",
+  "plural": false
+ },
+ {
+  "id": "u990",
+  "context": "caruspex::Worker",
+  "de": "Erst verbinden.",
+  "en": "Connect first.",
+  "plural": false
+ },
+ {
+  "id": "u991",
+  "context": "caruspex::Worker",
+  "de": "Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel.",
+  "en": "This car does not speak CAN. UDS only exists on CAN cars; on older VW and Audi the control units go through the KKL cable.",
+  "plural": false
+ },
+ {
+  "id": "u992",
+  "context": "caruspex::Worker",
+  "de": "Fehlerspeicher von %1 gelöscht.",
+  "en": "Fault memory of %1 cleared.",
+  "plural": false
+ },
+ {
+  "id": "u993",
+  "context": "caruspex::Worker",
+  "de": "Löschen bei %1 hat nicht geklappt: %2",
+  "en": "Clearing %1 did not work: %2",
+  "plural": false
+ },
+ {
+  "id": "u994",
+  "context": "caruspex::Worker",
+  "de": "Aufnahme lässt sich nicht öffnen: %1",
+  "en": "The recording cannot be opened: %1",
+  "plural": false
+ },
+ {
+  "id": "u995",
+  "context": "caruspex::Worker",
+  "de": "Erst verbinden, dann aufzeichnen.",
+  "en": "Connect first, then record.",
+  "plural": false
+ },
+ {
+  "id": "u996",
+  "context": "caruspex::Worker",
+  "de": "Datei lässt sich nicht öffnen: %1",
+  "en": "The file cannot be opened: %1",
+  "plural": false
+ },
+ {
+  "id": "u997",
+  "context": "caruspex::Worker",
+  "de": "Verbinde mit %1 über Bluetooth LE ...",
+  "en": "Connecting to %1 over Bluetooth LE ...",
+  "plural": false
+ },
+ {
+  "id": "u998",
+  "context": "caruspex::Worker",
+  "de": "Kanal gefunden (%1)",
+  "en": "Channel found (%1)",
+  "plural": false
+ },
+ {
+  "id": "u999",
+  "context": "caruspex::Worker",
+  "de": "Suche Bluetooth-Adapter ...",
+  "en": "Searching for Bluetooth adapters ...",
+  "plural": false
+ }
+]

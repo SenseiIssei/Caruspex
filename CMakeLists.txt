@@ -29,6 +29,7 @@ endif()
 add_library(caruspex_core STATIC
     ${CARUSPEX_SERIAL}
     src/core/Lang.cpp
+    src/core/Catalog.gen.cpp
     src/core/Transport.cpp
     src/core/Elm327.cpp
     src/core/EcuAddress.cpp
@@ -214,10 +215,29 @@ if(CARUSPEX_GUI)
     # The source strings are German; the English translation is compiled into
     # the binary as :/i18n/caruspex_en.qm. Refresh the .ts file after changing
     # UI strings with: cmake --build build --target update_translations
+    # One file per language; lupdate takes the target language from the
+    # file name. The other languages are filled by tools/gen_i18n.py.
     qt_add_translations(caruspex
-        TS_FILES translations/caruspex_en.ts
+        TS_FILES
+            translations/caruspex_en.ts
+            translations/caruspex_es.ts
+            translations/caruspex_fr.ts
+            translations/caruspex_pt.ts
+            translations/caruspex_it.ts
+            translations/caruspex_nl.ts
+            translations/caruspex_pl.ts
+            translations/caruspex_cs.ts
+            translations/caruspex_ru.ts
+            translations/caruspex_uk.ts
+            translations/caruspex_tr.ts
+            translations/caruspex_ar.ts
+            translations/caruspex_zh.ts
+            translations/caruspex_ja.ts
+            translations/caruspex_ko.ts
+            translations/caruspex_hi.ts
+            translations/caruspex_id.ts
         RESOURCE_PREFIX /i18n
-        LUPDATE_OPTIONS -no-obsolete -locations none -source-language de -target-language en
+        LUPDATE_OPTIONS -no-obsolete -locations none -source-language de
     )
     target_compile_definitions(caruspex PRIVATE CARUSPEX_VERSION="${PROJECT_VERSION}")
     set_target_properties(caruspex PROPERTIES
@@ -285,6 +305,7 @@ if(CARUSPEX_TESTS)
         tests/test_enet.cpp
         tests/test_obd_on_uds.cpp
         tests/test_can_signals.cpp
+        tests/test_lang.cpp
         tests/FakeEcu.cpp
         tests/FakeEcu2000.cpp
     )

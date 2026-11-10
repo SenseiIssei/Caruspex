@@ -1,0 +1,21 @@
+{
+"u1000": "V okolí nebyl nalezen žádný adaptér Bluetooth. Je zapojený do auta a je zapnuté zapalování?",
+"u1001": "Připojuji se k %1 přes klasický Bluetooth ...",
+"u1002": "Hledám auto v síti (ENET a DoIP) ...",
+"u1003": "Připojeno přes %1: %2%3",
+"u1004": "Diagnostika vozidla přes EOBD s adaptéry kompatibilními s ELM327",
+"u1005": "Připojit přímo adaptér Wi-Fi, např. 192.168.0.10:35000",
+"u1006": "host:port",
+"u1007": "Jazyk pro tento běh: de nebo en",
+"u1008": "Připojit se rovnou k vestavěnému ukázkovému autu",
+"u1009": "Začít na této stránce, např. faults nebo live",
+"u1010": "Po několika sekundách uložit snímek okna a skončit (pro dokumentaci)",
+"u1011": "Velikost okna, např. 1440x920",
+"u1012": "Vzhled pro tento běh: dark nebo light",
+"u1013": "Přehrát zaznamenanou relaci",
+"u1014": "Připojit adaptér na sériovém portu, např. COM3 nebo /dev/ttyUSB0, auto prohledá všechny",
+"u1015": "Připojit adaptér Bluetooth podle jeho adresy, nebo auto pro vyhledání",
+"u1016": "Po připojení vytvořit diagnostickou zprávu (PDF, nebo HTML u .html) a skončit",
+"u1017": "Připojit BMW nebo Mini přes kabel ENET podle jeho adresy, nebo auto pro vyhledání",
+"u1018": "--report potřebuje připojení: --demo, --port, --tcp, --enet, --bluetooth nebo --replay"
+}

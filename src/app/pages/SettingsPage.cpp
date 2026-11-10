@@ -1,5 +1,7 @@
 #include "app/pages/SettingsPage.h"
 
+#include "core/Lang.h"
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDesktopServices>
@@ -209,8 +211,9 @@ SettingsPage::SettingsPage(QWidget* parent) : QWidget(parent) {
 
     language_ = new QComboBox;
     language_->addItem(tr("Wie das System"), QStringLiteral("auto"));
-    language_->addItem(QStringLiteral("Deutsch"), QStringLiteral("de"));
-    language_->addItem(QStringLiteral("English"), QStringLiteral("en"));
+    // Every language under its own name, so anyone finds theirs.
+    for (const LanguageInfo& info : languages())
+        language_->addItem(QString::fromUtf8(info.nativeName), QString::fromLatin1(info.code));
     form->addRow(tr("Sprache"), language_);
     appearance_ = new QComboBox;
     appearance_->addItem(tr("Wie das System"), QStringLiteral("auto"));

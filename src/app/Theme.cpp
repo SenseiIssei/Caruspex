@@ -1,5 +1,7 @@
 #include "app/Theme.h"
 
+#include "core/Lang.h"
+
 #include <QApplication>
 
 #include <algorithm>
@@ -10,6 +12,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPropertyAnimation>
+#include <QRegularExpression>
 #include <QProxyStyle>
 #include <QStyleOption>
 #include <QStyle>
@@ -53,6 +56,27 @@ void loadFonts() {
     f.mono = load({":/fonts/JetBrainsMono-Regular.ttf", ":/fonts/JetBrainsMono-Medium.ttf",
                    ":/fonts/JetBrainsMono-Bold.ttf"},
                   f.mono);
+
+    // The bundled fonts only cover Latin, Greek and Cyrillic. For other
+    // scripts Qt would pick a fallback font per character, which mixes
+    // styles within one word (Chinese most of all). One fixed font per
+    // script keeps the text even: the system fonts of Windows, macOS and
+    // Linux, the first one present wins.
+    const Language active = language();
+    QStringList script;
+    if (active == Language::Chinese)
+        script = {"Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC"};
+    else if (active == Language::Japanese)
+        script = {"Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans CJK JP", "Noto Sans JP"};
+    else if (active == Language::Korean)
+        script = {"Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans CJK KR", "Noto Sans KR"};
+    else if (active == Language::Hindi)
+        script = {"Nirmala UI", "Kohinoor Devanagari", "Noto Sans Devanagari"};
+    else if (active == Language::Arabic)
+        script = {"Segoe UI", "Geeza Pro", "Noto Sans Arabic", "Noto Naskh Arabic"};
+    if (!script.isEmpty()) {
+        for (const QString& family : {f.sans, f.display, f.mono}) QFont::insertSubstitutions(family, script);
+    }
 }
 
 QFont make(const QString& family, int px, int weight) {
@@ -172,6 +196,11 @@ void setLight(bool light) {
 }
 
 bool isLight() { return g_light; }
+
+bool spacedLetters() {
+    const Language l = language();
+    return l != Language::Hindi && l != Language::Arabic;
+}
 
 QString sansFamily() { return families().sans; }
 QString displayFamily() { return families().display; }
@@ -503,7 +532,11 @@ void apply(QApplication& app) {
     app.setPalette(palette);
 
     app.setFont(sans(14));
-    app.setStyleSheet(stylesheet());
+    QString sheet = stylesheet();
+    // Spacing between letters tears joined scripts apart (Devanagari, Arabic).
+    if (!spacedLetters()) sheet.replace(QRegularExpression(QStringLiteral("letter-spacing: *[0-9.]+px")),
+                                        QStringLiteral("letter-spacing: 0px"));
+    app.setStyleSheet(sheet);
 }
 
 void addShadow(QWidget* widget, int blur, int offsetY, double alpha) {

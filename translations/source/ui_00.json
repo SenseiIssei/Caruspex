@@ -1,0 +1,1761 @@
+[
+ {
+  "id": "u0",
+  "context": "QObject",
+  "de": "Unbekanntes Fahrzeug",
+  "en": "Unknown vehicle",
+  "plural": false
+ },
+ {
+  "id": "u1",
+  "context": "QObject",
+  "de": "noch keine Prüfung",
+  "en": "not checked yet",
+  "plural": false
+ },
+ {
+  "id": "u2",
+  "context": "QObject",
+  "de": "zuletzt ohne Fehler",
+  "en": "last check: no faults",
+  "plural": false
+ },
+ {
+  "id": "u3",
+  "context": "QObject",
+  "de": "zuletzt %n Fehler",
+  "en": [
+   "last check: %n fault",
+   "last check: %n faults"
+  ],
+  "plural": true
+ },
+ {
+  "id": "u4",
+  "context": "QObject",
+  "de": "verbunden",
+  "en": "connected",
+  "plural": false
+ },
+ {
+  "id": "u5",
+  "context": "caruspex::AdapterPage",
+  "de": "Werkzeug",
+  "en": "Tools",
+  "plural": false
+ },
+ {
+  "id": "u6",
+  "context": "caruspex::AdapterPage",
+  "de": "Adaptertest",
+  "en": "Adapter test",
+  "plural": false
+ },
+ {
+  "id": "u7",
+  "context": "caruspex::AdapterPage",
+  "de": "Viele ELM327 sind Nachbauten, die eine höhere Version behaupten, als sie können. Der Test fragt nach, misst die Antwortzeit und sagt ehrlich, was er daraus schließt. Er schreibt nichts in den Adapter.",
+  "en": "Many ELM327 adapters are clones that claim a higher version than they can actually handle. The test asks, measures the response time and tells you honestly what it concludes from that. It writes nothing to the adapter.",
+  "plural": false
+ },
+ {
+  "id": "u8",
+  "context": "caruspex::AdapterPage",
+  "de": "Adapter testen",
+  "en": "Test adapter",
+  "plural": false
+ },
+ {
+  "id": "u9",
+  "context": "caruspex::AdapterPage",
+  "de": "Erst verbinden, dann testen. Dauert etwa zehn Sekunden.",
+  "en": "Connect first, then test. Takes about ten seconds.",
+  "plural": false
+ },
+ {
+  "id": "u10",
+  "context": "caruspex::AdapterPage",
+  "de": "Meldet sich als",
+  "en": "Reports as",
+  "plural": false
+ },
+ {
+  "id": "u11",
+  "context": "caruspex::AdapterPage",
+  "de": "Verhält sich wie",
+  "en": "Behaves like",
+  "plural": false
+ },
+ {
+  "id": "u12",
+  "context": "caruspex::AdapterPage",
+  "de": "Antwortzeit",
+  "en": "Response time",
+  "plural": false
+ },
+ {
+  "id": "u13",
+  "context": "caruspex::AdapterPage",
+  "de": "Spannung an der Buchse",
+  "en": "Voltage at the socket",
+  "plural": false
+ },
+ {
+  "id": "u14",
+  "context": "caruspex::AdapterPage",
+  "de": "Was der Test ergeben hat",
+  "en": "What the test found",
+  "plural": false
+ },
+ {
+  "id": "u15",
+  "context": "caruspex::AdapterPage",
+  "de": "Befehle im Einzelnen",
+  "en": "Commands in detail",
+  "plural": false
+ },
+ {
+  "id": "u16",
+  "context": "caruspex::AdapterPage",
+  "de": "Befehl",
+  "en": "Command",
+  "plural": false
+ },
+ {
+  "id": "u17",
+  "context": "caruspex::AdapterPage",
+  "de": "Seit",
+  "en": "Since",
+  "plural": false
+ },
+ {
+  "id": "u18",
+  "context": "caruspex::AdapterPage",
+  "de": "Kann er",
+  "en": "Supported",
+  "plural": false
+ },
+ {
+  "id": "u19",
+  "context": "caruspex::AdapterPage",
+  "de": "Wofür",
+  "en": "Used for",
+  "plural": false
+ },
+ {
+  "id": "u20",
+  "context": "caruspex::AdapterPage",
+  "de": "Teste ...",
+  "en": "Testing ...",
+  "plural": false
+ },
+ {
+  "id": "u21",
+  "context": "caruspex::AdapterPage",
+  "de": "mit Antwortzahl %1 ms",
+  "en": "with response count: %1 ms",
+  "plural": false
+ },
+ {
+  "id": "u22",
+  "context": "caruspex::AdapterPage",
+  "de": "ja",
+  "en": "yes",
+  "plural": false
+ },
+ {
+  "id": "u23",
+  "context": "caruspex::AdapterPage",
+  "de": "nein",
+  "en": "no",
+  "plural": false
+ },
+ {
+  "id": "u24",
+  "context": "caruspex::BatteryPage",
+  "de": "Messen",
+  "en": "Measure",
+  "plural": false
+ },
+ {
+  "id": "u25",
+  "context": "caruspex::BatteryPage",
+  "de": "Batterie und Lichtmaschine",
+  "en": "Battery and alternator",
+  "plural": false
+ },
+ {
+  "id": "u26",
+  "context": "caruspex::BatteryPage",
+  "de": "Vier kurze Messungen, Schritt für Schritt. Die Spannung misst der Adapter direkt an der Buchse, das klappt bei jedem Auto.",
+  "en": "Four short measurements, step by step. The adapter measures the voltage directly at the socket, which works on every car.",
+  "plural": false
+ },
+ {
+  "id": "u27",
+  "context": "caruspex::BatteryPage",
+  "de": "Spannung jetzt",
+  "en": "Voltage now",
+  "plural": false
+ },
+ {
+  "id": "u28",
+  "context": "caruspex::BatteryPage",
+  "de": "Bordnetz",
+  "en": "Electrical system",
+  "plural": false
+ },
+ {
+  "id": "u29",
+  "context": "caruspex::BatteryPage",
+  "de": "Batterieart unbekannt",
+  "en": "Battery type unknown",
+  "plural": false
+ },
+ {
+  "id": "u30",
+  "context": "caruspex::BatteryPage",
+  "de": "Nassbatterie (Standard)",
+  "en": "Flooded battery (standard)",
+  "plural": false
+ },
+ {
+  "id": "u31",
+  "context": "caruspex::BatteryPage",
+  "de": "EFB (Start-Stopp)",
+  "en": "EFB (start-stop)",
+  "plural": false
+ },
+ {
+  "id": "u32",
+  "context": "caruspex::BatteryPage",
+  "de": "AGM (Start-Stopp, Vlies)",
+  "en": "AGM (start-stop, glass mat)",
+  "plural": false
+ },
+ {
+  "id": "u33",
+  "context": "caruspex::BatteryPage",
+  "de": "Auto hat Start-Stopp",
+  "en": "Car has start-stop",
+  "plural": false
+ },
+ {
+  "id": "u34",
+  "context": "caruspex::BatteryPage",
+  "de": "So geht's",
+  "en": "How it works",
+  "plural": false
+ },
+ {
+  "id": "u35",
+  "context": "caruspex::BatteryPage",
+  "de": "Ruhespannung",
+  "en": "Resting voltage",
+  "plural": false
+ },
+ {
+  "id": "u36",
+  "context": "caruspex::BatteryPage",
+  "de": "Beim Anlassen",
+  "en": "While cranking",
+  "plural": false
+ },
+ {
+  "id": "u37",
+  "context": "caruspex::BatteryPage",
+  "de": "Laden im Leerlauf",
+  "en": "Charging at idle",
+  "plural": false
+ },
+ {
+  "id": "u38",
+  "context": "caruspex::BatteryPage",
+  "de": "Laden unter Last",
+  "en": "Charging under load",
+  "plural": false
+ },
+ {
+  "id": "u39",
+  "context": "caruspex::BatteryPage",
+  "de": "Aufnehmen, dann starten",
+  "en": "Record, then start",
+  "plural": false
+ },
+ {
+  "id": "u40",
+  "context": "caruspex::BatteryPage",
+  "de": "Ergebnis",
+  "en": "Result",
+  "plural": false
+ },
+ {
+  "id": "u41",
+  "context": "caruspex::BatteryPage",
+  "de": "Nach der ersten Messung steht hier, wie es um Batterie und Lichtmaschine steht.",
+  "en": "After the first measurement, this shows how the battery and alternator are doing.",
+  "plural": false
+ },
+ {
+  "id": "u42",
+  "context": "caruspex::BatteryPage",
+  "de": "Nimmt %1 s auf. Jetzt den Motor starten.",
+  "en": "Recording for %1 s. Start the engine now.",
+  "plural": false
+ },
+ {
+  "id": "u43",
+  "context": "caruspex::BatteryPage",
+  "de": "Misst %1 s ...",
+  "en": "Measuring for %1 s ...",
+  "plural": false
+ },
+ {
+  "id": "u44",
+  "context": "caruspex::BatteryPage",
+  "de": "gemessen: %1 V",
+  "en": "measured: %1 V",
+  "plural": false
+ },
+ {
+  "id": "u45",
+  "context": "caruspex::BatteryPage",
+  "de": "tiefster Wert: %1 V",
+  "en": "lowest value: %1 V",
+  "plural": false
+ },
+ {
+  "id": "u46",
+  "context": "caruspex::BatteryPage",
+  "de": "Ladezustand etwa %1 %.",
+  "en": "State of charge about %1 %.",
+  "plural": false
+ },
+ {
+  "id": "u47",
+  "context": "caruspex::BatteryPage",
+  "de": "Was tun: %1",
+  "en": "What to do: %1",
+  "plural": false
+ },
+ {
+  "id": "u48",
+  "context": "caruspex::BleTransport",
+  "de": "Bluetooth ist ausgeschaltet.",
+  "en": "Bluetooth is switched off.",
+  "plural": false
+ },
+ {
+  "id": "u49",
+  "context": "caruspex::BleTransport",
+  "de": "Caruspex darf Bluetooth nicht verwenden. Bitte in den Systemeinstellungen unter Datenschutz erlauben.",
+  "en": "Caruspex is not allowed to use Bluetooth. Please allow it in the system settings under privacy.",
+  "plural": false
+ },
+ {
+  "id": "u50",
+  "context": "caruspex::BleTransport",
+  "de": "Dieser Rechner hat kein Bluetooth LE, das Caruspex nutzen kann.",
+  "en": "This computer has no Bluetooth LE that Caruspex can use.",
+  "plural": false
+ },
+ {
+  "id": "u51",
+  "context": "caruspex::BleTransport",
+  "de": "Bluetooth LE ist auf diesem Rechner nicht verfügbar.",
+  "en": "Bluetooth LE is not available on this computer.",
+  "plural": false
+ },
+ {
+  "id": "u52",
+  "context": "caruspex::BleTransport",
+  "de": "Verbindung zu %1 kam nicht zustande",
+  "en": "Could not connect to %1",
+  "plural": false
+ },
+ {
+  "id": "u53",
+  "context": "caruspex::BleTransport",
+  "de": "Das Gerät hat seine Dienste nicht gemeldet.",
+  "en": "The device did not report its services.",
+  "plural": false
+ },
+ {
+  "id": "u54",
+  "context": "caruspex::BleTransport",
+  "de": "Auf diesem Gerät wurde kein serieller Kanal für OBD gefunden. Ist es ein OBD-Adapter mit Bluetooth LE?",
+  "en": "No serial channel for OBD was found on this device. Is it an OBD adapter with Bluetooth LE?",
+  "plural": false
+ },
+ {
+  "id": "u55",
+  "context": "caruspex::ConnectPage",
+  "de": "Verbindung",
+  "en": "Connection",
+  "plural": false
+ },
+ {
+  "id": "u56",
+  "context": "caruspex::ConnectPage",
+  "de": "Mit dem Auto verbinden",
+  "en": "Connect to the car",
+  "plural": false
+ },
+ {
+  "id": "u57",
+  "context": "caruspex::ConnectPage",
+  "de": "Ein Adapter in der OBD-Buchse, die Zündung an, ein Klick. Welches Protokoll das Auto spricht, findet Caruspex selbst heraus.",
+  "en": "An adapter in the OBD socket, ignition on, one click. Caruspex works out by itself which protocol the car speaks.",
+  "plural": false
+ },
+ {
+  "id": "u58",
+  "context": "caruspex::ConnectPage",
+  "de": "So geht's",
+  "en": "How it works",
+  "plural": false
+ },
+ {
+  "id": "u59",
+  "context": "caruspex::ConnectPage",
+  "de": "Buchse finden",
+  "en": "Find the socket",
+  "plural": false
+ },
+ {
+  "id": "u60",
+  "context": "caruspex::ConnectPage",
+  "de": "Die OBD-Buchse sitzt fast immer im Fußraum auf der Fahrerseite, unter dem Lenkrad oder hinter einer kleinen Klappe.",
+  "en": "The OBD socket is almost always in the footwell on the driver's side, under the steering wheel or behind a small cover.",
+  "plural": false
+ },
+ {
+  "id": "u61",
+  "context": "caruspex::ConnectPage",
+  "de": "Adapter einstecken",
+  "en": "Plug in the adapter",
+  "plural": false
+ },
+ {
+  "id": "u62",
+  "context": "caruspex::ConnectPage",
+  "de": "ELM327 per USB, Bluetooth oder WLAN. Für Airbag, ABS und Grundeinstellungen bei VAG bis etwa 2004 ein KKL-Kabel.",
+  "en": "ELM327 via USB, Bluetooth or Wi-Fi. For airbag, ABS and basic settings on VAG cars up to about 2004, a KKL cable.",
+  "plural": false
+ },
+ {
+  "id": "u63",
+  "context": "caruspex::ConnectPage",
+  "de": "Zündung an",
+  "en": "Ignition on",
+  "plural": false
+ },
+ {
+  "id": "u64",
+  "context": "caruspex::ConnectPage",
+  "de": "Zündung einschalten. Der Motor darf aus sein, für Live-Werte darf er laufen, aber nur im Freien.",
+  "en": "Switch on the ignition. The engine can stay off. For live values it may run, but only outdoors.",
+  "plural": false
+ },
+ {
+  "id": "u65",
+  "context": "caruspex::ConnectPage",
+  "de": "Verbinden",
+  "en": "Connect",
+  "plural": false
+ },
+ {
+  "id": "u66",
+  "context": "caruspex::ConnectPage",
+  "de": "Rechts auf Verbinden drücken. Beim ersten Mal dauert es ein paar Sekunden, bis das Protokoll gefunden ist.",
+  "en": "Press Connect on the right. The first time, it takes a few seconds to find the protocol.",
+  "plural": false
+ },
+ {
+  "id": "u67",
+  "context": "caruspex::ConnectPage",
+  "de": "Adapter",
+  "en": "Adapter",
+  "plural": false
+ },
+ {
+  "id": "u68",
+  "context": "caruspex::ConnectPage",
+  "de": "WLAN",
+  "en": "Wi-Fi",
+  "plural": false
+ },
+ {
+  "id": "u69",
+  "context": "caruspex::ConnectPage",
+  "de": "Demo-Auto",
+  "en": "Demo car",
+  "plural": false
+ },
+ {
+  "id": "u70",
+  "context": "caruspex::ConnectPage",
+  "de": "Anschlüsse neu suchen",
+  "en": "Rescan ports",
+  "plural": false
+ },
+ {
+  "id": "u71",
+  "context": "caruspex::ConnectPage",
+  "de": "Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle Anschlüsse der Reihe nach.",
+  "en": "After pairing, Bluetooth adapters show up in Windows as their own COM port. With Search automatically, Caruspex tries all ports one after another.",
+  "plural": false
+ },
+ {
+  "id": "u72",
+  "context": "caruspex::ConnectPage",
+  "de": "Erst mit dem WLAN des Adapters verbinden. Die meisten nutzen 192.168.0.10, Port 35000.",
+  "en": "Connect to the adapter's Wi-Fi first. Most use 192.168.0.10, port 35000.",
+  "plural": false
+ },
+ {
+  "id": "u73",
+  "context": "caruspex::ConnectPage",
+  "de": "Ein nachgebautes Auto im Programm: es fährt, wärmt sich auf, hat ein paar Fehler gespeichert. Ideal zum Ausprobieren, ganz ohne Adapter.",
+  "en": "A simulated car inside the app: it drives, warms up and has a few faults stored. Ideal for trying things out, no adapter needed.",
+  "plural": false
+ },
+ {
+  "id": "u74",
+  "context": "caruspex::ConnectPage",
+  "de": "Fahrzeug",
+  "en": "Vehicle",
+  "plural": false
+ },
+ {
+  "id": "u75",
+  "context": "caruspex::ConnectPage",
+  "de": "freiwillig",
+  "en": "optional",
+  "plural": false
+ },
+ {
+  "id": "u76",
+  "context": "caruspex::ConnectPage",
+  "de": "Automatisch erkennen, oder suchen: Golf 4, A2, E46 ...",
+  "en": "Detect automatically, or search: Golf 4, A2, E46 ...",
+  "plural": false
+ },
+ {
+  "id": "u77",
+  "context": "caruspex::ConnectPage",
+  "de": "Baujahr ",
+  "en": "Year ",
+  "plural": false
+ },
+ {
+  "id": "u78",
+  "context": "caruspex::ConnectPage",
+  "de": "Nicht verbunden",
+  "en": "Not connected",
+  "plural": false
+ },
+ {
+  "id": "u79",
+  "context": "caruspex::ConnectPage",
+  "de": "Das hat nicht geklappt",
+  "en": "That didn't work",
+  "plural": false
+ },
+ {
+  "id": "u80",
+  "context": "caruspex::ConnectPage",
+  "de": "Häufige Gründe: Zündung aus, Adapter nicht ganz eingesteckt, falscher Anschluss gewählt, oder ein anderes Programm hält den Anschluss offen. Bei Bluetooth hilft oft, den Adapter neu zu koppeln.",
+  "en": "Common reasons: ignition off, adapter not fully plugged in, wrong port selected, or another program is holding the port open. With Bluetooth, pairing the adapter again often helps.",
+  "plural": false
+ },
+ {
+  "id": "u81",
+  "context": "caruspex::ConnectPage",
+  "de": "Automatisch suchen",
+  "en": "Search automatically",
+  "plural": false
+ },
+ {
+  "id": "u82",
+  "context": "caruspex::ConnectPage",
+  "de": "Ohne Auswahl probiert Caruspex die Protokolle der Reihe nach durch und erkennt das Auto danach an der Fahrgestellnummer.",
+  "en": "Without a selection, Caruspex tries the protocols one after another and then recognises the car by its VIN.",
+  "plural": false
+ },
+ {
+  "id": "u83",
+  "context": "caruspex::ConnectPage",
+  "de": "Bei diesem Auto: %1",
+  "en": "For this car: %1",
+  "plural": false
+ },
+ {
+  "id": "u84",
+  "context": "caruspex::ConnectPage",
+  "de": "Verbinde ...",
+  "en": "Connecting ...",
+  "plural": false
+ },
+ {
+  "id": "u85",
+  "context": "caruspex::ConnectPage",
+  "de": "Trennen",
+  "en": "Disconnect",
+  "plural": false
+ },
+ {
+  "id": "u86",
+  "context": "caruspex::ConnectPage",
+  "de": "Verbunden",
+  "en": "Connected",
+  "plural": false
+ },
+ {
+  "id": "u87",
+  "context": "caruspex::ConnectPage",
+  "de": "Adapter: %1\nWeg: %2\nProtokoll: %3",
+  "en": "Adapter: %1\nLink: %2\nProtocol: %3",
+  "plural": false
+ },
+ {
+  "id": "u88",
+  "context": "caruspex::ConnectPage",
+  "de": "Aufnahme",
+  "en": "Recording",
+  "plural": false
+ },
+ {
+  "id": "u89",
+  "context": "caruspex::ConnectPage",
+  "de": "Aufnahme wählen (.jsonl)",
+  "en": "Choose a recording (.jsonl)",
+  "plural": false
+ },
+ {
+  "id": "u90",
+  "context": "caruspex::ConnectPage",
+  "de": "Wählen",
+  "en": "Choose",
+  "plural": false
+ },
+ {
+  "id": "u91",
+  "context": "caruspex::ConnectPage",
+  "de": "Im ursprünglichen Tempo abspielen",
+  "en": "Play back at the original pace",
+  "plural": false
+ },
+ {
+  "id": "u92",
+  "context": "caruspex::ConnectPage",
+  "de": "Spielt eine aufgezeichnete Sitzung ab, als wäre das Auto da. Gut für die Fehlersuche, oder wenn jemand eine Aufnahme schickt.",
+  "en": "Plays a recorded session back as if the car were there. Good for troubleshooting, or when someone sends you a recording.",
+  "plural": false
+ },
+ {
+  "id": "u93",
+  "context": "caruspex::ConnectPage",
+  "de": "Aufnahme wählen",
+  "en": "Choose a recording",
+  "plural": false
+ },
+ {
+  "id": "u94",
+  "context": "caruspex::ConnectPage",
+  "de": "Caruspex-Aufnahme (*.jsonl);;Alle Dateien (*)",
+  "en": "Caruspex recording (*.jsonl);;All files (*)",
+  "plural": false
+ },
+ {
+  "id": "u95",
+  "context": "caruspex::ConnectPage",
+  "de": "Erst eine Aufnahme wählen.",
+  "en": "Choose a recording first.",
+  "plural": false
+ },
+ {
+  "id": "u96",
+  "context": "caruspex::ConnectPage",
+  "de": "Unbenanntes Gerät (%1)",
+  "en": "Unnamed device (%1)",
+  "plural": false
+ },
+ {
+  "id": "u97",
+  "context": "caruspex::ConnectPage",
+  "de": "OBD-Adapter",
+  "en": "OBD adapter",
+  "plural": false
+ },
+ {
+  "id": "u98",
+  "context": "caruspex::ConnectPage",
+  "de": "Ein Gerät gefunden",
+  "en": "One device found",
+  "plural": false
+ },
+ {
+  "id": "u99",
+  "context": "caruspex::ConnectPage",
+  "de": "%1 Geräte gefunden",
+  "en": "%1 devices found",
+  "plural": false
+ },
+ {
+  "id": "u100",
+  "context": "caruspex::ConnectPage",
+  "de": "%1, keins davon sieht nach einem OBD-Adapter aus. Unbekannte Adapter lassen sich trotzdem wählen.",
+  "en": "%1, none of them looks like an OBD adapter. Unknown adapters can still be chosen.",
+  "plural": false
+ },
+ {
+  "id": "u101",
+  "context": "caruspex::ConnectPage",
+  "de": "%1, davon %2 als OBD-Adapter erkannt.",
+  "en": "%1, %2 of them recognised as OBD adapters.",
+  "plural": false
+ },
+ {
+  "id": "u102",
+  "context": "caruspex::ConnectPage",
+  "de": "USB oder COM-Port",
+  "en": "USB or COM port",
+  "plural": false
+ },
+ {
+  "id": "u103",
+  "context": "caruspex::ConnectPage",
+  "de": "Bluetooth",
+  "en": "Bluetooth",
+  "plural": false
+ },
+ {
+  "id": "u104",
+  "context": "caruspex::ConnectPage",
+  "de": "Nach Bluetooth-Geräten suchen",
+  "en": "Search for Bluetooth devices",
+  "plural": false
+ },
+ {
+  "id": "u105",
+  "context": "caruspex::ConnectPage",
+  "de": "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
+  "en": "Caruspex finds adapters with Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, Veepeak BLE) directly, without pairing. Pair classic Bluetooth adapters once in the system settings, the PIN is usually 1234 or 0000; after that they show up in this list.",
+  "plural": false
+ },
+ {
+  "id": "u106",
+  "context": "caruspex::ConnectPage",
+  "de": "Suche Bluetooth-Geräte, das dauert bis zu einer halben Minute ...",
+  "en": "Searching for Bluetooth devices, this takes up to half a minute ...",
+  "plural": false
+ },
+ {
+  "id": "u107",
+  "context": "caruspex::ConnectPage",
+  "de": "klassisch",
+  "en": "classic",
+  "plural": false
+ },
+ {
+  "id": "u108",
+  "context": "caruspex::ConnectPage",
+  "de": "LE und klassisch",
+  "en": "LE and classic",
+  "plural": false
+ },
+ {
+  "id": "u109",
+  "context": "caruspex::ConnectPage",
+  "de": "LE",
+  "en": "LE",
+  "plural": false
+ },
+ {
+  "id": "u110",
+  "context": "caruspex::ConnectPage",
+  "de": "Kein Bluetooth-Gerät gefunden. Steckt der Adapter im Auto, und ist die Zündung an? Manche Adapter schlafen ein und wachen erst nach einem Druck auf ihren Knopf wieder auf.",
+  "en": "No Bluetooth device found. Is the adapter plugged into the car, and is the ignition on? Some adapters fall asleep and only wake up again when you press their button.",
+  "plural": false
+ },
+ {
+  "id": "u111",
+  "context": "caruspex::ConnectPage",
+  "de": "Automatisch suchen, oder die Adresse des Autos (169.254.x.x)",
+  "en": "Search automatically, or the car's address (169.254.x.x)",
+  "plural": false
+ },
+ {
+  "id": "u112",
+  "context": "caruspex::ConnectPage",
+  "de": "Netzwerkkabel",
+  "en": "Network cable",
+  "plural": false
+ },
+ {
+  "id": "u113",
+  "context": "caruspex::ConnectPage",
+  "de": "Für ein ENET-Kabel (BMW und Mini ab der F-Baureihe) oder ein DoIP-Kabel (viele neuere Autos) zwischen OBD-Buchse und Netzwerkanschluss. Caruspex erkennt selbst, was das Auto spricht. Zündung an; nach dem Einstecken braucht der Rechner bis zu einer Minute für seine automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören in die Werkstattsoftware.",
+  "en": "For an ENET cable (BMW and Mini from the F series on) or a DoIP cable (many newer cars) between the OBD socket and the network port. Caruspex works out by itself what the car speaks. Ignition on; after plugging in, the computer needs up to a minute for its automatic address. Caruspex only reads; coding and flashing belong in the workshop software.",
+  "plural": false
+ },
+ {
+  "id": "u114",
+  "context": "caruspex::DashboardPage",
+  "de": "Alles in Ordnung",
+  "en": "All good",
+  "plural": false
+ },
+ {
+  "id": "u115",
+  "context": "caruspex::DashboardPage",
+  "de": "Kühlmittel",
+  "en": "Coolant",
+  "plural": false
+ },
+ {
+  "id": "u116",
+  "context": "caruspex::DashboardPage",
+  "de": "DEIN FAHRZEUG",
+  "en": "YOUR CAR",
+  "plural": false
+ },
+ {
+  "id": "u117",
+  "context": "caruspex::DashboardPage",
+  "de": "Verbinden",
+  "en": "Connect",
+  "plural": false
+ },
+ {
+  "id": "u118",
+  "context": "caruspex::DashboardPage",
+  "de": "Live-Werte",
+  "en": "Live values",
+  "plural": false
+ },
+ {
+  "id": "u119",
+  "context": "caruspex::DashboardPage",
+  "de": "Prüfbericht",
+  "en": "Diagnostic report",
+  "plural": false
+ },
+ {
+  "id": "u120",
+  "context": "caruspex::DashboardPage",
+  "de": "Alles Gelesene als PDF speichern oder drucken",
+  "en": "Save everything read as a PDF or print it",
+  "plural": false
+ },
+ {
+  "id": "u121",
+  "context": "caruspex::DashboardPage",
+  "de": "Was Caruspex gefunden hat",
+  "en": "What Caruspex found",
+  "plural": false
+ },
+ {
+  "id": "u122",
+  "context": "caruspex::DashboardPage",
+  "de": "Jeder Punkt Abzug steht hier, mit Grund.",
+  "en": "Every point deducted is listed here, with the reason.",
+  "plural": false
+ },
+ {
+  "id": "u123",
+  "context": "caruspex::DashboardPage",
+  "de": "Batterie",
+  "en": "Battery",
+  "plural": false
+ },
+ {
+  "id": "u124",
+  "context": "caruspex::DashboardPage",
+  "de": "Kilometerstand",
+  "en": "Mileage",
+  "plural": false
+ },
+ {
+  "id": "u125",
+  "context": "caruspex::DashboardPage",
+  "de": "Tank",
+  "en": "Tank",
+  "plural": false
+ },
+ {
+  "id": "u126",
+  "context": "caruspex::DashboardPage",
+  "de": "Live",
+  "en": "Live",
+  "plural": false
+ },
+ {
+  "id": "u127",
+  "context": "caruspex::DashboardPage",
+  "de": "%1 über %2, Protokoll %3",
+  "en": "%1 via %2, protocol %3",
+  "plural": false
+ },
+ {
+  "id": "u128",
+  "context": "caruspex::DashboardPage",
+  "de": "noch nicht warm",
+  "en": "not warm yet",
+  "plural": false
+ },
+ {
+  "id": "u129",
+  "context": "caruspex::DashboardPage",
+  "de": "Gesundheit",
+  "en": "Health",
+  "plural": false
+ },
+ {
+  "id": "u130",
+  "context": "caruspex::DashboardPage",
+  "de": "WILLKOMMEN",
+  "en": "WELCOME",
+  "plural": false
+ },
+ {
+  "id": "u131",
+  "context": "caruspex::DashboardPage",
+  "de": "Noch kein Auto verbunden",
+  "en": "No car connected yet",
+  "plural": false
+ },
+ {
+  "id": "u132",
+  "context": "caruspex::DashboardPage",
+  "de": "Adapter einstecken, Zündung an, verbinden. Oder erst einmal mit dem Demo-Auto ausprobieren.",
+  "en": "Plug in the adapter, switch on the ignition, connect. Or try the demo car first.",
+  "plural": false
+ },
+ {
+  "id": "u133",
+  "context": "caruspex::DashboardPage",
+  "de": "Verbundenes Fahrzeug",
+  "en": "Connected vehicle",
+  "plural": false
+ },
+ {
+  "id": "u134",
+  "context": "caruspex::DashboardPage",
+  "de": "Auto prüfen",
+  "en": "Check car",
+  "plural": false
+ },
+ {
+  "id": "u135",
+  "context": "caruspex::DashboardPage",
+  "de": "Verbunden. Auto prüfen liest Fehler, Bereitschaft und Fahrzeugdaten.",
+  "en": "Connected. Check car reads faults, readiness and vehicle data.",
+  "plural": false
+ },
+ {
+  "id": "u136",
+  "context": "caruspex::DashboardPage",
+  "de": "Kein Fehler gespeichert.",
+  "en": "No faults stored.",
+  "plural": false
+ },
+ {
+  "id": "u137",
+  "context": "caruspex::DashboardPage",
+  "de": "1 Eintrag im Fehlerspeicher.",
+  "en": "1 entry in the fault memory.",
+  "plural": false
+ },
+ {
+  "id": "u138",
+  "context": "caruspex::DashboardPage",
+  "de": "%1 Einträge im Fehlerspeicher.",
+  "en": "%1 entries in the fault memory.",
+  "plural": false
+ },
+ {
+  "id": "u139",
+  "context": "caruspex::DashboardPage",
+  "de": "Noch offen",
+  "en": "Pending",
+  "plural": false
+ },
+ {
+  "id": "u140",
+  "context": "caruspex::DashboardPage",
+  "de": "Noch nichts geprüft",
+  "en": "Nothing checked yet",
+  "plural": false
+ },
+ {
+  "id": "u141",
+  "context": "caruspex::DashboardPage",
+  "de": "Nach dem Verbinden steht hier, was mit dem Auto los ist, in einfachen Worten.",
+  "en": "After connecting, this shows what is going on with the car, in plain words.",
+  "plural": false
+ },
+ {
+  "id": "u142",
+  "context": "caruspex::DashboardPage",
+  "de": "Bereit",
+  "en": "Ready",
+  "plural": false
+ },
+ {
+  "id": "u143",
+  "context": "caruspex::DashboardPage",
+  "de": "Auto prüfen drücken",
+  "en": "Press Check car",
+  "plural": false
+ },
+ {
+  "id": "u144",
+  "context": "caruspex::DashboardPage",
+  "de": "Bereit zur Prüfung",
+  "en": "Ready to check",
+  "plural": false
+ },
+ {
+  "id": "u145",
+  "context": "caruspex::DashboardPage",
+  "de": "Auto prüfen liest den Fehlerspeicher, die Bereitschaftstests und die Fahrzeugdaten.",
+  "en": "Check car reads the fault memory, the readiness monitors and the vehicle data.",
+  "plural": false
+ },
+ {
+  "id": "u146",
+  "context": "caruspex::DashboardPage",
+  "de": "Motorkontrollleuchte an",
+  "en": "Check engine light on",
+  "plural": false
+ },
+ {
+  "id": "u147",
+  "context": "caruspex::DashboardPage",
+  "de": "Das Steuergerät meldet einen abgasrelevanten Fehler. Bald in die Werkstatt oder selbst nachsehen.",
+  "en": "The control unit reports an emissions-related fault. Visit a workshop soon or take a look yourself.",
+  "plural": false
+ },
+ {
+  "id": "u148",
+  "context": "caruspex::DashboardPage",
+  "de": "1 Bereitschaftstest noch offen",
+  "en": "1 readiness monitor still incomplete",
+  "plural": false
+ },
+ {
+  "id": "u149",
+  "context": "caruspex::DashboardPage",
+  "de": "%1 Bereitschaftstests noch offen",
+  "en": "%1 readiness monitors still incomplete",
+  "plural": false
+ },
+ {
+  "id": "u150",
+  "context": "caruspex::DashboardPage",
+  "de": "Nach dem Löschen oder einem Batteriewechsel normal. Für die AU sollten sie abgeschlossen sein.",
+  "en": "Normal after clearing faults or changing the battery. They should be complete for the emissions test.",
+  "plural": false
+ },
+ {
+  "id": "u151",
+  "context": "caruspex::DashboardPage",
+  "de": "Kein Fehler gespeichert, die Lampe ist aus.",
+  "en": "No faults stored, the light is off.",
+  "plural": false
+ },
+ {
+  "id": "u152",
+  "context": "caruspex::DashboardPage",
+  "de": "Gut in Schuss",
+  "en": "In good shape",
+  "plural": false
+ },
+ {
+  "id": "u153",
+  "context": "caruspex::DashboardPage",
+  "de": "Braucht Pflege",
+  "en": "Needs care",
+  "plural": false
+ },
+ {
+  "id": "u154",
+  "context": "caruspex::DashboardPage",
+  "de": "Bitte ansehen",
+  "en": "Needs attention",
+  "plural": false
+ },
+ {
+  "id": "u155",
+  "context": "caruspex::DashboardPage",
+  "de": "Live starten",
+  "en": "Start live",
+  "plural": false
+ },
+ {
+  "id": "u156",
+  "context": "caruspex::DashboardPage",
+  "de": "Anzeigen wählen",
+  "en": "Choose gauges",
+  "plural": false
+ },
+ {
+  "id": "u157",
+  "context": "caruspex::DashboardPage",
+  "de": "Live anhalten",
+  "en": "Pause live",
+  "plural": false
+ },
+ {
+  "id": "u158",
+  "context": "caruspex::EcuPage",
+  "de": "Werkstatt",
+  "en": "Workshop",
+  "plural": false
+ },
+ {
+  "id": "u159",
+  "context": "caruspex::EcuPage",
+  "de": "Alle Steuergeräte",
+  "en": "All control units",
+  "plural": false
+ },
+ {
+  "id": "u160",
+  "context": "caruspex::EcuPage",
+  "de": "Fragt über CAN jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr. Mit einem normalen ELM327, bei den meisten Autos ab etwa 2008. Ältere VW und Audi gehen über das KKL-Kabel.",
+  "en": "Asks every control unit one by one over CAN: engine, gearbox, ABS, airbag, instrument cluster, climate and more. With a plain ELM327, on most cars from about 2008. Older VW and Audi go through the KKL cable.",
+  "plural": false
+ },
+ {
+  "id": "u161",
+  "context": "caruspex::EcuPage",
+  "de": "Alle üblichen Adressen durchsuchen (langsamer)",
+  "en": "Search all usual addresses (slower)",
+  "plural": false
+ },
+ {
+  "id": "u162",
+  "context": "caruspex::EcuPage",
+  "de": "Adressliste %1",
+  "en": "Address list %1",
+  "plural": false
+ },
+ {
+  "id": "u163",
+  "context": "caruspex::EcuPage",
+  "de": "Steuergeräte suchen",
+  "en": "Find control units",
+  "plural": false
+ },
+ {
+  "id": "u164",
+  "context": "caruspex::EcuPage",
+  "de": "Abbrechen",
+  "en": "Cancel",
+  "plural": false
+ },
+ {
+  "id": "u165",
+  "context": "caruspex::EcuPage",
+  "de": "Fehlerspeicher",
+  "en": "Fault memory",
+  "plural": false
+ },
+ {
+  "id": "u166",
+  "context": "caruspex::EcuPage",
+  "de": "Fehler dieses Steuergeräts löschen",
+  "en": "Clear this unit's faults",
+  "plural": false
+ },
+ {
+  "id": "u167",
+  "context": "caruspex::EcuPage",
+  "de": "Fehler löschen",
+  "en": "Clear faults",
+  "plural": false
+ },
+ {
+  "id": "u168",
+  "context": "caruspex::EcuPage",
+  "de": "Den Fehlerspeicher von %1 löschen? Ein Fehler, dessen Ursache noch besteht, kommt wieder. Bei Airbag und ABS erst die Ursache beheben.",
+  "en": "Clear the fault memory of %1? A fault whose cause is still there comes back. For airbag and ABS, fix the cause first.",
+  "plural": false
+ },
+ {
+  "id": "u169",
+  "context": "caruspex::EcuPage",
+  "de": "Noch nicht gesucht. Verbinden, dann auf Steuergeräte suchen.",
+  "en": "Not searched yet. Connect, then press Find control units.",
+  "plural": false
+ },
+ {
+  "id": "u170",
+  "context": "caruspex::EcuPage",
+  "de": "Suche läuft ...",
+  "en": "Searching ...",
+  "plural": false
+ },
+ {
+  "id": "u171",
+  "context": "caruspex::EcuPage",
+  "de": "Durchsucht %1 Adressen. Das dauert ein, zwei Minuten.",
+  "en": "Searching %1 addresses. This takes a minute or two.",
+  "plural": false
+ },
+ {
+  "id": "u172",
+  "context": "caruspex::EcuPage",
+  "de": "Fragt %1 bekannte Steuergeräte.",
+  "en": "Asking %1 known control units.",
+  "plural": false
+ },
+ {
+  "id": "u173",
+  "context": "caruspex::EcuPage",
+  "de": "Frage %1 (%2 von %3)",
+  "en": "Asking %1 (%2 of %3)",
+  "plural": false
+ },
+ {
+  "id": "u174",
+  "context": "caruspex::EcuPage",
+  "de": "%n Fehler",
+  "en": [
+   "%n fault",
+   "%n faults"
+  ],
+  "plural": true
+ },
+ {
+  "id": "u175",
+  "context": "caruspex::EcuPage",
+  "de": "in Ordnung",
+  "en": "OK",
+  "plural": false
+ },
+ {
+  "id": "u176",
+  "context": "caruspex::EcuPage",
+  "de": "Anfrage %1, Antwort %2",
+  "en": "Request %1, response %2",
+  "plural": false
+ },
+ {
+  "id": "u177",
+  "context": "caruspex::EcuPage",
+  "de": "Bezeichnung",
+  "en": "Name",
+  "plural": false
+ },
+ {
+  "id": "u178",
+  "context": "caruspex::EcuPage",
+  "de": "Teilenummer",
+  "en": "Part number",
+  "plural": false
+ },
+ {
+  "id": "u179",
+  "context": "caruspex::EcuPage",
+  "de": "Software",
+  "en": "Software",
+  "plural": false
+ },
+ {
+  "id": "u180",
+  "context": "caruspex::EcuPage",
+  "de": "Hardware",
+  "en": "Hardware",
+  "plural": false
+ },
+ {
+  "id": "u181",
+  "context": "caruspex::EcuPage",
+  "de": "Seriennummer",
+  "en": "Serial number",
+  "plural": false
+ },
+ {
+  "id": "u182",
+  "context": "caruspex::EcuPage",
+  "de": "Fehlerspeicher nicht lesbar",
+  "en": "Fault memory not readable",
+  "plural": false
+ },
+ {
+  "id": "u183",
+  "context": "caruspex::EcuPage",
+  "de": "Das Steuergerät hat geantwortet, gibt seinen Fehlerspeicher aber nicht heraus.",
+  "en": "The control unit answered but does not hand out its fault memory.",
+  "plural": false
+ },
+ {
+  "id": "u184",
+  "context": "caruspex::EcuPage",
+  "de": "Kein Fehler gespeichert",
+  "en": "No fault stored",
+  "plural": false
+ },
+ {
+  "id": "u185",
+  "context": "caruspex::EcuPage",
+  "de": "gerade aktiv",
+  "en": "active right now",
+  "plural": false
+ },
+ {
+  "id": "u186",
+  "context": "caruspex::EcuPage",
+  "de": "gespeichert",
+  "en": "stored",
+  "plural": false
+ },
+ {
+  "id": "u187",
+  "context": "caruspex::EcuPage",
+  "de": "vorläufig",
+  "en": "pending",
+  "plural": false
+ },
+ {
+  "id": "u188",
+  "context": "caruspex::EcuPage",
+  "de": "Warnlampe an",
+  "en": "warning lamp on",
+  "plural": false
+ },
+ {
+  "id": "u189",
+  "context": "caruspex::EcuPage",
+  "de": "%1 Steuergeräte gefunden, %2 davon mit Fehlern.",
+  "en": "%1 control units found, %2 of them with faults.",
+  "plural": false
+ },
+ {
+  "id": "u190",
+  "context": "caruspex::EcuPage",
+  "de": "Abgebrochen.",
+  "en": "Cancelled.",
+  "plural": false
+ },
+ {
+  "id": "u191",
+  "context": "caruspex::EcuPage",
+  "de": "Kein Steuergerät hat geantwortet. Manche Autos lassen über die Buchse nur das Motorsteuergerät antworten, dann hilft nur die Werkstatt.",
+  "en": "No control unit answered. Some cars only let the engine unit answer through the socket; then only a workshop tool helps.",
+  "plural": false
+ },
+ {
+  "id": "u192",
+  "context": "caruspex::EcuPage",
+  "de": "BMW und Mini: alle 128 Adressen (langsamer, findet alles)",
+  "en": "BMW and Mini: all 128 addresses (slower, finds everything)",
+  "plural": false
+ },
+ {
+  "id": "u193",
+  "context": "caruspex::EvPage",
+  "de": "Messen",
+  "en": "Measure",
+  "plural": false
+ },
+ {
+  "id": "u194",
+  "context": "caruspex::EvPage",
+  "de": "Akku von E-Auto und Hybrid",
+  "en": "Electric and hybrid battery",
+  "plural": false
+ },
+ {
+  "id": "u195",
+  "context": "caruspex::EvPage",
+  "de": "Akkugesundheit, Ladestand, Zellen und Temperaturen direkt aus dem Batteriesteuergerät. Die Werte kommen aus belegten Herstellerlisten, die Quelle steht bei jedem Wert.",
+  "en": "State of health, charge, cells and temperatures straight from the battery management unit. The values come from documented manufacturer lists; each one names its source.",
+  "plural": false
+ },
+ {
+  "id": "u196",
+  "context": "caruspex::EvPage",
+  "de": "Akku lesen",
+  "en": "Read battery",
+  "plural": false
+ },
+ {
+  "id": "u197",
+  "context": "caruspex::EvPage",
+  "de": "Laufend lesen",
+  "en": "Read continuously",
+  "plural": false
+ },
+ {
+  "id": "u198",
+  "context": "caruspex::EvPage",
+  "de": "Akkugesundheit",
+  "en": "Battery health",
+  "plural": false
+ },
+ {
+  "id": "u199",
+  "context": "caruspex::EvPage",
+  "de": "SOH",
+  "en": "SOH",
+  "plural": false
+ },
+ {
+  "id": "u200",
+  "context": "caruspex::EvPage",
+  "de": "LADESTAND",
+  "en": "STATE OF CHARGE",
+  "plural": false
+ },
+ {
+  "id": "u201",
+  "context": "caruspex::EvPage",
+  "de": "Spannung",
+  "en": "Voltage",
+  "plural": false
+ },
+ {
+  "id": "u202",
+  "context": "caruspex::EvPage",
+  "de": "Strom",
+  "en": "Current",
+  "plural": false
+ },
+ {
+  "id": "u203",
+  "context": "caruspex::EvPage",
+  "de": "Leistung",
+  "en": "Power",
+  "plural": false
+ },
+ {
+  "id": "u204",
+  "context": "caruspex::EvPage",
+  "de": "Zellen",
+  "en": "Cells",
+  "plural": false
+ },
+ {
+  "id": "u205",
+  "context": "caruspex::EvPage",
+  "de": "Zellspreizung",
+  "en": "Cell spread",
+  "plural": false
+ },
+ {
+  "id": "u206",
+  "context": "caruspex::EvPage",
+  "de": "Akkutemperatur",
+  "en": "Battery temperature",
+  "plural": false
+ },
+ {
+  "id": "u207",
+  "context": "caruspex::EvPage",
+  "de": "12-Volt-Batterie",
+  "en": "12 V battery",
+  "plural": false
+ },
+ {
+  "id": "u208",
+  "context": "caruspex::EvPage",
+  "de": "Alle Werte",
+  "en": "All values",
+  "plural": false
+ },
+ {
+  "id": "u209",
+  "context": "caruspex::EvPage",
+  "de": "Wert",
+  "en": "Value",
+  "plural": false
+ },
+ {
+  "id": "u210",
+  "context": "caruspex::EvPage",
+  "de": "Messung",
+  "en": "Reading",
+  "plural": false
+ },
+ {
+  "id": "u211",
+  "context": "caruspex::EvPage",
+  "de": "Quelle",
+  "en": "Source",
+  "plural": false
+ },
+ {
+  "id": "u212",
+  "context": "caruspex::EvPage",
+  "de": "Lese ...",
+  "en": "Reading ...",
+  "plural": false
+ },
+ {
+  "id": "u213",
+  "context": "caruspex::EvPage",
+  "de": "Anhalten",
+  "en": "Pause",
+  "plural": false
+ },
+ {
+  "id": "u214",
+  "context": "caruspex::EvPage",
+  "de": "Keine Antwort vom Batteriesteuergerät: %1. Passt das Paket zum Auto, und ist die Zündung an?",
+  "en": "No answer from the battery management unit: %1. Does the pack fit the car, and is the ignition on?",
+  "plural": false
+ },
+ {
+  "id": "u215",
+  "context": "caruspex::EvPage",
+  "de": "%1 Werte gelesen, %2 ohne Antwort.",
+  "en": "%1 values read, %2 without an answer.",
+  "plural": false
+ },
+ {
+  "id": "u216",
+  "context": "caruspex::EvPage",
+  "de": "%n Wert(e) gelesen.",
+  "en": [
+   "%n value read.",
+   "%n values read."
+  ],
+  "plural": true
+ },
+ {
+  "id": "u217",
+  "context": "caruspex::EvPage",
+  "de": "Wie neu",
+  "en": "As new",
+  "plural": false
+ },
+ {
+  "id": "u218",
+  "context": "caruspex::EvPage",
+  "de": "Gut",
+  "en": "Good",
+  "plural": false
+ },
+ {
+  "id": "u219",
+  "context": "caruspex::EvPage",
+  "de": "Gebraucht",
+  "en": "Used",
+  "plural": false
+ },
+ {
+  "id": "u220",
+  "context": "caruspex::EvPage",
+  "de": "Deutlich gealtert",
+  "en": "Clearly aged",
+  "plural": false
+ },
+ {
+  "id": "u221",
+  "context": "caruspex::EvPage",
+  "de": "noch nicht gelesen",
+  "en": "not read yet",
+  "plural": false
+ },
+ {
+  "id": "u222",
+  "context": "caruspex::EvPage",
+  "de": "Anzeige %1 %, Batteriesteuergerät intern %2 %",
+  "en": "Display %1 %, battery unit internally %2 %",
+  "plural": false
+ },
+ {
+  "id": "u223",
+  "context": "caruspex::EvPage",
+  "de": "gleichmäßig",
+  "en": "even",
+  "plural": false
+ },
+ {
+  "id": "u224",
+  "context": "caruspex::EvPage",
+  "de": "etwas ungleich",
+  "en": "slightly uneven",
+  "plural": false
+ },
+ {
+  "id": "u225",
+  "context": "caruspex::EvPage",
+  "de": "deutlich ungleich",
+  "en": "clearly uneven",
+  "plural": false
+ },
+ {
+  "id": "u226",
+  "context": "caruspex::EvPage",
+  "de": "kälteste Stelle %1 °C",
+  "en": "coldest point %1 °C",
+  "plural": false
+ },
+ {
+  "id": "u227",
+  "context": "caruspex::EvPage",
+  "de": "Der Akku hat deutlich an Kapazität verloren. Reichweite und Ladeleistung sind spürbar geringer; Garantiebedingungen prüfen, viele Hersteller garantieren 70 %.",
+  "en": "The battery has clearly lost capacity. Range and charging power are noticeably lower; check the warranty terms, many makers guarantee 70 %.",
+  "plural": false
+ },
+ {
+  "id": "u228",
+  "context": "caruspex::EvPage",
+  "de": "Die Zellen sind ungleich geladen. Einmal langsam auf 100 % laden und einige Stunden stehen lassen hilft dem Ausgleich; bleibt es so, in die Werkstatt.",
+  "en": "The cells are unevenly charged. Charging slowly to 100 % once and leaving the car for a few hours helps them balance; if it stays like this, see a workshop.",
+  "plural": false
+ },
+ {
+  "id": "u229",
+  "context": "caruspex::EvPage",
+  "de": "Für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören, mit Adapterkabel an der Diagnosebuchse). Andere E-Autos lassen sich über eigene Werte auf der Seite Live-Werte ergänzen.",
+  "en": "For Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening, with an adapter cable on the diagnostic connector). Other electric cars can be added through custom values on the Live values page.",
+  "plural": false
+ },
+ {
+  "id": "u230",
+  "context": "caruspex::FaultsPage",
+  "de": "Fehlerspeicher",
+  "en": "Fault memory",
+  "plural": false
+ },
+ {
+  "id": "u231",
+  "context": "caruspex::FaultsPage",
+  "de": "Neu einlesen",
+  "en": "Read again",
+  "plural": false
+ },
+ {
+  "id": "u232",
+  "context": "caruspex::FaultsPage",
+  "de": "Fehler löschen",
+  "en": "Clear faults",
+  "plural": false
+ },
+ {
+  "id": "u233",
+  "context": "caruspex::FaultsPage",
+  "de": "Hartnäckig löschen",
+  "en": "Persistent clear",
+  "plural": false
+ },
+ {
+  "id": "u234",
+  "context": "caruspex::FaultsPage",
+  "de": "Als CSV speichern",
+  "en": "Save as CSV",
+  "plural": false
+ },
+ {
+  "id": "u235",
+  "context": "caruspex::FaultsPage",
+  "de": "Kein Eintrag im Speicher",
+  "en": "No entries in memory",
+  "plural": false
+ },
+ {
+  "id": "u236",
+  "context": "caruspex::FaultsPage",
+  "de": "Mindestens ein Code betrifft die Drosselklappe. Löschen allein reicht da erfahrungsgemäß nicht, die Klappe muss angelernt werden.",
+  "en": "At least one code concerns the throttle body. In practice clearing alone is not enough here; the throttle body needs an adaptation.",
+  "plural": false
+ },
+ {
+  "id": "u237",
+  "context": "caruspex::FaultsPage",
+  "de": "Fehlerspeicher löschen",
+  "en": "Clear fault memory",
+  "plural": false
+ },
+ {
+  "id": "u238",
+  "context": "caruspex::FaultsPage",
+  "de": "Fehlerspeicher wirklich löschen?",
+  "en": "Really clear the fault memory?",
+  "plural": false
+ },
+ {
+  "id": "u239",
+  "context": "caruspex::FaultsPage",
+  "de": "Die Fehlerlampe geht aus und die Bereitschaftstests werden zurückgesetzt. Eine Abgasuntersuchung fällt direkt danach durch, bis das Auto wieder ein paar Fahrzyklen gelaufen ist.\n\nLöschen ersetzt keine Reparatur.",
+  "en": "The check engine light goes off and the readiness monitors are reset. An emissions test will fail right afterwards until the car has completed a few drive cycles again.\n\nClearing is no substitute for a repair.",
+  "plural": false
+ },
+ {
+  "id": "u240",
+  "context": "caruspex::FaultsPage",
+  "de": "Ja, löschen",
+  "en": "Yes, clear",
+  "plural": false
+ },
+ {
+  "id": "u241",
+  "context": "caruspex::FaultsPage",
+  "de": "Abbrechen",
+  "en": "Cancel",
+  "plural": false
+ },
+ {
+  "id": "u242",
+  "context": "caruspex::FaultsPage",
+  "de": "Mehrfach löschen und jedes Mal nachprüfen?",
+  "en": "Clear several times and verify each time?",
+  "plural": false
+ },
+ {
+  "id": "u243",
+  "context": "caruspex::FaultsPage",
+  "de": "Es wird bis zu %1-mal gelöscht. Nach jedem Versuch wird nachgelesen, ob der Speicher wirklich leer ist. Bleibt etwas stehen, wird zwischendurch die Verbindung neu aufgebaut, weil manche Steuergeräte den Löschbefehl nur direkt nach dem Wecken annehmen.\n\nWas das nicht kann: einen Fehler beseitigen, dessen Ursache noch besteht. Der steht sofort wieder drin, egal wie oft gelöscht wird. Löschen ersetzt keine Reparatur.\n\nDie Bereitschaftstests werden dabei ebenfalls zurückgesetzt.",
+  "en": "The memory is cleared up to %1 times. After each attempt it is read back to check whether it is really empty. If something remains, the connection is re-established in between, because some control units only accept the clear command right after waking up.\n\nWhat this cannot do: remove a fault whose cause is still present. It is stored again immediately, no matter how often it is cleared. Clearing is no substitute for a repair.\n\nThe readiness monitors are reset as well.",
+  "plural": false
+ },
+ {
+  "id": "u244",
+  "context": "caruspex::FaultsPage",
+  "de": "Ja, hartnäckig löschen",
+  "en": "Yes, persistent clear",
+  "plural": false
+ },
+ {
+  "id": "u245",
+  "context": "caruspex::FaultsPage",
+  "de": "Fertig: der Speicher ist leer.",
+  "en": "Done: the memory is empty.",
+  "plural": false
+ },
+ {
+  "id": "u246",
+  "context": "caruspex::FaultsPage",
+  "de": "Fertig: %1 Einträge bleiben stehen. Das heißt, die Ursache besteht noch. Der Reiter Fehlerspeicher zeigt oben rechts am Fahrzeug, wo zu suchen ist.",
+  "en": "Done: %1 entries remain. That means the cause is still present. The Fault memory tab shows on the car at the top right where to look.",
+  "plural": false
+ },
+ {
+  "id": "u247",
+  "context": "caruspex::FaultsPage",
+  "de": "Speichern",
+  "en": "Save",
+  "plural": false
+ },
+ {
+  "id": "u248",
+  "context": "caruspex::FaultsPage",
+  "de": "CSV (*.csv)",
+  "en": "CSV (*.csv)",
+  "plural": false
+ },
+ {
+  "id": "u249",
+  "context": "caruspex::FaultsPage",
+  "de": "Fehler",
+  "en": "Error",
+  "plural": false
+ }
+]

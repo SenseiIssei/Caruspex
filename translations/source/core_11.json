@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c2750",
+  "de": "ABS/ESP abgeschaltet, Information gespeichert (meist Folge eines anderen Fehlers)",
+  "en": "System disabled information stored (usually follows another fault)"
+ },
+ {
+  "id": "c2751",
+  "de": "Gemisch Bank 1 zu mager",
+  "en": "System too lean - bank 1"
+ },
+ {
+  "id": "c2752",
+  "de": "Gemisch Bank 2 zu mager",
+  "en": "System too lean - bank 2"
+ },
+ {
+  "id": "c2753",
+  "de": "Gemisch bei höherer Last zu mager, Bank 1",
+  "en": "System too lean at higher load - bank 1"
+ },
+ {
+  "id": "c2754",
+  "de": "Gemisch bei höherer Last zu mager, Bank 2",
+  "en": "System too lean at higher load - bank 2"
+ },
+ {
+  "id": "c2755",
+  "de": "Gemisch im Leerlauf zu mager, Bank 1",
+  "en": "System too lean at idle - bank 1"
+ },
+ {
+  "id": "c2756",
+  "de": "Gemisch im Leerlauf zu mager, Bank 2",
+  "en": "System too lean at idle - bank 2"
+ },
+ {
+  "id": "c2757",
+  "de": "Gemisch außerhalb des Leerlaufs zu mager, Bank 1",
+  "en": "System too lean off idle - bank 1"
+ },
+ {
+  "id": "c2758",
+  "de": "Gemisch außerhalb des Leerlaufs zu mager, Bank 2",
+  "en": "System too lean off idle - bank 2"
+ },
+ {
+  "id": "c2759",
+  "de": "Gemisch Bank 1 zu fett",
+  "en": "System too rich - bank 1"
+ },
+ {
+  "id": "c2760",
+  "de": "Gemisch Bank 2 zu fett",
+  "en": "System too rich - bank 2"
+ },
+ {
+  "id": "c2761",
+  "de": "Gemisch bei höherer Last zu fett, Bank 1",
+  "en": "System too rich at higher load - bank 1"
+ },
+ {
+  "id": "c2762",
+  "de": "Gemisch bei höherer Last zu fett, Bank 2",
+  "en": "System too rich at higher load - bank 2"
+ },
+ {
+  "id": "c2763",
+  "de": "Gemisch im Leerlauf zu fett, Bank 1",
+  "en": "System too rich at idle - bank 1"
+ },
+ {
+  "id": "c2764",
+  "de": "Gemisch im Leerlauf zu fett, Bank 2",
+  "en": "System too rich at idle - bank 2"
+ },
+ {
+  "id": "c2765",
+  "de": "Gemisch außerhalb des Leerlaufs zu fett, Bank 1",
+  "en": "System too rich off idle - bank 1"
+ },
+ {
+  "id": "c2766",
+  "de": "Gemisch außerhalb des Leerlaufs zu fett, Bank 2",
+  "en": "System too rich off idle - bank 2"
+ },
+ {
+  "id": "c2767",
+  "de": "Bordnetzspannung - Fehlfunktion",
+  "en": "System voltage"
+ },
+ {
+  "id": "c2768",
+  "de": "Bordnetzspannung zu hoch",
+  "en": "System voltage high"
+ },
+ {
+  "id": "c2769",
+  "de": "Bordnetzspannung zu niedrig (Batterie oder Lichtmaschine)",
+  "en": "System voltage low"
+ },
+ {
+  "id": "c2770",
+  "de": "Bordnetzspannung instabil",
+  "en": "System voltage unstable"
+ },
+ {
+  "id": "c2771",
+  "de": "Wandlerüberbrückung - PWM-Magnetventil Stromkreis",
+  "en": "TCC PWM solenoid circuit"
+ },
+ {
+  "id": "c2772",
+  "de": "Getriebesteuergerät Drehzahlausgang - Stromkreis",
+  "en": "TCM engine speed output - circuit"
+ },
+ {
+  "id": "c2773",
+  "de": "Getriebesteuergerät Drehzahlausgang - Spannung zu hoch",
+  "en": "TCM engine speed output - circuit high"
+ },
+ {
+  "id": "c2774",
+  "de": "Getriebesteuergerät Drehzahlausgang - Spannung zu niedrig",
+  "en": "TCM engine speed output - circuit low"
+ },
+ {
+  "id": "c2775",
+  "de": "Getriebesteuergerät - Spannungsversorgung - Spannung zu hoch",
+  "en": "TCM power input signal - high"
+ },
+ {
+  "id": "c2776",
+  "de": "Getriebesteuergerät - Spannungsversorgung - Signal setzt zeitweise aus",
+  "en": "TCM power input signal - intermittent"
+ },
+ {
+  "id": "c2777",
+  "de": "Getriebesteuergerät - Spannungsversorgung - Spannung zu niedrig",
+  "en": "TCM power input signal - low"
+ },
+ {
+  "id": "c2778",
+  "de": "Getriebesteuergerät - Spannungsversorgung - Fehlfunktion",
+  "en": "TCM power input signal - malfunction"
+ },
+ {
+  "id": "c2779",
+  "de": "Getriebesteuergerät - Spannungsversorgung - Signal unplausibel",
+  "en": "TCM power input signal - range/performance"
+ },
+ {
+  "id": "c2780",
+  "de": "Hauptrelais Getriebesteuergerät - Steuerkreis Spannung zu hoch",
+  "en": "TCM power relay - control circuit high"
+ },
+ {
+  "id": "c2781",
+  "de": "Hauptrelais Getriebesteuergerät - Steuerkreis Spannung zu niedrig",
+  "en": "TCM power relay - control circuit low"
+ },
+ {
+  "id": "c2782",
+  "de": "Hauptrelais Getriebesteuergerät - Steuerkreis oder Unterbrechung",
+  "en": "TCM power relay - control circuit/open"
+ },
+ {
+  "id": "c2783",
+  "de": "Getriebesteuergerät - Prozessor",
+  "en": "TCM processor"
+ },
+ {
+  "id": "c2784",
+  "de": "OT-Geber - Signal setzt zeitweise aus",
+  "en": "TDC sensor intermittent interruption"
+ },
+ {
+  "id": "c2785",
+  "de": "OT-Geber - kein Signal",
+  "en": "TDC sensor no signal"
+ },
+ {
+  "id": "c2786",
+  "de": "Drosselklappensensor 1 und 2 passen nicht zusammen",
+  "en": "TP sensor 1-2 correlation"
+ },
+ {
+  "id": "c2787",
+  "de": "Drosselklappensensor - Signal zeitweise zu hoch",
+  "en": "TP sensor circuit intermittent high voltage"
+ },
+ {
+  "id": "c2788",
+  "de": "Drosselklappensensor - Signal zeitweise zu niedrig",
+  "en": "TP sensor circuit intermittent low voltage"
+ },
+ {
+  "id": "c2789",
+  "de": "Taiwan",
+  "en": "Taiwan"
+ },
+ {
+  "id": "c2790",
+  "de": "Telematik (ATM)",
+  "en": "Telematics (ATM)"
+ },
+ {
+  "id": "c2791",
+  "de": "Temperatur",
+  "en": "Temperature"
+ },
+ {
+  "id": "c2792",
+  "de": "Temperaturdifferenz",
+  "en": "Temperature difference"
+ },
+ {
+  "id": "c2793",
+  "de": "Temperaturen",
+  "en": "Temperatures"
+ },
+ {
+  "id": "c2794",
+  "de": "Tesla Model 3 und Model Y (Mithören am CAN-Bus)",
+  "en": "Tesla Model 3 and Model Y (listening on the CAN bus)"
+ },
+ {
+  "id": "c2795",
+  "de": "Thailand",
+  "en": "Thailand"
+ },
+ {
+  "id": "c2796",
+  "de": "Die DoIP-Verbindung zum Auto ist getrennt.",
+  "en": "The DoIP connection to the car is gone."
+ },
+ {
+  "id": "c2797",
+  "de": "Die ENET-Verbindung zum Auto ist getrennt.",
+  "en": "The ENET connection to the car is gone."
+ },
+ {
+  "id": "c2798",
+  "de": "Der Adapter nimmt die Adresse nicht an (ATSH/ATCRA).",
+  "en": "The adapter does not accept the address (ATSH/ATCRA)."
+ },
+ {
+  "id": "c2799",
+  "de": "Der Adapter nimmt die Adresse nicht an (ATSH/ATCRA/ATCAF0).",
+  "en": "The adapter does not accept the address (ATSH/ATCRA/ATCAF0)."
+ },
+ {
+  "id": "c2800",
+  "de": "Der betroffene Zylinder bekommt wahrscheinlich keinen Kraftstoff, der Motor läuft unrund. Behutsam zur Werkstatt fahren.",
+  "en": "The affected cylinder probably gets no fuel and the engine runs rough. Drive gently to a workshop."
+ },
+ {
+  "id": "c2801",
+  "de": "Airbag oder Gurtstraffer lösen bei einem Unfall möglicherweise nicht aus. Technisch kann man weiterfahren, die Sicherheit ist aber eingeschränkt: bald in die Werkstatt. Nicht selbst an Airbag-Steckern arbeiten.",
+  "en": "The airbag or seat belt pretensioner may not deploy in a crash. The car can still be driven, but safety is reduced: go to a workshop soon. Do not work on airbag connectors yourself."
+ },
+ {
+  "id": "c2802",
+  "de": "Die Antwort passt nicht zur Anfrage.",
+  "en": "The answer does not match the request."
+ },
+ {
+  "id": "c2803",
+  "de": "Das Auto hat die DoIP-Verbindung getrennt.",
+  "en": "The car closed the DoIP connection."
+ },
+ {
+  "id": "c2804",
+  "de": "Das Auto hat die ENET-Verbindung getrennt.",
+  "en": "The car closed the ENET connection."
+ },
+ {
+  "id": "c2805",
+  "de": "Das Auto fährt nur noch mit der Batterieladung und kann nach einiger Zeit ausgehen. Unnötige Verbraucher ausschalten und direkt zur Werkstatt fahren.",
+  "en": "The car is running on battery charge only and may cut out after a while. Switch off unnecessary loads and drive straight to a workshop."
+ },
+ {
+  "id": "c2806",
+  "de": "Das Auto kann ins Notlaufprogramm gehen und reagiert dann nur noch träge aufs Gaspedal. Vorsichtig zur Werkstatt fahren.",
+  "en": "The car may go into limp mode and then responds only sluggishly to the accelerator. Drive carefully to a workshop."
+ },
+ {
+  "id": "c2807",
+  "de": "Das Auto kann ins Notlaufprogramm gehen: wenig Leistung, begrenzte Drehzahl. Vorsichtig fahren, bei plötzlichem Leistungsverlust nicht überholen, bald prüfen lassen.",
+  "en": "The car may go into limp mode with little power and limited revs. Drive carefully, do not overtake in case power drops suddenly, and have it checked soon."
+ },
+ {
+  "id": "c2808",
+  "de": "Die Prüfziffer an Stelle 9 stimmt nicht. Wahrscheinlich ist ein Zeichen falsch abgeschrieben.",
+  "en": "The check digit at position 9 does not match. Probably a character was copied wrongly."
+ },
+ {
+  "id": "c2809",
+  "de": "Die Prüfziffer an Stelle 9 stimmt. Das spricht für ein Fahrzeug, das für Nordamerika gebaut wurde.",
+  "en": "The check digit at position 9 matches. That suggests a vehicle built for North America."
+ },
+ {
+  "id": "c2810",
+  "de": "Die Prüfziffer passt nicht, ist bei Fahrzeugen für Europa aber nicht vorgeschrieben. Das ist kein Fehler.",
+  "en": "The check digit does not match, but it is not required for vehicles built for Europe. That is not an error."
+ },
+ {
+  "id": "c2811",
+  "de": "Die Motorkontrollleuchte kann ausgefallen sein, neue Fehler würdest du dann nicht sehen. Bald prüfen lassen.",
+  "en": "The check engine light may have failed, so you would not see new faults. Have it checked soon."
+ },
+ {
+  "id": "c2812",
+  "de": "Beim Einschalten der Zündung muss die Motorkontrollleuchte kurz aufleuchten",
+  "en": "The check engine light must light up briefly when you switch on the ignition"
+ },
+ {
+  "id": "c2813",
+  "de": "Das Steuergerät hört nicht auf, sich vorzustellen",
+  "en": "The control unit keeps sending identification blocks"
+ },
+ {
+  "id": "c2814",
+  "de": "Das Steuergerät nennt Überwachungen, liefert aber noch keine Ergebnisse. Nach dem Löschen der Fehler braucht es erst einige Fahrten.",
+  "en": "The control unit lists monitors but has no results yet. After clearing the codes it needs a few trips first."
+ },
+ {
+  "id": "c2815",
+  "de": "Die Stromversorgung des Steuergeräts ist gestört, der Motor kann ausgehen oder nicht anspringen. Bald prüfen lassen.",
+  "en": "The control unit power supply is disturbed, so the engine may cut out or fail to start. Have it checked soon."
+ },
+ {
+  "id": "c2816",
+  "de": "Das Steuergerät liefert keine Bauteilüberwachung. Bei Fahrzeugen vor etwa 2003 ist das normal.",
+  "en": "The control unit provides no component monitoring results. This is normal for vehicles from before about 2003."
+ },
+ {
+  "id": "c2817",
+  "de": "Das Steuergerät liefert keine Lambdasondenprüfung. Bei Fahrzeugen mit CAN ist dieser Dienst abgeschafft, die Werte stecken dort in der Bauteilüberwachung.",
+  "en": "The control unit provides no oxygen sensor test results. Vehicles with CAN no longer have this service; the values are part of component monitoring there."
+ },
+ {
+  "id": "c2818",
+  "de": "Das Steuergerät meldet einen inneren Fehler. Läuft das Auto normal, vorsichtig zur Werkstatt. Vorher die Batterie prüfen, denn schwache Spannung löst solche Fehler oft aus.",
+  "en": "The control unit reports an internal fault. If the car runs normally, drive carefully to a workshop. Check the battery first, because low voltage often triggers such faults."
+ },
+ {
+  "id": "c2819",
+  "de": "Die Steuergeräte können sich nicht mehr richtig austauschen. Funktionieren Bremsen, Lenkung und Warnleuchten normal, vorsichtig zur Werkstatt fahren.",
+  "en": "The control units can no longer communicate properly. If brakes, steering and warning lights work normally, drive carefully to a workshop."
+ },
+ {
+  "id": "c2820",
+  "de": "Motorsteuergerät selbst",
+  "en": "The engine control unit itself"
+ },
+ {
+  "id": "c2821",
+  "de": "Der Motor kann jederzeit ausgehen oder nicht mehr anspringen. Nur noch kurze Strecken fahren, am besten direkt zur Werkstatt.",
+  "en": "The engine may cut out at any time or fail to restart. Only drive short distances, ideally straight to a workshop."
+ },
+ {
+  "id": "c2822",
+  "de": "Der Motor kann ausgehen oder nicht mehr anspringen. Möglichst bald prüfen lassen.",
+  "en": "The engine may cut out or fail to start. Have it checked as soon as possible."
+ },
+ {
+  "id": "c2823",
+  "de": "Der Motor kann Leistung verlieren, ruckeln oder sogar im Fahren ausgehen. Vorsichtig fahren, nicht mit fast leerem Tank, und bald prüfen lassen.",
+  "en": "The engine may lose power, stumble or even cut out while driving. Drive carefully, not with a nearly empty tank, and have it checked soon."
+ },
+ {
+  "id": "c2824",
+  "de": "Die Datei ist keine Caruspex-Aufnahme.",
+  "en": "The file is not a Caruspex recording."
+ },
+ {
+  "id": "c2825",
+  "de": "Das Gateway bestätigt die Anfrage nicht.",
+  "en": "The gateway does not acknowledge the request."
+ },
+ {
+  "id": "c2826",
+  "de": "Das Gateway nimmt die Anfrage nicht an.",
+  "en": "The gateway refuses the request."
+ },
+ {
+  "id": "c2827",
+  "de": "Das Gateway meldet einen Fehler ",
+  "en": "The gateway reports error "
+ },
+ {
+  "id": "c2828",
+  "de": "Der schwierigste Test. Das Auto mindestens 8 Stunden stehen lassen (am besten über Nacht), Tank zwischen einem Viertel und drei Vierteln voll, Tankdeckel fest zu. Kaltstart, dann ruhig fahren mit Stadt- und Landstraßenanteil und einer Minute Leerlauf am Ende. Viele Autos testen erst nach dem Abstellen, also danach wieder einige Stunden stehen lassen. Bei sehr kaltem oder sehr heißem Wetter läuft der Test oft gar nicht.",
+  "en": "The hardest one. Let the car sit for at least 8 hours (overnight is best), tank between a quarter and three quarters full, fuel cap tightly closed. Cold start, then drive calmly with some town and some country road and a minute of idling at the end. Many cars run the test only after being switched off, so let it sit for a few hours again afterwards. In very cold or very hot weather the test often does not run at all."
+ },
+ {
+  "id": "c2829",
+  "de": "Das Hybridsystem meldet eine Störung, das Auto kann in einen Notlauf gehen. Vorsichtig zu einer Fachwerkstatt fahren und nicht selbst an Hochvoltteilen arbeiten.",
+  "en": "The hybrid system reports a fault and the car may enter limp mode. Drive carefully to a specialist and never work on high-voltage parts yourself."
+ },
+ {
+  "id": "c2830",
+  "de": "Die letzte Zeile ist abgeschnitten und wurde ausgelassen.\n",
+  "en": "The last line is cut off and was left out.\n"
+ },
+ {
+  "id": "c2831",
+  "de": "Der Hersteller ist klar, das Modell steht nicht in der Fahrgestellnummer. Bitte das Modell aus der Liste wählen.",
+  "en": "The manufacturer is clear, the model is not in the VIN. Please pick the model from the list."
+ },
+ {
+  "id": "c2832",
+  "de": "Der Hersteller ist in der Tabelle nicht verzeichnet.",
+  "en": "The manufacturer is not in the table."
+ },
+ {
+  "id": "c2833",
+  "de": "Der Hersteller ist unbekannt, daher gibt es keinen Treffer im Katalog.",
+  "en": "The manufacturer is unknown, so there is no match in the catalog."
+ },
+ {
+  "id": "c2834",
+  "de": "Der Modellcode passt, aber das Baujahr liegt außerhalb der bekannten Bauzeit.",
+  "en": "The model code matches, but the model year lies outside the known build period."
+ },
+ {
+  "id": "c2835",
+  "de": "Der Modellcode passt, ein Baujahr steht nicht in der Fahrgestellnummer.",
+  "en": "The model code matches, the VIN carries no model year."
+ },
+ {
+  "id": "c2836",
+  "de": "Der Modellcode passt; das Baujahr ergibt sich erst über die Bauzeit dieser Generation.",
+  "en": "The model code matches; the model year follows from the build period of this generation."
+ },
+ {
+  "id": "c2837",
+  "de": "Die schärfere adaptive Zeitsteuerung ATAT2 ist vorhanden und verkürzt die Wartezeit weiter. Bei fehlenden Antworten zurück auf ATAT1.",
+  "en": "The more aggressive adaptive timing ATAT2 is available and shortens the waiting further. Go back to ATAT1 if answers go missing."
+ },
+ {
+  "id": "c2838",
+  "de": "Die normale Bremse funktioniert weiter, ABS und ESP sind aber wahrscheinlich abgeschaltet. Vorsichtig fahren und bald prüfen lassen. Fühlt sich das Bremspedal anders an als sonst, nicht weiterfahren.",
+  "en": "The normal brakes still work, but ABS and stability control are probably switched off. Drive carefully and have it checked soon. If the brake pedal feels different from usual, do not drive on."
+ },
+ {
+  "id": "c2839",
+  "de": "Die normale Bremse funktioniert weiter, ABS und ESP sind aber wahrscheinlich abgeschaltet. Vorsichtig fahren, besonders bei Nässe und Glätte, und bald prüfen lassen.",
+  "en": "The normal brakes still work, but ABS and stability control are probably switched off. Drive carefully, especially in wet or icy conditions, and have it checked soon."
+ },
+ {
+  "id": "c2840",
+  "de": "Die Stellglieddiagnose ist bisher nur für KWP1281 umgesetzt. Dieses Steuergerät spricht KWP2000.",
+  "en": "The output test is only implemented for KWP1281 so far. This control unit speaks KWP2000."
+ },
+ {
+  "id": "c2841",
+  "de": "Die Aufnahme nennt keine gültige Formatversion.",
+  "en": "The recording does not state a valid format version."
+ },
+ {
+  "id": "c2842",
+  "de": "Die Aufnahme ist leer.",
+  "en": "The recording is empty."
+ },
+ {
+  "id": "c2843",
+  "de": "Das System hat Geräusche erkannt, die auf verschlissene Pleuellager hindeuten, und schaltet in den Notlauf. Möglichst nicht weiterfahren und die Marken-Werkstatt anrufen: für viele betroffene Motoren gibt es eine Rückruf- oder Garantieaktion.",
+  "en": "The system has detected noise that points to worn connecting rod bearings and switches to limp mode. Avoid driving further and call a dealer workshop: many affected engines are covered by a recall or warranty campaign."
+ },
+ {
+  "id": "c2844",
+  "de": "Das Getriebesteuergerät hat selbst einen Fehler gespeichert. Den Getriebe-Fehlerspeicher auslesen, dort steht der eigentliche Grund. Fährt das Getriebe im Notlauf mit festem Gang, nur kurz und behutsam fahren.",
+  "en": "The transmission control unit has stored a fault of its own. Read the transmission fault memory, which holds the actual cause. If the gearbox is in limp mode with a fixed gear, only drive briefly and gently."
+ },
+ {
+  "id": "c2845",
+  "de": "Das Getriebe rutscht oder schaltet falsch. Nur noch behutsam fahren, nichts ziehen und nicht stark beschleunigen, bald in die Werkstatt.",
+  "en": "The transmission is slipping or shifting wrongly. Drive gently only, do not tow or accelerate hard, and go to a workshop soon."
+ },
+ {
+  "id": "c2846",
+  "de": "Das Getriebe ist zu heiß. Tempo verringern, keinen Anhänger ziehen und nicht im Stop-and-go quälen. Erscheint eine Warnmeldung, anhalten und abkühlen lassen.",
+  "en": "The transmission is too hot. Slow down, do not tow and avoid stop-and-go. If a warning appears, stop and let it cool down."
+ },
+ {
+  "id": "c2847",
+  "de": "Der Wert kam in den gehörten Nachrichten nicht vor.",
+  "en": "The value was not in the frames heard."
+ },
+ {
+  "id": "c2848",
+  "de": "Das Fahrzeug gibt die Diagnose nicht frei (Code ",
+  "en": "The vehicle does not grant routing (code "
+ },
+ {
+  "id": "c2849",
+  "de": "Das Fahrzeug nimmt die Anfrage nicht an (DoIP ",
+  "en": "The vehicle refuses the request (DoIP "
+ },
+ {
+  "id": "c2850",
+  "de": "Das Fahrzeug lehnt die DoIP-Nachricht ab.",
+  "en": "The vehicle rejects the DoIP message."
+ },
+ {
+  "id": "c2851",
+  "de": "Diebstahl erkannt, Motor gesperrt (Wegfahrsperre)",
+  "en": "Theft detected - vehicle immobilized"
+ },
+ {
+  "id": "c2852",
+  "de": "Wegfahrsperre - Freigabe für Kraftstoff nicht empfangen",
+  "en": "Theft deterrent fuel enable signal not received"
+ },
+ {
+  "id": "c2853",
+  "de": "Wegfahrsperre - Startfreigabe falsch",
+  "en": "Theft deterrent start enable signal not correct"
+ },
+ {
+  "id": "c2854",
+  "de": "Thermostatheizung - Steuerkreis Spannung zu hoch",
+  "en": "Thermostat heater - control circuit high"
+ },
+ {
+  "id": "c2855",
+  "de": "Thermostatheizung - Steuerkreis Spannung zu niedrig",
+  "en": "Thermostat heater - control circuit low"
+ },
+ {
+  "id": "c2856",
+  "de": "Thermostatheizung - Steuerkreis oder Unterbrechung",
+  "en": "Thermostat heater - control circuit/open"
+ },
+ {
+  "id": "c2857",
+  "de": "Thermostat hängt offen\nKühlmitteltemperaturgeber misst falsch\nSehr kalte Umgebung und viel Kurzstrecke",
+  "en": "Thermostat stuck open\nCoolant temperature sensor reads wrong\nVery cold weather and many short trips"
+ },
+ {
+  "id": "c2858",
+  "de": "Dieses Auto hat noch keine Diagnose, die ein Adapter auslesen kann. Fehler zeigen sich höchstens als Blinkcode.",
+  "en": "This car has no diagnosis yet that an adapter could read. Faults show up as blink codes at most."
+ },
+ {
+  "id": "c2859",
+  "de": "Dieses Steuergerät spricht kein KWP2000 (Schlüsselbytes ",
+  "en": "This control unit does not speak KWP2000 (key bytes "
+ },
+ {
+  "id": "c2860",
+  "de": "Stellglieddiagnose kennt dieses Steuergerät nicht",
+  "en": "This control unit does not support the output test"
+ },
+ {
+  "id": "c2861",
+  "de": "Dieses Steuergerät kennt den Dienst nicht",
+  "en": "This control unit does not support the service"
+ },
+ {
+  "id": "c2862",
+  "de": "Das ist kein gültiger Fehlercode.",
+  "en": "This is not a valid trouble code."
+ },
+ {
+  "id": "c2863",
+  "de": "Von diesem Hersteller gab es in diesem Baujahr nur dieses Modell.",
+  "en": "This manufacturer only built this model in that year."
+ },
+ {
+  "id": "c2864",
+  "de": "Dieser Hersteller schreibt bei Fahrzeugen für Europa kein Baujahr in die Fahrgestellnummer. Es steht im Fahrzeugschein.",
+  "en": "This manufacturer writes no model year into VINs for Europe. It is in the registration papers."
+ },
+ {
+  "id": "c2865",
+  "de": "Diese Nachricht ist auf dem Bus nicht zu hören (",
+  "en": "This message is not heard on the bus ("
+ },
+ {
+  "id": "c2866",
+  "de": "So klappt es am ehesten: Auto über Nacht stehen lassen, damit der Motor ganz kalt ist (Kühlmittel ungefähr so warm wie die Außenluft). Tank zwischen einem Viertel und drei Vierteln voll. Vorher keine Fehler mehr im Speicher und zwischendurch nichts löschen, sonst beginnt alles von vorn. Während der Fahrt Zündung nicht ausschalten und Klimaanlage, Heckscheibenheizung und andere große Verbraucher möglichst aus lassen.",
+  "en": "This works best: let the car sit overnight so the engine is completely cold (coolant about as warm as the outside air). Tank between a quarter and three quarters full. No faults left in memory beforehand, and do not clear anything in between, or everything starts over. Do not switch the ignition off during the drive, and keep the air conditioning, rear window heating and other big consumers off if you can."
+ },
+ {
+  "id": "c2867",
+  "de": "Drosselklappensteller - elektrische Fehlfunktion",
+  "en": "Throttle actuator - electrical malfunction"
+ },
+ {
+  "id": "c2868",
+  "de": "Drosselklappen-Ansteuerung A und B",
+  "en": "Throttle actuator A and B"
+ },
+ {
+  "id": "c2869",
+  "de": "Drosselklappensteller und Fahrpedal",
+  "en": "Throttle actuator and accelerator pedal"
+ },
+ {
+  "id": "c2870",
+  "de": "Drosselklappensteller Bank 1 - Fehlfunktion",
+  "en": "Throttle actuator bank 1 - malfunction"
+ },
+ {
+  "id": "c2871",
+  "de": "Drosselklappen-Steuermodul - Funktion",
+  "en": "Throttle actuator control module performance"
+ },
+ {
+  "id": "c2872",
+  "de": "Drosselklappen-Steuermodul - Prozessor",
+  "en": "Throttle actuator control module processor"
+ },
+ {
+  "id": "c2873",
+  "de": "Drosselklappensteller Motor - Stromkreis Spannung zu hoch",
+  "en": "Throttle actuator control motor - circuit high"
+ },
+ {
+  "id": "c2874",
+  "de": "Drosselklappensteller Motor - Stromkreis Spannung zu niedrig",
+  "en": "Throttle actuator control motor - circuit low"
+ },
+ {
+  "id": "c2875",
+  "de": "Drosselklappensteller Motor - Funktion",
+  "en": "Throttle actuator control motor - circuit range/performance"
+ },
+ {
+  "id": "c2876",
+  "de": "Drosselklappensteller Motor - Stromkreis oder Unterbrechung",
+  "en": "Throttle actuator control motor - circuit/open"
+ },
+ {
+  "id": "c2877",
+  "de": "Drosselklappensteller Motorstrom - Funktion",
+  "en": "Throttle actuator control motor current range/performance"
+ },
+ {
+  "id": "c2878",
+  "de": "Drosselklappensteller Bank 1 - Funktion (Anlernen fällig?)",
+  "en": "Throttle actuator control range/performance - bank 1"
+ },
+ {
+  "id": "c2879",
+  "de": "Drosselklappensteller Bank 2 - Funktion",
+  "en": "Throttle actuator control range/performance - bank 2"
+ },
+ {
+  "id": "c2880",
+  "de": "Drosselklappensteuerung - Motor zwangsweise abgestellt",
+  "en": "Throttle actuator control system - forced engine shutdown"
+ },
+ {
+  "id": "c2881",
+  "de": "Drosselklappensteuerung - Leerlauf erzwungen (Notlauf)",
+  "en": "Throttle actuator control system - forced idle"
+ },
+ {
+  "id": "c2882",
+  "de": "Drosselklappensteuerung - Drehzahl zwangsweise begrenzt",
+  "en": "Throttle actuator control system - forced limited RPM"
+ },
+ {
+  "id": "c2883",
+  "de": "Drosselklappensteuerung - Leistung zwangsweise begrenzt",
+  "en": "Throttle actuator control system - forced limited power"
+ },
+ {
+  "id": "c2884",
+  "de": "Drosselklappe hängt geschlossen",
+  "en": "Throttle actuator control system - stuck closed"
+ },
+ {
+  "id": "c2885",
+  "de": "Drosselklappe hängt offen",
+  "en": "Throttle actuator control system - stuck open"
+ },
+ {
+  "id": "c2886",
+  "de": "Drosselklappengehäuse - Funktion",
+  "en": "Throttle actuator control throttle body range/performance"
+ },
+ {
+  "id": "c2887",
+  "de": "Drosselklappe und Fahrpedal",
+  "en": "Throttle and accelerator pedal"
+ },
+ {
+  "id": "c2888",
+  "de": "Drosselklappe",
+  "en": "Throttle body"
+ },
+ {
+  "id": "c2889",
+  "de": "Drosselklappensteuereinheit J338",
+  "en": "Throttle body J338"
+ },
+ {
+  "id": "c2890",
+  "de": "Drosselklappe und Fahrpedalgeber",
+  "en": "Throttle body and accelerator pedal sensor"
+ },
+ {
+  "id": "c2891",
+  "de": "Drosselklappensteuerung - Fehlfunktion",
+  "en": "Throttle body control - malfunction"
+ },
+ {
+  "id": "c2892",
+  "de": "Drosselklappensteuerung: Regelbereich",
+  "en": "Throttle body control: control range"
+ },
+ {
+  "id": "c2893",
+  "de": "Drosselklappenmotor - Stromkreis",
+  "en": "Throttle control motor circuit"
+ },
+ {
+  "id": "c2894",
+  "de": "Drosselklappenmotor - Kurzschluss",
+  "en": "Throttle control motor circuit short"
+ },
+ {
+  "id": "c2895",
+  "de": "Drosselklappenmotor blockiert",
+  "en": "Throttle control motor lock"
+ },
+ {
+  "id": "c2896",
+  "de": "Relais Drosselklappenmotor - Unterbrechung",
+  "en": "Throttle control motor relay circuit open"
+ },
+ {
+  "id": "c2897",
+  "de": "Relais Drosselklappenmotor - Kurzschluss",
+  "en": "Throttle control motor relay circuit short"
+ },
+ {
+  "id": "c2898",
+  "de": "Drosselklappenstellung",
+  "en": "Throttle position"
+ },
+ {
+  "id": "c2899",
+  "de": "Drosselklappensensor (Automatikgetriebe) - Fehlfunktion",
+  "en": "Throttle position sensor (A/T)"
+ },
+ {
+  "id": "c2900",
+  "de": "Drosselklappensensor 1 - Stromkreis",
+  "en": "Throttle position sensor 1 circuit"
+ },
+ {
+  "id": "c2901",
+  "de": "Drosselklappensensor 2 - Stromkreis",
+  "en": "Throttle position sensor 2 circuit"
+ },
+ {
+  "id": "c2902",
+  "de": "Drosselklappenpotentiometer G69",
+  "en": "Throttle position sensor G69"
+ },
+ {
+  "id": "c2903",
+  "de": "Drosselklappenpotentiometer G88",
+  "en": "Throttle position sensor G88"
+ },
+ {
+  "id": "c2904",
+  "de": "Drosselklappensensor passt nicht zum Luftmassenmesser",
+  "en": "Throttle position sensor inconsistent with MAF sensor"
+ },
+ {
+  "id": "c2905",
+  "de": "Drosselklappensensor - Signal setzt zeitweise aus",
+  "en": "Throttle position sensor intermittent"
+ },
+ {
+  "id": "c2906",
+  "de": "Drosselklappensensor - Signal unter dem Messbereich",
+  "en": "Throttle position sensor out of range low"
+ },
+ {
+  "id": "c2907",
+  "de": "Drosselklappensensor - außerhalb des Selbsttestbereichs",
+  "en": "Throttle position sensor out of self-test range"
+ },
+ {
+  "id": "c2908",
+  "de": "Drosselklappenpotentiometer: Signal unplausibel",
+  "en": "Throttle position sensor: implausible signal"
+ },
+ {
+  "id": "c2909",
+  "de": "Drosselklappensensoren",
+  "en": "Throttle position sensors"
+ },
+ {
+  "id": "c2910",
+  "de": "Drosselklappen-/Fahrpedalgeber A - Stromkreis",
+  "en": "Throttle/pedal position sensor A - circuit"
+ },
+ {
+  "id": "c2911",
+  "de": "Drosselklappen-/Fahrpedalgeber A - Signal zu hoch",
+  "en": "Throttle/pedal position sensor A - circuit high"
+ },
+ {
+  "id": "c2912",
+  "de": "Drosselklappen-/Fahrpedalgeber A - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor A - circuit intermittent"
+ },
+ {
+  "id": "c2913",
+  "de": "Drosselklappen-/Fahrpedalgeber A - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor A - circuit low"
+ },
+ {
+  "id": "c2914",
+  "de": "Drosselklappen-/Fahrpedalgeber A - Signal unplausibel",
+  "en": "Throttle/pedal position sensor A - circuit range/performance"
+ },
+ {
+  "id": "c2915",
+  "de": "Drosselklappen-/Fahrpedalgeber A - oberer Anschlag unplausibel",
+  "en": "Throttle/pedal position sensor A maximum stop performance"
+ },
+ {
+  "id": "c2916",
+  "de": "Drosselklappen-/Fahrpedalgeber A - unterer Anschlag unplausibel",
+  "en": "Throttle/pedal position sensor A minimum stop performance"
+ },
+ {
+  "id": "c2917",
+  "de": "Drosselklappen-/Fahrpedalgeber A und B - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor A/B voltage correlation"
+ },
+ {
+  "id": "c2918",
+  "de": "Drosselklappen-/Fahrpedalgeber A und C - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor A/C voltage correlation"
+ },
+ {
+  "id": "c2919",
+  "de": "Drosselklappen-/Fahrpedalgeber B - Stromkreis",
+  "en": "Throttle/pedal position sensor B - circuit"
+ },
+ {
+  "id": "c2920",
+  "de": "Drosselklappen-/Fahrpedalgeber B - Signal zu hoch",
+  "en": "Throttle/pedal position sensor B - circuit high"
+ },
+ {
+  "id": "c2921",
+  "de": "Drosselklappen-/Fahrpedalgeber B - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor B - circuit intermittent"
+ },
+ {
+  "id": "c2922",
+  "de": "Drosselklappen-/Fahrpedalgeber B - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor B - circuit low"
+ },
+ {
+  "id": "c2923",
+  "de": "Drosselklappen-/Fahrpedalgeber B - Signal unplausibel",
+  "en": "Throttle/pedal position sensor B - circuit range/performance"
+ },
+ {
+  "id": "c2924",
+  "de": "Drosselklappen-/Fahrpedalgeber B und C - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor B/C voltage correlation"
+ },
+ {
+  "id": "c2925",
+  "de": "Drosselklappen-/Fahrpedalgeber C - Stromkreis",
+  "en": "Throttle/pedal position sensor C - circuit"
+ },
+ {
+  "id": "c2926",
+  "de": "Drosselklappen-/Fahrpedalgeber C - Signal zu hoch",
+  "en": "Throttle/pedal position sensor C - circuit high"
+ },
+ {
+  "id": "c2927",
+  "de": "Drosselklappen-/Fahrpedalgeber C - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor C - circuit intermittent"
+ },
+ {
+  "id": "c2928",
+  "de": "Drosselklappen-/Fahrpedalgeber C - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor C - circuit low"
+ },
+ {
+  "id": "c2929",
+  "de": "Drosselklappen-/Fahrpedalgeber C - Signal unplausibel",
+  "en": "Throttle/pedal position sensor C - circuit range/performance"
+ },
+ {
+  "id": "c2930",
+  "de": "Fahrpedal-/Drosselklappengeber D - Stromkreis",
+  "en": "Throttle/pedal position sensor D - circuit"
+ },
+ {
+  "id": "c2931",
+  "de": "Fahrpedal-/Drosselklappengeber D - Signal zu hoch",
+  "en": "Throttle/pedal position sensor D - circuit high"
+ },
+ {
+  "id": "c2932",
+  "de": "Fahrpedal-/Drosselklappengeber D - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor D - circuit intermittent"
+ },
+ {
+  "id": "c2933",
+  "de": "Fahrpedal-/Drosselklappengeber D - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor D - circuit low"
+ },
+ {
+  "id": "c2934",
+  "de": "Fahrpedal-/Drosselklappengeber D - Signal unplausibel",
+  "en": "Throttle/pedal position sensor D - circuit range/performance"
+ },
+ {
+  "id": "c2935",
+  "de": "Fahrpedal-/Drosselklappengeber D und E - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor D/E voltage correlation"
+ },
+ {
+  "id": "c2936",
+  "de": "Fahrpedal-/Drosselklappengeber D und F - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor D/F voltage correlation"
+ },
+ {
+  "id": "c2937",
+  "de": "Fahrpedal-/Drosselklappengeber E - Stromkreis",
+  "en": "Throttle/pedal position sensor E - circuit"
+ },
+ {
+  "id": "c2938",
+  "de": "Fahrpedal-/Drosselklappengeber E - Signal zu hoch",
+  "en": "Throttle/pedal position sensor E - circuit high"
+ },
+ {
+  "id": "c2939",
+  "de": "Fahrpedal-/Drosselklappengeber E - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor E - circuit intermittent"
+ },
+ {
+  "id": "c2940",
+  "de": "Fahrpedal-/Drosselklappengeber E - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor E - circuit low"
+ },
+ {
+  "id": "c2941",
+  "de": "Fahrpedal-/Drosselklappengeber E - Signal unplausibel",
+  "en": "Throttle/pedal position sensor E - circuit range/performance"
+ },
+ {
+  "id": "c2942",
+  "de": "Fahrpedal-/Drosselklappengeber E und F - Spannungen passen nicht zusammen",
+  "en": "Throttle/pedal position sensor E/F voltage correlation"
+ },
+ {
+  "id": "c2943",
+  "de": "Fahrpedal-/Drosselklappengeber F - Stromkreis",
+  "en": "Throttle/pedal position sensor F - circuit"
+ },
+ {
+  "id": "c2944",
+  "de": "Fahrpedal-/Drosselklappengeber F - Signal zu hoch",
+  "en": "Throttle/pedal position sensor F - circuit high"
+ },
+ {
+  "id": "c2945",
+  "de": "Fahrpedal-/Drosselklappengeber F - Signal setzt zeitweise aus",
+  "en": "Throttle/pedal position sensor F - circuit intermittent"
+ },
+ {
+  "id": "c2946",
+  "de": "Fahrpedal-/Drosselklappengeber F - Signal zu niedrig",
+  "en": "Throttle/pedal position sensor F - circuit low"
+ },
+ {
+  "id": "c2947",
+  "de": "Fahrpedal-/Drosselklappengeber F - Signal unplausibel",
+  "en": "Throttle/pedal position sensor F - circuit range/performance"
+ },
+ {
+  "id": "c2948",
+  "de": "Zeit",
+  "en": "Time"
+ },
+ {
+  "id": "c2949",
+  "de": "Zeit zwischen den Umschaltungen",
+  "en": "Time between transitions"
+ },
+ {
+  "id": "c2950",
+  "de": "Zeit seit dem Löschen",
+  "en": "Time since codes cleared"
+ },
+ {
+  "id": "c2951",
+  "de": "Hochauflösendes Bezugssignal A - Impulse unregelmäßig",
+  "en": "Timing reference high resolution signal A - intermittent/erratic pulses"
+ },
+ {
+  "id": "c2952",
+  "de": "Hochauflösendes Bezugssignal A - Fehlfunktion",
+  "en": "Timing reference high resolution signal A - malfunction"
+ },
+ {
+  "id": "c2953",
+  "de": "Hochauflösendes Bezugssignal A - keine Impulse",
+  "en": "Timing reference high resolution signal A - no pulse"
+ },
+ {
+  "id": "c2954",
+  "de": "Hochauflösendes Bezugssignal A - zu wenige Impulse",
+  "en": "Timing reference high resolution signal A - too few pulses"
+ },
+ {
+  "id": "c2955",
+  "de": "Hochauflösendes Bezugssignal A - zu viele Impulse",
+  "en": "Timing reference high resolution signal A - too many pulses"
+ },
+ {
+  "id": "c2956",
+  "de": "Hochauflösendes Bezugssignal B - Impulse unregelmäßig",
+  "en": "Timing reference high resolution signal B - intermittent/erratic pulses"
+ },
+ {
+  "id": "c2957",
+  "de": "Hochauflösendes Bezugssignal B - Fehlfunktion",
+  "en": "Timing reference high resolution signal B - malfunction"
+ },
+ {
+  "id": "c2958",
+  "de": "Hochauflösendes Bezugssignal B - keine Impulse",
+  "en": "Timing reference high resolution signal B - no pulse"
+ },
+ {
+  "id": "c2959",
+  "de": "Hochauflösendes Bezugssignal B - zu wenige Impulse",
+  "en": "Timing reference high resolution signal B - too few pulses"
+ },
+ {
+  "id": "c2960",
+  "de": "Hochauflösendes Bezugssignal B - zu viele Impulse",
+  "en": "Timing reference high resolution signal B - too many pulses"
+ },
+ {
+  "id": "c2961",
+  "de": "Reifen- oder Achsübersetzung außerhalb des zulässigen Bereichs",
+  "en": "Tire/axle ratio out of acceptable range"
+ },
+ {
+  "id": "c2962",
+  "de": "Zu lang: eine Fahrgestellnummer hat 17 Zeichen.",
+  "en": "Too long: a VIN has 17 characters."
+ },
+ {
+  "id": "c2963",
+  "de": "Zu viele Blöcke beim Lesen des Fehlerspeichers",
+  "en": "Too many blocks while reading the fault memory"
+ },
+ {
+  "id": "c2964",
+  "de": "Zu kurz: eine Fahrgestellnummer hat 17 Zeichen. Autos vor 1981 hatten oft kürzere Nummern, die sich nicht nach dieser Norm deuten lassen.",
+  "en": "Too short: a VIN has 17 characters. Cars built before 1981 often had shorter numbers that cannot be decoded after this standard."
+ },
+ {
+  "id": "c2965",
+  "de": "AdBlue nachfüllen. Fährt man weiter, sperrt das Auto nach Ablauf der angezeigten Restreichweite den nächsten Motorstart.",
+  "en": "Top up AdBlue. If you keep driving, the car blocks the next engine start once the displayed remaining range has run out."
+ },
+ {
+  "id": "c2966",
+  "de": "Drehmoment Kennlinienpunkt 1",
+  "en": "Torque at engine point 1"
+ },
+ {
+  "id": "c2967",
+  "de": "Drehmoment Kennlinienpunkt 2",
+  "en": "Torque at engine point 2"
+ },
+ {
+  "id": "c2968",
+  "de": "Drehmoment Kennlinienpunkt 3",
+  "en": "Torque at engine point 3"
+ },
+ {
+  "id": "c2969",
+  "de": "Drehmoment Kennlinienpunkt 4",
+  "en": "Torque at engine point 4"
+ },
+ {
+  "id": "c2970",
+  "de": "Drehmoment im Leerlauf",
+  "en": "Torque at idle"
+ },
+ {
+  "id": "c2971",
+  "de": "Wandlerüberbrückungskupplung - elektrischer Fehler",
+  "en": "Torque converter clutch - circuit electrical"
+ },
+ {
+  "id": "c2972",
+  "de": "Wandlerüberbrückungskupplung - Signal setzt zeitweise aus",
+  "en": "Torque converter clutch - circuit intermittent"
+ },
+ {
+  "id": "c2973",
+  "de": "Wandlerüberbrückungskupplung - Funktion oder bleibt offen",
+  "en": "Torque converter clutch - circuit performance/stuck off"
+ },
+ {
+  "id": "c2974",
+  "de": "Wandlerüberbrückungskupplung - bleibt geschlossen",
+  "en": "Torque converter clutch - circuit stuck on"
+ },
+ {
+  "id": "c2975",
+  "de": "Wandlerüberbrückungskupplung - Magnetventil Stromkreis oder Unterbrechung",
+  "en": "Torque converter clutch - solenoid circuit/open"
+ },
+ {
+  "id": "c2976",
+  "de": "Wandlerüberbrückung - Funktion",
+  "en": "Torque converter clutch system performance"
+ },
+ {
+  "id": "c2977",
+  "de": "Geladene Ladungsmenge gesamt",
+  "en": "Total charge (current)"
+ },
+ {
+  "id": "c2978",
+  "de": "Entnommene Ladungsmenge gesamt",
+  "en": "Total discharge (current)"
+ },
+ {
+  "id": "c2979",
+  "de": "Geladene Energie gesamt",
+  "en": "Total energy charged"
+ },
+ {
+  "id": "c2980",
+  "de": "Entnommene Energie gesamt",
+  "en": "Total energy discharged"
+ },
+ {
+  "id": "c2981",
+  "de": "Motorlaufzeit gesamt",
+  "en": "Total engine run time"
+ },
+ {
+  "id": "c2982",
+  "de": "Motorlaufzeit im Leerlauf",
+  "en": "Total idle run time"
+ },
+ {
+  "id": "c2983",
+  "de": "Laufzeit mit Nebenantrieb",
+  "en": "Total run time with PTO active"
+ },
+ {
+  "id": "c2984",
+  "de": "Toyota/Lexus",
+  "en": "Toyota/Lexus"
+ },
+ {
+  "id": "c2985",
+  "de": "Antriebsschlupfregelung - Eingangssignal",
+  "en": "Traction control input signal"
+ },
+ {
+  "id": "c2986",
+  "de": "Getriebe",
+  "en": "Transmission"
+ },
+ {
+  "id": "c2987",
+  "de": "Eingelegter Gang",
+  "en": "Transmission actual gear"
+ },
+ {
+  "id": "c2988",
+  "de": "Getriebe und Kupplung",
+  "en": "Transmission and clutch"
+ },
+ {
+  "id": "c2989",
+  "de": "Getriebe und dessen Steuergerät",
+  "en": "Transmission and its control unit"
+ },
+ {
+  "id": "c2990",
+  "de": "Getriebebauteil rutscht",
+  "en": "Transmission component slipping"
+ },
+ {
+  "id": "c2991",
+  "de": "Getriebesteuerung",
+  "en": "Transmission control"
+ },
+ {
+  "id": "c2992",
+  "de": "Getriebesteuerung (TCM)",
+  "en": "Transmission control (TCM)"
+ },
+ {
+  "id": "c2993",
+  "de": "Getriebe-Steuerschalter (O/D) - außerhalb des Selbsttestbereichs",
+  "en": "Transmission control switch circuit out of self-test range"
+ },
+ {
+  "id": "c2994",
+  "de": "Getriebesteuerung - Fehler gespeichert (Getriebespeicher auslesen)",
+  "en": "Transmission control system (MIL request)"
+ },
+ {
+  "id": "c2995",
+  "de": "Getriebesteuerung - elektrischer Fehler",
+  "en": "Transmission control system electrical"
+ },
+ {
+  "id": "c2996",
+  "de": "Getriebesteuerung - Funktion",
+  "en": "Transmission control system range/performance"
+ },
+ {
+  "id": "c2997",
+  "de": "Getriebeöl gealtert",
+  "en": "Transmission fluid deteriorated"
+ },
+ {
+  "id": "c2998",
+  "de": "Getriebeöl überhitzt",
+  "en": "Transmission fluid over temperature condition"
+ },
+ {
+  "id": "c2999",
+  "de": "Getriebeöldrucksensor/-schalter A - Stromkreis",
+  "en": "Transmission fluid pressure sensor/switch A - circuit"
+ }
+]

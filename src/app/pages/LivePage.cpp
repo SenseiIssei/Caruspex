@@ -167,7 +167,7 @@ void LivePage::addSection(const QString& title) {
     head->setData(Qt::UserRole, -1);
     head->setForeground(theme::color::accent);
     QFont f = theme::sans(11, 700);
-    f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
+    if (theme::spacedLetters()) f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
     head->setFont(f);
     pidList_->addItem(head);
 }
@@ -185,7 +185,7 @@ void LivePage::buildPidList() {
             head->setData(Qt::UserRole, -1);
             head->setForeground(theme::color::accent);
             QFont f = theme::sans(11, 700);
-            f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
+            if (theme::spacedLetters()) f.setLetterSpacing(QFont::AbsoluteSpacing, 1.2);
             head->setFont(f);
             pidList_->addItem(head);
             any = true;

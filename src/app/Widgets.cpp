@@ -645,6 +645,9 @@ public:
         auto* label = new QLabel(text);
         label->setWordWrap(true);
         label->setMaximumWidth(340);
+        // Room for glyphs that reach past the line, as Latin words inside
+        // right-to-left text do.
+        label->setContentsMargins(4, 0, 4, 0);
         label->setStyleSheet(QStringLiteral("font-size: 13px;"));
         layout->addWidget(label, 1);
         adjustSize();

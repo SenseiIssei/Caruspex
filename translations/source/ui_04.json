@@ -1,0 +1,135 @@
+[
+ {
+  "id": "u1000",
+  "context": "caruspex::Worker",
+  "de": "Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?",
+  "en": "No Bluetooth adapter found nearby. Is it plugged into the car, and is the ignition on?",
+  "plural": false
+ },
+ {
+  "id": "u1001",
+  "context": "caruspex::Worker",
+  "de": "Verbinde mit %1 über klassisches Bluetooth ...",
+  "en": "Connecting to %1 over classic Bluetooth ...",
+  "plural": false
+ },
+ {
+  "id": "u1002",
+  "context": "caruspex::Worker",
+  "de": "Suche das Auto im Netzwerk (ENET und DoIP) ...",
+  "en": "Searching for the car on the network (ENET and DoIP) ...",
+  "plural": false
+ },
+ {
+  "id": "u1003",
+  "context": "caruspex::Worker",
+  "de": "Verbunden über %1: %2%3",
+  "en": "Connected over %1: %2%3",
+  "plural": false
+ },
+ {
+  "id": "u1004",
+  "context": "main",
+  "de": "Fahrzeugdiagnose über EOBD mit ELM327-kompatiblen Adaptern",
+  "en": "Vehicle diagnostics over EOBD with ELM327-compatible adapters",
+  "plural": false
+ },
+ {
+  "id": "u1005",
+  "context": "main",
+  "de": "WLAN-Adapter direkt verbinden, z.B. 192.168.0.10:35000",
+  "en": "Connect a Wi-Fi adapter directly, e.g. 192.168.0.10:35000",
+  "plural": false
+ },
+ {
+  "id": "u1006",
+  "context": "main",
+  "de": "host:port",
+  "en": "host:port",
+  "plural": false
+ },
+ {
+  "id": "u1007",
+  "context": "main",
+  "de": "Sprache für diesen Start: de oder en",
+  "en": "Language for this run: de or en",
+  "plural": false
+ },
+ {
+  "id": "u1008",
+  "context": "main",
+  "de": "Gleich mit dem eingebauten Demo-Auto verbinden",
+  "en": "Connect straight to the built-in demo car",
+  "plural": false
+ },
+ {
+  "id": "u1009",
+  "context": "main",
+  "de": "Mit dieser Seite starten, z.B. faults oder live",
+  "en": "Start on this page, e.g. faults or live",
+  "plural": false
+ },
+ {
+  "id": "u1010",
+  "context": "main",
+  "de": "Nach ein paar Sekunden ein Bild des Fensters speichern und beenden (für Dokumentation)",
+  "en": "Save a picture of the window after a few seconds and quit (for documentation)",
+  "plural": false
+ },
+ {
+  "id": "u1011",
+  "context": "main",
+  "de": "Fenstergröße, z.B. 1440x920",
+  "en": "Window size, e.g. 1440x920",
+  "plural": false
+ },
+ {
+  "id": "u1012",
+  "context": "main",
+  "de": "Erscheinungsbild für diesen Start: dark oder light",
+  "en": "Appearance for this run: dark or light",
+  "plural": false
+ },
+ {
+  "id": "u1013",
+  "context": "main",
+  "de": "Eine aufgezeichnete Sitzung abspielen",
+  "en": "Play back a recorded session",
+  "plural": false
+ },
+ {
+  "id": "u1014",
+  "context": "main",
+  "de": "Adapter am seriellen Anschluss verbinden, z.B. COM3 oder /dev/ttyUSB0, auto sucht an allen",
+  "en": "Connect an adapter on a serial port, e.g. COM3 or /dev/ttyUSB0, auto searches all of them",
+  "plural": false
+ },
+ {
+  "id": "u1015",
+  "context": "main",
+  "de": "Bluetooth-Adapter verbinden, über die Adresse oder auto für die Suche",
+  "en": "Connect a Bluetooth adapter by its address, or auto to search",
+  "plural": false
+ },
+ {
+  "id": "u1016",
+  "context": "main",
+  "de": "Nach dem Verbinden einen Prüfbericht schreiben (PDF, oder HTML bei .html) und beenden",
+  "en": "After connecting, write a diagnostic report (PDF, or HTML for .html) and quit",
+  "plural": false
+ },
+ {
+  "id": "u1017",
+  "context": "main",
+  "de": "BMW oder Mini über ein ENET-Kabel verbinden, über die Adresse oder auto für die Suche",
+  "en": "Connect a BMW or Mini over an ENET cable, by its address or auto to search",
+  "plural": false
+ },
+ {
+  "id": "u1018",
+  "context": "main",
+  "de": "--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay",
+  "en": "--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay",
+  "plural": false
+ }
+]

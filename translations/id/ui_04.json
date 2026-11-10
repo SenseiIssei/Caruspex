@@ -1,0 +1,21 @@
+{
+"u1000": "Tidak ada adaptor Bluetooth ditemukan di sekitar. Apakah tercolok di mobil, dan apakah kunci kontak menyala?",
+"u1001": "Menyambung ke %1 lewat Bluetooth klasik ...",
+"u1002": "Mencari mobil di jaringan (ENET dan DoIP) ...",
+"u1003": "Tersambung lewat %1: %2%3",
+"u1004": "Diagnosis kendaraan lewat EOBD dengan adaptor yang kompatibel ELM327",
+"u1005": "Sambungkan adaptor Wi-Fi langsung, misalnya 192.168.0.10:35000",
+"u1006": "host:port",
+"u1007": "Bahasa untuk sesi ini: de atau en",
+"u1008": "Langsung sambung ke mobil demo bawaan",
+"u1009": "Mulai di halaman ini, misalnya faults atau live",
+"u1010": "Simpan gambar jendela setelah beberapa detik lalu keluar (untuk dokumentasi)",
+"u1011": "Ukuran jendela, misalnya 1440x920",
+"u1012": "Tampilan untuk sesi ini: dark atau light",
+"u1013": "Putar ulang sesi yang direkam",
+"u1014": "Sambungkan adaptor di port serial, misalnya COM3 atau /dev/ttyUSB0, auto mencari semuanya",
+"u1015": "Sambungkan adaptor Bluetooth lewat alamatnya, atau auto untuk mencari",
+"u1016": "Setelah tersambung, tulis laporan diagnosis (PDF, atau HTML untuk .html) lalu keluar",
+"u1017": "Sambungkan BMW atau Mini lewat kabel ENET, dengan alamatnya atau auto untuk mencari",
+"u1018": "--report butuh koneksi: --demo, --port, --tcp, --enet, --bluetooth, atau --replay"
+}

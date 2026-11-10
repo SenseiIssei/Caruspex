@@ -83,7 +83,7 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 **Bedienung**
 - Neue Oberfläche im Stil von Odysync: ruhig, dunkel, mit weichen Übergängen
 - Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse
-- Deutsch und Englisch, Einstellungen wirken sofort
+- 18 Sprachen für Oberfläche und alle Fehlertexte: Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Italienisch, Niederländisch, Polnisch, Tschechisch, Russisch, Ukrainisch, Türkisch, Arabisch (von rechts nach links), Chinesisch, Japanisch, Koreanisch, Hindi und Indonesisch. Folgt der Systemsprache, umschaltbar in den Einstellungen, Einstellungen wirken sofort
 
 ## Welche Autos
 

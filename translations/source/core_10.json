@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c2500",
+  "de": "AdBlue-Dosierventil Bank 1 Einheit 1 - Steuerkreis Spannung zu hoch",
+  "en": "Reductant injector bank 1 unit 1 - control circuit high"
+ },
+ {
+  "id": "c2501",
+  "de": "AdBlue-Dosierventil Bank 1 Einheit 1 - Steuerkreis Spannung zu niedrig",
+  "en": "Reductant injector bank 1 unit 1 - control circuit low"
+ },
+ {
+  "id": "c2502",
+  "de": "AdBlue-Dosierventil Bank 1 Einheit 1 - Steuerkreis oder Unterbrechung",
+  "en": "Reductant injector bank 1 unit 1 - control circuit/open"
+ },
+ {
+  "id": "c2503",
+  "de": "AdBlue-Füllstandssensor - Stromkreis",
+  "en": "Reductant level sensor circuit"
+ },
+ {
+  "id": "c2504",
+  "de": "AdBlue-Füllstand zu niedrig",
+  "en": "Reductant level too low"
+ },
+ {
+  "id": "c2505",
+  "de": "AdBlue-Druck zu hoch",
+  "en": "Reductant pressure too high"
+ },
+ {
+  "id": "c2506",
+  "de": "AdBlue-Druck zu niedrig",
+  "en": "Reductant pressure too low"
+ },
+ {
+  "id": "c2507",
+  "de": "AdBlue-System - Funktion",
+  "en": "Reductant system performance"
+ },
+ {
+  "id": "c2508",
+  "de": "Verweise auf andere Werte (val{...}) werden nicht unterstützt",
+  "en": "References to other values (val{...}) are not supported"
+ },
+ {
+  "id": "c2509",
+  "de": "Art der Regeneration",
+  "en": "Regeneration type"
+ },
+ {
+  "id": "c2510",
+  "de": "Ablehnungsgrund 0x",
+  "en": "Rejection reason 0x"
+ },
+ {
+  "id": "c2511",
+  "de": "Fahrpedalstellung relativ",
+  "en": "Relative accelerator pedal position"
+ },
+ {
+  "id": "c2512",
+  "de": "Relative Drosselklappenstellung",
+  "en": "Relative throttle position"
+ },
+ {
+  "id": "c2513",
+  "de": "Drosselklappe A Stellung relativ",
+  "en": "Relative throttle position A"
+ },
+ {
+  "id": "c2514",
+  "de": "Drosselklappe B Stellung relativ",
+  "en": "Relative throttle position B"
+ },
+ {
+  "id": "c2515",
+  "de": "Tankdeckel abnehmen, Dichtung ansehen und wieder fest schließen, bis er klickt\nFehler löschen und einige Fahrten abwarten: der Test läuft nur unter bestimmten Bedingungen\nSchläuche am Aktivkohlefilter ansehen, oft nahe dem Tank oder im Radkasten",
+  "en": "Remove the fuel cap, look at the seal and close it firmly until it clicks\nClear the code and wait a few trips: the test only runs under certain conditions\nLook at the hoses at the charcoal canister, often near the tank or in a wheel arch"
+ },
+ {
+  "id": "c2516",
+  "de": "Renault Zoe Phase 1 (2013 bis 2019)",
+  "en": "Renault Zoe phase 1 (2013 to 2019)"
+ },
+ {
+  "id": "c2517",
+  "de": "Technik von Renault.",
+  "en": "Renault technology."
+ },
+ {
+  "id": "c2518",
+  "de": "Renault/Dacia",
+  "en": "Renault/Dacia"
+ },
+ {
+  "id": "c2519",
+  "de": "Hybridbatterie ersetzen",
+  "en": "Replace hybrid battery pack"
+ },
+ {
+  "id": "c2520",
+  "de": "Anfrage zu lang (höchstens 6 Bytes mit erweiterter Adresse).",
+  "en": "Request too long (at most 6 bytes with extended addressing)."
+ },
+ {
+  "id": "c2521",
+  "de": "Anfrage zu lang für den Adapter (höchstens 7 Bytes).",
+  "en": "Request too long for the adapter (at most 7 bytes)."
+ },
+ {
+  "id": "c2522",
+  "de": "Angefragter Wert liegt außerhalb des Bereichs",
+  "en": "Requested value is out of range"
+ },
+ {
+  "id": "c2523",
+  "de": "CAN-Empfangsfilter zurücksetzen (Standardwert)",
+  "en": "Reset the CAN receive filter (default)"
+ },
+ {
+  "id": "c2524",
+  "de": "Widerstand",
+  "en": "Resistance"
+ },
+ {
+  "id": "c2525",
+  "de": "Antwort bricht nach ",
+  "en": "Response breaks off after "
+ },
+ {
+  "id": "c2526",
+  "de": "Response ist keine passende CAN-Adresse: ",
+  "en": "Response is no matching CAN id: "
+ },
+ {
+  "id": "c2527",
+  "de": "Antwort dauert länger, Steuergerät arbeitet noch",
+  "en": "Response pending, control unit still working"
+ },
+ {
+  "id": "c2528",
+  "de": "Response ohne Header.",
+  "en": "Response without a header."
+ },
+ {
+  "id": "c2529",
+  "de": "Rückhaltesysteme: Airbag und Gurtstraffer",
+  "en": "Restraint systems: airbags and seat belt pretensioners"
+ },
+ {
+  "id": "c2530",
+  "de": "Ergebnis ist keine endliche Zahl.",
+  "en": "Result is not a finite number."
+ },
+ {
+  "id": "c2531",
+  "de": "Rückwärtsgang - falsche Übersetzung",
+  "en": "Reverse incorrect ratio"
+ },
+ {
+  "id": "c2532",
+  "de": "Rückwärtsgangsperre - Steuerkreis",
+  "en": "Reverse inhibit control circuit"
+ },
+ {
+  "id": "c2533",
+  "de": "Rückwärtsgang-Eingang - Stromkreis",
+  "en": "Reverse input circuit"
+ },
+ {
+  "id": "c2534",
+  "de": "Rückwärtsgang-Ausgang - Stromkreis",
+  "en": "Reverse output circuit"
+ },
+ {
+  "id": "c2535",
+  "de": "Rückfahr- und Umfeldkamera (TRSVC)",
+  "en": "Reversing and surround camera (TRSVC)"
+ },
+ {
+  "id": "c2536",
+  "de": "Umschaltzeit fett nach mager",
+  "en": "Rich-to-lean switch time"
+ },
+ {
+  "id": "c2537",
+  "de": "Spannungsschwelle fett nach mager",
+  "en": "Rich-to-lean threshold voltage"
+ },
+ {
+  "id": "c2538",
+  "de": "Raddrehzahlsensor vorne rechts - Stromkreis oder Signal",
+  "en": "Right front wheel speed sensor - circuit or signal"
+ },
+ {
+  "id": "c2539",
+  "de": "Raddrehzahlsensor hinten rechts - Stromkreis oder Signal",
+  "en": "Right rear wheel speed sensor - circuit or signal"
+ },
+ {
+  "id": "c2540",
+  "de": "Seitenairbag rechts - Zündkreis",
+  "en": "Right side airbag deployment control"
+ },
+ {
+  "id": "c2541",
+  "de": "Roadster",
+  "en": "Roadster"
+ },
+ {
+  "id": "c2542",
+  "de": "Rumänien",
+  "en": "Romania"
+ },
+ {
+  "id": "c2543",
+  "de": "Dachfunktionszentrum (FZD)",
+  "en": "Roof function centre (FZD)"
+ },
+ {
+  "id": "c2544",
+  "de": "Schlechtwegerkennung - Hardware fehlt",
+  "en": "Rough road hardware not present"
+ },
+ {
+  "id": "c2545",
+  "de": "Schlechtwegsensor A - Signalkreis",
+  "en": "Rough road sensor A signal circuit"
+ },
+ {
+  "id": "c2546",
+  "de": "Schlechtwegsensor B - Signalkreis",
+  "en": "Rough road sensor B signal circuit"
+ },
+ {
+  "id": "c2547",
+  "de": "Schlechtwegsignal - unplausibel",
+  "en": "Rough road signal - implausible"
+ },
+ {
+  "id": "c2548",
+  "de": "Klimaanlage bei warmem Motor einige Minuten laufen lassen.",
+  "en": "Run the air conditioning for a few minutes with the engine warm."
+ },
+ {
+  "id": "c2549",
+  "de": "Laufzeit seit Motorstart",
+  "en": "Run time since engine start"
+ },
+ {
+  "id": "c2550",
+  "de": "Laufzeit mit Fehlerlampe an",
+  "en": "Run time with MIL on"
+ },
+ {
+  "id": "c2551",
+  "de": "Läuft",
+  "en": "Running"
+ },
+ {
+  "id": "c2552",
+  "de": "Läuft ständig mit und ist meist schon kurz nach dem Start fertig.",
+  "en": "Runs all the time and is usually complete shortly after starting."
+ },
+ {
+  "id": "c2553",
+  "de": "Läuft ständig mit, sobald der Motor warm ist. Einige Minuten Leerlauf und gleichmäßige Fahrt.",
+  "en": "Runs all the time once the engine is warm. A few minutes of idling and steady driving."
+ },
+ {
+  "id": "c2554",
+  "de": "Läuft ständig mit. Ein paar Minuten normale Fahrt mit wechselnder Drehzahl reichen meistens.",
+  "en": "Runs all the time. A few minutes of normal driving at varying engine speeds is usually enough."
+ },
+ {
+  "id": "c2555",
+  "de": "Russland",
+  "en": "Russia"
+ },
+ {
+  "id": "c2556",
+  "de": "SAE J1850 PWM.",
+  "en": "SAE J1850 PWM."
+ },
+ {
+  "id": "c2557",
+  "de": "SAE J1850 VPW.",
+  "en": "SAE J1850 VPW."
+ },
+ {
+  "id": "c2558",
+  "de": "SAE/ISO (alle Marken)",
+  "en": "SAE/ISO (all brands)"
+ },
+ {
+  "id": "c2559",
+  "de": "SCR-Katalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "SCR NOx catalyst efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c2560",
+  "de": "SOC",
+  "en": "SOC"
+ },
+ {
+  "id": "c2561",
+  "de": "SOC BMS",
+  "en": "SOC BMS"
+ },
+ {
+  "id": "c2562",
+  "de": "SOC LBC",
+  "en": "SOC LBC"
+ },
+ {
+  "id": "c2563",
+  "de": "SOC Anzeige",
+  "en": "SOC display"
+ },
+ {
+  "id": "c2564",
+  "de": "SOH",
+  "en": "SOH"
+ },
+ {
+  "id": "c2565",
+  "de": "SOH LBC",
+  "en": "SOH LBC"
+ },
+ {
+  "id": "c2566",
+  "de": "STN-Chip: Mit STBR lässt sich die serielle Geschwindigkeit für diese Sitzung erhöhen, bei USB- und seriellen Verbindungen bis in den Megabit-Bereich. Bluetooth und WLAN bestimmen ihr Tempo selbst. Dauerhaft gespeichert wird dabei nichts (das täte erst STSBR). Caruspex stellt das nicht selbst um.",
+  "en": "STN chip: STBR raises the serial speed for this session, into the megabit range on USB and serial connections. Bluetooth and Wi-Fi set their own speed. Nothing is stored permanently (STSBR would do that). Caruspex does not change it itself."
+ },
+ {
+  "id": "c2567",
+  "de": "STN-Chips verarbeiten Anfragen deutlich schneller als ELM327-Nachbauten und puffern mehr. Kürzere Abfrageintervalle sind hier unbedenklich.",
+  "en": "STN chips process requests much faster than ELM327 clones and buffer more. Shorter polling intervals are fine here."
+ },
+ {
+  "id": "c2568",
+  "de": "SUV",
+  "en": "SUV"
+ },
+ {
+  "id": "c2569",
+  "de": "SYNC (APIM)",
+  "en": "SYNC (APIM)"
+ },
+ {
+  "id": "c2570",
+  "de": "Saudi-Arabien",
+  "en": "Saudi Arabia"
+ },
+ {
+  "id": "c2571",
+  "de": "Sitzmodul Fahrer (SM)",
+  "en": "Seat module driver (SM)"
+ },
+ {
+  "id": "c2572",
+  "de": "Sitzmodul Beifahrer (SM)",
+  "en": "Seat module passenger (SM)"
+ },
+ {
+  "id": "c2573",
+  "de": "Sitze",
+  "en": "Seats"
+ },
+ {
+  "id": "c2574",
+  "de": "Sekundärluft",
+  "en": "Secondary air"
+ },
+ {
+  "id": "c2575",
+  "de": "Sekundärluft ",
+  "en": "Secondary air "
+ },
+ {
+  "id": "c2576",
+  "de": "Sekundärluftsystem - Fehlfunktion",
+  "en": "Secondary air injection system"
+ },
+ {
+  "id": "c2577",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 1 - Stromkreis",
+  "en": "Secondary air injection system air flow/pressure sensor bank 1 - circuit"
+ },
+ {
+  "id": "c2578",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 1 - Signal zu hoch",
+  "en": "Secondary air injection system air flow/pressure sensor bank 1 - circuit high"
+ },
+ {
+  "id": "c2579",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 1 - Signal setzt zeitweise aus",
+  "en": "Secondary air injection system air flow/pressure sensor bank 1 - circuit intermittent"
+ },
+ {
+  "id": "c2580",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 1 - Signal zu niedrig",
+  "en": "Secondary air injection system air flow/pressure sensor bank 1 - circuit low"
+ },
+ {
+  "id": "c2581",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 1 - Signal unplausibel",
+  "en": "Secondary air injection system air flow/pressure sensor bank 1 - circuit range/performance"
+ },
+ {
+  "id": "c2582",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 2 - Stromkreis",
+  "en": "Secondary air injection system air flow/pressure sensor bank 2 - circuit"
+ },
+ {
+  "id": "c2583",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 2 - Signal zu hoch",
+  "en": "Secondary air injection system air flow/pressure sensor bank 2 - circuit high"
+ },
+ {
+  "id": "c2584",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 2 - Signal setzt zeitweise aus",
+  "en": "Secondary air injection system air flow/pressure sensor bank 2 - circuit intermittent"
+ },
+ {
+  "id": "c2585",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 2 - Signal zu niedrig",
+  "en": "Secondary air injection system air flow/pressure sensor bank 2 - circuit low"
+ },
+ {
+  "id": "c2586",
+  "de": "Sekundärluft-Durchfluss-/Drucksensor Bank 2 - Signal unplausibel",
+  "en": "Secondary air injection system air flow/pressure sensor bank 2 - circuit range/performance"
+ },
+ {
+  "id": "c2587",
+  "de": "Sekundärluftpumpe oder Relais A - Steuerkreis",
+  "en": "Secondary air injection system control A circuit"
+ },
+ {
+  "id": "c2588",
+  "de": "Sekundärluftsystem Steuerung A - Spannung zu hoch",
+  "en": "Secondary air injection system control A circuit high"
+ },
+ {
+  "id": "c2589",
+  "de": "Sekundärluftsystem Steuerung A - Spannung zu niedrig",
+  "en": "Secondary air injection system control A circuit low"
+ },
+ {
+  "id": "c2590",
+  "de": "Sekundärluftpumpe oder Relais B - Steuerkreis",
+  "en": "Secondary air injection system control B circuit"
+ },
+ {
+  "id": "c2591",
+  "de": "Sekundärluftsystem - falscher Durchfluss erkannt",
+  "en": "Secondary air injection system incorrect flow detected"
+ },
+ {
+  "id": "c2592",
+  "de": "Sekundärluftsystem Bank 1 - Durchfluss zu gering",
+  "en": "Secondary air injection system insufficient flow - bank 1"
+ },
+ {
+  "id": "c2593",
+  "de": "Sekundärluftsystem Bank 2 - Durchfluss zu gering",
+  "en": "Secondary air injection system insufficient flow - bank 2"
+ },
+ {
+  "id": "c2594",
+  "de": "Sekundärluft-Pumpe Bank 1 - läuft nicht",
+  "en": "Secondary air injection system pump stuck off - bank 1"
+ },
+ {
+  "id": "c2595",
+  "de": "Sekundärluft-Pumpe Bank 2 - läuft nicht",
+  "en": "Secondary air injection system pump stuck off - bank 2"
+ },
+ {
+  "id": "c2596",
+  "de": "Sekundärluft-Pumpe Bank 1 - läuft dauernd",
+  "en": "Secondary air injection system pump stuck on - bank 1"
+ },
+ {
+  "id": "c2597",
+  "de": "Sekundärluft-Pumpe Bank 2 - läuft dauernd",
+  "en": "Secondary air injection system pump stuck on - bank 2"
+ },
+ {
+  "id": "c2598",
+  "de": "Sekundärluft-Umschaltventil A - Stromkreis",
+  "en": "Secondary air injection system switching valve A circuit"
+ },
+ {
+  "id": "c2599",
+  "de": "Sekundärluft-Umschaltventil A - Unterbrechung",
+  "en": "Secondary air injection system switching valve A circuit open"
+ },
+ {
+  "id": "c2600",
+  "de": "Sekundärluft-Umschaltventil A - Kurzschluss",
+  "en": "Secondary air injection system switching valve A circuit shorted"
+ },
+ {
+  "id": "c2601",
+  "de": "Sekundärluft-Umschaltventil B - Stromkreis",
+  "en": "Secondary air injection system switching valve B circuit"
+ },
+ {
+  "id": "c2602",
+  "de": "Sekundärluft-Umschaltventil B - Unterbrechung",
+  "en": "Secondary air injection system switching valve B circuit open"
+ },
+ {
+  "id": "c2603",
+  "de": "Sekundärluft-Umschaltventil B - Kurzschluss",
+  "en": "Secondary air injection system switching valve B circuit shorted"
+ },
+ {
+  "id": "c2604",
+  "de": "Sekundärluft-Umschaltventil Bank 1 - hängt geschlossen",
+  "en": "Secondary air injection system switching valve stuck closed - bank 1"
+ },
+ {
+  "id": "c2605",
+  "de": "Sekundärluft-Umschaltventil Bank 2 - hängt geschlossen",
+  "en": "Secondary air injection system switching valve stuck closed - bank 2"
+ },
+ {
+  "id": "c2606",
+  "de": "Sekundärluft-Umschaltventil Bank 1 - hängt offen",
+  "en": "Secondary air injection system switching valve stuck open - bank 1"
+ },
+ {
+  "id": "c2607",
+  "de": "Sekundärluft-Umschaltventil Bank 2 - hängt offen",
+  "en": "Secondary air injection system switching valve stuck open - bank 2"
+ },
+ {
+  "id": "c2608",
+  "de": "Sekundärluft",
+  "en": "Secondary air status"
+ },
+ {
+  "id": "c2609",
+  "de": "Sekundärluft",
+  "en": "Secondary air system"
+ },
+ {
+  "id": "c2610",
+  "de": "Sekundärluft, Durchfluss",
+  "en": "Secondary air, flow"
+ },
+ {
+  "id": "c2611",
+  "de": "Hintere Lambdasonde Bank 1",
+  "en": "Secondary oxygen sensor bank 1"
+ },
+ {
+  "id": "c2612",
+  "de": "Hintere Lambdasonde Bank 2",
+  "en": "Secondary oxygen sensor bank 2"
+ },
+ {
+  "id": "c2613",
+  "de": "Limousine",
+  "en": "Sedan"
+ },
+ {
+  "id": "c2614",
+  "de": "Senden fehlgeschlagen",
+  "en": "Send failed"
+ },
+ {
+  "id": "c2615",
+  "de": "Senden über DoIP ging nicht.",
+  "en": "Sending over DoIP failed."
+ },
+ {
+  "id": "c2616",
+  "de": "Senden über ENET ging nicht.",
+  "en": "Sending over ENET failed."
+ },
+ {
+  "id": "c2617",
+  "de": "Sensor-Referenzspannung A - Spannung zu hoch",
+  "en": "Sensor reference voltage A - circuit high"
+ },
+ {
+  "id": "c2618",
+  "de": "Sensor-Referenzspannung A - Spannung zu niedrig",
+  "en": "Sensor reference voltage A - circuit low"
+ },
+ {
+  "id": "c2619",
+  "de": "Sensor-Referenzspannung A - Stromkreis oder Unterbrechung",
+  "en": "Sensor reference voltage A - circuit/open"
+ },
+ {
+  "id": "c2620",
+  "de": "Sensor-Referenzspannung B - Spannung zu hoch",
+  "en": "Sensor reference voltage B - circuit high"
+ },
+ {
+  "id": "c2621",
+  "de": "Sensor-Referenzspannung B - Spannung zu niedrig",
+  "en": "Sensor reference voltage B - circuit low"
+ },
+ {
+  "id": "c2622",
+  "de": "Sensor-Referenzspannung B - Stromkreis oder Unterbrechung",
+  "en": "Sensor reference voltage B - circuit/open"
+ },
+ {
+  "id": "c2623",
+  "de": "Sensor-Referenzspannung C - Spannung zu hoch",
+  "en": "Sensor reference voltage C - circuit high"
+ },
+ {
+  "id": "c2624",
+  "de": "Sensor-Referenzspannung C - Spannung zu niedrig",
+  "en": "Sensor reference voltage C - circuit low"
+ },
+ {
+  "id": "c2625",
+  "de": "Sensor-Referenzspannung C - Stromkreis oder Unterbrechung",
+  "en": "Sensor reference voltage C - circuit/open"
+ },
+ {
+  "id": "c2626",
+  "de": "Serielle Datenverbindung - Fehlfunktion",
+  "en": "Serial communication link"
+ },
+ {
+  "id": "c2627",
+  "de": "Datenverbindung Motor- und Getriebesteuergerät",
+  "en": "Serial communication link (ECM - TCM)"
+ },
+ {
+  "id": "c2628",
+  "de": "Dienst wird nicht unterstützt",
+  "en": "Service not supported"
+ },
+ {
+  "id": "c2629",
+  "de": "Dienst abgelehnt",
+  "en": "Service rejected"
+ },
+ {
+  "id": "c2630",
+  "de": "Sitzungsart 0x",
+  "en": "Session type 0x"
+ },
+ {
+  "id": "c2631",
+  "de": "Mehrere Sensoren teilen sich diese Versorgung, daher treten oft viele Folgefehler auf und das Auto kann ins Notlaufprogramm gehen. Bald prüfen lassen.",
+  "en": "Several sensors share this supply, so many follow-up faults often appear and the car may go into limp mode. Have it checked soon."
+ },
+ {
+  "id": "c2632",
+  "de": "Schaltfehler",
+  "en": "Shift error"
+ },
+ {
+  "id": "c2633",
+  "de": "Schaltmagnetventil A - Steuerkreis Spannung zu hoch",
+  "en": "Shift solenoid A - control circuit high"
+ },
+ {
+  "id": "c2634",
+  "de": "Schaltmagnetventil A - Steuerkreis Spannung zu niedrig",
+  "en": "Shift solenoid A - control circuit low"
+ },
+ {
+  "id": "c2635",
+  "de": "Schaltmagnetventil A - Steuerkreis Funktion",
+  "en": "Shift solenoid A - control circuit range/performance"
+ },
+ {
+  "id": "c2636",
+  "de": "Schaltmagnetventil A - elektrischer Fehler",
+  "en": "Shift solenoid A - electrical"
+ },
+ {
+  "id": "c2637",
+  "de": "Schaltmagnetventil A - Signal setzt zeitweise aus",
+  "en": "Shift solenoid A - intermittent"
+ },
+ {
+  "id": "c2638",
+  "de": "Schaltmagnetventil A - Fehlfunktion",
+  "en": "Shift solenoid A - malfunction"
+ },
+ {
+  "id": "c2639",
+  "de": "Schaltmagnetventil A - Funktion oder bleibt ausgeschaltet",
+  "en": "Shift solenoid A - performance/stuck off"
+ },
+ {
+  "id": "c2640",
+  "de": "Schaltmagnetventil A - bleibt eingeschaltet",
+  "en": "Shift solenoid A - stuck on"
+ },
+ {
+  "id": "c2641",
+  "de": "Schaltmagnetventil B - Steuerkreis Spannung zu hoch",
+  "en": "Shift solenoid B - control circuit high"
+ },
+ {
+  "id": "c2642",
+  "de": "Schaltmagnetventil B - Steuerkreis Spannung zu niedrig",
+  "en": "Shift solenoid B - control circuit low"
+ },
+ {
+  "id": "c2643",
+  "de": "Schaltmagnetventil B - Steuerkreis Funktion",
+  "en": "Shift solenoid B - control circuit range/performance"
+ },
+ {
+  "id": "c2644",
+  "de": "Schaltmagnetventil B - elektrischer Fehler",
+  "en": "Shift solenoid B - electrical"
+ },
+ {
+  "id": "c2645",
+  "de": "Schaltmagnetventil B - Signal setzt zeitweise aus",
+  "en": "Shift solenoid B - intermittent"
+ },
+ {
+  "id": "c2646",
+  "de": "Schaltmagnetventil B - Fehlfunktion",
+  "en": "Shift solenoid B - malfunction"
+ },
+ {
+  "id": "c2647",
+  "de": "Schaltmagnetventil B - Funktion oder bleibt ausgeschaltet",
+  "en": "Shift solenoid B - performance/stuck off"
+ },
+ {
+  "id": "c2648",
+  "de": "Schaltmagnetventil B - bleibt eingeschaltet",
+  "en": "Shift solenoid B - stuck on"
+ },
+ {
+  "id": "c2649",
+  "de": "Schaltmagnetventil C - Steuerkreis Spannung zu hoch",
+  "en": "Shift solenoid C - control circuit high"
+ },
+ {
+  "id": "c2650",
+  "de": "Schaltmagnetventil C - Steuerkreis Spannung zu niedrig",
+  "en": "Shift solenoid C - control circuit low"
+ },
+ {
+  "id": "c2651",
+  "de": "Schaltmagnetventil C - Steuerkreis Funktion",
+  "en": "Shift solenoid C - control circuit range/performance"
+ },
+ {
+  "id": "c2652",
+  "de": "Schaltmagnetventil C - elektrischer Fehler",
+  "en": "Shift solenoid C - electrical"
+ },
+ {
+  "id": "c2653",
+  "de": "Schaltmagnetventil C - Signal setzt zeitweise aus",
+  "en": "Shift solenoid C - intermittent"
+ },
+ {
+  "id": "c2654",
+  "de": "Schaltmagnetventil C - Fehlfunktion",
+  "en": "Shift solenoid C - malfunction"
+ },
+ {
+  "id": "c2655",
+  "de": "Schaltmagnetventil C - Funktion oder bleibt ausgeschaltet",
+  "en": "Shift solenoid C - performance/stuck off"
+ },
+ {
+  "id": "c2656",
+  "de": "Schaltmagnetventil C - bleibt eingeschaltet",
+  "en": "Shift solenoid C - stuck on"
+ },
+ {
+  "id": "c2657",
+  "de": "Schaltmagnetventil D - Steuerkreis Spannung zu hoch",
+  "en": "Shift solenoid D - control circuit high"
+ },
+ {
+  "id": "c2658",
+  "de": "Schaltmagnetventil D - Steuerkreis Spannung zu niedrig",
+  "en": "Shift solenoid D - control circuit low"
+ },
+ {
+  "id": "c2659",
+  "de": "Schaltmagnetventil D - Steuerkreis Funktion",
+  "en": "Shift solenoid D - control circuit range/performance"
+ },
+ {
+  "id": "c2660",
+  "de": "Schaltmagnetventil D - elektrischer Fehler",
+  "en": "Shift solenoid D - electrical"
+ },
+ {
+  "id": "c2661",
+  "de": "Schaltmagnetventil D - Signal setzt zeitweise aus",
+  "en": "Shift solenoid D - intermittent"
+ },
+ {
+  "id": "c2662",
+  "de": "Schaltmagnetventil D - Fehlfunktion",
+  "en": "Shift solenoid D - malfunction"
+ },
+ {
+  "id": "c2663",
+  "de": "Schaltmagnetventil D - Funktion oder bleibt ausgeschaltet",
+  "en": "Shift solenoid D - performance/stuck off"
+ },
+ {
+  "id": "c2664",
+  "de": "Schaltmagnetventil D - bleibt eingeschaltet",
+  "en": "Shift solenoid D - stuck on"
+ },
+ {
+  "id": "c2665",
+  "de": "Schaltmagnetventil E - Steuerkreis Spannung zu hoch",
+  "en": "Shift solenoid E - control circuit high"
+ },
+ {
+  "id": "c2666",
+  "de": "Schaltmagnetventil E - Steuerkreis Spannung zu niedrig",
+  "en": "Shift solenoid E - control circuit low"
+ },
+ {
+  "id": "c2667",
+  "de": "Schaltmagnetventil E - Steuerkreis Funktion",
+  "en": "Shift solenoid E - control circuit range/performance"
+ },
+ {
+  "id": "c2668",
+  "de": "Schaltmagnetventil E - elektrischer Fehler",
+  "en": "Shift solenoid E - electrical"
+ },
+ {
+  "id": "c2669",
+  "de": "Schaltmagnetventil E - Signal setzt zeitweise aus",
+  "en": "Shift solenoid E - intermittent"
+ },
+ {
+  "id": "c2670",
+  "de": "Schaltmagnetventil E - Fehlfunktion",
+  "en": "Shift solenoid E - malfunction"
+ },
+ {
+  "id": "c2671",
+  "de": "Schaltmagnetventil E - Funktion oder bleibt ausgeschaltet",
+  "en": "Shift solenoid E - performance/stuck off"
+ },
+ {
+  "id": "c2672",
+  "de": "Schaltmagnetventil E - bleibt eingeschaltet",
+  "en": "Shift solenoid E - stuck on"
+ },
+ {
+  "id": "c2673",
+  "de": "Schalt-/Zeitsteuerungs-Magnetventil - Spannung zu hoch",
+  "en": "Shift/timing solenoid - high"
+ },
+ {
+  "id": "c2674",
+  "de": "Schalt-/Zeitsteuerungs-Magnetventil - Signal setzt zeitweise aus",
+  "en": "Shift/timing solenoid - intermittent"
+ },
+ {
+  "id": "c2675",
+  "de": "Schalt-/Zeitsteuerungs-Magnetventil - Spannung zu niedrig",
+  "en": "Shift/timing solenoid - low"
+ },
+ {
+  "id": "c2676",
+  "de": "Schalt-/Zeitsteuerungs-Magnetventil - Fehlfunktion",
+  "en": "Shift/timing solenoid - malfunction"
+ },
+ {
+  "id": "c2677",
+  "de": "Schalt-/Zeitsteuerungs-Magnetventil - Funktion",
+  "en": "Shift/timing solenoid - range/performance"
+ },
+ {
+  "id": "c2678",
+  "de": "Kurzzeit-Gemischkorrektur Bank 1",
+  "en": "Short-term fuel trim bank 1"
+ },
+ {
+  "id": "c2679",
+  "de": "Kurzzeit-Gemischkorrektur Bank 2",
+  "en": "Short-term fuel trim bank 2"
+ },
+ {
+  "id": "c2680",
+  "de": "Kurzzeit-Korrektur hintere Lambdasonde Bank 1",
+  "en": "Short-term secondary O2 trim bank 1"
+ },
+ {
+  "id": "c2681",
+  "de": "Kurzzeit-Korrektur hintere Lambdasonde Bank 2",
+  "en": "Short-term secondary O2 trim bank 2"
+ },
+ {
+  "id": "c2682",
+  "de": "Kurzzeit-Korrektur hintere Lambdasonde Bank 3",
+  "en": "Short-term secondary O2 trim bank 3"
+ },
+ {
+  "id": "c2683",
+  "de": "Kurzzeit-Korrektur hintere Lambdasonde Bank 4",
+  "en": "Short-term secondary O2 trim bank 4"
+ },
+ {
+  "id": "c2684",
+  "de": "Zähler der Busaktivität anzeigen",
+  "en": "Show the activity monitor count"
+ },
+ {
+  "id": "c2685",
+  "de": "Seitenairbag Fahrerseite N199",
+  "en": "Side airbag, driver side N199"
+ },
+ {
+  "id": "c2686",
+  "de": "Seitenairbag Fahrerseite: Widerstand",
+  "en": "Side airbag, driver side: resistance"
+ },
+ {
+  "id": "c2687",
+  "de": "Seitenairbag Beifahrerseite N200",
+  "en": "Side airbag, passenger side N200"
+ },
+ {
+  "id": "c2688",
+  "de": "Seitenairbag Beifahrerseite: Widerstand",
+  "en": "Side airbag, passenger side: resistance"
+ },
+ {
+  "id": "c2689",
+  "de": "Stilles Mithören auf dem CAN-Bus (Standardwert)",
+  "en": "Silent CAN monitoring (default)"
+ },
+ {
+  "id": "c2690",
+  "de": "Singapur",
+  "en": "Singapore"
+ },
+ {
+  "id": "c2691",
+  "de": "Verbrennungsaussetzer an einem Zylinder (nicht angegeben)",
+  "en": "Single cylinder misfire (cylinder not specified)"
+ },
+ {
+  "id": "c2692",
+  "de": "Slowakei",
+  "en": "Slovakia"
+ },
+ {
+  "id": "c2693",
+  "de": "Slowenien",
+  "en": "Slovenia"
+ },
+ {
+  "id": "c2694",
+  "de": "Software nicht kompatibel mit dem Motorsteuergerät",
+  "en": "Software incompatibility with ECM/PCM"
+ },
+ {
+  "id": "c2695",
+  "de": "Software nicht kompatibel mit dem Getriebesteuergerät",
+  "en": "Software incompatibility with transmission control module"
+ },
+ {
+  "id": "c2696",
+  "de": "Südafrika",
+  "en": "South Africa"
+ },
+ {
+  "id": "c2697",
+  "de": "Südamerika",
+  "en": "South America"
+ },
+ {
+  "id": "c2698",
+  "de": "Südkorea",
+  "en": "South Korea"
+ },
+ {
+  "id": "c2699",
+  "de": "Spanien",
+  "en": "Spain"
+ },
+ {
+  "id": "c2700",
+  "de": "Geschwindigkeit",
+  "en": "Speed"
+ },
+ {
+  "id": "c2701",
+  "de": "Tempomatleuchte - Steuerkreis",
+  "en": "Speed control lamp control circuit"
+ },
+ {
+  "id": "c2702",
+  "de": "Raddrehzahlsensor vorne links - Signal fehlt",
+  "en": "Speed wheel LF input signal missing"
+ },
+ {
+  "id": "c2703",
+  "de": "Raddrehzahlsensor hinten links - Signal fehlt",
+  "en": "Speed wheel LR input signal missing"
+ },
+ {
+  "id": "c2704",
+  "de": "Raddrehzahlsensor vorne rechts - Signal fehlt",
+  "en": "Speed wheel RF input signal missing"
+ },
+ {
+  "id": "c2705",
+  "de": "Raddrehzahlsensor hinten rechts - Signal fehlt",
+  "en": "Speed wheel RR input signal missing"
+ },
+ {
+  "id": "c2706",
+  "de": "Raddrehzahlsensor vorne links - Eingangssignal fehlerhaft",
+  "en": "Speed wheel sensor LF input circuit failure"
+ },
+ {
+  "id": "c2707",
+  "de": "Raddrehzahlsensor hinten links - Eingangssignal fehlerhaft",
+  "en": "Speed wheel sensor LR input circuit failure"
+ },
+ {
+  "id": "c2708",
+  "de": "Raddrehzahlsensor vorne rechts - Eingangssignal fehlerhaft",
+  "en": "Speed wheel sensor RF input circuit failure"
+ },
+ {
+  "id": "c2709",
+  "de": "Raddrehzahlsensor hinten rechts - Eingangssignal fehlerhaft",
+  "en": "Speed wheel sensor RR input circuit failure"
+ },
+ {
+  "id": "c2710",
+  "de": "Ladeluftschlauch gerissen oder abgerutscht\nUnterdruckschläuche oder Ladedruckdose undicht\nVerstellung des Turboladers (VTG) verrußt und schwergängig\nTurbolader verschlissen\nAGR oder Partikelfilter zugesetzt",
+  "en": "Split or detached charge air hose\nLeaking vacuum hoses or wastegate actuator\nTurbo vane mechanism (VTG) sooted and sticking\nWorn turbocharger\nClogged EGR or particulate filter"
+ },
+ {
+  "id": "c2711",
+  "de": "Sri Lanka",
+  "en": "Sri Lanka"
+ },
+ {
+  "id": "c2712",
+  "de": "Fahrdynamik und ABS (DSC)",
+  "en": "Stability control and ABS (DSC)"
+ },
+ {
+  "id": "c2713",
+  "de": "Motor springt schlecht an",
+  "en": "Startability malfunction"
+ },
+ {
+  "id": "c2714",
+  "de": "Anlasssperre - Stromkreis",
+  "en": "Starter disable circuit"
+ },
+ {
+  "id": "c2715",
+  "de": "Anlasserrelais - Stromkreis",
+  "en": "Starter relay - circuit"
+ },
+ {
+  "id": "c2716",
+  "de": "Anlasserrelais - Spannung zu hoch",
+  "en": "Starter relay - circuit high"
+ },
+ {
+  "id": "c2717",
+  "de": "Anlasserrelais - Spannung zu niedrig",
+  "en": "Starter relay - circuit low"
+ },
+ {
+  "id": "c2718",
+  "de": "Startanforderung - Stromkreis",
+  "en": "Starter request circuit"
+ },
+ {
+  "id": "c2719",
+  "de": "Anlasserschalter - Signal zu niedrig",
+  "en": "Starter switch circuit low input"
+ },
+ {
+  "id": "c2720",
+  "de": "Starts",
+  "en": "Starts"
+ },
+ {
+  "id": "c2721",
+  "de": "Ladestand (BMS)",
+  "en": "State of charge (BMS)"
+ },
+ {
+  "id": "c2722",
+  "de": "Ladestand (EVC)",
+  "en": "State of charge (EVC)"
+ },
+ {
+  "id": "c2723",
+  "de": "Ladestand (Mittel)",
+  "en": "State of charge (average)"
+ },
+ {
+  "id": "c2724",
+  "de": "Ladestand (Batteriesteuerung)",
+  "en": "State of charge (battery controller)"
+ },
+ {
+  "id": "c2725",
+  "de": "Ladestand (Anzeige)",
+  "en": "State of charge (display)"
+ },
+ {
+  "id": "c2726",
+  "de": "Akkugesundheit (SOH)",
+  "en": "State of health"
+ },
+ {
+  "id": "c2727",
+  "de": "Akkugesundheit (EVC)",
+  "en": "State of health (EVC)"
+ },
+ {
+  "id": "c2728",
+  "de": "Akkugesundheit (Batteriesteuerung)",
+  "en": "State of health (battery controller)"
+ },
+ {
+  "id": "c2729",
+  "de": "Lenkung",
+  "en": "Steering"
+ },
+ {
+  "id": "c2730",
+  "de": "Lenkwinkelgeber G85",
+  "en": "Steering angle sensor G85"
+ },
+ {
+  "id": "c2731",
+  "de": "Lenksäulenschalter (SCCM)",
+  "en": "Steering column (SCCM)"
+ },
+ {
+  "id": "c2732",
+  "de": "Lenksäulenelektronik",
+  "en": "Steering column electronics"
+ },
+ {
+  "id": "c2733",
+  "de": "Schritt 1, Ruhespannung: Das Auto sollte mindestens 30 Minuten stehen, besser einige Stunden. Alle Verbraucher aus, Türen zu. Zündung nur kurz einschalten (nicht starten), damit der Adapter messen kann.",
+  "en": "Step 1, resting voltage: the car should have been parked for at least 30 minutes, better a few hours. All consumers off, doors closed. Switch the ignition on only briefly (do not start) so the adapter can measure."
+ },
+ {
+  "id": "c2734",
+  "de": "Schritt 2, Startspannung: Messung starten und dann den Motor anlassen. Caruspex fragt währenddessen nur die Spannung ab, so schnell es geht, und merkt sich den tiefsten Wert.",
+  "en": "Step 2, cranking voltage: start the measurement and then start the engine. During this Caruspex polls only the voltage, as fast as it can, and keeps the lowest value."
+ },
+ {
+  "id": "c2735",
+  "de": "Schritt 3, Ladespannung im Leerlauf: Motor im Leerlauf laufen lassen, alle Verbraucher aus. Etwa eine Minute warten.",
+  "en": "Step 3, charging voltage at idle: let the engine idle with all consumers off. Wait about a minute."
+ },
+ {
+  "id": "c2736",
+  "de": "Schritt 4, Ladespannung unter Last: Abblendlicht, Gebläse auf höchster Stufe und Heckscheibenheizung einschalten. Etwa eine Minute warten.",
+  "en": "Step 4, charging voltage under load: switch on the low beams, the blower at full speed and the rear window heating. Wait about a minute."
+ },
+ {
+  "id": "c2737",
+  "de": "CVT-Schrittmotor - Stromkreis",
+  "en": "Step motor circuit"
+ },
+ {
+  "id": "c2738",
+  "de": "CVT-Schrittmotor - Funktion",
+  "en": "Step motor function"
+ },
+ {
+  "id": "c2739",
+  "de": "Bremslichtschalter - Signal fehlerhaft",
+  "en": "Stop lamp switch signal malfunction"
+ },
+ {
+  "id": "c2740",
+  "de": "Bald anhalten und bei kaltem Motor den Kühlmittelstand prüfen. Mit zu wenig Kühlmittel droht Überhitzung.",
+  "en": "Stop soon and check the coolant level with the engine cold. With too little coolant the engine can overheat."
+ },
+ {
+  "id": "c2741",
+  "de": "Steuerkette gelängt (bei manchen Motoren häufig)\nNockenwellenversteller hängt oder bekommt zu wenig Öl\nZahnriemen um einen Zahn übergesprungen\nSensor oder Geberrad defekt",
+  "en": "Stretched timing chain (common on some engines)\nCamshaft adjuster sticking or starved of oil\nTiming belt jumped a tooth\nFaulty sensor or reluctor wheel"
+ },
+ {
+  "id": "c2742",
+  "de": "Unterfunktion wird nicht unterstützt",
+  "en": "Sub-function not supported"
+ },
+ {
+  "id": "c2743",
+  "de": "Subaru",
+  "en": "Subaru"
+ },
+ {
+  "id": "c2744",
+  "de": "Übersicht der programmierbaren Parameter (nur lesen)",
+  "en": "Summary of the programmable parameters (read only)"
+ },
+ {
+  "id": "c2745",
+  "de": "Versorgung",
+  "en": "Supply V"
+ },
+ {
+  "id": "c2746",
+  "de": "Versorgungsspannung (Motorsteuergerät)",
+  "en": "Supply voltage (engine control unit)"
+ },
+ {
+  "id": "c2747",
+  "de": "Schweden",
+  "en": "Sweden"
+ },
+ {
+  "id": "c2748",
+  "de": "Schalter und Bordnetz",
+  "en": "Switches and electrical system"
+ },
+ {
+  "id": "c2749",
+  "de": "Schweiz",
+  "en": "Switzerland"
+ }
+]

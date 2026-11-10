@@ -1,0 +1,21 @@
+{
+"u1000": "Nenhum adaptador Bluetooth encontrado por perto. Ele está ligado ao carro e a ignição está ligada?",
+"u1001": "Conectando a %1 por Bluetooth clássico ...",
+"u1002": "Procurando o carro na rede (ENET e DoIP) ...",
+"u1003": "Conectado por %1: %2%3",
+"u1004": "Diagnóstico de veículos por EOBD com adaptadores compatíveis com ELM327",
+"u1005": "Conectar diretamente um adaptador Wi-Fi, por exemplo 192.168.0.10:35000",
+"u1006": "host:porta",
+"u1007": "Idioma para esta execução: de ou en",
+"u1008": "Conectar direto ao carro de demonstração integrado",
+"u1009": "Iniciar nesta página, por exemplo faults ou live",
+"u1010": "Salvar uma imagem da janela depois de alguns segundos e sair (para documentação)",
+"u1011": "Tamanho da janela, por exemplo 1440x920",
+"u1012": "Aparência para esta execução: dark ou light",
+"u1013": "Reproduzir uma sessão gravada",
+"u1014": "Conectar um adaptador numa porta serial, por exemplo COM3 ou /dev/ttyUSB0, auto procura em todas",
+"u1015": "Conectar um adaptador Bluetooth pelo endereço, ou auto para procurar",
+"u1016": "Depois de conectar, gravar um relatório de diagnóstico (PDF, ou HTML para .html) e sair",
+"u1017": "Conectar um BMW ou Mini por um cabo ENET, pelo endereço ou auto para procurar",
+"u1018": "--report precisa de uma conexão: --demo, --port, --tcp, --enet, --bluetooth ou --replay"
+}

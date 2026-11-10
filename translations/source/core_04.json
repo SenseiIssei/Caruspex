@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c1000",
+  "de": "AGR-Magnetventil - Stromkreis",
+  "en": "EGRC solenoid valve"
+ },
+ {
+  "id": "c1001",
+  "de": "EOBD (Europa)",
+  "en": "EOBD (Europe)"
+ },
+ {
+  "id": "c1002",
+  "de": "EOBD und OBD",
+  "en": "EOBD and OBD"
+ },
+ {
+  "id": "c1003",
+  "de": "EOBD und OBD-II",
+  "en": "EOBD and OBD-II"
+ },
+ {
+  "id": "c1004",
+  "de": "EOBD, OBD und OBD-II",
+  "en": "EOBD, OBD and OBD-II"
+ },
+ {
+  "id": "c1005",
+  "de": "Drosselklappensteller - Spannungsversorgung",
+  "en": "ETCS actuator power source circuit"
+ },
+ {
+  "id": "c1006",
+  "de": "Magnetventil für Aktivkohlebehälter N80",
+  "en": "EVAP canister purge valve N80"
+ },
+ {
+  "id": "c1007",
+  "de": "Belüftungsventil Aktivkohlefilter - hängt geschlossen",
+  "en": "EVAP canister vent control valve close"
+ },
+ {
+  "id": "c1008",
+  "de": "Belüftungsventil Aktivkohlefilter - bleibt offen",
+  "en": "EVAP canister vent control valve open"
+ },
+ {
+  "id": "c1009",
+  "de": "Belüftungsventil Aktivkohlefilter - Stromkreis",
+  "en": "EVAP canister vent solenoid circuit"
+ },
+ {
+  "id": "c1010",
+  "de": "Tankentlüftung - Leck im Bereich des Aktivkohlefilters",
+  "en": "EVAP control system leakage (EVAP canister system)"
+ },
+ {
+  "id": "c1011",
+  "de": "Tankentlüftung - Leck im Bereich des Tanks",
+  "en": "EVAP control system leakage (fuel tank system)"
+ },
+ {
+  "id": "c1012",
+  "de": "Tankentlüftung - Überwachung des Spüldurchflusses",
+  "en": "EVAP control system purge flow monitoring"
+ },
+ {
+  "id": "c1013",
+  "de": "Tankentlüftung - kleines Leck (Überdruck)",
+  "en": "EVAP control system small leak (positive pressure)"
+ },
+ {
+  "id": "c1014",
+  "de": "Kraftstoffdampf-Temperatursensor - Stromkreis",
+  "en": "EVAP fuel vapor temperature sensor - circuit"
+ },
+ {
+  "id": "c1015",
+  "de": "Kraftstoffdampf-Temperatursensor - Signal zu hoch",
+  "en": "EVAP fuel vapor temperature sensor - circuit high"
+ },
+ {
+  "id": "c1016",
+  "de": "Kraftstoffdampf-Temperatursensor - Signal setzt zeitweise aus",
+  "en": "EVAP fuel vapor temperature sensor - circuit intermittent"
+ },
+ {
+  "id": "c1017",
+  "de": "Kraftstoffdampf-Temperatursensor - Signal zu niedrig",
+  "en": "EVAP fuel vapor temperature sensor - circuit low"
+ },
+ {
+  "id": "c1018",
+  "de": "Kraftstoffdampf-Temperatursensor - Signal unplausibel",
+  "en": "EVAP fuel vapor temperature sensor - circuit range/performance"
+ },
+ {
+  "id": "c1019",
+  "de": "Spüldurchflusssensor Tankentlüftung - Stromkreis",
+  "en": "EVAP purge flow sensor - circuit"
+ },
+ {
+  "id": "c1020",
+  "de": "Spüldurchflusssensor Tankentlüftung - Signal zu hoch",
+  "en": "EVAP purge flow sensor - circuit high"
+ },
+ {
+  "id": "c1021",
+  "de": "Spüldurchflusssensor Tankentlüftung - Signal setzt zeitweise aus",
+  "en": "EVAP purge flow sensor - circuit intermittent"
+ },
+ {
+  "id": "c1022",
+  "de": "Spüldurchflusssensor Tankentlüftung - Signal zu niedrig",
+  "en": "EVAP purge flow sensor - circuit low"
+ },
+ {
+  "id": "c1023",
+  "de": "Spüldurchflusssensor Tankentlüftung - Signal unplausibel",
+  "en": "EVAP purge flow sensor - circuit range/performance"
+ },
+ {
+  "id": "c1024",
+  "de": "Tankentlüftungsventil - Kurzschluss nach Masse",
+  "en": "EVAP purge valve - short to ground"
+ },
+ {
+  "id": "c1025",
+  "de": "Tankentlüftungsventil - Kurzschluss nach Plus",
+  "en": "EVAP purge valve - short to positive"
+ },
+ {
+  "id": "c1026",
+  "de": "Tankentlüftung - Durchfluss ohne Spülbefehl",
+  "en": "EVAP system flow during non-purge"
+ },
+ {
+  "id": "c1027",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Steuerkreis Spannung zu hoch",
+  "en": "EVAP system leak detection pump - control circuit high"
+ },
+ {
+  "id": "c1028",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Steuerkreis Spannung zu niedrig",
+  "en": "EVAP system leak detection pump - control circuit low"
+ },
+ {
+  "id": "c1029",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Steuerkreis oder Unterbrechung",
+  "en": "EVAP system leak detection pump - control circuit/open"
+ },
+ {
+  "id": "c1030",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Rückmeldung Spannung zu hoch",
+  "en": "EVAP system leak detection pump - sense circuit high"
+ },
+ {
+  "id": "c1031",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Rückmeldung setzt zeitweise aus",
+  "en": "EVAP system leak detection pump - sense circuit intermittent/erratic"
+ },
+ {
+  "id": "c1032",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Rückmeldung Spannung zu niedrig",
+  "en": "EVAP system leak detection pump - sense circuit low"
+ },
+ {
+  "id": "c1033",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Rückmeldung unplausibel",
+  "en": "EVAP system leak detection pump - sense circuit range/performance"
+ },
+ {
+  "id": "c1034",
+  "de": "Leckdiagnosepumpe Tankentlüftung - Rückmeldung, Stromkreis oder Unterbrechung",
+  "en": "EVAP system leak detection pump - sense circuit/open"
+ },
+ {
+  "id": "c1035",
+  "de": "Drucksensor Tankentlüftung - Stromkreis",
+  "en": "EVAP system pressure sensor/switch - circuit"
+ },
+ {
+  "id": "c1036",
+  "de": "Drucksensor Tankentlüftung - Signal zu hoch",
+  "en": "EVAP system pressure sensor/switch - circuit high"
+ },
+ {
+  "id": "c1037",
+  "de": "Drucksensor Tankentlüftung - Signal setzt zeitweise aus",
+  "en": "EVAP system pressure sensor/switch - circuit intermittent"
+ },
+ {
+  "id": "c1038",
+  "de": "Drucksensor Tankentlüftung - Signal zu niedrig",
+  "en": "EVAP system pressure sensor/switch - circuit low"
+ },
+ {
+  "id": "c1039",
+  "de": "Drucksensor Tankentlüftung - Signal unplausibel",
+  "en": "EVAP system pressure sensor/switch - circuit range/performance"
+ },
+ {
+  "id": "c1040",
+  "de": "Tankentlüftungsventil A - Stromkreis",
+  "en": "EVAP system purge control valve A circuit"
+ },
+ {
+  "id": "c1041",
+  "de": "Tankentlüftungsventil A - Spannung zu hoch",
+  "en": "EVAP system purge control valve A circuit high"
+ },
+ {
+  "id": "c1042",
+  "de": "Tankentlüftungsventil A - Spannung zu niedrig",
+  "en": "EVAP system purge control valve A circuit low"
+ },
+ {
+  "id": "c1043",
+  "de": "Tankentlüftungsventil A - Unterbrechung",
+  "en": "EVAP system purge control valve A circuit open"
+ },
+ {
+  "id": "c1044",
+  "de": "Tankentlüftungsventil A - Kurzschluss",
+  "en": "EVAP system purge control valve A circuit shorted"
+ },
+ {
+  "id": "c1045",
+  "de": "Tankentlüftung Belüftungsventil - Steuerkreis",
+  "en": "EVAP system vent control circuit"
+ },
+ {
+  "id": "c1046",
+  "de": "Tankentlüftung Belüftungsventil - Unterbrechung",
+  "en": "EVAP system vent control circuit open"
+ },
+ {
+  "id": "c1047",
+  "de": "Tankentlüftung Belüftungsventil - Kurzschluss",
+  "en": "EVAP system vent control circuit shorted"
+ },
+ {
+  "id": "c1048",
+  "de": "Tankentlüftung Belüftungsventil - Spannung zu hoch",
+  "en": "EVAP system vent valve control circuit high"
+ },
+ {
+  "id": "c1049",
+  "de": "Tankentlüftung Belüftungsventil - Spannung zu niedrig",
+  "en": "EVAP system vent valve control circuit low"
+ },
+ {
+  "id": "c1050",
+  "de": "Tankentlüftung Belüftungsventil - Stromkreis",
+  "en": "EVAP system vent valve/solenoid circuit"
+ },
+ {
+  "id": "c1051",
+  "de": "Tankentlüftung: zuerst den Tankdeckel prüfen, dann die Schläuche",
+  "en": "EVAP system: check the fuel cap first, then the hoses"
+ },
+ {
+  "id": "c1052",
+  "de": "Echo passt nicht: erwartet ",
+  "en": "Echo mismatch: expected "
+ },
+ {
+  "id": "c1053",
+  "de": "Ecuador",
+  "en": "Ecuador"
+ },
+ {
+  "id": "c1054",
+  "de": "Ägypten",
+  "en": "Egypt"
+ },
+ {
+  "id": "c1055",
+  "de": "Elektrisch",
+  "en": "Electric"
+ },
+ {
+  "id": "c1056",
+  "de": "Elektrische Lenkung (EPS)",
+  "en": "Electric power steering (EPS)"
+ },
+ {
+  "id": "c1057",
+  "de": "Elektronischer Drosselklappensteller - Fehlfunktion",
+  "en": "Electric throttle control actuator"
+ },
+ {
+  "id": "c1058",
+  "de": "Elektronische Drosselklappensteuerung - Funktion",
+  "en": "Electric throttle control function"
+ },
+ {
+  "id": "c1059",
+  "de": "Elektronische Drosselklappensteuerung - Fehlfunktion",
+  "en": "Electric throttle control system"
+ },
+ {
+  "id": "c1060",
+  "de": "Elektrik",
+  "en": "Electrical"
+ },
+ {
+  "id": "c1061",
+  "de": "Lastsensor Bordnetz (ELD) - Spannung zu hoch",
+  "en": "Electrical load detector circuit high voltage"
+ },
+ {
+  "id": "c1062",
+  "de": "Lastsensor Bordnetz (ELD) - Spannung zu niedrig",
+  "en": "Electrical load detector circuit low voltage"
+ },
+ {
+  "id": "c1063",
+  "de": "Bordnetz",
+  "en": "Electrical system"
+ },
+ {
+  "id": "c1064",
+  "de": "ABS-Steuergerät - interner Fehler",
+  "en": "Electronic control unit (EBCM) malfunction"
+ },
+ {
+  "id": "c1065",
+  "de": "Druckregelventil (EPC) - Unterbrechung",
+  "en": "Electronic pressure control solenoid open circuit"
+ },
+ {
+  "id": "c1066",
+  "de": "Druckregelventil (EPC) - Kurzschluss",
+  "en": "Electronic pressure control solenoid short circuit"
+ },
+ {
+  "id": "c1067",
+  "de": "Abgasreinigung",
+  "en": "Emission control"
+ },
+ {
+  "id": "c1068",
+  "de": "Ausgelegt für Abgasvorschrift",
+  "en": "Emission requirements designed for"
+ },
+ {
+  "id": "c1069",
+  "de": "Leere Gleichung",
+  "en": "Empty equation"
+ },
+ {
+  "id": "c1070",
+  "de": "Ende der Stellglieddiagnose",
+  "en": "End of output test"
+ },
+ {
+  "id": "c1071",
+  "de": "Energy kWh",
+  "en": "Energy kWh"
+ },
+ {
+  "id": "c1072",
+  "de": "Energie verbleibend",
+  "en": "Energy remaining"
+ },
+ {
+  "id": "c1073",
+  "de": "Energie im Neuzustand",
+  "en": "Energy when new"
+ },
+ {
+  "id": "c1074",
+  "de": "Motor",
+  "en": "Engine"
+ },
+ {
+  "id": "c1075",
+  "de": "Drehzahl- oder Geschwindigkeitsbegrenzer erreicht",
+  "en": "Engine RPM or vehicle speed limiter reached"
+ },
+ {
+  "id": "c1076",
+  "de": "Drehzahlausgang - Stromkreis",
+  "en": "Engine RPM output circuit"
+ },
+ {
+  "id": "c1077",
+  "de": "Motor und Steuertrieb",
+  "en": "Engine and timing drive"
+ },
+ {
+  "id": "c1078",
+  "de": "Motorsteuerung",
+  "en": "Engine control"
+ },
+ {
+  "id": "c1079",
+  "de": "Motorsteuerung (DME)",
+  "en": "Engine control (DME)"
+ },
+ {
+  "id": "c1080",
+  "de": "Motorsteuerung (ECM)",
+  "en": "Engine control (ECM)"
+ },
+ {
+  "id": "c1081",
+  "de": "Motorsteuergerät: Anpassung fehlt oder stimmt nicht",
+  "en": "Engine control unit: adaptation missing or incorrect"
+ },
+ {
+  "id": "c1082",
+  "de": "Motorsteuergerät: keine Verbindung",
+  "en": "Engine control unit: no communication"
+ },
+ {
+  "id": "c1083",
+  "de": "Kühlmittelstand zu niedrig",
+  "en": "Engine coolant level low"
+ },
+ {
+  "id": "c1084",
+  "de": "Motor überhitzt - Schutzbetrieb aktiv",
+  "en": "Engine coolant over temperature - protection mode active"
+ },
+ {
+  "id": "c1085",
+  "de": "Motor überhitzt (Kühlmitteltemperatur zu hoch)",
+  "en": "Engine coolant over temperature condition"
+ },
+ {
+  "id": "c1086",
+  "de": "Kühlmitteltemperatursensor - Stromkreis",
+  "en": "Engine coolant temperature sensor - circuit"
+ },
+ {
+  "id": "c1087",
+  "de": "Kühlmitteltemperatursensor - Signal zu hoch",
+  "en": "Engine coolant temperature sensor - circuit high"
+ },
+ {
+  "id": "c1088",
+  "de": "Kühlmitteltemperatursensor - Signal setzt zeitweise aus",
+  "en": "Engine coolant temperature sensor - circuit intermittent"
+ },
+ {
+  "id": "c1089",
+  "de": "Kühlmitteltemperatursensor - Signal zu niedrig",
+  "en": "Engine coolant temperature sensor - circuit low"
+ },
+ {
+  "id": "c1090",
+  "de": "Kühlmitteltemperatursensor - Signal unplausibel",
+  "en": "Engine coolant temperature sensor - circuit range/performance"
+ },
+ {
+  "id": "c1091",
+  "de": "Kühlmitteltemperatursensor 2 - Stromkreis",
+  "en": "Engine coolant temperature sensor 2 - circuit"
+ },
+ {
+  "id": "c1092",
+  "de": "Kühlmitteltemperatursensor 2 - Signal zu hoch",
+  "en": "Engine coolant temperature sensor 2 - circuit high"
+ },
+ {
+  "id": "c1093",
+  "de": "Kühlmitteltemperatursensor 2 - Signal setzt zeitweise aus",
+  "en": "Engine coolant temperature sensor 2 - circuit intermittent"
+ },
+ {
+  "id": "c1094",
+  "de": "Kühlmitteltemperatursensor 2 - Signal zu niedrig",
+  "en": "Engine coolant temperature sensor 2 - circuit low"
+ },
+ {
+  "id": "c1095",
+  "de": "Kühlmitteltemperatursensor 2 - Signal unplausibel",
+  "en": "Engine coolant temperature sensor 2 - circuit range/performance"
+ },
+ {
+  "id": "c1096",
+  "de": "Hybrid: Verbrennungsmotor springt nicht an",
+  "en": "Engine does not start"
+ },
+ {
+  "id": "c1097",
+  "de": "Abgasmassenstrom",
+  "en": "Engine exhaust flow rate"
+ },
+ {
+  "id": "c1098",
+  "de": "Verbrennungsmotor springt nicht an",
+  "en": "Engine failed to start"
+ },
+ {
+  "id": "c1099",
+  "de": "Reibmoment des Motors",
+  "en": "Engine friction torque"
+ },
+ {
+  "id": "c1100",
+  "de": "Kraftstoffverbrauch",
+  "en": "Engine fuel rate"
+ },
+ {
+  "id": "c1101",
+  "de": "Kraftstoffmassenstrom",
+  "en": "Engine fuel rate (mass)"
+ },
+ {
+  "id": "c1102",
+  "de": "Warnleuchte Motortemperatur - Steuerkreis",
+  "en": "Engine hot lamp output control circuit"
+ },
+ {
+  "id": "c1103",
+  "de": "Motorbetriebsstunden",
+  "en": "Engine hours"
+ },
+ {
+  "id": "c1104",
+  "de": "Motoreingriff Getriebe - nicht plausibel",
+  "en": "Engine intervention by transmission - implausible"
+ },
+ {
+  "id": "c1105",
+  "de": "Motorlastsignal",
+  "en": "Engine load signal"
+ },
+ {
+  "id": "c1106",
+  "de": "Herstellerdiagnose (EMD)",
+  "en": "Engine manufacturer diagnostics (EMD)"
+ },
+ {
+  "id": "c1107",
+  "de": "Verbrennungsaussetzer beim Start (erste 1000 Umdrehungen)",
+  "en": "Engine misfire detected on startup (first 1000 revolutions)"
+ },
+ {
+  "id": "c1108",
+  "de": "Motoröl und Schmierung",
+  "en": "Engine oil and lubrication"
+ },
+ {
+  "id": "c1109",
+  "de": "Motoröl überhitzt",
+  "en": "Engine oil over temperature"
+ },
+ {
+  "id": "c1110",
+  "de": "Öldrucksensor/-schalter - Stromkreis",
+  "en": "Engine oil pressure sensor/switch - circuit"
+ },
+ {
+  "id": "c1111",
+  "de": "Öldrucksensor/-schalter - Spannung zu hoch",
+  "en": "Engine oil pressure sensor/switch - high voltage"
+ },
+ {
+  "id": "c1112",
+  "de": "Öldrucksensor/-schalter - Spannung zu niedrig",
+  "en": "Engine oil pressure sensor/switch - low voltage"
+ },
+ {
+  "id": "c1113",
+  "de": "Öldrucksensor/-schalter - Signal unplausibel",
+  "en": "Engine oil pressure sensor/switch - range/performance"
+ },
+ {
+  "id": "c1114",
+  "de": "Öldruck zu niedrig",
+  "en": "Engine oil pressure too low"
+ },
+ {
+  "id": "c1115",
+  "de": "Öltemperatur",
+  "en": "Engine oil temperature"
+ },
+ {
+  "id": "c1116",
+  "de": "Motoröltemperatursensor - Stromkreis",
+  "en": "Engine oil temperature sensor - circuit"
+ },
+ {
+  "id": "c1117",
+  "de": "Motoröltemperatursensor - Signal zu hoch",
+  "en": "Engine oil temperature sensor - circuit high"
+ },
+ {
+  "id": "c1118",
+  "de": "Motoröltemperatursensor - Signal setzt zeitweise aus",
+  "en": "Engine oil temperature sensor - circuit intermittent"
+ },
+ {
+  "id": "c1119",
+  "de": "Motoröltemperatursensor - Signal zu niedrig",
+  "en": "Engine oil temperature sensor - circuit low"
+ },
+ {
+  "id": "c1120",
+  "de": "Motoröltemperatursensor - Signal unplausibel",
+  "en": "Engine oil temperature sensor - circuit range/performance"
+ },
+ {
+  "id": "c1121",
+  "de": "Motor überhitzt",
+  "en": "Engine over temperature (overheat)"
+ },
+ {
+  "id": "c1122",
+  "de": "Motordrehzahl zu hoch (Überdrehzahl)",
+  "en": "Engine overspeed condition"
+ },
+ {
+  "id": "c1123",
+  "de": "Drehmomentkennlinie",
+  "en": "Engine percent torque data"
+ },
+ {
+  "id": "c1124",
+  "de": "Motorpositionssystem Bank 1 - Funktion",
+  "en": "Engine position system performance - bank 1"
+ },
+ {
+  "id": "c1125",
+  "de": "Motorpositionssystem Bank 2 - Funktion",
+  "en": "Engine position system performance - bank 2"
+ },
+ {
+  "id": "c1126",
+  "de": "Bezugsdrehmoment des Motors",
+  "en": "Engine reference torque"
+ },
+ {
+  "id": "c1127",
+  "de": "Motorlaufzeit gesamt",
+  "en": "Engine run time"
+ },
+ {
+  "id": "c1128",
+  "de": "Motor läuft (1 = ja)",
+  "en": "Engine running (1 = yes)"
+ },
+ {
+  "id": "c1129",
+  "de": "Motorabstellmagnet - Fehlfunktion",
+  "en": "Engine shutoff solenoid"
+ },
+ {
+  "id": "c1130",
+  "de": "Drehzahl",
+  "en": "Engine speed"
+ },
+ {
+  "id": "c1131",
+  "de": "Motordrehzahl (OBD)",
+  "en": "Engine speed (OBD)"
+ },
+ {
+  "id": "c1132",
+  "de": "Motordrehzahl-Eingang (Getriebe) - Stromkreis",
+  "en": "Engine speed input - circuit"
+ },
+ {
+  "id": "c1133",
+  "de": "Motordrehzahl-Eingang (Getriebe) - Signal setzt zeitweise aus",
+  "en": "Engine speed input - circuit intermittent"
+ },
+ {
+  "id": "c1134",
+  "de": "Motordrehzahl-Eingang (Getriebe) - kein Signal",
+  "en": "Engine speed input - circuit no signal"
+ },
+ {
+  "id": "c1135",
+  "de": "Motordrehzahl-Eingang (Getriebe) - Signal unplausibel",
+  "en": "Engine speed input - circuit range/performance"
+ },
+ {
+  "id": "c1136",
+  "de": "Motordrehzahlgeber G28",
+  "en": "Engine speed sensor G28"
+ },
+ {
+  "id": "c1137",
+  "de": "Motorstart durch Fahrberechtigungssystem (DAS) gesperrt",
+  "en": "Engine start blocked by drive authorization system (DAS)"
+ },
+ {
+  "id": "c1138",
+  "de": "Motorstarts",
+  "en": "Engine starts"
+ },
+ {
+  "id": "c1139",
+  "de": "Motormomentenüberwachung - Adaption an der Grenze",
+  "en": "Engine torque monitoring - adaptation at limit"
+ },
+ {
+  "id": "c1140",
+  "de": "Motorart laut Steuergerät",
+  "en": "Engine type reported by the ECU"
+ },
+ {
+  "id": "c1141",
+  "de": "Erweiterte Herstellerdiagnose (EMD+)",
+  "en": "Enhanced engine manufacturer diagnostics (EMD+)"
+ },
+ {
+  "id": "c1142",
+  "de": "Gleichung endet zu früh",
+  "en": "Equation ends too early"
+ },
+ {
+  "id": "c1143",
+  "de": "Gleichung zu tief verschachtelt",
+  "en": "Equation nested too deeply"
+ },
+ {
+  "id": "c1144",
+  "de": "Gleichung: ",
+  "en": "Equation: "
+ },
+ {
+  "id": "c1145",
+  "de": "Kombi",
+  "en": "Estate"
+ },
+ {
+  "id": "c1146",
+  "de": "Estland",
+  "en": "Estonia"
+ },
+ {
+  "id": "c1147",
+  "de": "Ethanolanteil",
+  "en": "Ethanol content"
+ },
+ {
+  "id": "c1148",
+  "de": "Europa",
+  "en": "Europe"
+ },
+ {
+  "id": "c1149",
+  "de": "Tankentlüftung - Fehlfunktion",
+  "en": "Evaporative emission system"
+ },
+ {
+  "id": "c1150",
+  "de": "Tankentlüftung - Spüldurchfluss zu hoch",
+  "en": "Evaporative emission system high purge flow"
+ },
+ {
+  "id": "c1151",
+  "de": "Tankentlüftung - falscher Spüldurchfluss",
+  "en": "Evaporative emission system incorrect purge flow"
+ },
+ {
+  "id": "c1152",
+  "de": "Tankentlüftung - Leck erkannt (Tankdeckel lose oder fehlt)",
+  "en": "Evaporative emission system leak detected (fuel cap loose/off)"
+ },
+ {
+  "id": "c1153",
+  "de": "Tankentlüftung - großes Leck erkannt (Tankdeckel, Schlauch)",
+  "en": "Evaporative emission system leak detected (large leak)"
+ },
+ {
+  "id": "c1154",
+  "de": "Tankentlüftung - kleines Leck erkannt",
+  "en": "Evaporative emission system leak detected (small leak)"
+ },
+ {
+  "id": "c1155",
+  "de": "Tankentlüftung - sehr kleines Leck erkannt",
+  "en": "Evaporative emission system leak detected (very small leak)"
+ },
+ {
+  "id": "c1156",
+  "de": "Tankentlüftung - Spüldurchfluss zu gering",
+  "en": "Evaporative emission system low purge flow"
+ },
+ {
+  "id": "c1157",
+  "de": "Tankentlüftung Belüftungsventil - hängt geschlossen",
+  "en": "Evaporative emission system vent valve stuck closed"
+ },
+ {
+  "id": "c1158",
+  "de": "Tankentlüftung",
+  "en": "Evaporative system"
+ },
+ {
+  "id": "c1159",
+  "de": "Tankentlüftung, Leck 0,020 Zoll",
+  "en": "Evaporative system, 0.020 inch leak"
+ },
+ {
+  "id": "c1160",
+  "de": "Tankentlüftung, Leck 0,040 Zoll",
+  "en": "Evaporative system, 0.040 inch leak"
+ },
+ {
+  "id": "c1161",
+  "de": "Tankentlüftung, Leck 0,090 Zoll",
+  "en": "Evaporative system, 0.090 inch leak"
+ },
+ {
+  "id": "c1162",
+  "de": "Tankentlüftung, Deckel offen oder großes Leck",
+  "en": "Evaporative system, cap off or large leak"
+ },
+ {
+  "id": "c1163",
+  "de": "Tankentlüftung, Durchfluss",
+  "en": "Evaporative system, flow"
+ },
+ {
+  "id": "c1164",
+  "de": "Tankentlüftung, Leckprüfung",
+  "en": "Evaporative system, leak check"
+ },
+ {
+  "id": "c1165",
+  "de": "Tankentlüftung, Spülstrom",
+  "en": "Evaporative system, purge flow"
+ },
+ {
+  "id": "c1166",
+  "de": "Kupplung rutscht zu stark",
+  "en": "Excessive clutch slippage"
+ },
+ {
+  "id": "c1167",
+  "de": "Abgas",
+  "en": "Exhaust"
+ },
+ {
+  "id": "c1168",
+  "de": "Abgasnachbehandlung",
+  "en": "Exhaust aftertreatment"
+ },
+ {
+  "id": "c1169",
+  "de": "Abgasnachbehandlung, SCR und AdBlue",
+  "en": "Exhaust aftertreatment, SCR and AdBlue"
+ },
+ {
+  "id": "c1170",
+  "de": "Abgasrückführung",
+  "en": "Exhaust gas recirculation"
+ },
+ {
+  "id": "c1171",
+  "de": "Abgasrückführung A - Steuerkreis Spannung zu hoch",
+  "en": "Exhaust gas recirculation A control circuit high"
+ },
+ {
+  "id": "c1172",
+  "de": "Abgasrückführung A - Steuerkreis Spannung zu niedrig",
+  "en": "Exhaust gas recirculation A control circuit low"
+ },
+ {
+  "id": "c1173",
+  "de": "Abgasrückführung - Steuerkreis",
+  "en": "Exhaust gas recirculation control circuit"
+ },
+ {
+  "id": "c1174",
+  "de": "Abgasrückführung - Steuerkreis Funktion",
+  "en": "Exhaust gas recirculation control circuit range/performance"
+ },
+ {
+  "id": "c1175",
+  "de": "AGR-Kühlung - Funktion",
+  "en": "Exhaust gas recirculation cooling system performance"
+ },
+ {
+  "id": "c1176",
+  "de": "AGR-Kühlung Umschaltventil - Steuerkreis Spannung zu hoch",
+  "en": "Exhaust gas recirculation cooling valve - control circuit high"
+ },
+ {
+  "id": "c1177",
+  "de": "AGR-Kühlung Umschaltventil - Steuerkreis Spannung zu niedrig",
+  "en": "Exhaust gas recirculation cooling valve - control circuit low"
+ },
+ {
+  "id": "c1178",
+  "de": "AGR-Kühlung Umschaltventil - Steuerkreis oder Unterbrechung",
+  "en": "Exhaust gas recirculation cooling valve - control circuit/open"
+ },
+ {
+  "id": "c1179",
+  "de": "Abgasrückführung - Durchfluss fehlerhaft",
+  "en": "Exhaust gas recirculation flow"
+ },
+ {
+  "id": "c1180",
+  "de": "Abgasrückführung - Durchfluss zu hoch",
+  "en": "Exhaust gas recirculation flow excessive detected"
+ },
+ {
+  "id": "c1181",
+  "de": "Abgasrückführung - Durchfluss zu gering",
+  "en": "Exhaust gas recirculation flow insufficient detected"
+ },
+ {
+  "id": "c1182",
+  "de": "AGR-Sensor A - Stromkreis",
+  "en": "Exhaust gas recirculation sensor A circuit"
+ },
+ {
+  "id": "c1183",
+  "de": "AGR-Sensor A - Signal zu hoch",
+  "en": "Exhaust gas recirculation sensor A circuit high"
+ },
+ {
+  "id": "c1184",
+  "de": "AGR-Sensor A - Signal zu niedrig",
+  "en": "Exhaust gas recirculation sensor A circuit low"
+ },
+ {
+  "id": "c1185",
+  "de": "AGR-Sensor A - Signal unplausibel",
+  "en": "Exhaust gas recirculation sensor A circuit range/performance"
+ },
+ {
+  "id": "c1186",
+  "de": "AGR-Sensor B - Stromkreis",
+  "en": "Exhaust gas recirculation sensor B circuit"
+ },
+ {
+  "id": "c1187",
+  "de": "AGR-Sensor B - Signal zu hoch",
+  "en": "Exhaust gas recirculation sensor B circuit high"
+ },
+ {
+  "id": "c1188",
+  "de": "AGR-Sensor B - Signal zu niedrig",
+  "en": "Exhaust gas recirculation sensor B circuit low"
+ },
+ {
+  "id": "c1189",
+  "de": "Abgasrückführung - Systemfunktion",
+  "en": "Exhaust gas recirculation system performance"
+ },
+ {
+  "id": "c1190",
+  "de": "AGR-Drosselklappe - Steuerkreis Spannung zu hoch",
+  "en": "Exhaust gas recirculation throttle control circuit high"
+ },
+ {
+  "id": "c1191",
+  "de": "AGR-Drosselklappe - Steuerkreis Spannung zu niedrig",
+  "en": "Exhaust gas recirculation throttle control circuit low"
+ },
+ {
+  "id": "c1192",
+  "de": "AGR-Drosselklappe - Steuerkreis",
+  "en": "Exhaust gas recirculation throttle position control circuit"
+ },
+ {
+  "id": "c1193",
+  "de": "AGR-Drosselklappe - Funktion",
+  "en": "Exhaust gas recirculation throttle position control range/performance"
+ },
+ {
+  "id": "c1194",
+  "de": "Abgasrückführung, Ventil meist verrußt",
+  "en": "Exhaust gas recirculation, valve usually sooted up"
+ },
+ {
+  "id": "c1195",
+  "de": "Abgassensor",
+  "en": "Exhaust gas sensor"
+ },
+ {
+  "id": "c1196",
+  "de": "Abgastemperatursensor Bank 1 Sensor 1 - Stromkreis",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 1 - circuit"
+ },
+ {
+  "id": "c1197",
+  "de": "Abgastemperatursensor Bank 1 Sensor 1 - Signal zu hoch",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 1 - circuit high"
+ },
+ {
+  "id": "c1198",
+  "de": "Abgastemperatursensor Bank 1 Sensor 1 - Signal zu niedrig",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 1 - circuit low"
+ },
+ {
+  "id": "c1199",
+  "de": "Abgastemperatursensor Bank 1 Sensor 2 - Stromkreis",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 2 - circuit"
+ },
+ {
+  "id": "c1200",
+  "de": "Abgastemperatursensor Bank 1 Sensor 2 - Signal zu hoch",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 2 - circuit high"
+ },
+ {
+  "id": "c1201",
+  "de": "Abgastemperatursensor Bank 1 Sensor 2 - Signal zu niedrig",
+  "en": "Exhaust gas temperature sensor bank 1 sensor 2 - circuit low"
+ },
+ {
+  "id": "c1202",
+  "de": "Abgastemperatursensor Bank 2 Sensor 1 - Stromkreis",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 1 - circuit"
+ },
+ {
+  "id": "c1203",
+  "de": "Abgastemperatursensor Bank 2 Sensor 1 - Signal zu hoch",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 1 - circuit high"
+ },
+ {
+  "id": "c1204",
+  "de": "Abgastemperatursensor Bank 2 Sensor 1 - Signal zu niedrig",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 1 - circuit low"
+ },
+ {
+  "id": "c1205",
+  "de": "Abgastemperatursensor Bank 2 Sensor 2 - Stromkreis",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 2 - circuit"
+ },
+ {
+  "id": "c1206",
+  "de": "Abgastemperatursensor Bank 2 Sensor 2 - Signal zu hoch",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 2 - circuit high"
+ },
+ {
+  "id": "c1207",
+  "de": "Abgastemperatursensor Bank 2 Sensor 2 - Signal zu niedrig",
+  "en": "Exhaust gas temperature sensor bank 2 sensor 2 - circuit low"
+ },
+ {
+  "id": "c1208",
+  "de": "Abgastemperatursensor Bank 1 Sensor 1 - Signal setzt zeitweise aus",
+  "en": "Exhaust gas temperature sensor circuit intermittent - bank 1 sensor 1"
+ },
+ {
+  "id": "c1209",
+  "de": "Abgastemperatursensor Bank 1 Sensor 1 - Signal unplausibel",
+  "en": "Exhaust gas temperature sensor circuit range/performance - bank 1 sensor 1"
+ },
+ {
+  "id": "c1210",
+  "de": "Abgastemperatursensor Bank 1 Sensor 2 - Signal unplausibel",
+  "en": "Exhaust gas temperature sensor circuit range/performance - bank 1 sensor 2"
+ },
+ {
+  "id": "c1211",
+  "de": "Abgastemperatur zu hoch, Bank 1",
+  "en": "Exhaust gas temperature too high - bank 1"
+ },
+ {
+  "id": "c1212",
+  "de": "Abgastemperatur zu hoch, Bank 2",
+  "en": "Exhaust gas temperature too high - bank 2"
+ },
+ {
+  "id": "c1213",
+  "de": "Abgas nicht warm genug, hintere Lambdasonde nicht geprüft",
+  "en": "Exhaust not warm enough, downstream sensor not tested"
+ },
+ {
+  "id": "c1214",
+  "de": "Abgasdruck",
+  "en": "Exhaust pressure"
+ },
+ {
+  "id": "c1215",
+  "de": "Abgasdruck Bank 1",
+  "en": "Exhaust pressure bank 1"
+ },
+ {
+  "id": "c1216",
+  "de": "Abgasdruck Bank 2",
+  "en": "Exhaust pressure bank 2"
+ },
+ {
+  "id": "c1217",
+  "de": "Abgasdruckregelventil A - Spannung zu hoch",
+  "en": "Exhaust pressure control valve A - high"
+ },
+ {
+  "id": "c1218",
+  "de": "Abgasdruckregelventil A - Signal setzt zeitweise aus",
+  "en": "Exhaust pressure control valve A - intermittent"
+ },
+ {
+  "id": "c1219",
+  "de": "Abgasdruckregelventil A - Spannung zu niedrig",
+  "en": "Exhaust pressure control valve A - low"
+ },
+ {
+  "id": "c1220",
+  "de": "Abgasdruckregelventil A - Fehlfunktion",
+  "en": "Exhaust pressure control valve A - malfunction"
+ },
+ {
+  "id": "c1221",
+  "de": "Abgasdruckregelventil A - Funktion",
+  "en": "Exhaust pressure control valve A - range/performance"
+ },
+ {
+  "id": "c1222",
+  "de": "Abgasdrucksensor A - Stromkreis",
+  "en": "Exhaust pressure sensor A - circuit"
+ },
+ {
+  "id": "c1223",
+  "de": "Abgasdrucksensor A - Signal zu hoch",
+  "en": "Exhaust pressure sensor A - circuit high"
+ },
+ {
+  "id": "c1224",
+  "de": "Abgasdrucksensor A - Signal setzt zeitweise aus",
+  "en": "Exhaust pressure sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1225",
+  "de": "Abgasdrucksensor A - Signal zu niedrig",
+  "en": "Exhaust pressure sensor A - circuit low"
+ },
+ {
+  "id": "c1226",
+  "de": "Abgasdrucksensor A - Signal unplausibel",
+  "en": "Exhaust pressure sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1227",
+  "de": "Abgasanlage",
+  "en": "Exhaust system"
+ },
+ {
+  "id": "c1228",
+  "de": "Abgastemperatur für die Partikelfilter-Regeneration zu hoch, Bank 1",
+  "en": "Exhaust temperature too high for particulate filter regeneration - bank 1"
+ },
+ {
+  "id": "c1229",
+  "de": "Abgastemperatur für die Partikelfilter-Regeneration zu niedrig, Bank 1",
+  "en": "Exhaust temperature too low for particulate filter regeneration - bank 1"
+ },
+ {
+  "id": "c1230",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 1 - Stromkreis",
+  "en": "Exhaust valve control solenoid bank 1 - circuit"
+ },
+ {
+  "id": "c1231",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 1 - Spannung zu hoch",
+  "en": "Exhaust valve control solenoid bank 1 - circuit high"
+ },
+ {
+  "id": "c1232",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 1 - Spannung zu niedrig",
+  "en": "Exhaust valve control solenoid bank 1 - circuit low"
+ },
+ {
+  "id": "c1233",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 2 - Stromkreis",
+  "en": "Exhaust valve control solenoid bank 2 - circuit"
+ },
+ {
+  "id": "c1234",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 2 - Spannung zu hoch",
+  "en": "Exhaust valve control solenoid bank 2 - circuit high"
+ },
+ {
+  "id": "c1235",
+  "de": "Magnetventil Ventilsteuerung Auslass Bank 2 - Spannung zu niedrig",
+  "en": "Exhaust valve control solenoid bank 2 - circuit low"
+ },
+ {
+  "id": "c1236",
+  "de": "Ventilsteuerung Auslass Magnetventil Bank 1 - Funktion",
+  "en": "Exhaust valve control solenoid circuit range/performance - bank 1"
+ },
+ {
+  "id": "c1237",
+  "de": "Ventilsteuerung Auslass Magnetventil Bank 2 - Funktion",
+  "en": "Exhaust valve control solenoid circuit range/performance - bank 2"
+ },
+ {
+  "id": "c1238",
+  "de": "Abgas: Lambdasonden und Katalysator",
+  "en": "Exhaust: oxygen sensors and catalytic converter"
+ },
+ {
+  "id": "c1239",
+  "de": "Erweiterte Adressierung gibt es hier nur mit 11-Bit-Adressen.",
+  "en": "Extended addressing is only supported with 11-bit ids."
+ },
+ {
+  "id": "c1240",
+  "de": "Fehler im Frequenz- oder PWM-Signal",
+  "en": "FM (frequency modulated) or PWM failure"
+ },
+ {
+  "id": "c1241",
+  "de": "Fehler im Frequenz- oder PWM-Signal",
+  "en": "FM or PWM failure"
+ },
+ {
+  "id": "c1242",
+  "de": "Faktor",
+  "en": "Factor"
+ },
+ {
+  "id": "c1243",
+  "de": "Kühlerlüfter 1 - Steuerkreis",
+  "en": "Fan 1 control circuit"
+ },
+ {
+  "id": "c1244",
+  "de": "Kühlerlüfter 1 - Steuerkreis Spannung zu hoch",
+  "en": "Fan 1 control circuit high"
+ },
+ {
+  "id": "c1245",
+  "de": "Kühlerlüfter 1 - Steuerkreis Spannung zu niedrig",
+  "en": "Fan 1 control circuit low"
+ },
+ {
+  "id": "c1246",
+  "de": "Kühlerlüfter 2 - Steuerkreis",
+  "en": "Fan 2 control circuit"
+ },
+ {
+  "id": "c1247",
+  "de": "Kühlerlüfter 2 - Steuerkreis Spannung zu hoch",
+  "en": "Fan 2 control circuit high"
+ },
+ {
+  "id": "c1248",
+  "de": "Kühlerlüfter 2 - Steuerkreis Spannung zu niedrig",
+  "en": "Fan 2 control circuit low"
+ },
+ {
+  "id": "c1249",
+  "de": "Kühlerlüfter 3 - Steuerkreis",
+  "en": "Fan 3 control circuit"
+ }
+]

@@ -1,0 +1,21 @@
+{
+"u1000": "Yakında Bluetooth adaptörü bulunamadı. Araca takılı mı ve kontak açık mı?",
+"u1001": "Klasik Bluetooth üzerinden %1 adaptörüne bağlanılıyor ...",
+"u1002": "Ağda araç aranıyor (ENET ve DoIP) ...",
+"u1003": "%1 üzerinden bağlandı: %2%3",
+"u1004": "ELM327 uyumlu adaptörlerle EOBD üzerinden araç teşhisi",
+"u1005": "Bir Wi-Fi adaptörünü doğrudan bağlayın, örn. 192.168.0.10:35000",
+"u1006": "ana bilgisayar:port",
+"u1007": "Bu çalıştırma için dil: de veya en",
+"u1008": "Doğrudan yerleşik demo araca bağlan",
+"u1009": "Bu sayfada başla, örn. faults veya live",
+"u1010": "Birkaç saniye sonra pencerenin resmini kaydet ve çık (belgeleme için)",
+"u1011": "Pencere boyutu, örn. 1440x920",
+"u1012": "Bu çalıştırma için görünüm: dark veya light",
+"u1013": "Kaydedilmiş bir oturumu oynat",
+"u1014": "Seri porttaki bir adaptörü bağla, örn. COM3 veya /dev/ttyUSB0, auto hepsini arar",
+"u1015": "Bir Bluetooth adaptörünü adresiyle bağla veya aramak için auto",
+"u1016": "Bağlandıktan sonra bir teşhis raporu yaz (PDF veya .html için HTML) ve çık",
+"u1017": "Bir BMW veya Mini'yi ENET kablosuyla adresiyle veya aramak için auto ile bağla",
+"u1018": "--report bir bağlantı gerektirir: --demo, --port, --tcp, --enet, --bluetooth veya --replay"
+}

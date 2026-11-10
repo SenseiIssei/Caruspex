@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c2250",
+  "de": "Lambdasonde Bank 1, Sonde 3 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 1 sensor 3"
+ },
+ {
+  "id": "c2251",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 2 sensor 1"
+ },
+ {
+  "id": "c2252",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 2 sensor 2"
+ },
+ {
+  "id": "c2253",
+  "de": "Lambdasonde Bank 2, Sonde 3 - Heizkreis",
+  "en": "O2 sensor heater circuit - bank 2 sensor 3"
+ },
+ {
+  "id": "c2254",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 1 sensor 1"
+ },
+ {
+  "id": "c2255",
+  "de": "Lambdasondenheizung Bank 1, Sonde 2 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 1 sensor 2"
+ },
+ {
+  "id": "c2256",
+  "de": "Lambdasondenheizung Bank 1, Sonde 3 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 1 sensor 3"
+ },
+ {
+  "id": "c2257",
+  "de": "Lambdasondenheizung Bank 2, Sonde 1 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 2 sensor 1"
+ },
+ {
+  "id": "c2258",
+  "de": "Lambdasondenheizung Bank 2, Sonde 2 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 2 sensor 2"
+ },
+ {
+  "id": "c2259",
+  "de": "Lambdasondenheizung Bank 2, Sonde 3 - Steuerkreis",
+  "en": "O2 sensor heater control circuit - bank 2 sensor 3"
+ },
+ {
+  "id": "c2260",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 1 sensor 1"
+ },
+ {
+  "id": "c2261",
+  "de": "Lambdasondenheizung Bank 1, Sonde 2 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 1 sensor 2"
+ },
+ {
+  "id": "c2262",
+  "de": "Lambdasondenheizung Bank 1, Sonde 3 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 1 sensor 3"
+ },
+ {
+  "id": "c2263",
+  "de": "Lambdasondenheizung Bank 2, Sonde 1 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 2 sensor 1"
+ },
+ {
+  "id": "c2264",
+  "de": "Lambdasondenheizung Bank 2, Sonde 2 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 2 sensor 2"
+ },
+ {
+  "id": "c2265",
+  "de": "Lambdasondenheizung Bank 2, Sonde 3 - Steuerkreis Spannung zu hoch",
+  "en": "O2 sensor heater control circuit high - bank 2 sensor 3"
+ },
+ {
+  "id": "c2266",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 1 sensor 1"
+ },
+ {
+  "id": "c2267",
+  "de": "Lambdasondenheizung Bank 1, Sonde 2 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 1 sensor 2"
+ },
+ {
+  "id": "c2268",
+  "de": "Lambdasondenheizung Bank 1, Sonde 3 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 1 sensor 3"
+ },
+ {
+  "id": "c2269",
+  "de": "Lambdasondenheizung Bank 2, Sonde 1 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 2 sensor 1"
+ },
+ {
+  "id": "c2270",
+  "de": "Lambdasondenheizung Bank 2, Sonde 2 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 2 sensor 2"
+ },
+ {
+  "id": "c2271",
+  "de": "Lambdasondenheizung Bank 2, Sonde 3 - Steuerkreis Spannung zu niedrig",
+  "en": "O2 sensor heater control circuit low - bank 2 sensor 3"
+ },
+ {
+  "id": "c2272",
+  "de": "Lambdasondenheizung Bank 1, Sonde 1 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 1 sensor 1"
+ },
+ {
+  "id": "c2273",
+  "de": "Lambdasondenheizung Bank 1, Sonde 2 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 1 sensor 2"
+ },
+ {
+  "id": "c2274",
+  "de": "Lambdasondenheizung Bank 1, Sonde 3 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 1 sensor 3"
+ },
+ {
+  "id": "c2275",
+  "de": "Lambdasondenheizung Bank 2, Sonde 1 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 2 sensor 1"
+ },
+ {
+  "id": "c2276",
+  "de": "Lambdasondenheizung Bank 2, Sonde 2 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 2 sensor 2"
+ },
+ {
+  "id": "c2277",
+  "de": "Lambdasondenheizung Bank 2, Sonde 3 - Widerstand",
+  "en": "O2 sensor heater resistance - bank 2 sensor 3"
+ },
+ {
+  "id": "c2278",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Minus-Steuerkreis - Spannung zu hoch",
+  "en": "O2 sensor negative current control circuit - bank 1 sensor 1 - high"
+ },
+ {
+  "id": "c2279",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Minus-Steuerkreis - Spannung zu niedrig",
+  "en": "O2 sensor negative current control circuit - bank 1 sensor 1 - low"
+ },
+ {
+  "id": "c2280",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Minus-Steuerkreis - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor negative current control circuit - bank 1 sensor 1 - open"
+ },
+ {
+  "id": "c2281",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Minus-Steuerkreis - Spannung zu hoch",
+  "en": "O2 sensor negative current control circuit - bank 2 sensor 1 - high"
+ },
+ {
+  "id": "c2282",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Minus-Steuerkreis - Spannung zu niedrig",
+  "en": "O2 sensor negative current control circuit - bank 2 sensor 1 - low"
+ },
+ {
+  "id": "c2283",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Minus-Steuerkreis - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor negative current control circuit - bank 2 sensor 1 - open"
+ },
+ {
+  "id": "c2284",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Pumpstrom-Steuerkreis - Spannung zu hoch",
+  "en": "O2 sensor positive current control circuit - bank 1 sensor 1 - high"
+ },
+ {
+  "id": "c2285",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Pumpstrom-Steuerkreis - Spannung zu niedrig",
+  "en": "O2 sensor positive current control circuit - bank 1 sensor 1 - low"
+ },
+ {
+  "id": "c2286",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Pumpstrom-Steuerkreis - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor positive current control circuit - bank 1 sensor 1 - open"
+ },
+ {
+  "id": "c2287",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Pumpstrom-Steuerkreis - Spannung zu hoch",
+  "en": "O2 sensor positive current control circuit - bank 2 sensor 1 - high"
+ },
+ {
+  "id": "c2288",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Pumpstrom-Steuerkreis - Spannung zu niedrig",
+  "en": "O2 sensor positive current control circuit - bank 2 sensor 1 - low"
+ },
+ {
+  "id": "c2289",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Pumpstrom-Steuerkreis - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor positive current control circuit - bank 2 sensor 1 - open"
+ },
+ {
+  "id": "c2290",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Referenzspannung - Spannung zu hoch",
+  "en": "O2 sensor reference voltage - bank 1 sensor 1 - circuit high"
+ },
+ {
+  "id": "c2291",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Referenzspannung - Spannung zu niedrig",
+  "en": "O2 sensor reference voltage - bank 1 sensor 1 - circuit low"
+ },
+ {
+  "id": "c2292",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Referenzspannung - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor reference voltage - bank 1 sensor 1 - circuit/open"
+ },
+ {
+  "id": "c2293",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Referenzspannung - Funktion",
+  "en": "O2 sensor reference voltage - bank 1 sensor 1 - performance"
+ },
+ {
+  "id": "c2294",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Referenzspannung - Spannung zu hoch",
+  "en": "O2 sensor reference voltage - bank 2 sensor 1 - circuit high"
+ },
+ {
+  "id": "c2295",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Referenzspannung - Spannung zu niedrig",
+  "en": "O2 sensor reference voltage - bank 2 sensor 1 - circuit low"
+ },
+ {
+  "id": "c2296",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Referenzspannung - Stromkreis oder Unterbrechung",
+  "en": "O2 sensor reference voltage - bank 2 sensor 1 - circuit/open"
+ },
+ {
+  "id": "c2297",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Referenzspannung - Funktion",
+  "en": "O2 sensor reference voltage - bank 2 sensor 1 - performance"
+ },
+ {
+  "id": "c2298",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Signal hängt auf mager",
+  "en": "O2 sensor signal biased/stuck lean - bank 1 sensor 1"
+ },
+ {
+  "id": "c2299",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Signal hängt auf mager",
+  "en": "O2 sensor signal biased/stuck lean - bank 1 sensor 2"
+ },
+ {
+  "id": "c2300",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Signal hängt auf mager",
+  "en": "O2 sensor signal biased/stuck lean - bank 2 sensor 1"
+ },
+ {
+  "id": "c2301",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Signal hängt auf mager",
+  "en": "O2 sensor signal biased/stuck lean - bank 2 sensor 2"
+ },
+ {
+  "id": "c2302",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Signal hängt auf fett",
+  "en": "O2 sensor signal biased/stuck rich - bank 1 sensor 1"
+ },
+ {
+  "id": "c2303",
+  "de": "Lambdasonde Bank 1, Sonde 2 - Signal hängt auf fett",
+  "en": "O2 sensor signal biased/stuck rich - bank 1 sensor 2"
+ },
+ {
+  "id": "c2304",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Signal hängt auf fett",
+  "en": "O2 sensor signal biased/stuck rich - bank 2 sensor 1"
+ },
+ {
+  "id": "c2305",
+  "de": "Lambdasonde Bank 2, Sonde 2 - Signal hängt auf fett",
+  "en": "O2 sensor signal biased/stuck rich - bank 2 sensor 2"
+ },
+ {
+  "id": "c2306",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Signalkreis hat Kurzschluss zum Heizkreis",
+  "en": "O2 sensor signal circuit shorted to heater circuit - bank 1 sensor 1"
+ },
+ {
+  "id": "c2307",
+  "de": "Lambdasonden vertauscht: Bank 1 Sonde 1 und Bank 2 Sonde 1",
+  "en": "O2 sensor signals swapped: bank 1 sensor 1 / bank 2 sensor 1"
+ },
+ {
+  "id": "c2308",
+  "de": "Lambdasonden vertauscht: Bank 1 Sonde 2 und Bank 2 Sonde 2",
+  "en": "O2 sensor signals swapped: bank 1 sensor 2 / bank 2 sensor 2"
+ },
+ {
+  "id": "c2309",
+  "de": "Lambdasonde Bank 1, Sonde 1 - reagiert zu langsam von mager nach fett",
+  "en": "O2 sensor slow response - lean to rich - bank 1 sensor 1"
+ },
+ {
+  "id": "c2310",
+  "de": "Lambdasonde Bank 1, Sonde 2 - reagiert zu langsam von mager nach fett",
+  "en": "O2 sensor slow response - lean to rich - bank 1 sensor 2"
+ },
+ {
+  "id": "c2311",
+  "de": "Lambdasonde Bank 2, Sonde 1 - reagiert zu langsam von mager nach fett",
+  "en": "O2 sensor slow response - lean to rich - bank 2 sensor 1"
+ },
+ {
+  "id": "c2312",
+  "de": "Lambdasonde Bank 2, Sonde 2 - reagiert zu langsam von mager nach fett",
+  "en": "O2 sensor slow response - lean to rich - bank 2 sensor 2"
+ },
+ {
+  "id": "c2313",
+  "de": "Lambdasonde Bank 1, Sonde 1 - reagiert zu langsam von fett nach mager",
+  "en": "O2 sensor slow response - rich to lean - bank 1 sensor 1"
+ },
+ {
+  "id": "c2314",
+  "de": "Lambdasonde Bank 1, Sonde 2 - reagiert zu langsam von fett nach mager",
+  "en": "O2 sensor slow response - rich to lean - bank 1 sensor 2"
+ },
+ {
+  "id": "c2315",
+  "de": "Lambdasonde Bank 2, Sonde 1 - reagiert zu langsam von fett nach mager",
+  "en": "O2 sensor slow response - rich to lean - bank 2 sensor 1"
+ },
+ {
+  "id": "c2316",
+  "de": "Lambdasonde Bank 2, Sonde 2 - reagiert zu langsam von fett nach mager",
+  "en": "O2 sensor slow response - rich to lean - bank 2 sensor 2"
+ },
+ {
+  "id": "c2317",
+  "de": "OBD (Bundesstaaten USA)",
+  "en": "OBD (federal, USA)"
+ },
+ {
+  "id": "c2318",
+  "de": "OBD und OBD-II",
+  "en": "OBD and OBD-II"
+ },
+ {
+  "id": "c2319",
+  "de": "OBD-Bereitschaftstests noch nicht abgeschlossen (kein Fehler)",
+  "en": "OBD monitor testing not complete (not a fault)"
+ },
+ {
+  "id": "c2320",
+  "de": "Abgasnorm des Steuergeräts",
+  "en": "OBD standard of the ECU"
+ },
+ {
+  "id": "c2321",
+  "de": "OBD, EOBD und KOBD",
+  "en": "OBD, EOBD and KOBD"
+ },
+ {
+  "id": "c2322",
+  "de": "OBD, OBD-II, EOBD und KOBD",
+  "en": "OBD, OBD-II, EOBD and KOBD"
+ },
+ {
+  "id": "c2323",
+  "de": "OBD-II (Kalifornien)",
+  "en": "OBD-II (California)"
+ },
+ {
+  "id": "c2324",
+  "de": "OBD-II teilweise",
+  "en": "OBD-II in part"
+ },
+ {
+  "id": "c2325",
+  "de": "Ölsteuerventil der Nockenwellenverstellung Bank 1 - Stromkreis",
+  "en": "OCV circuit malfunction - bank 1"
+ },
+ {
+  "id": "c2326",
+  "de": "Ozeanien",
+  "en": "Oceania"
+ },
+ {
+  "id": "c2327",
+  "de": "Kilometerstand",
+  "en": "Odometer"
+ },
+ {
+  "id": "c2328",
+  "de": "Kilometerstand im Motorsteuergerät nicht programmiert",
+  "en": "Odometer not programmed - ECM/PCM"
+ },
+ {
+  "id": "c2329",
+  "de": "Öltemp.",
+  "en": "Oil T"
+ },
+ {
+  "id": "c2330",
+  "de": "Ölstand",
+  "en": "Oil level"
+ },
+ {
+  "id": "c2331",
+  "de": "Öldruckgeber",
+  "en": "Oil pressure sensor"
+ },
+ {
+  "id": "c2332",
+  "de": "Öltemperatur",
+  "en": "Oil temperature"
+ },
+ {
+  "id": "c2333",
+  "de": "Batterie alt oder entladen (viel Kurzstrecke, lange Standzeit)\nLichtmaschine lädt nicht genug\nPolklemmen locker oder korrodiert\nEin Verbraucher entlädt die Batterie im Stand",
+  "en": "Old or discharged battery (many short trips, long periods parked)\nAlternator not charging enough\nLoose or corroded battery terminals\nSomething drains the battery while parked"
+ },
+ {
+  "id": "c2334",
+  "de": "Getriebeöl alt oder zu wenig\nGetriebeölkühler zugesetzt\nStarke Belastung durch Anhänger oder Bergfahrt\nTemperatursensor misst falsch",
+  "en": "Old or low transmission fluid\nClogged transmission cooler\nHeavy load from towing or climbing\nTemperature sensor reads wrong"
+ },
+ {
+  "id": "c2335",
+  "de": "Getriebeöl alt, verschmutzt oder zu wenig\nMagnetventil oder Ventilkörper defekt\nStecker am Getriebe undicht, Öl im Kabel\nGetriebesteuergerät",
+  "en": "Old, dirty or low transmission fluid\nFaulty solenoid or valve body\nLeaking transmission connector, oil in the wiring\nTransmission control unit"
+ },
+ {
+  "id": "c2336",
+  "de": "Ein Zylinder arbeitet nicht so gleichmäßig wie die anderen. Weiterfahren ist meist möglich, das Problem kann sich aber zu Aussetzern auswachsen.",
+  "en": "One cylinder does not work as evenly as the others. You can usually keep driving, but it can develop into misfires."
+ },
+ {
+  "id": "c2337",
+  "de": "Nur AdBlue nach ISO 22241 tanken, nie Wasser oder andere Flüssigkeiten\nWeiße Kristalle am Dosierventil im Auspuff deuten auf ein Problem\nRestreichweite im Kombiinstrument beachten",
+  "en": "Only fill AdBlue to ISO 22241, never water or other fluids\nWhite crystals at the dosing valve in the exhaust point to a problem\nWatch the remaining range in the instrument cluster"
+ },
+ {
+  "id": "c2338",
+  "de": "Betriebszeit",
+  "en": "Op time"
+ },
+ {
+  "id": "c2339",
+  "de": "Opel/Vauxhall",
+  "en": "Opel/Vauxhall"
+ },
+ {
+  "id": "c2340",
+  "de": "Luftfilterkasten öffnen: sitzt der Filter richtig, ist er sauber?\nAnsaugschlauch hinter dem Luftmassenmesser auf Risse prüfen\nMesswert ansehen: im Leerlauf grob 2 bis 7 g/s je nach Hubraum, beim Gasgeben muss er gleichmäßig steigen",
+  "en": "Open the air box: is the filter seated properly and clean?\nCheck the intake hose after the MAF sensor for cracks\nLook at the live value: roughly 2 to 7 g/s at idle depending on engine size, and it must rise smoothly when you rev"
+ },
+ {
+  "id": "c2341",
+  "de": "Betriebszeit",
+  "en": "Operating time"
+ },
+ {
+  "id": "c2342",
+  "de": "Sonstiges",
+  "en": "Other"
+ },
+ {
+  "id": "c2343",
+  "de": "Auslassventil vorne links N102",
+  "en": "Outlet valve front left N102"
+ },
+ {
+  "id": "c2344",
+  "de": "Auslassventil vorne rechts N100",
+  "en": "Outlet valve front right N100"
+ },
+ {
+  "id": "c2345",
+  "de": "Abtriebsdrehzahlsensor - Stromkreis",
+  "en": "Output speed sensor - circuit"
+ },
+ {
+  "id": "c2346",
+  "de": "Abtriebsdrehzahlsensor - Signal setzt zeitweise aus",
+  "en": "Output speed sensor - circuit intermittent"
+ },
+ {
+  "id": "c2347",
+  "de": "Abtriebsdrehzahlsensor - kein Signal",
+  "en": "Output speed sensor - circuit no signal"
+ },
+ {
+  "id": "c2348",
+  "de": "Abtriebsdrehzahlsensor - Signal unplausibel",
+  "en": "Output speed sensor - circuit range/performance"
+ },
+ {
+  "id": "c2349",
+  "de": "Ausgänge und Relais",
+  "en": "Outputs and relays"
+ },
+ {
+  "id": "c2350",
+  "de": "Lambdasonde",
+  "en": "Oxygen sensor"
+ },
+ {
+  "id": "c2351",
+  "de": "Lambdasonde G39",
+  "en": "Oxygen sensor G39"
+ },
+ {
+  "id": "c2352",
+  "de": "Lambdasonde nach Katalysator G130",
+  "en": "Oxygen sensor after catalytic converter G130"
+ },
+ {
+  "id": "c2353",
+  "de": "Lambdasonde Bank 1",
+  "en": "Oxygen sensor bank 1"
+ },
+ {
+  "id": "c2354",
+  "de": "Lambdasonde Bank 2",
+  "en": "Oxygen sensor bank 2"
+ },
+ {
+  "id": "c2355",
+  "de": "Lambdaregelung: Regelgrenze unterschritten",
+  "en": "Oxygen sensor control: below lower limit"
+ },
+ {
+  "id": "c2356",
+  "de": "Lambdaregelung: Regelgrenze erreicht",
+  "en": "Oxygen sensor control: limit reached"
+ },
+ {
+  "id": "c2357",
+  "de": "Lambdasondenheizung",
+  "en": "Oxygen sensor heater"
+ },
+ {
+  "id": "c2358",
+  "de": "Lambdasondenheizung Z19",
+  "en": "Oxygen sensor heater Z19"
+ },
+ {
+  "id": "c2359",
+  "de": "Lambdasonde: Steuerung",
+  "en": "Oxygen sensor: control"
+ },
+ {
+  "id": "c2360",
+  "de": "Lambdasonden und ihre Heizung, vor und nach dem Katalysator",
+  "en": "Oxygen sensors and their heaters, before and after the catalytic converter"
+ },
+ {
+  "id": "c2361",
+  "de": "Verbaute Lambdasonden",
+  "en": "Oxygen sensors fitted"
+ },
+ {
+  "id": "c2362",
+  "de": "Verbaute Lambdasonden (4 Bänke)",
+  "en": "Oxygen sensors fitted (4 banks)"
+ },
+ {
+  "id": "c2363",
+  "de": "Lambdasonden im Abgasstrang",
+  "en": "Oxygen sensors in the exhaust system"
+ },
+ {
+  "id": "c2364",
+  "de": "P0171",
+  "en": "P0420"
+ },
+ {
+  "id": "c2365",
+  "de": "Wegfahrsperre (PATS) - kein Signal vom Schlüssel-Transponder",
+  "en": "PATS ignition key transponder signal is not received"
+ },
+ {
+  "id": "c2366",
+  "de": "Wegfahrsperre (PATS) - falscher Schlüsselcode",
+  "en": "PATS received incorrect key-code from ignition key transponder"
+ },
+ {
+  "id": "c2367",
+  "de": "Wegfahrsperre (PATS) - ungültiges Format des Schlüsselcodes",
+  "en": "PATS received invalid format of key-code from ignition key transponder"
+ },
+ {
+  "id": "c2368",
+  "de": "Wegfahrsperre (PATS) - kein Signal vom Lesegerät",
+  "en": "PATS transceiver signal is not received"
+ },
+ {
+  "id": "c2369",
+  "de": "Motorsteuergerät meldet Fehler der Antriebsschlupfregelung",
+  "en": "PCM indicated traction control malfunction"
+ },
+ {
+  "id": "c2370",
+  "de": "Steuergerät - Dauerspeicher-Test fehlgeschlagen",
+  "en": "PCM keep alive memory test error"
+ },
+ {
+  "id": "c2371",
+  "de": "Steuergerät-Innentemperatursensor A - Stromkreis",
+  "en": "PCM/ECM/TCM internal temperature sensor A - circuit"
+ },
+ {
+  "id": "c2372",
+  "de": "Steuergerät-Innentemperatursensor A - Signal zu hoch",
+  "en": "PCM/ECM/TCM internal temperature sensor A - circuit high"
+ },
+ {
+  "id": "c2373",
+  "de": "Steuergerät-Innentemperatursensor A - Signal zu niedrig",
+  "en": "PCM/ECM/TCM internal temperature sensor A - circuit low"
+ },
+ {
+  "id": "c2374",
+  "de": "Steuergerät-Innentemperatursensor A - Signal unplausibel",
+  "en": "PCM/ECM/TCM internal temperature sensor A - circuit range/performance"
+ },
+ {
+  "id": "c2375",
+  "de": "Steuergerät - Innentemperatur zu hoch",
+  "en": "PCM/ECM/TCM internal temperature too high"
+ },
+ {
+  "id": "c2376",
+  "de": "Partikel-Kontrollbereich (NTE)",
+  "en": "PM NTE control area status"
+ },
+ {
+  "id": "c2377",
+  "de": "PSA/Stellantis (Peugeot, Citroën, DS)",
+  "en": "PSA/Stellantis (Peugeot, Citroën, DS)"
+ },
+ {
+  "id": "c2378",
+  "de": "Pakistan",
+  "en": "Pakistan"
+ },
+ {
+  "id": "c2379",
+  "de": "Park-/Neutralschalter - Fehlfunktion",
+  "en": "Park/neutral position switch"
+ },
+ {
+  "id": "c2380",
+  "de": "Park-/Neutralschalter - Fehlfunktion",
+  "en": "Park/neutral position switch malfunction"
+ },
+ {
+  "id": "c2381",
+  "de": "Park-/Neutralschalter - Eingangssignal",
+  "en": "Park/neutral switch input circuit"
+ },
+ {
+  "id": "c2382",
+  "de": "Einparkhilfe",
+  "en": "Parking aid"
+ },
+ {
+  "id": "c2383",
+  "de": "Einparkhilfe (PAM)",
+  "en": "Parking aid (PAM)"
+ },
+ {
+  "id": "c2384",
+  "de": "Partikelfilter",
+  "en": "Particulate filter"
+ },
+ {
+  "id": "c2385",
+  "de": "Partikelfilter und Differenzdruck",
+  "en": "Particulate filter and differential pressure"
+ },
+ {
+  "id": "c2386",
+  "de": "Partikelfilter Bank 1, Temperatur davor",
+  "en": "Particulate filter bank 1 inlet temperature"
+ },
+ {
+  "id": "c2387",
+  "de": "Partikelfilter Bank 1, Temperatur danach",
+  "en": "Particulate filter bank 1 outlet temperature"
+ },
+ {
+  "id": "c2388",
+  "de": "Partikelfilter Bank 2, Temperatur davor",
+  "en": "Particulate filter bank 2 inlet temperature"
+ },
+ {
+  "id": "c2389",
+  "de": "Partikelfilter Bank 2, Temperatur danach",
+  "en": "Particulate filter bank 2 outlet temperature"
+ },
+ {
+  "id": "c2390",
+  "de": "Partikelfilter Bank 1 - Wirkungsgrad zu gering",
+  "en": "Particulate filter efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c2391",
+  "de": "Partikelfilter Bank 2 - Wirkungsgrad zu gering",
+  "en": "Particulate filter efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c2392",
+  "de": "Partikelfilter-Regeneration",
+  "en": "Particulate filter regeneration"
+ },
+ {
+  "id": "c2393",
+  "de": "Partikelfilter, Temperaturen",
+  "en": "Particulate filter temperatures"
+ },
+ {
+  "id": "c2394",
+  "de": "Rußkonzentration Bank 1",
+  "en": "Particulate matter bank 1"
+ },
+ {
+  "id": "c2395",
+  "de": "Rußkonzentration Bank 2",
+  "en": "Particulate matter bank 2"
+ },
+ {
+  "id": "c2396",
+  "de": "Partikelsensor",
+  "en": "Particulate matter sensor"
+ },
+ {
+  "id": "c2397",
+  "de": "Teils ISO 9141-2, teils J1850 VPW.",
+  "en": "Partly ISO 9141-2, partly J1850 VPW."
+ },
+ {
+  "id": "c2398",
+  "de": "Teils J1850 PWM wie Ford.",
+  "en": "Partly J1850 PWM like Ford."
+ },
+ {
+  "id": "c2399",
+  "de": "Teils J1850 VPW wie GM.",
+  "en": "Partly J1850 VPW like GM."
+ },
+ {
+  "id": "c2400",
+  "de": "Bis 2006 teils K-Line.",
+  "en": "Partly K-Line until 2006."
+ },
+ {
+  "id": "c2401",
+  "de": "Abschaltung Beifahrerairbag: Schalter",
+  "en": "Passenger airbag deactivation: switch"
+ },
+ {
+  "id": "c2402",
+  "de": "Zünder für Beifahrerairbag N131",
+  "en": "Passenger airbag igniter N131"
+ },
+ {
+  "id": "c2403",
+  "de": "Tür Beifahrer (PDM)",
+  "en": "Passenger door (PDM)"
+ },
+ {
+  "id": "c2404",
+  "de": "Beifahrer-Frontairbag Stufe 1 - Zündkreis",
+  "en": "Passenger frontal stage 1 deployment control"
+ },
+ {
+  "id": "c2405",
+  "de": "Beifahrer-Frontairbag Stufe 2 - Zündkreis",
+  "en": "Passenger frontal stage 2 deployment control"
+ },
+ {
+  "id": "c2406",
+  "de": "Sitzbelegungserkennung Beifahrer",
+  "en": "Passenger seat occupancy detection"
+ },
+ {
+  "id": "c2407",
+  "de": "Peru",
+  "en": "Peru"
+ },
+ {
+  "id": "c2408",
+  "de": "Benzin",
+  "en": "Petrol"
+ },
+ {
+  "id": "c2409",
+  "de": "Philippinen",
+  "en": "Philippines"
+ },
+ {
+  "id": "c2410",
+  "de": "Pick-up",
+  "en": "Pickup"
+ },
+ {
+  "id": "c2411",
+  "de": "Plug-in-Hybrid",
+  "en": "Plug-in hybrid"
+ },
+ {
+  "id": "c2412",
+  "de": "Polen",
+  "en": "Poland"
+ },
+ {
+  "id": "c2413",
+  "de": "Hybrid: Leistung des Verbrennungsmotors zu gering",
+  "en": "Poor engine power"
+ },
+ {
+  "id": "c2414",
+  "de": "Schlechte oder alte AdBlue-Qualität\nNOx-Sensor defekt\nDosierventil verkristallisiert oder verstopft\nSCR-Katalysator gealtert\nAdBlue-Pumpe oder Heizung defekt",
+  "en": "Poor or old AdBlue\nFaulty NOx sensor\nDosing valve crystallised or blocked\nAged SCR catalyst\nFaulty AdBlue pump or heater"
+ },
+ {
+  "id": "c2415",
+  "de": "Portugal",
+  "en": "Portugal"
+ },
+ {
+  "id": "c2416",
+  "de": "Stelle 10 enthält kein Baujahr. In Europa ist das erlaubt, das Baujahr steht dann nur im Fahrzeugschein.",
+  "en": "Position 10 holds no model year. That is allowed in Europe, the year is then only in the registration papers."
+ },
+ {
+  "id": "c2417",
+  "de": "Kurbelgehäuseentlüftung - Funktion (Falschluft?)",
+  "en": "Positive crankcase ventilation (blow-by) function problem"
+ },
+ {
+  "id": "c2418",
+  "de": "Gemischkorrektur nach Katalysator Bank 1 - zu mager",
+  "en": "Post catalyst fuel trim system too lean - bank 1"
+ },
+ {
+  "id": "c2419",
+  "de": "Gemischkorrektur nach Katalysator Bank 2 - zu mager",
+  "en": "Post catalyst fuel trim system too lean - bank 2"
+ },
+ {
+  "id": "c2420",
+  "de": "Gemischkorrektur nach Katalysator Bank 1 - zu fett",
+  "en": "Post catalyst fuel trim system too rich - bank 1"
+ },
+ {
+  "id": "c2421",
+  "de": "Gemischkorrektur nach Katalysator Bank 2 - zu fett",
+  "en": "Post catalyst fuel trim system too rich - bank 2"
+ },
+ {
+  "id": "c2422",
+  "de": "Leistung",
+  "en": "Power"
+ },
+ {
+  "id": "c2423",
+  "de": "Lenkhilfe",
+  "en": "Power steering"
+ },
+ {
+  "id": "c2424",
+  "de": "Lenkhilfe (EPS)",
+  "en": "Power steering (EPS)"
+ },
+ {
+  "id": "c2425",
+  "de": "Lenkhilfe (MDPS)",
+  "en": "Power steering (MDPS)"
+ },
+ {
+  "id": "c2426",
+  "de": "Lenkhilfe (PSCM)",
+  "en": "Power steering (PSCM)"
+ },
+ {
+  "id": "c2427",
+  "de": "Servolenkung - Steuerkreis",
+  "en": "Power steering - control circuit"
+ },
+ {
+  "id": "c2428",
+  "de": "Servolenkung - Steuerkreis Spannung zu hoch",
+  "en": "Power steering - control circuit high"
+ },
+ {
+  "id": "c2429",
+  "de": "Servolenkung - Steuerkreis Spannung zu niedrig",
+  "en": "Power steering - control circuit low"
+ },
+ {
+  "id": "c2430",
+  "de": "Servolenkungs-Drucksensor - außerhalb des Selbsttestbereichs",
+  "en": "Power steering pressure sensor out of self-test range"
+ },
+ {
+  "id": "c2431",
+  "de": "Servolenkungs-Drucksensor/-schalter - Stromkreis",
+  "en": "Power steering pressure sensor/switch - circuit"
+ },
+ {
+  "id": "c2432",
+  "de": "Servolenkungs-Drucksensor/-schalter - Signal zu hoch",
+  "en": "Power steering pressure sensor/switch - circuit high"
+ },
+ {
+  "id": "c2433",
+  "de": "Servolenkungs-Drucksensor/-schalter - Signal setzt zeitweise aus",
+  "en": "Power steering pressure sensor/switch - circuit intermittent"
+ },
+ {
+  "id": "c2434",
+  "de": "Servolenkungs-Drucksensor/-schalter - Signal zu niedrig",
+  "en": "Power steering pressure sensor/switch - circuit low"
+ },
+ {
+  "id": "c2435",
+  "de": "Servolenkungs-Drucksensor/-schalter - Signal unplausibel",
+  "en": "Power steering pressure sensor/switch - circuit range/performance"
+ },
+ {
+  "id": "c2436",
+  "de": "Servolenkungs-Druckschalter - außerhalb des Selbsttestbereichs",
+  "en": "Power steering pressure switch out of self-test range"
+ },
+ {
+  "id": "c2437",
+  "de": "Spannungsversorgung Klemme 30",
+  "en": "Power supply terminal 30"
+ },
+ {
+  "id": "c2438",
+  "de": "Spannungsversorgung Klemme 30 - Spannung zu klein",
+  "en": "Power supply terminal 30 - voltage too low"
+ },
+ {
+  "id": "c2439",
+  "de": "Nebenantrieb (PTO)",
+  "en": "Power take-off (PTO)"
+ },
+ {
+  "id": "c2440",
+  "de": "Antrieb",
+  "en": "Powertrain"
+ },
+ {
+  "id": "c2441",
+  "de": "Antrieb (von SAE reserviert)",
+  "en": "Powertrain (reserved by SAE)"
+ },
+ {
+  "id": "c2442",
+  "de": "Antrieb und Abgasnachbehandlung",
+  "en": "Powertrain and exhaust aftertreatment"
+ },
+ {
+  "id": "c2443",
+  "de": "Motorsteuerung (PCM)",
+  "en": "Powertrain control (PCM)"
+ },
+ {
+  "id": "c2444",
+  "de": "Datenbus Antrieb - Fehlfunktion",
+  "en": "Powertrain data bus - malfunction"
+ },
+ {
+  "id": "c2445",
+  "de": "Datenbus Antrieb - fehlende Botschaft vom ABS",
+  "en": "Powertrain data bus - missing message from ABS"
+ },
+ {
+  "id": "c2446",
+  "de": "Datenbus Antrieb - fehlende Botschaft vom Kombiinstrument",
+  "en": "Powertrain data bus - missing message from instrument cluster"
+ },
+ {
+  "id": "c2447",
+  "de": "Datenbus Antrieb - fehlende Botschaft vom Getriebesteuergerät",
+  "en": "Powertrain data bus - missing message from transmission control unit"
+ },
+ {
+  "id": "c2448",
+  "de": "Druck",
+  "en": "Pressure"
+ },
+ {
+  "id": "c2449",
+  "de": "Druckregelventil A - Steuerkreis Spannung zu hoch",
+  "en": "Pressure control solenoid A - control circuit high"
+ },
+ {
+  "id": "c2450",
+  "de": "Druckregelventil A - Steuerkreis Spannung zu niedrig",
+  "en": "Pressure control solenoid A - control circuit low"
+ },
+ {
+  "id": "c2451",
+  "de": "Druckregelventil A - Funktion",
+  "en": "Pressure control solenoid A - control circuit range/performance"
+ },
+ {
+  "id": "c2452",
+  "de": "Druckregelventil A - Steuerkreis oder Unterbrechung",
+  "en": "Pressure control solenoid A - control circuit/open"
+ },
+ {
+  "id": "c2453",
+  "de": "Druckregelventil A - elektrischer Fehler",
+  "en": "Pressure control solenoid A - electrical"
+ },
+ {
+  "id": "c2454",
+  "de": "Druckregelventil A - Signal setzt zeitweise aus",
+  "en": "Pressure control solenoid A - intermittent"
+ },
+ {
+  "id": "c2455",
+  "de": "Druckregelventil A - Fehlfunktion",
+  "en": "Pressure control solenoid A - malfunction"
+ },
+ {
+  "id": "c2456",
+  "de": "Druckregelventil A - Funktion oder bleibt ausgeschaltet",
+  "en": "Pressure control solenoid A - performance/stuck off"
+ },
+ {
+  "id": "c2457",
+  "de": "Druckregelventil A - bleibt eingeschaltet",
+  "en": "Pressure control solenoid A - stuck on"
+ },
+ {
+  "id": "c2458",
+  "de": "Druckregelventil B - Steuerkreis Spannung zu hoch",
+  "en": "Pressure control solenoid B - control circuit high"
+ },
+ {
+  "id": "c2459",
+  "de": "Druckregelventil B - Steuerkreis Spannung zu niedrig",
+  "en": "Pressure control solenoid B - control circuit low"
+ },
+ {
+  "id": "c2460",
+  "de": "Druckregelventil B - Funktion",
+  "en": "Pressure control solenoid B - control circuit range/performance"
+ },
+ {
+  "id": "c2461",
+  "de": "Druckregelventil B - Steuerkreis oder Unterbrechung",
+  "en": "Pressure control solenoid B - control circuit/open"
+ },
+ {
+  "id": "c2462",
+  "de": "Druckregelventil B - elektrischer Fehler",
+  "en": "Pressure control solenoid B - electrical"
+ },
+ {
+  "id": "c2463",
+  "de": "Druckregelventil B - Signal setzt zeitweise aus",
+  "en": "Pressure control solenoid B - intermittent"
+ },
+ {
+  "id": "c2464",
+  "de": "Druckregelventil B - Fehlfunktion",
+  "en": "Pressure control solenoid B - malfunction"
+ },
+ {
+  "id": "c2465",
+  "de": "Druckregelventil B - Funktion oder bleibt ausgeschaltet",
+  "en": "Pressure control solenoid B - performance/stuck off"
+ },
+ {
+  "id": "c2466",
+  "de": "Druckregelventil B - bleibt eingeschaltet",
+  "en": "Pressure control solenoid B - stuck on"
+ },
+ {
+  "id": "c2467",
+  "de": "Druckregelventil C - Steuerkreis Spannung zu hoch",
+  "en": "Pressure control solenoid C - control circuit high"
+ },
+ {
+  "id": "c2468",
+  "de": "Druckregelventil C - Steuerkreis Spannung zu niedrig",
+  "en": "Pressure control solenoid C - control circuit low"
+ },
+ {
+  "id": "c2469",
+  "de": "Druckregelventil C - Funktion",
+  "en": "Pressure control solenoid C - control circuit range/performance"
+ },
+ {
+  "id": "c2470",
+  "de": "Druckregelventil C - Steuerkreis oder Unterbrechung",
+  "en": "Pressure control solenoid C - control circuit/open"
+ },
+ {
+  "id": "c2471",
+  "de": "Druckregelventil C - elektrischer Fehler",
+  "en": "Pressure control solenoid C - electrical"
+ },
+ {
+  "id": "c2472",
+  "de": "Druckregelventil C - Signal setzt zeitweise aus",
+  "en": "Pressure control solenoid C - intermittent"
+ },
+ {
+  "id": "c2473",
+  "de": "Druckregelventil C - Fehlfunktion",
+  "en": "Pressure control solenoid C - malfunction"
+ },
+ {
+  "id": "c2474",
+  "de": "Druckregelventil C - Funktion oder bleibt ausgeschaltet",
+  "en": "Pressure control solenoid C - performance/stuck off"
+ },
+ {
+  "id": "c2475",
+  "de": "Druckregelventil C - bleibt eingeschaltet",
+  "en": "Pressure control solenoid C - stuck on"
+ },
+ {
+  "id": "c2476",
+  "de": "Vordere Lambdasonde (Sonde 1) - Stromkreis",
+  "en": "Primary HO2S (sensor 1) circuit malfunction"
+ },
+ {
+  "id": "c2477",
+  "de": "Vordere Lambdasonde (Sonde 1) - Signal unplausibel",
+  "en": "Primary HO2S (sensor 1) circuit range/performance"
+ },
+ {
+  "id": "c2478",
+  "de": "Vordere Lambdasonde (Sonde 1) - reagiert zu langsam",
+  "en": "Primary HO2S (sensor 1) slow response"
+ },
+ {
+  "id": "c2479",
+  "de": "Vordere Lambdasonde - Heizung Funktion",
+  "en": "Primary HO2S heater system"
+ },
+ {
+  "id": "c2480",
+  "de": "Vordere Lambdasonde - Heizung elektrisch fehlerhaft",
+  "en": "Primary HO2S heater system electrical"
+ },
+ {
+  "id": "c2481",
+  "de": "Propan",
+  "en": "Propane"
+ },
+ {
+  "id": "c2482",
+  "de": "Protokoll: ",
+  "en": "Protocol: "
+ },
+ {
+  "id": "c2483",
+  "de": "Reines Elektroauto: Abgaswerte gibt es nicht, daher antworten oft nur wenige OBD-Messwerte und kaum Fehlercodes.",
+  "en": "Pure electric car: there are no emissions to report, so often only a few OBD values and hardly any trouble codes answer."
+ },
+ {
+  "id": "c2484",
+  "de": "Menge",
+  "en": "Quantity"
+ },
+ {
+  "id": "c2485",
+  "de": "Drehzahl",
+  "en": "RPM"
+ },
+ {
+  "id": "c2486",
+  "de": "Kühlerlüfter und deren Relais",
+  "en": "Radiator fans and their relays"
+ },
+ {
+  "id": "c2487",
+  "de": "Radio und Navigation",
+  "en": "Radio and navigation"
+ },
+ {
+  "id": "c2488",
+  "de": "Radio: keine Verbindung",
+  "en": "Radio: no communication"
+ },
+ {
+  "id": "c2489",
+  "de": "Verbrennungsaussetzer - mehrere oder wechselnde Zylinder",
+  "en": "Random/multiple cylinder misfire detected"
+ },
+ {
+  "id": "c2490",
+  "de": "Anteil",
+  "en": "Ratio"
+ },
+ {
+  "id": "c2491",
+  "de": "Fehlerspeicher des genannten Steuergeräts auslesen\nBatteriespannung prüfen",
+  "en": "Read the fault memory of the named control unit\nCheck the battery voltage"
+ },
+ {
+  "id": "c2492",
+  "de": "Zündungseingang lesen",
+  "en": "Read the ignition input"
+ },
+ {
+  "id": "c2493",
+  "de": "Fehlerspeicher des Getriebesteuergeräts auslesen\nGetriebeölstand in der Werkstatt prüfen lassen",
+  "en": "Read the transmission control unit fault memory\nHave the transmission fluid level checked at a workshop"
+ },
+ {
+  "id": "c2494",
+  "de": "Anpassungskanäle lesen ist bisher nur für KWP1281 umgesetzt. Dieses Steuergerät spricht KWP2000.",
+  "en": "Reading adaptation channels is only implemented for KWP1281 so far. This control unit speaks KWP2000."
+ },
+ {
+  "id": "c2495",
+  "de": "AdBlue-Füllstand",
+  "en": "Reagent tank level"
+ },
+ {
+  "id": "c2496",
+  "de": "Sperrdifferenzial hinten (GHAS)",
+  "en": "Rear differential lock (GHAS)"
+ },
+ {
+  "id": "c2497",
+  "de": "Heckelektronik (REM)",
+  "en": "Rear electronics (REM)"
+ },
+ {
+  "id": "c2498",
+  "de": "Aufgenommen: ",
+  "en": "Recorded: "
+ },
+ {
+  "id": "c2499",
+  "de": "Aufnahme: ",
+  "en": "Recording: "
+ }
+]

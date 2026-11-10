@@ -80,6 +80,8 @@ QString rgba(const QColor& c, double alpha);
 // The colours above are filled from the chosen palette.
 void setLight(bool light);
 bool isLight();
+// False for scripts whose letters join (Devanagari, Arabic): no letter spacing.
+bool spacedLetters();
 
 void apply(QApplication& app);
 QString stylesheet();

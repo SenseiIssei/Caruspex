@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c1250",
+  "de": "Kühlerlüfter 3 - Steuerkreis Spannung zu hoch",
+  "en": "Fan 3 control circuit high"
+ },
+ {
+  "id": "c1251",
+  "de": "Kühlerlüfter 3 - Steuerkreis Spannung zu niedrig",
+  "en": "Fan 3 control circuit low"
+ },
+ {
+  "id": "c1252",
+  "de": "Kühlerlüfter - Überstrom",
+  "en": "Fan circuit over current"
+ },
+ {
+  "id": "c1253",
+  "de": "Kühlerlüfter dreht zu schnell (Lüfterkupplung)",
+  "en": "Fan overspeed"
+ },
+ {
+  "id": "c1254",
+  "de": "Kühlerlüfter - Spannungsversorgung oder Masse",
+  "en": "Fan power/ground circuit"
+ },
+ {
+  "id": "c1255",
+  "de": "Kühlerlüfter - Plausibilitätsprüfung fehlgeschlagen",
+  "en": "Fan rationality check"
+ },
+ {
+  "id": "c1256",
+  "de": "Kühlerlüfter dreht zu schnell",
+  "en": "Fan speed high"
+ },
+ {
+  "id": "c1257",
+  "de": "Kühlerlüfter dreht zu langsam",
+  "en": "Fan speed low"
+ },
+ {
+  "id": "c1258",
+  "de": "Lüfterdrehzahlsensor - Stromkreis",
+  "en": "Fan speed sensor - circuit"
+ },
+ {
+  "id": "c1259",
+  "de": "Lüfterdrehzahlsensor - Signal setzt zeitweise aus",
+  "en": "Fan speed sensor - circuit intermittent"
+ },
+ {
+  "id": "c1260",
+  "de": "Lüfterdrehzahlsensor - kein Signal",
+  "en": "Fan speed sensor - circuit no signal"
+ },
+ {
+  "id": "c1261",
+  "de": "Lüfterdrehzahlsensor - Signal unplausibel",
+  "en": "Fan speed sensor - circuit range/performance"
+ },
+ {
+  "id": "c1262",
+  "de": "Schnellladestecker steckt (1 = ja)",
+  "en": "Fast charging plug connected (1 = yes)"
+ },
+ {
+  "id": "c1263",
+  "de": "Fehler im sendenden Steuergerät oder an seinen Sensoren\nFalsche Codierung nach dem Tausch eines Steuergeräts\nSpannungseinbruch",
+  "en": "Fault in the sending control unit or its sensors\nWrong coding after a control unit was replaced\nVoltage drop"
+ },
+ {
+  "id": "c1264",
+  "de": "Fehler im Getriebe: Sensor, Magnetventil oder Ölstand\nSpannungseinbruch",
+  "en": "Fault in the transmission: sensor, solenoid or fluid level\nVoltage drop"
+ },
+ {
+  "id": "c1265",
+  "de": "Fehlerspeicher nicht lesbar. ",
+  "en": "Fault memory not readable. "
+ },
+ {
+  "id": "c1266",
+  "de": "ABS-Hydraulikeinheit oder Pumpe defekt\nSicherung oder Relais\nStecker am ABS-Steuergerät korrodiert\nSpannungsversorgung, schwache Batterie",
+  "en": "Faulty ABS hydraulic unit or pump\nFuse or relay\nCorroded ABS control unit connector\nPower supply, weak battery"
+ },
+ {
+  "id": "c1267",
+  "de": "NOx-Sensor defekt (das Steuergerät sitzt im Kabel des Sensors)\nStecker oder Kabel\nSpannungsversorgung des Sensors",
+  "en": "Faulty NOx sensor (its control unit sits in the sensor cable)\nConnector or wiring\nSensor power supply"
+ },
+ {
+  "id": "c1268",
+  "de": "Lichtmaschine oder Regler defekt\nKeilrippenriemen rutscht oder ist gerissen\nStecker oder Kabel an der Lichtmaschine\nFreilauf der Riemenscheibe defekt",
+  "en": "Faulty alternator or regulator\nDrive belt slipping or broken\nConnector or wiring at the alternator\nFaulty alternator pulley freewheel"
+ },
+ {
+  "id": "c1269",
+  "de": "Laderegler der Lichtmaschine defekt\nSchlechte Masseverbindung\nLadegerät oder Starthilfe angeschlossen",
+  "en": "Faulty alternator voltage regulator\nPoor ground connection\nCharger or jump starter connected"
+ },
+ {
+  "id": "c1270",
+  "de": "Magnetventil der Ladedruckregelung defekt\nElektrischer Steller am Turbolader defekt oder schwergängig\nStecker oder Kabel\nUnterdruckschläuche undicht",
+  "en": "Faulty boost control solenoid\nElectric turbo actuator faulty or sticking\nConnector or wiring\nLeaking vacuum hoses"
+ },
+ {
+  "id": "c1271",
+  "de": "Nockenwellensensor defekt\nStecker oder Kabel, manchmal Öl im Stecker\nSteuerzeiten verstellt (Kette gelängt, Riemen übergesprungen)",
+  "en": "Faulty camshaft sensor\nConnector or wiring, sometimes oil in the connector\nValve timing off (stretched chain, belt jumped a tooth)"
+ },
+ {
+  "id": "c1272",
+  "de": "Kurbelwellensensor defekt, oft nur bei warmem Motor\nStecker oder Kabel beschädigt\nGeberrad beschädigt oder Metallabrieb am Sensor",
+  "en": "Faulty crankshaft sensor, often only when the engine is hot\nDamaged connector or wiring\nDamaged reluctor wheel or metal debris on the sensor"
+ },
+ {
+  "id": "c1273",
+  "de": "Abgastemperaturfühler defekt (Hitze, Alterung)\nStecker oder Kabel",
+  "en": "Faulty exhaust temperature sensor (heat, age)\nConnector or wiring"
+ },
+ {
+  "id": "c1274",
+  "de": "Lüftermotor defekt\nLüftersteuergerät oder Relais\nSicherung\nStecker oder Kabel",
+  "en": "Faulty fan motor\nFan control module or relay\nFuse\nConnector or wiring"
+ },
+ {
+  "id": "c1275",
+  "de": "Glühzeitsteuergerät defekt\nSicherung\nGlühkerze mit Kurzschluss\nStecker oder Kabel",
+  "en": "Faulty glow plug control module\nFuse\nGlow plug with a short circuit\nConnector or wiring"
+ },
+ {
+  "id": "c1276",
+  "de": "Zündspule defekt\nStecker an der Spule locker oder korrodiert\nVerschlissene Zündkerze überlastet die Spule\nAnsteuerung im Steuergerät (selten)",
+  "en": "Faulty ignition coil\nLoose or corroded coil connector\nA worn spark plug overloads the coil\nDriver stage in the control unit (rare)"
+ },
+ {
+  "id": "c1277",
+  "de": "Transponder im Schlüssel defekt oder Schlüsselbatterie leer\nLesespule am Zündschloss\nSchlüssel nicht angelernt, etwa nach einem Tausch\nVerbindung zwischen Wegfahrsperre und Motorsteuerung",
+  "en": "Faulty key transponder or flat key battery\nReader coil at the ignition lock\nKey not programmed, for example after a replacement\nLink between the immobilizer and the engine control unit"
+ },
+ {
+  "id": "c1278",
+  "de": "Klopfsensor defekt oder Stecker korrodiert\nSensor mit falschem Drehmoment angezogen\nKabel beschädigt\nEchtes Klopfen: falscher Kraftstoff, Ablagerungen, zu heißer Motor",
+  "en": "Faulty knock sensor or corroded connector\nSensor tightened to the wrong torque\nDamaged wiring\nReal knocking: wrong fuel, carbon deposits, engine running too hot"
+ },
+ {
+  "id": "c1279",
+  "de": "Hauptrelais defekt\nSicherung\nMasseverbindung oder Stecker korrodiert\nSchwache Batterie",
+  "en": "Faulty main relay\nFuse\nCorroded ground connection or connector\nWeak battery"
+ },
+ {
+  "id": "c1280",
+  "de": "Tankentlüftungsventil defekt oder hängt\nStecker oder Leitung zum Ventil\nSchlauch abgerutscht oder verstopft\nAktivkohlefilter verstopft, oft durch Überfüllen des Tanks",
+  "en": "Faulty or sticking purge valve\nConnector or wiring to the valve\nDetached or blocked hose\nClogged charcoal canister, often from overfilling the tank"
+ },
+ {
+  "id": "c1281",
+  "de": "Sekundärluftpumpe defekt, oft durch eingedrungenes Wasser\nKombiventil hängt oder ist verkokt\nRelais oder Sicherung der Pumpe\nSchläuche gerissen",
+  "en": "Faulty secondary air pump, often from water ingress\nCombination valve stuck or coked\nPump relay or fuse\nSplit hoses"
+ },
+ {
+  "id": "c1282",
+  "de": "Sensor defekt\nStecker oder Kabel am Getriebe, oft Öl im Stecker\nGetriebeölstand",
+  "en": "Faulty sensor\nConnector or wiring at the gearbox, often oil in the connector\nTransmission fluid level"
+ },
+ {
+  "id": "c1283",
+  "de": "Sensor defekt, oft im Luftmassenmesser oder Saugrohrdrucksensor eingebaut\nStecker oder Kabel",
+  "en": "Faulty sensor, often built into the MAF or MAP sensor\nConnector or wiring"
+ },
+ {
+  "id": "c1284",
+  "de": "Temperaturgeber defekt (häufig, günstiges Teil)\nStecker korrodiert oder Kabel beschädigt\nZu wenig Kühlmittel, der Geber sitzt in Luft",
+  "en": "Faulty temperature sensor (common, cheap part)\nCorroded connector or damaged wire\nLow coolant, the sensor sits in air"
+ },
+ {
+  "id": "c1285",
+  "de": "Geschwindigkeitssensor oder ABS-Raddrehzahlsensor defekt\nStecker oder Kabel\nFehler im ABS-Steuergerät, das das Signal liefert",
+  "en": "Faulty vehicle speed sensor or ABS wheel speed sensor\nConnector or wiring\nFault in the ABS control unit that provides the signal"
+ },
+ {
+  "id": "c1286",
+  "de": "Fiat/Alfa Romeo/Lancia",
+  "en": "Fiat/Alfa Romeo/Lancia"
+ },
+ {
+  "id": "c1287",
+  "de": "Finnland",
+  "en": "Finland"
+ },
+ {
+  "id": "c1288",
+  "de": "Kabel am betroffenen Rad bis zum Stecker ansehen\nNach einem Radlagertausch: ist der Magnetring richtig herum eingebaut?",
+  "en": "Follow the cable at the affected wheel up to its connector and inspect it\nAfter a wheel bearing replacement: was the magnetic ring fitted the right way round?"
+ },
+ {
+  "id": "c1289",
+  "de": "Bei einem einzelnen Zylinder: Zündspule mit dem Nachbarzylinder tauschen, Fehler löschen und schauen, ob der Aussetzer mitwandert\nIm Serviceheft nachsehen, wann die Zündkerzen zuletzt gewechselt wurden\nBei laufendem Motor auf Zischen am Ansaugtrakt hören",
+  "en": "For a single cylinder: swap the ignition coil with the neighbouring cylinder, clear the code and see whether the misfire follows the coil\nCheck in the service book when the spark plugs were last replaced\nListen for hissing at the intake with the engine running"
+ },
+ {
+  "id": "c1290",
+  "de": "Ford",
+  "en": "Ford"
+ },
+ {
+  "id": "c1291",
+  "de": "Gemerkte Ereignisse vergessen",
+  "en": "Forget events"
+ },
+ {
+  "id": "c1292",
+  "de": "J1939-Kopfzeilen formatieren (Standardwert)",
+  "en": "Format J1939 headers (default)"
+ },
+ {
+  "id": "c1293",
+  "de": "Formel ",
+  "en": "Formula "
+ },
+ {
+  "id": "c1294",
+  "de": "Allradschalter - Stromkreis",
+  "en": "Four wheel drive (4WD) switch - circuit"
+ },
+ {
+  "id": "c1295",
+  "de": "Allradschalter - Signal zu hoch",
+  "en": "Four wheel drive (4WD) switch - circuit high"
+ },
+ {
+  "id": "c1296",
+  "de": "Allradschalter - Signal zu niedrig",
+  "en": "Four wheel drive (4WD) switch - circuit low"
+ },
+ {
+  "id": "c1297",
+  "de": "Allradschalter - Signal unplausibel",
+  "en": "Four wheel drive (4WD) switch - circuit range/performance"
+ },
+ {
+  "id": "c1298",
+  "de": "Frankreich",
+  "en": "France"
+ },
+ {
+  "id": "c1299",
+  "de": "Frankreich oder Serbien",
+  "en": "France or Serbia"
+ },
+ {
+  "id": "c1300",
+  "de": "Ab etwa %d: ",
+  "en": "From about %d: "
+ },
+ {
+  "id": "c1301",
+  "de": "Kraftstoff",
+  "en": "Fuel"
+ },
+ {
+  "id": "c1302",
+  "de": "Kraftstoff- und Luftmessung",
+  "en": "Fuel and air metering"
+ },
+ {
+  "id": "c1303",
+  "de": "Kraftstoff- und Luftmessung (Einspritzung)",
+  "en": "Fuel and air metering (injector circuit)"
+ },
+ {
+  "id": "c1304",
+  "de": "Gemischbildung und Kraftstoff",
+  "en": "Fuel and mixture"
+ },
+ {
+  "id": "c1305",
+  "de": "Tankdeckel-Warnleuchte - Steuerkreis",
+  "en": "Fuel cap lamp control circuit"
+ },
+ {
+  "id": "c1306",
+  "de": "Tankdeckel nicht richtig geschlossen oder Dichtung rissig\nSchlauch am Aktivkohlefilter oder am Tankentlüftungsventil undicht\nTankentlüftungsventil schließt nicht dicht\nLeckdiagnosepumpe defekt",
+  "en": "Fuel cap not closed properly or seal cracked\nLeaking hose at the charcoal canister or purge valve\nPurge valve does not seal\nFaulty leak detection pump"
+ },
+ {
+  "id": "c1307",
+  "de": "Tankdeckel offen oder fehlt\nSchlauch abgerutscht oder gerissen\nEinfüllstutzen undicht oder durchgerostet\nTankentlüftungsventil hängt",
+  "en": "Fuel cap open or missing\nHose detached or split\nLeaking or rusted filler neck\nPurge valve sticking"
+ },
+ {
+  "id": "c1308",
+  "de": "Kraftstoffzusammensetzungssensor - Stromkreis",
+  "en": "Fuel composition sensor - circuit"
+ },
+ {
+  "id": "c1309",
+  "de": "Kraftstoffzusammensetzungssensor - Signal zu hoch",
+  "en": "Fuel composition sensor - circuit high"
+ },
+ {
+  "id": "c1310",
+  "de": "Kraftstoffzusammensetzungssensor - Signal zu niedrig",
+  "en": "Fuel composition sensor - circuit low"
+ },
+ {
+  "id": "c1311",
+  "de": "Kraftstoffzusammensetzungssensor - Signal unplausibel",
+  "en": "Fuel composition sensor - circuit range/performance"
+ },
+ {
+  "id": "c1312",
+  "de": "Kraftstoffverbrauchssignal",
+  "en": "Fuel consumption signal"
+ },
+ {
+  "id": "c1313",
+  "de": "Fehler bei der Kraftstoffförderung",
+  "en": "Fuel delivery error"
+ },
+ {
+  "id": "c1314",
+  "de": "Kraftstoffzuheizer abgeschaltet",
+  "en": "Fuel fired heater disabled"
+ },
+ {
+  "id": "c1315",
+  "de": "Kraftstoffzuheizer - Funktion",
+  "en": "Fuel fired heater performance"
+ },
+ {
+  "id": "c1316",
+  "de": "Einspritzung",
+  "en": "Fuel injection"
+ },
+ {
+  "id": "c1317",
+  "de": "Einspritzung und Gemisch",
+  "en": "Fuel injection and mixture"
+ },
+ {
+  "id": "c1318",
+  "de": "Einspritzanlage",
+  "en": "Fuel injection system"
+ },
+ {
+  "id": "c1319",
+  "de": "Einspritzbeginn",
+  "en": "Fuel injection timing"
+ },
+ {
+  "id": "c1320",
+  "de": "Einspritzsteuergerät - Funktion",
+  "en": "Fuel injector control module performance"
+ },
+ {
+  "id": "c1321",
+  "de": "Einspritzsteuergerät - Relaisansteuerung",
+  "en": "Fuel injector control module relay control"
+ },
+ {
+  "id": "c1322",
+  "de": "Einspritzventile Gruppe A - Versorgungsspannung - Spannung zu hoch",
+  "en": "Fuel injector group A supply voltage - circuit high"
+ },
+ {
+  "id": "c1323",
+  "de": "Einspritzventile Gruppe A - Versorgungsspannung - Spannung zu niedrig",
+  "en": "Fuel injector group A supply voltage - circuit low"
+ },
+ {
+  "id": "c1324",
+  "de": "Einspritzventile Gruppe A - Versorgungsspannung - Stromkreis oder Unterbrechung",
+  "en": "Fuel injector group A supply voltage - circuit/open"
+ },
+ {
+  "id": "c1325",
+  "de": "Einspritzventile Gruppe B - Versorgungsspannung - Spannung zu hoch",
+  "en": "Fuel injector group B supply voltage - circuit high"
+ },
+ {
+  "id": "c1326",
+  "de": "Einspritzventile Gruppe B - Versorgungsspannung - Spannung zu niedrig",
+  "en": "Fuel injector group B supply voltage - circuit low"
+ },
+ {
+  "id": "c1327",
+  "de": "Einspritzventile Gruppe B - Versorgungsspannung - Stromkreis oder Unterbrechung",
+  "en": "Fuel injector group B supply voltage - circuit/open"
+ },
+ {
+  "id": "c1328",
+  "de": "Einspritzventile Gruppe C - Versorgungsspannung - Spannung zu hoch",
+  "en": "Fuel injector group C supply voltage - circuit high"
+ },
+ {
+  "id": "c1329",
+  "de": "Einspritzventile Gruppe C - Versorgungsspannung - Spannung zu niedrig",
+  "en": "Fuel injector group C supply voltage - circuit low"
+ },
+ {
+  "id": "c1330",
+  "de": "Einspritzventile Gruppe C - Versorgungsspannung - Stromkreis oder Unterbrechung",
+  "en": "Fuel injector group C supply voltage - circuit/open"
+ },
+ {
+  "id": "c1331",
+  "de": "Einspritzventile Gruppe D - Versorgungsspannung - Spannung zu hoch",
+  "en": "Fuel injector group D supply voltage - circuit high"
+ },
+ {
+  "id": "c1332",
+  "de": "Einspritzventile Gruppe D - Versorgungsspannung - Spannung zu niedrig",
+  "en": "Fuel injector group D supply voltage - circuit low"
+ },
+ {
+  "id": "c1333",
+  "de": "Einspritzventile Gruppe D - Versorgungsspannung - Stromkreis oder Unterbrechung",
+  "en": "Fuel injector group D supply voltage - circuit/open"
+ },
+ {
+  "id": "c1334",
+  "de": "Tankanzeige-Ausgang - Stromkreis",
+  "en": "Fuel level output circuit"
+ },
+ {
+  "id": "c1335",
+  "de": "Tankgeber und Füllstand",
+  "en": "Fuel level sender and fuel level"
+ },
+ {
+  "id": "c1336",
+  "de": "Tankfüllstandsgeber A - Stromkreis",
+  "en": "Fuel level sensor A - circuit"
+ },
+ {
+  "id": "c1337",
+  "de": "Tankfüllstandsgeber A - Signal zu hoch",
+  "en": "Fuel level sensor A - circuit high"
+ },
+ {
+  "id": "c1338",
+  "de": "Tankfüllstandsgeber A - Signal setzt zeitweise aus",
+  "en": "Fuel level sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1339",
+  "de": "Tankfüllstandsgeber A - Signal zu niedrig",
+  "en": "Fuel level sensor A - circuit low"
+ },
+ {
+  "id": "c1340",
+  "de": "Tankfüllstandsgeber A - Signal unplausibel",
+  "en": "Fuel level sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1341",
+  "de": "Geber für Kraftstoffvorrat G",
+  "en": "Fuel level sensor G"
+ },
+ {
+  "id": "c1342",
+  "de": "Kraftstoffstand zu niedrig (Tank fast leer gefahren)",
+  "en": "Fuel level too low"
+ },
+ {
+  "id": "c1343",
+  "de": "Kraftstoffdruck",
+  "en": "Fuel pressure"
+ },
+ {
+  "id": "c1344",
+  "de": "Kraftstoffdruck und Temperatur",
+  "en": "Fuel pressure and temperature"
+ },
+ {
+  "id": "c1345",
+  "de": "Kraftstoffdruckregelung",
+  "en": "Fuel pressure control system"
+ },
+ {
+  "id": "c1346",
+  "de": "Kraftstoffdruckregler 1 - Steuerkreis",
+  "en": "Fuel pressure regulator 1 - control circuit"
+ },
+ {
+  "id": "c1347",
+  "de": "Kraftstoffdruckregler 1 - Steuerkreis Spannung zu hoch",
+  "en": "Fuel pressure regulator 1 - control circuit high"
+ },
+ {
+  "id": "c1348",
+  "de": "Kraftstoffdruckregler 1 - Steuerkreis Spannung zu niedrig",
+  "en": "Fuel pressure regulator 1 - control circuit low"
+ },
+ {
+  "id": "c1349",
+  "de": "Kraftstoffdruckregler 1 - Funktion",
+  "en": "Fuel pressure regulator 1 performance"
+ },
+ {
+  "id": "c1350",
+  "de": "Kraftstoffdruckregler 2 - Steuerkreis",
+  "en": "Fuel pressure regulator 2 - control circuit"
+ },
+ {
+  "id": "c1351",
+  "de": "Kraftstoffdruckregler 2 - Steuerkreis Spannung zu hoch",
+  "en": "Fuel pressure regulator 2 - control circuit high"
+ },
+ {
+  "id": "c1352",
+  "de": "Kraftstoffdruckregler 2 - Steuerkreis Spannung zu niedrig",
+  "en": "Fuel pressure regulator 2 - control circuit low"
+ },
+ {
+  "id": "c1353",
+  "de": "Kraftstoffdruckregler 2 - Funktion",
+  "en": "Fuel pressure regulator 2 performance"
+ },
+ {
+  "id": "c1354",
+  "de": "Kraftstoffdruckgeber",
+  "en": "Fuel pressure sensor"
+ },
+ {
+  "id": "c1355",
+  "de": "Kraftstoffdruck, Pumpe und Filter",
+  "en": "Fuel pressure, pump and filter"
+ },
+ {
+  "id": "c1356",
+  "de": "Kraftstoffpumpe - Primärkreis",
+  "en": "Fuel pump - primary circuit"
+ },
+ {
+  "id": "c1357",
+  "de": "Kraftstoffpumpe - Sekundärkreis Spannung zu hoch",
+  "en": "Fuel pump - secondary circuit high"
+ },
+ {
+  "id": "c1358",
+  "de": "Kraftstoffpumpe - Sekundärkreis setzt zeitweise aus",
+  "en": "Fuel pump - secondary circuit intermittent"
+ },
+ {
+  "id": "c1359",
+  "de": "Kraftstoffpumpe - Sekundärkreis Spannung zu niedrig",
+  "en": "Fuel pump - secondary circuit low"
+ },
+ {
+  "id": "c1360",
+  "de": "Kraftstoffpumpe A - Steuerkreis Spannung zu hoch",
+  "en": "Fuel pump A - control circuit high"
+ },
+ {
+  "id": "c1361",
+  "de": "Kraftstoffpumpe A - Steuerkreis Spannung zu niedrig",
+  "en": "Fuel pump A - control circuit low"
+ },
+ {
+  "id": "c1362",
+  "de": "Kraftstoffpumpe A - Steuerkreis oder Unterbrechung",
+  "en": "Fuel pump A - control circuit/open"
+ },
+ {
+  "id": "c1363",
+  "de": "Kraftstoffpumpe (EKPM)",
+  "en": "Fuel pump control (EKPM)"
+ },
+ {
+  "id": "c1364",
+  "de": "Kraftstoffpumpensteuerung - außerhalb des Bereichs",
+  "en": "Fuel pump control out of range"
+ },
+ {
+  "id": "c1365",
+  "de": "Kraftstoffpumpen-Steuermodul abgeschaltet oder nicht erreichbar",
+  "en": "Fuel pump driver module disabled or off line"
+ },
+ {
+  "id": "c1366",
+  "de": "Kraftstoffpumpen-Relais - Stromkreis",
+  "en": "Fuel pump relay - circuit"
+ },
+ {
+  "id": "c1367",
+  "de": "Kraftstoffpumpenrelais J17",
+  "en": "Fuel pump relay J17"
+ },
+ {
+  "id": "c1368",
+  "de": "Mengensteller",
+  "en": "Fuel quantity adjuster"
+ },
+ {
+  "id": "c1369",
+  "de": "Raildruck",
+  "en": "Fuel rail pressure"
+ },
+ {
+  "id": "c1370",
+  "de": "Raildruck absolut",
+  "en": "Fuel rail pressure (absolute)"
+ },
+ {
+  "id": "c1371",
+  "de": "Raildruck relativ zum Saugrohr",
+  "en": "Fuel rail pressure (relative to manifold)"
+ },
+ {
+  "id": "c1372",
+  "de": "Raildruck A",
+  "en": "Fuel rail pressure A"
+ },
+ {
+  "id": "c1373",
+  "de": "Raildruck B",
+  "en": "Fuel rail pressure B"
+ },
+ {
+  "id": "c1374",
+  "de": "Kraftstoffdrucksensor A (Rail) - Stromkreis",
+  "en": "Fuel rail pressure sensor A - circuit"
+ },
+ {
+  "id": "c1375",
+  "de": "Kraftstoffdrucksensor A (Rail) - Signal zu hoch",
+  "en": "Fuel rail pressure sensor A - circuit high"
+ },
+ {
+  "id": "c1376",
+  "de": "Kraftstoffdrucksensor A (Rail) - Signal setzt zeitweise aus",
+  "en": "Fuel rail pressure sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1377",
+  "de": "Kraftstoffdrucksensor A (Rail) - Signal zu niedrig",
+  "en": "Fuel rail pressure sensor A - circuit low"
+ },
+ {
+  "id": "c1378",
+  "de": "Kraftstoffdrucksensor A (Rail) - Signal unplausibel",
+  "en": "Fuel rail pressure sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1379",
+  "de": "Kraftstoffdruck im Rail oder System zu hoch",
+  "en": "Fuel rail/system pressure - too high"
+ },
+ {
+  "id": "c1380",
+  "de": "Kraftstoffdruck im Rail oder System zu niedrig",
+  "en": "Fuel rail/system pressure - too low"
+ },
+ {
+  "id": "c1381",
+  "de": "Hybrid: Kraftstoff ausgegangen",
+  "en": "Fuel run out"
+ },
+ {
+  "id": "c1382",
+  "de": "Kraftstoffabsperrventil A - Steuerkreis Spannung zu hoch",
+  "en": "Fuel shutoff valve A - control circuit high"
+ },
+ {
+  "id": "c1383",
+  "de": "Kraftstoffabsperrventil A - Steuerkreis Spannung zu niedrig",
+  "en": "Fuel shutoff valve A - control circuit low"
+ },
+ {
+  "id": "c1384",
+  "de": "Kraftstoffabsperrventil A - Steuerkreis oder Unterbrechung",
+  "en": "Fuel shutoff valve A - control circuit/open"
+ },
+ {
+  "id": "c1385",
+  "de": "Kraftstoffsystem",
+  "en": "Fuel system"
+ },
+ {
+  "id": "c1386",
+  "de": "Gemischregelung, zweites System",
+  "en": "Fuel system 2 status"
+ },
+ {
+  "id": "c1387",
+  "de": "Kraftstoffsystem - großes Leck erkannt",
+  "en": "Fuel system leak detected - large leak"
+ },
+ {
+  "id": "c1388",
+  "de": "Kraftstoffsystem - kleines Leck erkannt",
+  "en": "Fuel system leak detected - small leak"
+ },
+ {
+  "id": "c1389",
+  "de": "Gemischregelung",
+  "en": "Fuel system status"
+ },
+ {
+  "id": "c1390",
+  "de": "Tankfüllstand",
+  "en": "Fuel tank level"
+ },
+ {
+  "id": "c1391",
+  "de": "Tankdruck-Regelventil - Spannung zu niedrig",
+  "en": "Fuel tank pressure control solenoid valve circuit low"
+ },
+ {
+  "id": "c1392",
+  "de": "Tankdruck",
+  "en": "Fuel tank vapor pressure"
+ },
+ {
+  "id": "c1393",
+  "de": "Tankdruck (großer Bereich)",
+  "en": "Fuel tank vapor pressure (wide range)"
+ },
+ {
+  "id": "c1394",
+  "de": "Kraftstofftemperatur A",
+  "en": "Fuel temperature A"
+ },
+ {
+  "id": "c1395",
+  "de": "Kraftstofftemperatur B",
+  "en": "Fuel temperature B"
+ },
+ {
+  "id": "c1396",
+  "de": "Kraftstofftemperatursensor A - Stromkreis",
+  "en": "Fuel temperature sensor A - circuit"
+ },
+ {
+  "id": "c1397",
+  "de": "Kraftstofftemperatursensor A - Signal zu hoch",
+  "en": "Fuel temperature sensor A - circuit high"
+ },
+ {
+  "id": "c1398",
+  "de": "Kraftstofftemperatursensor A - Signal setzt zeitweise aus",
+  "en": "Fuel temperature sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1399",
+  "de": "Kraftstofftemperatursensor A - Signal zu niedrig",
+  "en": "Fuel temperature sensor A - circuit low"
+ },
+ {
+  "id": "c1400",
+  "de": "Kraftstofftemperatursensor A - Signal unplausibel",
+  "en": "Fuel temperature sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1401",
+  "de": "Kraftstofftemperatursensor B - Stromkreis",
+  "en": "Fuel temperature sensor B - circuit"
+ },
+ {
+  "id": "c1402",
+  "de": "Kraftstofftemperatursensor B - Signal zu hoch",
+  "en": "Fuel temperature sensor B - circuit high"
+ },
+ {
+  "id": "c1403",
+  "de": "Kraftstofftemperatursensor B - Signal setzt zeitweise aus",
+  "en": "Fuel temperature sensor B - circuit intermittent"
+ },
+ {
+  "id": "c1404",
+  "de": "Kraftstofftemperatursensor B - Signal zu niedrig",
+  "en": "Fuel temperature sensor B - circuit low"
+ },
+ {
+  "id": "c1405",
+  "de": "Kraftstofftemperatursensor B - Signal unplausibel",
+  "en": "Fuel temperature sensor B - circuit range/performance"
+ },
+ {
+  "id": "c1406",
+  "de": "Kraftstofftemperatur zu hoch",
+  "en": "Fuel temperature too high"
+ },
+ {
+  "id": "c1407",
+  "de": "Fehler beim Einspritzzeitpunkt",
+  "en": "Fuel timing error"
+ },
+ {
+  "id": "c1408",
+  "de": "Gemischadaption Bank 1 - Fehlfunktion",
+  "en": "Fuel trim malfunction - bank 1"
+ },
+ {
+  "id": "c1409",
+  "de": "Gemischadaption Bank 2 - Fehlfunktion",
+  "en": "Fuel trim malfunction - bank 2"
+ },
+ {
+  "id": "c1410",
+  "de": "Kraftstoffart",
+  "en": "Fuel type"
+ },
+ {
+  "id": "c1411",
+  "de": "Tankentlüftung",
+  "en": "Fuel vapour system (EVAP)"
+ },
+ {
+  "id": "c1412",
+  "de": "Kraftstoffmengenregler - Steuerkreis Spannung zu hoch",
+  "en": "Fuel volume regulator - control circuit high"
+ },
+ {
+  "id": "c1413",
+  "de": "Kraftstoffmengenregler - Steuerkreis Spannung zu niedrig",
+  "en": "Fuel volume regulator - control circuit low"
+ },
+ {
+  "id": "c1414",
+  "de": "Kraftstoffmengenregler - Funktion",
+  "en": "Fuel volume regulator - control circuit range/performance"
+ },
+ {
+  "id": "c1415",
+  "de": "Kraftstoffmengenregler - Steuerkreis oder Unterbrechung",
+  "en": "Fuel volume regulator - control circuit/open"
+ },
+ {
+  "id": "c1416",
+  "de": "Kraftstoff-/Luftgemisch und Zusatzemission",
+  "en": "Fuel/air metering and auxiliary emission controls"
+ },
+ {
+  "id": "c1417",
+  "de": "Kraftstoff-/Luftgemisch und Abgasnachbehandlung",
+  "en": "Fuel/air metering and exhaust aftertreatment"
+ },
+ {
+  "id": "c1418",
+  "de": "Volle OBD-II-Diagnose über die 16-polige Buchse: Fehlercodes, Messwerte und Bereitschaftstests.",
+  "en": "Full OBD-II diagnosis through the 16-pin socket: trouble codes, live values and readiness tests."
+ },
+ {
+  "id": "c1419",
+  "de": "Full kWh",
+  "en": "Full kWh"
+ },
+ {
+  "id": "c1420",
+  "de": "Energie bei voller Ladung",
+  "en": "Full pack energy"
+ },
+ {
+  "id": "c1421",
+  "de": "Vollastschalter F81",
+  "en": "Full throttle switch F81"
+ },
+ {
+  "id": "c1422",
+  "de": "GM (Chevrolet, Buick, Cadillac, GMC)",
+  "en": "GM (Chevrolet, Buick, Cadillac, GMC)"
+ },
+ {
+  "id": "c1423",
+  "de": "Gas (LPG/CNG)",
+  "en": "Gas (LPG/CNG)"
+ },
+ {
+  "id": "c1424",
+  "de": "Benzin",
+  "en": "Gasoline"
+ },
+ {
+  "id": "c1425",
+  "de": "Benziner (Fremdzünder)",
+  "en": "Gasoline (spark ignition)"
+ },
+ {
+  "id": "c1426",
+  "de": "Benzinpartikelfilter Bank 1",
+  "en": "Gasoline particulate filter bank 1"
+ },
+ {
+  "id": "c1427",
+  "de": "Benzinpartikelfilter Bank 2",
+  "en": "Gasoline particulate filter bank 2"
+ },
+ {
+  "id": "c1428",
+  "de": "Gateway",
+  "en": "Gateway"
+ },
+ {
+  "id": "c1429",
+  "de": "Gateway (FEM/ZGM)",
+  "en": "Gateway (FEM/ZGM)"
+ },
+ {
+  "id": "c1430",
+  "de": "Gateway (GWM)",
+  "en": "Gateway (GWM)"
+ },
+ {
+  "id": "c1431",
+  "de": "1. Gang - falsche Übersetzung",
+  "en": "Gear 1 incorrect ratio"
+ },
+ {
+  "id": "c1432",
+  "de": "2. Gang - falsche Übersetzung",
+  "en": "Gear 2 incorrect ratio"
+ },
+ {
+  "id": "c1433",
+  "de": "3. Gang - falsche Übersetzung",
+  "en": "Gear 3 incorrect ratio"
+ },
+ {
+  "id": "c1434",
+  "de": "4. Gang - falsche Übersetzung",
+  "en": "Gear 4 incorrect ratio"
+ },
+ {
+  "id": "c1435",
+  "de": "5. Gang - falsche Übersetzung",
+  "en": "Gear 5 incorrect ratio"
+ },
+ {
+  "id": "c1436",
+  "de": "6. Gang - falsche Übersetzung",
+  "en": "Gear 6 incorrect ratio"
+ },
+ {
+  "id": "c1437",
+  "de": "Getriebe",
+  "en": "Gearbox"
+ },
+ {
+  "id": "c1438",
+  "de": "Getriebesteuerung",
+  "en": "Gearbox control"
+ },
+ {
+  "id": "c1439",
+  "de": "Allgemein",
+  "en": "General"
+ },
+ {
+  "id": "c1440",
+  "de": "Lichtmaschine - Steuerkreis",
+  "en": "Generator control circuit"
+ },
+ {
+  "id": "c1441",
+  "de": "Lichtmaschine Erregung (Klemme F) - Spannung zu hoch",
+  "en": "Generator field/F terminal circuit high"
+ },
+ {
+  "id": "c1442",
+  "de": "Lichtmaschine Erregung (Klemme F) - Spannung zu niedrig",
+  "en": "Generator field/F terminal circuit low"
+ },
+ {
+  "id": "c1443",
+  "de": "Lichtmaschine Erregung (Klemme F) - Steuerkreis",
+  "en": "Generator field/F terminal control circuit"
+ },
+ {
+  "id": "c1444",
+  "de": "Ladekontrollleuchte - Steuerkreis",
+  "en": "Generator lamp control circuit"
+ },
+ {
+  "id": "c1445",
+  "de": "Lichtmaschine Ladekontrolle (Klemme L) - Spannung zu hoch",
+  "en": "Generator lamp/L terminal circuit high"
+ },
+ {
+  "id": "c1446",
+  "de": "Lichtmaschine Ladekontrolle (Klemme L) - Spannung zu niedrig",
+  "en": "Generator lamp/L terminal circuit low"
+ },
+ {
+  "id": "c1447",
+  "de": "Lichtmaschine Ladekontrolle (Klemme L) - Steuerkreis",
+  "en": "Generator lamp/L terminal control circuit"
+ },
+ {
+  "id": "c1448",
+  "de": "Deutschland",
+  "en": "Germany"
+ },
+ {
+  "id": "c1449",
+  "de": "Deutschland (ehemals DDR)",
+  "en": "Germany (former East Germany)"
+ },
+ {
+  "id": "c1450",
+  "de": "GetCommState fehlgeschlagen",
+  "en": "GetCommState failed"
+ },
+ {
+  "id": "c1451",
+  "de": "Glühzeitsteuergerät - Steuerkreis Spannung zu hoch",
+  "en": "Glow plug control module control circuit high"
+ },
+ {
+  "id": "c1452",
+  "de": "Glühzeitsteuergerät - Steuerkreis Spannung zu niedrig",
+  "en": "Glow plug control module control circuit low"
+ },
+ {
+  "id": "c1453",
+  "de": "Glühzeitsteuergerät - Verbindung zum Motorsteuergerät",
+  "en": "Glow plug control module to PCM communication circuit"
+ },
+ {
+  "id": "c1454",
+  "de": "Glühzeitsteuergerät - Verbindung zum Motorsteuergerät unplausibel",
+  "en": "Glow plug control module to PCM communication circuit range/performance"
+ },
+ {
+  "id": "c1455",
+  "de": "Vorglühlampe",
+  "en": "Glow plug lamp"
+ },
+ {
+  "id": "c1456",
+  "de": "Glühzeitsteuergerät - Steuerkreis",
+  "en": "Glow plug module control circuit"
+ },
+ {
+  "id": "c1457",
+  "de": "Glühkerzen/Heizung Kreis A - Fehlfunktion",
+  "en": "Glow plug/heater circuit A"
+ },
+ {
+  "id": "c1458",
+  "de": "Glühkerzen/Heizung Kreis B - Fehlfunktion",
+  "en": "Glow plug/heater circuit B"
+ },
+ {
+  "id": "c1459",
+  "de": "Glühkontrollleuchte - Stromkreis",
+  "en": "Glow plug/heater indicator circuit"
+ },
+ {
+  "id": "c1460",
+  "de": "Bald in die Werkstatt und bis dahin möglichst wenig fahren. Ist der Steuertrieb gelängt oder übergesprungen, können Ventile und Kolben zusammenstoßen, das wäre ein teurer Motorschaden.",
+  "en": "Go to a workshop soon and drive as little as possible until then. If the timing drive has stretched or jumped, valves and pistons can collide, which would be an expensive engine failure."
+ },
+ {
+  "id": "c1461",
+  "de": "Griechenland",
+  "en": "Greece"
+ },
+ {
+  "id": "c1462",
+  "de": "Lambdasonde Bank 1, Sonde 1 - zu wenige Wechsel",
+  "en": "HO2S insufficient switching - bank 1 sensor 1"
+ },
+ {
+  "id": "c1463",
+  "de": "Lambdasonde Bank 2, Sonde 1 - zu wenige Wechsel",
+  "en": "HO2S insufficient switching - bank 2 sensor 1"
+ },
+ {
+  "id": "c1464",
+  "de": "Lambdasonde Bank 1, Sonde 1 - Übergangszeit unplausibel",
+  "en": "HO2S transition time ratio - bank 1 sensor 1"
+ },
+ {
+  "id": "c1465",
+  "de": "Lambdasonde Bank 2, Sonde 1 - Übergangszeit unplausibel",
+  "en": "HO2S transition time ratio - bank 2 sensor 1"
+ },
+ {
+  "id": "c1466",
+  "de": "Hybridbatterie - Fehlfunktion",
+  "en": "HV battery malfunction"
+ },
+ {
+  "id": "c1467",
+  "de": "Hallgeber G40",
+  "en": "Hall sensor G40"
+ },
+ {
+  "id": "c1468",
+  "de": "Unbedenklich für die Fahrt, nur die Klimaanlage arbeitet nicht oder eingeschränkt.",
+  "en": "Harmless for driving, only the air conditioning does not work or works poorly."
+ },
+ {
+  "id": "c1469",
+  "de": "Unbedenklich für den Motor, Weiterfahren ist in Ordnung. Hängt ein Ventil offen, kann der Motor nach dem Tanken schlecht anspringen oder im Leerlauf unruhig laufen.",
+  "en": "Harmless for the engine, it is fine to keep driving. If a valve sticks open, the engine may start poorly after refuelling or idle unevenly."
+ },
+ {
+  "id": "c1470",
+  "de": "Unbedenklich für den Motor, Weiterfahren ist in Ordnung. Es entweicht nur etwas Benzindampf.",
+  "en": "Harmless for the engine, it is fine to keep driving. Only a little fuel vapour escapes."
+ },
+ {
+  "id": "c1471",
+  "de": "Für den Motor unbedenklich. Riecht es deutlich nach Benzin, das Auto nicht in geschlossenen Räumen abstellen und bald prüfen lassen.",
+  "en": "Harmless for the engine. If there is a clear smell of petrol, do not park the car indoors and have it checked soon."
+ },
+ {
+  "id": "c1472",
+  "de": "Unbedenklich, aber die Tankanzeige kann falsch sein. Lieber früher tanken und den Tageskilometerzähler im Blick behalten.",
+  "en": "Harmless, but the fuel gauge may be wrong. Fill up early and keep an eye on the trip meter."
+ },
+ {
+  "id": "c1473",
+  "de": "Unbedenklich, nur der Tempomat geht eventuell nicht.",
+  "en": "Harmless, only the cruise control may not work."
+ },
+ {
+  "id": "c1474",
+  "de": "Schrägheck",
+  "en": "Hatchback"
+ },
+ {
+  "id": "c1475",
+  "de": "Beim Klimaservice die Kältemittelmenge prüfen lassen",
+  "en": "Have the refrigerant quantity checked at an A/C service"
+ },
+ {
+  "id": "c1476",
+  "de": "Drosselklappe reinigen und anlernen lassen\nUnterdruckschläuche prüfen",
+  "en": "Have the throttle body cleaned and adapted\nCheck the vacuum hoses"
+ },
+ {
+  "id": "c1477",
+  "de": "Getriebeölstand prüfen lassen",
+  "en": "Have the transmission fluid level checked"
+ },
+ {
+  "id": "c1478",
+  "de": "Getriebeölstand von einer Werkstatt prüfen lassen\nÖlspuren am Getriebestecker suchen\nIst schon einmal ein Getriebeölwechsel gemacht worden?",
+  "en": "Have the transmission fluid level checked by a workshop\nLook for oil at the transmission connector\nHas the transmission fluid ever been changed?"
+ },
+ {
+  "id": "c1479",
+  "de": "Kopfairbag Fahrerseite",
+  "en": "Head airbag, driver side"
+ },
+ {
+  "id": "c1480",
+  "de": "Kopfairbag Beifahrerseite",
+  "en": "Head airbag, passenger side"
+ },
+ {
+  "id": "c1481",
+  "de": "Head Unit (NBT/CIC)",
+  "en": "Head unit (NBT/CIC)"
+ },
+ {
+  "id": "c1482",
+  "de": "Header ist keine CAN-Adresse: ",
+  "en": "Header is no CAN id: "
+ },
+ {
+  "id": "c1483",
+  "de": "Kopfzeile ohne die Spalten Name, ModeAndPID und Equation.",
+  "en": "Header line without the columns Name, ModeAndPID and Equation."
+ },
+ {
+  "id": "c1484",
+  "de": "Scheinwerfer-Treiber (TMS)",
+  "en": "Headlight driver (TMS)"
+ },
+ {
+  "id": "c1485",
+  "de": "Scheinwerfer-Treiber 2 (TMS)",
+  "en": "Headlight driver 2 (TMS)"
+ },
+ {
+  "id": "c1486",
+  "de": "Katalysatorheizung",
+  "en": "Heated catalyst"
+ },
+ {
+  "id": "c1487",
+  "de": "Beheizter Katalysator Bank 1 - Wirkungsgrad zu gering",
+  "en": "Heated catalyst efficiency below threshold - bank 1"
+ },
+ {
+  "id": "c1488",
+  "de": "Beheizter Katalysator Bank 2 - Wirkungsgrad zu gering",
+  "en": "Heated catalyst efficiency below threshold - bank 2"
+ },
+ {
+  "id": "c1489",
+  "de": "Beheizter Katalysator Bank 1 - Temperatur zu niedrig",
+  "en": "Heated catalyst temperature below threshold - bank 1"
+ },
+ {
+  "id": "c1490",
+  "de": "Beheizter Katalysator Bank 2 - Temperatur zu niedrig",
+  "en": "Heated catalyst temperature below threshold - bank 2"
+ },
+ {
+  "id": "c1491",
+  "de": "Heizung",
+  "en": "Heater T"
+ },
+ {
+  "id": "c1492",
+  "de": "Nutzfahrzeug EEV (C)",
+  "en": "Heavy duty EEV (C)"
+ },
+ {
+  "id": "c1493",
+  "de": "Nutzfahrzeug Euro IV (B1)",
+  "en": "Heavy duty Euro IV (B1)"
+ },
+ {
+  "id": "c1494",
+  "de": "Nutzfahrzeug Euro-OBD Stufe I mit NOx-Regelung",
+  "en": "Heavy duty Euro OBD stage I with NOx control"
+ },
+ {
+  "id": "c1495",
+  "de": "Nutzfahrzeug Euro-OBD Stufe I ohne NOx-Regelung",
+  "en": "Heavy duty Euro OBD stage I without NOx control"
+ },
+ {
+  "id": "c1496",
+  "de": "Nutzfahrzeug Euro-OBD Stufe II mit NOx-Regelung",
+  "en": "Heavy duty Euro OBD stage II with NOx control"
+ },
+ {
+  "id": "c1497",
+  "de": "Nutzfahrzeug Euro-OBD Stufe II ohne NOx-Regelung",
+  "en": "Heavy duty Euro OBD stage II without NOx control"
+ },
+ {
+  "id": "c1498",
+  "de": "Nutzfahrzeug Euro-OBD Stufe VI",
+  "en": "Heavy duty Euro OBD stage VI"
+ },
+ {
+  "id": "c1499",
+  "de": "Nutzfahrzeug Euro V (B2)",
+  "en": "Heavy duty Euro V (B2)"
+ }
+]

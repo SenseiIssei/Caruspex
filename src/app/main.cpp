@@ -57,11 +57,16 @@ int main(int argc, char** argv) {
     caruspex::AppSettings startup = caruspex::loadSettings();
     const QString requested = languageFromArguments(QCoreApplication::arguments());
     if (!requested.isEmpty()) startup.language = requested;
-    const bool english = caruspex::effectiveLanguage(startup) == QStringLiteral("en");
-    caruspex::setLanguage(english ? caruspex::Language::English
-                                  : caruspex::Language::German);
-    if (english && translator.load(QStringLiteral(":/i18n/caruspex_en.qm"))) {
+    const QString code = caruspex::effectiveLanguage(startup);
+    const caruspex::Language active = caruspex::languageFromCode(code.toStdString());
+    caruspex::setLanguage(code == QStringLiteral("de") ? caruspex::Language::German : active);
+    if (code != QStringLiteral("de") &&
+        translator.load(QStringLiteral(":/i18n/caruspex_%1.qm").arg(code))) {
         QApplication::installTranslator(&translator);
+    }
+    // Arabic reads from right to left; Qt mirrors the layouts.
+    if (caruspex::languageInfo(active).rightToLeft && code != QStringLiteral("de")) {
+        QApplication::setLayoutDirection(Qt::RightToLeft);
     }
 
     QCommandLineParser parser;
@@ -117,7 +122,7 @@ int main(int argc, char** argv) {
         QStringList() << QStringLiteral("language"),
         QCoreApplication::translate("main",
                                     "Sprache für diesen Start: de oder en"),
-        QStringLiteral("de|en"));
+        QStringLiteral("de|en|fr|..."));
     parser.addOption(languageOption);
     QCommandLineOption demoOption(
         QStringList() << QStringLiteral("demo"),

@@ -1,0 +1,947 @@
+[
+ {
+  "id": "c3250",
+  "de": "Unterbrechung",
+  "en": "circuit open"
+ },
+ {
+  "id": "c3251",
+  "de": "Schutzabschaltung nach Zeitüberschreitung",
+  "en": "circuit or component protection time-out"
+ },
+ {
+  "id": "c3252",
+  "de": "Widerstand über der Schwelle",
+  "en": "circuit resistance above threshold"
+ },
+ {
+  "id": "c3253",
+  "de": "Widerstand unter der Schwelle",
+  "en": "circuit resistance below threshold"
+ },
+ {
+  "id": "c3254",
+  "de": "Widerstand außerhalb des Bereichs",
+  "en": "circuit resistance out of range"
+ },
+ {
+  "id": "c3255",
+  "de": "Kurzschluss nach Plus",
+  "en": "circuit short to battery"
+ },
+ {
+  "id": "c3256",
+  "de": "Kurzschluss nach Plus oder Unterbrechung",
+  "en": "circuit short to battery or open"
+ },
+ {
+  "id": "c3257",
+  "de": "Kurzschluss nach Masse",
+  "en": "circuit short to ground"
+ },
+ {
+  "id": "c3258",
+  "de": "Kurzschluss nach Masse oder Unterbrechung",
+  "en": "circuit short to ground or open"
+ },
+ {
+  "id": "c3259",
+  "de": "Spannung über der Schwelle",
+  "en": "circuit voltage above threshold"
+ },
+ {
+  "id": "c3260",
+  "de": "Spannung unter der Schwelle",
+  "en": "circuit voltage below threshold"
+ },
+ {
+  "id": "c3261",
+  "de": "Spannung außerhalb des Bereichs",
+  "en": "circuit voltage out of range"
+ },
+ {
+  "id": "c3262",
+  "de": "geregelt (geschlossener Regelkreis)",
+  "en": "closed loop"
+ },
+ {
+  "id": "c3263",
+  "de": "geschlossener Regelkreis (normal)",
+  "en": "closed loop (normal)"
+ },
+ {
+  "id": "c3264",
+  "de": "geschlossen, aber eine Lambdasonde fällt aus",
+  "en": "closed loop, but an oxygen sensor has failed"
+ },
+ {
+  "id": "c3265",
+  "de": "Code ",
+  "en": "code "
+ },
+ {
+  "id": "c3266",
+  "de": "kalt",
+  "en": "cold"
+ },
+ {
+  "id": "c3267",
+  "de": "Komfort",
+  "en": "comfort"
+ },
+ {
+  "id": "c3268",
+  "de": "Sollstellung nicht erreichbar",
+  "en": "commanded position not reachable"
+ },
+ {
+  "id": "c3269",
+  "de": "Bauteilfehler",
+  "en": "component failure"
+ },
+ {
+  "id": "c3270",
+  "de": "interner Bauteilfehler",
+  "en": "component internal failure"
+ },
+ {
+  "id": "c3271",
+  "de": "Funktion behindert oder blockiert",
+  "en": "component or system operation obstructed or blocked"
+ },
+ {
+  "id": "c3272",
+  "de": "Übertemperatur des Bauteils",
+  "en": "component or system over temperature"
+ },
+ {
+  "id": "c3273",
+  "de": "Bedingungen nicht erfüllt (Zündung, Motorzustand, Geschwindigkeit?)",
+  "en": "conditions not correct (ignition, engine state, speed?)"
+ },
+ {
+  "id": "c3274",
+  "de": "Fehler im Datenspeicher (RAM)",
+  "en": "data memory failure"
+ },
+ {
+  "id": "c3275",
+  "de": "deaktiviert",
+  "en": "deactivated"
+ },
+ {
+  "id": "c3276",
+  "de": "Mangel aktiv",
+  "en": "deficiency active"
+ },
+ {
+  "id": "c3277",
+  "de": "Grad",
+  "en": "deg"
+ },
+ {
+  "id": "c3278",
+  "de": "Grad v.OT",
+  "en": "deg BTDC"
+ },
+ {
+  "id": "c3279",
+  "de": "Grad C",
+  "en": "deg C"
+ },
+ {
+  "id": "c3280",
+  "de": "hinter dem Katalysator",
+  "en": "downstream of the catalytic converter"
+ },
+ {
+  "id": "c3281",
+  "de": "Fahrstufe eingelegt",
+  "en": "drive range engaged"
+ },
+ {
+  "id": "c3282",
+  "de": "elektrischer Fehler",
+  "en": "electrical failure"
+ },
+ {
+  "id": "c3283",
+  "de": "Notlaufstellung nicht erreichbar",
+  "en": "emergency position not reachable"
+ },
+ {
+  "id": "c3284",
+  "de": "leer",
+  "en": "empty"
+ },
+ {
+  "id": "c3285",
+  "de": "Motor",
+  "en": "engine"
+ },
+ {
+  "id": "c3286",
+  "de": "Motor aus oder nicht vorhanden",
+  "en": "engine off or not present"
+ },
+ {
+  "id": "c3287",
+  "de": "Ereignisinformation",
+  "en": "event information"
+ },
+ {
+  "id": "c3288",
+  "de": "zu viele Versuche",
+  "en": "exceeded number of attempts"
+ },
+ {
+  "id": "c3289",
+  "de": "teuer",
+  "en": "expensive"
+ },
+ {
+  "id": "c3290",
+  "de": "Fehlerart",
+  "en": "failure type"
+ },
+ {
+  "id": "c3291",
+  "de": "Fehler erkannt",
+  "en": "fault present"
+ },
+ {
+  "id": "c3292",
+  "de": "Undichtigkeit",
+  "en": "fluid leak or seal failure"
+ },
+ {
+  "id": "c3293",
+  "de": "aus der Außenluft oder abgeschaltet",
+  "en": "from the outside air or off"
+ },
+ {
+  "id": "c3294",
+  "de": "Kraftstoffart ",
+  "en": "fuel type "
+ },
+ {
+  "id": "c3295",
+  "de": "OBD-II vollständig",
+  "en": "full OBD-II"
+ },
+ {
+  "id": "c3296",
+  "de": "Gang ",
+  "en": "gear "
+ },
+ {
+  "id": "c3297",
+  "de": "Prüfsummenfehler",
+  "en": "general checksum failure"
+ },
+ {
+  "id": "c3298",
+  "de": "allgemeiner elektrischer Fehler",
+  "en": "general electrical failure"
+ },
+ {
+  "id": "c3299",
+  "de": "allgemeiner Fehler",
+  "en": "general failure"
+ },
+ {
+  "id": "c3300",
+  "de": "Speicherfehler",
+  "en": "general memory failure"
+ },
+ {
+  "id": "c3301",
+  "de": "allgemeiner Programmierfehler",
+  "en": "general programming failure"
+ },
+ {
+  "id": "c3302",
+  "de": "allgemeine Ablehnung",
+  "en": "general reject"
+ },
+ {
+  "id": "c3303",
+  "de": "allgemeiner Signalfehler",
+  "en": "general signal failure"
+ },
+ {
+  "id": "c3304",
+  "de": "iDrive-Controller (ZBE)",
+  "en": "iDrive controller (ZBE)"
+ },
+ {
+  "id": "c3305",
+  "de": "Wegfahrsperre",
+  "en": "immobilizer"
+ },
+ {
+  "id": "c3306",
+  "de": "Gang eingelegt",
+  "en": "in gear"
+ },
+ {
+  "id": "c3307",
+  "de": "läuft gerade",
+  "en": "in progress"
+ },
+ {
+  "id": "c3308",
+  "de": "falsch montiert",
+  "en": "incorrect assembly"
+ },
+ {
+  "id": "c3309",
+  "de": "falsches Bauteil eingebaut",
+  "en": "incorrect component installed"
+ },
+ {
+  "id": "c3310",
+  "de": "falsche Länge oder falsches Format",
+  "en": "incorrect message length or format"
+ },
+ {
+  "id": "c3311",
+  "de": "im Kontrollbereich",
+  "en": "inside the control area"
+ },
+ {
+  "id": "c3312",
+  "de": "im Ausnahmebereich des Herstellers",
+  "en": "inside the manufacturer carve-out area"
+ },
+ {
+  "id": "c3313",
+  "de": "Kombiinstrument",
+  "en": "instrument cluster"
+ },
+ {
+  "id": "c3314",
+  "de": "sporadisch",
+  "en": "intermittent"
+ },
+ {
+  "id": "c3315",
+  "de": "interner elektronischer Fehler",
+  "en": "internal electronic failure"
+ },
+ {
+  "id": "c3316",
+  "de": "falscher Schlüssel",
+  "en": "invalid key"
+ },
+ {
+  "id": "c3317",
+  "de": "ungültige oder unpassende Konfiguration",
+  "en": "invalid or incompatible configuration"
+ },
+ {
+  "id": "c3318",
+  "de": "ungültige oder unpassende Software",
+  "en": "invalid or incompatible software component"
+ },
+ {
+  "id": "c3319",
+  "de": "ungültige Daten empfangen",
+  "en": "invalid serial data received"
+ },
+ {
+  "id": "c3320",
+  "de": "Signal ungültig",
+  "en": "invalid signal"
+ },
+ {
+  "id": "c3321",
+  "de": "nur Mithören",
+  "en": "listen only"
+ },
+ {
+  "id": "c3322",
+  "de": "Flüssigkeitsstand zu niedrig",
+  "en": "low fluid level"
+ },
+ {
+  "id": "c3323",
+  "de": "nur Herstellerdiagnose",
+  "en": "manufacturer diagnosis only"
+ },
+ {
+  "id": "c3324",
+  "de": "herstellereigener Stecker",
+  "en": "manufacturer plug"
+ },
+ {
+  "id": "c3325",
+  "de": "herstellerspezifische Fehlerart",
+  "en": "manufacturer specific failure type"
+ },
+ {
+  "id": "c3326",
+  "de": "herstellerspezifisch, Ladedruck",
+  "en": "manufacturer-specific, boost pressure"
+ },
+ {
+  "id": "c3327",
+  "de": "herstellerspezifisch, Steuergerät",
+  "en": "manufacturer-specific, control unit"
+ },
+ {
+  "id": "c3328",
+  "de": "herstellerspezifisch, Datenbus und Bordspannung",
+  "en": "manufacturer-specific, data bus and battery voltage"
+ },
+ {
+  "id": "c3329",
+  "de": "herstellerspezifisch, Leerlaufregelung und Drosselklappenanpassung",
+  "en": "manufacturer-specific, idle control and throttle body adaptation"
+ },
+ {
+  "id": "c3330",
+  "de": "herstellerspezifisch, Lambdaregelung",
+  "en": "manufacturer-specific, lambda control"
+ },
+ {
+  "id": "c3331",
+  "de": "herstellerspezifisch, Gemisch",
+  "en": "manufacturer-specific, mixture"
+ },
+ {
+  "id": "c3332",
+  "de": "herstellerspezifisch, Getriebe",
+  "en": "manufacturer-specific, transmission"
+ },
+ {
+  "id": "c3333",
+  "de": "mechanischer Fehler",
+  "en": "mechanical failure"
+ },
+ {
+  "id": "c3334",
+  "de": "mechanische Verbindung defekt",
+  "en": "mechanical linkage failure"
+ },
+ {
+  "id": "c3335",
+  "de": "Kalibrierung fehlt",
+  "en": "missing calibration"
+ },
+ {
+  "id": "c3336",
+  "de": "Botschaft fehlt",
+  "en": "missing message"
+ },
+ {
+  "id": "c3337",
+  "de": "gemischt, wird ermittelt",
+  "en": "mixed, will be detected"
+ },
+ {
+  "id": "c3338",
+  "de": "mittel",
+  "en": "moderate"
+ },
+ {
+  "id": "c3339",
+  "de": "Leerlauf",
+  "en": "neutral"
+ },
+ {
+  "id": "c3340",
+  "de": "Leerlauf oder Kupplung getreten",
+  "en": "neutral or clutch pressed"
+ },
+ {
+  "id": "c3341",
+  "de": "kein Klartext hinterlegt",
+  "en": "no description available"
+ },
+ {
+  "id": "c3342",
+  "de": "keine Diagnose",
+  "en": "no diagnosis"
+ },
+ {
+  "id": "c3343",
+  "de": "kein Diagnosestecker",
+  "en": "no diagnostic connector"
+ },
+ {
+  "id": "c3344",
+  "de": "keine Zuordnung hinterlegt",
+  "en": "no location on file"
+ },
+ {
+  "id": "c3345",
+  "de": "keine Aussetzer in der aktuellen Fahrt",
+  "en": "no misfires in the current trip"
+ },
+ {
+  "id": "c3346",
+  "de": "keine Funktion",
+  "en": "no operation"
+ },
+ {
+  "id": "c3347",
+  "de": "kein Signal",
+  "en": "no signal"
+ },
+ {
+  "id": "c3348",
+  "de": "noch keine passende Fahrt erkannt",
+  "en": "no suitable trip recorded yet"
+ },
+ {
+  "id": "c3349",
+  "de": "keine",
+  "en": "none"
+ },
+ {
+  "id": "c3350",
+  "de": "nicht OBD-pflichtig",
+  "en": "not OBD compliant"
+ },
+ {
+  "id": "c3351",
+  "de": "nicht aktiviert",
+  "en": "not activated"
+ },
+ {
+  "id": "c3352",
+  "de": "nicht aktiv",
+  "en": "not active"
+ },
+ {
+  "id": "c3353",
+  "de": "nicht zugeordnet",
+  "en": "not assigned"
+ },
+ {
+  "id": "c3354",
+  "de": "nicht angegeben",
+  "en": "not available"
+ },
+ {
+  "id": "c3355",
+  "de": "nicht konfiguriert",
+  "en": "not configured"
+ },
+ {
+  "id": "c3356",
+  "de": "nicht programmiert",
+  "en": "not programmed"
+ },
+ {
+  "id": "c3357",
+  "de": "keine Angabe",
+  "en": "not reported"
+ },
+ {
+  "id": "c3358",
+  "de": "läuft nicht",
+  "en": "not running"
+ },
+ {
+  "id": "c3359",
+  "de": "aus",
+  "en": "off"
+ },
+ {
+  "id": "c3360",
+  "de": "oft ein bis mehrere Tage normaler Nutzung",
+  "en": "often one to several days of normal use"
+ },
+ {
+  "id": "c3361",
+  "de": "an",
+  "en": "on"
+ },
+ {
+  "id": "c3362",
+  "de": "im Schnitt ",
+  "en": "on average "
+ },
+ {
+  "id": "c3363",
+  "de": "gesteuert (offener Regelkreis)",
+  "en": "open loop"
+ },
+ {
+  "id": "c3364",
+  "de": "offener Regelkreis (Motor noch kalt)",
+  "en": "open loop (engine still cold)"
+ },
+ {
+  "id": "c3365",
+  "de": "offener Regelkreis (Volllast oder Schub)",
+  "en": "open loop (full load or overrun)"
+ },
+ {
+  "id": "c3366",
+  "de": "offener Regelkreis (Systemfehler)",
+  "en": "open loop (system fault)"
+ },
+ {
+  "id": "c3367",
+  "de": "außerhalb des Kontrollbereichs",
+  "en": "outside the control area"
+ },
+ {
+  "id": "c3368",
+  "de": "Übertemperatur",
+  "en": "over temperature"
+ },
+ {
+  "id": "c3369",
+  "de": "Kennwerte außerhalb",
+  "en": "parametric"
+ },
+ {
+  "id": "c3370",
+  "de": "Parken oder Neutral",
+  "en": "park or neutral"
+ },
+ {
+  "id": "c3371",
+  "de": "passiv (von selbst beim Fahren)",
+  "en": "passive (on its own while driving)"
+ },
+ {
+  "id": "c3372",
+  "de": "Leistung zu gering oder falsche Funktion",
+  "en": "performance or incorrect operation"
+ },
+ {
+  "id": "c3373",
+  "de": "dauerhaft",
+  "en": "permanent"
+ },
+ {
+  "id": "c3374",
+  "de": "Fehler im Programmspeicher",
+  "en": "program memory failure"
+ },
+ {
+  "id": "c3375",
+  "de": "Programmier- oder Konfigurationsfehler",
+  "en": "programming failure"
+ },
+ {
+  "id": "c3376",
+  "de": "Pumpe für Prüfung eingeschaltet",
+  "en": "pump switched on for a check"
+ },
+ {
+  "id": "c3377",
+  "de": "Kennung oder Wert außerhalb des Bereichs",
+  "en": "request out of range"
+ },
+ {
+  "id": "c3378",
+  "de": "falsche Reihenfolge der Anfragen",
+  "en": "request sequence error"
+ },
+ {
+  "id": "c3379",
+  "de": "Wartezeit noch nicht abgelaufen",
+  "en": "required time delay not expired"
+ },
+ {
+  "id": "c3380",
+  "de": "Anforderung ",
+  "en": "requirement "
+ },
+ {
+  "id": "c3381",
+  "de": "Antwort noch in Arbeit",
+  "en": "response pending"
+ },
+ {
+  "id": "c3382",
+  "de": "Antwort wäre zu lang",
+  "en": "response too long"
+ },
+ {
+  "id": "c3383",
+  "de": "Zugriff gesperrt, braucht eine Freischaltung (Security Access)",
+  "en": "security access denied"
+ },
+ {
+  "id": "c3384",
+  "de": "Dienst wird nicht unterstützt",
+  "en": "service not supported"
+ },
+ {
+  "id": "c3385",
+  "de": "Dienst in der aktiven Sitzung nicht unterstützt",
+  "en": "service not supported in active session"
+ },
+ {
+  "id": "c3386",
+  "de": "Signal über dem zulässigen Bereich",
+  "en": "signal above allowable range"
+ },
+ {
+  "id": "c3387",
+  "de": "Signalamplitude zu groß",
+  "en": "signal amplitude above maximum"
+ },
+ {
+  "id": "c3388",
+  "de": "Signalamplitude zu klein",
+  "en": "signal amplitude below minimum"
+ },
+ {
+  "id": "c3389",
+  "de": "Signal unter dem zulässigen Bereich",
+  "en": "signal below allowable range"
+ },
+ {
+  "id": "c3390",
+  "de": "Nullpunkt oder Grundwert des Signals außerhalb des Bereichs",
+  "en": "signal bias level out of range or zero adjustment failure"
+ },
+ {
+  "id": "c3391",
+  "de": "Fehler bei der Signalberechnung",
+  "en": "signal calculation failure"
+ },
+ {
+  "id": "c3392",
+  "de": "Signalvergleich fehlgeschlagen",
+  "en": "signal compare failure"
+ },
+ {
+  "id": "c3393",
+  "de": "Signal mit einem anderen verkoppelt",
+  "en": "signal cross coupled"
+ },
+ {
+  "id": "c3394",
+  "de": "Signal unruhig",
+  "en": "signal erratic"
+ },
+ {
+  "id": "c3395",
+  "de": "Signalfehler",
+  "en": "signal failure"
+ },
+ {
+  "id": "c3396",
+  "de": "Signalfrequenz falsch",
+  "en": "signal frequency incorrect"
+ },
+ {
+  "id": "c3397",
+  "de": "Signalfrequenz zu hoch",
+  "en": "signal frequency too high"
+ },
+ {
+  "id": "c3398",
+  "de": "Signalfrequenz zu niedrig",
+  "en": "signal frequency too low"
+ },
+ {
+  "id": "c3399",
+  "de": "zu wenige Impulse",
+  "en": "signal has too few pulses"
+ },
+ {
+  "id": "c3400",
+  "de": "zu wenige Signalwechsel",
+  "en": "signal has too few transitions or events"
+ },
+ {
+  "id": "c3401",
+  "de": "zu viele Impulse",
+  "en": "signal has too many pulses"
+ },
+ {
+  "id": "c3402",
+  "de": "zu viele Signalwechsel",
+  "en": "signal has too many transitions or events"
+ },
+ {
+  "id": "c3403",
+  "de": "High-Zeit des Signals zu lang",
+  "en": "signal high time above maximum"
+ },
+ {
+  "id": "c3404",
+  "de": "High-Zeit des Signals zu kurz",
+  "en": "signal high time below minimum"
+ },
+ {
+  "id": "c3405",
+  "de": "Signal nach dem Ereignis falsch",
+  "en": "signal incorrect after event"
+ },
+ {
+  "id": "c3406",
+  "de": "Signal ungültig",
+  "en": "signal invalid"
+ },
+ {
+  "id": "c3407",
+  "de": "Low-Zeit des Signals zu lang",
+  "en": "signal low time above maximum"
+ },
+ {
+  "id": "c3408",
+  "de": "Low-Zeit des Signals zu kurz",
+  "en": "signal low time below minimum"
+ },
+ {
+  "id": "c3409",
+  "de": "Signal unplausibel",
+  "en": "signal plausibility failure"
+ },
+ {
+  "id": "c3410",
+  "de": "Signal ändert sich zu schnell",
+  "en": "signal rate of change above threshold"
+ },
+ {
+  "id": "c3411",
+  "de": "Signal ändert sich zu langsam",
+  "en": "signal rate of change below threshold"
+ },
+ {
+  "id": "c3412",
+  "de": "Signalform falsch",
+  "en": "signal shape or waveform failure"
+ },
+ {
+  "id": "c3413",
+  "de": "Signal bleibt auf hoch stehen",
+  "en": "signal stuck high"
+ },
+ {
+  "id": "c3414",
+  "de": "Signal bleibt innerhalb des Bereichs stehen",
+  "en": "signal stuck in range"
+ },
+ {
+  "id": "c3415",
+  "de": "Signal bleibt auf niedrig stehen",
+  "en": "signal stuck low"
+ },
+ {
+  "id": "c3416",
+  "de": "seit ",
+  "en": "since "
+ },
+ {
+  "id": "c3417",
+  "de": "Fehler im Sonderspeicher",
+  "en": "special memory failure"
+ },
+ {
+  "id": "c3418",
+  "de": "Norm ",
+  "en": "standard "
+ },
+ {
+  "id": "c3419",
+  "de": "Status ",
+  "en": "status "
+ },
+ {
+  "id": "c3420",
+  "de": "Lenkung",
+  "en": "steering"
+ },
+ {
+  "id": "c3421",
+  "de": "gespeichert",
+  "en": "stored"
+ },
+ {
+  "id": "c3422",
+  "de": "Unterfunktion wird nicht unterstützt",
+  "en": "sub-function not supported"
+ },
+ {
+  "id": "c3423",
+  "de": "Unterfunktion in der aktiven Sitzung nicht unterstützt",
+  "en": "sub-function not supported in active session"
+ },
+ {
+  "id": "c3424",
+  "de": "Fehler der Überwachungssoftware",
+  "en": "supervision software failure"
+ },
+ {
+  "id": "c3425",
+  "de": "interner Fehler des Systems",
+  "en": "system internal failure"
+ },
+ {
+  "id": "c3426",
+  "de": "Programmierfehler des Systems",
+  "en": "system programming failure"
+ },
+ {
+  "id": "c3427",
+  "de": "tcgetattr fehlgeschlagen: ",
+  "en": "tcgetattr failed: "
+ },
+ {
+  "id": "c3428",
+  "de": "Getriebe",
+  "en": "transmission"
+ },
+ {
+  "id": "c3429",
+  "de": "unter einer Minute bis wenige Minuten",
+  "en": "under a minute to a few minutes"
+ },
+ {
+  "id": "c3430",
+  "de": "unerwartete Funktion",
+  "en": "unexpected operation"
+ },
+ {
+  "id": "c3431",
+  "de": "unbekannt",
+  "en": "unknown"
+ },
+ {
+  "id": "c3432",
+  "de": "unbekanntes Stellglied",
+  "en": "unknown actuator"
+ },
+ {
+  "id": "c3433",
+  "de": "unbekannter Code",
+  "en": "unknown code"
+ },
+ {
+  "id": "c3434",
+  "de": "vor dem Katalysator",
+  "en": "upstream of the catalytic converter"
+ },
+ {
+  "id": "c3435",
+  "de": "Prüfwert der Botschaft falsch",
+  "en": "value of signal protection calculation incorrect"
+ },
+ {
+  "id": "c3436",
+  "de": "warm",
+  "en": "warm"
+ },
+ {
+  "id": "c3437",
+  "de": "Fehler der Überwachung (Watchdog)",
+  "en": "watchdog or safety processor failure"
+ },
+ {
+  "id": "c3438",
+  "de": "falsche Einbaulage",
+  "en": "wrong mounting position"
+ }
+]

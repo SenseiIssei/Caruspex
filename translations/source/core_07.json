@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c1750",
+  "de": "Saugrohrdruck: Steuergerät defekt",
+  "en": "Intake manifold pressure: control unit faulty"
+ },
+ {
+  "id": "c1751",
+  "de": "Saugrohrklappen Bank 1 - Steuerkreis Spannung zu hoch",
+  "en": "Intake manifold runner control bank 1 - control circuit high"
+ },
+ {
+  "id": "c1752",
+  "de": "Saugrohrklappen Bank 1 - Steuerkreis Spannung zu niedrig",
+  "en": "Intake manifold runner control bank 1 - control circuit low"
+ },
+ {
+  "id": "c1753",
+  "de": "Saugrohrklappen Bank 1 - Steuerkreis oder Unterbrechung",
+  "en": "Intake manifold runner control bank 1 - control circuit/open"
+ },
+ {
+  "id": "c1754",
+  "de": "Saugrohrklappen Bank 2 - Steuerkreis Spannung zu hoch",
+  "en": "Intake manifold runner control bank 2 - control circuit high"
+ },
+ {
+  "id": "c1755",
+  "de": "Saugrohrklappen Bank 2 - Steuerkreis Spannung zu niedrig",
+  "en": "Intake manifold runner control bank 2 - control circuit low"
+ },
+ {
+  "id": "c1756",
+  "de": "Saugrohrklappen Bank 2 - Steuerkreis oder Unterbrechung",
+  "en": "Intake manifold runner control bank 2 - control circuit/open"
+ },
+ {
+  "id": "c1757",
+  "de": "Saugrohrklappen Bank 1 - hängen geschlossen",
+  "en": "Intake manifold runner control stuck closed - bank 1"
+ },
+ {
+  "id": "c1758",
+  "de": "Saugrohrklappen Bank 2 - hängen geschlossen",
+  "en": "Intake manifold runner control stuck closed - bank 2"
+ },
+ {
+  "id": "c1759",
+  "de": "Saugrohrklappen Bank 1 - hängen offen",
+  "en": "Intake manifold runner control stuck open - bank 1"
+ },
+ {
+  "id": "c1760",
+  "de": "Saugrohrklappen Bank 2 - hängen offen",
+  "en": "Intake manifold runner control stuck open - bank 2"
+ },
+ {
+  "id": "c1761",
+  "de": "Saugrohrklappen-Positionssensor Bank 1 - Stromkreis",
+  "en": "Intake manifold runner position sensor/switch bank 1 - circuit"
+ },
+ {
+  "id": "c1762",
+  "de": "Saugrohrklappen-Positionssensor Bank 1 - Signal zu hoch",
+  "en": "Intake manifold runner position sensor/switch bank 1 - circuit high"
+ },
+ {
+  "id": "c1763",
+  "de": "Saugrohrklappen-Positionssensor Bank 1 - Signal setzt zeitweise aus",
+  "en": "Intake manifold runner position sensor/switch bank 1 - circuit intermittent"
+ },
+ {
+  "id": "c1764",
+  "de": "Saugrohrklappen-Positionssensor Bank 1 - Signal zu niedrig",
+  "en": "Intake manifold runner position sensor/switch bank 1 - circuit low"
+ },
+ {
+  "id": "c1765",
+  "de": "Saugrohrklappen-Positionssensor Bank 1 - Signal unplausibel",
+  "en": "Intake manifold runner position sensor/switch bank 1 - circuit range/performance"
+ },
+ {
+  "id": "c1766",
+  "de": "Saugrohrklappen-Positionssensor Bank 2 - Stromkreis",
+  "en": "Intake manifold runner position sensor/switch bank 2 - circuit"
+ },
+ {
+  "id": "c1767",
+  "de": "Saugrohrklappen-Positionssensor Bank 2 - Signal zu hoch",
+  "en": "Intake manifold runner position sensor/switch bank 2 - circuit high"
+ },
+ {
+  "id": "c1768",
+  "de": "Saugrohrklappen-Positionssensor Bank 2 - Signal setzt zeitweise aus",
+  "en": "Intake manifold runner position sensor/switch bank 2 - circuit intermittent"
+ },
+ {
+  "id": "c1769",
+  "de": "Saugrohrklappen-Positionssensor Bank 2 - Signal zu niedrig",
+  "en": "Intake manifold runner position sensor/switch bank 2 - circuit low"
+ },
+ {
+  "id": "c1770",
+  "de": "Saugrohrklappen-Positionssensor Bank 2 - Signal unplausibel",
+  "en": "Intake manifold runner position sensor/switch bank 2 - circuit range/performance"
+ },
+ {
+  "id": "c1771",
+  "de": "Saugrohrumschaltung Bank 1 - Steuerkreis Spannung zu hoch",
+  "en": "Intake manifold tuning valve bank 1 - control circuit high"
+ },
+ {
+  "id": "c1772",
+  "de": "Saugrohrumschaltung Bank 1 - Steuerkreis Spannung zu niedrig",
+  "en": "Intake manifold tuning valve bank 1 - control circuit low"
+ },
+ {
+  "id": "c1773",
+  "de": "Saugrohrumschaltung Bank 1 - Steuerkreis oder Unterbrechung",
+  "en": "Intake manifold tuning valve bank 1 - control circuit/open"
+ },
+ {
+  "id": "c1774",
+  "de": "Saugrohrumschaltung Bank 2 - Steuerkreis Spannung zu hoch",
+  "en": "Intake manifold tuning valve bank 2 - control circuit high"
+ },
+ {
+  "id": "c1775",
+  "de": "Saugrohrumschaltung Bank 2 - Steuerkreis Spannung zu niedrig",
+  "en": "Intake manifold tuning valve bank 2 - control circuit low"
+ },
+ {
+  "id": "c1776",
+  "de": "Saugrohrumschaltung Bank 2 - Steuerkreis oder Unterbrechung",
+  "en": "Intake manifold tuning valve bank 2 - control circuit/open"
+ },
+ {
+  "id": "c1777",
+  "de": "Ansaugtrakt",
+  "en": "Intake system"
+ },
+ {
+  "id": "c1778",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 1 - Stromkreis",
+  "en": "Intake valve control solenoid bank 1 - circuit"
+ },
+ {
+  "id": "c1779",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 1 - Spannung zu hoch",
+  "en": "Intake valve control solenoid bank 1 - circuit high"
+ },
+ {
+  "id": "c1780",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 1 - Spannung zu niedrig",
+  "en": "Intake valve control solenoid bank 1 - circuit low"
+ },
+ {
+  "id": "c1781",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 2 - Stromkreis",
+  "en": "Intake valve control solenoid bank 2 - circuit"
+ },
+ {
+  "id": "c1782",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 2 - Spannung zu hoch",
+  "en": "Intake valve control solenoid bank 2 - circuit high"
+ },
+ {
+  "id": "c1783",
+  "de": "Magnetventil Ventilsteuerung Einlass Bank 2 - Spannung zu niedrig",
+  "en": "Intake valve control solenoid bank 2 - circuit low"
+ },
+ {
+  "id": "c1784",
+  "de": "Ventilsteuerung Einlass Magnetventil Bank 1 - Funktion",
+  "en": "Intake valve control solenoid circuit range/performance - bank 1"
+ },
+ {
+  "id": "c1785",
+  "de": "Ventilsteuerung Einlass Magnetventil Bank 2 - Funktion",
+  "en": "Intake valve control solenoid circuit range/performance - bank 2"
+ },
+ {
+  "id": "c1786",
+  "de": "Einlassnockenwellenverstellung Magnetventil - Stromkreis",
+  "en": "Intake valve timing control solenoid valve circuit"
+ },
+ {
+  "id": "c1787",
+  "de": "Fahrwerksregelung (ICM)",
+  "en": "Integrated chassis management (ICM)"
+ },
+ {
+  "id": "c1788",
+  "de": "Zwischenwellen-Drehzahlsensor A - Stromkreis",
+  "en": "Intermediate shaft speed sensor A - circuit"
+ },
+ {
+  "id": "c1789",
+  "de": "Zwischenwellen-Drehzahlsensor A - Signal setzt zeitweise aus",
+  "en": "Intermediate shaft speed sensor A - circuit intermittent"
+ },
+ {
+  "id": "c1790",
+  "de": "Zwischenwellen-Drehzahlsensor A - kein Signal",
+  "en": "Intermediate shaft speed sensor A - circuit no signal"
+ },
+ {
+  "id": "c1791",
+  "de": "Zwischenwellen-Drehzahlsensor A - Signal unplausibel",
+  "en": "Intermediate shaft speed sensor A - circuit range/performance"
+ },
+ {
+  "id": "c1792",
+  "de": "Steuergerät - Analog-Digital-Wandlung Funktion",
+  "en": "Internal control module A/D processing performance"
+ },
+ {
+  "id": "c1793",
+  "de": "Steuergerät - Fahrpedalauswertung Funktion",
+  "en": "Internal control module accelerator pedal position performance"
+ },
+ {
+  "id": "c1794",
+  "de": "Steuergerät - Motordrehzahlauswertung Funktion",
+  "en": "Internal control module engine RPM performance"
+ },
+ {
+  "id": "c1795",
+  "de": "Steuergerät - Dauerspeicher (KAM) fehlerhaft",
+  "en": "Internal control module keep alive memory (KAM) error"
+ },
+ {
+  "id": "c1796",
+  "de": "Steuergerät - Hauptprozessor Funktion",
+  "en": "Internal control module main processor performance"
+ },
+ {
+  "id": "c1797",
+  "de": "Steuergerät - Prüfsummenfehler im Speicher",
+  "en": "Internal control module memory check sum error"
+ },
+ {
+  "id": "c1798",
+  "de": "Steuergerät - Überwachungsprozessor Funktion",
+  "en": "Internal control module monitoring processor performance"
+ },
+ {
+  "id": "c1799",
+  "de": "Steuergerät - Arbeitsspeicher (RAM) fehlerhaft",
+  "en": "Internal control module random access memory (RAM) error"
+ },
+ {
+  "id": "c1800",
+  "de": "Steuergerät - Programmspeicher (ROM) fehlerhaft",
+  "en": "Internal control module read only memory (ROM) error"
+ },
+ {
+  "id": "c1801",
+  "de": "Software im Steuergerät nicht kompatibel",
+  "en": "Internal control module software incompatibility"
+ },
+ {
+  "id": "c1802",
+  "de": "Steuergerät - Drehmomentberechnung Funktion",
+  "en": "Internal control module torque calculation performance"
+ },
+ {
+  "id": "c1803",
+  "de": "Interner Steuergerätefehler",
+  "en": "Internal control unit fault"
+ },
+ {
+  "id": "c1804",
+  "de": "Unplausible Daten vom Steuergerät: Motorsteuergerät",
+  "en": "Invalid data received from ECM/PCM A"
+ },
+ {
+  "id": "c1805",
+  "de": "Unplausible Daten von einem Steuergerät",
+  "en": "Invalid data received from a control module"
+ },
+ {
+  "id": "c1806",
+  "de": "Unplausible Daten vom Steuergerät: ABS-Steuergerät",
+  "en": "Invalid data received from anti-lock brake system (ABS) control module"
+ },
+ {
+  "id": "c1807",
+  "de": "Unplausible Daten vom Steuergerät: Bordnetzsteuergerät",
+  "en": "Invalid data received from body control module"
+ },
+ {
+  "id": "c1808",
+  "de": "Unplausible Daten vom Steuergerät: Bremssystem-Steuergerät",
+  "en": "Invalid data received from brake system control module"
+ },
+ {
+  "id": "c1809",
+  "de": "Unplausible Daten vom Steuergerät: Kombiinstrument",
+  "en": "Invalid data received from instrument panel control module"
+ },
+ {
+  "id": "c1810",
+  "de": "Unplausible Daten vom Steuergerät: Lenkwinkelsensor",
+  "en": "Invalid data received from steering angle sensor module"
+ },
+ {
+  "id": "c1811",
+  "de": "Unplausible Daten vom Steuergerät: Getriebesteuergerät",
+  "en": "Invalid data received from transmission control module"
+ },
+ {
+  "id": "c1812",
+  "de": "Unplausible Daten vom Steuergerät: Fahrdynamik-Steuergerät (ESP)",
+  "en": "Invalid data received from vehicle dynamics control module"
+ },
+ {
+  "id": "c1813",
+  "de": "Ungültiger Schlüssel (Wegfahrsperre)",
+  "en": "Invalid immobilizer key"
+ },
+ {
+  "id": "c1814",
+  "de": "Ungültiger Schlüssel",
+  "en": "Invalid key"
+ },
+ {
+  "id": "c1815",
+  "de": "Ungültige Zahl",
+  "en": "Invalid number"
+ },
+ {
+  "id": "c1816",
+  "de": "Ungültige Anfrage.",
+  "en": "Invalid request."
+ },
+ {
+  "id": "c1817",
+  "de": "Wechselrichter A - Kühlung Funktion",
+  "en": "Inverter A cooling system performance"
+ },
+ {
+  "id": "c1818",
+  "de": "Wechselrichter oder seine Kühlung (Kühlmittelpumpe)\nSchwache 12-Volt-Batterie\nHochvoltbatterie\nVerbrennungsmotor springt nicht an (Tank leer, Zündung)",
+  "en": "Inverter or its cooling (coolant pump)\nWeak 12 volt battery\nHigh-voltage battery\nCombustion engine does not start (empty tank, ignition)"
+ },
+ {
+  "id": "c1819",
+  "de": "Iran",
+  "en": "Iran"
+ },
+ {
+  "id": "c1820",
+  "de": "Irland",
+  "en": "Ireland"
+ },
+ {
+  "id": "c1821",
+  "de": "Leuchtet die Airbag-Leuchte dauerhaft?\nWurde kürzlich an Sitzen oder Lenkrad gearbeitet?\nFunktionieren Hupe und Lenkradtasten? Ein Ausfall deutet auf die Wickelfeder",
+  "en": "Is the airbag light on permanently?\nWas any work done on the seats or steering wheel recently?\nDo the horn and steering wheel buttons work? If not, the clock spring is a likely cause"
+ },
+ {
+  "id": "c1822",
+  "de": "Leuchtet die Batterielampe?\nSpannung bei laufendem Motor messen: unter etwa 13 Volt lädt die Lichtmaschine nicht\nKeilrippenriemen ansehen: Risse, quietscht er?",
+  "en": "Is the battery warning light on?\nMeasure the voltage with the engine running: below about 13 volts the alternator is not charging\nLook at the drive belt: cracks, does it squeal?"
+ },
+ {
+  "id": "c1823",
+  "de": "Isolation",
+  "en": "Isolation"
+ },
+ {
+  "id": "c1824",
+  "de": "Isolationswiderstand",
+  "en": "Isolation resistance"
+ },
+ {
+  "id": "c1825",
+  "de": "Israel",
+  "en": "Israel"
+ },
+ {
+  "id": "c1826",
+  "de": "Weiterfahren ist in Ordnung. Bei Gelegenheit prüfen lassen.",
+  "en": "It is fine to keep driving. Have it checked when convenient."
+ },
+ {
+  "id": "c1827",
+  "de": "Weiterfahren ist in Ordnung. Bei Kälte springt der Motor schlechter an und läuft die ersten Sekunden unrund. Vor dem Winter beheben.",
+  "en": "It is fine to keep driving. In cold weather the engine starts harder and runs rough for the first few seconds. Fix it before winter."
+ },
+ {
+  "id": "c1828",
+  "de": "Weiterfahren ist in Ordnung. Das Steuergerät nimmt einen Ersatzwert, Kaltstart und Verbrauch können etwas leiden.",
+  "en": "It is fine to keep driving. The control unit uses a substitute value, so cold starts and consumption may suffer slightly."
+ },
+ {
+  "id": "c1829",
+  "de": "Weiterfahren ist in Ordnung. Im Leerlauf kann die Drehzahl schwanken oder der Motor ausgehen, besonders kalt oder mit eingeschalteter Klimaanlage.",
+  "en": "It is fine to keep driving. The idle speed may hunt or the engine may stall, especially when cold or with the air conditioning on."
+ },
+ {
+  "id": "c1830",
+  "de": "Weiterfahren ist in Ordnung. Das Sekundärluftsystem arbeitet nur kurz nach dem Kaltstart, damit der Katalysator schneller warm wird.",
+  "en": "It is fine to keep driving. The secondary air system only runs briefly after a cold start to warm up the catalytic converter faster."
+ },
+ {
+  "id": "c1831",
+  "de": "Weiterfahren ist in Ordnung. Die Sonde nach dem Katalysator überwacht vor allem den Kat, das Gemisch regelt sie kaum mit.",
+  "en": "It is fine to keep driving. The sensor after the catalytic converter mainly monitors the converter and has little say in the mixture."
+ },
+ {
+  "id": "c1832",
+  "de": "Weiterfahren ist in Ordnung. Ohne Heizung braucht die Sonde nach dem Kaltstart länger, bis sie misst, die Abgaswerte sind dann kurz schlechter.",
+  "en": "It is fine to keep driving. Without its heater the sensor takes longer to work after a cold start, so emissions are briefly worse."
+ },
+ {
+  "id": "c1833",
+  "de": "Weiterfahren ist in Ordnung, der Motor kann etwas Leistung oder Drehmoment verlieren.",
+  "en": "It is fine to keep driving; the engine may lose a little power or torque."
+ },
+ {
+  "id": "c1834",
+  "de": "Ob dieser Hersteller an Stelle 10 das Baujahr schreibt, ist nicht sicher. Das Baujahr ist daher nur eine Vermutung.",
+  "en": "It is not certain that this manufacturer puts the model year at position 10. The year is therefore only a guess."
+ },
+ {
+  "id": "c1835",
+  "de": "Italien",
+  "en": "Italy"
+ },
+ {
+  "id": "c1836",
+  "de": "Elfenbeinküste",
+  "en": "Ivory Coast"
+ },
+ {
+  "id": "c1837",
+  "de": "JOBD und EOBD",
+  "en": "JOBD and EOBD"
+ },
+ {
+  "id": "c1838",
+  "de": "JOBD und OBD-II",
+  "en": "JOBD and OBD-II"
+ },
+ {
+  "id": "c1839",
+  "de": "JOBD, EOBD und OBD-II",
+  "en": "JOBD, EOBD and OBD-II"
+ },
+ {
+  "id": "c1840",
+  "de": "Japan",
+  "en": "Japan"
+ },
+ {
+  "id": "c1841",
+  "de": "Früh K-Line, später CAN.",
+  "en": "K-Line early on, CAN later."
+ },
+ {
+  "id": "c1842",
+  "de": "K-Line-Zeit, KWP1281 oder KWP2000.",
+  "en": "K-Line era, KWP1281 or KWP2000."
+ },
+ {
+  "id": "c1843",
+  "de": "K-Line-Zeit.",
+  "en": "K-Line era."
+ },
+ {
+  "id": "c1844",
+  "de": "K-Line. EOBD über das Motorsteuergerät, alles Weitere braucht KKL.",
+  "en": "K-Line. EOBD via the engine control unit, everything else needs a KKL cable."
+ },
+ {
+  "id": "c1845",
+  "de": "KKL-Kabel (KWP1281)",
+  "en": "KKL cable (KWP1281)"
+ },
+ {
+  "id": "c1846",
+  "de": "Selbsttest bei laufendem Motor nicht abgeschlossen",
+  "en": "KOER self-test not able to complete"
+ },
+ {
+  "id": "c1847",
+  "de": "KWP1281 (Blockprotokoll)",
+  "en": "KWP1281 (block protocol)"
+ },
+ {
+  "id": "c1848",
+  "de": "Kasachstan",
+  "en": "Kazakhstan"
+ },
+ {
+  "id": "c1849",
+  "de": "Dauerspeicher-Versorgung - Spannung zu niedrig",
+  "en": "Keep alive power voltage too low"
+ },
+ {
+  "id": "c1850",
+  "de": "Schlüsselanpassung unvollständig",
+  "en": "Key adaptation incomplete"
+ },
+ {
+  "id": "c1851",
+  "de": "Schlüsselbytes fehlen",
+  "en": "Key bytes missing"
+ },
+ {
+  "id": "c1852",
+  "de": "Schlüssel: Signal fehlt oder Schlüssel nicht angelernt",
+  "en": "Key: no signal or key not adapted"
+ },
+ {
+  "id": "c1853",
+  "de": "Klopfregelung Zylinder 1",
+  "en": "Knock control cylinder 1"
+ },
+ {
+  "id": "c1854",
+  "de": "Klopfregelung Zylinder 1 - Regelgrenze erreicht",
+  "en": "Knock control cylinder 1 - control limit attained"
+ },
+ {
+  "id": "c1855",
+  "de": "Klopfregelung Zylinder 2",
+  "en": "Knock control cylinder 2"
+ },
+ {
+  "id": "c1856",
+  "de": "Klopfregelung Zylinder 2 - Regelgrenze erreicht",
+  "en": "Knock control cylinder 2 - control limit attained"
+ },
+ {
+  "id": "c1857",
+  "de": "Klopfregelung Zylinder 3",
+  "en": "Knock control cylinder 3"
+ },
+ {
+  "id": "c1858",
+  "de": "Klopfregelung Zylinder 3 - Regelgrenze erreicht",
+  "en": "Knock control cylinder 3 - control limit attained"
+ },
+ {
+  "id": "c1859",
+  "de": "Klopfregelung Zylinder 4",
+  "en": "Knock control cylinder 4"
+ },
+ {
+  "id": "c1860",
+  "de": "Klopfregelung Zylinder 4 - Regelgrenze erreicht",
+  "en": "Knock control cylinder 4 - control limit attained"
+ },
+ {
+  "id": "c1861",
+  "de": "Klopfregelung - Systemfehler",
+  "en": "Knock control system error"
+ },
+ {
+  "id": "c1862",
+  "de": "Klopfsensor 1 (Bank 1 oder einziger Sensor) - Stromkreis",
+  "en": "Knock sensor 1 (bank 1 or single sensor) - circuit"
+ },
+ {
+  "id": "c1863",
+  "de": "Klopfsensor 1 (Bank 1 oder einziger Sensor) - Signal zu hoch",
+  "en": "Knock sensor 1 (bank 1 or single sensor) - circuit high"
+ },
+ {
+  "id": "c1864",
+  "de": "Klopfsensor 1 (Bank 1 oder einziger Sensor) - Signal setzt zeitweise aus",
+  "en": "Knock sensor 1 (bank 1 or single sensor) - circuit intermittent"
+ },
+ {
+  "id": "c1865",
+  "de": "Klopfsensor 1 (Bank 1 oder einziger Sensor) - Signal zu niedrig",
+  "en": "Knock sensor 1 (bank 1 or single sensor) - circuit low"
+ },
+ {
+  "id": "c1866",
+  "de": "Klopfsensor 1 (Bank 1 oder einziger Sensor) - Signal unplausibel",
+  "en": "Knock sensor 1 (bank 1 or single sensor) - circuit range/performance"
+ },
+ {
+  "id": "c1867",
+  "de": "Klopfsensor 1 G61",
+  "en": "Knock sensor 1 G61"
+ },
+ {
+  "id": "c1868",
+  "de": "Klopfsensor 2 (Bank 2) - Stromkreis",
+  "en": "Knock sensor 2 (bank 2) - circuit"
+ },
+ {
+  "id": "c1869",
+  "de": "Klopfsensor 2 (Bank 2) - Signal zu hoch",
+  "en": "Knock sensor 2 (bank 2) - circuit high"
+ },
+ {
+  "id": "c1870",
+  "de": "Klopfsensor 2 (Bank 2) - Signal setzt zeitweise aus",
+  "en": "Knock sensor 2 (bank 2) - circuit intermittent"
+ },
+ {
+  "id": "c1871",
+  "de": "Klopfsensor 2 (Bank 2) - Signal zu niedrig",
+  "en": "Knock sensor 2 (bank 2) - circuit low"
+ },
+ {
+  "id": "c1872",
+  "de": "Klopfsensor 2 (Bank 2) - Signal unplausibel",
+  "en": "Knock sensor 2 (bank 2) - circuit range/performance"
+ },
+ {
+  "id": "c1873",
+  "de": "Klopfsensor 2 G66",
+  "en": "Knock sensor 2 G66"
+ },
+ {
+  "id": "c1874",
+  "de": "Klopfsensor-Erkennungssystem (KSDS): Verdacht auf Pleuellagerschaden",
+  "en": "Knock sensor detection system (KSDS): suspected connecting rod bearing wear"
+ },
+ {
+  "id": "c1875",
+  "de": "Korea (KOBD)",
+  "en": "Korea (KOBD)"
+ },
+ {
+  "id": "c1876",
+  "de": "LPG (Autogas)",
+  "en": "LPG"
+ },
+ {
+  "id": "c1877",
+  "de": "Hintere Lambdasonde Bank 1 schaltet nicht, meldet mager",
+  "en": "Lack of downstream HO2S switch - sensor indicates lean, bank 1"
+ },
+ {
+  "id": "c1878",
+  "de": "Hintere Lambdasonde Bank 2 schaltet nicht, meldet mager",
+  "en": "Lack of downstream HO2S switch - sensor indicates lean, bank 2"
+ },
+ {
+  "id": "c1879",
+  "de": "Hintere Lambdasonde Bank 1 schaltet nicht, meldet fett",
+  "en": "Lack of downstream HO2S switch - sensor indicates rich, bank 1"
+ },
+ {
+  "id": "c1880",
+  "de": "Hintere Lambdasonde Bank 2 schaltet nicht, meldet fett",
+  "en": "Lack of downstream HO2S switch - sensor indicates rich, bank 2"
+ },
+ {
+  "id": "c1881",
+  "de": "Vordere Lambdasonde Bank 1 schaltet nicht, Gemischadaption am Anschlag",
+  "en": "Lack of upstream HO2S switch - adaptive fuel at limit, bank 1"
+ },
+ {
+  "id": "c1882",
+  "de": "Vordere Lambdasonde Bank 2 schaltet nicht, Gemischadaption am Anschlag",
+  "en": "Lack of upstream HO2S switch - adaptive fuel at limit, bank 2"
+ },
+ {
+  "id": "c1883",
+  "de": "Vordere Lambdasonde Bank 1 schaltet nicht, meldet mager",
+  "en": "Lack of upstream HO2S switch - sensor indicates lean, bank 1"
+ },
+ {
+  "id": "c1884",
+  "de": "Vordere Lambdasonde Bank 2 schaltet nicht, meldet mager",
+  "en": "Lack of upstream HO2S switch - sensor indicates lean, bank 2"
+ },
+ {
+  "id": "c1885",
+  "de": "Vordere Lambdasonde Bank 1 schaltet nicht, meldet fett",
+  "en": "Lack of upstream HO2S switch - sensor indicates rich, bank 1"
+ },
+ {
+  "id": "c1886",
+  "de": "Vordere Lambdasonde Bank 2 schaltet nicht, meldet fett",
+  "en": "Lack of upstream HO2S switch - sensor indicates rich, bank 2"
+ },
+ {
+  "id": "c1887",
+  "de": "Leuchte im Kombiinstrument\nLeitung zum Kombiinstrument",
+  "en": "Lamp in the instrument cluster\nWiring to the instrument cluster"
+ },
+ {
+  "id": "c1888",
+  "de": "Querbeschleunigungsgeber G200",
+  "en": "Lateral acceleration sensor G200"
+ },
+ {
+  "id": "c1889",
+  "de": "Lettland",
+  "en": "Latvia"
+ },
+ {
+  "id": "c1890",
+  "de": "Undichte Kraftstoffleitung oder Verbindung\nUndichtes Einspritzventil oder Rail\nFehlmessung des Drucksensors",
+  "en": "Leaking fuel line or fitting\nLeaking injector or fuel rail\nFalse reading from the pressure sensor"
+ },
+ {
+  "id": "c1891",
+  "de": "Einspritzventil undicht\nKraftstoffdruck zu hoch (Druckregler)\nLuftmassenmesser misst zu wenig Luft\nLuftfilter stark verschmutzt\nTankentlüftungsventil hängt offen",
+  "en": "Leaking injector\nFuel pressure too high (pressure regulator)\nMass air flow sensor reads too little air\nBadly clogged air filter\nEVAP purge valve stuck open"
+ },
+ {
+  "id": "c1892",
+  "de": "Umschaltzeit mager nach fett",
+  "en": "Lean-to-rich switch time"
+ },
+ {
+  "id": "c1893",
+  "de": "Spannungsschwelle mager nach fett",
+  "en": "Lean-to-rich threshold voltage"
+ },
+ {
+  "id": "c1894",
+  "de": "Leerzeichen in Antworten weglassen (schon eingestellt)",
+  "en": "Leave out spaces in responses (already set)"
+ },
+ {
+  "id": "c1895",
+  "de": "Raddrehzahlsensor vorne links - Stromkreis oder Signal",
+  "en": "Left front wheel speed sensor - circuit or signal"
+ },
+ {
+  "id": "c1896",
+  "de": "Raddrehzahlsensor hinten links - Stromkreis oder Signal",
+  "en": "Left rear wheel speed sensor - circuit or signal"
+ },
+ {
+  "id": "c1897",
+  "de": "Seitenairbag links - Zündkreis",
+  "en": "Left side airbag deployment control"
+ },
+ {
+  "id": "c1898",
+  "de": "Längenbyte fehlt",
+  "en": "Length byte missing"
+ },
+ {
+  "id": "c1899",
+  "de": "Lichtmodul (LHM)",
+  "en": "Light module (LHM)"
+ },
+ {
+  "id": "c1900",
+  "de": "Lichtmodul 2 (LHM)",
+  "en": "Light module 2 (LHM)"
+ },
+ {
+  "id": "c1901",
+  "de": "Licht",
+  "en": "Lighting"
+ },
+ {
+  "id": "c1902",
+  "de": "Zeile ",
+  "en": "Line "
+ },
+ {
+  "id": "c1903",
+  "de": "Nach einem Kaltstart hinhören: die Pumpe läuft hörbar etwa eine Minute\nSicherung und Schläuche prüfen",
+  "en": "Listen after a cold start: the pump can be heard running for about a minute\nCheck the fuse and the hoses"
+ },
+ {
+  "id": "c1904",
+  "de": "Bei laufendem Motor auf Zischen am Ansaugtrakt hören\nUnterdruckschläuche auf Risse prüfen, besonders an der Kurbelgehäuseentlüftung\nMesswerte der Kurz- und Langzeitkorrektur ansehen: hoch im Leerlauf und kleiner bei höherer Drehzahl spricht für Falschluft",
+  "en": "Listen for hissing at the intake with the engine running\nCheck the vacuum hoses for cracks, especially at the crankcase ventilation\nLook at the short and long term fuel trims: high at idle and lower at higher revs points to a vacuum leak"
+ },
+ {
+  "id": "c1905",
+  "de": "Litauen",
+  "en": "Lithuania"
+ },
+ {
+  "id": "c1906",
+  "de": "Gemischadaption Leerlauf Bank 1 - Regelgrenze unterschritten (zu mager, Falschluft)",
+  "en": "Long term fuel trim at idle, bank 1 - system too lean (vacuum leak)"
+ },
+ {
+  "id": "c1907",
+  "de": "Gemischadaption Leerlauf Bank 1 - Regelgrenze überschritten (zu fett)",
+  "en": "Long term fuel trim at idle, bank 1 - system too rich"
+ },
+ {
+  "id": "c1908",
+  "de": "Gemischadaption Leerlauf Bank 2 - Regelgrenze unterschritten (zu mager, Falschluft)",
+  "en": "Long term fuel trim at idle, bank 2 - system too lean (vacuum leak)"
+ },
+ {
+  "id": "c1909",
+  "de": "Gemischadaption Leerlauf Bank 2 - Regelgrenze überschritten (zu fett)",
+  "en": "Long term fuel trim at idle, bank 2 - system too rich"
+ },
+ {
+  "id": "c1910",
+  "de": "Gemischadaption Teillast Bank 1 - Regelgrenze unterschritten (zu mager)",
+  "en": "Long term fuel trim at part load, bank 1 - system too lean"
+ },
+ {
+  "id": "c1911",
+  "de": "Gemischadaption Teillast Bank 1 - Regelgrenze überschritten (zu fett)",
+  "en": "Long term fuel trim at part load, bank 1 - system too rich"
+ },
+ {
+  "id": "c1912",
+  "de": "Gemischadaption Teillast Bank 2 - Regelgrenze unterschritten (zu mager)",
+  "en": "Long term fuel trim at part load, bank 2 - system too lean"
+ },
+ {
+  "id": "c1913",
+  "de": "Gemischadaption Teillast Bank 2 - Regelgrenze überschritten (zu fett)",
+  "en": "Long term fuel trim at part load, bank 2 - system too rich"
+ },
+ {
+  "id": "c1914",
+  "de": "Langzeit-Gemischkorrektur Bank 1",
+  "en": "Long-term fuel trim bank 1"
+ },
+ {
+  "id": "c1915",
+  "de": "Langzeit-Gemischkorrektur Bank 2",
+  "en": "Long-term fuel trim bank 2"
+ },
+ {
+  "id": "c1916",
+  "de": "Langzeit-Korrektur hintere Lambdasonde Bank 1",
+  "en": "Long-term secondary O2 trim bank 1"
+ },
+ {
+  "id": "c1917",
+  "de": "Langzeit-Korrektur hintere Lambdasonde Bank 2",
+  "en": "Long-term secondary O2 trim bank 2"
+ },
+ {
+  "id": "c1918",
+  "de": "Langzeit-Korrektur hintere Lambdasonde Bank 3",
+  "en": "Long-term secondary O2 trim bank 3"
+ },
+ {
+  "id": "c1919",
+  "de": "Langzeit-Korrektur hintere Lambdasonde Bank 4",
+  "en": "Long-term secondary O2 trim bank 4"
+ },
+ {
+  "id": "c1920",
+  "de": "Längsbeschleunigungsgeber G251",
+  "en": "Longitudinal acceleration sensor G251"
+ },
+ {
+  "id": "c1921",
+  "de": "Luftfilter ansehen\nRiecht das Motoröl nach Benzin? Das deutet auf ein undichtes Einspritzventil\nAuf schwarzen Rauch und Benzingeruch am Auspuff achten",
+  "en": "Look at the air filter\nDoes the engine oil smell of petrol? That points to a leaking injector\nWatch for black smoke and a fuel smell at the tailpipe"
+ },
+ {
+  "id": "c1922",
+  "de": "Messwerte der Gemischkorrektur ansehen: positive Werte heißen zu mager, negative zu fett\nUnterdruckschläuche auf Risse prüfen",
+  "en": "Look at the fuel trim values: positive means too lean, negative too rich\nCheck the vacuum hoses for cracks"
+ },
+ {
+  "id": "c1923",
+  "de": "Gestänge der Saugrohrklappen ansehen\nStecker und Unterdruckschläuche prüfen",
+  "en": "Look at the intake runner flap linkage\nCheck the connector and the vacuum hoses"
+ },
+ {
+  "id": "c1924",
+  "de": "Nur ansehen, nicht anfassen: Unfallschaden oder Wasser im Auto?",
+  "en": "Look only, do not touch: accident damage or water inside the car?"
+ },
+ {
+  "id": "c1925",
+  "de": "Wackelkontakt an den Steckern unter den Vordersitzen, häufig nach Sitzverstellen oder Ausbau\nWickelfeder (Schleifring) im Lenkrad verschlissen\nZündpille oder Airbag-Modul defekt\nZu niedrige Batteriespannung beim Start",
+  "en": "Loose contact at the connectors under the front seats, often after moving or removing a seat\nWorn clock spring in the steering wheel\nFaulty igniter or airbag module\nBattery voltage too low when starting"
+ },
+ {
+  "id": "c1926",
+  "de": "Stecker am Einspritzventil locker oder korrodiert\nKabelbruch im Kabelbaum\nSpule im Einspritzventil defekt\nEndstufe im Steuergerät (selten)",
+  "en": "Loose or corroded injector connector\nBroken wire in the harness\nFaulty injector coil\nDriver stage in the control unit (rare)"
+ },
+ {
+  "id": "c1927",
+  "de": "Keine Verbindung zum Steuergerät: Motorsteuergerät",
+  "en": "Lost communication with ECM/PCM A"
+ },
+ {
+  "id": "c1928",
+  "de": "Keine Verbindung zum Steuergerät: Motorsteuergerät B",
+  "en": "Lost communication with ECM/PCM B"
+ },
+ {
+  "id": "c1929",
+  "de": "Keine Verbindung zum Steuergerät: Klimasteuergerät",
+  "en": "Lost communication with HVAC control module"
+ },
+ {
+  "id": "c1930",
+  "de": "Keine Verbindung zu einem Steuergerät",
+  "en": "Lost communication with a control module"
+ },
+ {
+  "id": "c1931",
+  "de": "Keine Verbindung zum Steuergerät: Steuergerät für Alternativkraftstoff",
+  "en": "Lost communication with alternative fuel control module"
+ },
+ {
+  "id": "c1932",
+  "de": "Keine Verbindung zum Steuergerät: ABS-Steuergerät",
+  "en": "Lost communication with anti-lock brake system (ABS) control module"
+ },
+ {
+  "id": "c1933",
+  "de": "Keine Verbindung zum Steuergerät: Batteriesteuergerät A",
+  "en": "Lost communication with battery energy control module A"
+ },
+ {
+  "id": "c1934",
+  "de": "Keine Verbindung zum Steuergerät: Batteriesteuergerät B",
+  "en": "Lost communication with battery energy control module B"
+ },
+ {
+  "id": "c1935",
+  "de": "Keine Verbindung zum Steuergerät: Bordnetzsteuergerät",
+  "en": "Lost communication with body control module"
+ },
+ {
+  "id": "c1936",
+  "de": "Keine Verbindung zum Steuergerät: Bordnetzsteuergerät A",
+  "en": "Lost communication with body control module A"
+ },
+ {
+  "id": "c1937",
+  "de": "Keine Verbindung zum Steuergerät: Bordnetzsteuergerät B",
+  "en": "Lost communication with body control module B"
+ },
+ {
+  "id": "c1938",
+  "de": "Keine Verbindung zum Steuergerät: Bremssystem-Steuergerät",
+  "en": "Lost communication with brake system control module"
+ },
+ {
+  "id": "c1939",
+  "de": "Keine Verbindung zum Steuergerät: Abstandssensor des Tempomaten",
+  "en": "Lost communication with cruise control front distance range sensor"
+ },
+ {
+  "id": "c1940",
+  "de": "Keine Verbindung zum Steuergerät: Tempomat-Steuergerät",
+  "en": "Lost communication with cruise control module"
+ },
+ {
+  "id": "c1941",
+  "de": "Keine Verbindung zum Steuergerät: Türsteuergerät A",
+  "en": "Lost communication with door control module A"
+ },
+ {
+  "id": "c1942",
+  "de": "Keine Verbindung zum Steuergerät: Türsteuergerät B",
+  "en": "Lost communication with door control module B"
+ },
+ {
+  "id": "c1943",
+  "de": "Keine Verbindung zum Steuergerät: Fahrmotor-Steuergerät A",
+  "en": "Lost communication with drive motor control module A"
+ },
+ {
+  "id": "c1944",
+  "de": "Keine Verbindung zum Steuergerät: Allradkupplungs-Steuergerät",
+  "en": "Lost communication with four-wheel drive clutch control module"
+ },
+ {
+  "id": "c1945",
+  "de": "Keine Verbindung zum Steuergerät: Einspritz-Steuergerät",
+  "en": "Lost communication with fuel injector control module"
+ },
+ {
+  "id": "c1946",
+  "de": "Keine Verbindung zum Steuergerät: Kraftstoffpumpen-Steuergerät",
+  "en": "Lost communication with fuel pump control module"
+ },
+ {
+  "id": "c1947",
+  "de": "Keine Verbindung zum Steuergerät: Schaltmodul A",
+  "en": "Lost communication with gear shift control module A"
+ },
+ {
+  "id": "c1948",
+  "de": "Keine Verbindung zum Steuergerät: Glühzeitsteuergerät",
+  "en": "Lost communication with glow plug control module"
+ },
+ {
+  "id": "c1949",
+  "de": "Keine Verbindung zum Steuergerät: Hybrid-Steuergerät",
+  "en": "Lost communication with hybrid powertrain control module"
+ },
+ {
+  "id": "c1950",
+  "de": "Keine Verbindung zum Steuergerät: Informationsdisplay A",
+  "en": "Lost communication with information center A"
+ },
+ {
+  "id": "c1951",
+  "de": "Keine Verbindung zum Steuergerät: Kombiinstrument",
+  "en": "Lost communication with instrument panel cluster (IPC) control module"
+ },
+ {
+  "id": "c1952",
+  "de": "Keine Verbindung zum Steuergerät: Querbeschleunigungssensor",
+  "en": "Lost communication with lateral acceleration sensor module"
+ },
+ {
+  "id": "c1953",
+  "de": "Keine Verbindung zum Steuergerät: Beschleunigungssensor (mehrachsig)",
+  "en": "Lost communication with multi-axis acceleration sensor module"
+ },
+ {
+  "id": "c1954",
+  "de": "Keine Verbindung zum Steuergerät: Feststellbremsen-Steuergerät",
+  "en": "Lost communication with park brake control module"
+ },
+ {
+  "id": "c1955",
+  "de": "Keine Verbindung zum Steuergerät: Einparkhilfe-Steuergerät A",
+  "en": "Lost communication with parking assist control module A"
+ },
+ {
+  "id": "c1956",
+  "de": "Keine Verbindung zum Steuergerät: Servolenkungs-Steuergerät",
+  "en": "Lost communication with power steering control module"
+ },
+ {
+  "id": "c1957",
+  "de": "Keine Verbindung zum Steuergerät: Radio",
+  "en": "Lost communication with radio"
+ },
+ {
+  "id": "c1958",
+  "de": "Keine Verbindung zum Steuergerät: Funkfernbedienung",
+  "en": "Lost communication with remote function actuation"
+ },
+ {
+  "id": "c1959",
+  "de": "Keine Verbindung zum Steuergerät: Airbag-Steuergerät",
+  "en": "Lost communication with restraints control module"
+ },
+ {
+  "id": "c1960",
+  "de": "Keine Verbindung zum Steuergerät: Niveauregelungs-Steuergerät",
+  "en": "Lost communication with ride level control module"
+ },
+ {
+  "id": "c1961",
+  "de": "Keine Verbindung zum Steuergerät: Sitzsteuergerät A",
+  "en": "Lost communication with seat control module A"
+ },
+ {
+  "id": "c1962",
+  "de": "Keine Verbindung zum Steuergerät: Lenkwinkelsensor",
+  "en": "Lost communication with steering angle sensor module"
+ },
+ {
+  "id": "c1963",
+  "de": "Keine Verbindung zum Steuergerät: Lenkkraft-Steuergerät",
+  "en": "Lost communication with steering effort control module"
+ },
+ {
+  "id": "c1964",
+  "de": "Keine Verbindung zum Steuergerät: Telematik-Steuergerät A",
+  "en": "Lost communication with telematic control module A"
+ },
+ {
+  "id": "c1965",
+  "de": "Keine Verbindung zum Steuergerät: Drosselklappen-Steuergerät",
+  "en": "Lost communication with throttle actuator control module"
+ },
+ {
+  "id": "c1966",
+  "de": "Keine Verbindung zum Steuergerät: Reifendruck-Steuergerät",
+  "en": "Lost communication with tire pressure monitor module"
+ },
+ {
+  "id": "c1967",
+  "de": "Keine Verbindung zum Steuergerät: Verteilergetriebe-Steuergerät",
+  "en": "Lost communication with transfer case control module"
+ },
+ {
+  "id": "c1968",
+  "de": "Keine Verbindung zum Steuergerät: Getriebesteuergerät",
+  "en": "Lost communication with transmission control module"
+ },
+ {
+  "id": "c1969",
+  "de": "Keine Verbindung zum Steuergerät: Fahrdynamik-Steuergerät (ESP)",
+  "en": "Lost communication with vehicle dynamics control module"
+ },
+ {
+  "id": "c1970",
+  "de": "Keine Verbindung zum Steuergerät: Wegfahrsperren-Steuergerät",
+  "en": "Lost communication with vehicle immobilizer control module"
+ },
+ {
+  "id": "c1971",
+  "de": "Keine Verbindung zum Steuergerät: Diebstahlwarnanlage",
+  "en": "Lost communication with vehicle security control module"
+ },
+ {
+  "id": "c1972",
+  "de": "Keine Verbindung zum Steuergerät: Gierratensensor",
+  "en": "Lost communication with yaw rate sensor module"
+ },
+ {
+  "id": "c1973",
+  "de": "Viel Kurzstrecke, die Regeneration bricht immer wieder ab\nRegeneration verhindert durch einen anderen Fehler (Drucksensor, Temperaturfühler, AGR)\nMotor erzeugt zu viel Ruß (Einspritzventile, Turbolader, AGR)\nFilter durch Asche am Ende seiner Lebensdauer",
+  "en": "Lots of short trips, regeneration keeps being interrupted\nRegeneration blocked by another fault (pressure sensor, temperature sensor, EGR)\nEngine produces too much soot (injectors, turbo, EGR)\nFilter at the end of its life from ash"
+ },
+ {
+  "id": "c1974",
+  "de": "Gering",
+  "en": "Low"
+ },
+ {
+  "id": "c1975",
+  "de": "Zu wenig Motoröl\nÖldruckschalter oder Sensor defekt oder undicht\nÖlpumpe oder Ansaugsieb verstopft\nVerschlissene Lager",
+  "en": "Low engine oil\nFaulty or leaking oil pressure switch or sensor\nClogged oil pump or pickup screen\nWorn bearings"
+ },
+ {
+  "id": "c1976",
+  "de": "Kühlerlüfter niedrige Stufe - Primärkreis",
+  "en": "Low fan control primary circuit"
+ },
+ {
+  "id": "c1977",
+  "de": "Getriebeölstand zu niedrig oder Öl verbraucht\nKupplungen oder Bremsbänder im Getriebe verschlissen\nMagnetventile oder Ventilkörper\nDrehzahlsensoren",
+  "en": "Low or worn-out transmission fluid\nWorn clutches or bands inside the gearbox\nSolenoids or valve body\nSpeed sensors"
+ },
+ {
+  "id": "c1978",
+  "de": "Zu wenig oder falsches Motoröl\nMagnetventil der Zylinderabschaltung defekt\nStecker oder Kabel\nVentiltrieb verschlissen (Stößel)",
+  "en": "Low or wrong engine oil\nFaulty deactivation solenoid\nConnector or wiring\nWorn valve train (lifters)"
+ },
+ {
+  "id": "c1979",
+  "de": "Zu wenig Kältemittel durch ein Leck\nDrucksensor defekt\nKompressorkupplung oder Relais",
+  "en": "Low refrigerant due to a leak\nFaulty pressure sensor\nCompressor clutch or relay"
+ },
+ {
+  "id": "c1980",
+  "de": "Low-Speed-CAN-Bus - Leitung High - Spannung zu hoch",
+  "en": "Low speed CAN - bus (+) high"
+ },
+ {
+  "id": "c1981",
+  "de": "Low-Speed-CAN-Bus - Leitung High - Spannung zu niedrig",
+  "en": "Low speed CAN - bus (+) low"
+ },
+ {
+  "id": "c1982",
+  "de": "Low-Speed-CAN-Bus - Leitung High - Unterbrechung",
+  "en": "Low speed CAN - bus (+) open"
+ },
+ {
+  "id": "c1983",
+  "de": "Low-Speed-CAN-Bus - Leitung Low - Spannung zu hoch",
+  "en": "Low speed CAN - bus (-) high"
+ },
+ {
+  "id": "c1984",
+  "de": "Low-Speed-CAN-Bus - Leitung Low - Spannung zu niedrig",
+  "en": "Low speed CAN - bus (-) low"
+ },
+ {
+  "id": "c1985",
+  "de": "Low-Speed-CAN-Bus - Leitung Low - Unterbrechung",
+  "en": "Low speed CAN - bus (-) open"
+ },
+ {
+  "id": "c1986",
+  "de": "Low-Speed-CAN-Bus - Leitung Low hat Kurzschluss zu Leitung High",
+  "en": "Low speed CAN - bus (-) shorted to bus (+)"
+ },
+ {
+  "id": "c1987",
+  "de": "Low-Speed-CAN-Bus - Fehlfunktion",
+  "en": "Low speed CAN - communication bus"
+ },
+ {
+  "id": "c1988",
+  "de": "Low-Speed-CAN-Bus - Funktion",
+  "en": "Low speed CAN - communication bus performance"
+ },
+ {
+  "id": "c1989",
+  "de": "Zu wenig, altes oder falsches Motoröl\nMagnetventil der Nockenwellenverstellung verschmutzt oder defekt\nSieb im Ölkanal verstopft\nVersteller oder Steuerkette verschlissen",
+  "en": "Low, old or wrong engine oil\nCamshaft adjuster solenoid dirty or faulty\nClogged oil screen in the oil gallery\nWorn adjuster or timing chain"
+ },
+ {
+  "id": "c1990",
+  "de": "Niedrigste Zelltemperatur",
+  "en": "Lowest cell temperature"
+ },
+ {
+  "id": "c1991",
+  "de": "Niedrigste Zellspannung",
+  "en": "Lowest cell voltage"
+ },
+ {
+  "id": "c1992",
+  "de": "Luxemburg",
+  "en": "Luxembourg"
+ },
+ {
+  "id": "c1993",
+  "de": "Luftmassenmesser - Signal setzt zeitweise aus",
+  "en": "MAF sensor intermittent"
+ },
+ {
+  "id": "c1994",
+  "de": "Luftmassenmesser - außerhalb des Selbsttestbereichs",
+  "en": "MAF sensor out of self-test range"
+ },
+ {
+  "id": "c1995",
+  "de": "Saugrohrdrucksensor - Signal höher als erwartet",
+  "en": "MAP sensor signal higher than expected"
+ },
+ {
+  "id": "c1996",
+  "de": "Saugrohrdrucksensor - Signal niedriger als erwartet",
+  "en": "MAP sensor signal lower than expected"
+ },
+ {
+  "id": "c1997",
+  "de": "Saugrohrdruck oder Luftmasse passt nicht zur Drosselklappenstellung (oft Falschluft)",
+  "en": "MAP/MAF - throttle position correlation (often a vacuum leak)"
+ },
+ {
+  "id": "c1998",
+  "de": "Fehlerlampe und Fehlerzahl",
+  "en": "MIL and number of codes"
+ },
+ {
+  "id": "c1999",
+  "de": "MIL-Anforderung - Unterbrechung oder Kurzschluss nach Plus",
+  "en": "MIL request - open circuit or short to positive"
+ }
+]

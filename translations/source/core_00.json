@@ -1,0 +1,1252 @@
+[
+ {
+  "id": "c0",
+  "de": "   Schlüsselbytes ",
+  "en": "   Key bytes "
+ },
+ {
+  "id": "c1",
+  "de": "  ATAT2 abgelehnt, es bleibt bei ATAT1.",
+  "en": "  ATAT2 refused, staying with ATAT1."
+ },
+ {
+  "id": "c2",
+  "de": "  Schnelle adaptive Zeitsteuerung (ATAT2) aktiv.",
+  "en": "  Aggressive adaptive timing (ATAT2) active."
+ },
+ {
+  "id": "c3",
+  "de": "  Mit ATAT2 fehlen Antworten, zurück auf ATAT1.",
+  "en": "  Answers go missing with ATAT2, back to ATAT1."
+ },
+ {
+  "id": "c4",
+  "de": "  Kein OBD, aber Verkehr auf dem CAN-Bus: verbunden zum Mithören.",
+  "en": "  No OBD, but traffic on the CAN bus: connected for listening."
+ },
+ {
+  "id": "c5",
+  "de": "  Hinweis: unerwartete Adapterkennung '",
+  "en": "  Note: unexpected adapter ID '"
+ },
+ {
+  "id": "c6",
+  "de": "  STN-Chip erkannt: ",
+  "en": "  STN chip detected: "
+ },
+ {
+  "id": "c7",
+  "de": "  Der Adapter kennt keine adaptive Zeitsteuerung (ATAT), ATAT2 entfällt.",
+  "en": "  The adapter has no adaptive timing (ATAT), so ATAT2 is skipped."
+ },
+ {
+  "id": "c8",
+  "de": "  Das Auto spricht OBD über UDS (SAE J1979-2).",
+  "en": "  The car speaks OBD on UDS (SAE J1979-2)."
+ },
+ {
+  "id": "c9",
+  "de": "  Versuche Protokoll ",
+  "en": "  Trying protocol "
+ },
+ {
+  "id": "c10",
+  "de": " (WLAN)",
+  "en": " (Wi-Fi)"
+ },
+ {
+  "id": "c11",
+  "de": " (ist das WLAN des Adapters verbunden?)",
+  "en": " (are you connected to the adapter's Wi-Fi?)"
+ },
+ {
+  "id": "c12",
+  "de": " (Zähler ",
+  "en": " (counter "
+ },
+ {
+  "id": "c13",
+  "de": " (zum Beispiel ein unbekanntes Steuergerät).",
+  "en": " (for example an unknown control unit)."
+ },
+ {
+  "id": "c14",
+  "de": " (herstellerspezifisch)",
+  "en": " (manufacturer-specific)"
+ },
+ {
+  "id": "c15",
+  "de": " (herstellerspezifisch, ",
+  "en": " (manufacturer-specific, "
+ },
+ {
+  "id": "c16",
+  "de": " (fehlt die Gruppe dialout? sudo usermod -aG dialout $USER)",
+  "en": " (missing the dialout group? sudo usermod -aG dialout $USER)"
+ },
+ {
+  "id": "c17",
+  "de": " (vermutlich, Bereich ",
+  "en": " (probably, area "
+ },
+ {
+  "id": "c18",
+  "de": " - kein Klartext hinterlegt",
+  "en": " - no description available"
+ },
+ {
+  "id": "c19",
+  "de": " Sicher klappt es mit einem KKL-Kabel über KWP1281.",
+  "en": " A KKL cable with KWP1281 works for sure."
+ },
+ {
+  "id": "c20",
+  "de": " Die übrigen Steuergeräte erreicht Caruspex mit einem KKL-Kabel.",
+  "en": " Caruspex reaches the other control units with a KKL cable."
+ },
+ {
+  "id": "c21",
+  "de": " Bei Dieselmotoren dieses Baujahrs war OBD noch keine Pflicht.",
+  "en": " For diesel engines of this model year OBD was not yet mandatory."
+ },
+ {
+  "id": "c22",
+  "de": " kennt dieses Steuergerät nicht",
+  "en": " are not supported by this control unit"
+ },
+ {
+  "id": "c23",
+  "de": " an Stelle ",
+  "en": " at position "
+ },
+ {
+  "id": "c24",
+  "de": " Bank ",
+  "en": " bank "
+ },
+ {
+  "id": "c25",
+  "de": " Baud",
+  "en": " baud"
+ },
+ {
+  "id": "c26",
+  "de": " Bytes",
+  "en": " bytes"
+ },
+ {
+  "id": "c27",
+  "de": " lässt sich nicht öffnen (Windows-Fehler ",
+  "en": " cannot be opened (Windows error "
+ },
+ {
+  "id": "c28",
+  "de": " lässt sich nicht öffnen: ",
+  "en": " cannot be opened: "
+ },
+ {
+  "id": "c29",
+  "de": " Datenbytes erhalten).",
+  "en": " data bytes received)."
+ },
+ {
+  "id": "c30",
+  "de": " gibt es hier nicht",
+  "en": " does not exist here"
+ },
+ {
+  "id": "c31",
+  "de": " meldet sich nicht.\n  - Zündung an?\n  - Hat das Fahrzeug dieses Steuergerät überhaupt?\n  - Bei neueren Fahrzeugen läuft die Diagnose über CAN, nicht K-Line.",
+  "en": " does not respond.\n  - Ignition on?\n  - Does the vehicle have this control unit at all?\n  - Newer vehicles are diagnosed over CAN, not K-Line."
+ },
+ {
+  "id": "c32",
+  "de": " meldet sich nicht.\n  - Zündung an?\n  - Hat das Fahrzeug dieses Steuergerät überhaupt?\n  - Bei neueren Fahrzeugen läuft die Diagnose über CAN, nicht über K-Line.",
+  "en": " does not respond.\n  - Ignition on?\n  - Does the vehicle have this control unit at all?\n  - Newer vehicles are diagnosed over CAN, not over K-Line."
+ },
+ {
+  "id": "c33",
+  "de": " fehlt (",
+  "en": " is missing ("
+ },
+ {
+  "id": "c34",
+  "de": " wird nicht unterstützt",
+  "en": " is not supported"
+ },
+ {
+  "id": "c35",
+  "de": " Aussetzer in der aktuellen Fahrt",
+  "en": " misfires in the current trip"
+ },
+ {
+  "id": "c36",
+  "de": " von ",
+  "en": " of "
+ },
+ {
+  "id": "c37",
+  "de": " je Fahrt über die letzten 10 Fahrten",
+  "en": " per trip over the last 10 trips"
+ },
+ {
+  "id": "c38",
+  "de": " abgelehnt: ",
+  "en": " rejected: "
+ },
+ {
+  "id": "c39",
+  "de": " Sonde ",
+  "en": " sensor "
+ },
+ {
+  "id": "c40",
+  "de": " passenden Fahrten, Quote ",
+  "en": " suitable trips, ratio "
+ },
+ {
+  "id": "c41",
+  "de": " Mal geprüft",
+  "en": " times checked"
+ },
+ {
+  "id": "c42",
+  "de": " Mal geprüft bei ",
+  "en": " times checked in "
+ },
+ {
+  "id": "c43",
+  "de": " bis ",
+  "en": " to "
+ },
+ {
+  "id": "c44",
+  "de": " auf den Anpassungskanal",
+  "en": " to the adaptation channel"
+ },
+ {
+  "id": "c45",
+  "de": " auf die Grundeinstellung",
+  "en": " to the basic settings"
+ },
+ {
+  "id": "c46",
+  "de": " auf das Löschen",
+  "en": " to the clear request"
+ },
+ {
+  "id": "c47",
+  "de": " auf den Messwertblock",
+  "en": " to the measuring block"
+ },
+ {
+  "id": "c48",
+  "de": "'. Falsche Baudrate, oder Kabel/Bluetooth weg?",
+  "en": "'. Wrong baud rate, or cable/Bluetooth disconnected?"
+ },
+ {
+  "id": "c49",
+  "de": "). Steckt das Kabel am richtigen Bus, und ist das Auto wach?",
+  "en": "). Is the cable on the right bus, and is the car awake?"
+ },
+ {
+  "id": "c50",
+  "de": "). Manche Hersteller verlangen dafür eine Anmeldung in ihrer Software.",
+  "en": "). Some makers require a login in their own software for it."
+ },
+ {
+  "id": "c51",
+  "de": ", bekommen ",
+  "en": ", got "
+ },
+ {
+  "id": "c52",
+  "de": ", hängt das Kabel richtig?",
+  "en": ", is the cable connected properly?"
+ },
+ {
+  "id": "c53",
+  "de": ". Ist das die Adresse des Autos, und ist die Zündung an?",
+  "en": ". Is this the car's address, and is the ignition on?"
+ },
+ {
+  "id": "c54",
+  "de": ". Das Steuergerät spricht weder KWP1281 noch KWP2000 so, wie erwartet.",
+  "en": ". The control unit speaks neither KWP1281 nor KWP2000 as expected."
+ },
+ {
+  "id": "c55",
+  "de": "01 Motor",
+  "en": "01 Engine"
+ },
+ {
+  "id": "c56",
+  "de": "02 Getriebe",
+  "en": "02 Transmission"
+ },
+ {
+  "id": "c57",
+  "de": "03 Bremsenelektronik (ABS)",
+  "en": "03 Brake electronics (ABS)"
+ },
+ {
+  "id": "c58",
+  "de": "08 Klimaanlage",
+  "en": "08 Air conditioning"
+ },
+ {
+  "id": "c59",
+  "de": "09 Zentralelektrik",
+  "en": "09 Central electrics"
+ },
+ {
+  "id": "c60",
+  "de": "Schaltung 1-2 fehlerhaft",
+  "en": "1-2 shift"
+ },
+ {
+  "id": "c61",
+  "de": "Gangsprung 1-4 Kontrollleuchte - Steuerkreis",
+  "en": "1-4 upshift (skip shift) lamp control circuit"
+ },
+ {
+  "id": "c62",
+  "de": "Gangsprung 1-4 Magnetventil - Steuerkreis",
+  "en": "1-4 upshift (skip shift) solenoid control circuit"
+ },
+ {
+  "id": "c63",
+  "de": "10 bis 15 Minuten",
+  "en": "10 to 15 minutes"
+ },
+ {
+  "id": "c64",
+  "de": "10 bis 20 Minuten",
+  "en": "10 to 20 minutes"
+ },
+ {
+  "id": "c65",
+  "de": "10 bis 20 Minuten nach einem Kaltstart",
+  "en": "10 to 20 minutes after a cold start"
+ },
+ {
+  "id": "c66",
+  "de": "Spannung der 12-V-Batterie",
+  "en": "12 V battery voltage"
+ },
+ {
+  "id": "c67",
+  "de": "12 V",
+  "en": "12V"
+ },
+ {
+  "id": "c68",
+  "de": "15 Airbag",
+  "en": "15 Airbags"
+ },
+ {
+  "id": "c69",
+  "de": "15 bis 20 Minuten",
+  "en": "15 to 20 minutes"
+ },
+ {
+  "id": "c70",
+  "de": "15 bis 30 Minuten, oft über mehrere Fahrten",
+  "en": "15 to 30 minutes, often over several trips"
+ },
+ {
+  "id": "c71",
+  "de": "16 Lenkradelektronik",
+  "en": "16 Steering wheel electronics"
+ },
+ {
+  "id": "c72",
+  "de": "16-polige OBD-Buchse vorhanden, aber OBD war für dieses Baujahr noch keine Pflicht (EU: Benziner ab 2001, Diesel ab 2004; USA ab 1996). Viele Motorsteuergeräte antworten trotzdem, ein Versuch lohnt sich.",
+  "en": "16-pin OBD socket present, but OBD was not yet mandatory for this model year (EU: petrol from 2001, diesel from 2004; USA from 1996). Many engine control units answer anyway, it is worth a try."
+ },
+ {
+  "id": "c73",
+  "de": "16-polige OBD-II-Buchse",
+  "en": "16-pin OBD-II socket"
+ },
+ {
+  "id": "c74",
+  "de": "17 Kombiinstrument",
+  "en": "17 Instrument cluster"
+ },
+ {
+  "id": "c75",
+  "de": "Schaltung 2-3 fehlerhaft",
+  "en": "2-3 shift"
+ },
+ {
+  "id": "c76",
+  "de": "20 Minuten bis mehrere Fahrten",
+  "en": "20 minutes to several trips"
+ },
+ {
+  "id": "c77",
+  "de": "20 bis 30 Minuten",
+  "en": "20 to 30 minutes"
+ },
+ {
+  "id": "c78",
+  "de": "25 Wegfahrsperre",
+  "en": "25 Immobilizer"
+ },
+ {
+  "id": "c79",
+  "de": "Schaltung 3-4 fehlerhaft",
+  "en": "3-4 shift"
+ },
+ {
+  "id": "c80",
+  "de": "30 Minuten bis mehrere Fahrten",
+  "en": "30 minutes to several trips"
+ },
+ {
+  "id": "c81",
+  "de": "Schaltung 4-5 fehlerhaft",
+  "en": "4-5 shift"
+ },
+ {
+  "id": "c82",
+  "de": "46 Komfortsystem",
+  "en": "46 Comfort system"
+ },
+ {
+  "id": "c83",
+  "de": "5 bis 10 Minuten",
+  "en": "5 to 10 minutes"
+ },
+ {
+  "id": "c84",
+  "de": "Sensor-Referenzspannung 5 Volt Nr. 2 - Stromkreis",
+  "en": "5 volt reference 2 circuit"
+ },
+ {
+  "id": "c85",
+  "de": "Sensor-Referenzspannung 5 Volt - Stromkreis",
+  "en": "5 volt reference circuit"
+ },
+ {
+  "id": "c86",
+  "de": ": belegt ein anderes Programm den Port?",
+  "en": ": is another program using the port?"
+ },
+ {
+  "id": "c87",
+  "de": ": Port existiert nicht.",
+  "en": ": port does not exist."
+ },
+ {
+  "id": "c88",
+  "de": ": Sonde ",
+  "en": ": sensor "
+ },
+ {
+  "id": "c89",
+  "de": "Nockenwelle A (Einlass) Bank 1 - Verstellung reagiert zu langsam",
+  "en": "A camshaft position (intake) bank 1 - slow response"
+ },
+ {
+  "id": "c90",
+  "de": "Nockenwelle A (Einlass) Bank 1 - Steuerzeit zu früh oder Systemfunktion",
+  "en": "A camshaft position (intake) bank 1 - timing over-advanced or system performance"
+ },
+ {
+  "id": "c91",
+  "de": "Nockenwelle A (Einlass) Bank 1 - Steuerzeit zu spät",
+  "en": "A camshaft position (intake) bank 1 - timing over-retarded"
+ },
+ {
+  "id": "c92",
+  "de": "Nockenwelle A (Einlass) Bank 2 - Verstellung reagiert zu langsam",
+  "en": "A camshaft position (intake) bank 2 - slow response"
+ },
+ {
+  "id": "c93",
+  "de": "Nockenwelle A (Einlass) Bank 2 - Steuerzeit zu früh oder Systemfunktion",
+  "en": "A camshaft position (intake) bank 2 - timing over-advanced or system performance"
+ },
+ {
+  "id": "c94",
+  "de": "Nockenwelle A (Einlass) Bank 2 - Steuerzeit zu spät",
+  "en": "A camshaft position (intake) bank 2 - timing over-retarded"
+ },
+ {
+  "id": "c95",
+  "de": "Nockenwellenversteller A (Einlass) Bank 1 - Stromkreis",
+  "en": "A camshaft position actuator (intake) bank 1 - circuit"
+ },
+ {
+  "id": "c96",
+  "de": "Nockenwellenversteller A (Einlass) Bank 2 - Stromkreis",
+  "en": "A camshaft position actuator (intake) bank 2 - circuit"
+ },
+ {
+  "id": "c97",
+  "de": "Nockenwellenversteller A Bank 1 - Steuerkreis Spannung zu hoch",
+  "en": "A camshaft position actuator control circuit high - bank 1"
+ },
+ {
+  "id": "c98",
+  "de": "Nockenwellenversteller A Bank 2 - Steuerkreis Spannung zu hoch",
+  "en": "A camshaft position actuator control circuit high - bank 2"
+ },
+ {
+  "id": "c99",
+  "de": "Nockenwellenversteller A Bank 1 - Steuerkreis Spannung zu niedrig",
+  "en": "A camshaft position actuator control circuit low - bank 1"
+ },
+ {
+  "id": "c100",
+  "de": "Nockenwellenversteller A Bank 2 - Steuerkreis Spannung zu niedrig",
+  "en": "A camshaft position actuator control circuit low - bank 2"
+ },
+ {
+  "id": "c101",
+  "de": "Ein Steuergerät meldet sich nicht auf dem Datenbus. Wie schlimm das ist, hängt vom Gerät ab: betrifft es Motor, Bremsen oder Airbag, bald in die Werkstatt. Oft steckt nur ein kurzer Spannungseinbruch dahinter.",
+  "en": "A control unit is silent on the data bus. How serious that is depends on the unit: if it is the engine, brakes or airbag, go to a workshop soon. Often it was only a brief voltage drop."
+ },
+ {
+  "id": "c102",
+  "de": "Ein Steuergerät schickt Daten, die nicht plausibel sind. Häufig ist das ein Folgefehler: zuerst den Fehlerspeicher des genannten Steuergeräts auslesen.",
+  "en": "A control unit sends data that does not make sense. This is often a follow-up fault: read the fault memory of the named control unit first."
+ },
+ {
+  "id": "c103",
+  "de": "Lange Antwort kam nicht vollständig an.",
+  "en": "A long answer did not arrive completely."
+ },
+ {
+  "id": "c104",
+  "de": "Es läuft schon eine Aufnahme.",
+  "en": "A recording is already running."
+ },
+ {
+  "id": "c105",
+  "de": "Ein Sensor an dieser Versorgung hat einen Kurzschluss\nKabelbaum durchgescheuert oder Marderbiss\nSteuergerät (selten)",
+  "en": "A sensor on this supply has a short circuit\nChafed harness or marten bite\nControl unit (rare)"
+ },
+ {
+  "id": "c106",
+  "de": "Klimakompressor-Relais - Steuerkreis",
+  "en": "A/C clutch relay - control circuit"
+ },
+ {
+  "id": "c107",
+  "de": "Klimakompressor-Relais - Steuerkreis Spannung zu hoch",
+  "en": "A/C clutch relay - control circuit high"
+ },
+ {
+  "id": "c108",
+  "de": "Klimakompressor-Relais - Steuerkreis Spannung zu niedrig",
+  "en": "A/C clutch relay - control circuit low"
+ },
+ {
+  "id": "c109",
+  "de": "Klimakompressor abgeschaltet",
+  "en": "A/C compressor switched off"
+ },
+ {
+  "id": "c110",
+  "de": "Verdampfer-Temperatursensor - Stromkreis",
+  "en": "A/C evaporator temperature sensor - circuit"
+ },
+ {
+  "id": "c111",
+  "de": "Verdampfer-Temperatursensor - Signal zu hoch",
+  "en": "A/C evaporator temperature sensor - circuit high"
+ },
+ {
+  "id": "c112",
+  "de": "Verdampfer-Temperatursensor - Signal setzt zeitweise aus",
+  "en": "A/C evaporator temperature sensor - circuit intermittent"
+ },
+ {
+  "id": "c113",
+  "de": "Verdampfer-Temperatursensor - Signal zu niedrig",
+  "en": "A/C evaporator temperature sensor - circuit low"
+ },
+ {
+  "id": "c114",
+  "de": "Verdampfer-Temperatursensor - Signal unplausibel",
+  "en": "A/C evaporator temperature sensor - circuit range/performance"
+ },
+ {
+  "id": "c115",
+  "de": "Klimadruck und Kühlkreis",
+  "en": "A/C pressure and refrigerant circuit"
+ },
+ {
+  "id": "c116",
+  "de": "Klimaanlage",
+  "en": "A/C refrigerant"
+ },
+ {
+  "id": "c117",
+  "de": "Kältemittel-Drucksensor A - Stromkreis",
+  "en": "A/C refrigerant pressure sensor A - circuit"
+ },
+ {
+  "id": "c118",
+  "de": "Kältemittel-Drucksensor A - Signal zu hoch",
+  "en": "A/C refrigerant pressure sensor A - circuit high"
+ },
+ {
+  "id": "c119",
+  "de": "Kältemittel-Drucksensor A - Signal zu niedrig",
+  "en": "A/C refrigerant pressure sensor A - circuit low"
+ },
+ {
+  "id": "c120",
+  "de": "Kältemittel-Drucksensor A - Signal unplausibel",
+  "en": "A/C refrigerant pressure sensor A - circuit range/performance"
+ },
+ {
+  "id": "c121",
+  "de": "Breitband-Lambdasonde 1 Bank 1 - Verschiebung nach mager",
+  "en": "A/F sensor 1 (bank 1) lean shift monitoring"
+ },
+ {
+  "id": "c122",
+  "de": "Breitband-Lambdasonde 1 Bank 1 - Verschiebung nach fett",
+  "en": "A/F sensor 1 (bank 1) rich shift monitoring"
+ },
+ {
+  "id": "c123",
+  "de": "Breitband-Lambdasonde 1 Bank 2 - Verschiebung nach mager",
+  "en": "A/F sensor 1 (bank 2) lean shift monitoring"
+ },
+ {
+  "id": "c124",
+  "de": "Breitband-Lambdasonde 1 Bank 2 - Verschiebung nach fett",
+  "en": "A/F sensor 1 (bank 2) rich shift monitoring"
+ },
+ {
+  "id": "c125",
+  "de": "Breitband-Lambdasonde Bank 1, Sonde 1 - Signal unplausibel",
+  "en": "A/F sensor circuit range/performance - bank 1 sensor 1"
+ },
+ {
+  "id": "c126",
+  "de": "Breitband-Lambdasonde Bank 2, Sonde 1 - Signal unplausibel",
+  "en": "A/F sensor circuit range/performance - bank 2 sensor 1"
+ },
+ {
+  "id": "c127",
+  "de": "Breitband-Lambdasonde Bank 1, Sonde 1 - reagiert zu langsam",
+  "en": "A/F sensor circuit response - bank 1 sensor 1"
+ },
+ {
+  "id": "c128",
+  "de": "Breitband-Lambdasonde Bank 2, Sonde 1 - reagiert zu langsam",
+  "en": "A/F sensor circuit response - bank 2 sensor 1"
+ },
+ {
+  "id": "c129",
+  "de": "Breitband-Lambdasonde Bank 1, Sonde 1 - Heizkreis",
+  "en": "A/F sensor heater circuit - bank 1 sensor 1"
+ },
+ {
+  "id": "c130",
+  "de": "Breitband-Lambdasonde Bank 2, Sonde 1 - Heizkreis",
+  "en": "A/F sensor heater circuit - bank 2 sensor 1"
+ },
+ {
+  "id": "c131",
+  "de": "Automatikgetriebe Kupplungsdruck-Magnetventil A - Fehlfunktion",
+  "en": "A/T clutch pressure control solenoid valve A malfunction"
+ },
+ {
+  "id": "c132",
+  "de": "Automatikgetriebe Steuerrelais - Fehlfunktion",
+  "en": "A/T control relay malfunction"
+ },
+ {
+  "id": "c133",
+  "de": "Automatikgetriebe Wählhebelschalter - Unterbrechung",
+  "en": "A/T gear position switch open"
+ },
+ {
+  "id": "c134",
+  "de": "Automatikgetriebe Wählhebelschalter - Kurzschluss",
+  "en": "A/T gear position switch short"
+ },
+ {
+  "id": "c135",
+  "de": "Automatikgetriebe Überbrückungs-Magnetventil A - Fehlfunktion",
+  "en": "A/T lock-up control solenoid valve A malfunction"
+ },
+ {
+  "id": "c136",
+  "de": "Hydraulikpumpe für ABS V64",
+  "en": "ABS hydraulic pump V64"
+ },
+ {
+  "id": "c137",
+  "de": "Hydraulikpumpe für ABS V64: Stromkreis",
+  "en": "ABS hydraulic pump V64: circuit"
+ },
+ {
+  "id": "c138",
+  "de": "ABS-Hydraulikpumpenmotor - Stromkreis",
+  "en": "ABS hydraulic pump motor circuit failure"
+ },
+ {
+  "id": "c139",
+  "de": "ABS-Betrieb: Regelung dauerhaft aktiv",
+  "en": "ABS operation: control permanently active"
+ },
+ {
+  "id": "c140",
+  "de": "ABS-Pumpenmotor - Stromkreis",
+  "en": "ABS pump motor circuit"
+ },
+ {
+  "id": "c141",
+  "de": "Magnetventile für ABS",
+  "en": "ABS solenoid valves"
+ },
+ {
+  "id": "c142",
+  "de": "ABS-Ventilrelais - Stromkreis",
+  "en": "ABS valve relay circuit"
+ },
+ {
+  "id": "c143",
+  "de": "ABS/ASR - Bremslichtschalter Stromkreis",
+  "en": "ABS/TCS brake switch circuit"
+ },
+ {
+  "id": "c144",
+  "de": "Wechselstromstecker steckt (1 = ja)",
+  "en": "AC charging plug connected (1 = yes)"
+ },
+ {
+  "id": "c145",
+  "de": "AC-Stecker",
+  "en": "AC plug"
+ },
+ {
+  "id": "c146",
+  "de": "Sekundärluftsystem Bank 1 - Fehlfunktion",
+  "en": "AIR system - bank 1"
+ },
+ {
+  "id": "c147",
+  "de": "Sekundärluftsystem Bank 2 - Fehlfunktion",
+  "en": "AIR system - bank 2"
+ },
+ {
+  "id": "c148",
+  "de": "Tempomat-Bremsschalter - Fehlfunktion",
+  "en": "ASCD brake switch"
+ },
+ {
+  "id": "c149",
+  "de": "Tempomat-Lenkradschalter - Fehlfunktion",
+  "en": "ASCD steering switch"
+ },
+ {
+  "id": "c150",
+  "de": "Tempomat-Geschwindigkeitssignal - Fehlfunktion",
+  "en": "ASCD vehicle speed sensor"
+ },
+ {
+  "id": "c151",
+  "de": "Tankdruck absolut",
+  "en": "Absolute fuel tank vapor pressure"
+ },
+ {
+  "id": "c152",
+  "de": "Absolute Last",
+  "en": "Absolute load"
+ },
+ {
+  "id": "c153",
+  "de": "Drosselklappe absolut B",
+  "en": "Absolute throttle position B"
+ },
+ {
+  "id": "c154",
+  "de": "Drosselklappe absolut C",
+  "en": "Absolute throttle position C"
+ },
+ {
+  "id": "c155",
+  "de": "Drosselklappe absolut G",
+  "en": "Absolute throttle position G"
+ },
+ {
+  "id": "c156",
+  "de": "Fahrpedalstellung D",
+  "en": "Accelerator pedal position D"
+ },
+ {
+  "id": "c157",
+  "de": "Fahrpedalstellung E",
+  "en": "Accelerator pedal position E"
+ },
+ {
+  "id": "c158",
+  "de": "Fahrpedalstellung F",
+  "en": "Accelerator pedal position F"
+ },
+ {
+  "id": "c159",
+  "de": "Fahrpedalgeber 1 - Stromkreis",
+  "en": "Accelerator pedal position sensor 1 circuit"
+ },
+ {
+  "id": "c160",
+  "de": "Fahrpedalgeber 2 - Stromkreis",
+  "en": "Accelerator pedal position sensor 2 circuit"
+ },
+ {
+  "id": "c161",
+  "de": "Fahrpedalgeber - Stromkreis",
+  "en": "Accelerator pedal position sensor circuit"
+ },
+ {
+  "id": "c162",
+  "de": "Fahrpedalgeber - Signal unplausibel",
+  "en": "Accelerator pedal position sensor range/performance"
+ },
+ {
+  "id": "c163",
+  "de": "Fahrpedalsystem - Fehlfunktion",
+  "en": "Accelerator pedal position system"
+ },
+ {
+  "id": "c164",
+  "de": "Fahrpedalgeber 1 - Signal zu groß",
+  "en": "Accelerator pedal sensor 1 - signal too high"
+ },
+ {
+  "id": "c165",
+  "de": "Fahrpedalgeber 1 - Signal zu klein",
+  "en": "Accelerator pedal sensor 1 - signal too low"
+ },
+ {
+  "id": "c166",
+  "de": "Fahrpedalgeber 2 - Signal zu groß",
+  "en": "Accelerator pedal sensor 2 - signal too high"
+ },
+ {
+  "id": "c167",
+  "de": "Fahrpedalgeber 2 - Signal zu klein",
+  "en": "Accelerator pedal sensor 2 - signal too low"
+ },
+ {
+  "id": "c168",
+  "de": "Fahrpedalgeber 1 und 2 - Signale unplausibel",
+  "en": "Accelerator pedal sensors 1 and 2 - signals implausible"
+ },
+ {
+  "id": "c169",
+  "de": "Zugriff verweigert, Freischaltcode nötig",
+  "en": "Access denied, security code required"
+ },
+ {
+  "id": "c170",
+  "de": "Active Sound Design (ASD)",
+  "en": "Active Sound Design (ASD)"
+ },
+ {
+  "id": "c171",
+  "de": "Abgasrückführung A tatsächlich",
+  "en": "Actual EGR A"
+ },
+ {
+  "id": "c172",
+  "de": "Abgasrückführung B tatsächlich",
+  "en": "Actual EGR B"
+ },
+ {
+  "id": "c173",
+  "de": "Drehmoment tatsächlich",
+  "en": "Actual engine torque"
+ },
+ {
+  "id": "c174",
+  "de": "Übersetzung des Gangs",
+  "en": "Actual gear ratio"
+ },
+ {
+  "id": "c175",
+  "de": "Stellglied ",
+  "en": "Actuator "
+ },
+ {
+  "id": "c176",
+  "de": "Stellglied-Versorgungsspannung A - Spannung zu hoch",
+  "en": "Actuator supply voltage A - circuit high"
+ },
+ {
+  "id": "c177",
+  "de": "Stellglied-Versorgungsspannung A - Spannung zu niedrig",
+  "en": "Actuator supply voltage A - circuit low"
+ },
+ {
+  "id": "c178",
+  "de": "Stellglied-Versorgungsspannung A - Stromkreis oder Unterbrechung",
+  "en": "Actuator supply voltage A - circuit/open"
+ },
+ {
+  "id": "c179",
+  "de": "AdBlue-Tank leer oder fast leer\nFüllstandssensor defekt, oft im Fördermodul verbaut\nAdBlue bei Frost eingefroren, taut während der Fahrt auf",
+  "en": "AdBlue tank empty or nearly empty\nFaulty level sensor, often part of the delivery module\nAdBlue frozen in frost, it thaws while driving"
+ },
+ {
+  "id": "c180",
+  "de": "AdBlue-Tank nicht leer, Motor warm fahren, dann 20 bis 30 Minuten gleichmäßig über Land oder Autobahn. Bei Frost dauert es oft länger.",
+  "en": "AdBlue tank not empty, drive until warm, then 20 to 30 minutes at a steady pace on country roads or the motorway. In freezing weather it often takes longer."
+ },
+ {
+  "id": "c181",
+  "de": "Anpassung",
+  "en": "Adaptation"
+ },
+ {
+  "id": "c182",
+  "de": "Anpassungskanal ",
+  "en": "Adaptation channel "
+ },
+ {
+  "id": "c183",
+  "de": "Adapter meldet: ",
+  "en": "Adapter reports: "
+ },
+ {
+  "id": "c184",
+  "de": "Adapter: ",
+  "en": "Adapter: "
+ },
+ {
+  "id": "c185",
+  "de": "Mehrere Liter AdBlue nachfüllen und danach die Zündung einige Minuten eingeschaltet lassen oder losfahren\nBleibt die Meldung trotz vollem Tank, ist meist der Sensor schuld",
+  "en": "Add several litres of AdBlue, then leave the ignition on for a few minutes or start driving\nIf the message stays with a full tank, the sensor is usually to blame"
+ },
+ {
+  "id": "c186",
+  "de": "Adressbytes fehlen in der Antwort",
+  "en": "Address bytes missing in the response"
+ },
+ {
+  "id": "c187",
+  "de": "Afrika",
+  "en": "Africa"
+ },
+ {
+  "id": "c188",
+  "de": "Nach langer Standzeit den Messwert mit der Außentemperatur vergleichen",
+  "en": "After the car has stood for a long time, compare the reading with the outside temperature"
+ },
+ {
+  "id": "c189",
+  "de": "Gealterte Zellen der Hochvoltbatterie\nKühlung der Batterie behindert, etwa verstopfter Lüftereinlass\nSpannungsmessung oder Batteriesteuergerät",
+  "en": "Aged cells in the high-voltage battery\nBattery cooling obstructed, for example a blocked fan intake\nVoltage sensing or battery control unit"
+ },
+ {
+  "id": "c190",
+  "de": "Lambdasonde gealtert oder verschmutzt\nStecker oder Kabel der Sonde beschädigt (Hitze, Steinschlag)\nFalschluft oder Undichtigkeit im Auspuff vor der Sonde\nDas Gemisch ist wirklich falsch, die Ursache liegt woanders",
+  "en": "Aged or contaminated oxygen sensor\nDamaged sensor connector or wiring (heat, stone chips)\nVacuum leak or exhaust leak upstream of the sensor\nThe mixture really is off and the cause lies elsewhere"
+ },
+ {
+  "id": "c191",
+  "de": "Katalysator gealtert oder beschädigt\nLambdasonde nach dem Kat defekt oder träge\nUndichtigkeit im Auspuff vor oder an der Sonde\nFrühere Zündaussetzer oder hoher Ölverbrauch haben den Kat geschädigt",
+  "en": "Aged or damaged catalytic converter\nFaulty or slow oxygen sensor after the converter\nExhaust leak before or at the sensor\nEarlier misfires or high oil consumption have damaged the converter"
+ },
+ {
+  "id": "c192",
+  "de": "Lambdasonde gealtert\nStecker oder Kabel beschädigt\nUndichtigkeit im Auspuff\nKatalysator gealtert",
+  "en": "Aged oxygen sensor\nDamaged connector or wiring\nExhaust leak\nAged catalytic converter"
+ },
+ {
+  "id": "c193",
+  "de": "Luft und Aufladung",
+  "en": "Air and boost"
+ },
+ {
+  "id": "c194",
+  "de": "Luftunterstützte Einspritzung - Steuerkreis Spannung zu hoch",
+  "en": "Air assisted injector control circuit high"
+ },
+ {
+  "id": "c195",
+  "de": "Luftunterstützte Einspritzung - Steuerkreis oder Spannung zu niedrig",
+  "en": "Air assisted injector control circuit or circuit low"
+ },
+ {
+  "id": "c196",
+  "de": "Luftunterstützte Einspritzung - Funktion",
+  "en": "Air assisted injector control range/performance"
+ },
+ {
+  "id": "c197",
+  "de": "Klimaanlage - Kältemittelverlust",
+  "en": "Air conditioner refrigerant charge loss"
+ },
+ {
+  "id": "c198",
+  "de": "Klimaanlage und Heizung",
+  "en": "Air conditioning and heating"
+ },
+ {
+  "id": "c199",
+  "de": "Klimaanlage: Signal",
+  "en": "Air conditioning: signal"
+ },
+ {
+  "id": "c200",
+  "de": "Ansaugluft gedrosselt oder Falschluft zwischen Luftfilter und Luftmassenmesser",
+  "en": "Air flow restriction / air leak between air filter and MAF"
+ },
+ {
+  "id": "c201",
+  "de": "Luftansaugung",
+  "en": "Air intake"
+ },
+ {
+  "id": "c202",
+  "de": "Falschluft zwischen Luftmassenmesser und Drosselklappe",
+  "en": "Air leak between MAF and throttle body"
+ },
+ {
+  "id": "c203",
+  "de": "Falschluft zwischen Drosselklappe und Einlassventilen",
+  "en": "Air leak between throttle body and intake valves"
+ },
+ {
+  "id": "c204",
+  "de": "Luftmasse",
+  "en": "Air mass"
+ },
+ {
+  "id": "c205",
+  "de": "Gemischverteilung der Zylinder Bank 1",
+  "en": "Air-fuel ratio imbalance bank 1"
+ },
+ {
+  "id": "c206",
+  "de": "Gemischverteilung der Zylinder Bank 2",
+  "en": "Air-fuel ratio imbalance bank 2"
+ },
+ {
+  "id": "c207",
+  "de": "Airbag",
+  "en": "Airbag"
+ },
+ {
+  "id": "c208",
+  "de": "Airbag (ACSM)",
+  "en": "Airbag (ACSM)"
+ },
+ {
+  "id": "c209",
+  "de": "Airbag (RCM)",
+  "en": "Airbag (RCM)"
+ },
+ {
+  "id": "c210",
+  "de": "Airbag-Steuergerät: keine Verbindung",
+  "en": "Airbag control unit: no communication"
+ },
+ {
+  "id": "c211",
+  "de": "Airbag und Gurtstraffer",
+  "en": "Airbags and seat belt pretensioners"
+ },
+ {
+  "id": "c212",
+  "de": "Steuergerät Alternativkraftstoff - Dauerspeicher fehlerhaft",
+  "en": "Alternative fuel control module KAM error"
+ },
+ {
+  "id": "c213",
+  "de": "Steuergerät Alternativkraftstoff - RAM/ROM fehlerhaft",
+  "en": "Alternative fuel control module RAM/ROM error"
+ },
+ {
+  "id": "c214",
+  "de": "Lichtmaschine Klemme FR - Stromkreis",
+  "en": "Alternator FR terminal circuit"
+ },
+ {
+  "id": "c215",
+  "de": "Höhengeber F96",
+  "en": "Altitude sensor F96"
+ },
+ {
+  "id": "c216",
+  "de": "Umgebungstemperatur",
+  "en": "Ambient air temperature"
+ },
+ {
+  "id": "c217",
+  "de": "Außenlufttemperatursensor - Stromkreis",
+  "en": "Ambient air temperature sensor - circuit"
+ },
+ {
+  "id": "c218",
+  "de": "Außenlufttemperatursensor - Signal zu hoch",
+  "en": "Ambient air temperature sensor - circuit high"
+ },
+ {
+  "id": "c219",
+  "de": "Außenlufttemperatursensor - Signal setzt zeitweise aus",
+  "en": "Ambient air temperature sensor - circuit intermittent"
+ },
+ {
+  "id": "c220",
+  "de": "Außenlufttemperatursensor - Signal zu niedrig",
+  "en": "Ambient air temperature sensor - circuit low"
+ },
+ {
+  "id": "c221",
+  "de": "Außenlufttemperatursensor - Signal unplausibel",
+  "en": "Ambient air temperature sensor - circuit range/performance"
+ },
+ {
+  "id": "c222",
+  "de": "Außentemperatur- und Ansauggeber",
+  "en": "Ambient temperature and intake sensors"
+ },
+ {
+  "id": "c223",
+  "de": "Verstärker (AMP)",
+  "en": "Amplifier (AMP)"
+ },
+ {
+  "id": "c224",
+  "de": "Ein alter, kaum genutzter Test für das Kältemittel der Klimaanlage. Heute meldet ihn fast kein Auto mehr.",
+  "en": "An old, rarely used test for the air conditioning refrigerant. Almost no car reports it any more."
+ },
+ {
+  "id": "c225",
+  "de": "Winkel",
+  "en": "Angle"
+ },
+ {
+  "id": "c226",
+  "de": "Antwort zu kurz: Byte ",
+  "en": "Answer too short: byte "
+ },
+ {
+  "id": "c227",
+  "de": "Gibt es weitere Fehler zu Sensoren oder AGR? Die zuerst beheben\nIst ein Öl mit Freigabe für Partikelfilter (Low SAPS) eingefüllt?\nÖlstand prüfen: viele abgebrochene Regenerationen verdünnen das Öl mit Diesel",
+  "en": "Are there other faults for sensors or EGR? Fix those first\nIs the engine filled with an oil approved for particulate filters (low SAPS)?\nCheck the oil level: many interrupted regenerations dilute the oil with diesel"
+ },
+ {
+  "id": "c228",
+  "de": "Argentinien",
+  "en": "Argentina"
+ },
+ {
+  "id": "c229",
+  "de": "Solange der Motor läuft, fährt das Auto normal. Nach dem Abstellen springt es aber möglicherweise nicht wieder an, also nicht an einem abgelegenen Ort parken. Den Zweitschlüssel ausprobieren.",
+  "en": "As long as the engine runs, the car drives normally. After switching off it may not restart, so do not park somewhere remote. Try the spare key."
+ },
+ {
+  "id": "c230",
+  "de": "Möglichst bald 15 bis 20 Minuten zügig über Land oder Autobahn fahren, damit der Filter sich freibrennt. Geht die Warnung danach nicht aus oder fährt das Auto im Notlauf, in die Werkstatt: ein vollgesetzter Filter wird teuer.",
+  "en": "As soon as possible, drive briskly for 15 to 20 minutes on a main road or motorway so the filter can burn itself clean. If the warning stays on or the car is in limp mode, go to a workshop: a fully clogged filter gets expensive."
+ },
+ {
+  "id": "c231",
+  "de": "Asien",
+  "en": "Asia"
+ },
+ {
+  "id": "c232",
+  "de": "Am oder im Sicherungskasten auf der Fahrerseite, hinter dessen Deckel.",
+  "en": "At or in the fuse box on the driver side, behind its lid."
+ },
+ {
+  "id": "c233",
+  "de": "Hinten an der Mittelkonsole beziehungsweise unter den Rücksitzen.",
+  "en": "At the rear of the centre console or under the rear seats."
+ },
+ {
+  "id": "c234",
+  "de": "Radio (ACM)",
+  "en": "Audio (ACM)"
+ },
+ {
+  "id": "c235",
+  "de": "Australien",
+  "en": "Australia"
+ },
+ {
+  "id": "c236",
+  "de": "Österreich",
+  "en": "Austria"
+ },
+ {
+  "id": "c237",
+  "de": "Automatisch erkennen",
+  "en": "Auto-detect"
+ },
+ {
+  "id": "c238",
+  "de": "Automatikgetriebe (EGS)",
+  "en": "Automatic gearbox (EGS)"
+ },
+ {
+  "id": "c239",
+  "de": "Automatikgetriebe, Wählhebel",
+  "en": "Automatic transmission range"
+ },
+ {
+  "id": "c240",
+  "de": "Zusatzemission (AGR, Sekundärluft, Tankentlüftung, Katalysator)",
+  "en": "Auxiliary emission controls (EGR, secondary air, EVAP, catalyst)"
+ },
+ {
+  "id": "c241",
+  "de": "Zusatzemission und Partikelfilter",
+  "en": "Auxiliary emission controls and particulate filter"
+ },
+ {
+  "id": "c242",
+  "de": "Zusatzeingänge und Bordnetz",
+  "en": "Auxiliary inputs and charging"
+ },
+ {
+  "id": "c243",
+  "de": "Zusätzliche Ein- und Ausgänge",
+  "en": "Auxiliary inputs and outputs"
+ },
+ {
+  "id": "c244",
+  "de": "Mögliche Ladeleistung",
+  "en": "Available charge power"
+ },
+ {
+  "id": "c245",
+  "de": "Mögliche Entladeleistung",
+  "en": "Available discharge power"
+ },
+ {
+  "id": "c246",
+  "de": "AdBlue-Bedarf im Schnitt",
+  "en": "Average demanded reagent consumption"
+ },
+ {
+  "id": "c247",
+  "de": "Strecke zwischen Regenerationen im Schnitt",
+  "en": "Average distance between regenerations"
+ },
+ {
+  "id": "c248",
+  "de": "AdBlue-Verbrauch im Schnitt",
+  "en": "Average reagent consumption"
+ },
+ {
+  "id": "c249",
+  "de": "Zeit zwischen Regenerationen im Schnitt",
+  "en": "Average time between regenerations"
+ }
+]
