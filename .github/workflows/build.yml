@@ -132,7 +132,7 @@ jobs:
         run: bash tools/smoke_test.sh smoke
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: dist/
@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload smoke test screenshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}-smoke
           path: smoke/
