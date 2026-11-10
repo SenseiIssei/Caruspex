@@ -1,0 +1,2502 @@
+// Link between the interface and the diagnostic core (Session.cpp).
+//
+// One thread owns the ELM327 and runs the jobs the commands put into its
+// channel, one after another, like the Qt Worker in its own thread. Results
+// go out as events through a Sink. The timers of the Qt version (live loop,
+// basic settings, voltage) are deadlines checked between two jobs, so a stop
+// request always gets through before the next tick.
+use std::collections::BTreeSet;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, channel};
+use std::sync::{Arc, OnceLock};
+use std::time::{Duration, Instant};
+
+use caruspex_analysis::common::{FuelType, Level};
+use caruspex_analysis::drive_cycle_guide::drive_cycle_guide;
+use caruspex_analysis::health_check::{self, HealthInput};
+use caruspex_analysis::inputs as ai;
+use caruspex_data::dtc::lookup_dtc;
+use caruspex_data::ecu_addresses::{
+    EcuDefinition, bmw_address_sweep, ecu_definitions, ecu_from_ids, generic_ecu_sweep,
+};
+use caruspex_data::severity::Severity;
+use caruspex_i18n::l;
+use caruspex_link::adapter_probe::version_text;
+use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
+use caruspex_link::timing::sleep_ms;
+use caruspex_link::{
+    AdaptiveTiming, Elm327, KLineStream, SerialTransport, TcpTransport, Transport, enumerate_ports,
+    probe_adapter,
+};
+use caruspex_net::{CanElm, SlcanLink, open_can_interface, open_network_car, probe_slcan};
+use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
+use caruspex_protocols::{
+    Ecu, Fault, KLineProtocol, LiveValue, MeasuringValue, Obd2, Uds, UdsEcu, VagKLine,
+    VehicleStatus, scan_ecus,
+};
+use caruspex_record::{
+    CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, USER_KEY_BASE, active_recording,
+    built_in_packs, parse_torque_csv, recording_summary, start_recording, stop_recording,
+};
+use serde::Serialize;
+use serde_json::{Value, json};
+
+use crate::rows::*;
+use crate::settings::AppSettings;
+use crate::texts::{args, w};
+
+/// Seconds since the program started, monotonic (appSeconds()).
+pub fn app_seconds() -> f64 {
+    static START: OnceLock<Instant> = OnceLock::new();
+    START.get_or_init(Instant::now).elapsed().as_secs_f64()
+}
+
+/// Where the worker's events go: the Tauri window, or a list in the tests.
+pub trait Sink: Send + Sync + 'static {
+    fn emit(&self, event: &str, payload: Value);
+    /// Every live value, before it goes out as an event (the trip computer
+    /// listens here).
+    fn live(&self, _row: &LiveRow) {}
+}
+
+pub enum Job {
+    OpenSerial {
+        device: String,
+        baud: i32,
+        protocol_order: String,
+    },
+    OpenTcp {
+        host: String,
+        port: i32,
+        protocol_order: String,
+    },
+    OpenDemo,
+    OpenEnet {
+        host: String,
+    },
+    OpenCan {
+        spec: String,
+    },
+    ScanBle {
+        milliseconds: i32,
+    },
+    OpenBle {
+        id: String,
+        name: String,
+        kinds: i32,
+        protocol_order: String,
+    },
+    OpenReplay {
+        path: String,
+        real_time: bool,
+        protocol_order: String,
+    },
+    /// Any ready transport; the tests hand in a DemoTransport without delays.
+    OpenTransport {
+        transport: Box<dyn Transport>,
+        protocol_order: String,
+    },
+    Close,
+    StartRecording(String),
+    StopRecording,
+    ReadFaults,
+    ClearFaults,
+    ReadDetails,
+    StartLive(Vec<i32>),
+    StopLive,
+    SendRaw(String),
+    ReadMonitors,
+    HealthCheck(i32),
+    ProbeAdapter,
+    BruteForceClear(i32),
+    StartVoltagePoll(i32),
+    StopVoltagePoll,
+    ReadCustom(Vec<i32>),
+    StartCustomPoll(Vec<i32>),
+    ImportCustomCsv(String),
+    ScanUds(String),
+    ClearUdsEcu {
+        request: u32,
+        response: u32,
+        extended29: bool,
+        name: String,
+    },
+    OpenKkl {
+        device: String,
+        ecu_address: i32,
+    },
+    CloseKkl,
+    StartBasicSetting(i32),
+    StopBasicSetting,
+    SetBasicSettingSession(i32),
+    ScanAllEcus {
+        device: String,
+        clear_attempts: i32,
+    },
+    ReadAdaptation(i32),
+    ActuatorTest,
+    ApplySettings(AppSettings),
+    Shutdown,
+}
+
+/// The commands' end of the worker.
+#[derive(Clone)]
+pub struct WorkerHandle {
+    tx: Sender<Job>,
+    cancel: Arc<AtomicBool>,
+}
+
+impl WorkerHandle {
+    pub fn send(&self, job: Job) {
+        let _ = self.tx.send(job);
+    }
+    /// Cancels a running scan. Allowed from any thread; the scan blocks the
+    /// worker's loop, so a job would not get through.
+    pub fn cancel_scan(&self) {
+        self.cancel.store(true, Ordering::SeqCst);
+    }
+}
+
+/// Starts the worker thread.
+pub fn spawn(sink: Arc<dyn Sink>, settings: AppSettings) -> WorkerHandle {
+    let (tx, rx) = channel();
+    let cancel = Arc::new(AtomicBool::new(false));
+    let mut worker = Worker::new(sink, cancel.clone());
+    worker.apply_settings(settings);
+    std::thread::Builder::new()
+        .name("caruspex-worker".into())
+        .spawn(move || worker.run(rx))
+        .expect("worker thread starts");
+    WorkerHandle { tx, cancel }
+}
+
+#[derive(Default)]
+struct Timer {
+    active: bool,
+    interval_ms: u64,
+    next: Option<Instant>,
+}
+
+impl Timer {
+    fn start(&mut self) {
+        self.active = true;
+        self.next = Some(Instant::now() + Duration::from_millis(self.interval_ms));
+    }
+    fn stop(&mut self) {
+        self.active = false;
+        self.next = None;
+    }
+    fn set_interval(&mut self, ms: u64) {
+        self.interval_ms = ms;
+    }
+    fn due(&self, now: Instant) -> bool {
+        self.active && self.next.is_some_and(|n| n <= now)
+    }
+    fn rearm(&mut self) {
+        if self.active {
+            self.next = Some(Instant::now() + Duration::from_millis(self.interval_ms));
+        }
+    }
+}
+
+fn to_row(v: &LiveValue) -> LiveRow {
+    // The key tells the values of one PID apart; it equals the PID for the
+    // primary value, so everything keyed by PID keeps working.
+    let pid = if v.key != 0 { v.key } else { v.pid };
+    LiveRow {
+        pid,
+        name: crate::knowledge::live_name(pid, &v.name),
+        unit: v.unit.clone(),
+        text: v.text.clone(),
+        value: v.value,
+        warn: v.warn,
+        time: app_seconds(),
+        display_min: v.display_min,
+        display_max: v.display_max,
+    }
+}
+
+// The core reports the kind of a fault as display text in the active
+// language. "stored" is the English wording the core uses for "gespeichert".
+fn is_stored_kind(kind: &str) -> bool {
+    kind == "gespeichert" || kind == "stored" || kind == l("gespeichert", "stored")
+}
+
+fn fault_row(f: &Fault) -> FaultRow {
+    FaultRow {
+        code: f.code.clone(),
+        kind: f.kind.clone(),
+        text: f.text.clone(),
+        throttle_related: f.throttle_related,
+        stored: is_stored_kind(&f.kind),
+        ecu: f.ecu.clone(),
+    }
+}
+
+fn status_row(st: &VehicleStatus) -> StatusRow {
+    StatusRow {
+        valid: st.valid,
+        mil: st.mil_on,
+        fault_count: st.fault_count,
+        monitor_names: st.readiness.iter().map(|i| i.name.clone()).collect(),
+        monitor_ready: st.readiness.iter().map(|i| i.ready).collect(),
+    }
+}
+
+fn uds_row(ecu: &UdsEcu) -> UdsEcuRow {
+    UdsEcuRow {
+        request: ecu.definition.request,
+        response: ecu.definition.response,
+        extended29: ecu.definition.extended29,
+        kind: ecu.definition.kind as i32,
+        name: ecu.definition.name.clone(),
+        present: ecu.present,
+        dtcs_read: ecu.dtcs_read,
+        part_number: ecu.info.part_number.clone(),
+        software_version: ecu.info.software_version.clone(),
+        hardware_version: ecu.info.hardware_version.clone(),
+        system_name: ecu.info.system_name.clone(),
+        serial: ecu.info.serial.clone(),
+        dtcs: ecu
+            .dtcs
+            .iter()
+            .map(|d| UdsDtcRow {
+                code: d.code.clone(),
+                failure_text: d.failure_text.clone(),
+                text: d.text.clone(),
+                test_failed: d.test_failed,
+                pending: d.pending,
+                confirmed: d.confirmed,
+                warning_lamp: d.warning_lamp,
+            })
+            .collect(),
+        note: ecu.note.clone(),
+    }
+}
+
+/// The fields of a measuring block as rows "Feld 1: ...". An invalid field
+/// keeps its number, so the field numbers match the ones of the control unit.
+fn measured_rows(values: &[MeasuringValue]) -> Vec<LiveRow> {
+    let mut rows = Vec::new();
+    for (i, m) in values.iter().enumerate() {
+        let index = i as i32 + 1;
+        if !m.valid {
+            continue;
+        }
+        rows.push(LiveRow {
+            pid: index,
+            name: args(&w("Feld %1: %2", "Field %1: %2"), &[&index, &m.label]),
+            unit: m.unit.clone(),
+            value: m.value,
+            ..LiveRow::default()
+        });
+    }
+    rows
+}
+
+fn analysis_fault(f: &Fault) -> ai::Fault {
+    ai::Fault {
+        code: f.code.clone(),
+        kind: f.kind.clone(),
+        text: f.text.clone(),
+        throttle_related: f.throttle_related,
+    }
+}
+
+fn analysis_status(st: &VehicleStatus) -> ai::VehicleStatus {
+    ai::VehicleStatus {
+        mil_on: st.mil_on,
+        fault_count: st.fault_count,
+        readiness: st
+            .readiness
+            .iter()
+            .map(|i| ai::ReadinessItem {
+                name: i.name.clone(),
+                ready: i.ready,
+            })
+            .collect(),
+        valid: st.valid,
+        compression_ignition: st.compression_ignition,
+    }
+}
+
+fn analysis_monitor(r: &caruspex_protocols::MonitorResult) -> ai::MonitorResult {
+    ai::MonitorResult {
+        test_id: r.test_id,
+        component_id: r.component_id,
+        name: r.name.clone(),
+        component: r.component.clone(),
+        value: r.value,
+        minimum: r.minimum,
+        maximum: r.maximum,
+        unit: r.unit.clone(),
+        has_minimum: r.has_minimum,
+        has_maximum: r.has_maximum,
+        passed: r.passed,
+    }
+}
+
+pub struct Worker {
+    sink: Arc<dyn Sink>,
+    cancel: Arc<AtomicBool>,
+    elm: Elm327,
+    // The Qt worker kept an Obd2 next to the Elm327 while connected. Obd2
+    // borrows the driver here, so only its batch memory is kept.
+    obd_ready: bool,
+    batch_refused: BTreeSet<i32>,
+    poll_timer: Timer,
+    poll_pids: Vec<i32>,
+    poll_index: usize,
+    custom_poll_keys: Vec<i32>,
+    custom_turn: bool,
+    user_pids: Vec<CustomPid>,
+    kwp: Option<VagKLine<KLineStream>>,
+    basic_setting_timer: Timer,
+    basic_setting_group: i32,
+    voltage_timer: Timer,
+    settings: AppSettings,
+}
+
+impl Worker {
+    pub fn new(sink: Arc<dyn Sink>, cancel: Arc<AtomicBool>) -> Self {
+        Self {
+            sink,
+            cancel,
+            elm: Elm327::new(),
+            obd_ready: false,
+            batch_refused: BTreeSet::new(),
+            poll_timer: Timer::default(),
+            poll_pids: Vec::new(),
+            poll_index: 0,
+            custom_poll_keys: Vec::new(),
+            custom_turn: false,
+            user_pids: Vec::new(),
+            kwp: None,
+            basic_setting_timer: Timer::default(),
+            basic_setting_group: 60,
+            voltage_timer: Timer::default(),
+            settings: AppSettings::default(),
+        }
+    }
+
+    // --- Plumbing -----------------------------------------------------------
+
+    fn emit(&self, event: &str, payload: impl Serialize) {
+        self.sink
+            .emit(event, serde_json::to_value(payload).unwrap_or(Value::Null));
+    }
+    fn log(&self, line: impl Into<String>) {
+        self.emit("log_line", json!({ "line": line.into() }));
+    }
+    fn busy(&self, active: bool) {
+        self.emit("busy", json!({ "active": active }));
+    }
+    fn failed(&self, error: impl Into<String>) {
+        self.emit("failed", json!({ "error": error.into() }));
+    }
+    fn emit_live(&self, row: LiveRow) {
+        self.sink.live(&row);
+        self.emit("live_value", json!({ "row": row }));
+    }
+    fn kkl_message(&self, message: impl Into<String>, is_error: bool) {
+        self.emit(
+            "kkl_message",
+            json!({ "message": message.into(), "isError": is_error }),
+        );
+    }
+    fn cancelled(&self) -> bool {
+        self.cancel.load(Ordering::SeqCst)
+    }
+
+    fn set_elm_log(&mut self) {
+        let sink = self.sink.clone();
+        self.elm.set_log(Box::new(move |m: &str| {
+            sink.emit("log_line", json!({ "line": m }));
+        }));
+    }
+
+    /// Runs `f` with an Obd2 on the driver, keeping its batch memory.
+    fn with_obd<R>(&mut self, f: impl FnOnce(&mut Obd2<'_>) -> R) -> R {
+        let refused = std::mem::take(&mut self.batch_refused);
+        let mut obd = Obd2::with_batch_memory(&mut self.elm, refused);
+        let result = f(&mut obd);
+        self.batch_refused = obd.batch_refused_pids().clone();
+        result
+    }
+
+    // --- The loop -------------------------------------------------------------
+
+    fn next_deadline(&self) -> Option<Instant> {
+        [
+            &self.poll_timer,
+            &self.basic_setting_timer,
+            &self.voltage_timer,
+        ]
+        .iter()
+        .filter(|t| t.active)
+        .filter_map(|t| t.next)
+        .min()
+    }
+
+    pub fn run(mut self, rx: Receiver<Job>) {
+        loop {
+            let job = match self.next_deadline() {
+                None => match rx.recv() {
+                    Ok(job) => Some(job),
+                    Err(_) => break,
+                },
+                Some(deadline) => {
+                    let wait = deadline.saturating_duration_since(Instant::now());
+                    match rx.recv_timeout(wait) {
+                        Ok(job) => Some(job),
+                        Err(RecvTimeoutError::Timeout) => None,
+                        Err(RecvTimeoutError::Disconnected) => break,
+                    }
+                }
+            };
+            match job {
+                Some(Job::Shutdown) => break,
+                Some(job) => self.handle(job),
+                None => self.run_due_timers(),
+            }
+        }
+        self.shutdown();
+    }
+
+    fn shutdown(&mut self) {
+        self.cancel.store(true, Ordering::SeqCst);
+        self.stop_live();
+        self.elm.disconnect();
+        if let Some(mut kwp) = self.kwp.take() {
+            kwp.disconnect();
+        }
+    }
+
+    /// Runs every timer whose time has come (one tick each).
+    pub fn run_due_timers(&mut self) {
+        let now = Instant::now();
+        if self.poll_timer.due(now) {
+            self.poll_tick();
+            self.poll_timer.rearm();
+        }
+        if self.basic_setting_timer.due(now) {
+            self.basic_setting_tick();
+            self.basic_setting_timer.rearm();
+        }
+        if self.voltage_timer.due(now) {
+            self.voltage_tick();
+            self.voltage_timer.rearm();
+        }
+    }
+
+    pub fn handle(&mut self, job: Job) {
+        match job {
+            Job::OpenSerial {
+                device,
+                baud,
+                protocol_order,
+            } => self.open_serial(&device, baud, &protocol_order),
+            Job::OpenTcp {
+                host,
+                port,
+                protocol_order,
+            } => self.open_tcp(&host, port, &protocol_order),
+            Job::OpenDemo => self.open_demo(),
+            Job::OpenEnet { host } => self.open_enet(&host),
+            Job::OpenCan { spec } => self.open_can(&spec),
+            Job::ScanBle { milliseconds } => self.scan_ble(milliseconds),
+            Job::OpenBle {
+                id,
+                name,
+                kinds,
+                protocol_order,
+            } => self.open_ble(&id, &name, kinds, &protocol_order),
+            Job::OpenReplay {
+                path,
+                real_time,
+                protocol_order,
+            } => self.open_replay(&path, real_time, &protocol_order),
+            Job::OpenTransport {
+                transport,
+                protocol_order,
+            } => {
+                self.busy(true);
+                self.set_elm_log();
+                let ok = self.finish_connect(transport, &protocol_order, true);
+                self.busy(false);
+                if ok {
+                    self.refresh_status_and_faults();
+                }
+            }
+            Job::Close => self.close_adapter(),
+            Job::StartRecording(path) => self.start_recording(&path),
+            Job::StopRecording => self.stop_recording(),
+            Job::ReadFaults => self.refresh_status_and_faults(),
+            Job::ClearFaults => self.clear_faults(),
+            Job::ReadDetails => self.read_details(),
+            Job::StartLive(pids) => self.start_live(pids),
+            Job::StopLive => self.stop_live(),
+            Job::SendRaw(command) => self.send_raw(&command),
+            Job::ReadMonitors => self.read_monitors(),
+            Job::HealthCheck(seconds) => self.run_health_check(seconds),
+            Job::ProbeAdapter => self.probe_adapter(),
+            Job::BruteForceClear(attempts) => self.brute_force_clear(attempts),
+            Job::StartVoltagePoll(ms) => self.start_voltage_poll(ms),
+            Job::StopVoltagePoll => self.voltage_timer.stop(),
+            Job::ReadCustom(keys) => self.read_custom(&keys),
+            Job::StartCustomPoll(keys) => self.start_custom_poll(keys),
+            Job::ImportCustomCsv(path) => self.import_custom_csv(&path),
+            Job::ScanUds(family) => self.scan_uds(&family),
+            Job::ClearUdsEcu {
+                request,
+                response,
+                extended29,
+                name,
+            } => self.clear_uds_ecu(request, response, extended29, &name),
+            Job::OpenKkl {
+                device,
+                ecu_address,
+            } => self.open_kkl(&device, ecu_address),
+            Job::CloseKkl => self.close_kkl(),
+            Job::StartBasicSetting(group) => self.start_basic_setting(group),
+            Job::StopBasicSetting => self.stop_basic_setting(),
+            Job::SetBasicSettingSession(mode) => self.set_basic_setting_session(mode),
+            Job::ScanAllEcus {
+                device,
+                clear_attempts,
+            } => self.scan_all_ecus(&device, clear_attempts),
+            Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
+            Job::ActuatorTest => self.run_actuator_test(),
+            Job::ApplySettings(values) => self.apply_settings(values),
+            Job::Shutdown => self.shutdown(),
+        }
+    }
+
+    // --- Connecting -----------------------------------------------------------
+
+    /// Hands a ready transport to the ELM327 driver and reports the result.
+    fn finish_connect(
+        &mut self,
+        transport: Box<dyn Transport>,
+        protocol_order: &str,
+        report_failure: bool,
+    ) -> bool {
+        if let Err(error) = self.elm.connect(transport, protocol_order) {
+            // Let go of the port, so the next baud rate (or the SLCAN probe)
+            // can open it again.
+            self.elm.disconnect();
+            if report_failure {
+                self.failed(error);
+            } else {
+                self.log(error);
+            }
+            return false;
+        }
+        // On CAN several control units may answer; with headers on, every
+        // fault keeps the unit it came from.
+        if self.elm.is_can() {
+            self.elm.set_headers(true);
+        }
+        self.obd_ready = true;
+        self.batch_refused.clear();
+        self.emit(
+            "connected",
+            json!({
+                "adapter": self.elm.version(),
+                "transport": self.elm.transport_name(),
+                "protocol": self.elm.protocol_text(),
+            }),
+        );
+        true
+    }
+
+    fn open_serial(&mut self, device: &str, baud: i32, protocol_order: &str) {
+        self.busy(true);
+        self.set_elm_log();
+
+        // An empty device means: look for the adapter on every port. Only
+        // the usual rates are tried there, otherwise a computer with many
+        // ports would keep the user waiting for minutes.
+        let searching = device.is_empty();
+        let devices: Vec<String> = if searching {
+            let list: Vec<String> = enumerate_ports().into_iter().map(|p| p.device).collect();
+            if list.is_empty() {
+                self.busy(false);
+                self.failed(w(
+                    "Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?",
+                    "No port found. Is the adapter plugged into the computer, and is the Bluetooth adapter paired?",
+                ));
+                return;
+            }
+            list
+        } else {
+            vec![device.to_string()]
+        };
+        let bauds: Vec<u32> = if baud > 0 {
+            vec![baud as u32]
+        } else if searching {
+            vec![38400, 115200, 9600]
+        } else {
+            vec![38400, 9600, 115200, 500000]
+        };
+
+        let mut error = String::new();
+        for candidate_device in &devices {
+            if searching {
+                self.log(args(
+                    &w("Probiere %1 ...", "Trying %1 ..."),
+                    &[candidate_device],
+                ));
+            }
+            for (i, &b) in bauds.iter().enumerate() {
+                let mut candidate = SerialTransport::new();
+                if let Err(e) = candidate.open(candidate_device, b) {
+                    error = e;
+                    break;
+                }
+                self.log(args(
+                    &w("Anschluss %1 offen bei %2 Baud", "Port %1 open at %2 baud"),
+                    &[candidate_device, &b],
+                ));
+                let last = !searching && i + 1 == bauds.len();
+                if self.finish_connect(Box::new(candidate), protocol_order, last) {
+                    if searching {
+                        self.emit("adapter_found", json!({ "device": candidate_device }));
+                    }
+                    self.busy(false);
+                    self.refresh_status_and_faults();
+                    return;
+                }
+                if !searching {
+                    break;
+                }
+            }
+            if searching {
+                // No ELM327 here; perhaps a CAN stick with the SLCAN protocol.
+                let mut serial = SerialTransport::new();
+                if serial.open(candidate_device, 115200).is_ok()
+                    && probe_slcan(&mut serial).is_some()
+                {
+                    self.log(args(
+                        &w("SLCAN-Adapter an %1 gefunden", "SLCAN adapter found on %1"),
+                        &[candidate_device],
+                    ));
+                    let mut link = SlcanLink::new(Box::new(serial));
+                    if link.open(500000).is_ok() {
+                        let front = CanElm::new(
+                            Box::new(link),
+                            format!("SLCAN {candidate_device}"),
+                            500000,
+                        );
+                        if self.finish_connect(Box::new(front), "67", true) {
+                            self.emit("adapter_found", json!({ "device": candidate_device }));
+                            self.busy(false);
+                            self.refresh_status_and_faults();
+                            return;
+                        }
+                    }
+                }
+            }
+            if !searching {
+                self.busy(false);
+                if !error.is_empty() {
+                    self.failed(error);
+                }
+                return;
+            }
+        }
+        self.busy(false);
+        self.failed(if searching {
+            w(
+                "An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?",
+                "No ELM327 answered on any port. Is the ignition on and the adapter properly plugged in?",
+            )
+        } else {
+            error
+        });
+    }
+
+    fn open_tcp(&mut self, host: &str, port: i32, protocol_order: &str) {
+        self.busy(true);
+        self.set_elm_log();
+        let mut transport = TcpTransport::new();
+        if let Err(error) = transport.open(host, port.clamp(0, 65535) as u16) {
+            self.busy(false);
+            self.failed(error);
+            return;
+        }
+        let ok = self.finish_connect(Box::new(transport), protocol_order, true);
+        self.busy(false);
+        if ok {
+            self.refresh_status_and_faults();
+        }
+    }
+
+    fn scan_ble(&mut self, milliseconds: i32) {
+        self.busy(true);
+        let (devices, error) = ble::scan(milliseconds);
+        self.busy(false);
+        self.emit(
+            "ble_scan_finished",
+            json!({ "devices": devices, "error": error }),
+        );
+    }
+
+    fn open_ble(&mut self, id: &str, name: &str, kinds: i32, protocol_order: &str) {
+        self.busy(true);
+        self.set_elm_log();
+        let candidates = if id.is_empty() {
+            self.log(w(
+                "Suche Bluetooth-Adapter ...",
+                "Searching for Bluetooth adapters ...",
+            ));
+            match ble::candidates() {
+                Ok(list) if !list.is_empty() => list,
+                Ok(_) => {
+                    self.busy(false);
+                    self.failed(w(
+                        "Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?",
+                        "No Bluetooth adapter found nearby. Is it plugged into the car, and is the ignition on?",
+                    ));
+                    return;
+                }
+                Err(error) => {
+                    self.busy(false);
+                    self.failed(error);
+                    return;
+                }
+            }
+        } else {
+            vec![ble::device(id, name, kinds)]
+        };
+
+        let mut error = String::new();
+        for d in candidates {
+            let shown = if d.name.is_empty() {
+                d.id.clone()
+            } else {
+                d.name.clone()
+            };
+            // Bluetooth LE first. Classic Bluetooth is a COM port (Windows)
+            // or /dev/rfcommN (Linux) and goes through the cable mode.
+            let mut transport: Option<Box<dyn Transport>> = None;
+            if d.low_energy {
+                self.log(args(
+                    &w(
+                        "Verbinde mit %1 über Bluetooth LE ...",
+                        "Connecting to %1 over Bluetooth LE ...",
+                    ),
+                    &[&shown],
+                ));
+                match ble::open(&d) {
+                    Ok((t, profile)) => {
+                        self.log(args(
+                            &w("Kanal gefunden (%1)", "Channel found (%1)"),
+                            &[&profile],
+                        ));
+                        transport = Some(t);
+                    }
+                    Err(e) => {
+                        self.log(e.clone());
+                        error = e;
+                    }
+                }
+            }
+            let Some(transport) = transport else { continue };
+            if self.finish_connect(transport, protocol_order, true) {
+                self.emit(
+                    "ble_adapter_found",
+                    json!({ "id": d.id, "name": d.name, "kinds": ble::kinds(&d) }),
+                );
+                self.busy(false);
+                self.refresh_status_and_faults();
+                return;
+            }
+        }
+        self.busy(false);
+        self.failed(error);
+    }
+
+    fn open_enet(&mut self, host: &str) {
+        // ENET is always CAN behind the front end.
+        self.busy(true);
+        self.set_elm_log();
+        if host.is_empty() {
+            self.log(w(
+                "Suche das Auto im Netzwerk (ENET und DoIP) ...",
+                "Searching for the car on the network (ENET and DoIP) ...",
+            ));
+        }
+        let car = match open_network_car(host) {
+            Ok(car) => car,
+            Err(error) => {
+                self.busy(false);
+                self.failed(error);
+                return;
+            }
+        };
+        let vin = if car.vin.is_empty() {
+            String::new()
+        } else {
+            format!(", VIN {}", car.vin)
+        };
+        self.log(args(
+            &w("Verbunden über %1: %2%3", "Connected over %1: %2%3"),
+            &[&car.kind, &car.transport.name(), &vin],
+        ));
+        let ok = self.finish_connect(Box::new(car.transport), "6", true);
+        self.busy(false);
+        if ok {
+            self.refresh_status_and_faults();
+        }
+    }
+
+    fn open_can(&mut self, spec: &str) {
+        self.busy(true);
+        self.set_elm_log();
+        let opener = |device: &str, baud: u32| -> Result<Box<dyn Transport>, String> {
+            let mut serial = SerialTransport::new();
+            serial.open(device, baud)?;
+            Ok(Box::new(serial))
+        };
+        let transport = match open_can_interface(spec, &opener) {
+            Ok(t) => t,
+            Err(error) => {
+                self.busy(false);
+                self.failed(error);
+                return;
+            }
+        };
+        self.log(args(
+            &w("CAN-Schnittstelle offen: %1", "CAN interface open: %1"),
+            &[&transport.name()],
+        ));
+        // 11 bit first, then 29 bit; a car that answers neither is listened to.
+        let ok = self.finish_connect(Box::new(transport), "67", true);
+        self.busy(false);
+        if ok {
+            self.refresh_status_and_faults();
+        }
+    }
+
+    fn open_demo(&mut self) {
+        // The demo car speaks CAN; the K-line protocols would only cost seconds.
+        self.busy(true);
+        self.set_elm_log();
+        let ok = self.finish_connect(Box::new(caruspex_demo::DemoTransport::default()), "6", true);
+        self.busy(false);
+        if ok {
+            self.refresh_status_and_faults();
+        }
+    }
+
+    fn open_replay(&mut self, path: &str, real_time: bool, protocol_order: &str) {
+        self.busy(true);
+        self.set_elm_log();
+        let replay = ReplayTransport::new(
+            path,
+            if real_time {
+                ReplayPacing::RealTime
+            } else {
+                ReplayPacing::Fast
+            },
+        );
+        if !replay.is_open() {
+            self.busy(false);
+            self.failed(args(
+                &w(
+                    "Aufnahme lässt sich nicht öffnen: %1",
+                    "The recording cannot be opened: %1",
+                ),
+                &[&replay.error()],
+            ));
+            return;
+        }
+        self.log(recording_summary(&replay.info()));
+        let order = replay.protocol_order(protocol_order);
+        let ok = self.finish_connect(Box::new(replay), &order, true);
+        self.busy(false);
+        if ok {
+            self.refresh_status_and_faults();
+        }
+    }
+
+    fn start_recording(&mut self, path: &str) {
+        if !self.elm.connected() {
+            self.emit(
+                "recording_state",
+                json!({ "active": false, "path": path, "exchanges": 0,
+                        "error": w("Erst verbinden, dann aufzeichnen.", "Connect first, then record.") }),
+            );
+            return;
+        }
+        match start_recording(&mut self.elm, path) {
+            Ok(_) => self.emit(
+                "recording_state",
+                json!({ "active": true, "path": path, "exchanges": 0, "error": "" }),
+            ),
+            Err(error) => self.emit(
+                "recording_state",
+                json!({ "active": false, "path": path, "exchanges": 0, "error": error }),
+            ),
+        }
+    }
+
+    fn stop_recording(&mut self) {
+        let (exchanges, path) = active_recording(&self.elm)
+            .map(|h| (h.exchanges(), h.path().to_string()))
+            .unwrap_or_default();
+        stop_recording(&mut self.elm);
+        self.emit(
+            "recording_state",
+            json!({ "active": false, "path": path, "exchanges": exchanges, "error": "" }),
+        );
+    }
+
+    fn close_adapter(&mut self) {
+        self.stop_live();
+        self.elm.disconnect();
+        self.obd_ready = false;
+        self.emit("closed", json!({}));
+    }
+
+    // --- Reading --------------------------------------------------------------
+
+    fn refresh_status_and_faults(&mut self) {
+        if !self.obd_ready {
+            return;
+        }
+        self.busy(true);
+        let st = self.with_obd(|o| o.read_status());
+        self.emit("status", json!({ "row": status_row(&st) }));
+
+        let rows: Vec<FaultRow> = self
+            .with_obd(|o| o.read_faults())
+            .iter()
+            .map(fault_row)
+            .collect();
+        let count = rows.len();
+        self.emit("faults", json!({ "rows": rows }));
+        self.log(if count == 0 {
+            w(
+                "Fehlerspeicher gelesen: kein Eintrag.",
+                "Fault memory read: no entries.",
+            )
+        } else {
+            args(
+                &w(
+                    "Fehlerspeicher gelesen: %1 Einträge.",
+                    "Fault memory read: %1 entries.",
+                ),
+                &[&count],
+            )
+        });
+
+        let supported: Vec<i32> = self.with_obd(|o| o.supported_pids()).into_iter().collect();
+        self.emit("supported_pids", json!({ "pids": supported }));
+        self.busy(false);
+    }
+
+    fn clear_faults(&mut self) {
+        if !self.obd_ready {
+            return;
+        }
+        self.busy(true);
+        let result = self.with_obd(|o| o.clear_faults());
+        self.log(match result {
+            Ok(()) => w("Fehlerspeicher gelöscht.", "Fault memory cleared."),
+            Err(error) => args(
+                &w("Löschen fehlgeschlagen: %1", "Clearing failed: %1"),
+                &[&error],
+            ),
+        });
+        self.busy(false);
+        self.refresh_status_and_faults();
+    }
+
+    fn read_details(&mut self) {
+        if !self.obd_ready {
+            return;
+        }
+        self.busy(true);
+        let vin = self.with_obd(|o| o.read_vin());
+        // All freeze frames; the first one also goes out the old way for the
+        // pages that only know a single frame.
+        let frames: Vec<FreezeFrameRow> = self
+            .with_obd(|o| o.read_freeze_frames(caruspex_protocols::obd2::DEFAULT_FREEZE_FRAMES))
+            .iter()
+            .map(|f| FreezeFrameRow {
+                frame: f.frame,
+                dtc: f.dtc.clone(),
+                ecu: f.ecu.clone(),
+                values: f.values.iter().map(to_row).collect(),
+            })
+            .collect();
+        let (code, rows) = frames
+            .first()
+            .map(|f| (f.dtc.clone(), f.values.clone()))
+            .unwrap_or_default();
+        self.emit(
+            "vehicle_info",
+            json!({ "vin": vin, "freezeCode": code, "freezeRows": rows }),
+        );
+        self.emit("freeze_frames", json!({ "frames": frames }));
+
+        // One reading of the values the start page shows as tiles, so they
+        // are not empty until a measurement runs.
+        let supported = self.with_obd(|o| o.supported_pids());
+        for pid in [0x05, 0x2F, 0x42, 0xA6] {
+            if !supported.is_empty() && !supported.contains(&pid) {
+                continue;
+            }
+            if let Some(value) = self.with_obd(|o| o.read_live(pid)) {
+                self.emit_live(to_row(&value));
+            }
+        }
+        self.busy(false);
+    }
+
+    fn start_live(&mut self, pids: Vec<i32>) {
+        self.poll_pids = pids;
+        if !self.obd_ready || self.poll_pids.is_empty() {
+            return;
+        }
+        self.poll_index = 0;
+        // No faster than the configured interval. On the K-Line a request
+        // takes longer anyway, but a fast CAN adapter or the simulator would
+        // otherwise flood the interface with events.
+        self.poll_timer
+            .set_interval(self.settings.poll_interval_ms.max(0) as u64);
+        self.poll_timer.start();
+        self.log(args(
+            &w(
+                "Messung gestartet, %1 Werte im Umlauf.",
+                "Measurement started, cycling through %1 values.",
+            ),
+            &[&self.poll_pids.len()],
+        ));
+    }
+
+    fn stop_live(&mut self) {
+        self.custom_poll_keys.clear();
+        if self.poll_timer.active {
+            self.poll_timer.stop();
+            self.log(w("Messung gestoppt.", "Measurement stopped."));
+        }
+    }
+
+    // One slice per tick. That keeps the loop free and stop requests from
+    // the interface get through immediately.
+    fn poll_tick(&mut self) {
+        if !self.obd_ready {
+            return;
+        }
+        // Every other tick belongs to the manufacturer values when some are
+        // selected. They change slowly and cost an addressing round each time.
+        if !self.custom_poll_keys.is_empty() {
+            self.custom_turn = !self.custom_turn;
+            if self.custom_turn || self.poll_pids.is_empty() {
+                let keys = self.custom_poll_keys.clone();
+                self.read_custom_now(&keys);
+                return;
+            }
+        }
+        if self.poll_pids.is_empty() {
+            return;
+        }
+        // Up to six PIDs per tick: on CAN they go out as one request,
+        // elsewhere the core reads them one by one.
+        let mut slice = Vec::new();
+        let n = self.poll_pids.len();
+        for _ in 0..6.min(n) {
+            slice.push(self.poll_pids[self.poll_index % n]);
+            self.poll_index = (self.poll_index + 1) % n;
+        }
+        for value in self.with_obd(|o| o.read_live_batch(&slice, false)) {
+            self.emit_live(to_row(&value));
+        }
+    }
+
+    fn send_raw(&mut self, command: &str) {
+        let result = self.elm.send(command, 8000);
+        let reply = if result.lines.is_empty() {
+            w("(keine Antwort)", "(no reply)")
+        } else {
+            result.lines.join("\n")
+        };
+        self.emit("raw_reply", json!({ "reply": reply }));
+    }
+
+    fn read_monitors(&mut self) {
+        if !self.obd_ready {
+            self.emit(
+                "monitor_results",
+                json!({ "rows": [], "note": w("Nicht verbunden.", "Not connected.") }),
+            );
+            return;
+        }
+        self.busy(true);
+        let id = self.with_obd(|o| o.read_identity());
+        self.emit(
+            "identity",
+            json!({ "vin": id.vin, "calibration": id.calibration_id,
+                    "checksum": id.calibration_verification, "ecuName": id.ecu_name }),
+        );
+
+        let (results, note) = match self.with_obd(|o| o.read_monitor_results()) {
+            Ok(list) => (list, String::new()),
+            Err(note) => (Vec::new(), note),
+        };
+        let rows: Vec<MonitorRow> = results
+            .iter()
+            .map(|r| MonitorRow {
+                name: r.name.clone(),
+                component: r.component.clone(),
+                value: r.value,
+                minimum: r.minimum,
+                maximum: r.maximum,
+                unit: r.unit.clone(),
+                has_minimum: r.has_minimum,
+                has_maximum: r.has_maximum,
+                passed: r.passed,
+            })
+            .collect();
+        let count = rows.len();
+        self.emit("monitor_results", json!({ "rows": rows, "note": note }));
+
+        let (tests, oxygen_note) = match self.with_obd(|o| o.read_oxygen_sensor_tests()) {
+            Ok(list) => (list, String::new()),
+            Err(note) => (Vec::new(), note),
+        };
+        let oxygen: Vec<OxygenRow> = tests
+            .iter()
+            .map(|t| OxygenRow {
+                name: t.name.clone(),
+                sensor: t.sensor,
+                value: t.value,
+                unit: t.unit.clone(),
+            })
+            .collect();
+        let oxygen_count = oxygen.len();
+        self.emit(
+            "oxygen_tests",
+            json!({ "rows": oxygen, "note": oxygen_note }),
+        );
+
+        self.busy(false);
+        self.log(args(
+            &w(
+                "Bauteilüberwachung gelesen: %1 Tests, %2 Sondenprüfungen.",
+                "Component monitoring read: %1 tests, %2 O2 sensor tests.",
+            ),
+            &[&count, &oxygen_count],
+        ));
+    }
+
+    // Modes 06, 05 and 09 in one go: everything the control unit reveals
+    // about itself and its running self-tests.
+    fn run_health_check(&mut self, seconds: i32) {
+        if !self.obd_ready {
+            self.failed(w(
+                "Für den Gesundheitscheck erst verbinden.",
+                "Connect first to run the health check.",
+            ));
+            return;
+        }
+        self.stop_live();
+        self.cancel.store(false, Ordering::SeqCst);
+        self.busy(true);
+        let mut input = HealthInput::default();
+        let progress = |me: &Self, step: String, percent: i32| {
+            me.emit(
+                "health_progress",
+                json!({ "step": step, "percent": percent }),
+            );
+        };
+
+        progress(
+            self,
+            w(
+                "Bereitschaft und Fehlerlampe",
+                "Readiness and check engine light",
+            ),
+            4,
+        );
+        let st = self.with_obd(|o| o.read_status());
+        input.set_status(&analysis_status(&st));
+        self.emit("status", json!({ "row": status_row(&st) }));
+
+        progress(self, w("Fehlerspeicher", "Fault memory"), 10);
+        let faults = self.with_obd(|o| o.read_faults());
+        input.faults = faults.iter().map(analysis_fault).collect();
+        input.faults_read = self.elm.connected();
+        let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
+        self.emit("faults", json!({ "rows": rows }));
+        input.fault_level = Some(Arc::new(|f: &ai::Fault| {
+            // The database knows how urgent a code is; pending codes count
+            // one step lower, they may still disappear on their own.
+            let severity = lookup_dtc(&f.code, "").severity;
+            let mut level = Level::Info;
+            if severity == Severity::Critical {
+                level = Level::Critical;
+            } else if severity == Severity::High || severity == Severity::Medium {
+                level = Level::Warning;
+            }
+            if !is_stored_kind(&f.kind) && level == Level::Warning {
+                level = Level::Info;
+            }
+            level
+        }));
+
+        progress(
+            self,
+            w(
+                "Bauteilprüfung (Modus 06)",
+                "Component monitoring (mode 06)",
+            ),
+            18,
+        );
+        input.monitor_results = self
+            .with_obd(|o| o.read_monitor_results())
+            .unwrap_or_default()
+            .iter()
+            .map(analysis_monitor)
+            .collect();
+        input.monitor_results_read = true;
+
+        if let Some(fuel) = self.with_obd(|o| o.read_live(0x51)) {
+            input.fuel = health_check::fuel_type_from_obd(fuel.value as i32);
+        }
+
+        // Live series: only what the car offers.
+        let supported = self.with_obd(|o| o.supported_pids());
+        let pids: Vec<i32> = health_check::health_live_pids()
+            .iter()
+            .copied()
+            .filter(|p| supported.is_empty() || supported.contains(p))
+            .collect();
+        let start = app_seconds();
+        let total = seconds.max(1);
+        while !pids.is_empty() && app_seconds() - start < f64::from(seconds) && !self.cancelled() {
+            let values = self.with_obd(|o| o.read_live_batch(&pids, false));
+            let t = app_seconds() - start;
+            let snapshot: Vec<ai::LiveValue> = values
+                .iter()
+                .map(|v| ai::LiveValue {
+                    pid: v.pid,
+                    value: v.value,
+                })
+                .collect();
+            input.add_snapshot(&snapshot, t);
+            for value in &values {
+                self.emit_live(to_row(value));
+            }
+            let elapsed = app_seconds() - start;
+            let left = (seconds - elapsed as i32).max(0);
+            let percent = 25 + (70.0 * elapsed / f64::from(total)) as i32;
+            progress(
+                self,
+                args(
+                    &w(
+                        "Messwerte sammeln, noch %1 s",
+                        "Collecting values, %1 s left",
+                    ),
+                    &[&left],
+                ),
+                percent.min(95),
+            );
+            if values.is_empty() {
+                // Nothing answers (adapter gone): do not spin.
+                sleep_ms(100);
+            }
+        }
+
+        let report = health_check::run_health_check(&input);
+        let mut row = HealthRow {
+            score: report.score,
+            grade: report.grade as i32,
+            summary: report.summary.text(),
+            checks_run: report.checks_run,
+            diesel: input.fuel == FuelType::Diesel,
+            ..HealthRow::default()
+        };
+        for f in &report.findings {
+            row.findings.push(HealthFindingRow {
+                level: f.level as i32,
+                area: String::new(),
+                title: f.title.text(),
+                explanation: f.explanation.text(),
+                advice: f.advice.text(),
+            });
+        }
+        for skipped in &report.not_checked {
+            row.not_checked.push(format!(
+                "{}: {}",
+                skipped.title.text(),
+                skipped.reason.text()
+            ));
+        }
+        for m in &input.readiness {
+            if !m.supported {
+                continue;
+            }
+            let guide = drive_cycle_guide(m.monitor);
+            row.monitors.push(MonitorGuideRow {
+                name: guide.name.get().to_string(),
+                complete: m.complete,
+                explanation: guide.explanation.get().to_string(),
+                drive_pattern: guide.drive_pattern.get().to_string(),
+                typical_time: guide.typical_time.get().to_string(),
+                cold_start: guide.needs_cold_start,
+            });
+        }
+        progress(self, w("Fertig", "Done"), 100);
+        self.emit("health_result", json!({ "row": row }));
+        self.busy(false);
+    }
+
+    fn probe_adapter(&mut self) {
+        if !self.elm.connected() {
+            self.failed(w(
+                "Für den Adaptertest erst verbinden.",
+                "Connect first to run the adapter test.",
+            ));
+            return;
+        }
+        self.stop_live();
+        self.voltage_timer.stop();
+        self.busy(true);
+        let report = probe_adapter(&mut self.elm);
+        let row = AdapterRow {
+            reachable: report.reachable,
+            version: report.version_text.clone(),
+            description: report.description.clone(),
+            is_stn: report.is_stn,
+            stn_id: report.stn_id.clone(),
+            voltage: report.voltage,
+            has_voltage: report.has_voltage,
+            round_trip_ms: report.round_trip_ms,
+            round_trip_with_hint_ms: report.round_trip_with_hint_ms,
+            behaves_like: if report.behaves_like_level > 0 {
+                version_text(report.behaves_like_level)
+            } else {
+                String::new()
+            },
+            accepts_unknown: report.accepts_unknown_commands,
+            verdict: report.verdict.get(),
+            facts: report.facts.iter().map(|f| f.get()).collect(),
+            speed_tips: report.speed_tips.iter().map(|t| t.get()).collect(),
+            checks: report
+                .checks
+                .iter()
+                .map(|c| AdapterCheckRow {
+                    command: c.command.clone(),
+                    version: version_text(c.introduced_in),
+                    supported: c.supported,
+                    purpose: c.purpose.get(),
+                })
+                .collect(),
+        };
+        self.emit("adapter_report", json!({ "row": row }));
+        self.busy(false);
+    }
+
+    // Persistent clear over EOBD. Some control units only accept the command
+    // right after the connection is established, others need several
+    // attempts. That is why the connection is re-established in between.
+    fn brute_force_clear(&mut self, attempts: i32) {
+        if !self.obd_ready {
+            self.emit(
+                "clear_progress",
+                json!({ "line": w("Nicht verbunden.", "Not connected.") }),
+            );
+            self.emit(
+                "clear_finished",
+                json!({ "everythingGone": false, "remaining": 0 }),
+            );
+            return;
+        }
+        self.busy(true);
+        let mut remaining = 0usize;
+        for attempt in 1..=attempts {
+            let line = |s: String| json!({ "line": s });
+            self.emit(
+                "clear_progress",
+                line(args(
+                    &w("Versuch %1 von %2 ...", "Attempt %1 of %2 ..."),
+                    &[&attempt, &attempts],
+                )),
+            );
+            if let Err(error) = self.with_obd(|o| o.clear_faults()) {
+                self.emit(
+                    "clear_progress",
+                    line(args(
+                        &w(
+                            "   Steuergerät quittiert nicht: %1",
+                            "   Control unit does not acknowledge: %1",
+                        ),
+                        &[&error],
+                    )),
+                );
+            }
+            sleep_ms(600);
+
+            let left = self.with_obd(|o| o.read_faults());
+            remaining = left.len();
+            if left.is_empty() {
+                self.emit(
+                    "clear_progress",
+                    line(w("   Speicher ist leer.", "   Memory is empty.")),
+                );
+                self.busy(false);
+                self.emit(
+                    "clear_finished",
+                    json!({ "everythingGone": true, "remaining": 0 }),
+                );
+                self.refresh_status_and_faults();
+                return;
+            }
+            self.emit(
+                "clear_progress",
+                line(args(
+                    &w("   noch %1 Einträge", "   %1 entries left"),
+                    &[&remaining],
+                )),
+            );
+
+            // From the second failure on, re-establish the connection. Some
+            // control units only open the clear window right after waking up.
+            if attempt >= 2 && attempt < attempts {
+                self.emit(
+                    "clear_progress",
+                    line(w(
+                        "   Verbindung wird neu aufgebaut ...",
+                        "   Re-establishing the connection ...",
+                    )),
+                );
+                let _ = self.elm.send("ATZ", 6000);
+                sleep_ms(400);
+                for command in ["ATE0", "ATL0", "ATS0", "ATH0"] {
+                    self.elm.send(command, DEFAULT_SEND_TIMEOUT_MS);
+                }
+                self.elm.send("0100", 10000);
+                sleep_ms(200);
+            }
+        }
+        self.busy(false);
+        self.emit(
+            "clear_finished",
+            json!({ "everythingGone": false, "remaining": remaining }),
+        );
+        self.refresh_status_and_faults();
+    }
+
+    fn start_voltage_poll(&mut self, interval_ms: i32) {
+        if !self.elm.connected() {
+            return;
+        }
+        self.stop_live();
+        self.voltage_timer.set_interval(interval_ms.max(20) as u64);
+        self.voltage_timer.start();
+    }
+
+    fn voltage_tick(&mut self) {
+        let result = self.elm.send("ATRV", 1000);
+        for line in &result.lines {
+            let text: String = line.trim().chars().filter(|&c| c != 'V').collect();
+            if let Ok(volts) = text.trim().parse::<f64>()
+                && volts > 3.0
+                && volts < 32.0
+            {
+                self.emit(
+                    "adapter_voltage",
+                    json!({ "volts": volts, "time": app_seconds() }),
+                );
+                break;
+            }
+        }
+    }
+
+    // --- Manufacturer and user values (CustomPids) ------------------------------
+
+    fn find_custom(&self, key: i32) -> Option<CustomPid> {
+        built_in_packs()
+            .iter()
+            .find(|p| p.key == key)
+            .or_else(|| self.user_pids.iter().find(|p| p.key == key))
+            .cloned()
+    }
+
+    /// Reads custom values and emits them; returns (ok, failed, first error).
+    fn read_custom_now(&mut self, keys: &[i32]) -> (usize, usize, String) {
+        let list: Vec<CustomPid> = keys.iter().filter_map(|&k| self.find_custom(k)).collect();
+        let mut ok = 0;
+        let mut bad = 0;
+        let mut first_error = String::new();
+        let readings = {
+            // The reader restores the normal OBD addressing when it goes out
+            // of scope, so the next OBD request works as before.
+            let mut reader = CustomPidReader::new(&mut self.elm);
+            reader.read_all(&list)
+        };
+        for r in readings {
+            if r.ok {
+                ok += 1;
+                self.emit_live(to_row(&r.value));
+            } else {
+                bad += 1;
+                if first_error.is_empty() {
+                    first_error = r.error;
+                }
+            }
+        }
+        (ok, bad, first_error)
+    }
+
+    fn read_custom(&mut self, keys: &[i32]) {
+        if !self.obd_ready {
+            self.emit(
+                "custom_read",
+                json!({ "ok": 0, "failed": keys.len(), "firstError": w("Erst verbinden.", "Connect first.") }),
+            );
+            return;
+        }
+        self.busy(true);
+        let (ok, failed, error) = self.read_custom_now(keys);
+        self.emit(
+            "custom_read",
+            json!({ "ok": ok, "failed": failed, "firstError": error }),
+        );
+        self.busy(false);
+    }
+
+    fn start_custom_poll(&mut self, keys: Vec<i32>) {
+        if !self.obd_ready {
+            return;
+        }
+        self.custom_poll_keys = keys;
+        self.poll_timer
+            .set_interval(self.settings.poll_interval_ms.max(0) as u64);
+        if !self.custom_poll_keys.is_empty() && !self.poll_timer.active {
+            self.poll_timer.start();
+        }
+    }
+
+    fn import_custom_csv(&mut self, path: &str) {
+        let data = match std::fs::read(path) {
+            Ok(data) => data,
+            Err(e) => {
+                self.emit(
+                    "custom_imported",
+                    json!({ "rows": [], "errors": [args(&w("Datei lässt sich nicht öffnen: %1", "The file cannot be opened: %1"), &[&e])] }),
+                );
+                return;
+            }
+        };
+        // New imports get keys after the ones already loaded.
+        let base = USER_KEY_BASE + self.user_pids.len() as i32;
+        let (parsed, problems) = parse_torque_csv(&String::from_utf8_lossy(&data), base);
+        let mut rows = Vec::new();
+        for mut p in parsed {
+            p.pack.clear();
+            rows.push(CustomRow {
+                key: p.key,
+                name: p.name.clone(),
+                short_name: p.short_name.clone(),
+                unit: p.unit.clone(),
+                pack: String::new(),
+                source: p.source.clone(),
+                request: p.request.clone(),
+                header: p.header.clone(),
+                short_name_en: String::new(),
+            });
+            self.user_pids.push(p);
+        }
+        self.emit(
+            "custom_imported",
+            json!({ "rows": rows, "errors": problems }),
+        );
+    }
+
+    // --- UDS ---------------------------------------------------------------------
+
+    fn scan_uds(&mut self, family: &str) {
+        let finished = |me: &Self,
+                        present: usize,
+                        with_faults: usize,
+                        cancelled: bool,
+                        note: String| {
+            me.emit(
+                "uds_scan_finished",
+                json!({ "present": present, "withFaults": with_faults, "cancelled": cancelled, "note": note }),
+            );
+        };
+        if !self.obd_ready {
+            finished(self, 0, 0, false, w("Erst verbinden.", "Connect first."));
+            return;
+        }
+        if !self.elm.is_can() {
+            finished(
+                self,
+                0,
+                0,
+                false,
+                w(
+                    "Das Auto spricht kein CAN. UDS gibt es erst bei CAN-Autos, bei älteren VW und Audi gehen die Steuergeräte über das KKL-Kabel.",
+                    "This car does not speak CAN. UDS only exists on CAN cars; on older VW and Audi the control units go through the KKL cable.",
+                ),
+            );
+            return;
+        }
+        self.stop_live();
+        self.voltage_timer.stop();
+        self.cancel.store(false, Ordering::SeqCst);
+        self.busy(true);
+
+        // "BMW*" is the full sweep of the BMW diagnostic addresses.
+        let mut list: Vec<EcuDefinition> = if family.is_empty() {
+            generic_ecu_sweep()
+        } else if family == "BMW*" {
+            bmw_address_sweep()
+        } else {
+            ecu_definitions(family)
+        };
+        let generic = family.is_empty() || list.is_empty();
+        if list.is_empty() {
+            list = generic_ecu_sweep();
+        }
+        let total = list.len();
+        self.emit(
+            "uds_scan_started",
+            json!({ "total": total, "generic": generic }),
+        );
+
+        // One unit at a time, so every answer reaches the page right away.
+        let mut present = 0;
+        let mut with_faults = 0;
+        for (index, def) in list.iter().enumerate() {
+            if self.cancelled() {
+                break;
+            }
+            self.emit(
+                "uds_scan_progress",
+                json!({ "name": def.name, "index": index, "total": total }),
+            );
+            let cancel = self.cancel.clone();
+            let is_cancelled = move || cancel.load(Ordering::SeqCst);
+            let result = scan_ecus(
+                &mut self.elm,
+                std::slice::from_ref(def),
+                None,
+                Some(&is_cancelled),
+            );
+            let Some(ecu) = result.first().filter(|e| e.present) else {
+                continue;
+            };
+            present += 1;
+            if !ecu.dtcs.is_empty() {
+                with_faults += 1;
+            }
+            self.emit("uds_ecu_result", json!({ "row": uds_row(ecu) }));
+        }
+        finished(self, present, with_faults, self.cancelled(), String::new());
+        self.busy(false);
+    }
+
+    fn clear_uds_ecu(&mut self, request: u32, response: u32, extended29: bool, name: &str) {
+        if !self.obd_ready {
+            return;
+        }
+        self.stop_live();
+        self.busy(true);
+        let def = ecu_from_ids(request, response, extended29, name);
+        let result = {
+            let mut uds = Uds::new(&mut self.elm);
+            uds.select(&def).and_then(|_| uds.clear_dtcs())
+        };
+        let message = match &result {
+            Ok(()) => args(
+                &w(
+                    "Fehlerspeicher von %1 gelöscht.",
+                    "Fault memory of %1 cleared.",
+                ),
+                &[&name],
+            ),
+            Err(error) => args(
+                &w(
+                    "Löschen bei %1 hat nicht geklappt: %2",
+                    "Clearing %1 did not work: %2",
+                ),
+                &[&name, error],
+            ),
+        };
+        self.emit(
+            "uds_clear_result",
+            json!({ "name": name, "ok": result.is_ok(), "message": message }),
+        );
+        // Read that unit again so the page shows what is left.
+        let never = || false;
+        let again = scan_ecus(
+            &mut self.elm,
+            std::slice::from_ref(&def),
+            None,
+            Some(&never),
+        );
+        if let Some(ecu) = again.first().filter(|e| e.present) {
+            let mut row = uds_row(ecu);
+            row.name = name.to_string();
+            self.emit("uds_ecu_result", json!({ "row": row }));
+        }
+        self.busy(false);
+    }
+
+    // --- KWP1281 over KKL ---------------------------------------------------------
+
+    fn open_kkl(&mut self, device: &str, ecu_address: i32) {
+        self.close_kkl();
+        self.busy(true);
+        self.kkl_message(
+            w(
+                "Wecke das Steuergerät mit der 5-Baud-Adresse, das dauert etwa drei Sekunden ...",
+                "Waking the control unit with the 5-baud address, this takes about three seconds ...",
+            ),
+            false,
+        );
+
+        let mut stream = KLineStream::new();
+        if let Err(error) = stream.open(device, 9600) {
+            self.busy(false);
+            self.kkl_message(error, true);
+            return;
+        }
+        let sink = self.sink.clone();
+        let log: caruspex_protocols::KLineLog =
+            Arc::new(move |m: &str| sink.emit("log_line", json!({ "line": m })));
+        let mut kwp = VagKLine::new(stream, Some(log));
+        // The configured session type must be set before basic settings can
+        // be started.
+        kwp.set_basic_setting_session(self.settings.basic_setting_session.clamp(0, 255) as u8);
+        let ecu = Ecu::from_address(ecu_address.clamp(0, 255) as u8);
+        if let Err(error) = kwp.connect(ecu) {
+            drop(kwp);
+            self.busy(false);
+            self.emit(
+                "kkl_connected",
+                json!({ "connected": false, "identification": "" }),
+            );
+            self.kkl_message(error, true);
+            return;
+        }
+
+        let identification: Vec<String> = kwp
+            .identification()
+            .iter()
+            .map(|l| l.trim().to_string())
+            .collect();
+        let protocol_name = kwp.protocol_name();
+        let is_kwp2000 = kwp.protocol() == KLineProtocol::Kwp2000;
+        self.kwp = Some(kwp);
+        self.busy(false);
+        self.emit(
+            "kkl_connected",
+            json!({ "connected": true, "identification": identification.join("  |  ") }),
+        );
+        self.emit(
+            "kkl_protocol",
+            json!({ "protocolName": protocol_name, "isKwp2000": is_kwp2000 }),
+        );
+        self.kkl_message(
+            args(
+                &w(
+                    "Verbunden mit %1 über %2. Vor dem Start die Punkte oben prüfen.",
+                    "Connected to %1 via %2. Check the points above before starting.",
+                ),
+                &[&ecu_name(ecu), &protocol_name],
+            ),
+            false,
+        );
+        self.log(args(
+            &w("KWP1281 verbunden: %1", "KWP1281 connected: %1"),
+            &[&identification.join(" / ")],
+        ));
+    }
+
+    fn close_kkl(&mut self) {
+        self.stop_basic_setting();
+        if let Some(kwp) = self.kwp.take() {
+            let mut stream = kwp.into_stream();
+            stream.close();
+        }
+        self.emit(
+            "kkl_connected",
+            json!({ "connected": false, "identification": "" }),
+        );
+    }
+
+    fn kkl_connected(&self) -> bool {
+        self.kwp.as_ref().is_some_and(|k| k.connected())
+    }
+
+    fn start_basic_setting(&mut self, group: i32) {
+        if !self.kkl_connected() {
+            self.kkl_message(
+                w(
+                    "Erst das KKL-Kabel verbinden.",
+                    "Connect the KKL cable first.",
+                ),
+                true,
+            );
+            return;
+        }
+        self.basic_setting_group = group;
+        // The control unit drops out of basic settings if nothing arrives for
+        // about a second. We ask considerably more often.
+        self.basic_setting_timer
+            .set_interval(self.settings.basic_setting_interval_ms.max(0) as u64);
+        self.basic_setting_timer.start();
+        self.kkl_message(
+            args(
+                &w(
+                    "Grundeinstellung im Messwertblock %1 läuft. Gaspedal nicht antippen.",
+                    "Basic settings running in measuring block %1. Don't touch the accelerator pedal.",
+                ),
+                &[&group],
+            ),
+            false,
+        );
+        self.log(args(
+            &w(
+                "Grundeinstellung Block %1 gestartet",
+                "Basic settings block %1 started",
+            ),
+            &[&group],
+        ));
+    }
+
+    fn stop_basic_setting(&mut self) {
+        if self.basic_setting_timer.active {
+            self.basic_setting_timer.stop();
+            self.kkl_message(
+                w("Grundeinstellung beendet.", "Basic settings finished."),
+                false,
+            );
+            self.log(w("Grundeinstellung beendet", "Basic settings finished"));
+        }
+    }
+
+    fn basic_setting_tick(&mut self) {
+        if !self.kkl_connected() {
+            self.stop_basic_setting();
+            return;
+        }
+        let group = self.basic_setting_group.clamp(0, 255) as u8;
+        let result = self.kwp.as_mut().map(|k| k.basic_setting(group));
+        match result {
+            Some(Ok(measured)) => {
+                let rows = measured_rows(&measured);
+                self.emit("basic_setting_values", json!({ "values": rows }));
+            }
+            Some(Err(error)) => {
+                self.stop_basic_setting();
+                self.kkl_message(error, true);
+            }
+            None => self.stop_basic_setting(),
+        }
+    }
+
+    // Searches all known control units one after another. Each attempt takes
+    // a few seconds because of the 5-baud wake-up address; for control units
+    // that are not fitted, the time spent waiting for a reply comes on top.
+    fn scan_all_ecus(&mut self, device: &str, clear_attempts: i32) {
+        self.close_kkl();
+        self.cancel.store(false, Ordering::SeqCst);
+
+        let mut stream = KLineStream::new();
+        if let Err(error) = stream.open(device, 9600) {
+            self.kkl_message(error, true);
+            self.emit(
+                "scan_finished",
+                json!({ "present": 0, "withFaults": 0, "cancelled": false }),
+            );
+            return;
+        }
+
+        let list = known_ecus();
+        let total = list.len();
+        self.emit("scan_started", json!({ "total": total }));
+        self.busy(true);
+
+        let mut present = 0i32;
+        let mut with_faults = 0i32;
+        for (i, &ecu) in list.iter().enumerate() {
+            if self.cancelled() {
+                break;
+            }
+            let index = i + 1;
+            let mut row = EcuScanRow {
+                address: i32::from(ecu.address()),
+                name: ecu_name(ecu).to_string(),
+                ..EcuScanRow::default()
+            };
+            self.emit(
+                "scan_progress",
+                json!({ "ecuName": row.name, "index": index, "total": total }),
+            );
+
+            let mut probe = VagKLine::new(stream, None);
+            if probe.connect(ecu).is_err() {
+                stream = probe.into_stream();
+                row.present = false;
+                row.note = w(
+                    "meldet sich nicht, vermutlich nicht verbaut",
+                    "does not respond, probably not fitted",
+                );
+                self.emit("scan_ecu_result", json!({ "row": row }));
+                continue;
+            }
+
+            row.present = true;
+            present += 1;
+            let identification: Vec<String> = probe
+                .identification()
+                .iter()
+                .map(|l| l.trim().to_string())
+                .collect();
+            row.identification = format!(
+                "[{}]  {}",
+                probe.protocol_name(),
+                identification.join("  |  ")
+            );
+
+            match probe.read_faults() {
+                Ok(faults) => {
+                    for f in &faults {
+                        row.faults.push(FaultRow {
+                            code: format!("{:05}", f.code),
+                            kind: if f.sporadic {
+                                w("sporadisch", "intermittent")
+                            } else {
+                                w("gespeichert", "stored")
+                            },
+                            text: f.text.clone(),
+                            throttle_related: false,
+                            stored: !f.sporadic,
+                            ecu: String::new(),
+                        });
+                    }
+                    if !row.faults.is_empty() {
+                        with_faults += 1;
+                    }
+                    row.note = if row.faults.is_empty() {
+                        w("kein Eintrag", "no entries")
+                    } else {
+                        args(&w("%1 Einträge", "%1 entries"), &[&row.faults.len()])
+                    };
+
+                    // Persistent clear: read back after every attempt. Some
+                    // control units only accept the clear command on the
+                    // second try.
+                    if clear_attempts > 0 && !faults.is_empty() {
+                        let mut cleared = false;
+                        let mut attempt = 1;
+                        while attempt <= clear_attempts && !cleared {
+                            self.emit(
+                                "clear_progress",
+                                json!({ "line": args(&w("%1: lösche, Versuch %2 von %3", "%1: clearing, attempt %2 of %3"), &[&row.name, &attempt, &clear_attempts]) }),
+                            );
+                            if let Err(error) = probe.clear_faults() {
+                                self.emit(
+                                    "clear_progress",
+                                    json!({ "line": args(&w("   abgelehnt: %1", "   rejected: %1"), &[&error]) }),
+                                );
+                                sleep_ms(300);
+                                attempt += 1;
+                                continue;
+                            }
+                            sleep_ms(400);
+                            if probe.read_faults().is_ok_and(|rest| rest.is_empty()) {
+                                cleared = true;
+                            }
+                            attempt += 1;
+                        }
+                        if cleared {
+                            row.faults.clear();
+                            row.note = w("gelöscht", "cleared");
+                            with_faults -= 1;
+                            self.emit(
+                                "clear_progress",
+                                json!({ "line": args(&w("   %1: leer", "   %1: empty"), &[&row.name]) }),
+                            );
+                        } else {
+                            row.note = args(
+                                &w(
+                                    "%1 Einträge, Löschen ohne Wirkung",
+                                    "%1 entries, clearing had no effect",
+                                ),
+                                &[&row.faults.len()],
+                            );
+                            self.emit(
+                                "clear_progress",
+                                json!({ "line": args(&w("   %1: bleibt bestehen, die Ursache ist noch da", "   %1: remains, the cause is still present"), &[&row.name]) }),
+                            );
+                        }
+                    }
+                }
+                Err(error) => row.note = error,
+            }
+            stream = probe.into_stream();
+            self.emit("scan_ecu_result", json!({ "row": row }));
+        }
+
+        stream.close();
+        self.busy(false);
+        self.emit(
+            "scan_finished",
+            json!({ "present": present, "withFaults": with_faults, "cancelled": self.cancelled() }),
+        );
+    }
+
+    fn read_adaptation_channel(&mut self, channel: i32) {
+        if !self.kkl_connected() {
+            self.kkl_message(
+                w(
+                    "Erst das KKL-Kabel verbinden.",
+                    "Connect the KKL cable first.",
+                ),
+                true,
+            );
+            return;
+        }
+        self.busy(true);
+        let result = self
+            .kwp
+            .as_mut()
+            .map(|k| k.read_adaptation(channel.clamp(0, 255) as u8));
+        match result {
+            Some(Ok((value, shown))) => {
+                let rows = measured_rows(&shown);
+                self.busy(false);
+                self.emit(
+                    "adaptation_result",
+                    json!({ "channel": channel, "value": value, "shown": rows }),
+                );
+                self.kkl_message(
+                    args(
+                        &w(
+                            "Anpassungskanal %1 steht auf %2.",
+                            "Adaptation channel %1 is set to %2.",
+                        ),
+                        &[&channel, &value],
+                    ),
+                    false,
+                );
+            }
+            Some(Err(error)) => {
+                self.busy(false);
+                self.kkl_message(error, true);
+            }
+            None => self.busy(false),
+        }
+    }
+
+    fn run_actuator_test(&mut self) {
+        if !self.kkl_connected() {
+            self.kkl_message(
+                w(
+                    "Erst das KKL-Kabel verbinden.",
+                    "Connect the KKL cable first.",
+                ),
+                true,
+            );
+            return;
+        }
+        self.busy(true);
+        let result = self.kwp.as_mut().map(|k| k.actuator_test());
+        self.busy(false);
+        match result {
+            Some(Ok(actuator)) => self.emit("actuator_result", json!({ "actuator": actuator })),
+            Some(Err(error)) => self.kkl_message(error, true),
+            None => {}
+        }
+    }
+
+    fn set_basic_setting_session(&mut self, mode: i32) {
+        if let Some(kwp) = self.kwp.as_mut() {
+            kwp.set_basic_setting_session(mode.clamp(0, 255) as u8);
+        }
+        self.log(args(
+            &w(
+                "Sitzungsart für die Grundeinstellung: 0x%1",
+                "Session type for basic settings: 0x%1",
+            ),
+            &[&format!("{mode:02X}")],
+        ));
+    }
+
+    /// Applies the settings. Called at startup and after every change; also
+    /// takes effect during a running measurement.
+    pub fn apply_settings(&mut self, values: AppSettings) {
+        self.settings = values;
+        // Update running timers right away, otherwise a change would only
+        // take effect after the next connection.
+        self.poll_timer
+            .set_interval(self.settings.poll_interval_ms.max(0) as u64);
+        self.basic_setting_timer
+            .set_interval(self.settings.basic_setting_interval_ms.max(0) as u64);
+
+        self.elm
+            .set_timeout_scale(f64::from(self.settings.timeout_percent) / 100.0);
+        self.elm
+            .set_adaptive_timing(match self.settings.adaptive_timing {
+                2 => AdaptiveTiming::Aggressive,
+                1 => AdaptiveTiming::Auto,
+                _ => AdaptiveTiming::Standard,
+            });
+        self.elm.set_verbose(self.settings.log_raw);
+        if let Some(kwp) = self.kwp.as_mut() {
+            kwp.set_basic_setting_session(self.settings.basic_setting_session.clamp(0, 255) as u8);
+        }
+    }
+
+    #[cfg(test)]
+    pub fn live_running(&self) -> bool {
+        self.poll_timer.active
+    }
+}
+
+/// Bluetooth LE through caruspex-link, as the worker needs it.
+mod ble {
+    use caruspex_link::Transport;
+    use caruspex_link::ble::{BleDevice, BleTransport, bluetooth_kinds, scan_ble_devices};
+
+    use crate::rows::BleDeviceRow;
+
+    pub fn scan(milliseconds: i32) -> (Vec<BleDeviceRow>, String) {
+        match scan_ble_devices(milliseconds.max(0) as u64) {
+            Ok(devices) => (
+                devices
+                    .iter()
+                    .map(|d| BleDeviceRow {
+                        id: d.id.clone(),
+                        name: d.name.clone(),
+                        score: d.score,
+                        kinds: bluetooth_kinds(d),
+                    })
+                    .collect(),
+                String::new(),
+            ),
+            Err(error) => (Vec::new(), error),
+        }
+    }
+
+    /// The devices of a six second search that look like OBD adapters.
+    pub fn candidates() -> Result<Vec<BleDevice>, String> {
+        Ok(scan_ble_devices(6000)?
+            .into_iter()
+            .filter(|d| d.score >= 3)
+            .collect())
+    }
+
+    pub fn device(id: &str, name: &str, kinds: i32) -> BleDevice {
+        let mut d = BleDevice {
+            id: id.to_string(),
+            name: name.to_string(),
+            low_energy: kinds & 1 != 0,
+            classic: kinds & 2 != 0,
+            ..BleDevice::default()
+        };
+        if !d.low_energy && !d.classic {
+            d.low_energy = true;
+        }
+        d
+    }
+
+    pub fn open(d: &BleDevice) -> Result<(Box<dyn Transport>, String), String> {
+        let transport = BleTransport::open(d)?;
+        let profile = transport.profile().to_string();
+        Ok((Box::new(transport), profile))
+    }
+
+    pub fn kinds(d: &BleDevice) -> i32 {
+        bluetooth_kinds(d)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Mutex;
+
+    use caruspex_demo::{DemoOptions, DemoTransport};
+
+    use super::*;
+
+    #[derive(Default)]
+    pub struct Collect(pub Mutex<Vec<(String, Value)>>);
+
+    impl Sink for Collect {
+        fn emit(&self, event: &str, payload: Value) {
+            self.0.lock().unwrap().push((event.to_string(), payload));
+        }
+    }
+
+    impl Collect {
+        fn take(&self) -> Vec<(String, Value)> {
+            std::mem::take(&mut *self.0.lock().unwrap())
+        }
+        fn named(events: &[(String, Value)], name: &str) -> Vec<Value> {
+            events
+                .iter()
+                .filter(|(e, _)| e == name)
+                .map(|(_, p)| p.clone())
+                .collect()
+        }
+    }
+
+    fn demo_worker() -> (Worker, Arc<Collect>) {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.apply_settings(AppSettings::default());
+        let options = DemoOptions {
+            latency_scale: 0.0,
+            // The engine runs from the start, so the live values move.
+            engine_start_seconds: 0.0,
+            ..DemoOptions::default()
+        };
+        worker.handle(Job::OpenTransport {
+            transport: Box::new(DemoTransport::new(options)),
+            protocol_order: "6".into(),
+        });
+        (worker, sink)
+    }
+
+    #[test]
+    fn connects_and_reads_status_and_faults() {
+        let (_worker, sink) = demo_worker();
+        let events = sink.take();
+        let connected = Collect::named(&events, "connected");
+        assert_eq!(connected.len(), 1, "{events:?}");
+        assert!(!connected[0]["protocol"].as_str().unwrap().is_empty());
+        let status = Collect::named(&events, "status");
+        assert_eq!(status[0]["row"]["valid"], true);
+        let faults = Collect::named(&events, "faults");
+        let rows = faults[0]["rows"].as_array().unwrap();
+        assert!(!rows.is_empty(), "the demo car has stored codes");
+        assert!(rows.iter().any(|r| r["stored"] == true));
+        assert!(
+            !Collect::named(&events, "supported_pids")[0]["pids"]
+                .as_array()
+                .unwrap()
+                .is_empty()
+        );
+        // busy goes on and off in pairs.
+        let busy = Collect::named(&events, "busy");
+        assert_eq!(busy.last().unwrap()["active"], false);
+    }
+
+    #[test]
+    fn details_bring_vin_and_freeze_frames() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::ReadDetails);
+        let events = sink.take();
+        let info = &Collect::named(&events, "vehicle_info")[0];
+        assert_eq!(info["vin"], DemoTransport::vin());
+        assert!(
+            !Collect::named(&events, "freeze_frames")[0]["frames"]
+                .as_array()
+                .unwrap()
+                .is_empty()
+        );
+        assert!(!Collect::named(&events, "live_value").is_empty());
+    }
+
+    #[test]
+    fn live_loop_reads_values_and_stops() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::StartLive(vec![0x0C, 0x0D, 0x05]));
+        assert!(worker.live_running());
+        for _ in 0..3 {
+            std::thread::sleep(Duration::from_millis(25));
+            worker.run_due_timers();
+        }
+        worker.handle(Job::StopLive);
+        assert!(!worker.live_running());
+        let events = sink.take();
+        let values = Collect::named(&events, "live_value");
+        assert!(values.iter().any(|v| v["row"]["pid"] == 0x0C), "{values:?}");
+        assert!(
+            values
+                .iter()
+                .all(|v| v["row"]["time"].as_f64().unwrap() > 0.0)
+        );
+    }
+
+    #[test]
+    fn clearing_empties_the_demo_memory() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::ClearFaults);
+        let events = sink.take();
+        let faults = Collect::named(&events, "faults");
+        let stored = faults[0]["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|r| r["stored"] == true)
+            .count();
+        assert_eq!(stored, 0);
+    }
+
+    #[test]
+    fn health_check_reports_a_score() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::HealthCheck(1));
+        let events = sink.take();
+        let result = &Collect::named(&events, "health_result")[0]["row"];
+        let score = result["score"].as_i64().unwrap();
+        assert!((0..=100).contains(&score), "{result}");
+        assert!(result["checksRun"].as_i64().unwrap() > 0);
+        let progress = Collect::named(&events, "health_progress");
+        assert_eq!(progress.last().unwrap()["percent"], 100);
+    }
+
+    #[test]
+    fn uds_scan_finds_the_demo_units() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        // The generic sweep asks the engine first; the demo answers on
+        // 7E0, 7E1 and four body units.
+        worker.handle(Job::ScanUds("".into()));
+        let events = sink.take();
+        let started = &Collect::named(&events, "uds_scan_started")[0];
+        assert_eq!(started["generic"], true);
+        let found = Collect::named(&events, "uds_ecu_result");
+        assert!(found.len() >= 4, "{found:?}");
+        assert!(found.iter().any(|r| r["row"]["request"] == 0x7E0));
+        let finished = &Collect::named(&events, "uds_scan_finished")[0];
+        assert_eq!(finished["present"].as_u64().unwrap() as usize, found.len());
+        assert_eq!(finished["cancelled"], false);
+    }
+
+    /// Cancels the scan once it reaches the sixth unit, from inside the
+    /// event stream, the way the interface's cancel button would.
+    struct CancelAt {
+        events: Collect,
+        cancel: Arc<AtomicBool>,
+    }
+
+    impl Sink for CancelAt {
+        fn emit(&self, event: &str, payload: Value) {
+            if event == "uds_scan_progress" && payload["index"] == 5 {
+                self.cancel.store(true, Ordering::SeqCst);
+            }
+            self.events.emit(event, payload);
+        }
+    }
+
+    #[test]
+    fn uds_scan_can_be_cancelled() {
+        let cancel = Arc::new(AtomicBool::new(false));
+        let sink = Arc::new(CancelAt {
+            events: Collect::default(),
+            cancel: cancel.clone(),
+        });
+        let mut worker = Worker::new(sink.clone(), cancel);
+        worker.apply_settings(AppSettings::default());
+        worker.handle(Job::OpenTransport {
+            transport: Box::new(DemoTransport::new(DemoOptions {
+                latency_scale: 0.0,
+                ..DemoOptions::default()
+            })),
+            protocol_order: "6".into(),
+        });
+        worker.handle(Job::ScanUds("".into()));
+        let events = sink.events.take();
+        let progress = Collect::named(&events, "uds_scan_progress");
+        assert_eq!(
+            progress.len(),
+            6,
+            "stops right after the unit it was cancelled at"
+        );
+        let finished = &Collect::named(&events, "uds_scan_finished")[0];
+        assert_eq!(finished["cancelled"], true);
+    }
+
+    #[test]
+    fn adapter_probe_and_raw_command() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::ProbeAdapter);
+        worker.handle(Job::SendRaw("ATI".into()));
+        let events = sink.take();
+        let report = &Collect::named(&events, "adapter_report")[0]["row"];
+        assert_eq!(report["reachable"], true);
+        assert!(!report["verdict"].as_str().unwrap().is_empty());
+        let reply = &Collect::named(&events, "raw_reply")[0]["reply"];
+        assert!(reply.as_str().unwrap().contains("ELM327"), "{reply}");
+    }
+
+    #[test]
+    fn custom_values_of_the_demo_pack() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        let keys: Vec<i32> = built_in_packs()
+            .iter()
+            .filter(|p| p.pack == "caruspex-demo")
+            .map(|p| p.key)
+            .collect();
+        assert!(!keys.is_empty());
+        worker.handle(Job::ReadCustom(keys.clone()));
+        let events = sink.take();
+        let read = &Collect::named(&events, "custom_read")[0];
+        assert!(read["ok"].as_u64().unwrap() > 0, "{read}");
+        assert!(
+            Collect::named(&events, "live_value")
+                .iter()
+                .any(|v| keys.contains(&(v["row"]["pid"].as_i64().unwrap() as i32)))
+        );
+    }
+
+    #[test]
+    fn not_connected_answers() {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.handle(Job::ScanUds("VAG".into()));
+        worker.handle(Job::BruteForceClear(3));
+        worker.handle(Job::ReadMonitors);
+        worker.handle(Job::StartRecording("x.jsonl".into()));
+        let events = sink.take();
+        assert_eq!(
+            Collect::named(&events, "uds_scan_finished")[0]["present"],
+            0
+        );
+        assert_eq!(
+            Collect::named(&events, "clear_finished")[0]["everythingGone"],
+            false
+        );
+        assert_eq!(
+            Collect::named(&events, "monitor_results")[0]["rows"]
+                .as_array()
+                .unwrap()
+                .len(),
+            0
+        );
+        assert_eq!(
+            Collect::named(&events, "recording_state")[0]["active"],
+            false
+        );
+    }
+
+    #[test]
+    fn closing_reports_closed() {
+        let (mut worker, sink) = demo_worker();
+        sink.take();
+        worker.handle(Job::Close);
+        let events = sink.take();
+        assert_eq!(Collect::named(&events, "closed").len(), 1);
+        worker.handle(Job::ReadFaults);
+        assert!(Collect::named(&sink.take(), "faults").is_empty());
+    }
+}

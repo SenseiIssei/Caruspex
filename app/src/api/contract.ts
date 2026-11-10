@@ -68,8 +68,12 @@ export interface Commands {
   // --- Files -----------------------------------------------------------------
   // Shows a save dialog and writes the text. Returns the path, null if cancelled.
   save_text_file: Cmd<{ title: string; suggestedName: string; filters: FileFilter[]; content: string }, string | null>;
-  // Shows a save dialog and renders the HTML into a PDF. Returns the path.
+  // Shows a save dialog and renders the HTML into a PDF. Returns the path;
+  // null if cancelled, or where only the print dialog could be offered.
   save_pdf: Cmd<{ title: string; suggestedName: string; html: string }, string | null>;
+  // Writes the report without asking (--report): PDF, or HTML for .html.
+  // During a --report run the program ends afterwards.
+  write_report: Cmd<{ path: string; html: string }, boolean>;
   // Shows an open dialog and reads the file. null if cancelled.
   open_text_file: Cmd<{ title: string; filters: FileFilter[] }, OpenedTextFile | null>;
   // Only asks for a path (recording target, Torque CSV, replay file, log file).
@@ -231,6 +235,10 @@ export interface Events {
   uds_ecu_result: { row: UdsEcuRow };
   uds_scan_finished: { present: number; withFaults: number; cancelled: boolean; note: string };
   uds_clear_result: { name: string; ok: boolean; message: string };
+  // Command line (main.cpp): the page of --page once a connection has
+  // settled, and --report asking the interface for the document.
+  cli_page: { page: string };
+  cli_report: { path: string };
 }
 
 export type CommandName = keyof Commands;

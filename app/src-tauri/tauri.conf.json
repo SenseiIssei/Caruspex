@@ -13,6 +13,7 @@
     "windows": [
       {
         "label": "main",
+        "create": false,
         "title": "Caruspex - Fahrzeugdiagnose",
         "width": 1440,
         "height": 920,

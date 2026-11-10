@@ -11,6 +11,35 @@ path = "src/main.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.7", features = [] }
+serde_json = "1.0.154"
 
 [dependencies]
 tauri = { version = "2.12", features = [] }
+tauri-plugin-dialog = "2.8.3"
+tauri-plugin-opener = "2.7.3"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.154"
+ureq = { version = "2.12.1", features = ["json"] }
+chrono = { version = "0.4.42", default-features = false, features = ["clock", "std"] }
+
+caruspex-i18n.workspace = true
+caruspex-vehicles.workspace = true
+caruspex-data.workspace = true
+caruspex-link.workspace = true
+caruspex-protocols.workspace = true
+caruspex-net.workspace = true
+caruspex-record.workspace = true
+caruspex-analysis.workspace = true
+caruspex-demo.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+# The same versions wry uses, so the WebView2 handles of with_webview fit.
+webview2-com = "0.39.1"
+windows = { version = "0.62.2", features = [
+    "Win32_Foundation",
+    "Win32_System_Com",
+    "Win32_UI_Shell",
+    "Win32_Storage_FileSystem",
+] }
+windows-core = "0.62.2"
+winreg = "0.55.0"
