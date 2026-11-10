@@ -1,13 +1,16 @@
 [package]
 name = "caruspex-record"
-description = "Recordings and replay of adapter sessions, JSON writer"
+description = "Recordings and replay of adapter sessions, custom values and PID packs, JSON writer"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
 caruspex-i18n.workspace = true
+caruspex-data.workspace = true
 caruspex-link.workspace = true
+caruspex-protocols.workspace = true
+caruspex-net.workspace = true
 
 [dev-dependencies]
 caruspex-demo.workspace = true

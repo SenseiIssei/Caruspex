@@ -1,14 +1,20 @@
-//! Recordings and replay of adapter sessions, plus the small JSON writer of
-//! the console tool.
-//!
-//! CustomPids and PidPacks follow in a later round (they need the UDS code
-//! of `caruspex-protocols`).
+//! Recordings and replay of adapter sessions, custom values (Torque CSV,
+//! equations, manufacturer PID packs) and the small JSON writer of the
+//! console tool.
 #![forbid(unsafe_code)]
 
+pub mod custom_pids;
+mod generated;
 pub mod json_writer;
+pub mod pid_packs;
 pub mod recording;
 
+pub use custom_pids::{
+    CustomPid, CustomPidReader, CustomReading, PACK_KEY_BASE, TorqueEquation, USER_KEY_BASE,
+    is_custom_key, parse_request_hex, parse_torque_csv, read_custom, write_torque_csv,
+};
 pub use json_writer::{JsonWriter, ToJson};
+pub use pid_packs::{built_in_packs, pack_category, pack_names, pack_pids, pack_title};
 pub use recording::{
     RECORDING_FORMAT, RECORDING_VERSION, RecordedDirection, RecordedEvent, Recording,
     RecordingHandle, RecordingInfo, RecordingMeta, RecordingTransport, ReplayPacing,
