@@ -16,3 +16,4 @@ aqtinstall.log
 target/
 node_modules/
 app/dist/
+crates/caruspex-net/fake-j2534/Cargo.lock
