@@ -519,6 +519,7 @@ dependencies = [
  "caruspex-record",
  "caruspex-vehicles",
  "chrono",
+ "dirs",
  "serde",
  "serde_json",
  "tauri",

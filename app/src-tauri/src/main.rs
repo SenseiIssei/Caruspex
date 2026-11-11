@@ -101,6 +101,34 @@ fn main() {
         Err(error) => print_and_exit(&error, 2),
     };
 
+    // Answers that need no window come first: on a machine without a display
+    // (a server, the CI) the window system cannot even start.
+    if cli.help || cli.version || (cli.report.is_some() && !cli.connects()) {
+        // The same folder Tauri uses for app_config_dir: <config>/<identifier>.
+        let config_dir = dirs::config_dir()
+            .unwrap_or_default()
+            .join("dev.senseiissei.caruspex");
+        let values = settings::load_settings(&config_dir);
+        let code = cli
+            .language
+            .clone()
+            .unwrap_or_else(|| values.language.clone());
+        commands::apply_language(&commands::effective_language(&code));
+        if cli.help {
+            print_and_exit(&cli::help_text(), 0);
+        }
+        if cli.version {
+            print_and_exit(&format!("Caruspex {}", env!("CARGO_PKG_VERSION")), 0);
+        }
+        print_and_exit(
+            &texts::main_text(
+                "--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay",
+                "--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay",
+            ),
+            2,
+        );
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
@@ -117,21 +145,6 @@ fn main() {
             // has sent its own.
             let code = cli.language.clone().unwrap_or_else(|| values.language.clone());
             commands::apply_language(&commands::effective_language(&code));
-            if cli.help {
-                print_and_exit(&cli::help_text(), 0);
-            }
-            if cli.version {
-                print_and_exit(&format!("Caruspex {}", env!("CARGO_PKG_VERSION")), 0);
-            }
-            if cli.report.is_some() && !cli.connects() {
-                print_and_exit(
-                    &texts::main_text(
-                        "--report braucht eine Verbindung: --demo, --port, --tcp, --enet, --bluetooth oder --replay",
-                        "--report needs a connection: --demo, --port, --tcp, --enet, --bluetooth or --replay",
-                    ),
-                    2,
-                );
-            }
             // English tables for the other languages, built before any other
             // thread looks at the language.
             knowledge::init_english_names();
