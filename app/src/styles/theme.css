@@ -109,6 +109,84 @@
   --number-top: #141821;
 }
 
+/* High contrast (settings, Bedienung): black or white ground, full white or
+   black text, bright borders and stronger signal colours, for weak eyes and
+   a laptop in the sun. Muted texts stay readable at 7:1 and more. */
+:root[data-contrast="high"] {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-high: #111111;
+  --surface-hover: #1f1f1f;
+  --border: #bdbdbd;
+  --border-bright: #ffffff;
+  --sidebar: #000000;
+  --input: #000000;
+  --card-top: #000000;
+  --track: #3a3a3a;
+  --row-line: #6b6b6b;
+  --alternate: #0b0b0b;
+  --hover-line: #ffffff;
+  --scroll: #9a9a9a;
+  --scroll-hover: #ffffff;
+  --pressed: #262626;
+  --disabled: #0b0b0b;
+  --text: #ffffff;
+  --text-muted: #e8e8e8;
+  --text-faint: #cfcfcf;
+  --accent: #b9b7ff;
+  --accent-hover: #d6d5ff;
+  --accent-dim: #5a54f0;
+  --sky: #8fd0ff;
+  --good: #6cf0b4;
+  --warn: #ffd166;
+  --bad: #ff9a9a;
+  --info: #9cd0ff;
+  --warm: #ffd98a;
+  --shadow: none;
+  --shadow-soft: none;
+  --number-top: #ffffff;
+}
+
+:root[data-contrast="high"][data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-high: #f0f0f0;
+  --surface-hover: #e0e0e0;
+  --border: #4a4a4a;
+  --border-bright: #000000;
+  --sidebar: #ffffff;
+  --input: #ffffff;
+  --card-top: #ffffff;
+  --track: #c8c8c8;
+  --row-line: #8a8a8a;
+  --alternate: #f5f5f5;
+  --hover-line: #000000;
+  --scroll: #6b6b6b;
+  --scroll-hover: #000000;
+  --pressed: #d6d6d6;
+  --disabled: #f2f2f2;
+  --text: #000000;
+  --text-muted: #1a1a1a;
+  --text-faint: #333333;
+  --accent: #2f28c8;
+  --accent-hover: #1f19a0;
+  --accent-dim: #1f19a0;
+  --sky: #005a9e;
+  --good: #006b3c;
+  --warn: #7a4f00;
+  --bad: #a00000;
+  --info: #004f9e;
+  --warm: #7a4f00;
+  --number-top: #000000;
+}
+
+:root[data-contrast="high"] .card,
+:root[data-contrast="high"] .btn,
+:root[data-contrast="high"] .chip,
+:root[data-contrast="high"] .input,
+:root[data-contrast="high"] .select { border-width: 2px; }
+:root[data-contrast="high"] :focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+
 /* One fixed font per script, the lists of Theme.cpp. */
 :root[lang="zh"] { --script: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC"; }
 :root[lang="ja"] { --script: "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans CJK JP", "Noto Sans JP"; }

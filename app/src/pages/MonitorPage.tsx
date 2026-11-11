@@ -158,7 +158,18 @@ export default function MonitorPage() {
   const toggle = (group: "monitors" | "oxygen") => setCollapsed((c) => ({ ...c, [group]: !c[group] }));
 
   const groupRow = (group: "monitors" | "oxygen", title: string) => (
-    <tr className="monitor-group" onClick={() => toggle(group)}>
+    <tr
+      className="monitor-group"
+      onClick={() => toggle(group)}
+      tabIndex={0}
+      aria-expanded={!collapsed[group]}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle(group);
+        }
+      }}
+    >
       <td colSpan={6}>
         <span className="monitor-group-title">
           <Icon name={collapsed[group] ? "chevron-right" : "chevron-down"} size={14} className="monitor-chevron" />

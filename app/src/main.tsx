@@ -1,11 +1,13 @@
 // Start-up (main.cpp): settings first, then the language and the look, so
 // every page is built with the right texts. In a browser the address can
 // override them for this run, like the command line options of the Qt
-// version: ?lang=ar, ?theme=light, ?page=faults, ?mode=beginner, ?demo.
+// version: ?lang=ar, ?theme=light, ?page=faults, ?mode=beginner, ?demo,
+// and ?contrast=high for the high contrast palette.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { call, DEFAULT_SETTINGS } from "./api";
 import { effectiveLanguage, setLanguage, t } from "./i18n";
+import { setFontScale, setHighContrast } from "./lib/access";
 import { setAppearance, type Appearance } from "./lib/theme";
 import { emitApp } from "./lib/store";
 import { App } from "./shell/App";
@@ -29,6 +31,8 @@ async function boot(): Promise<void> {
   await setLanguage(language);
   await call("set_language", { code: language }).catch(() => undefined);
   setAppearance((params.get("theme") ?? settings.appearance) as Appearance);
+  setHighContrast(params.get("contrast") === "high" || !!settings.highContrast);
+  setFontScale(settings.fontScale ?? 100);
 
   session.set({ linkText: t("caruspex::MainWindow", "Nicht verbunden") });
   startSession();

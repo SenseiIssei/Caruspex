@@ -15,6 +15,7 @@ import { Icon } from "../components/Icon";
 import { Button, Card, Chip, Page, PageHeader, Select, type Option } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
 import { localeNumber, t, translator } from "../i18n";
+import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent, useInterval, usePageActive } from "../lib/hooks";
 import { onApp } from "../lib/store";
 import { cssColor, toCss, useThemeVersion } from "../lib/theme";
@@ -828,8 +829,20 @@ export default function XrayPage() {
               <div className="xray-tour-buttons">
                 {steps && steps.length > 1 ? (
                   <>
-                    <Button small icon="chevron-left" disabled={!tour} onClick={() => setTour((i) => Math.max(0, (i ?? 0) - 1))} />
-                    <Button small icon="chevron-right" disabled={(tour ?? 0) + 1 >= steps.length} onClick={() => setTour((i) => Math.min(steps.length - 1, (i ?? 0) + 1))} />
+                    <Button
+                      small
+                      icon="chevron-left"
+                      title={t(ACCESS, "Zurück")}
+                      disabled={!tour}
+                      onClick={() => setTour((i) => Math.max(0, (i ?? 0) - 1))}
+                    />
+                    <Button
+                      small
+                      icon="chevron-right"
+                      title={t(ACCESS, "Weiter")}
+                      disabled={(tour ?? 0) + 1 >= steps.length}
+                      onClick={() => setTour((i) => Math.min(steps.length - 1, (i ?? 0) + 1))}
+                    />
                   </>
                 ) : null}
                 <Button small onClick={endTour}>

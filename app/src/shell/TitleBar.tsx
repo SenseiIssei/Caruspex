@@ -62,7 +62,13 @@ export function TitleBar({
 
   return (
     <header className="titlebar" data-tauri-drag-region>
-      <button className="tool-button" title={t(TB, "Seitenleiste ein- oder ausklappen")} onClick={onToggleSidebar}>
+      <button
+        type="button"
+        className="tool-button"
+        title={t(TB, "Seitenleiste ein- oder ausklappen")}
+        aria-label={t(TB, "Seitenleiste ein- oder ausklappen")}
+        onClick={onToggleSidebar}
+      >
         <Icon name="sidebar" size={18} />
       </button>
       <div className="logo-mark" data-tauri-drag-region>
@@ -101,23 +107,38 @@ export function TitleBar({
       <button
         className={`tool-button${logOpen ? " on" : ""}`}
         title={t(TB, "Protokoll ein- oder ausblenden")}
+        aria-label={t(TB, "Protokoll ein- oder ausblenden")}
         aria-pressed={logOpen}
         onClick={onToggleLog}
       >
         <Icon name="terminal" size={18} />
       </button>
       <div className="window-buttons">
-        <button className="window-button" title={t(TB, "Minimieren")} onClick={() => windowAction("minimize")}>
+        <button
+          type="button"
+          className="window-button"
+          title={t(TB, "Minimieren")}
+          aria-label={t(TB, "Minimieren")}
+          onClick={() => windowAction("minimize")}
+        >
           <Icon name="minimise" size={16} />
         </button>
         <button
+          type="button"
           className="window-button"
           title={maximised ? t(TB, "Wiederherstellen") : t(TB, "Maximieren")}
+          aria-label={maximised ? t(TB, "Wiederherstellen") : t(TB, "Maximieren")}
           onClick={() => windowAction("toggleMaximize")}
         >
           <Icon name={maximised ? "restore" : "maximise"} size={16} />
         </button>
-        <button className="window-button close" title={t(TB, "Schließen")} onClick={() => windowAction("close")}>
+        <button
+          type="button"
+          className="window-button close"
+          title={t(TB, "Schließen")}
+          aria-label={t(TB, "Schließen")}
+          onClick={() => windowAction("close")}
+        >
           <Icon name="x" size={16} />
         </button>
       </div>

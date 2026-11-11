@@ -93,11 +93,15 @@ export function Button({
   small?: boolean;
   busy?: boolean;
 }) {
+  // A button with only an icon is named by its tooltip for screen readers.
+  const label = rest["aria-label"] ?? (!children && typeof rest.title === "string" ? rest.title : undefined);
   return (
     <button
       type="button"
       className={cx("btn", variant !== "default" && variant, small && "small", !children && "icon-only", className)}
       {...rest}
+      aria-label={label}
+      aria-busy={busy || undefined}
     >
       {busy ? <Spinner size={14} /> : icon ? <Icon name={icon} size={small ? 14 : 16} /> : null}
       {children}

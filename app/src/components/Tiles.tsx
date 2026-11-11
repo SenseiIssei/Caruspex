@@ -23,7 +23,22 @@ export function StatTile({
   onClick?: () => void;
 }) {
   return (
-    <div className={`stat-tile card flat${onClick ? " clickable" : ""}`} onClick={onClick}>
+    <div
+      className={`stat-tile card flat${onClick ? " clickable" : ""}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+    >
       <div className="stat-tile-top">
         <Icon name={icon} size={16} className="muted" />
         <span className="stat-tile-caption">{caption}</span>

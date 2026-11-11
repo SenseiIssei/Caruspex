@@ -67,7 +67,7 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
           <Button variant="ghost" small onClick={clearLog}>
             {t(MW, "Leeren")}
           </Button>
-          <Button variant="ghost" small icon="chevron-down" onClick={onClose} />
+          <Button variant="ghost" small icon="chevron-down" title={t("caruspex::TitleBar", "Protokoll ein- oder ausblenden")} onClick={onClose} />
         </div>
         <pre ref={box} className="log-text mono selectable">
           {lines.join("\n")}

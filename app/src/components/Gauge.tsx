@@ -86,7 +86,7 @@ export function Gauge({
   const text = active ? shown.toFixed(decimals) : "--";
 
   return (
-    <div className="gauge" style={{ width: size }}>
+    <div className="gauge" style={{ width: size }} role="img" aria-label={`${title}: ${active ? `${value.toFixed(decimals)} ${unit}` : "--"}`}>
       <svg width={size} height={side} viewBox={`0 0 ${side} ${side}`} aria-hidden>
         <defs>
           <linearGradient id={`${id}-ok`} x1="0" y1="1" x2="1" y2="1">
