@@ -128,12 +128,13 @@ def brand_dtcs():
 
 
 def measured(gens):
-    """The Wikidata dimensions of generated/dimensions.rs by generation index:
-    {index: [length, width, height, wheelbase, track, mass, item]}."""
+    """The dimensions of generated/dimensions.rs (makers' data and Wikidata)
+    by generation index: {index: [length, width, height, wheelbase, track,
+    mass, item, doc]}."""
     text = (VEHICLES / "generated" / "dimensions.rs").read_text(encoding="utf-8")
     row_re = re.compile(r"^\s*M \{ brand: " + STR + r", model: " + STR + r", generation: " + STR
                         + r", length: (\d+), width: (\d+), height: (\d+), wheelbase: (\d+), track: (\d+), mass: (\d+), item: "
-                        + STR + r" \},\s*$")
+                        + STR + r", doc: " + STR + r" \},\s*$")
     index = {(g[0], g[1], g[2]): i for i, g in enumerate(gens)}
     out = {}
     for line in text.splitlines():
@@ -143,8 +144,8 @@ def measured(gens):
             key = (unescape(g[0]), unescape(g[1]), unescape(g[2]))
             if key not in index:
                 sys.exit(f"dimensions: {key} is not in the catalog")
-            out[str(index[key])] = [int(v) for v in g[3:9]] + [g[9]]
-    header = re.search(r"Wikidata \(CC0\): (\d+) of", text)
+            out[str(index[key])] = [int(v) for v in g[3:9]] + [g[9], unescape(g[10])]
+    header = re.search(r"Dimensions: (\d+) of", text)
     if not header or int(header.group(1)) != len(out):
         sys.exit(f"dimensions parse mismatch: {len(out)} rows")
     return out

@@ -1,0 +1,17 @@
+# Outer dimensions for popular generations where Wikidata has none or only
+# some, from the technical data the makers published at the launch of the
+# generation (press kit or data sheet). Millimetres, body without mirrors,
+# the base body of the catalog row (5-door hatchback, saloon, liftback).
+# Facts only: every row names the document and its year. Empty fields are
+# taken from Wikidata. tools/gen_dimensions.py puts these values first and
+# fills the rest from data/wikidata/dimensions.csv.
+brand,model,generation,length,width,height,wheelbase,source
+BMW,3er,F30,4624,1811,1429,2810,"BMW Group PressClub, Der neue BMW 3er (F30) und Der neue BMW 3er Touring (F31), Technische Daten, 2011/2012: Limousine und Touring gleich lang, breit, hoch"
+BMW,4er,F32,4638,1825,1362,2810,"BMW Group PressClub, Das neue BMW 4er Coupé, Technische Daten, 2013"
+BMW,4er Gran Coupé,F36,4638,1825,1389,2810,"BMW Group PressClub, Das neue BMW 4er Gran Coupé, Technische Daten, 2014"
+Ford,Focus,Mk2,4342,1840,1497,2640,"Ford of Europe, Ford Focus 5-door, Technical Specifications, 2004"
+Ford,Focus,Mk3,4358,1823,1484,2648,"Ford of Europe, New Ford Focus 5-door, Technical Specifications, 2010"
+Ford,Focus,Mk4,4378,1825,1454,2700,"Ford of Europe, All-New Ford Focus 5-door, Technical Specifications, 2018"
+Škoda,Octavia,II,4572,1769,1462,2578,"Škoda Auto, Octavia, Technical Data, 2004"
+Škoda,Octavia,III,4659,1814,1461,2686,"Škoda Auto, Octavia, Technical Data, 2012"
+Škoda,Octavia,IV,4689,1829,1470,2686,"Škoda Auto, TD Octavia petrol diesel, Technical Data, 2020"

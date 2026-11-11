@@ -151,7 +151,7 @@ describe("x-ray layout", () => {
       const [brand, model, generation, from, to, body, powertrains] = g;
       for (const year of [from, to || 2026]) {
         const anatomy = anatomyOf(body as BodyType, brand, model, year, powertrains, 0, generation, data.measured[String(i)] ?? null);
-        if (anatomy.dimensionSource === "wikidata") measured++;
+        if (anatomy.dimensionSource !== "typical") measured++;
         for (const variant of bodyVariants(anatomy, body as BodyType)) {
           const layout = buildLayout({ anatomy, body: body as BodyType, variant, ecus: ALL_KINDS.slice(0, 8), kline: false, turbo: false });
           checkCar(layout, `${brand} ${model} ${generation} ${year} ${BodyType[variant]}`);
@@ -187,8 +187,11 @@ describe("hand-tuned shapes", () => {
 
   it("draws the BMW 4 Series Gran Coupe (F36) as a four-door fastback", () => {
     const [anatomy, body] = anatomyFor("BMW", "4er Gran Coupé", "F36");
-    expect(anatomy.dimensionSource).toBe("wikidata");
-    expect(anatomy.lengthMm).toBe(4641);
+    expect(anatomy.dimensionSource).toBe("manufacturer");
+    expect(anatomy.lengthMm).toBe(4638);
+    // 1.39 m high after the press kit (Wikidata only has the series values).
+    expect(anatomy.heightMm).toBe(1389);
+    expect(anatomy.dimensionDocument).toContain("2014");
     const shape = shapeFor(anatomy, body);
     expect(shape.source).toBe("profile");
     expect(shape.style).toBe("fastback");

@@ -23,15 +23,17 @@ type BrandCode = [string, string, string, number, number, number, boolean];
 // [key, label de, label en, brands, records]
 type FamilyRecord = [string, string, string, string, BrandCode[]];
 
-// [length, width, height, wheelbase, track, mass, Wikidata item]; 0 = none.
-export type MeasuredRecord = [number, number, number, number, number, number, string];
+// [length, width, height, wheelbase, track, mass, Wikidata item, maker's
+// document ("" for Wikidata alone)]; 0 = none.
+export type MeasuredRecord = [number, number, number, number, number, number, string, string];
 
 interface CatalogData {
   brands: BrandRecord[];
   generations: GenRecord[];
   wmi: WmiRecord[];
   countries: CountryRecord[];
-  // Wikidata dimensions by generation index (generated/dimensions.rs).
+  // Dimensions from the makers and Wikidata by generation index
+  // (generated/dimensions.rs).
   measured: Record<string, MeasuredRecord>;
 }
 
