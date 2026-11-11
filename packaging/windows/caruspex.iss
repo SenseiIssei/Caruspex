@@ -71,9 +71,9 @@ Source: "{#SourceDir}\MicrosoftEdgeWebview2Setup.exe"; DestDir: "{tmp}"; Flags: 
 ; removes the Qt libraries and plug-ins it no longer needs.
 Type: files; Name: "{app}\Qt6*.dll"
 Type: files; Name: "{app}\msvcp140*.dll"
-Type: files; Name: "{app}cruntime140*.dll"
+Type: files; Name: "{app}\vcruntime140*.dll"
 Type: files; Name: "{app}\concrt140.dll"
-Type: files; Name: "{app}ccorlib140.dll"
+Type: files; Name: "{app}\vccorlib140.dll"
 Type: files; Name: "{app}\D3Dcompiler_47.dll"
 Type: files; Name: "{app}\opengl32sw.dll"
 Type: files; Name: "{app}\*.qm"
@@ -81,12 +81,11 @@ Type: filesandordirs; Name: "{app}\platforms"
 Type: filesandordirs; Name: "{app}\styles"
 Type: filesandordirs; Name: "{app}\imageformats"
 Type: filesandordirs; Name: "{app}\iconengines"
-Type: filesandordirs; Name: "{app}	ls"
+Type: filesandordirs; Name: "{app}\tls"
 Type: filesandordirs; Name: "{app}\generic"
-Type: filesandordirs; Name: "{app}
-etworkinformation"
+Type: filesandordirs; Name: "{app}\networkinformation"
 Type: filesandordirs; Name: "{app}\printsupport"
-Type: filesandordirs; Name: "{app}	ranslations"
+Type: filesandordirs; Name: "{app}\translations"
 
 [Icons]
 Name: "{autoprograms}\Caruspex"; Filename: "{app}\caruspex.exe"
