@@ -24,11 +24,14 @@ import ThrottlePage from "../pages/ThrottlePage";
 import KklToolsPage from "../pages/KklToolsPage";
 import VehiclesPage from "../pages/VehiclesPage";
 import LexiconPage from "../pages/LexiconPage";
+import GlossaryPage from "../pages/GlossaryPage";
+import DrivePage from "../pages/DrivePage";
 import GaragePage from "../pages/GaragePage";
 import AdapterPage from "../pages/AdapterPage";
 import SettingsPage from "../pages/SettingsPage";
 
 const MW = "caruspex::MainWindow";
+const US = "caruspex::Usability";
 
 export type PageId =
   | "start"
@@ -41,6 +44,7 @@ export type PageId =
   | "tools"
   | "monitor"
   | "live"
+  | "drive"
   | "trip"
   | "performance"
   | "battery"
@@ -52,6 +56,7 @@ export type PageId =
   | "kkl"
   | "vehicles"
   | "lexicon"
+  | "glossary"
   | "garage"
   | "adapter"
   | "settings";
@@ -80,6 +85,7 @@ export const PAGES: PageEntry[] = [
   { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage, pro: true },
   { id: "monitor", icon: "stethoscope", label: () => t(MW, "Bauteilprüfung"), component: MonitorPage, pro: true },
   { id: "live", icon: "activity", label: () => t(MW, "Live-Werte"), section: () => t(MW, "Messen"), component: LivePage, pro: true },
+  { id: "drive", icon: "steering", label: () => t(US, "Fahrmodus"), component: DrivePage },
   { id: "trip", icon: "fuel", label: () => t(MW, "Bordcomputer"), component: TripPage, pro: true },
   { id: "performance", icon: "timer", label: () => t(MW, "Leistung"), component: PerformancePage, pro: true },
   { id: "battery", icon: "battery", label: () => t(MW, "Batterie"), component: BatteryPage },
@@ -91,6 +97,7 @@ export const PAGES: PageEntry[] = [
   { id: "kkl", icon: "sliders", label: () => t(MW, "Anpassung und Stellglieder"), component: KklToolsPage, pro: true },
   { id: "vehicles", icon: "car", label: () => t(MW, "Fahrzeuge"), section: () => t(MW, "Wissen"), component: VehiclesPage, pro: true },
   { id: "lexicon", icon: "book", label: () => t(MW, "Fehlercode-Lexikon"), component: LexiconPage, pro: true },
+  { id: "glossary", icon: "help", label: () => t(US, "Glossar"), component: GlossaryPage },
   { id: "garage", icon: "garage", label: () => t(MW, "Garage"), bottom: true, component: GaragePage },
   { id: "adapter", icon: "cable", label: () => t(MW, "Adapter"), bottom: true, component: AdapterPage, pro: true },
   { id: "settings", icon: "settings", label: () => t(MW, "Einstellungen"), bottom: true, component: SettingsPage },
