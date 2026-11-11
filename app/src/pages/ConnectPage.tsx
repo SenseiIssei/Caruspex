@@ -6,11 +6,15 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { call, type BleDeviceRow, type ConnectHelp, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
 import { Icon, type IconName } from "../components/Icon";
+import { TermStrip } from "../components/Term";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
 import { t, translator } from "../i18n";
+import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { navigate } from "../shell/nav";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
+import { openSetup } from "../state/setup";
+import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
 
 const tr = translator("caruspex::ConnectPage");
@@ -554,6 +558,15 @@ export default function ConnectPage() {
     if (choice?.generation) setGeneration(choice.generation, choice.year);
   });
 
+  // The first-start assistant hands over the adapter, the car and maybe
+  // the wish to connect right away.
+  useAppEvent<SetupChoice>("connect:setup", (choice) => {
+    setMode(choice.mode);
+    if (choice.generation) setGeneration(choice.generation, choice.year);
+    // After the render, so the connection uses the new choice.
+    if (choice.connect) setTimeout(() => startConnect({ mode: choice.mode }), 60);
+  });
+
   // --page connect-help: a Wi-Fi attempt to a closed port of this computer,
   // to see the connection assistant without any adapter.
   useAppEvent<string>("dev:page", (name) => {
@@ -609,7 +622,13 @@ export default function ConnectPage() {
             "Welches Protokoll das Auto spricht, findet Caruspex " +
             "selbst heraus.",
         )}
+        actions={
+          <Button icon="sparkles" onClick={() => openSetup()}>
+            {t("caruspex::Usability", "Einrichtungs-Assistent")}
+          </Button>
+        }
       />
+      <TermStrip ids={["obd", "elm327", "kkl", "can", "vin"]} />
 
       <div className="connect-columns">
         <Card className="connect-steps" title={tr("So geht's")}>
@@ -760,7 +779,7 @@ export default function ConnectPage() {
                 <div className="connect-line">
                   <Select className="grow" value={canIndex} options={canOptions} onChange={setCanIndex} disabled={canOptions.length === 0} />
                   <Select className="connect-rate" value={canRate} options={rateOptions} onChange={setCanRate} />
-                  <RefreshButton onClick={() => void refreshCanDevices()} />
+                  <RefreshButton title={tr("Anschlüsse neu suchen")} onClick={() => void refreshCanDevices()} />
                 </div>
                 <div className="hint">
                   {tr(
@@ -795,7 +814,7 @@ export default function ConnectPage() {
                 aria-autocomplete="list"
               />
               {vehicleText ? (
-                <button type="button" className="connect-clear" onClick={clearVehicle} tabIndex={-1}>
+                <button type="button" className="connect-clear" onClick={clearVehicle} tabIndex={-1} aria-label={t(ACCESS, "Eingabe leeren")}>
                   <Icon name="x" size={14} />
                 </button>
               ) : null}
