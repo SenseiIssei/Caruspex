@@ -20,8 +20,9 @@ mod text;
 pub mod tp20;
 
 pub use can_bus::{
-    CanElm, CanFrame, CanLink, J2534Device, SerialOpener, SharedCanLink, SlcanLink, j2534_devices,
-    open_can_interface, open_j2534, open_socket_can, probe_slcan, socket_can_interfaces,
+    CanElm, CanFrame, CanLink, J2534Device, KLineKind, SerialOpener, SharedCanLink, SlcanLink,
+    j2534_devices, j2534_library, open_can_interface, open_j2534, open_j2534_kline,
+    open_socket_can, probe_slcan, socket_can_interfaces,
 };
 pub use can_signals::{
     CanSignal, can_bits, decode_can_signal, parse_can_signal, parse_monitor_request,

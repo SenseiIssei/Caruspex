@@ -9,8 +9,8 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use caruspex_i18n::l;
-use caruspex_link::Transport;
 use caruspex_link::timing::now_ms;
+use caruspex_link::{ByteStream, Transport};
 
 use crate::text::{atoi, hex, is_hex, normalize, parse_hex, strtol_hex};
 
@@ -873,6 +873,67 @@ pub fn open_j2534(library: &str, bitrate: u32) -> Result<Box<dyn CanLink>, Strin
     }
 }
 
+/// The K-line protocols of a PassThru device.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum KLineKind {
+    /// ProtocolID 3.
+    Iso9141,
+    /// ProtocolID 4 (KWP2000 on the K-line).
+    Iso14230,
+}
+
+/// The driver DLL for a registered device name, a DLL path as it is, or the
+/// first usable driver when `place` is empty.
+pub fn j2534_library(place: &str) -> String {
+    let all = j2534_devices();
+    let mut library = place.to_string();
+    for d in &all {
+        if d.name == place {
+            library = d.library.clone();
+        }
+    }
+    if library.is_empty()
+        && let Some(usable) = all.iter().find(|d| d.usable)
+    {
+        library = usable.library.clone();
+    }
+    library
+}
+
+/// The K-line of a PassThru device as a byte stream for KWP1281 and
+/// KWP2000, with the 5-baud and the fast init done by the device. `device`
+/// is a registered name or a DLL path (empty: the first usable driver).
+/// Returns the stream and its name for the log.
+pub fn open_j2534_kline(
+    device: &str,
+    kind: KLineKind,
+    baud: u32,
+) -> Result<(Box<dyn ByteStream>, String), String> {
+    #[cfg(windows)]
+    {
+        let library = j2534_library(device);
+        if library.is_empty() {
+            return Err(l(
+                "Kein J2534-Gerät eingerichtet. Ist der Treiber des Herstellers installiert?",
+                "No J2534 device set up. Is the maker's driver installed?",
+            )
+            .into());
+        }
+        let stream = crate::j2534::open_kline(&library, kind, baud)?;
+        let name = stream.name();
+        Ok((Box::new(stream), name))
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (device, kind, baud);
+        Err(l(
+            "J2534-Geräte gibt es nur unter Windows.",
+            "J2534 devices exist on Windows only.",
+        )
+        .into())
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Choosing an interface
 // ---------------------------------------------------------------------------
@@ -908,21 +969,7 @@ pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<C
             Box::new(slcan)
         }
         "socketcan" => open_socket_can(if place.is_empty() { "can0" } else { place })?,
-        "j2534" => {
-            let all = j2534_devices();
-            let mut library = place.to_string();
-            for d in &all {
-                if d.name == place {
-                    library = d.library.clone();
-                }
-            }
-            if library.is_empty()
-                && let Some(usable) = all.iter().find(|d| d.usable)
-            {
-                library = usable.library.clone();
-            }
-            open_j2534(&library, bitrate)?
-        }
+        "j2534" => open_j2534(&j2534_library(place), bitrate)?,
         _ => {
             return Err(format!(
                 "{}{}",
