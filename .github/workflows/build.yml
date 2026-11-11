@@ -63,6 +63,9 @@ jobs:
       - name: Translations are complete
         run: python tools/i18n_rust.py --strict
 
+      - name: README language bar is current
+        run: python tools/readme_languages.py --check
+
       - name: Interface
         env:
           I18N_STRICT: "1"
