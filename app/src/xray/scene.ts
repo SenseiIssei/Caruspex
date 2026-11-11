@@ -374,7 +374,7 @@ export class XrayScene {
     this.controls.minDistance = Math.max(0.8, L * 0.2);
     this.controls.maxDistance = L * 3.2;
     // Three quarters from the front left, far enough for the whole car.
-    const distance = (L * 0.56) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    const distance = (L * 0.5) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
     this.home.target.set(0, H * 0.38, 0);
     this.home.position.copy(new THREE.Vector3(0.62, 0.55, 0.62).normalize().multiplyScalar(distance).add(this.home.target));
     if (!keepView) {
