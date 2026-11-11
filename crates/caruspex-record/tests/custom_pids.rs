@@ -533,6 +533,13 @@ fn reading_the_demo_pack_from_the_demo_car() {
         assert!(v["Supply voltage (engine control unit)"] > 13.5);
         assert!(v["Supply voltage (engine control unit)"] < 14.5);
         assert!(v["Engine speed (OBD)"] > 600.0);
+        // The odometer of the cluster (whole km) and the ABS (steps of 10 km).
+        let cluster = v["Odometer (instrument cluster)"];
+        assert!((48_213.0..48_300.0).contains(&cluster), "{cluster}");
+        assert_eq!(cluster.fract(), 0.0);
+        let abs = v["Odometer (ABS)"];
+        assert_eq!(abs % 10.0, 0.0);
+        assert!(cluster - abs >= 0.0 && cluster - abs < 10.0, "{abs}");
 
         // The engine was addressed once for all its values (one request for
         // the two values of 1010 too), and the default addressing is back.

@@ -21,7 +21,8 @@
 //! answer only this way: ABS 760, airbag 737, instrument cluster 720 and
 //! climate 744, each on request + 8. The engine also has a few maker values
 //! under service 22 (oil level, oil temperature, starts, a multi-frame block),
-//! read by the demo pack of the custom values (data/pids/caruspex-demo.csv).
+//! and the instrument cluster and the ABS keep the odometer, all read by the
+//! demo pack of the custom values (data/pids/caruspex-demo.csv).
 //!
 //! For tests the clock can be injected (see [`DemoClock`]) and the answer
 //! delay switched off, so every response is deterministic.

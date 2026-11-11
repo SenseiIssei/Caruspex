@@ -1,7 +1,7 @@
 // Demo answers for the measure pages: the trip computer, the performance
 // timer and the battery test of core/analysis ported to TypeScript, the
 // adapter voltage, and the manufacturer values (the packs of data/pids and
-// the made-up identifiers 1001 to 1010 of the demo engine).
+// the made-up identifiers 1001 to 1011 of the demo car).
 import { t } from "../../../i18n";
 import type {
   BatteryInput,
@@ -1232,6 +1232,10 @@ function answer(v: PackValue): { value: number } | { error: string } {
           : { value: (2456000 + Math.floor(s.runTime)) / 3600 };
     }
   }
+  // The odometer of the instrument cluster (whole km) and the ABS (steps of
+  // ten km), identifier 1011 on both, like crates/caruspex-demo.
+  if (v.request === "221011" && v.header === "720") return { value: Math.floor(s.odometer) };
+  if (v.request === "221011" && v.header === "760") return { value: Math.floor(s.odometer / 10) * 10 };
   return { error: L("Keine Antwort vom Steuergerät (NO DATA).", "No answer from the control unit (NO DATA).") };
 }
 

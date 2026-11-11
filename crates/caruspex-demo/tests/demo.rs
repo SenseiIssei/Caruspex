@@ -686,3 +686,32 @@ fn demo_engine_maker_values_and_identification_over_uds() {
     assert_eq!(rig.messages("221004")[0], vec![0x62, 0x10, 0x04, 0x00]);
     assert_eq!(rig.messages("221001")[0][3], 74);
 }
+
+#[test]
+fn cluster_and_abs_keep_the_odometer_of_pid_a6() {
+    let mut rig = Rig::connected(300.0);
+    // PID A6 of the engine, in tenths of a km.
+    let a6 = rig.live(0xA6);
+    let engine = f64::from(u32::from_be_bytes([a6[0], a6[1], a6[2], a6[3]])) / 10.0;
+    assert!(engine > 48_213.0, "{engine}");
+
+    // Instrument cluster: whole km, 32 bit.
+    assert_eq!(rig.ask("ATSH720"), "OK\r\r>");
+    let cluster = rig.messages("221011")[0].clone();
+    assert_eq!(&cluster[..3], [0x62, 0x10, 0x11]);
+    let km = f64::from(u32::from_be_bytes([
+        cluster[3], cluster[4], cluster[5], cluster[6],
+    ]));
+    assert_eq!(km, engine.floor());
+
+    // ABS: steps of ten km, 16 bit, so it lags at most ten km behind.
+    assert_eq!(rig.ask("ATSH760"), "OK\r\r>");
+    let abs = rig.messages("221011")[0].clone();
+    assert_eq!(abs.len(), 5);
+    let km = f64::from(u16::from_be_bytes([abs[3], abs[4]])) * 10.0;
+    assert!(engine - km >= 0.0 && engine - km < 10.0, "{km} {engine}");
+
+    // Only those two units know it; the others refuse the identifier.
+    assert_eq!(rig.ask("ATSH737"), "OK\r\r>");
+    assert_eq!(rig.ask("221011"), "7F 22 31 \r\r>");
+}
