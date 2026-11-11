@@ -19,6 +19,13 @@ updates:
     groups:
       rust:
         patterns: ["*"]
+    # These follow tauri's wry: app/src-tauri/src/webview_win.rs hands the
+    # WebView2 handles of wry to our own code, so they must be exactly the
+    # versions wry uses. They are raised together with tauri, never alone.
+    ignore:
+      - dependency-name: windows
+      - dependency-name: windows-core
+      - dependency-name: webview2-com
 
   # The interface: React, Vite, TypeScript and the Tauri JavaScript API.
   - package-ecosystem: npm

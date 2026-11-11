@@ -46,6 +46,7 @@ caruspex-demo.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 # The same versions wry uses, so the WebView2 handles of with_webview fit.
+# Dependabot leaves these three alone; they are raised together with tauri.
 webview2-com = "0.39.1"
 windows = { version = "0.62.2", features = [
     "Win32_Foundation",
