@@ -6,10 +6,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import { call } from "../api";
 import type { AppSettings } from "../api";
 import { DEFAULT_SETTINGS } from "../api";
-import { Button, Card, Check, NumberInput, Page, PageHeader, Select, TextInput } from "../components/ui";
+import { Button, Card, Check, NumberInput, Page, PageHeader, Segmented, Select, TextInput } from "../components/ui";
 import { LANGUAGES, translator } from "../i18n";
 import { setAppearance, type Appearance } from "../lib/theme";
-import { applySettings, useSettings } from "../state/session";
+import { applySettings, setProMode, useProMode, useSettings } from "../state/session";
 import "./SettingsPage.css";
 
 const tr = translator("caruspex::SettingsPage");
@@ -77,6 +77,7 @@ function SettingNumber({
 
 export default function SettingsPage() {
   const values = useSettings();
+  const pro = useProMode();
   // The path field reports on leaving it (editingFinished), not per key.
   const [logPath, setLogPath] = useState(values.logPath);
   useEffect(() => setLogPath(values.logPath), [values.logPath]);
@@ -90,7 +91,7 @@ export default function SettingsPage() {
 
   // The last port is no setting of this page; it stays.
   const reset = () => {
-    const defaults = { ...DEFAULT_SETTINGS, lastPort: values.lastPort };
+    const defaults = { ...DEFAULT_SETTINGS, lastPort: values.lastPort, proMode: values.proMode };
     setAppearance(defaults.appearance as Appearance);
     void applySettings(defaults);
   };
@@ -173,7 +174,29 @@ export default function SettingsPage() {
         )}
       />
 
-      <Group title={tr("Verbindung")} glow>
+      <Group title={tr("Bedienung")} glow>
+        <Full>
+          <Segmented
+            value={pro ? "pro" : "beginner"}
+            options={[
+              { value: "beginner", label: tr("Einsteiger"), icon: "lightbulb" },
+              { value: "pro", label: tr("Profi"), icon: "wrench" },
+            ]}
+            onChange={(v) => setProMode(v === "pro")}
+          />
+        </Full>
+        <Hint>
+          {pro
+            ? tr(
+                "Profis sehen alles: Live-Werte, Messungen, alle Steuergeräte, KKL, Anpassung und Stellglieder, Drosselklappe, Rohbefehle und Adressen.",
+              )
+            : tr(
+                "Einsteiger sehen nur die Seiten für den Alltag. Live-Werte, Messungen, alle Steuergeräte, KKL, Anpassung, Drosselklappe, Rohbefehle und das Wissen kommen mit dem Profimodus.",
+              )}
+        </Hint>
+      </Group>
+
+      <Group title={tr("Verbindung")}>
         <Row label={tr("Baudrate des Adapters")}>
           <Select value={pick(baudOptions, values.baudOverride)} options={baudOptions} onChange={(v) => change({ baudOverride: v })} />
         </Row>
@@ -254,38 +277,40 @@ export default function SettingsPage() {
         </Full>
       </Group>
 
-      <Group title={tr("K-Line und KKL-Kabel")}>
-        <Row label={tr("Voreingestelltes Steuergerät")}>
-          <Select value={pick(ecuOptions, values.kklEcuAddress)} options={ecuOptions} onChange={(v) => change({ kklEcuAddress: v })} />
-        </Row>
-        <Row label={tr("Sitzungsart bei KWP2000")}>
-          <Select
-            value={pick(sessionOptions, values.basicSettingSession)}
-            options={sessionOptions}
-            onChange={(v) => change({ basicSettingSession: v })}
-          />
-        </Row>
-        <Hint>
-          {tr(
-            "Welche Sitzungsart der 1.6 FSI für die Grundeinstellung verlangt, ist nicht öffentlich dokumentiert. Deshalb steht sie hier zur Wahl. Lehnt das Steuergerät ab, ist die nächste einen Versuch wert. Nur den KWP1281-Weg betrifft das nicht, dort gibt es diese Wahl nicht.",
-          )}
-        </Hint>
-        <Row label={tr("Nachfragetakt in der Grundeinstellung")}>
-          <SettingNumber
-            value={values.basicSettingIntervalMs}
-            min={50}
-            max={2000}
-            step={10}
-            suffix={tr(" ms").trim()}
-            onChange={(v) => change({ basicSettingIntervalMs: v })}
-          />
-        </Row>
-        <Hint>
-          {tr(
-            "Das Steuergerät fällt aus der Grundeinstellung, wenn länger als etwa eine Sekunde nichts kommt. Deutlich höher als 500 ms zu gehen ist riskant, während die Drosselklappe lernt.",
-          )}
-        </Hint>
-      </Group>
+      {pro ? (
+        <Group title={tr("K-Line und KKL-Kabel")}>
+          <Row label={tr("Voreingestelltes Steuergerät")}>
+            <Select value={pick(ecuOptions, values.kklEcuAddress)} options={ecuOptions} onChange={(v) => change({ kklEcuAddress: v })} />
+          </Row>
+          <Row label={tr("Sitzungsart bei KWP2000")}>
+            <Select
+              value={pick(sessionOptions, values.basicSettingSession)}
+              options={sessionOptions}
+              onChange={(v) => change({ basicSettingSession: v })}
+            />
+          </Row>
+          <Hint>
+            {tr(
+              "Welche Sitzungsart der 1.6 FSI für die Grundeinstellung verlangt, ist nicht öffentlich dokumentiert. Deshalb steht sie hier zur Wahl. Lehnt das Steuergerät ab, ist die nächste einen Versuch wert. Nur den KWP1281-Weg betrifft das nicht, dort gibt es diese Wahl nicht.",
+            )}
+          </Hint>
+          <Row label={tr("Nachfragetakt in der Grundeinstellung")}>
+            <SettingNumber
+              value={values.basicSettingIntervalMs}
+              min={50}
+              max={2000}
+              step={10}
+              suffix={tr(" ms").trim()}
+              onChange={(v) => change({ basicSettingIntervalMs: v })}
+            />
+          </Row>
+          <Hint>
+            {tr(
+              "Das Steuergerät fällt aus der Grundeinstellung, wenn länger als etwa eine Sekunde nichts kommt. Deutlich höher als 500 ms zu gehen ist riskant, während die Drosselklappe lernt.",
+            )}
+          </Hint>
+        </Group>
+      ) : null}
 
       <Group title={tr("Protokoll")}>
         <Full>

@@ -7,6 +7,7 @@ import { call } from "../api";
 import type { DtcInfo, FaultRow, FreezeFrameRow, ZoneInfo } from "../api";
 import { CarZone } from "../api";
 import { Icon } from "../components/Icon";
+import { ProHint } from "../components/ProHint";
 import { confirm } from "../components/Modal";
 import { toast } from "../components/Toast";
 import { Button, Card, Page, PageHeader, Pill } from "../components/ui";
@@ -18,6 +19,7 @@ import { useSession, useSettings } from "../state/session";
 import "./FaultsPage.css";
 
 const tr = translator("caruspex::FaultsPage");
+const tw = translator("caruspex::WhatToDoPage");
 
 // Colour for a Severity value (severityColour in FaultsPage.cpp): Info, Low,
 // Medium, High, Critical.
@@ -281,6 +283,7 @@ export default function FaultsPage() {
           {tr("Mindestens ein Code betrifft die Drosselklappe. Löschen allein reicht da erfahrungsgemäß nicht, die Klappe muss angelernt werden.")}
         </div>
       ) : null}
+      {connected && throttle ? <ProHint text={tw("Die Drosselklappe anlernen kann der Profimodus.")} page="throttle" /> : null}
 
       {clearLogVisible ? (
         <pre ref={logRef} className="faults-clear-log mono selectable fade-in">
@@ -340,6 +343,11 @@ export default function FaultsPage() {
           </Card>
         )}
       </div>
+
+      <ProHint
+        text={tw("Hier steht der Fehlerspeicher des Motors. Airbag, ABS, Getriebe und alle anderen Steuergeräte liest der Profimodus.")}
+        page="ecus"
+      />
 
       <div className="hint faults-footer">
         {tr(

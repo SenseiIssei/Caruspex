@@ -1,10 +1,10 @@
 // Start-up (main.cpp): settings first, then the language and the look, so
 // every page is built with the right texts. In a browser the address can
 // override them for this run, like the command line options of the Qt
-// version: ?lang=ar, ?theme=light, ?page=faults, ?demo.
+// version: ?lang=ar, ?theme=light, ?page=faults, ?mode=beginner, ?demo.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { call } from "./api";
+import { call, DEFAULT_SETTINGS } from "./api";
 import { effectiveLanguage, setLanguage, t } from "./i18n";
 import { setAppearance, type Appearance } from "./lib/theme";
 import { emitApp } from "./lib/store";
@@ -19,7 +19,10 @@ import "./styles/widgets.css";
 async function boot(): Promise<void> {
   const params = new URLSearchParams(location.search);
   const settings = await call("load_settings").catch(() => settingsStore.get().values);
-  settingsStore.set({ values: settings, loaded: true });
+  // ?mode=beginner or ?mode=pro (--mode) for this run, the setting stays.
+  const mode = params.get("mode");
+  const modeOverride = mode === "pro" ? true : mode === "beginner" ? false : null;
+  settingsStore.set({ values: { ...DEFAULT_SETTINGS, ...settings }, loaded: true, modeOverride });
 
   const language = effectiveLanguage(params.get("lang") ?? settings.language);
   await setLanguage(language);

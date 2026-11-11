@@ -3,7 +3,7 @@
 // live gauges.
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { call } from "../api";
-import type { HealthFindingRow, LiveRow, PidInfo } from "../api";
+import type { HealthFindingRow, LiveRow, PidInfo, Urgency } from "../api";
 import { Gauge } from "../components/Gauge";
 import type { IconName } from "../components/Icon";
 import { Icon } from "../components/Icon";
@@ -15,11 +15,14 @@ import { fixed, localeNumber, t, translator } from "../i18n";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { emitApp } from "../lib/store";
 import { navigate, openReport } from "../shell/nav";
-import { live, recordCheck, session, useSession, type DashboardFinding } from "../state/session";
+import { live, recordCheck, session, useProMode, useSession, type DashboardFinding } from "../state/session";
+import { useAdvice } from "../state/advice";
 import { describeFault, severityColor, severityTone } from "./FaultsPage";
+import { TIER_TONE, reportTone, tierTitle } from "./WhatToDoPage";
 import "./DashboardPage.css";
 
 const tr = translator("caruspex::DashboardPage");
+const tw = translator("caruspex::WhatToDoPage");
 const HP = "caruspex::HealthPage";
 
 // What can be put on a gauge, in menu order. Names, units and ranges come
@@ -96,6 +99,7 @@ export default function DashboardPage() {
   const faults = useSession((s) => s.faults);
   const haveRead = useSession((s) => s.haveFaults);
   const status = useSession((s) => s.status);
+  const pro = useProMode();
   const brand = identity?.brand ?? "";
 
   // The result of a full health check replaces the page's own rating until
@@ -277,16 +281,18 @@ export default function DashboardPage() {
               <Button variant="primary" icon={connected ? "sparkles" : "plug"} onClick={primary}>
                 {connected ? tr("Auto prüfen") : tr("Verbinden")}
               </Button>
-              <Button
-                icon="activity"
-                disabled={!connected}
-                onClick={() => {
-                  navigate("live");
-                  emitApp("live:toggle");
-                }}
-              >
-                {tr("Live-Werte")}
-              </Button>
+              {pro ? (
+                <Button
+                  icon="activity"
+                  disabled={!connected}
+                  onClick={() => {
+                    navigate("live");
+                    emitApp("live:toggle");
+                  }}
+                >
+                  {tr("Live-Werte")}
+                </Button>
+              ) : null}
               <Button icon="file" disabled={!connected} title={tr("Alles Gelesene als PDF speichern oder drucken")} onClick={openReport}>
                 {tr("Prüfbericht")}
               </Button>
@@ -297,6 +303,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </Card>
+
+      <WhatToDoCard connected={connected} />
 
       <div className="dash-middle">
         <Card className="dash-health">
@@ -327,6 +335,42 @@ export default function DashboardPage() {
 
       <GaugeCard connected={connected} />
     </Page>
+  );
+}
+
+// --- What to do -------------------------------------------------------------------------
+
+// "Was soll ich jetzt tun?" in short: the verdict, how many points per step,
+// the most urgent one, and the way to the page.
+function WhatToDoCard({ connected }: { connected: boolean }) {
+  const report = useAdvice();
+  const tone = reportTone(report);
+  const first = report && !report.nothingRead ? report.items[0] : undefined;
+  return (
+    <Card className="dash-todo" style={{ "--tone": tone } as CSSProperties}>
+      <div className="dash-todo-row">
+        <div className="dash-todo-text">
+          <div className="eyebrow">{tw("Was soll ich jetzt tun?")}</div>
+          <h2 className="section-title">{report?.headline ?? ""}</h2>
+          <div className="subtle dash-todo-first">
+            {first ? first.title : (report?.summary ?? "")}
+          </div>
+        </div>
+        {report && !report.nothingRead ? (
+          <div className="dash-todo-counts">
+            {([0, 1, 2] as Urgency[]).map((u) => (
+              <span key={u} className="dash-todo-count" style={{ "--tone": TIER_TONE[u] } as CSSProperties}>
+                <strong>{report.items.filter((i) => i.urgency === u).length}</strong>
+                {tierTitle(u)}
+              </span>
+            ))}
+          </div>
+        ) : null}
+        <Button variant={connected ? "primary" : "default"} icon="chevron-right" onClick={() => navigate("todo")}>
+          {tw("Ansehen")}
+        </Button>
+      </div>
+    </Card>
   );
 }
 
