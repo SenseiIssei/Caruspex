@@ -152,9 +152,9 @@ Erledigt im November 2026: die ganze Anwendung neu, mit gleichem Verhalten.
 - [x] Garage im alten Format, Einstellungen aus der Registry übernommen, Windows-Installer mit gleicher AppId aktualisiert eine 0.8 an Ort und Stelle
 - [x] Klassisches Bluetooth direkt über RFCOMM (Windows, Linux), Bluetooth LE über btleplug
 - [x] Neue CI: Prüfungen, Tests und Pakete für Windows, Linux (AppImage und .deb) und macOS
-- [ ] PDF-Bericht ohne Druckdialog auch auf macOS und Linux (Windows schreibt direkt über WebView2)
-- [ ] `--shot` für Bilder auch auf macOS und Linux
-- [ ] Übernahme der macOS-Einstellungen (plist) der Qt-Fassung
+- [x] PDF-Bericht ohne Druckdialog auch auf macOS und Linux: Windows über WebView2 (PrintToPdf), macOS über WKWebView (createPDF), Linux über einen WebKitGTK-Druckauftrag an GTKs Dateidrucker; der Druckdialog bleibt nur als Ausweg, wenn das scheitert
+- [x] `--shot` für Bilder auch auf macOS und Linux (WKWebView takeSnapshot, WebKitGTK get_snapshot); der Rauchtest öffnet dort das Demo-Auto und schreibt Bild und PDF-Bericht, unter Linux mit xvfb
+- [x] Übernahme der macOS-Einstellungen der Qt-Fassung aus `~/Library/Preferences/com.caruspex.Caruspex.plist`
 
 # Großer Ausbauplan ab 0.8.0
 
