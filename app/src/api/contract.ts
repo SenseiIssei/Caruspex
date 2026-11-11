@@ -228,7 +228,9 @@ export interface Events {
   log_line: { line: string };
   // Download of an update; total is 0 when the size is unknown.
   update_progress: { received: number; total: number };
-  connected: { adapter: string; transport: string; protocol: string };
+  // rawCan: the connection runs over a raw CAN interface (J2534, SLCAN,
+  // SocketCAN), so the KKL pages can use VAG TP 2.0 on it.
+  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };

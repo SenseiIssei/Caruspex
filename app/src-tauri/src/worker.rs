@@ -36,11 +36,14 @@ use caruspex_link::{
     AdaptiveTiming, Elm327, KLineStream, SerialTransport, TcpTransport, Transport, enumerate_ports,
     probe_adapter,
 };
-use caruspex_net::{CanElm, SlcanLink, open_can_interface, open_network_car, probe_slcan};
+use caruspex_net::{
+    CanElm, KLineKind, SharedCanLink, SlcanLink, Tp20, open_can_interface, open_j2534_kline,
+    open_network_car, probe_slcan,
+};
 use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
 use caruspex_protocols::{
-    Ecu, Fault, KLineProtocol, LiveValue, MeasuringValue, Obd2, Uds, UdsEcu, VagKLine,
-    VehicleStatus, scan_ecus,
+    Ecu, Fault, KLineProtocol, LiveValue, MeasuringValue, Obd2, Uds, UdsEcu, VagDiagnosis,
+    VagKLine, VagTp20, VehicleStatus, scan_ecus,
 };
 use caruspex_record::{
     CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, USER_KEY_BASE, active_recording,
@@ -61,6 +64,14 @@ pub fn app_seconds() -> f64 {
     static START: OnceLock<Instant> = OnceLock::new();
     START.get_or_init(Instant::now).elapsed().as_secs_f64()
 }
+
+/// The port choice of the KKL pages for TP 2.0 on the connected CAN interface.
+pub const TP20_DEVICE: &str = "tp20";
+/// The port choice of the KKL pages for the K-line of a J2534 device:
+/// this prefix and the driver.
+pub const J2534_DEVICE_PREFIX: &str = "j2534:";
+/// Keep-alive of an open KKL or TP 2.0 session.
+const KKL_KEEP_ALIVE_MS: u64 = 1000;
 
 /// Where the worker's events go: the Tauri window, or a list in the tests.
 pub trait Sink: Send + Sync + 'static {
@@ -509,7 +520,15 @@ pub struct Worker {
     custom_poll_keys: Vec<i32>,
     custom_turn: bool,
     user_pids: Vec<CustomPid>,
-    kwp: Option<VagKLine<KLineStream>>,
+    /// The VAG control unit session of the KKL pages: K-line (KKL cable or
+    /// J2534) or TP 2.0 on the CAN interface of the connection.
+    kwp: Option<Box<dyn VagDiagnosis>>,
+    /// The session runs on `can_link` (TP 2.0).
+    kkl_on_can: bool,
+    /// The raw CAN interface of the current connection, shared with its ELM
+    /// front end, for TP 2.0.
+    can_link: Option<SharedCanLink>,
+    kkl_keep_alive_timer: Timer,
     basic_setting_timer: Timer,
     basic_setting_group: i32,
     voltage_timer: Timer,
@@ -536,6 +555,9 @@ impl Worker {
             custom_turn: false,
             user_pids: Vec::new(),
             kwp: None,
+            kkl_on_can: false,
+            can_link: None,
+            kkl_keep_alive_timer: Timer::default(),
             basic_setting_timer: Timer::default(),
             basic_setting_group: 60,
             voltage_timer: Timer::default(),
@@ -562,6 +584,7 @@ impl Worker {
     }
     /// A connection attempt starts: forget what the last one found out.
     fn begin_connect(&mut self, kind: LinkKind) {
+        self.forget_can_link();
         self.facts = ConnectFacts {
             kind,
             ..ConnectFacts::default()
@@ -619,6 +642,7 @@ impl Worker {
             &self.poll_timer,
             &self.basic_setting_timer,
             &self.voltage_timer,
+            &self.kkl_keep_alive_timer,
         ]
         .iter()
         .filter(|t| t.active)
@@ -674,6 +698,10 @@ impl Worker {
         if self.voltage_timer.due(now) {
             self.voltage_tick();
             self.voltage_timer.rearm();
+        }
+        if self.kkl_keep_alive_timer.due(now) {
+            self.kkl_keep_alive_tick();
+            self.kkl_keep_alive_timer.rearm();
         }
     }
 
@@ -822,6 +850,7 @@ impl Worker {
                 "adapter": self.elm.version(),
                 "transport": self.elm.transport_name(),
                 "protocol": self.elm.protocol_text(),
+                "rawCan": self.can_link.is_some(),
             }),
         );
         Ok(())
@@ -931,12 +960,14 @@ impl Worker {
                             format!("SLCAN {candidate_device}"),
                             500000,
                         );
+                        self.can_link = Some(front.shared_link());
                         if self.finish_connect(Box::new(front), "67", false) {
                             self.emit("adapter_found", json!({ "device": candidate_device }));
                             self.busy(false);
                             self.refresh_status_and_faults();
                             return;
                         }
+                        self.can_link = None;
                     }
                 }
             }
@@ -1155,8 +1186,13 @@ impl Worker {
             &w("CAN-Schnittstelle offen: %1", "CAN interface open: %1"),
             &[&transport.name()],
         ));
+        // TP 2.0 for older VAG cars uses the same interface.
+        self.can_link = Some(transport.shared_link());
         // 11 bit first, then 29 bit; a car that answers neither is listened to.
         let ok = self.finish_connect(Box::new(transport), "67", true);
+        if !ok {
+            self.can_link = None;
+        }
         self.busy(false);
         if ok {
             self.refresh_status_and_faults();
@@ -1241,6 +1277,7 @@ impl Worker {
 
     fn close_adapter(&mut self) {
         self.stop_live();
+        self.forget_can_link();
         self.elm.disconnect();
         self.obd_ready = false;
         self.emit("closed", json!({}));
@@ -2337,33 +2374,79 @@ impl Worker {
 
     // --- KWP1281 over KKL ---------------------------------------------------------
 
+    /// The VAG session for a choice of the port lists: a serial port with a
+    /// KKL cable, "j2534:<driver>" for the K-line of a PassThru device, or
+    /// "tp20" for TP 2.0 on the CAN interface of the current connection.
+    fn open_vag_unit(
+        &mut self,
+        device: &str,
+        log: Option<caruspex_protocols::KLineLog>,
+    ) -> Result<Box<dyn VagDiagnosis>, String> {
+        if device == TP20_DEVICE {
+            let Some(shared) = self.can_link.clone() else {
+                return Err(l(
+                    "Für TP 2.0 erst über eine CAN-Schnittstelle (J2534, SLCAN, SocketCAN) mit dem Auto verbinden.",
+                    "For TP 2.0, connect to the car through a CAN interface (J2534, SLCAN, SocketCAN) first.",
+                )
+                .to_string());
+            };
+            self.kkl_on_can = true;
+            let tp20 = Tp20::new(Box::new(shared));
+            self.log(args(
+                l("TP 2.0 über %1", "TP 2.0 via %1"),
+                &[&caruspex_link::MessageLink::name(&tp20)],
+            ));
+            return Ok(Box::new(VagTp20::new(tp20, log)));
+        }
+        self.kkl_on_can = false;
+        if let Some(driver) = device.strip_prefix(J2534_DEVICE_PREFIX) {
+            let (stream, name) = open_j2534_kline(driver, KLineKind::Iso9141, 9600)?;
+            self.log(args(l("K-Line über %1", "K-line via %1"), &[&name]));
+            return Ok(Box::new(VagKLine::new(stream, log)));
+        }
+        let mut stream = KLineStream::new();
+        stream.open(device, 9600)?;
+        Ok(Box::new(VagKLine::new(stream, log)))
+    }
+
     fn open_kkl(&mut self, device: &str, ecu_address: i32) {
         self.close_kkl();
         self.busy(true);
         self.kkl_message(
-            w(
-                "Wecke das Steuergerät mit der 5-Baud-Adresse, das dauert etwa drei Sekunden ...",
-                "Waking the control unit with the 5-baud address, this takes about three seconds ...",
-            ),
+            if device == TP20_DEVICE {
+                l(
+                    "Öffne den TP-2.0-Kanal zum Steuergerät ...",
+                    "Opening the TP 2.0 channel to the control unit ...",
+                )
+                .to_string()
+            } else {
+                w(
+                    "Wecke das Steuergerät mit der 5-Baud-Adresse, das dauert etwa drei Sekunden ...",
+                    "Waking the control unit with the 5-baud address, this takes about three seconds ...",
+                )
+            },
             false,
         );
 
-        let mut stream = KLineStream::new();
-        if let Err(error) = stream.open(device, 9600) {
-            self.busy(false);
-            self.kkl_message(error, true);
-            return;
-        }
         let sink = self.sink.clone();
         let log: caruspex_protocols::KLineLog =
             Arc::new(move |m: &str| sink.emit("log_line", json!({ "line": m })));
-        let mut kwp = VagKLine::new(stream, Some(log));
+        let mut kwp = match self.open_vag_unit(device, Some(log)) {
+            Ok(kwp) => kwp,
+            Err(error) => {
+                self.kkl_on_can = false;
+                self.busy(false);
+                self.kkl_message(error, true);
+                return;
+            }
+        };
         // The configured session type must be set before basic settings can
         // be started.
         kwp.set_basic_setting_session(self.settings.basic_setting_session.clamp(0, 255) as u8);
         let ecu = Ecu::from_address(ecu_address.clamp(0, 255) as u8);
         if let Err(error) = kwp.connect(ecu) {
             drop(kwp);
+            self.kkl_on_can = false;
             self.busy(false);
             self.emit(
                 "kkl_connected",
@@ -2381,6 +2464,10 @@ impl Worker {
         let protocol_name = kwp.protocol_name();
         let is_kwp2000 = kwp.protocol() == KLineProtocol::Kwp2000;
         self.kwp = Some(kwp);
+        // Without traffic the control unit closes the session after a few
+        // seconds; basic settings keep it busy on their own.
+        self.kkl_keep_alive_timer.set_interval(KKL_KEEP_ALIVE_MS);
+        self.kkl_keep_alive_timer.start();
         self.busy(false);
         self.emit(
             "kkl_connected",
@@ -2408,10 +2495,12 @@ impl Worker {
 
     fn close_kkl(&mut self) {
         self.stop_basic_setting();
-        if let Some(kwp) = self.kwp.take() {
-            let mut stream = kwp.into_stream();
-            stream.close();
+        self.kkl_keep_alive_timer.stop();
+        // Signing off happens in disconnect, the port closes when it is dropped.
+        if let Some(mut kwp) = self.kwp.take() {
+            kwp.disconnect();
         }
+        self.kkl_on_can = false;
         self.emit(
             "kkl_connected",
             json!({ "connected": false, "identification": "" }),
@@ -2420,6 +2509,29 @@ impl Worker {
 
     fn kkl_connected(&self) -> bool {
         self.kwp.as_ref().is_some_and(|k| k.connected())
+    }
+
+    /// The CAN interface of the connection goes away: a TP 2.0 session on it
+    /// ends first.
+    fn forget_can_link(&mut self) {
+        if self.kkl_on_can {
+            self.close_kkl();
+        }
+        self.can_link = None;
+    }
+
+    fn kkl_keep_alive_tick(&mut self) {
+        if self.basic_setting_timer.active {
+            return; // the measuring block requests keep it open
+        }
+        if !self.kkl_connected() {
+            self.kkl_keep_alive_timer.stop();
+            return;
+        }
+        if let Some(Err(error)) = self.kwp.as_mut().map(|k| k.keep_alive()) {
+            self.close_kkl();
+            self.kkl_message(error, true);
+        }
     }
 
     fn start_basic_setting(&mut self, group: i32) {
@@ -2496,15 +2608,18 @@ impl Worker {
         self.close_kkl();
         self.cancel.store(false, Ordering::SeqCst);
 
-        let mut stream = KLineStream::new();
-        if let Err(error) = stream.open(device, 9600) {
-            self.kkl_message(error, true);
-            self.emit(
-                "scan_finished",
-                json!({ "present": 0, "withFaults": 0, "cancelled": false }),
-            );
-            return;
-        }
+        let mut probe = match self.open_vag_unit(device, None) {
+            Ok(probe) => probe,
+            Err(error) => {
+                self.kkl_on_can = false;
+                self.kkl_message(error, true);
+                self.emit(
+                    "scan_finished",
+                    json!({ "present": 0, "withFaults": 0, "cancelled": false }),
+                );
+                return;
+            }
+        };
 
         let list = known_ecus();
         let total = list.len();
@@ -2533,9 +2648,7 @@ impl Worker {
                 }),
             );
 
-            let mut probe = VagKLine::new(stream, None);
             if probe.connect(ecu).is_err() {
-                stream = probe.into_stream();
                 row.present = false;
                 row.note = w(
                     "meldet sich nicht, vermutlich nicht verbaut",
@@ -2634,11 +2747,12 @@ impl Worker {
                 }
                 Err(error) => row.note = error,
             }
-            stream = probe.into_stream();
+            probe.disconnect();
             self.emit("scan_ecu_result", json!({ "row": row }));
         }
 
-        stream.close();
+        drop(probe);
+        self.kkl_on_can = false;
         self.busy(false);
         self.emit(
             "scan_finished",
@@ -3236,5 +3350,146 @@ mod tests {
         assert_eq!(Collect::named(&events, "closed").len(), 1);
         worker.handle(Job::ReadFaults);
         assert!(Collect::named(&sink.take(), "faults").is_empty());
+    }
+
+    /// A VAG engine unit behind TP 2.0, just enough for the KKL pages: the
+    /// channel, short KWP2000 answers, the fault memory. Other units refuse
+    /// the channel at once, so the scan stays quick.
+    #[derive(Default)]
+    struct Tp20Engine {
+        out: std::collections::VecDeque<caruspex_net::CanFrame>,
+        inbound: Vec<u8>,
+        seq: u8,
+        faults: bool,
+    }
+
+    impl Tp20Engine {
+        fn say(&mut self, id: u32, data: Vec<u8>) {
+            self.out.push_back(caruspex_net::CanFrame {
+                id,
+                extended: false,
+                data,
+            });
+        }
+    }
+
+    impl caruspex_net::CanLink for Tp20Engine {
+        fn send(&mut self, f: &caruspex_net::CanFrame) -> bool {
+            let first = f.data[0];
+            if f.id == 0x200 {
+                let reply = if first == 0x01 {
+                    vec![0x00, 0xD0, 0x00, 0x03, 0x40, 0x07, 0x01]
+                } else {
+                    vec![0x00, 0xD6, 0x00, 0x10, 0x00, 0x10, 0x01]
+                };
+                self.say(0x200 + u32::from(first), reply);
+                return true;
+            }
+            match first {
+                0xA0 | 0xA3 => self.say(0x300, vec![0xA1, 0x0F, 0x8A, 0xFF, 0x32, 0xFF]),
+                0xA8 => self.say(0x300, vec![0xA8]),
+                _ if first >> 4 <= 3 => {
+                    self.inbound.extend_from_slice(&f.data[1..]);
+                    self.say(0x300, vec![0xB0 | ((first + 1) & 0x0F)]);
+                    if first >> 4 == 1 {
+                        let request = std::mem::take(&mut self.inbound);
+                        let answer = match request[2] {
+                            0x10 => vec![0x50, request[3]],
+                            0x1A => [&[0x5A, 0x9B][..], b"1K0907115"].concat(),
+                            0x18 if self.faults => vec![0x58, 0x01, 0x40, 0x66, 0xE0],
+                            0x18 => vec![0x58, 0x00],
+                            0x14 => {
+                                self.faults = false;
+                                vec![0x54, 0xFF, 0x00]
+                            }
+                            0x21 => vec![0x61, request[3], 0x01, 0xC8, 0x14],
+                            service => vec![service + 0x40],
+                        };
+                        let mut data = (answer.len() as u16).to_be_bytes().to_vec();
+                        data.extend_from_slice(&answer);
+                        let chunks: Vec<Vec<u8>> = data.chunks(7).map(<[u8]>::to_vec).collect();
+                        for (i, chunk) in chunks.iter().enumerate() {
+                            let kind: u8 = if i + 1 == chunks.len() { 0x1 } else { 0x2 };
+                            let mut packet = vec![(kind << 4) | self.seq];
+                            self.seq = (self.seq + 1) & 0x0F;
+                            packet.extend_from_slice(chunk);
+                            self.say(0x300, packet);
+                        }
+                    }
+                }
+                _ => {}
+            }
+            true
+        }
+        fn receive(&mut self, _timeout_ms: u64) -> Option<caruspex_net::CanFrame> {
+            self.out.pop_front()
+        }
+        fn name(&self) -> String {
+            "TP 2.0 test".into()
+        }
+    }
+
+    #[test]
+    fn kkl_pages_use_tp20_on_the_can_interface() {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+
+        // Without a CAN connection TP 2.0 says what is missing.
+        worker.handle(Job::OpenKkl {
+            device: TP20_DEVICE.into(),
+            ecu_address: 0x01,
+        });
+        let events = sink.take();
+        assert_eq!(Collect::named(&events, "kkl_message")[1]["isError"], true);
+
+        worker.can_link = Some(SharedCanLink::new(Box::new(Tp20Engine {
+            faults: true,
+            ..Tp20Engine::default()
+        })));
+        worker.handle(Job::OpenKkl {
+            device: TP20_DEVICE.into(),
+            ecu_address: 0x01,
+        });
+        let events = sink.take();
+        let connected = Collect::named(&events, "kkl_connected");
+        assert_eq!(connected.last().unwrap()["connected"], true);
+        assert_eq!(connected.last().unwrap()["identification"], "1K0907115");
+        assert_eq!(
+            Collect::named(&events, "kkl_protocol")[0]["protocolName"],
+            "KWP2000 (TP 2.0)"
+        );
+        assert!(worker.kkl_keep_alive_timer.active);
+        worker.kkl_keep_alive_tick();
+        assert!(worker.kkl_connected());
+
+        worker.handle(Job::StartBasicSetting(1));
+        worker.basic_setting_tick();
+        let events = sink.take();
+        let values = &Collect::named(&events, "basic_setting_values")[0]["values"];
+        assert_eq!(values.as_array().unwrap().len(), 1);
+        worker.handle(Job::CloseKkl);
+        assert!(!worker.kkl_connected());
+
+        // The scan of all units: the engine with its fault, cleared.
+        worker.handle(Job::ScanAllEcus {
+            device: TP20_DEVICE.into(),
+            clear_attempts: 2,
+        });
+        let events = sink.take();
+        let finished = &Collect::named(&events, "scan_finished")[0];
+        assert_eq!(finished["present"], 1);
+        assert_eq!(finished["withFaults"], 0);
+        let engine = &Collect::named(&events, "scan_ecu_result")[0]["row"];
+        assert_eq!(engine["present"], true);
+        assert!(
+            engine["identification"]
+                .as_str()
+                .unwrap()
+                .contains("TP 2.0")
+        );
+
+        // Closing the adapter lets go of the interface.
+        worker.handle(Job::Close);
+        assert!(worker.can_link.is_none());
     }
 }

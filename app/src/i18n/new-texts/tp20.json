@@ -1,0 +1,71 @@
+[
+ {
+  "context": "caruspex::KklWays",
+  "de": "K-Line über J2534: %1",
+  "en": "K-line via J2534: %1",
+  "tr": {
+   "es": "K-Line mediante J2534: %1",
+   "fr": "K-Line via J2534 : %1",
+   "pt": "K-Line via J2534: %1",
+   "it": "K-Line tramite J2534: %1",
+   "nl": "K-Line via J2534: %1",
+   "pl": "K-Line przez J2534: %1",
+   "cs": "K-Line přes J2534: %1",
+   "ru": "K-Line через J2534: %1",
+   "uk": "K-Line через J2534: %1",
+   "tr": "J2534 üzerinden K-Line: %1",
+   "ar": "K-Line عبر J2534: %1",
+   "zh": "通过 J2534 的 K-Line：%1",
+   "ja": "J2534 経由の K-Line: %1",
+   "ko": "J2534를 통한 K-Line: %1",
+   "hi": "J2534 के ज़रिए K-Line: %1",
+   "id": "K-Line lewat J2534: %1"
+  }
+ },
+ {
+  "context": "caruspex::KklWays",
+  "de": "TP 2.0 über die CAN-Schnittstelle (VAG etwa 2004 bis 2012)",
+  "en": "TP 2.0 via the CAN interface (VAG about 2004 to 2012)",
+  "tr": {
+   "es": "TP 2.0 mediante la interfaz CAN (VAG aprox. 2004 a 2012)",
+   "fr": "TP 2.0 via l'interface CAN (VAG environ 2004 à 2012)",
+   "pt": "TP 2.0 pela interface CAN (VAG aprox. 2004 a 2012)",
+   "it": "TP 2.0 tramite l'interfaccia CAN (VAG circa 2004-2012)",
+   "nl": "TP 2.0 via de CAN-interface (VAG ongeveer 2004 tot 2012)",
+   "pl": "TP 2.0 przez interfejs CAN (VAG ok. 2004 do 2012)",
+   "cs": "TP 2.0 přes rozhraní CAN (VAG zhruba 2004 až 2012)",
+   "ru": "TP 2.0 через CAN-интерфейс (VAG примерно 2004-2012)",
+   "uk": "TP 2.0 через CAN-інтерфейс (VAG приблизно 2004-2012)",
+   "tr": "CAN arayüzü üzerinden TP 2.0 (VAG, yaklaşık 2004-2012)",
+   "ar": "TP 2.0 عبر واجهة CAN (VAG من نحو 2004 إلى 2012)",
+   "zh": "通过 CAN 接口的 TP 2.0（VAG，约 2004 至 2012 年）",
+   "ja": "CAN インターフェース経由の TP 2.0（VAG、およそ 2004 年から 2012 年）",
+   "ko": "CAN 인터페이스를 통한 TP 2.0 (VAG 약 2004~2012년)",
+   "hi": "CAN इंटरफ़ेस के ज़रिए TP 2.0 (VAG लगभग 2004 से 2012)",
+   "id": "TP 2.0 lewat antarmuka CAN (VAG sekitar 2004 sampai 2012)"
+  }
+ },
+ {
+  "context": "caruspex::KklWays",
+  "de": "Erst ein KKL-Kabel anstecken und auf Suchen drücken. VW, Audi, Seat und Skoda von etwa 2004 bis 2012 gehen auch ohne: über eine CAN-Schnittstelle (J2534, SLCAN, SocketCAN) mit dem Auto verbinden, dann steht TP 2.0 in der Liste.",
+  "en": "Plug in a KKL cable first and press Search. VW, Audi, Seat and Skoda from about 2004 to 2012 also work without one: connect to the car through a CAN interface (J2534, SLCAN, SocketCAN), then TP 2.0 appears in the list.",
+  "tr": {
+   "es": "Conecte primero un cable KKL y pulse Buscar. VW, Audi, Seat y Skoda de aprox. 2004 a 2012 también funcionan sin él: conéctese al coche mediante una interfaz CAN (J2534, SLCAN, SocketCAN) y TP 2.0 aparecerá en la lista.",
+   "fr": "Branchez d'abord un câble KKL et appuyez sur Rechercher. Les VW, Audi, Seat et Skoda d'environ 2004 à 2012 fonctionnent aussi sans : connectez-vous à la voiture via une interface CAN (J2534, SLCAN, SocketCAN), TP 2.0 apparaît alors dans la liste.",
+   "pt": "Conecte primeiro um cabo KKL e clique em Procurar. VW, Audi, Seat e Skoda de aprox. 2004 a 2012 também funcionam sem ele: conecte-se ao carro por uma interface CAN (J2534, SLCAN, SocketCAN) e o TP 2.0 aparece na lista.",
+   "it": "Collega prima un cavo KKL e premi Cerca. VW, Audi, Seat e Skoda dal 2004 al 2012 circa funzionano anche senza: collegati all'auto tramite un'interfaccia CAN (J2534, SLCAN, SocketCAN) e TP 2.0 compare nell'elenco.",
+   "nl": "Sluit eerst een KKL-kabel aan en druk op Zoeken. VW, Audi, Seat en Skoda van ongeveer 2004 tot 2012 werken ook zonder: verbind met de auto via een CAN-interface (J2534, SLCAN, SocketCAN), dan staat TP 2.0 in de lijst.",
+   "pl": "Najpierw podłącz kabel KKL i naciśnij Szukaj. VW, Audi, Seat i Skoda z lat ok. 2004 do 2012 działają też bez niego: połącz się z autem przez interfejs CAN (J2534, SLCAN, SocketCAN), wtedy TP 2.0 pojawi się na liście.",
+   "cs": "Nejprve připojte kabel KKL a stiskněte Hledat. VW, Audi, Seat a Škoda zhruba z let 2004 až 2012 fungují i bez něj: připojte se k autu přes rozhraní CAN (J2534, SLCAN, SocketCAN), pak se v seznamu objeví TP 2.0.",
+   "ru": "Сначала подключите кабель KKL и нажмите «Поиск». VW, Audi, Seat и Skoda примерно 2004-2012 годов работают и без него: подключитесь к машине через CAN-интерфейс (J2534, SLCAN, SocketCAN), тогда в списке появится TP 2.0.",
+   "uk": "Спершу підключіть кабель KKL і натисніть «Пошук». VW, Audi, Seat і Skoda приблизно 2004-2012 років працюють і без нього: підключіться до авто через CAN-інтерфейс (J2534, SLCAN, SocketCAN), тоді в списку з'явиться TP 2.0.",
+   "tr": "Önce bir KKL kablosu takın ve Ara'ya basın. Yaklaşık 2004-2012 arası VW, Audi, Seat ve Skoda araçlar kablosuz da olur: araca bir CAN arayüzü (J2534, SLCAN, SocketCAN) üzerinden bağlanın, TP 2.0 listede görünür.",
+   "ar": "صِل كابل KKL أولاً واضغط على بحث. سيارات VW وAudi وSeat وSkoda من نحو 2004 إلى 2012 تعمل أيضاً بدونه: اتصل بالسيارة عبر واجهة CAN (J2534 أو SLCAN أو SocketCAN)، وعندها يظهر TP 2.0 في القائمة.",
+   "zh": "请先插入 KKL 线并点击“搜索”。约 2004 至 2012 年的大众、奥迪、西雅特和斯柯达也可以不用它：通过 CAN 接口（J2534、SLCAN、SocketCAN）连接车辆，列表中就会出现 TP 2.0。",
+   "ja": "まず KKL ケーブルを接続して「検索」を押してください。およそ 2004 年から 2012 年の VW、Audi、Seat、Skoda はケーブルなしでも使えます。CAN インターフェース（J2534、SLCAN、SocketCAN）で車に接続すると、一覧に TP 2.0 が表示されます。",
+   "ko": "먼저 KKL 케이블을 연결하고 검색을 누르세요. 약 2004~2012년식 VW, Audi, Seat, Skoda는 케이블 없이도 됩니다. CAN 인터페이스(J2534, SLCAN, SocketCAN)로 차에 연결하면 목록에 TP 2.0이 나타납니다.",
+   "hi": "पहले KKL केबल लगाएँ और खोजें दबाएँ। लगभग 2004 से 2012 की VW, Audi, Seat और Skoda इसके बिना भी चलती हैं: CAN इंटरफ़ेस (J2534, SLCAN, SocketCAN) से कार से जुड़ें, तब सूची में TP 2.0 दिखेगा।",
+   "id": "Pasang dulu kabel KKL lalu tekan Cari. VW, Audi, Seat, dan Skoda sekitar 2004 sampai 2012 juga bisa tanpa kabel itu: hubungkan ke mobil lewat antarmuka CAN (J2534, SLCAN, SocketCAN), lalu TP 2.0 muncul di daftar."
+  }
+ }
+]

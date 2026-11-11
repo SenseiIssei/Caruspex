@@ -11,7 +11,7 @@ import { Button, Card, Page, PageHeader, Progress, Select } from "../components/
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
 import { useSession, useSettings } from "../state/session";
-import { KklMessage, KklState, PortChoice, useMessageBox, usePorts } from "./WorkshopShared";
+import { KklMessage, KklState, PortChoice, noWay, useMessageBox, usePorts } from "./WorkshopShared";
 
 const tr = translator("caruspex::ThrottlePage");
 
@@ -95,7 +95,7 @@ export default function ThrottlePage() {
       return;
     }
     if (!ports.port) {
-      showMessage(tr("Kein Anschluss"), tr("Erst ein KKL-Kabel anstecken und auf Suchen drücken."));
+      showMessage(tr("Kein Anschluss"), noWay());
       return;
     }
     void call("open_kkl", { device: ports.port, ecuAddress: ENGINE });
