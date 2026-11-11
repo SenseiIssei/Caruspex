@@ -1,0 +1,612 @@
+[
+ {
+  "id": "c-used-car-1",
+  "de": "\"%1\" ist keine gültige Fahrgestellnummer (17 Zeichen, ohne I, O und Q). Vermutlich ein Tippfehler; bitte noch einmal von den Papieren abschreiben.",
+  "en": "\"%1\" is not a valid VIN (17 characters, without I, O and Q). Probably a typing error; please copy it from the papers again."
+ },
+ {
+  "id": "c-used-car-2",
+  "de": "%1 (%2)",
+  "en": "%1 (%2)"
+ },
+ {
+  "id": "c-used-car-3",
+  "de": "%1 Stunden Betrieb",
+  "en": "%1 hours of operation"
+ },
+ {
+  "id": "c-used-car-4",
+  "de": "%1 km",
+  "en": "%1 km"
+ },
+ {
+  "id": "c-used-car-5",
+  "de": "%1 bis %2",
+  "en": "%1 to %2"
+ },
+ {
+  "id": "c-used-car-6",
+  "de": "%1 Warmläufe",
+  "en": "%1 warm-ups"
+ },
+ {
+  "id": "c-used-car-7",
+  "de": "%1. Dauerhafte Fehler lassen sich nicht löschen. Sie verschwinden erst, wenn das Auto selbst festgestellt hat, dass der Fehler behoben ist.",
+  "en": "%1. Permanent faults cannot be cleared. They only go away once the car itself has seen that the fault is fixed."
+ },
+ {
+  "id": "c-used-car-8",
+  "de": "%1. Diese Fehler hat das Steuergerät bestätigt. Was sie bedeuten und was eine Reparatur ungefähr kostet, steht im Fehlerspeicher bei jedem Code.",
+  "en": "%1. The control unit has confirmed these faults. What they mean and roughly what a repair costs is shown with each code in the fault memory."
+ },
+ {
+  "id": "c-used-car-9",
+  "de": "%1. Diese Fehler hat das Steuergerät einmal gesehen, aber noch nicht bestätigt. Sie können verschwinden oder zu gespeicherten Fehlern werden.",
+  "en": "%1. The control unit has seen these faults once but not confirmed them yet. They can disappear or become stored faults."
+ },
+ {
+  "id": "c-used-car-10",
+  "de": "%1: %2 km",
+  "en": "%1: %2 km"
+ },
+ {
+  "id": "c-used-car-11",
+  "de": "Ein reines E-Auto hat keinen Auspuff und damit keine Bereitschaftstests. Das ist richtig so.",
+  "en": "A fully electric car has no exhaust and so no readiness monitors. That is as it should be."
+ },
+ {
+  "id": "c-used-car-12",
+  "de": "Laut Fahrgestellnummer ein %1 (die Baureihe wurde %2 gebaut). Passt das zu Anzeige und Papieren?",
+  "en": "According to the VIN a %1 (the series was built %2). Does that match the advert and the papers?"
+ },
+ {
+  "id": "c-used-car-13",
+  "de": "Laut Fahrgestellnummer ein %1, Modelljahr %2 (die Baureihe wurde %3 gebaut). Passt das zu Anzeige und Papieren?",
+  "en": "According to the VIN a %1, model year %2 (the series was built %3). Does that match the advert and the papers?"
+ },
+ {
+  "id": "c-used-car-14",
+  "de": "Alle Bereitschaftstests abgeschlossen",
+  "en": "All readiness monitors complete"
+ },
+ {
+  "id": "c-used-car-15",
+  "de": "Alle Quellen stimmen überein: %1. Kleine Unterschiede sind normal, weil nicht jedes Gerät gleich oft speichert.",
+  "en": "All sources agree: %1. Small differences are normal, because not every unit stores equally often."
+ },
+ {
+  "id": "c-used-car-16",
+  "de": "Gibt es Serviceheft, Rechnungen und Prüfberichte, die den Kilometerstand belegen?",
+  "en": "Are there a service book, invoices and inspection reports that back up the mileage?"
+ },
+ {
+  "id": "c-used-car-17",
+  "de": "Akku gealtert: %1 %",
+  "en": "Battery aged: %1 %"
+ },
+ {
+  "id": "c-used-car-18",
+  "de": "Akku stark gealtert: %1 %",
+  "en": "Battery badly aged: %1 %"
+ },
+ {
+  "id": "c-used-car-19",
+  "de": "Akkuzellen ungleich geladen",
+  "en": "Battery cells unevenly charged"
+ },
+ {
+  "id": "c-used-car-20",
+  "de": "Akku hat nicht geantwortet",
+  "en": "Battery did not answer"
+ },
+ {
+  "id": "c-used-car-21",
+  "de": "Akkuzustand nicht auslesbar",
+  "en": "Battery health cannot be read"
+ },
+ {
+  "id": "c-used-car-22",
+  "de": "Akkugesundheit nicht gemeldet",
+  "en": "Battery health not reported"
+ },
+ {
+  "id": "c-used-car-23",
+  "de": "Akku in gutem Zustand: %1 %",
+  "en": "Battery in good health: %1 %"
+ },
+ {
+  "id": "c-used-car-24",
+  "de": "Mit Fragen kaufen",
+  "en": "Buy with questions"
+ },
+ {
+  "id": "c-used-car-25",
+  "de": "Vorsicht: vor dem Kauf klären",
+  "en": "Careful: clear up before buying"
+ },
+ {
+  "id": "c-used-car-26",
+  "de": "Caruspex Demo-Auto",
+  "en": "Caruspex demo car"
+ },
+ {
+  "id": "c-used-car-27",
+  "de": "Den Herstellercode %1 kennt Caruspex nicht. Das spricht nicht gegen das Auto, nur lässt sich Modell und Baujahr nicht aus der Nummer prüfen.",
+  "en": "Caruspex does not know the maker code %1. That says nothing against the car, only model and year cannot be checked from the number."
+ },
+ {
+  "id": "c-used-car-28",
+  "de": "Motorkontrollleuchte an",
+  "en": "Check engine light on"
+ },
+ {
+  "id": "c-used-car-29",
+  "de": "Gelöscht, aber nicht repariert",
+  "en": "Cleared, but not repaired"
+ },
+ {
+  "id": "c-used-car-30",
+  "de": "Für die Gebrauchtwagen-Prüfung erst verbinden.",
+  "en": "Connect first to check a used car."
+ },
+ {
+  "id": "c-used-car-31",
+  "de": "Trotz des Löschens meldet das Auto dauerhafte Fehler: %1. Diese Codes lassen sich nicht löschen; sie verschwinden erst, wenn das Auto selbst festgestellt hat, dass der Fehler behoben ist. Der Fehler war also vor dem Löschen da und ist es vermutlich noch.",
+  "en": "Despite the clearing the car reports permanent faults: %1. These codes cannot be cleared; they only go away once the car itself has seen that the fault is fixed. So the fault was there before the clearing and probably still is."
+ },
+ {
+  "id": "c-used-car-32",
+  "de": "Stimmt die Fahrgestellnummer an der Frontscheibe und am Typschild mit den Papieren überein?",
+  "en": "Does the VIN on the windscreen and on the type plate match the papers?"
+ },
+ {
+  "id": "c-used-car-33",
+  "de": "Mit Warnlampe gefahren: %1 km",
+  "en": "Driven with the warning lamp on: %1 km"
+ },
+ {
+  "id": "c-used-car-34",
+  "de": "Motorsteuergerät (OBD)",
+  "en": "Engine control unit (OBD)"
+ },
+ {
+  "id": "c-used-car-35",
+  "de": "Fehlerspeicher",
+  "en": "Fault memory"
+ },
+ {
+  "id": "c-used-car-36",
+  "de": "Fehlerspeicher vor Kurzem gelöscht",
+  "en": "Fault memory cleared recently"
+ },
+ {
+  "id": "c-used-car-37",
+  "de": "Bei %1 muss die neunte Stelle eine Prüfziffer sein, die zu den anderen Zeichen passt. Hier passt sie nicht. Das kann ein Lesefehler sein, aber auch eine veränderte Nummer.",
+  "en": "For %1 the ninth character must be a check digit that fits the other characters. Here it does not. That can be a reading error, but also an altered number."
+ },
+ {
+  "id": "c-used-car-38",
+  "de": "Wurde am Akku schon etwas repariert oder getauscht?",
+  "en": "Has anything on the battery been repaired or replaced?"
+ },
+ {
+  "id": "c-used-car-39",
+  "de": "Gesundheitscheck: %1 von 100 Punkten",
+  "en": "Health check: %1 of 100 points"
+ },
+ {
+  "id": "c-used-car-40",
+  "de": "Viel gefahren",
+  "en": "High mileage"
+ },
+ {
+  "id": "c-used-car-41",
+  "de": "Erkannt: %1",
+  "en": "Identified: %1"
+ },
+ {
+  "id": "c-used-car-42",
+  "de": "Ungültige Fahrgestellnummer im Steuergerät",
+  "en": "Invalid VIN in the control unit"
+ },
+ {
+  "id": "c-used-car-43",
+  "de": "Gibt es ein Prüfprotokoll zum Akkuzustand (SOH) vom Hersteller oder einer Werkstatt, und gilt noch eine Akkugarantie?",
+  "en": "Is there a battery health (SOH) report from the maker or a workshop, and is a battery warranty still valid?"
+ },
+ {
+  "id": "c-used-car-44",
+  "de": "Zuletzt gelöscht",
+  "en": "Last cleared"
+ },
+ {
+  "id": "c-used-car-45",
+  "de": "Hersteller nicht erkannt",
+  "en": "Maker not recognised"
+ },
+ {
+  "id": "c-used-car-46",
+  "de": "Hersteller: %1",
+  "en": "Maker: %1"
+ },
+ {
+  "id": "c-used-car-47",
+  "de": "Kilometerstand und letztes Löschen",
+  "en": "Mileage and last clearing"
+ },
+ {
+  "id": "c-used-car-48",
+  "de": "Kilometerstand nicht auslesbar",
+  "en": "Mileage cannot be read"
+ },
+ {
+  "id": "c-used-car-49",
+  "de": "Kilometerstand passt zum Alter",
+  "en": "Mileage fits the age"
+ },
+ {
+  "id": "c-used-car-50",
+  "de": "Kilometerstand in weiteren Steuergeräten",
+  "en": "Mileage in other control units"
+ },
+ {
+  "id": "c-used-car-51",
+  "de": "Kilometerstand kleiner als die Strecke seit dem Löschen",
+  "en": "Mileage lower than the distance since clearing"
+ },
+ {
+  "id": "c-used-car-52",
+  "de": "Kilometerstände passen zusammen",
+  "en": "Mileage readings agree"
+ },
+ {
+  "id": "c-used-car-53",
+  "de": "Kilometerstände passen nicht zusammen",
+  "en": "Mileage readings do not match"
+ },
+ {
+  "id": "c-used-car-54",
+  "de": "Kilometerstand: %1 km",
+  "en": "Mileage: %1 km"
+ },
+ {
+  "id": "c-used-car-55",
+  "de": "Für dieses Modell sind keine Akkuwerte belegt. Beim E-Auto und Hybrid ist der Akku das teuerste Bauteil; seinen Zustand am besten mit einem Prüfprotokoll belegen lassen.",
+  "en": "No battery values are documented for this model. On an electric car or hybrid the battery is the most expensive part; best have its health confirmed by a test report."
+ },
+ {
+  "id": "c-used-car-56",
+  "de": "Keine Abgas-Selbsttests",
+  "en": "No emission self-tests"
+ },
+ {
+  "id": "c-used-car-57",
+  "de": "Kein Fehler gespeichert",
+  "en": "No faults stored"
+ },
+ {
+  "id": "c-used-car-58",
+  "de": "Keine Bereitschaftstests gemeldet",
+  "en": "No readiness monitors reported"
+ },
+ {
+  "id": "c-used-car-59",
+  "de": "Weder gespeicherte noch vorläufige noch dauerhafte Fehler im Motorsteuergerät.",
+  "en": "No stored, pending or permanent faults in the engine control unit."
+ },
+ {
+  "id": "c-used-car-60",
+  "de": "Noch nicht fertig: %1. Nach dem Löschen des Fehlerspeichers oder dem Abklemmen der Batterie braucht das Auto einige Fahrten, bis diese Selbsttests wieder durch sind. Einzelne offene Tests sind normal, viele passen zu einem frischen Löschen.",
+  "en": "Not complete yet: %1. After the fault memory was cleared or the battery disconnected, the car needs a few drives until these self-tests are done again. Single open tests are normal, many fit a fresh clearing."
+ },
+ {
+  "id": "c-used-car-61",
+  "de": "Nicht eingegeben. Für den Vergleich die Nummer aus der Zulassungsbescheinigung Teil I (Feld E) eintragen.",
+  "en": "Not entered. For the comparison, type in the number from the registration certificate."
+ },
+ {
+  "id": "c-used-car-62",
+  "de": "Nicht frisch gelöscht",
+  "en": "Not freshly cleared"
+ },
+ {
+  "id": "c-used-car-63",
+  "de": "Unauffällig",
+  "en": "Nothing unusual"
+ },
+ {
+  "id": "c-used-car-64",
+  "de": "km ABS",
+  "en": "Odo ABS"
+ },
+ {
+  "id": "c-used-car-65",
+  "de": "km Kombi",
+  "en": "Odo cluster"
+ },
+ {
+  "id": "c-used-car-66",
+  "de": "Kilometerstand (ABS)",
+  "en": "Odometer (ABS)"
+ },
+ {
+  "id": "c-used-car-67",
+  "de": "Kilometerstand (Kombiinstrument)",
+  "en": "Odometer (instrument cluster)"
+ },
+ {
+  "id": "c-used-car-68",
+  "de": "Im Schnitt etwa %1 km pro Jahr, ein üblicher Wert.",
+  "en": "On average about %1 km per year, a usual figure."
+ },
+ {
+  "id": "c-used-car-69",
+  "de": "Im Schnitt etwa %1 km pro Jahr, meist Langstrecke. Das schont den Motor, aber Verschleißteile wie Kupplung, Bremsen und Fahrwerk sind entsprechend beansprucht.",
+  "en": "On average about %1 km per year, mostly long distances. That is easy on the engine, but wear parts such as clutch, brakes and suspension have worked accordingly."
+ },
+ {
+  "id": "c-used-car-70",
+  "de": "Im Schnitt etwa %1 km pro Jahr. Das gibt es, etwa bei Zweitwagen, ist aber auch das, was ein zurückgedrehter Tacho zeigt.",
+  "en": "On average about %1 km per year. That happens, for a second car for instance, but it is also what a turned back odometer shows."
+ },
+ {
+  "id": "c-used-car-71",
+  "de": "Nur eine Quelle: %1. Für dieses Modell sind keine weiteren Steuergeräte mit belegter Kennung bekannt, ein Vergleich ist also nicht möglich. Der Wert muss zum Tacho passen.",
+  "en": "Only one source: %1. No further control units with a documented identifier are known for this model, so no comparison is possible. The value must match the dashboard."
+ },
+ {
+  "id": "c-used-car-72",
+  "de": "Vorläufige Fehler: %1",
+  "en": "Pending faults: %1"
+ },
+ {
+  "id": "c-used-car-73",
+  "de": "Dauerhafte Fehler: %1",
+  "en": "Permanent faults: %1"
+ },
+ {
+  "id": "c-used-car-74",
+  "de": "Eingegebene Nummer bitte prüfen",
+  "en": "Please check the number entered"
+ },
+ {
+  "id": "c-used-car-75",
+  "de": "Punkte, die gegen einen Kauf ohne weitere Prüfung sprechen: %1. Die Fragen unten zuerst mit dem Verkäufer klären und das Auto in einer Werkstatt ansehen lassen.",
+  "en": "Points that speak against buying without a closer look: %1. Clear up the questions below with the seller first and have the car looked at by a workshop."
+ },
+ {
+  "id": "c-used-car-76",
+  "de": "Punkte, die Sie mit dem Verkäufer besprechen sollten: %1. Nichts davon schließt einen Kauf aus, aber es gehört in den Preis oder in den Kaufvertrag.",
+  "en": "Points to talk through with the seller: %1. None of them rules out a purchase, but they belong in the price or in the contract."
+ },
+ {
+  "id": "c-used-car-77",
+  "de": "Bereitschaftstests",
+  "en": "Readiness monitors"
+ },
+ {
+  "id": "c-used-car-78",
+  "de": "Offene Bereitschaftstests: %1 von %2",
+  "en": "Readiness monitors not complete: %1 of %2"
+ },
+ {
+  "id": "c-used-car-79",
+  "de": "Auffallend wenig gefahren",
+  "en": "Remarkably low mileage"
+ },
+ {
+  "id": "c-used-car-80",
+  "de": "Seit dem letzten Löschen ist das Auto %1 km mit leuchtender Motorkontrollleuchte gefahren. Je länger ein Fehler ignoriert wird, desto eher entstehen Folgeschäden.",
+  "en": "Since the last clearing the car has been driven %1 km with the check engine light on. The longer a fault is ignored, the more likely it causes further damage."
+ },
+ {
+  "id": "c-used-car-81",
+  "de": "Seit dem letzten Löschen hat das Motorsteuergerät %1 km gezählt, der Kilometerstand zeigt aber nur %2 km. Das geht nur, wenn der Tacho zurückgestellt oder ein Steuergerät getauscht wurde.",
+  "en": "Since the last clearing the engine control unit has counted %1 km, but the mileage shows only %2 km. That is only possible if the odometer was turned back or a control unit was replaced."
+ },
+ {
+  "id": "c-used-car-82",
+  "de": "Seit dem letzten Löschen: %1. Wer den Fehlerspeicher löscht, schaltet auch die Warnlampe aus und setzt die Selbsttests des Autos zurück. Fehler, die erst nach einigen Fahrten wiederkommen, sind bei der Besichtigung dann noch nicht zu sehen. Kurz vor einem Verkauf kann das heißen, dass ein Fehler versteckt werden soll. Es gibt auch harmlose Gründe, etwa eine Reparatur, eine Inspektion oder eine abgeklemmte Batterie.",
+  "en": "Since the last clearing: %1. Clearing the fault memory also switches off the warning lamp and resets the car's self-tests. Faults that only come back after a few drives are then not visible at the viewing. Shortly before a sale this can mean that a fault is being hidden. There are harmless reasons too, such as a repair, a service or a disconnected battery."
+ },
+ {
+  "id": "c-used-car-83",
+  "de": "Seit dem letzten Löschen: %1. Kein Hinweis darauf, dass der Fehlerspeicher kurz vor der Besichtigung gelöscht wurde.",
+  "en": "Since the last clearing: %1. No sign that the fault memory was cleared shortly before the viewing."
+ },
+ {
+  "id": "c-used-car-84",
+  "de": "Seit wann leuchtet die Motorkontrollleuchte, und was hat die Werkstatt dazu gesagt?",
+  "en": "Since when has the check engine light been on, and what did the workshop say about it?"
+ },
+ {
+  "id": "c-used-car-85",
+  "de": "Gespeicherte Fehler: %1",
+  "en": "Stored faults: %1"
+ },
+ {
+  "id": "c-used-car-86",
+  "de": "Die Fahrgestellnummer gehört zu %1, Modelljahr %2. Das genaue Modell steht nicht im Katalog; es muss zu Anzeige und Papieren passen.",
+  "en": "The VIN belongs to %1, model year %2. The exact model is not in the catalog; it has to match the advert and the papers."
+ },
+ {
+  "id": "c-used-car-87",
+  "de": "Die Fahrgestellnummer gehört zu %1. Das genaue Modell steht nicht im Katalog; es muss zu Anzeige und Papieren passen.",
+  "en": "The VIN belongs to %1. The exact model is not in the catalog; it has to match the advert and the papers."
+ },
+ {
+  "id": "c-used-car-88",
+  "de": "Das Batteriesteuergerät (%1) hat nicht geantwortet: %2. Ist die Zündung an, und passt das Paket zum Auto?",
+  "en": "The battery control unit (%1) did not answer: %2. Is the ignition on, and does the pack fit the car?"
+ },
+ {
+  "id": "c-used-car-89",
+  "de": "Das Batteriesteuergerät hat geantwortet, aber keinen Wert für die Akkugesundheit (SOH) geliefert.",
+  "en": "The battery control unit answered, but gave no value for the battery health (SOH)."
+ },
+ {
+  "id": "c-used-car-90",
+  "de": "Der Akku hat noch %1 % seiner ursprünglichen Kapazität; die Reichweite ist entsprechend kleiner als neu. Viele Hersteller garantieren 70 % für acht Jahre oder 160 000 km.",
+  "en": "The battery still has %1 % of its original capacity; the range is smaller than new by the same share. Many makers guarantee 70 % for eight years or 160 000 km."
+ },
+ {
+  "id": "c-used-car-91",
+  "de": "Das Auto hat den Stand der Selbsttests (PID 01) nicht gemeldet.",
+  "en": "The car did not report the state of its self-tests (PID 01)."
+ },
+ {
+  "id": "c-used-car-92",
+  "de": "Das Auto meldet seinen Kilometerstand nicht über OBD (PID A6 gibt es erst bei neueren Autos), und für dieses Modell sind keine weiteren Kennungen belegt. Den Tachostand mit Serviceheft, Prüfberichten und Rechnungen vergleichen.",
+  "en": "The car does not report its mileage over OBD (PID A6 only exists on newer cars), and no further identifiers are documented for this model. Compare the odometer with the service book, inspection reports and invoices."
+ },
+ {
+  "id": "c-used-car-93",
+  "de": "Das Auto meldet nicht, wann der Fehlerspeicher zuletzt gelöscht wurde (PID 30, 31 und 4E).",
+  "en": "The car does not report when the fault memory was last cleared (PID 30, 31 and 4E)."
+ },
+ {
+  "id": "c-used-car-94",
+  "de": "Das Auto hat alle %1 Selbsttests seit dem letzten Löschen beendet. Das spricht dagegen, dass kurz vor der Besichtigung gelöscht wurde.",
+  "en": "The car has finished all %1 self-tests since the last clearing. That speaks against a clearing shortly before the viewing."
+ },
+ {
+  "id": "c-used-car-95",
+  "de": "Das Auto meldet keine Selbsttests. Manche Steuergeräte tun das nicht; dann lässt sich nicht sehen, ob die Tests seit dem letzten Löschen gelaufen sind.",
+  "en": "The car reports no self-tests. Some control units do not; then it cannot be seen whether the tests have run since the last clearing."
+ },
+ {
+  "id": "c-used-car-96",
+  "de": "Das Steuergerät meldet die Motorkontrollleuchte als eingeschaltet. Bei laufendem Motor muss sie aus sein; leuchtet sie, liegt ein bestätigter Fehler an der Abgasreinigung oder am Motor vor.",
+  "en": "The control unit reports the check engine light as on. With the engine running it must be off; if it is lit, there is a confirmed fault in the emission control or the engine."
+ },
+ {
+  "id": "c-used-car-97",
+  "de": "Die Steuergeräte zeigen nichts, was gegen das Auto spricht. Eine Probefahrt und ein Blick in die Wartungsnachweise ersetzt das nicht.",
+  "en": "The control units show nothing that speaks against the car. That does not replace a test drive and a look at the service records."
+ },
+ {
+  "id": "c-used-car-98",
+  "de": "Die Steuergeräte speichern verschiedene Werte: %1. Der Unterschied beträgt %2 km. Ein wenig ist normal, weil nicht jedes Gerät gleich oft speichert. So viel deutet aber darauf hin, dass der Tacho verstellt oder ein Steuergerät aus einem anderen Auto eingebaut wurde.",
+  "en": "The control units store different values: %1. The difference is %2 km. A little is normal, because not every unit stores equally often. This much points to an altered odometer or a control unit from another car."
+ },
+ {
+  "id": "c-used-car-99",
+  "de": "Im Motorsteuergerät und in den Papieren steht dieselbe Nummer: %1.",
+  "en": "The engine control unit and the papers carry the same number: %1."
+ },
+ {
+  "id": "c-used-car-100",
+  "de": "Das Motorsteuergerät nennt keine Fahrgestellnummer. Bei Autos bis etwa 2005 ist das normal, bei neueren seltener. Dann bleibt nur der Vergleich von Hand.",
+  "en": "The engine control unit does not report a VIN. That is normal for cars up to about 2005 and rarer for newer ones. Then only a comparison by hand is left."
+ },
+ {
+  "id": "c-used-car-101",
+  "de": "Das Motorsteuergerät meldet \"%1\". Das ist keine gültige Fahrgestellnummer (17 Zeichen, ohne I, O und Q). So etwas kommt vor, wenn ein Steuergerät getauscht oder neu programmiert und die Nummer nicht eingetragen wurde.",
+  "en": "The engine control unit reports \"%1\". That is not a valid VIN (17 characters, without I, O and Q). This happens when a control unit was replaced or reprogrammed and the number was not written in."
+ },
+ {
+  "id": "c-used-car-102",
+  "de": "Im Motorsteuergerät steht %1, in den Papieren %2. Entweder stammt das Steuergerät aus einem anderen Auto, oder das Auto ist nicht das aus den Papieren. Das vor dem Kauf klären, im Zweifel bei der Zulassungsstelle.",
+  "en": "The engine control unit says %1, the papers say %2. Either the control unit comes from another car, or the car is not the one in the papers. Clear this up before buying, if in doubt with the registration office."
+ },
+ {
+  "id": "c-used-car-103",
+  "de": "Der Fehlerspeicher ließ sich nicht lesen.",
+  "en": "The fault memory could not be read."
+ },
+ {
+  "id": "c-used-car-104",
+  "de": "Zwischen der höchsten und der tiefsten Zellspannung liegen %1 mV. Bei einem gesunden Akku sind es wenige hundertstel Volt. Einmal langsam voll laden kann helfen; bleibt es so, ist eine Zelle schwach.",
+  "en": "There are %1 mV between the highest and the lowest cell voltage. A healthy battery stays within a few hundredths of a volt. One slow full charge can help; if it stays like this, a cell is weak."
+ },
+ {
+  "id": "c-used-car-105",
+  "de": "Prüfziffer der Fahrgestellnummer stimmt nicht",
+  "en": "VIN check digit does not match"
+ },
+ {
+  "id": "c-used-car-106",
+  "de": "Fahrgestellnummer weicht von den Papieren ab",
+  "en": "VIN differs from the papers"
+ },
+ {
+  "id": "c-used-car-107",
+  "de": "Fahrgestellnummer der Papiere",
+  "en": "VIN from the papers"
+ },
+ {
+  "id": "c-used-car-108",
+  "de": "Fahrgestellnummer passt zu den Papieren",
+  "en": "VIN matches the papers"
+ },
+ {
+  "id": "c-used-car-109",
+  "de": "Fahrgestellnummer nicht gemeldet",
+  "en": "VIN not reported"
+ },
+ {
+  "id": "c-used-car-110",
+  "de": "Fahrgestellnummer",
+  "en": "Vehicle identification number"
+ },
+ {
+  "id": "c-used-car-111",
+  "de": "Wurde in letzter Zeit die Batterie abgeklemmt oder der Fehlerspeicher gelöscht?",
+  "en": "Was the battery disconnected or the fault memory cleared recently?"
+ },
+ {
+  "id": "c-used-car-112",
+  "de": "Wurden die Wartungen nach Plan gemacht, und wann wurden Kupplung, Bremsen und Zahnriemen zuletzt erneuert?",
+  "en": "Was the car serviced to plan, and when were the clutch, brakes and timing belt last renewed?"
+ },
+ {
+  "id": "c-used-car-113",
+  "de": "Wurde das Motorsteuergerät getauscht oder neu programmiert, und gibt es dafür eine Rechnung?",
+  "en": "Was the engine control unit replaced or reprogrammed, and is there an invoice for it?"
+ },
+ {
+  "id": "c-used-car-114",
+  "de": "Wurde der Fehler hinter %1 repariert, und gibt es dafür eine Rechnung?",
+  "en": "Was the fault behind %1 repaired, and is there an invoice for it?"
+ },
+ {
+  "id": "c-used-car-115",
+  "de": "Wurde der Tacho oder das Motorsteuergerät getauscht?",
+  "en": "Was the instrument cluster or the engine control unit replaced?"
+ },
+ {
+  "id": "c-used-car-116",
+  "de": "Was ist die Ursache für %1, und was würde die Reparatur kosten?",
+  "en": "What is the cause of %1, and what would the repair cost?"
+ },
+ {
+  "id": "c-used-car-117",
+  "de": "Wann und warum wurde der Fehlerspeicher zuletzt gelöscht? Gibt es dazu eine Rechnung?",
+  "en": "When and why was the fault memory last cleared? Is there an invoice for it?"
+ },
+ {
+  "id": "c-used-car-118",
+  "de": "Warum zeigen die Steuergeräte verschiedene Kilometerstände? Wurde der Tacho oder ein Steuergerät getauscht, und gibt es dafür einen Beleg?",
+  "en": "Why do the control units show different mileages? Was the instrument cluster or a control unit replaced, and is there proof of it?"
+ },
+ {
+  "id": "c-used-car-119",
+  "de": "Warum steht im Motorsteuergerät eine andere Fahrgestellnummer als in den Papieren?",
+  "en": "Why does the engine control unit carry a different VIN than the papers?"
+ },
+ {
+  "id": "c-used-car-120",
+  "de": "Warum wurde %1 gelöscht, ohne den Fehler zu reparieren?",
+  "en": "Why was %1 cleared without repairing the fault?"
+ },
+ {
+  "id": "c-used-car-121",
+  "de": "Warum wurde mit leuchtender Motorkontrollleuchte weitergefahren?",
+  "en": "Why was the car driven on with the check engine light on?"
+ },
+ {
+  "id": "c-used-car-122",
+  "de": "seit %1",
+  "en": "since %1"
+ }
+]
