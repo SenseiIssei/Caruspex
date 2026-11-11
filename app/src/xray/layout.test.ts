@@ -7,8 +7,8 @@ import { describe, expect, it } from "vitest";
 import catalog from "../api/mock/data/catalog.json";
 import { anatomyOf } from "../api/mock/areas/xray";
 import type { MeasuredRecord } from "../api/mock/areas/knowledge";
-import { BodyType, CarZone, Powertrain, type VehicleAnatomy } from "../api/types";
-import { SHAPES, bodyVariants, shapeFor } from "./shape";
+import { BodyType, CarZone, DrivenAxles, EngineLayout, Powertrain, type VehicleAnatomy } from "../api/types";
+import { SHAPES, bodyVariants, defaultShape, shapeFor } from "./shape";
 import {
   ECU_KIND_COUNT,
   ECU_PLACES,
@@ -16,6 +16,7 @@ import {
   guessKind,
   buildLayout,
   insideHull,
+  lampOutlines,
   zoneAnchor,
   type CarLayout,
   type EcuInput,
@@ -92,6 +93,41 @@ function checkCar(layout: CarLayout, label: string): void {
     const a: Vec3 = zoneAnchor(layout, zone);
     expect(a.every(Number.isFinite), `${label}: zone ${zone}`).toBe(true);
   }
+  checkLamps(layout, label);
+}
+
+// Headlights on the front face ahead of the front wheels, tail lights on the
+// rear face behind the rear wheels, both on the surface of the body, one on
+// each side; the grille between the headlights.
+function checkLamps(layout: CarLayout, label: string): void {
+  const { hull } = layout;
+  const lamps = lampOutlines(hull);
+  // Thousands of points per car: collect what is wrong, one expect at the end.
+  const wrong: string[] = [];
+  const onBody = (q: Vec3, what: string) => {
+    const u = hull.station(q[0]);
+    if (!q.every(Number.isFinite)) wrong.push(`${what} not finite`);
+    else if (u < -0.01 || u > 1.01) wrong.push(`${what} off the ends at ${u.toFixed(3)}`);
+    else if (q[1] < hull.bottom(Math.min(1, Math.max(0, u))) - 0.01) wrong.push(`${what} under the body`);
+    else if (Math.abs(q[2]) > hull.width / 2 + 0.02) wrong.push(`${what} wider than the car`);
+  };
+  for (const l of lamps.head) {
+    for (const q of l) {
+      onBody(q, "headlight");
+      if (q[0] <= layout.frontAxle) wrong.push("headlight behind the front axle");
+    }
+  }
+  for (const l of lamps.tail) {
+    for (const q of l) {
+      onBody(q, "tail light");
+      if (q[0] >= layout.rearAxle) wrong.push("tail light ahead of the rear axle");
+    }
+  }
+  for (const l of lamps.grille) for (const q of l) onBody(q, "grille");
+  const sides = (loops: Vec3[][]) => new Set(loops.map((l) => Math.sign(l[0]![2]))).size;
+  if (sides(lamps.head) !== 2) wrong.push("headlights not on both sides");
+  if (sides(lamps.tail) !== 2) wrong.push("tail lights not on both sides");
+  expect(wrong.slice(0, 3), label).toEqual([]);
 }
 
 describe("x-ray layout", () => {
@@ -234,5 +270,61 @@ describe("hand-tuned shapes", () => {
     const shape = shapeFor(a, body);
     expect(shape.source).toBe("typical");
     expect(shape.style).toBe("notchback");
+  });
+});
+
+describe("lamps and grille", () => {
+  const data = catalog as unknown as {
+    generations: [string, string, string, number, number, number, number][];
+    measured: Record<string, MeasuredRecord>;
+  };
+  const carFor = (brand: string, model: string, generation: string) => {
+    const i = data.generations.findIndex(([b, m, g]) => b === brand && m === model && g === generation);
+    const [, , , from, , body, powertrains] = data.generations[i]!;
+    const anatomy = anatomyOf(body as BodyType, brand, model, from, powertrains, 0, generation, data.measured[String(i)] ?? null);
+    const layout = buildLayout({ anatomy, body: body as BodyType, ecus: [], kline: false, turbo: false });
+    return { anatomy, body: body as BodyType, shape: shapeFor(anatomy, body as BodyType), layout };
+  };
+
+  it("follow the era: round lamps on old cars, slim ones that wrap round on new ones", () => {
+    const old = defaultShape(BodyType.Sedan, 1972, EngineLayout.FrontLongitudinal, DrivenAxles.Rear);
+    const now = defaultShape(BodyType.Sedan, 2022, EngineLayout.FrontTransverse, DrivenAxles.Front);
+    expect(old.headlight.round).toBeLessThan(3);
+    expect(old.headlight.wrap).toBeLessThan(0);
+    expect(now.headlight.height).toBeLessThan(old.headlight.height);
+    expect(now.headlight.wrap).toBeGreaterThan(0.1);
+    expect(now.taillight.wrap).toBeGreaterThan(old.taillight.wrap);
+    // An electric car has no radiator to feed: the grille is closed.
+    expect(defaultShape(BodyType.Hatchback, 2022, EngineLayout.None, DrivenAxles.Rear).grille.openings).toBe(0);
+    expect(now.grille.openings).toBe(1);
+  });
+
+  it("follow the hand-tuned rows", () => {
+    // Two grille openings side by side on the BMW (and the intake below),
+    // none on the Tesla, round headlights on the Fiat 500.
+    const bmw = carFor("BMW", "3er", "F30");
+    expect(bmw.shape.grille.openings).toBe(2);
+    expect(lampOutlines(bmw.layout.hull).grille.length).toBe(3);
+    const tesla = carFor("Tesla", "Model 3", "I");
+    expect(tesla.shape.grille.openings).toBe(0);
+    expect(lampOutlines(tesla.layout.hull).grille.length).toBe(1);
+    expect(carFor("Fiat", "500", "I").shape.headlight.round).toBe(2);
+    // The estate variant keeps the front of its saloon.
+    expect(shapeFor(bmw.anatomy, bmw.body, BodyType.Estate).grille.openings).toBe(2);
+  });
+
+  it("wrap modern lamps round the corner on to the side", () => {
+    const { layout } = carFor("Volkswagen", "Golf", "VIII");
+    const lamps = lampOutlines(layout.hull);
+    const half = layout.hull.width / 2;
+    // The outer end of a headlight sweeps back round the corner, the inner
+    // end stays clear of the middle.
+    for (const lamps_ of [lamps.head, lamps.tail]) {
+      const across = lamps_.flat().map((q) => Math.abs(q[2]));
+      const along = lamps_.flat().map((q) => q[0]);
+      expect(Math.max(...across)).toBeGreaterThan(half * 0.6);
+      expect(Math.min(...across)).toBeGreaterThan(0.04);
+      expect(Math.max(...along) - Math.min(...along)).toBeGreaterThan(0.12);
+    }
   });
 });

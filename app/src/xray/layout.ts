@@ -352,6 +352,171 @@ export function clampInside(hull: Hull, p: Vec3, margin = 0.06): Vec3 {
   return [x, y, z];
 }
 
+// --- Lamps and grille -------------------------------------------------------------
+
+// The front or rear face at one height in plan view: from the centre line
+// (z = 0) round the corner and back along the side, with the distance along
+// that line and where the corner is (where the line turns more along the car
+// than across it).
+interface FaceArc {
+  x: number[];
+  z: number[];
+  s: number[];
+  corner: number;
+  end: "front" | "rear";
+}
+
+function faceArc(hull: Hull, y: number, end: "front" | "rear"): FaceArc | null {
+  const n = 160;
+  const x: number[] = [];
+  const z: number[] = [];
+  // Never back past the wheel arches: a lamp on a car without overhangs
+  // stays on its corner.
+  const stop = end === "front" ? hull.profile.frontLift : hull.profile.rearLift;
+  for (let i = 0; i <= n; i++) {
+    const u = end === "front" ? 1 - (0.35 * i) / n : (0.35 * i) / n;
+    if (x.length > 2 && (end === "front" ? u < stop : u > stop)) break;
+    const half = hull.halfWidth(u, y);
+    if (half <= 0) {
+      if (x.length) break;
+      continue;
+    }
+    if (!x.length) {
+      x.push(hull.xAt(u));
+      z.push(0);
+    }
+    x.push(hull.xAt(u));
+    z.push(half);
+  }
+  if (x.length < 3) return null;
+  const s = [0];
+  let corner = -1;
+  for (let i = 1; i < x.length; i++) {
+    const dx = Math.abs(x[i]! - x[i - 1]!);
+    const dz = z[i]! - z[i - 1]!;
+    s.push(s[i - 1]! + Math.hypot(dx, dz));
+    if (corner < 0 && i > 1 && dx > Math.abs(dz)) corner = s[i - 1]!;
+  }
+  return { x, z, s, corner: corner < 0 ? s[s.length - 1]! : corner, end };
+}
+
+// The point at a distance along the face, a few millimetres out from the
+// surface so the line stays visible on the glass.
+function arcPoint(arc: FaceArc, dist: number, y: number, side: number): Vec3 {
+  const { x, z, s } = arc;
+  const d = Math.min(s[s.length - 1]!, Math.max(0, dist));
+  let i = 0;
+  while (i < s.length - 2 && s[i + 1]! < d) i++;
+  const seg = Math.max(1e-6, s[i + 1]! - s[i]!);
+  const t = (d - s[i]!) / seg;
+  const tx = x[i + 1]! - x[i]!;
+  const tz = z[i + 1]! - z[i]!;
+  const len = Math.max(1e-6, Math.hypot(tx, tz));
+  const [nx, nz] = arc.end === "front" ? [tz / len, -tx / len] : [-tz / len, tx / len];
+  const out = 0.006;
+  return [x[i]! + tx * t + nx * out, y, side * (z[i]! + tz * t + nz * out)];
+}
+
+export interface LampOutlines {
+  // Closed polylines on the body: headlights, tail lights and the openings
+  // in the front (grille and intake).
+  head: Vec3[][];
+  tail: Vec3[][];
+  grille: Vec3[][];
+}
+
+// The lamps and the grille of the profile drawn on the hull: each an
+// outline measured along the face from the centre line, so a lamp that
+// wraps round the corner follows the body on to the side.
+export function lampOutlines(hull: Hull): LampOutlines {
+  const p = hull.profile;
+  const cache = new Map<string, FaceArc | null>();
+  const arcAt = (y: number, end: "front" | "rear") => {
+    const key = `${end}${Math.round(y * 200)}`;
+    if (!cache.has(key)) cache.set(key, faceArc(hull, Math.round(y * 200) / 200, end));
+    return cache.get(key)!;
+  };
+  // A rounded rectangle (superellipse) in (distance along the face, height),
+  // centred at sc with half sizes rs and ry; dist < 0 is the other side.
+  const loop = (end: "front" | "rear", sc: number, rs: number, yc: number, ry: number, round: number, rise: number, side: number): Vec3[] => {
+    const pts: Vec3[] = [];
+    const e = 2 / Math.max(1.5, round);
+    for (let i = 0; i <= 48; i++) {
+      const a = (2 * Math.PI * i) / 48;
+      const c = Math.cos(a);
+      const sn = Math.sin(a);
+      const d = sc + rs * Math.sign(c) * Math.pow(Math.abs(c), e);
+      const q = rs > 0 ? (d - (sc - rs)) / (2 * rs) : 0.5;
+      const y = yc + ry * Math.sign(sn) * Math.pow(Math.abs(sn), e) + rise * (q - 0.5);
+      const arc = arcAt(y, end);
+      if (!arc) return [];
+      pts.push(arcPoint(arc, Math.abs(d), y, d < 0 ? -side : side));
+    }
+    return pts;
+  };
+  const faceBottom = (end: "front" | "rear") => hull.bottom(end === "front" ? 0.985 : 0.015);
+  const lamps = (end: "front" | "rear") => {
+    const lamp = end === "front" ? p.headlight : p.taillight;
+    // A low face (a wedge nose) gets a lamp in proportion.
+    const faceTop = end === "front" ? p.noseTop : p.tailTop;
+    const room = faceTop - (faceBottom(end) + 0.06);
+    const k = lamp.drop + lamp.height > room && lamp.drop > 0 ? Math.max(0.2, room / (lamp.drop + lamp.height)) : 1;
+    const top = faceTop - lamp.drop * k;
+    const bottom = Math.max(faceBottom(end) + 0.06, top - lamp.height * k);
+    const mid = arcAt((top + bottom) / 2, end);
+    if (!mid || top - bottom < 0.02) return [];
+    const s1 = Math.min(mid.s[mid.s.length - 1]!, mid.corner + lamp.wrap);
+    const s0 = Math.max(0.05, s1 - lamp.width);
+    if (s1 - s0 < 0.03) return [];
+    const yc = (top + bottom) / 2;
+    const ry = (top - bottom) / 2;
+    const out: Vec3[][] = [];
+    for (const side of [1, -1]) {
+      if (lamp.twin) {
+        const m = (s0 + s1) / 2;
+        const r = Math.min((s1 - s0) / 4 - 0.01, ry);
+        out.push(loop(end, (s0 + m) / 2, r, yc, ry, lamp.round, lamp.rise / 2, side));
+        out.push(loop(end, (m + s1) / 2, r, yc, ry, lamp.round, lamp.rise / 2, side));
+      } else {
+        out.push(loop(end, (s0 + s1) / 2, (s1 - s0) / 2, yc, ry, lamp.round, lamp.rise, side));
+      }
+    }
+    if (lamp.bar) {
+      const bar: Vec3[] = [];
+      for (let i = 0; i <= 24; i++) {
+        const d = -s0 + (2 * s0 * i) / 24;
+        bar.push(arcPoint(mid, Math.abs(d), yc - lamp.rise / 2, d < 0 ? -1 : 1));
+      }
+      out.push(bar);
+    }
+    return out.filter((l) => l.length > 1);
+  };
+  const grille = (): Vec3[][] => {
+    const g = p.grille;
+    const out: Vec3[][] = [];
+    const top = p.noseTop - g.drop;
+    const bottom = Math.max(faceBottom("front") + 0.1, top - g.height);
+    if (g.openings > 0 && top - bottom > 0.02 && g.width > 0.02) {
+      const yc = (top + bottom) / 2;
+      const ry = (top - bottom) / 2;
+      if (g.openings === 2) {
+        const half = g.width / 2;
+        out.push(loop("front", half + 0.012, half - 0.018, yc, ry, g.round, 0, 1));
+        out.push(loop("front", -(half + 0.012), half - 0.018, yc, ry, g.round, 0, 1));
+      } else {
+        out.push(loop("front", 0, g.width, yc, ry, g.round, 0, 1));
+      }
+    }
+    if (g.intakeWidth > 0.02 && g.intakeHeight > 0.02) {
+      const low = faceBottom("front") + 0.05;
+      const high = Math.min(low + g.intakeHeight, g.openings > 0 ? bottom - 0.04 : p.noseTop - 0.12);
+      if (high - low > 0.025) out.push(loop("front", 0, g.intakeWidth, (low + high) / 2, (high - low) / 2, 6, 0, 1));
+    }
+    return out.filter((l) => l.length > 1);
+  };
+  return { head: lamps("front"), tail: lamps("rear"), grille: grille() };
+}
+
 // --- The whole car ------------------------------------------------------------------
 
 export interface XrayInput {

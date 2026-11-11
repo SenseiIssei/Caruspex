@@ -9,7 +9,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { CarZone } from "../api/types";
 import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3 } from "./layout";
-import { LAYERS } from "./layout";
+import { LAYERS, lampOutlines } from "./layout";
 import { contactAxles, fitShell, looksLikeGlass, looksLikeWheel, orientation, type Bounds, type ShellFit } from "./shell";
 
 export interface XrayPalette {
@@ -559,6 +559,32 @@ export class XrayScene {
     make(THREE.BackSide, pal.light ? 0.05 : 0.035, pal.light ? 0.16 : 0.2, 10);
     make(THREE.FrontSide, pal.light ? 0.07 : 0.05, pal.light ? 0.34 : 0.4, 11);
     this.buildOutline(layout, rim);
+    this.buildLamps(layout, rim);
+  }
+
+  // Headlights, tail lights and the grille opening as lines on the glass,
+  // so the front and the rear read as such from any side: lamps in their
+  // light colours, the openings in the colour of the outline.
+  private buildLamps(layout: CarLayout, rim: THREE.Color): void {
+    const lamps = lampOutlines(layout.hull);
+    const light = this.palette.light;
+    const group = new THREE.Group();
+    group.name = "lamps";
+    const add = (loops: Vec3[][], color: THREE.Color, opacity: number) => {
+      const segments: number[] = [];
+      for (const l of loops) for (let i = 0; i + 1 < l.length; i++) segments.push(...l[i]!, ...l[i + 1]!);
+      if (!segments.length) return;
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(segments, 3));
+      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false, toneMapped: false });
+      const lines = new THREE.LineSegments(geo, mat);
+      lines.renderOrder = 12;
+      group.add(lines);
+    };
+    add(lamps.head, new THREE.Color(light ? "#33476f" : "#f2f7ff"), light ? 0.75 : 0.8);
+    add(lamps.tail, new THREE.Color(light ? "#c0362c" : "#ff5f57"), light ? 0.8 : 0.85);
+    add(lamps.grille, rim, light ? 0.5 : 0.45);
+    this.layerGroups.get("body")!.add(group);
   }
 
   // Thin lines along the window opening, the pillars, the door seams and
@@ -1293,7 +1319,7 @@ export class XrayScene {
     if (!shell) return;
     const body = this.layerGroups.get("body")!;
     for (const child of [...body.children]) {
-      if (child.name === "hull" || child.name === "outline") {
+      if (child.name === "hull" || child.name === "outline" || child.name === "lamps") {
         body.remove(child);
         disposeTree(child);
       }
