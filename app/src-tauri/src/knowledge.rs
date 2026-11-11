@@ -456,6 +456,7 @@ pub fn vehicle_anatomy(
         "measuredFields": dims.measured,
         "wikidataId": item,
         "massKg": mass,
+        "bodyNames": BodyType::ALL.iter().map(|&b| catalog::body_name(b)).collect::<Vec<_>>(),
         "lengthMm": dims.length,
         "widthMm": dims.width,
         "heightMm": dims.height,
@@ -563,6 +564,15 @@ mod tests {
         let golf = vehicle_anatomy(first["id"].as_i64().unwrap(), 2001, 0, "", "", 0);
         assert_eq!(golf["engine"], 1);
         assert!(golf["wheelbaseMm"].as_u64().unwrap() < golf["lengthMm"].as_u64().unwrap());
+        // The Golf IV's dimensions come from Wikidata (Q1419308).
+        assert_eq!(golf["dimensionSource"], "wikidata");
+        assert_eq!(golf["lengthMm"], 4148);
+        assert_eq!(golf["wikidataId"], "Q1419308");
+        assert_eq!(golf["generation"], "IV");
+        assert_eq!(
+            golf["bodyNames"].as_array().unwrap().len(),
+            BodyType::ALL.len()
+        );
         // The demo car: an estate with a petrol engine, no generation.
         let demo = vehicle_anatomy(-1, 2021, 2, "", "", 1);
         assert_eq!(demo["powertrain"], 1);

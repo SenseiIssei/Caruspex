@@ -265,6 +265,7 @@ fn main() {
             commands::open_text_file,
             commands::pick_save_path,
             commands::pick_open_path,
+            commands::read_model_file,
             commands::garage_load,
             commands::garage_save,
             commands::list_serial_ports,

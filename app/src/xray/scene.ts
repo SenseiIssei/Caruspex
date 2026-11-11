@@ -10,6 +10,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { CarZone } from "../api/types";
 import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3 } from "./layout";
 import { LAYERS } from "./layout";
+import { contactAxles, fitShell, looksLikeGlass, looksLikeWheel, orientation, type Bounds, type ShellFit } from "./shell";
 
 export interface XrayPalette {
   light: boolean;
@@ -69,13 +70,19 @@ uniform float uOpacity;
 uniform float uWindowAlpha;
 uniform float uFade;
 uniform float uBelt;
+uniform float uBeltRear;
 uniform float uRear;
 uniform float uLength;
 uniform float uCowl;
 uniform float uRoofFront;
 uniform float uRoofRear;
 uniform float uTail;
+uniform vec4 uDlo;
 uniform vec4 uPillars;
+uniform vec4 uPillarW;
+uniform float uKink;
+uniform float uGraphic;
+uniform float uWindowAll;
 varying vec3 vWorld;
 varying vec3 vNormalW;
 varying float vTop;
@@ -93,17 +100,24 @@ void main() {
   float u = (vWorld.x - uRear) / uLength;
   float y = vWorld.y;
 
-  // Glass areas: side windows between the pillars, windscreen, rear window.
+  // Glass areas: the side window opening (its front edge along the
+  // A-pillar, its rear edge along the last pillar with the kink at the
+  // bottom), split by the pillars between the doors; windscreen; rear window.
   float side = smoothstep(0.42, 0.62, abs(vNormalW.z));
-  float sideWin = side * band(uBelt + 0.02, vTop - 0.05, 0.02, y) * band(uTail + 0.01, uCowl - 0.004, 0.02, u);
+  float beltY = mix(uBeltRear, uBelt, smoothstep(uDlo.z, uCowl, u));
+  float k = clamp((y - beltY) / max(0.05, vTop - beltY), 0.0, 1.0);
+  float frontEdge = mix(uDlo.x, uDlo.y, k);
+  float rearEdge = mix(uDlo.z, uDlo.w, k) + uKink * (1.0 - smoothstep(0.0, 0.4, k));
+  float sideWin = side * band(beltY + 0.015, vTop - 0.045, 0.012, y) * band(rearEdge, frontEdge, 0.005, u);
   for (int i = 0; i < 4; i++) {
-    float p = uPillars[i];
-    if (p > 0.0) sideWin *= smoothstep(0.007, 0.014, abs(u - p));
+    float w = uPillarW[i];
+    if (w > 0.0) sideWin *= smoothstep(w * 0.5, w * 0.5 + 0.003, abs(u - uPillars[i]));
   }
   float frontal = 1.0 - smoothstep(0.32, 0.55, abs(vNormalW.z));
-  float shield = frontal * band(uRoofFront + 0.004, uCowl, 0.012, u) * smoothstep(uBelt, uBelt + 0.03, y) * (1.0 - smoothstep(0.96, 0.995, vNormalW.y));
-  float rearWin = frontal * band(uTail, uRoofRear - 0.004, 0.01, u) * smoothstep(uBelt, uBelt + 0.03, y) * (1.0 - smoothstep(0.96, 0.995, vNormalW.y));
-  float win = clamp(sideWin + shield + rearWin, 0.0, 1.0);
+  float notRoof = 1.0 - smoothstep(0.96, 0.995, vNormalW.y);
+  float shield = frontal * band(uRoofFront + 0.004, uCowl, 0.012, u) * smoothstep(uBelt, uBelt + 0.03, y) * notRoof;
+  float rearWin = frontal * band(uTail, uRoofRear - 0.004, 0.01, u) * smoothstep(uBeltRear, uBeltRear + 0.03, y) * notRoof;
+  float win = clamp((sideWin + shield + rearWin) * uGraphic + uWindowAll, 0.0, 1.0);
 
   vec3 r = reflect(-v, n);
   float skyAmount = smoothstep(-0.25, 0.55, r.y);
@@ -234,6 +248,73 @@ function floorTexture(light: boolean, accent: string): THREE.Texture {
   return tex;
 }
 
+// The outline strokes as pairs of points (x, y, z, x, y, z, ...).
+export function outlineSegments(layout: CarLayout): number[] {
+  const hull = layout.hull;
+  const p = hull.profile;
+  const segments: number[] = [];
+  const at = (u: number, y: number, side: number): Vec3 => [hull.xAt(u), y, side * (hull.halfWidth(u, y) + 0.003)];
+  const line = (pts: Vec3[]) => {
+    for (let i = 0; i + 1 < pts.length; i++) segments.push(...pts[i]!, ...pts[i + 1]!);
+  };
+  const sample = (from: number, to: number, f: (t: number) => Vec3, n = 40) => {
+    const out: Vec3[] = [];
+    for (let i = 0; i <= n; i++) out.push(f(from + ((to - from) * i) / n));
+    return out;
+  };
+  const [frontBottom, frontTop, rearBottom, rearTop] = p.dlo;
+  const belt = (u: number) => hull.beltAt(u) + 0.015;
+  const roof = (u: number) => hull.top(u) - 0.045;
+  const kinked = (k: number) => p.kink * (1 - Math.min(1, k / 0.4));
+  for (const side of [1, -1]) {
+    // Window opening: window line, A-pillar, roof edge, last pillar.
+    if (rearBottom < frontBottom) {
+      line(sample(rearBottom + p.kink, frontBottom, (u) => at(u, belt(u), side)));
+      line(sample(0, 1, (k) => {
+        const u = frontBottom + (frontTop - frontBottom) * k;
+        return at(u, Math.min(roof(u), belt(frontBottom) + (roof(frontTop) - belt(frontBottom)) * k), side);
+      }, 16));
+      if (rearTop < frontTop) line(sample(rearTop, frontTop, (u) => at(u, roof(u), side)));
+      line(sample(0, 1, (k) => {
+        const u = rearBottom + (rearTop - rearBottom) * k + kinked(k);
+        return at(u, Math.min(roof(u), belt(rearBottom) + (roof(rearTop) - belt(rearBottom)) * k), side);
+      }, 16));
+      for (const pillar of p.pillars) {
+        if (roof(pillar) > belt(pillar)) line(sample(belt(pillar), roof(pillar), (y) => at(pillar, y, side), 10));
+      }
+    }
+    // Door seams below the window line.
+    for (const seam of p.seams) {
+      const u = hull.station(seam.x);
+      if (seam.top > seam.bottom + 0.05) line(sample(seam.top, seam.bottom, (y) => at(u, y, side), 12));
+    }
+    // Wheel arches.
+    for (const w of layout.wheels.filter((w) => Math.sign(w.center[2]) === side)) {
+      const r = w.radius + 0.05;
+      const pts: Vec3[] = [];
+      for (let i = 0; i <= 24; i++) {
+        const a = Math.PI * 0.08 + (Math.PI * 0.84 * i) / 24;
+        const x = w.center[0] + Math.cos(a) * r;
+        const y = w.center[1] + Math.sin(a) * r;
+        const u = hull.station(x);
+        const half = hull.halfWidth(u, Math.max(y, hull.bottom(u) + 0.01));
+        pts.push([x, y, side * Math.max(half, Math.abs(w.center[2]) + w.width / 2) + side * 0.004]);
+      }
+      line(pts);
+    }
+  }
+  // Base of the windscreen and of the rear window, across the car.
+  for (const u of [p.cowl, p.tail + 0.004]) {
+    const y = hull.beltAt(u) + 0.02;
+    const half = hull.halfWidth(u, y);
+    if (half <= 0) continue;
+    const pts: Vec3[] = [];
+    for (let i = 0; i <= 20; i++) pts.push([hull.xAt(u), y + 0.004, -half + (2 * half * i) / 20]);
+    line(pts);
+  }
+  return segments;
+}
+
 export class XrayScene {
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
@@ -276,6 +357,7 @@ export class XrayScene {
   private resize: ResizeObserver;
   private disposed = false;
   private home = { position: new THREE.Vector3(), target: new THREE.Vector3() };
+  private shell: { outer: THREE.Group; inner: THREE.Object3D; turned: boolean; fit: ShellFit | null } | null = null;
 
   constructor(container: HTMLElement, palette: XrayPalette, reducedMotion: boolean, events: SceneEvents = {}) {
     this.container = container;
@@ -347,7 +429,7 @@ export class XrayScene {
       for (const child of [...g.children]) {
         if (child === this.networkGroup || child === this.packetGroup) continue;
         g.remove(child);
-        disposeTree(child);
+        if (child !== this.shell?.outer) disposeTree(child);
       }
     }
     for (const g of [this.wheelGroup, this.floorGroup]) {
@@ -362,10 +444,15 @@ export class XrayScene {
 
     this.buildHull(layout);
     this.buildWheels(layout);
+    this.wheelGroup.visible = true;
     this.buildFloor(layout);
     for (const part of layout.parts) this.addPart(part);
     for (const tube of layout.tubes) this.addTube(tube);
     this.setNetwork(layout);
+    if (this.shell) {
+      this.shell.outer.parent?.remove(this.shell.outer);
+      this.placeShell();
+    }
     this.applyHighlight();
     this.applyLayers();
 
@@ -428,7 +515,9 @@ export class XrayScene {
     const windowTint = pal.light ? new THREE.Color("#22304f") : new THREE.Color("#03060c");
     const sky = pal.light ? new THREE.Color("#f2f5fb") : new THREE.Color("#2a3552");
     const ground = pal.light ? new THREE.Color("#8a93a8") : new THREE.Color("#06080d");
-    const pillars = new THREE.Vector4(...[0, 1, 2, 3].map((i) => p.pillars[i] ?? -1) as [number, number, number, number]);
+    const pillars = new THREE.Vector4(...([0, 1, 2, 3].map((i) => p.pillars[i] ?? -1) as [number, number, number, number]));
+    const pillarWidths = new THREE.Vector4(...([0, 1, 2, 3].map((i) => p.pillarWidths[i] ?? 0) as [number, number, number, number]));
+    const dlo = new THREE.Vector4(...p.dlo);
     const make = (side: THREE.Side, opacity: number, windowAlpha: number, order: number) => {
       const m = new THREE.ShaderMaterial({
         vertexShader: GLASS_VERTEX,
@@ -446,13 +535,19 @@ export class XrayScene {
           uWindowAlpha: { value: windowAlpha },
           uFade: { value: 1 },
           uBelt: { value: hull.belt },
+          uBeltRear: { value: p.beltRear * hull.height },
           uRear: { value: hull.rear },
           uLength: { value: hull.length },
           uCowl: { value: p.cowl },
           uRoofFront: { value: p.roofFront },
           uRoofRear: { value: p.roofRear },
           uTail: { value: p.tail },
+          uDlo: { value: dlo },
           uPillars: { value: pillars },
+          uPillarW: { value: pillarWidths },
+          uKink: { value: p.kink },
+          uGraphic: { value: 1 },
+          uWindowAll: { value: 0 },
         },
       });
       const mesh = new THREE.Mesh(geo, m);
@@ -461,70 +556,21 @@ export class XrayScene {
       this.layerGroups.get("body")!.add(mesh);
       this.glass.push(m);
     };
-    make(THREE.BackSide, pal.light ? 0.05 : 0.035, pal.light ? 0.1 : 0.16, 10);
-    make(THREE.FrontSide, pal.light ? 0.07 : 0.05, pal.light ? 0.2 : 0.3, 11);
+    make(THREE.BackSide, pal.light ? 0.05 : 0.035, pal.light ? 0.16 : 0.2, 10);
+    make(THREE.FrontSide, pal.light ? 0.07 : 0.05, pal.light ? 0.34 : 0.4, 11);
     this.buildOutline(layout, rim);
   }
 
-  // Thin lines along the window openings, the pillars and the wheel
-  // arches: the few strokes that make a glass blob read as a car.
+  // Thin lines along the window opening, the pillars, the door seams and
+  // the wheel arches: the few strokes that make a glass blob read as a car.
   private buildOutline(layout: CarLayout, color: THREE.Color): void {
-    const hull = layout.hull;
-    const p = hull.profile;
-    const segments: number[] = [];
-    const roofY = (u: number) => hull.top(u) - 0.05;
-    const belt = hull.belt + 0.02;
-    const at = (u: number, y: number, side: number): Vec3 => [hull.xAt(u), y, side * (hull.halfWidth(u, y) + 0.003)];
-    const line = (pts: Vec3[]) => {
-      for (let i = 0; i + 1 < pts.length; i++) segments.push(...pts[i]!, ...pts[i + 1]!);
-    };
-    const sample = (from: number, to: number, f: (u: number) => Vec3, n = 40) => {
-      const out: Vec3[] = [];
-      for (let i = 0; i <= n; i++) out.push(f(from + ((to - from) * i) / n));
-      return out;
-    };
-    for (const side of [1, -1]) {
-      // Window opening: beltline, A-pillar, roof edge, rear pillar.
-      line(sample(p.tail + 0.01, p.cowl, (u) => at(u, belt, side)));
-      line(sample(p.roofFront, p.cowl, (u) => {
-        const k = (u - p.roofFront) / (p.cowl - p.roofFront);
-        return at(u, roofY(p.roofFront) + (belt - roofY(p.roofFront)) * k, side);
-      }, 16));
-      line(sample(p.roofRear, p.roofFront, (u) => at(u, roofY(u), side)));
-      line(sample(p.tail + 0.01, p.roofRear, (u) => {
-        const k = (u - p.tail - 0.01) / (p.roofRear - p.tail - 0.01);
-        return at(u, belt + (roofY(p.roofRear) - belt) * k, side);
-      }, 16));
-      for (const pillar of p.pillars) line(sample(belt, roofY(pillar), (y) => at(pillar, y, side), 10));
-      // Wheel arches.
-      for (const w of layout.wheels.filter((w) => Math.sign(w.center[2]) === side)) {
-        const r = w.radius + 0.05;
-        const pts: Vec3[] = [];
-        for (let i = 0; i <= 24; i++) {
-          const a = Math.PI * 0.08 + (Math.PI * 0.84 * i) / 24;
-          const x = w.center[0] + Math.cos(a) * r;
-          const y = w.center[1] + Math.sin(a) * r;
-          const u = hull.station(x);
-          const half = hull.halfWidth(u, Math.max(y, hull.bottom(u) + 0.01));
-          pts.push([x, y, side * Math.max(half, Math.abs(w.center[2]) + w.width / 2) + side * 0.004]);
-        }
-        line(pts);
-      }
-    }
-    // Base of the windscreen and of the rear window, across the car.
-    for (const u of [p.cowl, p.tail + 0.01]) {
-      const pts: Vec3[] = [];
-      for (let i = 0; i <= 20; i++) {
-        const half = hull.halfWidth(u, belt);
-        pts.push([hull.xAt(u), belt + 0.004, -half + (2 * half * i) / 20]);
-      }
-      line(pts);
-    }
+    const segments = outlineSegments(layout);
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.Float32BufferAttribute(segments, 3));
     const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: this.palette.light ? 0.45 : 0.4, depthWrite: false, toneMapped: false });
     const lines = new THREE.LineSegments(geo, mat);
     lines.renderOrder = 12;
+    lines.name = "outline";
     this.layerGroups.get("body")!.add(lines);
   }
 
@@ -880,6 +926,20 @@ export class XrayScene {
     this.animateTo(this.home.position.clone(), this.home.target.clone());
   }
 
+  // A straight view from one side, for comparing silhouettes (the
+  // screenshot option's "|side"); "rear" looks from behind the car.
+  viewFrom(side: "side" | "rear" | "front"): void {
+    const L = this.layout?.hull.length ?? 4.5;
+    const target = this.home.target.clone();
+    const distance = ((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))) * 1.25;
+    this.tween = null;
+    const dir = side === "side" ? new THREE.Vector3(0, 0.08, 1) : side === "rear" ? new THREE.Vector3(-1, 0.25, 0.35) : new THREE.Vector3(1, 0.25, 0.35);
+    this.camera.position.copy(dir.normalize().multiplyScalar(distance).add(target));
+    this.controls.target.copy(target);
+    this.controls.update();
+    this.dirty = true;
+  }
+
   private animateTo(position: THREE.Vector3, target: THREE.Vector3): void {
     if (this.reducedMotion) {
       this.camera.position.copy(position);
@@ -1129,36 +1189,154 @@ export class XrayScene {
     return { x: (v.x * 0.5 + 0.5) * this.container.clientWidth, y: (-v.y * 0.5 + 0.5) * this.container.clientHeight };
   }
 
-  // Replaces the generated hull by a glTF model (a free model of this
-  // generation, or the user's own), scaled to the car's length. The parts
-  // inside stay where the layout put them.
-  async loadShell(url: string): Promise<void> {
-    if (!this.layout) return;
+  // Replaces the generated hull by a 3D model (glTF or GLB) the user owns:
+  // turned, scaled and moved onto the car (shell.ts), drawn in the same
+  // glass as the generated body, its glass parts darker. The drivetrain, the
+  // control units and the lines stay as the layout put them. The model's own
+  // wheels replace the generated ones when it has any. files: the buffers
+  // and pictures a .gltf names next to itself, by name.
+  async loadShell(data: ArrayBuffer, options: { turned: boolean; files?: Map<string, Blob> }): Promise<ShellFit> {
     const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
-    const gltf = await new GLTFLoader().loadAsync(url);
-    const model = gltf.scene;
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-    const scale = this.layout.hull.length / Math.max(size.x, size.z);
-    model.scale.setScalar(scale);
-    if (size.z > size.x) model.rotation.y = Math.PI / 2;
-    const placed = new THREE.Box3().setFromObject(model);
-    model.position.y -= placed.min.y;
-    const glass = this.glass[1];
-    model.traverse((o) => {
+    const manager = new THREE.LoadingManager();
+    const urls = new Map<string, string>();
+    for (const [name, blob] of options.files ?? []) urls.set(name, URL.createObjectURL(blob));
+    manager.setURLModifier((url) => {
+      const name = decodeURIComponent(url.replace(/^.*[\\/]/, ""));
+      return urls.get(name) ?? urls.get(decodeURIComponent(url)) ?? url;
+    });
+    try {
+      const gltf = await new GLTFLoader(manager).parseAsync(data, "");
+      this.clearShell();
+      const inner = gltf.scene;
+      const outer = new THREE.Group();
+      outer.name = "shell";
+      outer.add(inner);
+      this.shell = { outer, inner, turned: options.turned, fit: null };
+      this.placeShell();
+      return this.shell.fit!;
+    } finally {
+      for (const url of urls.values()) URL.revokeObjectURL(url);
+    }
+  }
+
+  // Turns a loaded model around (it faced backwards).
+  turnShell(turned: boolean): ShellFit | null {
+    if (!this.shell) return null;
+    this.shell.turned = turned;
+    this.placeShell();
+    return this.shell.fit;
+  }
+
+  hasShell(): boolean {
+    return this.shell !== null;
+  }
+
+  // Back to the generated body.
+  clearShell(): void {
+    if (!this.shell) return;
+    this.shell.outer.parent?.remove(this.shell.outer);
+    disposeTree(this.shell.outer);
+    this.shell = null;
+    if (this.layout) this.setCar(this.layout, true);
+  }
+
+  private placeShell(): void {
+    const shell = this.shell;
+    const layout = this.layout;
+    if (!shell || !layout) return;
+    const { inner, outer } = shell;
+    // Measure the model as it is, then turned.
+    inner.rotation.set(0, 0, 0);
+    inner.position.set(0, 0, 0);
+    inner.scale.set(1, 1, 1);
+    outer.position.set(0, 0, 0);
+    outer.scale.set(1, 1, 1);
+    outer.updateMatrixWorld(true);
+    const raw = new THREE.Box3().setFromObject(inner);
+    const size = raw.getSize(new THREE.Vector3());
+    inner.rotation.y = orientation([size.x, size.y, size.z], shell.turned);
+    outer.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(inner);
+    const bounds: Bounds = { min: [box.min.x, box.min.y, box.min.z], max: [box.max.x, box.max.y, box.max.z] };
+    const points: Vec3[] = [];
+    const v = new THREE.Vector3();
+    inner.traverse((o) => {
       const mesh = o as THREE.Mesh;
-      if (mesh.isMesh) {
-        if (!mesh.geometry.getAttribute("aTop")) {
-          const count = mesh.geometry.getAttribute("position").count;
-          mesh.geometry.setAttribute("aTop", new THREE.BufferAttribute(new Float32Array(count).fill(-10), 1));
-        }
-        if (glass) mesh.material = glass;
+      if (!mesh.isMesh) return;
+      const pos = mesh.geometry.getAttribute("position");
+      const step = Math.max(1, Math.floor(pos.count / 4000));
+      for (let i = 0; i < pos.count; i += step) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(mesh.matrixWorld);
+        points.push([v.x, v.y, v.z]);
       }
     });
+    const axles = contactAxles(points, bounds);
+    const fit = fitShell(bounds, axles, {
+      length: layout.hull.length,
+      wheelbase: layout.frontAxle - layout.rearAxle,
+      frontAxle: layout.frontAxle,
+      rearAxle: layout.rearAxle,
+    }, inner.rotation.y);
+    // The pivot is in turned coordinates: the inner group turns first, then
+    // moves the pivot to its origin; the outer one scales and places it.
+    inner.position.set(-fit.pivot[0], -fit.pivot[1], -fit.pivot[2]);
+    outer.scale.set(fit.scale * fit.stretchX, fit.scale, fit.scale);
+    outer.position.set(...fit.position);
+    shell.fit = fit;
+    this.applyShellLook(axles !== null);
+  }
+
+  // Glass for the model, darker where the model has glass; the generated
+  // body and, when the model brings its own, the generated wheels go.
+  private applyShellLook(ownWheels: boolean): void {
+    const shell = this.shell;
+    if (!shell) return;
     const body = this.layerGroups.get("body")!;
-    for (const child of [...body.children]) if (child.name === "hull") body.remove(child);
-    body.add(model);
+    for (const child of [...body.children]) {
+      if (child.name === "hull" || child.name === "outline") {
+        body.remove(child);
+        disposeTree(child);
+      }
+    }
+    if (!shell.outer.parent) body.add(shell.outer);
+    this.wheelGroup.visible = !ownWheels;
     this.dirty = true;
+    const front = this.glass.find((m) => m.side === THREE.FrontSide);
+    // Already dressed (turned around): the materials stay.
+    if (!front) return;
+    // The hull's two materials go with the hull; the model gets its own.
+    this.glass = [];
+    const glassFor = (window: boolean) => {
+      const m = front.clone();
+      m.side = THREE.DoubleSide;
+      m.uniforms.uGraphic!.value = 0;
+      m.uniforms.uWindowAll!.value = window ? 1 : 0;
+      m.uniforms.uOpacity!.value = this.palette.light ? 0.06 : 0.045;
+      this.glass.push(m);
+      return m;
+    };
+    const plain = glassFor(false);
+    const windows = glassFor(true);
+    front.dispose();
+    const tyre = new THREE.MeshStandardMaterial({ color: this.palette.light ? 0x2a2d34 : 0x15171c, roughness: 0.85, metalness: 0.05 });
+    shell.inner.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const old = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.Material | undefined;
+      const name = `${mesh.name} ${old?.name ?? ""}`;
+      const glass = looksLikeGlass(name, !!old?.transparent, old?.opacity ?? 1);
+      // The glass needs normals; models without them get computed ones.
+      if (!mesh.geometry.getAttribute("normal")) mesh.geometry.computeVertexNormals();
+      if (!mesh.geometry.getAttribute("aTop")) {
+        const count = mesh.geometry.getAttribute("position").count;
+        mesh.geometry.setAttribute("aTop", new THREE.BufferAttribute(new Float32Array(count).fill(9), 1));
+      }
+      if (old && old !== plain && old !== windows && old !== tyre) old.dispose();
+      const wheel = !glass && looksLikeWheel(name);
+      mesh.material = wheel ? tyre : glass ? windows : plain;
+      mesh.renderOrder = wheel ? 0 : glass ? 11 : 10;
+    });
+    this.applyHighlight();
   }
 
   dispose(): void {

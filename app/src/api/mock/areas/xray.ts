@@ -3,7 +3,7 @@
 import { BodyType, DrivenAxles, EngineLayout, Powertrain, TractionBattery, type VehicleAnatomy } from "../../types";
 import { L } from "../core";
 import type { PartialHandlers } from "../runtime";
-import { catalogGeneration, powertrainText, type MeasuredRecord } from "./knowledge";
+import { bodyName, catalogGeneration, powertrainText, type MeasuredRecord } from "./knowledge";
 
 // Length, width, height, wheelbase, track from about 1995 to 2009.
 const BASE: Record<BodyType, [number, number, number, number, number]> = {
@@ -277,6 +277,7 @@ export function anatomyOf(
     measuredFields: bits,
     wikidataId: measured ? (measured[6].split("|")[0] ?? "") : "",
     massKg: measured ? measured[5] : 0,
+    bodyNames: Array.from({ length: 11 }, (_, i) => bodyName(i)),
     dimensionsText: wikidata
       ? L(
           "Maße dieses Modells aus Wikidata, die Form ist ihm nachempfunden; mit ≈ markierte Werte fehlen dort und sind geschätzt.",

@@ -88,6 +88,9 @@ export interface Commands {
   // Only asks for a path (recording target, Torque CSV, replay file, log file).
   pick_save_path: Cmd<{ title: string; suggestedName: string; filters: FileFilter[] }, string | null>;
   pick_open_path: Cmd<{ title: string; filters: FileFilter[] }, string | null>;
+  // The bytes of a 3D model for the X-ray view (.glb, .gltf and the files a
+  // .gltf names next to it).
+  read_model_file: Cmd<{ path: string }, ArrayBuffer>;
 
   // --- Garage (Garage.h): the whole file in and out ------------------------------
   // The interface keeps the logic (Garage.cpp); the backend stores the JSON

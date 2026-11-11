@@ -38,6 +38,9 @@ function download(name: string, content: string | Blob, type = "text/plain"): vo
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+// Files picked through pick_open_path, by the name it returned.
+const picked = new Map<string, File>();
+
 function pickFile(filters: FileFilter[]): Promise<File | null> {
   return new Promise((resolve) => {
     const input = document.createElement("input");
@@ -106,7 +109,16 @@ export const appHandlers: PartialHandlers = {
   pick_save_path: ({ suggestedName }) => `~/Dokumente/${suggestedName}`,
   pick_open_path: async ({ filters }) => {
     const file = await pickFile(filters);
+    if (file) picked.set(file.name, file);
     return file ? file.name : null;
+  },
+  // A file picked in this session, or a URL of the preview server.
+  read_model_file: async ({ path }) => {
+    const file = picked.get(path);
+    if (file) return file.arrayBuffer();
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`${path}: ${response.status}`);
+    return response.arrayBuffer();
   },
   garage_load: () => readJson<GarageCar[]>(GARAGE_KEY, []),
   garage_save: ({ cars }) => writeJson(GARAGE_KEY, cars),

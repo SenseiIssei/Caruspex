@@ -215,7 +215,7 @@ function brandGroup(data: CatalogData, brand: string): string {
 
 const onlyElectric = (pt: number) => pt !== 0 && (pt & ~PtElectric) === 0;
 
-function bodyName(body: number): string {
+export function bodyName(body: number): string {
   switch (body) {
     case 0: return L("Schrägheck", "Hatchback");
     case 1: return L("Limousine", "Sedan");

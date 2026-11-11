@@ -354,6 +354,10 @@ export interface GarageCar {
   trips: GarageTrip[];
   fuel: GarageFuel[];
   services: GarageService[];
+  // The owner's 3D model for the X-ray view (path of a .glb or .gltf) and
+  // whether it had to be turned around; absent without one.
+  xrayModel?: string;
+  xrayModelTurned?: boolean;
 }
 
 // --- Report.h -------------------------------------------------------------------
@@ -708,6 +712,8 @@ export interface VehicleAnatomy {
   wikidataId: string;
   // Empty weight from Wikidata, 0 without.
   massKg: number;
+  // The name of every body type (BodyType order), for the body variants.
+  bodyNames: string[];
   dimensionsText: string;
   powertrain: number;
   powertrainChoices: { flag: number; name: string }[];

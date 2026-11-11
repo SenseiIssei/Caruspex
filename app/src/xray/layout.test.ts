@@ -160,7 +160,8 @@ describe("x-ray layout", () => {
     });
     // About half of the catalog has its dimensions from Wikidata.
     expect(measured / 2).toBeGreaterThan(900);
-  });
+    // Over 5000 cars: more than the default five seconds on a busy runner.
+  }, 60_000);
 
   it("names a catalog generation for every hand-tuned shape", () => {
     const data = catalog as unknown as { generations: [string, string, string][] };
