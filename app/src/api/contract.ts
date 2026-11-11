@@ -11,6 +11,9 @@
 
 import type {
   AdapterRow,
+  AdviceInput,
+  AdviceReport,
+  ConnectHelp,
   AppInfo,
   AppSettings,
   BleDeviceRow,
@@ -174,6 +177,9 @@ export interface Commands {
   // --- Knowledge (core data, answered directly) --------------------------------
   lookup_dtc: Cmd<{ code: string; brand: string }, DtcInfo>;
   locate_dtc: Cmd<{ code: string }, ZoneInfo>;
+  // "Was soll ich jetzt tun?" (crate caruspex-advice): everything the
+  // interface knows about the car in, one list in three steps out.
+  what_to_do: Cmd<{ input: AdviceInput }, AdviceReport>;
   dtc_lexicon: Cmd<None, DtcLexiconEntry[]>;
   brand_families: Cmd<None, BrandFamily[]>;
   // Family key of a brand ("Skoda" -> "VAG"), empty if none.
@@ -199,7 +205,9 @@ export interface Commands {
 export interface Events {
   log_line: { line: string };
   connected: { adapter: string; transport: string; protocol: string };
-  failed: { error: string };
+  // help: the checklist of the connection assistant when connecting
+  // failed (absent for other failures and for recordings).
+  failed: { error: string; help?: ConnectHelp };
   // The automatic search found the adapter on this port.
   adapter_found: { device: string };
   ble_adapter_found: { id: string; name: string; kinds: number };

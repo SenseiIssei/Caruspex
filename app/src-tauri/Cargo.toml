@@ -41,6 +41,7 @@ caruspex-protocols.workspace = true
 caruspex-net.workspace = true
 caruspex-record.workspace = true
 caruspex-analysis.workspace = true
+caruspex-advice.workspace = true
 caruspex-demo.workspace = true
 
 [target.'cfg(windows)'.dependencies]

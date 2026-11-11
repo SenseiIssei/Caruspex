@@ -11,6 +11,7 @@ use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, channel};
 use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
 
+use caruspex_advice::connect_help::{ConnectFacts, LinkKind, connect_help};
 use caruspex_analysis::common::{FuelType, Level};
 use caruspex_analysis::drive_cycle_guide::drive_cycle_guide;
 use caruspex_analysis::health_check::{self, HealthInput};
@@ -355,6 +356,9 @@ pub struct Worker {
     basic_setting_group: i32,
     voltage_timer: Timer,
     settings: AppSettings,
+    /// What the running connection attempt found out, for the connection
+    /// assistant (caruspex_advice::connect_help).
+    facts: ConnectFacts,
 }
 
 impl Worker {
@@ -376,6 +380,7 @@ impl Worker {
             basic_setting_group: 60,
             voltage_timer: Timer::default(),
             settings: AppSettings::default(),
+            facts: ConnectFacts::default(),
         }
     }
 
@@ -393,6 +398,28 @@ impl Worker {
     }
     fn failed(&self, error: impl Into<String>) {
         self.emit("failed", json!({ "error": error.into() }));
+    }
+    /// A connection attempt starts: forget what the last one found out.
+    fn begin_connect(&mut self, kind: LinkKind) {
+        self.facts = ConnectFacts {
+            kind,
+            ..ConnectFacts::default()
+        };
+    }
+    /// Connecting failed: the error line and the checklist of the
+    /// connection assistant, built from what the attempt found out.
+    fn connect_failed(&self, error: impl Into<String>) {
+        let help = crate::advice::help_json(&connect_help(&self.facts));
+        self.emit("failed", json!({ "error": error.into(), "help": help }));
+    }
+    /// A port or interface did not open. Windows reports a port held by
+    /// another program with its own sentence (serial.rs).
+    fn port_failed(&mut self, error: &str) {
+        self.facts.port_opened = Some(false);
+        self.facts.port_busy = error.contains(l(
+            ": belegt ein anderes Programm den Port?",
+            ": is another program using the port?",
+        ));
     }
     fn emit_live(&self, row: LiveRow) {
         self.sink.live(&row);
@@ -522,6 +549,7 @@ impl Worker {
             } => {
                 self.busy(true);
                 self.set_elm_log();
+                self.begin_connect(LinkKind::Usb);
                 let ok = self.finish_connect(transport, &protocol_order, true);
                 self.busy(false);
                 if ok {
@@ -581,16 +609,43 @@ impl Worker {
         protocol_order: &str,
         report_failure: bool,
     ) -> bool {
-        if let Err(error) = self.elm.connect(transport, protocol_order) {
+        match self.try_connect(transport, protocol_order) {
+            Ok(()) => true,
+            Err(error) => {
+                if report_failure {
+                    self.connect_failed(error);
+                } else {
+                    self.log(error);
+                }
+                false
+            }
+        }
+    }
+
+    /// Hands a ready transport to the ELM327 driver; on success reports the
+    /// connection, on failure only notes what the driver found out.
+    fn try_connect(
+        &mut self,
+        transport: Box<dyn Transport>,
+        protocol_order: &str,
+    ) -> Result<(), String> {
+        self.facts.port_opened = Some(true);
+        self.facts.port_busy = false;
+        let result = self.elm.connect(transport, protocol_order);
+        // When several ports or rates are tried, the attempt where the
+        // adapter answered says the most; a silent one does not replace it.
+        let trace = self.elm.connect_trace().clone();
+        if trace.adapter_answered || self.facts.adapter_answered != Some(true) {
+            self.facts.adapter_answered = Some(trace.adapter_answered);
+            self.facts.adapter_id = trace.adapter_id;
+            self.facts.protocols_tried = trace.protocols_tried;
+            self.facts.bus_error = trace.bus_error;
+        }
+        if let Err(error) = result {
             // Let go of the port, so the next baud rate (or the SLCAN probe)
             // can open it again.
             self.elm.disconnect();
-            if report_failure {
-                self.failed(error);
-            } else {
-                self.log(error);
-            }
-            return false;
+            return Err(error);
         }
         // On CAN several control units may answer; with headers on, every
         // fault keeps the unit it came from.
@@ -607,12 +662,13 @@ impl Worker {
                 "protocol": self.elm.protocol_text(),
             }),
         );
-        true
+        Ok(())
     }
 
     fn open_serial(&mut self, device: &str, baud: i32, protocol_order: &str) {
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Usb);
 
         // An empty device means: look for the adapter on every port. Only
         // the usual rates are tried there, otherwise a computer with many
@@ -620,9 +676,10 @@ impl Worker {
         let searching = device.is_empty();
         let devices: Vec<String> = if searching {
             let list: Vec<String> = enumerate_ports().into_iter().map(|p| p.device).collect();
+            self.facts.ports_found = Some(list.len());
             if list.is_empty() {
                 self.busy(false);
-                self.failed(w(
+                self.connect_failed(w(
                     "Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?",
                     "No port found. Is the adapter plugged into the computer, and is the Bluetooth adapter paired?",
                 ));
@@ -641,6 +698,7 @@ impl Worker {
         };
 
         let mut error = String::new();
+        let mut any_opened = false;
         for candidate_device in &devices {
             if searching {
                 self.log(args(
@@ -651,24 +709,47 @@ impl Worker {
             for (i, &b) in bauds.iter().enumerate() {
                 let mut candidate = SerialTransport::new();
                 if let Err(e) = candidate.open(candidate_device, b) {
+                    // While searching, ports that do not open (paired
+                    // Bluetooth ports out of reach) say nothing about the
+                    // adapter; one that opened before counts.
+                    if !(searching && any_opened) {
+                        self.port_failed(&e);
+                    }
                     error = e;
                     break;
+                }
+                any_opened = true;
+                if !self.facts.bauds_tried.contains(&b) {
+                    self.facts.bauds_tried.push(b);
                 }
                 self.log(args(
                     &w("Anschluss %1 offen bei %2 Baud", "Port %1 open at %2 baud"),
                     &[candidate_device, &b],
                 ));
-                let last = !searching && i + 1 == bauds.len();
-                if self.finish_connect(Box::new(candidate), protocol_order, last) {
-                    if searching {
-                        self.emit("adapter_found", json!({ "device": candidate_device }));
+                match self.try_connect(Box::new(candidate), protocol_order) {
+                    Ok(()) => {
+                        if searching {
+                            self.emit("adapter_found", json!({ "device": candidate_device }));
+                        }
+                        self.busy(false);
+                        self.refresh_status_and_faults();
+                        return;
                     }
-                    self.busy(false);
-                    self.refresh_status_and_faults();
-                    return;
-                }
-                if !searching {
-                    break;
+                    Err(e) => {
+                        // The adapter understood this rate, the car is the
+                        // problem: other rates will not help. While
+                        // searching, the next port is tried.
+                        let stop = searching || self.elm.connect_trace().adapter_answered;
+                        // The last error of a chosen port goes out with the
+                        // failure, the others only into the log.
+                        if searching || (!stop && i + 1 < bauds.len()) {
+                            self.log(e.clone());
+                        }
+                        error = e;
+                        if stop {
+                            break;
+                        }
+                    }
                 }
             }
             if searching {
@@ -688,7 +769,7 @@ impl Worker {
                             format!("SLCAN {candidate_device}"),
                             500000,
                         );
-                        if self.finish_connect(Box::new(front), "67", true) {
+                        if self.finish_connect(Box::new(front), "67", false) {
                             self.emit("adapter_found", json!({ "device": candidate_device }));
                             self.busy(false);
                             self.refresh_status_and_faults();
@@ -699,14 +780,12 @@ impl Worker {
             }
             if !searching {
                 self.busy(false);
-                if !error.is_empty() {
-                    self.failed(error);
-                }
+                self.connect_failed(error);
                 return;
             }
         }
         self.busy(false);
-        self.failed(if searching {
+        self.connect_failed(if searching {
             w(
                 "An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?",
                 "No ELM327 answered on any port. Is the ignition on and the adapter properly plugged in?",
@@ -719,10 +798,12 @@ impl Worker {
     fn open_tcp(&mut self, host: &str, port: i32, protocol_order: &str) {
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Wifi);
         let mut transport = TcpTransport::new();
         if let Err(error) = transport.open(host, port.clamp(0, 65535) as u16) {
             self.busy(false);
-            self.failed(error);
+            self.port_failed(&error);
+            self.connect_failed(error);
             return;
         }
         let ok = self.finish_connect(Box::new(transport), protocol_order, true);
@@ -745,16 +826,21 @@ impl Worker {
     fn open_ble(&mut self, id: &str, name: &str, kinds: i32, protocol_order: &str) {
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Bluetooth);
         let candidates = if id.is_empty() {
             self.log(w(
                 "Suche Bluetooth-Adapter ...",
                 "Searching for Bluetooth adapters ...",
             ));
             match ble::candidates() {
-                Ok(list) if !list.is_empty() => list,
+                Ok(list) if !list.is_empty() => {
+                    self.facts.device_found = Some(true);
+                    list
+                }
                 Ok(_) => {
                     self.busy(false);
-                    self.failed(w(
+                    self.facts.device_found = Some(false);
+                    self.connect_failed(w(
                         "Kein Bluetooth-Adapter in der Nähe gefunden. Steckt er im Auto, und ist die Zündung an?",
                         "No Bluetooth adapter found nearby. Is it plugged into the car, and is the ignition on?",
                     ));
@@ -762,7 +848,7 @@ impl Worker {
                 }
                 Err(error) => {
                     self.busy(false);
-                    self.failed(error);
+                    self.connect_failed(error);
                     return;
                 }
             }
@@ -818,25 +904,37 @@ impl Worker {
                     }
                 }
             }
-            let Some(transport) = transport else { continue };
-            if self.finish_connect(transport, protocol_order, true) {
-                self.emit(
-                    "ble_adapter_found",
-                    json!({ "id": d.id, "name": d.name, "kinds": ble::kinds(&d) }),
-                );
-                self.busy(false);
-                self.refresh_status_and_faults();
-                return;
+            let Some(transport) = transport else {
+                if self.facts.port_opened.is_none() {
+                    self.facts.port_opened = Some(false);
+                }
+                continue;
+            };
+            match self.try_connect(transport, protocol_order) {
+                Ok(()) => {
+                    self.emit(
+                        "ble_adapter_found",
+                        json!({ "id": d.id, "name": d.name, "kinds": ble::kinds(&d) }),
+                    );
+                    self.busy(false);
+                    self.refresh_status_and_faults();
+                    return;
+                }
+                Err(e) => {
+                    self.log(e.clone());
+                    error = e;
+                }
             }
         }
         self.busy(false);
-        self.failed(error);
+        self.connect_failed(error);
     }
 
     fn open_enet(&mut self, host: &str) {
         // ENET is always CAN behind the front end.
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Network);
         if host.is_empty() {
             self.log(w(
                 "Suche das Auto im Netzwerk (ENET und DoIP) ...",
@@ -847,7 +945,8 @@ impl Worker {
             Ok(car) => car,
             Err(error) => {
                 self.busy(false);
-                self.failed(error);
+                self.facts.port_opened = Some(false);
+                self.connect_failed(error);
                 return;
             }
         };
@@ -870,6 +969,12 @@ impl Worker {
     fn open_can(&mut self, spec: &str) {
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Can);
+        // "j2534:<dll>@500000": the bit rate follows the last @.
+        self.facts.can_bit_rate = spec
+            .rsplit_once('@')
+            .and_then(|(_, rate)| rate.trim().parse().ok())
+            .unwrap_or(500_000);
         let opener = |device: &str, baud: u32| -> Result<Box<dyn Transport>, String> {
             let mut serial = SerialTransport::new();
             serial.open(device, baud)?;
@@ -879,7 +984,8 @@ impl Worker {
             Ok(t) => t,
             Err(error) => {
                 self.busy(false);
-                self.failed(error);
+                self.port_failed(&error);
+                self.connect_failed(error);
                 return;
             }
         };
@@ -899,6 +1005,7 @@ impl Worker {
         // The demo car speaks CAN; the K-line protocols would only cost seconds.
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Usb);
         let ok = self.finish_connect(Box::new(caruspex_demo::DemoTransport::default()), "6", true);
         self.busy(false);
         if ok {
@@ -909,6 +1016,7 @@ impl Worker {
     fn open_replay(&mut self, path: &str, real_time: bool, protocol_order: &str) {
         self.busy(true);
         self.set_elm_log();
+        self.begin_connect(LinkKind::Replay);
         let replay = ReplayTransport::new(
             path,
             if real_time {
@@ -1342,6 +1450,7 @@ impl Worker {
         };
         for f in &report.findings {
             row.findings.push(HealthFindingRow {
+                id: f.id.clone(),
                 level: f.level as i32,
                 area: String::new(),
                 title: f.title.text(),
@@ -2486,6 +2595,67 @@ mod tests {
             Collect::named(&events, "live_value")
                 .iter()
                 .any(|v| keys.contains(&(v["row"]["pid"].as_i64().unwrap() as i32)))
+        );
+    }
+
+    /// An adapter that answers, in front of a car that does not.
+    #[derive(Default)]
+    struct SilentCar {
+        reply: Vec<u8>,
+    }
+
+    impl Transport for SilentCar {
+        fn write(&mut self, data: &[u8]) -> bool {
+            let command = String::from_utf8_lossy(data).trim().to_ascii_uppercase();
+            let answer = match command.as_str() {
+                "" => "",
+                "ATZ" => "ELM327 v1.5",
+                "STI" => "?",
+                "0100" => "UNABLE TO CONNECT",
+                _ => "OK",
+            };
+            self.reply = format!("{answer}\r\r>").into_bytes();
+            true
+        }
+        fn read(&mut self, _timeout_ms: u64) -> Vec<u8> {
+            std::mem::take(&mut self.reply)
+        }
+        fn flush_input(&mut self) {}
+        fn name(&self) -> String {
+            "silent".into()
+        }
+    }
+
+    #[test]
+    fn a_failed_connect_comes_with_the_checklist() {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.handle(Job::OpenTransport {
+            transport: Box::new(SilentCar::default()),
+            protocol_order: "3".into(),
+        });
+        let events = sink.take();
+        let failed = Collect::named(&events, "failed");
+        assert_eq!(failed.len(), 1);
+        let help = &failed[0]["help"];
+        let state = |id: &str| {
+            help["items"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|i| i["id"] == id)
+                .map(|i| i["state"].as_str().unwrap_or_default().to_string())
+        };
+        assert_eq!(state("bus").as_deref(), Some("problem"));
+        assert_eq!(state("ignition").as_deref(), Some("problem"));
+        assert_eq!(state("clone").as_deref(), Some("check"));
+        assert_eq!(state("power").as_deref(), Some("fine"));
+        assert!(
+            help["found"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|l| l.as_str().unwrap().contains("UNABLE TO CONNECT"))
         );
     }
 

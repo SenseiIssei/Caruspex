@@ -18,6 +18,7 @@ history and in the v0.8.0 release.
 | caruspex-net | BMW ENET (HSFZ), DoIP, raw CAN interfaces (SLCAN, SocketCAN, J2534) with their own ISO-TP and an ELM327 front end, CAN signals | link |
 | caruspex-record | recordings and replay, custom PIDs with Torque equations, the built-in PID packs (generated from `data/pids/`), JSON output | link, protocols, net, data |
 | caruspex-analysis | health check, battery test, readiness, drive cycles, trip computer, performance timer | i18n |
+| caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
 | caruspex-demo | the built-in demo car: an ELM327 with simulated control units and an injectable clock | link |
 | caruspex-cli | `caruspex_cli`, the command-line tool | all of the above |
 | app/src-tauri | the desktop app: the worker thread, settings, garage, report, update check | all of the above |

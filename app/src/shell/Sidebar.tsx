@@ -3,7 +3,7 @@
 // Collapses to icons only.
 import { useEffect, useRef, type CSSProperties } from "react";
 import { Icon } from "../components/Icon";
-import { useSession } from "../state/session";
+import { useProMode, useSession } from "../state/session";
 import { navigate, useCurrentPage } from "./nav";
 import { PAGES, type PageEntry } from "./pages";
 
@@ -50,15 +50,28 @@ export function Sidebar({ compact }: { compact: boolean }) {
     list.current?.querySelector(".nav-button.active")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [page]);
 
-  const top = PAGES.filter((p) => !p.bottom);
-  const bottom = PAGES.filter((p) => p.bottom);
+  // Beginners see the everyday pages only. A section heading goes above the
+  // first entry of its section that is shown, so hiding the first one does
+  // not take the heading with it.
+  const pro = useProMode();
+  const shown = (p: PageEntry) => pro || !p.pro;
+  const top: { entry: PageEntry; heading?: () => string }[] = [];
+  let section: (() => string) | undefined;
+  let printed: (() => string) | undefined;
+  for (const entry of PAGES.filter((p) => !p.bottom)) {
+    if (entry.section) section = entry.section;
+    if (!shown(entry)) continue;
+    top.push({ entry, heading: section !== printed ? section : undefined });
+    printed = section;
+  }
+  const bottom = PAGES.filter((p) => p.bottom && shown(p));
 
   return (
     <nav className={`sidebar${compact ? " compact" : ""}`}>
       <div className="sidebar-scroll" ref={list}>
-        {top.map((entry) => (
+        {top.map(({ entry, heading }) => (
           <div key={entry.id} className="nav-group">
-            {entry.section ? <div className="nav-section">{compact ? "" : entry.section()}</div> : null}
+            {heading ? <div className="nav-section">{compact ? "" : heading()}</div> : null}
             <NavEntry entry={entry} active={page === entry.id} compact={compact} badge={badgeFor(entry)} />
           </div>
         ))}

@@ -90,6 +90,8 @@ export interface CustomRow {
 export type Level = 0 | 1 | 2 | 3;
 
 export interface HealthFindingRow {
+  // The stable rule id of the health check, e.g. "fuel_trim_bank1".
+  id: string;
   level: Level;
   area: string;
   title: string;
@@ -215,6 +217,9 @@ export interface AppSettings {
   language: string;
   // "auto", "dark" or "light".
   appearance: string;
+  // Profi mode shows every page, beginners the everyday ones. New installs
+  // start as beginners, settings from before the switch as Profi.
+  proMode: boolean;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -238,6 +243,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   checkUpdates: true,
   language: "auto",
   appearance: "auto",
+  proMode: false,
 };
 
 // --- Garage.h -------------------------------------------------------------------
@@ -709,4 +715,69 @@ export interface FileFilter {
 export interface OpenedTextFile {
   path: string;
   content: string;
+}
+
+// --- caruspex-advice: "Was soll ich jetzt tun?" --------------------------------------
+
+export interface AdviceInput {
+  brand: string;
+  // The fault memory has been read; tells "no faults" from "not read".
+  faultsRead: boolean;
+  faults: { code: string; kind: string; stored: boolean; ecu: string; text: string }[];
+  // null when PID 01 has not been read.
+  milOn: boolean | null;
+  readiness: { name: string; ready: boolean }[];
+  findings: { id: string; level: Level; title: string; explanation: string }[];
+  // The latest value per PID.
+  live: { pid: number; value: number }[];
+  // What the driver sees; OBD cannot tell a flashing lamp from a steady one.
+  milFlashing: boolean;
+  redWarningLamp: boolean;
+}
+
+// 0 stop now, 1 workshop soon, 2 can wait.
+export type Urgency = 0 | 1 | 2;
+// 0 unknown, 1 free, 2 below about 200 euros, 3 about 200 to 800, 4 above.
+export type AdviceCost = 0 | 1 | 2 | 3 | 4;
+
+export interface AdviceItem {
+  urgency: Urgency;
+  source: "observation" | "fault" | "finding" | "live" | "lamp" | "readiness";
+  // The fault code, empty for other items.
+  code: string;
+  title: string;
+  // One plain sentence: why it is in this step.
+  why: string;
+  cost: AdviceCost;
+  costText: string;
+  // What to tell the workshop.
+  workshop: string;
+  // Measured values that back the item up.
+  evidence: string[];
+  // The page with the details, empty for none.
+  page: "" | "faults" | "health" | "battery";
+}
+
+export interface AdviceReport {
+  headline: string;
+  summary: string;
+  nothingRead: boolean;
+  // Most urgent first.
+  items: AdviceItem[];
+}
+
+// --- caruspex-advice: the connection assistant ---------------------------------------
+
+export interface ConnectCheck {
+  id: string;
+  // problem: most likely the reason; check: worth a look; fine: known good.
+  state: "problem" | "check" | "fine";
+  title: string;
+  text: string;
+}
+
+export interface ConnectHelp {
+  // What the attempt found out, one line each.
+  found: string[];
+  items: ConnectCheck[];
 }

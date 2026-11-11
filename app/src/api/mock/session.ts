@@ -11,6 +11,7 @@ import {
   simulate,
   type Sample,
 } from "./car";
+import { connectHelp, type ConnectFacts } from "./advice";
 import { L } from "./core";
 import { describeDtc } from "./dtc";
 import { keysOfPid, liveRow, SUPPORTED_PIDS } from "./pids";
@@ -142,9 +143,11 @@ async function connectDemo(): Promise<void> {
   refreshStatusAndFaults();
 }
 
-async function noHardware(error: string): Promise<void> {
+// A failed attempt, with the checklist of the connection assistant built
+// from what the attempt would have found out in a browser.
+async function noHardware(error: string, facts?: ConnectFacts): Promise<void> {
   await busy(() => wait(900));
-  emit("failed", { error });
+  emit("failed", facts ? { error, help: connectHelp(facts) } : { error });
 }
 
 function stopLiveLoop(silent = false): void {
@@ -243,17 +246,25 @@ export const sessionHandlers: PartialHandlers = {
       device === ""
         ? t(W, "Kein Anschluss gefunden. Steckt der Adapter am Rechner, und ist ein Bluetooth-Adapter gekoppelt?")
         : t(W, "An keinem Anschluss hat ein ELM327 geantwortet. Zündung an und Adapter richtig eingesteckt?"),
+      device === ""
+        ? { kind: "usb", portsFound: 0 }
+        : { kind: "usb", portOpened: true, adapterAnswered: false, baudsTried: [38400, 9600, 115200, 500000] },
     );
   },
   open_tcp: ({ host, port }) => {
-    void noHardware(L(`Keine Verbindung zu ${host}:${port}`, `Cannot connect to ${host}:${port}`));
+    void noHardware(L(`Keine Verbindung zu ${host}:${port}`, `Cannot connect to ${host}:${port}`), { kind: "wifi", portOpened: false });
   },
   open_enet: ({ host }) => {
     if (host === "") log(t(W, "Suche das Auto im Netzwerk (ENET und DoIP) ..."));
-    void noHardware(L("Kein Fahrzeug im Netzwerk gefunden.", "No vehicle found on the network."));
+    void noHardware(L("Kein Fahrzeug im Netzwerk gefunden.", "No vehicle found on the network."), { kind: "network", portOpened: false });
   },
   open_can: ({ spec }) => {
-    void noHardware(L(`CAN-Schnittstelle ${spec} lässt sich nicht öffnen.`, `Cannot open the CAN interface ${spec}.`));
+    const rate = Number(spec.split("@").pop()) || 500000;
+    void noHardware(L(`CAN-Schnittstelle ${spec} lässt sich nicht öffnen.`, `Cannot open the CAN interface ${spec}.`), {
+      kind: "can",
+      portOpened: false,
+      canBitRate: rate,
+    });
   },
   scan_ble: async ({ milliseconds }) => {
     await busy(() => wait(Math.min(milliseconds, 2500)));
@@ -261,7 +272,7 @@ export const sessionHandlers: PartialHandlers = {
   },
   open_ble: () => {
     log(t(W, "Suche Bluetooth-Adapter ..."));
-    void noHardware(L("Kein Bluetooth-Adapter gefunden.", "No Bluetooth adapter found."));
+    void noHardware(L("Kein Bluetooth-Adapter gefunden.", "No Bluetooth adapter found."), { kind: "bluetooth", deviceFound: false });
   },
   open_replay: ({ path }) => {
     void noHardware(t(W, "Aufnahme lässt sich nicht öffnen: %1", path));

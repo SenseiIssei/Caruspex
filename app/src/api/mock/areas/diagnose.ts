@@ -1525,6 +1525,7 @@ function runAnalysis(input: HealthInput): HealthRow {
   }
 
   const rows: HealthFindingRow[] = findings.map((f) => ({
+    id: f.id,
     level: f.level,
     area: "",
     title: text(f.title),

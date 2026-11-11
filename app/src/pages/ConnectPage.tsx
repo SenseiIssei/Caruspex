@@ -3,8 +3,8 @@
 // connection from the backend events, like the Qt page did with the
 // Worker signals MainWindow connected to it, and writes the log lines
 // MainWindow wrote before each attempt.
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { call, type BleDeviceRow, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { call, type BleDeviceRow, type ConnectHelp, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
 import { t, translator } from "../i18n";
@@ -14,6 +14,8 @@ import { appendLog, applySettings, markConnecting, settingsStore } from "../stat
 import "./ConnectPage.css";
 
 const tr = translator("caruspex::ConnectPage");
+// Texts that are new in the connection assistant.
+const tc = translator("caruspex::ConnectHelp");
 const MW = "caruspex::MainWindow";
 
 // The values of core/Elm327.cpp: kProtocolOrderKLineFirst, kProtocolOrderCanFirst.
@@ -104,6 +106,48 @@ function Step({ n, icon, title, text }: { n: number; icon: IconName; title: stri
   );
 }
 
+// The connection assistant: what the attempt found out, then the points to
+// check, the likely reason first.
+const CHECK_LOOK: Record<string, { icon: IconName; tone: string }> = {
+  problem: { icon: "x-circle", tone: "var(--bad)" },
+  check: { icon: "info", tone: "var(--warn)" },
+  fine: { icon: "check-circle", tone: "var(--good)" },
+};
+
+function ConnectChecklist({ help }: { help: ConnectHelp }) {
+  return (
+    <div className="connect-help fade-in">
+      {help.found.length > 0 ? (
+        <div className="connect-help-found">
+          <div className="connect-help-head">{tc("Was Caruspex herausgefunden hat")}</div>
+          <ul>
+            {help.found.map((line) => (
+              <li key={line} className="selectable">
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      <div className="connect-help-head">{tc("Das kannst du prüfen")}</div>
+      <div className="connect-help-list">
+        {help.items.map((item) => {
+          const look = CHECK_LOOK[item.state] ?? CHECK_LOOK.check!;
+          return (
+            <div key={item.id} className={`connect-check ${item.state}`} style={{ "--tone": look.tone } as CSSProperties}>
+              <Icon name={look.icon} size={18} className="connect-check-icon" />
+              <div className="connect-check-texts">
+                <div className="connect-check-title">{item.title}</div>
+                {item.text ? <div className="subtle">{item.text}</div> : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ModeChip({ mode, current, icon, label, onPick }: { mode: Mode; current: Mode; icon: IconName; label: string; onPick: (m: Mode) => void }) {
   return (
     <Chip on={mode === current} onClick={() => onPick(mode)}>
@@ -165,6 +209,8 @@ export default function ConnectPage() {
   const [stateTone, setStateTone] = useState<"muted" | "warn" | "good" | "bad">("muted");
   const [details, setDetails] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // The checklist of the connection assistant for the last failed attempt.
+  const [help, setHelp] = useState<ConnectHelp | null>(null);
 
   // The latest values for the handlers that run outside a render (app events
   // that connect right after changing the mode or the port).
@@ -317,8 +363,9 @@ export default function ConnectPage() {
 
   // --- Connecting ----------------------------------------------------------------------------
 
-  const showError = (text: string) => {
+  const showError = (text: string, checklist: ConnectHelp | null = null) => {
     setError(text);
+    setHelp(checklist && checklist.items.length > 0 ? checklist : null);
   };
 
   const onConnecting = () => {
@@ -411,10 +458,10 @@ export default function ConnectPage() {
     setError(null);
   });
 
-  useBackendEvent("failed", ({ error: text }) => {
+  useBackendEvent("failed", ({ error: text, help: checklist }) => {
     setConnecting(false);
     if (!latest.current.connected) setStateTone("bad");
-    showError(text);
+    showError(text, checklist ?? null);
   });
 
   useBackendEvent("closed", () => {
@@ -505,6 +552,17 @@ export default function ConnectPage() {
   // A car chosen on the vehicles page.
   useAppEvent<{ generation: VehicleGenerationInfo; year: number }>("connect:generation", (choice) => {
     if (choice?.generation) setGeneration(choice.generation, choice.year);
+  });
+
+  // --page connect-help: a Wi-Fi attempt to a closed port of this computer,
+  // to see the connection assistant without any adapter.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "connect-help") return;
+    navigate("connect");
+    setMode("wifi");
+    setAddress("127.0.0.1:1");
+    latest.current.address = "127.0.0.1:1";
+    startConnect({ mode: "wifi" });
   });
 
   // Opens the Bluetooth choice and scans, without connecting.
@@ -802,15 +860,18 @@ export default function ConnectPage() {
             <div className="connect-error fade-in" role="alert">
               <div className="connect-error-head">{tr("Das hat nicht geklappt")}</div>
               <div className="wrap selectable">{error}</div>
-              <div className="subtle">
-                {tr(
-                  "Häufige Gründe: Zündung aus, Adapter nicht ganz eingesteckt, falscher " +
-                    "Anschluss gewählt, oder ein anderes Programm hält den Anschluss " +
-                    "offen. Bei Bluetooth hilft oft, den Adapter neu zu koppeln.",
-                )}
-              </div>
+              {help ? null : (
+                <div className="subtle">
+                  {tr(
+                    "Häufige Gründe: Zündung aus, Adapter nicht ganz eingesteckt, falscher " +
+                      "Anschluss gewählt, oder ein anderes Programm hält den Anschluss " +
+                      "offen. Bei Bluetooth hilft oft, den Adapter neu zu koppeln.",
+                  )}
+                </div>
+              )}
             </div>
           ) : null}
+          {error !== null && help ? <ConnectChecklist help={help} /> : null}
         </Card>
       </div>
     </Page>

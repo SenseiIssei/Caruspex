@@ -139,3 +139,23 @@
   border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent);
 }
 .connect-error-head { font-weight: 700; color: var(--bad); }
+
+/* --- The connection assistant ------------------------------------------------------- */
+
+.connect-help { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.connect-help-head { font-weight: 700; font-size: 13px; color: var(--text-muted); }
+.connect-help-found ul { margin: 4px 0 4px; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 2px; }
+.connect-help-list { display: flex; flex-direction: column; gap: 6px; }
+.connect-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-flat);
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, var(--border));
+  background: color-mix(in srgb, var(--tone) 6%, transparent);
+}
+.connect-check.fine { background: transparent; border-color: var(--border); }
+.connect-check-icon { color: var(--tone); flex: none; margin-top: 1px; }
+.connect-check-texts { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.connect-check-title { font-weight: 600; }

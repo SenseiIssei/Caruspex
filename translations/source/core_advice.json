@@ -1,0 +1,447 @@
+[
+ {
+  "id": "c-advice-1",
+  "de": "Eine blinkende Lampe heißt starke Zündaussetzer: unverbrannter Kraftstoff kann den Katalysator in wenigen Minuten zerstören.",
+  "en": "A flashing light means severe misfiring: unburnt fuel can destroy the catalytic converter within minutes."
+ },
+ {
+  "id": "c-advice-2",
+  "de": "Rote Warnlampe leuchtet",
+  "en": "A red warning light is on"
+ },
+ {
+  "id": "c-advice-3",
+  "de": "Eine rote Warnlampe leuchtet (Symbol fotografieren und zeigen). Das Auto wurde abgestellt.",
+  "en": "A red warning light is on (take a photo of the symbol and show it). The car has been parked."
+ },
+ {
+  "id": "c-advice-4",
+  "de": "Über 115 °C kann die Zylinderkopfdichtung Schaden nehmen; Motor abstellen und abkühlen lassen.",
+  "en": "Above 115 °C the head gasket can be damaged; switch off the engine and let it cool down."
+ },
+ {
+  "id": "c-advice-5",
+  "de": "Über 15,5 V leiden Batterie und Elektronik; meist ist der Regler der Lichtmaschine defekt.",
+  "en": "Above 15.5 V the battery and electronics suffer; usually the alternator's regulator is faulty."
+ },
+ {
+  "id": "c-advice-6",
+  "de": "Adapter hat Strom",
+  "en": "Adapter has power"
+ },
+ {
+  "id": "c-advice-7",
+  "de": "Adresse und Port",
+  "en": "Address and port"
+ },
+ {
+  "id": "c-advice-8",
+  "de": "Alles in Ordnung",
+  "en": "All good"
+ },
+ {
+  "id": "c-advice-9",
+  "de": "Lichtmaschine lädt nicht: %1 V",
+  "en": "Alternator not charging: %1 V"
+ },
+ {
+  "id": "c-advice-10",
+  "de": "Ein ENET-Kabel (Ethernet zu OBD) braucht die Brücke für die Aktivierung; ein einfaches Netzwerkkabel ohne sie geht nicht.",
+  "en": "An ENET cable (Ethernet to OBD) needs the activation bridge; a plain network cable without it does not work."
+ },
+ {
+  "id": "c-advice-11",
+  "de": "Ein anderes Programm hält den Anschluss, etwa eine andere Diagnose-App oder ein zweites Caruspex. Schließen und noch einmal verbinden.",
+  "en": "Another program holds the port, such as another diagnostic app or a second Caruspex. Close it and connect again."
+ },
+ {
+  "id": "c-advice-12",
+  "de": "Der Anschluss ist von einem anderen Programm belegt.",
+  "en": "Another program is using the port."
+ },
+ {
+  "id": "c-advice-13",
+  "de": "Bereich: %1.",
+  "en": "Area: %1."
+ },
+ {
+  "id": "c-advice-14",
+  "de": "Mindestens ein Punkt verträgt keine Weiterfahrt. Anhalten, sobald es sicher geht, und Hilfe holen.",
+  "en": "At least one point does not allow driving on. Stop as soon as it is safe and get help."
+ },
+ {
+  "id": "c-advice-15",
+  "de": "Baudrate",
+  "en": "Baud rate"
+ },
+ {
+  "id": "c-advice-16",
+  "de": "Bitrate",
+  "en": "Bit rate"
+ },
+ {
+  "id": "c-advice-17",
+  "de": "Bluetooth muss am Rechner eingeschaltet sein.",
+  "en": "Bluetooth must be switched on on this computer."
+ },
+ {
+  "id": "c-advice-18",
+  "de": "Bluetooth am Rechner",
+  "en": "Bluetooth on this computer"
+ },
+ {
+  "id": "c-advice-19",
+  "de": "Ladespannung zu hoch: %1 V",
+  "en": "Charging voltage too high: %1 V"
+ },
+ {
+  "id": "c-advice-20",
+  "de": "Motorkontrollleuchte blinkt",
+  "en": "Check engine light is flashing"
+ },
+ {
+  "id": "c-advice-21",
+  "de": "Motorkontrollleuchte an, aber kein Fehlercode",
+  "en": "Check engine light on, but no trouble code"
+ },
+ {
+  "id": "c-advice-22",
+  "de": "Nachbau-Adapter",
+  "en": "Clone adapter"
+ },
+ {
+  "id": "c-advice-23",
+  "de": "Häufige Ursachen: %1.",
+  "en": "Common causes: %1."
+ },
+ {
+  "id": "c-advice-24",
+  "de": "Verbinden und das Auto prüfen, dann steht hier, was zu tun ist.",
+  "en": "Connect and check the car, then this page tells you what to do."
+ },
+ {
+  "id": "c-advice-25",
+  "de": "Kühlmittel sehr heiß: %1 °C",
+  "en": "Coolant very hot: %1 °C"
+ },
+ {
+  "id": "c-advice-26",
+  "de": "Kosten erst nach der Fehlersuche abschätzbar",
+  "en": "Cost can only be estimated once the cause is found"
+ },
+ {
+  "id": "c-advice-27",
+  "de": "Kostet nichts",
+  "en": "Costs nothing"
+ },
+ {
+  "id": "c-advice-28",
+  "de": "Treiber",
+  "en": "Driver"
+ },
+ {
+  "id": "c-advice-29",
+  "de": "Firewall",
+  "en": "Firewall"
+ },
+ {
+  "id": "c-advice-30",
+  "de": "Zündung an",
+  "en": "Ignition on"
+ },
+ {
+  "id": "c-advice-31",
+  "de": "Steckt der Adapter noch, und ist es der richtige Anschluss? Im Geräte-Manager unter Anschlüsse steht, welcher zum Adapter gehört.",
+  "en": "Is the adapter still plugged in, and is it the right port? Device Manager lists under Ports which one belongs to the adapter."
+ },
+ {
+  "id": "c-advice-32",
+  "de": "Messwerte dazu: %1.",
+  "en": "Measured values: %1."
+ },
+ {
+  "id": "c-advice-33",
+  "de": "Gemessen bei laufendem Motor: %1.",
+  "en": "Measured with the engine running: %1."
+ },
+ {
+  "id": "c-advice-34",
+  "de": "Meldung vom Fahrzeugbus",
+  "en": "Message from the vehicle bus"
+ },
+ {
+  "id": "c-advice-35",
+  "de": "Die meisten Adapter leuchten, sobald sie in der Buchse stecken. Kein Licht: die Sicherung der Diagnosebuchse prüfen, oft ist es die des Zigarettenanzünders.",
+  "en": "Most adapters light up as soon as they sit in the socket. No light: check the fuse of the diagnostic socket, often the one of the cigarette lighter."
+ },
+ {
+  "id": "c-advice-36",
+  "de": "Die meisten Adapter nutzen 192.168.0.10 und Port 35000, manche 192.168.4.1. Das steht in der Anleitung des Adapters.",
+  "en": "Most adapters use 192.168.0.10 and port 35000, some 192.168.4.1. The adapter's manual says which."
+ },
+ {
+  "id": "c-advice-37",
+  "de": "Netzwerkadresse",
+  "en": "Network address"
+ },
+ {
+  "id": "c-advice-38",
+  "de": "Netzwerkkabel",
+  "en": "Network cable"
+ },
+ {
+  "id": "c-advice-39",
+  "de": "Kein Bluetooth-Adapter in der Nähe gefunden.",
+  "en": "No Bluetooth adapter found nearby."
+ },
+ {
+  "id": "c-advice-40",
+  "de": "Kein Adapter in der Nähe. Bluetooth-LE-Adapter brauchen keine Kopplung; klassische einmal in den Systemeinstellungen koppeln, die PIN ist meist 1234 oder 0000. Manche Adapter haben nur bei Zündung an Strom.",
+  "en": "No adapter nearby. Bluetooth LE adapters need no pairing; pair classic ones once in the system settings, the PIN is usually 1234 or 0000. Some adapters only have power with the ignition on."
+ },
+ {
+  "id": "c-advice-41",
+  "de": "Kein Fehler gespeichert und nichts Auffälliges gefunden.",
+  "en": "No fault stored and nothing unusual found."
+ },
+ {
+  "id": "c-advice-42",
+  "de": "Am Rechner ist kein Anschluss zu sehen.",
+  "en": "No port shows up on this computer."
+ },
+ {
+  "id": "c-advice-43",
+  "de": "Noch nicht bestätigt: das Steuergerät hat den Fehler einmal bemerkt und prüft bei den nächsten Fahrten weiter.",
+  "en": "Not confirmed yet: the control unit noticed the fault once and keeps checking on the next drives."
+ },
+ {
+  "id": "c-advice-44",
+  "de": "Noch nichts gelesen",
+  "en": "Nothing read yet"
+ },
+ {
+  "id": "c-advice-45",
+  "de": "Nichts Dringendes",
+  "en": "Nothing urgent"
+ },
+ {
+  "id": "c-advice-46",
+  "de": "Kopplung",
+  "en": "Pairing"
+ },
+ {
+  "id": "c-advice-47",
+  "de": "Bitte anhalten",
+  "en": "Please stop"
+ },
+ {
+  "id": "c-advice-48",
+  "de": "Stecker sitzt fest",
+  "en": "Plug firmly seated"
+ },
+ {
+  "id": "c-advice-49",
+  "de": "Anschluss frei",
+  "en": "Port free"
+ },
+ {
+  "id": "c-advice-50",
+  "de": "Anschlüsse am Rechner: %1",
+  "en": "Ports on this computer: %1"
+ },
+ {
+  "id": "c-advice-51",
+  "de": "Protokoll",
+  "en": "Protocol"
+ },
+ {
+  "id": "c-advice-52",
+  "de": "Probierte Protokolle: %1. Kein Steuergerät hat geantwortet.",
+  "en": "Protocols tried: %1. No control unit answered."
+ },
+ {
+  "id": "c-advice-53",
+  "de": "Bereitschaftstests offen: %1",
+  "en": "Readiness monitors incomplete: %1"
+ },
+ {
+  "id": "c-advice-54",
+  "de": "Bereitschaftstests noch offen: %1. Vor der Abgasuntersuchung erst fertig fahren lassen.",
+  "en": "Readiness monitors still incomplete: %1. Let them complete before the emissions test."
+ },
+ {
+  "id": "c-advice-55",
+  "de": "Rot heißt anhalten: meist geht es um Öldruck, Kühlmittel, Bremse oder Ladestrom, und Weiterfahren kann Motor oder Bremsen kosten.",
+  "en": "Red means stop: it is usually oil pressure, coolant, brakes or charging, and driving on can cost the engine or the brakes."
+ },
+ {
+  "id": "c-advice-56",
+  "de": "Gemeldet von: %1.",
+  "en": "Reported by: %1."
+ },
+ {
+  "id": "c-advice-57",
+  "de": "Das CAN-Interface ließ sich nicht öffnen. Ist es eingesteckt und der Treiber installiert? Viele J2534-Treiber gibt es nur in 32 Bit, Caruspex braucht 64 Bit.",
+  "en": "The CAN interface could not be opened. Is it plugged in and the driver installed? Many J2534 drivers exist in 32 bit only, Caruspex needs 64 bit."
+ },
+ {
+  "id": "c-advice-58",
+  "de": "Der Adapter antwortet: %1",
+  "en": "The adapter answers: %1"
+ },
+ {
+  "id": "c-advice-59",
+  "de": "Der Adapter nennt sich %1. Das steht fast nur auf billigen Nachbauten, die manche Protokolle nicht beherrschen; ein anderer Adapter hilft oft.",
+  "en": "The adapter calls itself %1. That is found almost only on cheap clones that cannot handle some protocols; another adapter often helps."
+ },
+ {
+  "id": "c-advice-60",
+  "de": "Der Adapter antwortet nicht.",
+  "en": "The adapter does not answer."
+ },
+ {
+  "id": "c-advice-61",
+  "de": "Der Adapter ließ keine Verbindung zu. Ist er noch mit einem Handy verbunden? Ein Adapter spricht nur mit einem Gerät.",
+  "en": "The adapter refused the connection. Is it still connected to a phone? An adapter talks to one device only."
+ },
+ {
+  "id": "c-advice-62",
+  "de": "Der Adapter meldet %1. Das heißt meist: Zündung aus, falsches Protokoll oder ein Problem an der Leitung zum Auto.",
+  "en": "The adapter reports %1. That usually means: ignition off, wrong protocol or a problem on the line to the car."
+ },
+ {
+  "id": "c-advice-63",
+  "de": "Der Adapter meldet: %1",
+  "en": "The adapter reports: %1"
+ },
+ {
+  "id": "c-advice-64",
+  "de": "WLAN des Adapters",
+  "en": "The adapter's Wi-Fi"
+ },
+ {
+  "id": "c-advice-65",
+  "de": "Das Auto hat seine Selbsttests noch nicht beendet; nach dem Löschen oder einem Batteriewechsel ist das normal und erledigt sich durch ein paar Tage normales Fahren.",
+  "en": "The car has not finished its self-tests yet; after clearing codes or a battery change that is normal and sorts itself out after a few days of normal driving."
+ },
+ {
+  "id": "c-advice-66",
+  "de": "Die Motorkontrollleuchte leuchtet, über OBD liefert das Motorsteuergerät aber keinen Fehlercode. Bitte alle Steuergeräte auslesen.",
+  "en": "The check engine light is on, but the engine control unit gives no trouble code over OBD. Please read all control units."
+ },
+ {
+  "id": "c-advice-67",
+  "de": "Die Motorkontrollleuchte ist an.",
+  "en": "The check engine light is on."
+ },
+ {
+  "id": "c-advice-68",
+  "de": "Die Motorkontrollleuchte hat während der Fahrt geblinkt, Verdacht auf starke Zündaussetzer. Das Auto wurde abgestellt.",
+  "en": "The check engine light was flashing while driving, suspected severe misfiring. The car has been parked."
+ },
+ {
+  "id": "c-advice-69",
+  "de": "Die Motorkontrollleuchte hat geblinkt.",
+  "en": "The check engine light was flashing."
+ },
+ {
+  "id": "c-advice-70",
+  "de": "Der Rechner muss mit dem WLAN des Adapters verbunden sein (oft WiFi_OBDII), nicht mit dem Heimnetz.",
+  "en": "The computer must be connected to the adapter's Wi-Fi (often WiFi_OBDII), not to the home network."
+ },
+ {
+  "id": "c-advice-71",
+  "de": "Der Rechner sollte seine Adresse automatisch beziehen. Antwortet das Auto nicht darauf, vergibt der Rechner nach etwa einer Minute selbst eine; dann noch einmal verbinden.",
+  "en": "The computer should obtain its address automatically. If the car does not answer, the computer assigns one itself after about a minute; then connect again."
+ },
+ {
+  "id": "c-advice-72",
+  "de": "Die Verbindung zum Adapter ließ sich nicht öffnen.",
+  "en": "The connection to the adapter could not be opened."
+ },
+ {
+  "id": "c-advice-73",
+  "de": "Die Verbindung zum Adapter ist offen.",
+  "en": "The connection to the adapter is open."
+ },
+ {
+  "id": "c-advice-74",
+  "de": "Die Kühlmitteltemperatur liegt über dem normalen Bereich; Kühlmittelstand und Lüfter bald prüfen lassen.",
+  "en": "The coolant temperature is above the normal range; have the coolant level and the fan checked soon."
+ },
+ {
+  "id": "c-advice-75",
+  "de": "Die Firewall muss die Suche nach dem Auto zulassen (UDP 6811 für ENET, 13400 für DoIP).",
+  "en": "The firewall must allow the search for the car (UDP 6811 for ENET, 13400 for DoIP)."
+ },
+ {
+  "id": "c-advice-76",
+  "de": "Der Gesundheitscheck meldet: %1.",
+  "en": "The health check reports: %1."
+ },
+ {
+  "id": "c-advice-77",
+  "de": "Die Lampe meldet einen abgasrelevanten Fehler; liefert das Motorsteuergerät keinen Code, steht er oft in einem anderen Steuergerät.",
+  "en": "The light reports an emissions fault; if the engine control unit gives no code, it is often stored in another control unit."
+ },
+ {
+  "id": "c-advice-78",
+  "de": "Probiert: %1 Baud. Manche Adapter brauchen eine feste Rate, einstellbar in den Einstellungen unter Verbindung.",
+  "en": "Tried: %1 baud. Some adapters need a fixed rate, which can be set in Settings under Connection."
+ },
+ {
+  "id": "c-advice-79",
+  "de": "Probiert: %1 kbit/s. Fast alle Autos ab 2008 nutzen 500 kbit/s an der OBD-Buchse, manche ältere 250 kbit/s.",
+  "en": "Tried: %1 kbit/s. Almost all cars from 2008 use 500 kbit/s at the OBD socket, some older ones 250 kbit/s."
+ },
+ {
+  "id": "c-advice-80",
+  "de": "Probiert: %1. Auf dieser Seite das Modell auswählen, dann probiert Caruspex zuerst das passende Protokoll; Autos vor etwa 2005 sprechen oft K-Line.",
+  "en": "Tried: %1. Pick the model on this page, then Caruspex tries the matching protocol first; cars from before about 2005 often speak K-Line."
+ },
+ {
+  "id": "c-advice-81",
+  "de": "Fehlercode %1, %2: %3.",
+  "en": "Trouble code %1, %2: %3."
+ },
+ {
+  "id": "c-advice-82",
+  "de": "Den Adapter abziehen, 10 Sekunden warten und fest in die OBD-Buchse stecken.",
+  "en": "Unplug the adapter, wait 10 seconds and push it firmly into the OBD socket."
+ },
+ {
+  "id": "c-advice-83",
+  "de": "Bald in die Werkstatt",
+  "en": "Visit a workshop soon"
+ },
+ {
+  "id": "c-advice-84",
+  "de": "Was unten steht, kann bis zur nächsten Inspektion warten.",
+  "en": "What is listed below can wait until the next service."
+ },
+ {
+  "id": "c-advice-85",
+  "de": "Bei laufendem Motor sollten mindestens 13,2 V anliegen, sonst wird die Batterie leer und das Auto bleibt stehen.",
+  "en": "With the engine running there should be at least 13.2 V, otherwise the battery goes flat and the car stops."
+ },
+ {
+  "id": "c-advice-86",
+  "de": "Ohne Treiber zeigt der Rechner keinen Anschluss. Meist fehlt der Treiber für den Chip im Kabel (CH340, FTDI oder CP210x), oder das USB-Kabel ist nur ein Ladekabel.",
+  "en": "Without a driver the computer shows no port. Usually the driver for the chip in the cable is missing (CH340, FTDI or CP210x), or the USB cable is a charging cable only."
+ },
+ {
+  "id": "c-advice-87",
+  "de": "Ohne Zündung antwortet kein Steuergerät. Zündung einschalten, der Motor darf aus sein.",
+  "en": "Without the ignition no control unit answers. Switch the ignition on, the engine may stay off."
+ },
+ {
+  "id": "c-advice-88",
+  "de": "Weiterfahren geht, aber lass die Punkte unten in den nächsten Wochen ansehen.",
+  "en": "You can keep driving, but have the points below looked at in the next few weeks."
+ },
+ {
+  "id": "c-advice-89",
+  "de": "Einsteiger- oder Profimodus für diesen Start",
+  "en": "Beginner or pro mode for this run"
+ }
+]

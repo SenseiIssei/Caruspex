@@ -4,6 +4,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![deny(unsafe_code)]
 
+mod advice;
 mod cli;
 mod commands;
 mod garage;
@@ -317,6 +318,7 @@ fn main() {
             commands::kkl_ecus,
             commands::lookup_dtc,
             commands::locate_dtc,
+            commands::what_to_do,
             commands::dtc_lexicon,
             commands::brand_families,
             commands::brand_family,
