@@ -79,6 +79,28 @@ per sessie worden afgedwongen met `--language fr` enzovoort. Hoe vertalingen wor
 
 ![Foutgeheugen](docs/screenshot-faults.png)
 
+### Wat moet ik nu doen?
+- Eén pagina die alles wat Caruspex vond in drie stappen sorteert: nu stoppen, binnenkort naar de garage, kan wachten.
+- Elk punt met één duidelijke zin waarom, een grove kostenindicatie en een briefje om in de garage te laten zien (code, regeleenheid, gebied, gebruikelijke oorzaken).
+- OBD kan niet zien of de motorstoringslamp knippert of dat er een rode waarschuwingslamp brandt: twee vinkjes vragen ernaar, en een knipperende lamp met misfires zet het punt op "nu stoppen".
+
+![Wat moet ik nu doen](docs/screenshot-todo.png)
+
+### Tweedehandsauto controleren
+- Voor de bezichtiging voor je koopt: komt het VIN in de auto overeen met de papieren en de catalogus, klopt de kilometerstand tussen de regeleenheden, zijn de fouten kort daarvoor gewist (afstand en tijd sinds het wissen)?
+- Gereedheidsmonitoren, opgeslagen fouten, de gezondheidscheck en bij elektrische auto's de toestand van de accu.
+- Een stoplicht, de vragen voor de verkoper en een pdf voor de aankoop.
+
+![Tweedehandsauto controleren](docs/screenshot-used-car.png)
+
+### Röntgenweergave in 3D
+- De verbonden auto als glazen model dat je kunt draaien: motor of motoren, versnellingsbak, tank of hoogspanningsaccu, uitlaat, radiateur, de 12 V-accu en de OBD-aansluiting, ingedeeld naar de carrosserie en aandrijving van de herkende auto.
+- Elke regeleenheid die de scan vond zit waar hij meestal zit, verbonden met zijn datalijnen (aandrijflijn- en comfort-CAN); terwijl Caruspex leest, reizen kleine pakketjes naar de regeleenheid waaraan wordt gevraagd.
+- Fouten laten hun gebied oplichten en kleuren de verantwoordelijke regeleenheid rood, live-waarden staan op het onderdeel waar ze bij horen en "Auto controleren" laat de camera naar elke bevinding vliegen. Lagen kunnen een voor een worden uitgezet.
+- Typische afmetingen voor de carrosserie en het tijdperk, geen replica van het exacte model: de ontwerpgegevens en bedradingsschema's van de fabrikanten zijn niet vrij beschikbaar.
+
+![Röntgenweergave](docs/screenshot-xray.png)
+
 ### Live-waarden
 - Elke mode 01-waarde van SAE J1979 tot en met PID C4: 145 PID's met meer dan 300 uitlezingen, gegroepeerd en doorzoekbaar.
 - Kilometerstand, versnelling, olietemperatuur, brandstofverbruik, koppel, turbodruk, uitlaattemperaturen, roetfilter, AdBlue, NOx en hybride accu, voor zover de auto ze doorgeeft.
@@ -139,6 +161,7 @@ adressering, luisteren naar broadcastwaarden (Tesla), opnemen en afspelen.
 
 ### Fabrikantwaarden en eigen waarden
 - Accu's van elektrische auto's: conditie, lading, celspanningen met spreiding, temperaturen, voor Hyundai Kona en Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf en Tesla Model 3 en Y (door te luisteren op de CAN-bus); elke waarde met een gedocumenteerde bron.
+- Fabrikantwaarden voor ongeveer 550 extra voertuigen uit het [OBDb](https://github.com/OBDb)-project (accu, bandenspanning, olie, kilometerteller en meer), automatisch aangeboden voor de herkende auto; elke formule wordt gecontroleerd met de eigen decoder van OBDb.
 - Laad je eigen waarden in het veelgebruikte Torque-CSV-formaat, met een complete evaluator voor Torque-formules.
 
 ![EV-accu](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ adressering, luisteren naar broadcastwaarden (Tesla), opnemen en afspelen.
 
 ### Uiterlijk en gevoel
 - Een nieuwe interface in de stijl van Odysync: rustig, donker, met soepele overgangen.
-- Stap voor stap verbinden met een automatische zoektocht over alle poorten.
+- Stap voor stap verbinden met een automatische zoektocht over alle poorten en, als het mislukt, een korte checklist voor dat soort verbinding (stuurprogramma, koppelen, contact, bitsnelheid, kloonadapters) met wat Caruspex al heeft uitgezocht.
+- Beginner- en expertmodus: beginners zien de pagina's voor elke dag, de werkplaatstools (KKL, aanpassing, ruwe commando's, adressen) verschijnen in de expertmodus.
 - 18 talen; instellingen gelden direct.
 - Laat het weten als er een nieuwe versie is: bij het starten vraagt het GitHub om de nieuwste release en verder niets (geen gegevens
   over jou of de auto); kan in de instellingen worden uitgezet.
@@ -464,6 +488,6 @@ respectieve eigenaren; Caruspex is niet verbonden aan of goedgekeurd door een au
 
 ## Licentie
 
-MIT, zie [LICENSE](LICENSE). De meegeleverde lettertypen vallen onder de SIL Open Font License 1.1:
+MIT, zie [LICENSE](LICENSE). De fabrikantwaarden voor honderden modellen zijn omgezet vanuit [OBDb](https://github.com/OBDb) en vallen, net als OBDb, onder CC BY-SA 4.0: ze staan los van de code in [data/obdb](data/obdb) met de licentie en de lijst met bronnen ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). De meegeleverde lettertypen vallen onder de SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) en
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

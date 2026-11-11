@@ -79,6 +79,28 @@ forcée à chaque lancement avec `--language fr` et ainsi de suite. La façon do
 
 ![Mémoire de défauts](docs/screenshot-faults.png)
 
+### Que dois-je faire maintenant ?
+- Une page qui classe tout ce que Caruspex a trouvé en trois étapes : s'arrêter tout de suite, au garage bientôt, peut attendre.
+- Chaque point avec une phrase simple qui explique pourquoi, une fourchette de coût approximative et une note à montrer au garage (code, calculateur, zone, causes habituelles).
+- L'OBD ne peut pas voir si le voyant moteur clignote ou si un voyant rouge est allumé : deux cases à cocher posent la question, et un voyant qui clignote avec des ratés d'allumage fait passer le point en "s'arrêter tout de suite".
+
+![Que dois-je faire maintenant](docs/screenshot-todo.png)
+
+### Vérifier une voiture d'occasion
+- Pour la visite avant l'achat : le VIN de la voiture correspond-il aux papiers et au catalogue, le kilométrage concorde-t-il entre les calculateurs, les défauts ont-ils été effacés peu avant (distance et durée depuis l'effacement) ?
+- Moniteurs de disponibilité, défauts mémorisés, le bilan de santé et, sur les voitures électriques, l'état de la batterie.
+- Un feu tricolore, les questions à poser au vendeur et un PDF pour l'achat.
+
+![Vérifier une voiture d'occasion](docs/screenshot-used-car.png)
+
+### Vue radiographique en 3D
+- La voiture connectée sous forme de maquette en verre que l'on peut tourner : moteur ou moteurs, boîte de vitesses, réservoir ou batterie haute tension, échappement, radiateur, batterie 12 V et prise OBD, disposés selon la carrosserie et la motorisation de la voiture détectée.
+- Chaque calculateur trouvé par l'analyse se trouve là où il est d'habitude, relié par ses lignes de données (CAN groupe motopropulseur et confort) ; pendant que Caruspex lit, de petits paquets voyagent vers le calculateur interrogé.
+- Les défauts éclairent leur zone et colorent en rouge le calculateur concerné, les valeurs en direct se posent sur la pièce à laquelle elles appartiennent et "Vérifier la voiture" amène la caméra vers chaque constat. Les couches peuvent être désactivées une à une.
+- Des dimensions typiques pour la carrosserie et l'époque, pas une réplique du modèle exact : les données de conception et les schémas électriques des constructeurs ne sont pas librement accessibles.
+
+![Vue radiographique](docs/screenshot-xray.png)
+
 ### Valeurs en direct
 - Toutes les valeurs du mode 01 de la SAE J1979 jusqu'au PID C4 : 145 PID avec plus de 300 mesures, regroupées et consultables.
 - Compteur kilométrique, rapport engagé, température d'huile, débit de carburant, couple, pression de suralimentation, températures d'échappement, filtre à particules, AdBlue, NOx et batterie hybride, dans la mesure où la voiture les communique.
@@ -139,6 +161,7 @@ BMW, écoute des valeurs diffusées (Tesla), enregistrement et relecture.
 
 ### Valeurs constructeur et personnalisées
 - Batteries de voitures électriques : état de santé, charge, tensions des cellules avec écart, températures, pour Hyundai Kona et Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf et Tesla Model 3 et Y (en écoutant le bus CAN) ; chaque valeur avec une source documentée.
+- Valeurs constructeur pour environ 550 véhicules de plus, issues du projet [OBDb](https://github.com/OBDb) (batterie, pression des pneus, huile, compteur kilométrique et plus), proposées automatiquement pour la voiture détectée ; chaque équation est vérifiée avec le décodeur d'OBDb lui-même.
 - Chargez vos propres valeurs au format CSV de Torque, très répandu, avec un évaluateur complet des équations de Torque.
 
 ![Batterie VE](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, écoute des valeurs diffusées (Tesla), enregistrement et relecture.
 
 ### Aspect et ergonomie
 - Une nouvelle interface dans le style d'Odysync : calme, sombre, avec des transitions fluides.
-- Connexion pas à pas avec une recherche automatique sur tous les ports.
+- Connexion pas à pas avec une recherche automatique sur tous les ports et, en cas d'échec, une courte liste de contrôle pour ce type de connexion (pilote, appairage, contact, débit, adaptateurs clones) avec ce que Caruspex a déjà découvert.
+- Mode débutant et expert : les débutants voient les pages du quotidien, les outils d'atelier (KKL, adaptation, commandes brutes, adresses) apparaissent en mode expert.
 - 18 langues ; les réglages s'appliquent immédiatement.
 - Vous prévient quand une nouvelle version est disponible : au démarrage, elle demande à GitHub la dernière version et rien d'autre (aucune donnée
   sur vous ni sur la voiture) ; peut être désactivé dans les réglages.
@@ -464,6 +488,6 @@ propriétaires respectifs ; Caruspex n'est affilié à aucun constructeur de vé
 
 ## Licence
 
-MIT, voir [LICENSE](LICENSE). Les polices incluses sont sous licence SIL Open Font License 1.1 :
+MIT, voir [LICENSE](LICENSE). Les valeurs constructeur de centaines de modèles sont converties à partir d'[OBDb](https://github.com/OBDb) et, comme OBDb, sous licence CC BY-SA 4.0 : elles sont séparées du code dans [data/obdb](data/obdb) avec la licence et la liste des sources ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Les polices incluses sont sous licence SIL Open Font License 1.1 :
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) et
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

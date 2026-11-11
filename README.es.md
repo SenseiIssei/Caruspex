@@ -79,6 +79,28 @@ forzar en cada ejecución con `--language fr` y similares. Cómo se hacen y se r
 
 ![Memoria de averías](docs/screenshot-faults.png)
 
+### ¿Qué hago ahora?
+- Una página que ordena todo lo que Caruspex ha encontrado en tres pasos: parar ya, pronto al taller, puede esperar.
+- Cada punto con una frase sencilla que explica el porqué, un rango de coste aproximado y una nota para enseñar en el taller (código, unidad de control, zona, causas habituales).
+- El OBD no puede saber si el testigo del motor parpadea o si hay un aviso rojo encendido: dos casillas preguntan por ello, y un testigo que parpadea con fallos de encendido pasa el punto a "parar ya".
+
+![¿Qué hago ahora?](docs/screenshot-todo.png)
+
+### Revisar un coche de segunda mano
+- Para la visita antes de comprar: ¿coincide el VIN del coche con la documentación y con el catálogo, coincide el kilometraje entre las unidades de control, se borraron las averías poco antes (distancia y tiempo desde el borrado)?
+- Monitores de disponibilidad, averías guardadas, el chequeo de salud y, en coches eléctricos, el estado de la batería.
+- Un semáforo, las preguntas para el vendedor y un PDF para la compra.
+
+![Revisar un coche de segunda mano](docs/screenshot-used-car.png)
+
+### Vista de rayos X en 3D
+- El coche conectado como un modelo de cristal que puedes girar: motor o motores, caja de cambios, depósito o batería de alta tensión, escape, radiador, la batería de 12 V y la toma OBD, colocados según la carrocería y la tracción del coche detectado.
+- Cada unidad de control encontrada en la búsqueda está donde suele estar, unida por sus líneas de datos (CAN de tren motriz y de confort); mientras Caruspex lee, pequeños paquetes viajan hacia la unidad consultada.
+- Las averías iluminan su zona y ponen en rojo la unidad de control responsable, los valores en vivo aparecen sobre la pieza a la que pertenecen y "Revisar coche" lleva la cámara a cada hallazgo. Las capas se pueden desactivar una a una.
+- Dimensiones típicas para la carrocería y la época, no una réplica del modelo exacto: los datos de diseño y los esquemas eléctricos de los fabricantes no son de libre acceso.
+
+![Vista de rayos X](docs/screenshot-xray.png)
+
 ### Valores en vivo
 - Todos los valores del modo 01 de SAE J1979 hasta el PID C4: 145 PID con más de 300 lecturas, agrupadas y con búsqueda.
 - Cuentakilómetros, marcha, temperatura del aceite, consumo de combustible, par, presión del turbo, temperaturas de escape, filtro de partículas, AdBlue, NOx y batería híbrida, en la medida en que el coche los comunique.
@@ -139,6 +161,7 @@ BMW, escucha de valores de difusión (Tesla), grabación y reproducción.
 
 ### Valores del fabricante y personalizados
 - Baterías de coches eléctricos: estado de salud, carga, tensiones de celdas con dispersión, temperaturas, para Hyundai Kona e Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf y Tesla Model 3 e Y (escuchando el bus CAN); cada valor con una fuente documentada.
+- Valores del fabricante para unos 550 vehículos más del proyecto [OBDb](https://github.com/OBDb) (batería, presión de neumáticos, aceite, cuentakilómetros y más), que se ofrecen automáticamente para el coche detectado; cada ecuación se comprueba con el decodificador del propio OBDb.
 - Carga tus propios valores en el formato CSV de Torque, muy extendido, con un evaluador completo de las ecuaciones de Torque.
 
 ![Batería del eléctrico](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, escucha de valores de difusión (Tesla), grabación y reproducción.
 
 ### Aspecto y manejo
 - Una interfaz nueva al estilo de Odysync: tranquila, oscura, con transiciones suaves.
-- Conexión paso a paso con una búsqueda automática por todos los puertos.
+- Conexión paso a paso con una búsqueda automática por todos los puertos y, si falla, una breve lista de comprobación para ese tipo de conexión (controlador, emparejamiento, contacto, velocidad de bits, adaptadores clónicos) con lo que Caruspex ya ha averiguado.
+- Modo principiante y profesional: los principiantes ven las páginas del día a día; las herramientas de taller (KKL, adaptación, comandos en bruto, direcciones) aparecen en el modo profesional.
 - 18 idiomas; los ajustes se aplican al instante.
 - Te avisa cuando hay una versión nueva: al arrancar pregunta a GitHub por la última versión y nada más (ningún dato
   sobre ti ni sobre el coche); se puede desactivar en los ajustes.
@@ -464,6 +488,6 @@ respectivos propietarios; Caruspex no está afiliado a ningún fabricante de veh
 
 ## Licencia
 
-MIT, véase [LICENSE](LICENSE). Las fuentes incluidas tienen licencia SIL Open Font License 1.1:
+MIT, véase [LICENSE](LICENSE). Los valores del fabricante de cientos de modelos están convertidos de [OBDb](https://github.com/OBDb) y, como OBDb, tienen licencia CC BY-SA 4.0: están separados del código en [data/obdb](data/obdb) con la licencia y la lista de fuentes ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Las fuentes incluidas tienen licencia SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) y
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

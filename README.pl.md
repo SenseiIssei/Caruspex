@@ -79,6 +79,28 @@ wymusić dla jednego uruchomienia przez `--language fr` i tak dalej. Jak powstaj
 
 ![Pamięć usterek](docs/screenshot-faults.png)
 
+### Co mam teraz zrobić?
+- Jedna strona, która porządkuje wszystko, co znalazł Caruspex, w trzech krokach: zatrzymać się od razu, wkrótce do warsztatu, może poczekać.
+- Przy każdym punkcie jedno proste zdanie wyjaśniające dlaczego, orientacyjny przedział kosztów i notatka do pokazania w warsztacie (kod, sterownik, obszar, typowe przyczyny).
+- OBD nie widzi, czy kontrolka silnika miga ani czy świeci czerwona kontrolka: pytają o to dwa pola wyboru, a migająca kontrolka z wypadaniem zapłonów przenosi punkt do "zatrzymać się od razu".
+
+![Co mam teraz zrobić](docs/screenshot-todo.png)
+
+### Sprawdź używany samochód
+- Na oględziny przed zakupem: czy numer VIN w samochodzie zgadza się z dokumentami i katalogiem, czy przebieg zgadza się między sterownikami, czy usterki skasowano tuż przed (odległość i czas od skasowania)?
+- Monitory gotowości, zapisane usterki, kontrola kondycji, a w samochodach elektrycznych stan baterii.
+- Sygnalizator świetlny, pytania do sprzedawcy i plik PDF do zakupu.
+
+![Sprawdź używany samochód](docs/screenshot-used-car.png)
+
+### Widok rentgenowski w 3D
+- Podłączony samochód jako szklany model, który można obracać: silnik lub silniki, skrzynia biegów, zbiornik lub bateria wysokiego napięcia, wydech, chłodnica, akumulator 12 V i gniazdo OBD, rozmieszczone według nadwozia i napędu rozpoznanego samochodu.
+- Każdy sterownik znaleziony podczas skanowania leży tam, gdzie zwykle się znajduje, połączony swoimi liniami danych (CAN układu napędowego i komfortu); gdy Caruspex odczytuje dane, małe pakiety wędrują do pytanego sterownika.
+- Usterki podświetlają swój obszar i zaczerwieniają odpowiedzialny sterownik, wartości na żywo leżą na części, do której należą, a "Sprawdź auto" kieruje kamerę na każdy wynik. Warstwy można wyłączać po kolei.
+- Typowe wymiary dla nadwozia i epoki, nie replika dokładnego modelu: dane konstrukcyjne i schematy elektryczne producentów nie są swobodnie dostępne.
+
+![Widok rentgenowski](docs/screenshot-xray.png)
+
 ### Wartości na żywo
 - Każda wartość trybu 01 z SAE J1979 aż do PID C4: 145 PID-ów z ponad 300 odczytami, pogrupowanych i z wyszukiwarką.
 - Przebieg, bieg, temperatura oleju, zużycie paliwa, moment obrotowy, doładowanie, temperatury spalin, filtr cząstek stałych, AdBlue, NOx i akumulator hybrydy, o ile samochód je zgłasza.
@@ -139,6 +161,7 @@ BMW, nasłuch wartości rozgłaszanych (Tesla), nagrywanie i odtwarzanie.
 
 ### Wartości producenta i własne
 - Akumulatory samochodów elektrycznych: stan zdrowia, naładowanie, napięcia ogniw z rozrzutem, temperatury, dla Hyundaia Kona i Ioniq, Kii e-Niro, Renault Zoe, Nissana Leaf oraz Tesli Model 3 i Y (przez nasłuch na magistrali CAN); każda wartość z udokumentowanym źródłem.
+- Wartości producenta dla około 550 kolejnych pojazdów z projektu [OBDb](https://github.com/OBDb) (bateria, ciśnienie w oponach, olej, licznik przebiegu i więcej), oferowane automatycznie dla rozpoznanego samochodu; każde równanie jest sprawdzane dekoderem samego OBDb.
 - Wczytaj własne wartości w powszechnie używanym formacie Torque CSV, z kompletnym interpreterem równań Torque.
 
 ![Akumulator EV](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, nasłuch wartości rozgłaszanych (Tesla), nagrywanie i odtwarzanie.
 
 ### Wygląd i obsługa
 - Nowy interfejs w stylu Odysync: spokojny, ciemny, z płynnymi przejściami.
-- Łączenie krok po kroku z automatycznym przeszukiwaniem wszystkich portów.
+- Łączenie krok po kroku z automatycznym przeszukiwaniem wszystkich portów, a gdy się nie uda, krótka lista kontrolna dla danego rodzaju połączenia (sterownik, parowanie, zapłon, prędkość transmisji, klony adapterów) z tym, co Caruspex już ustalił.
+- Tryb początkującego i profesjonalny: początkujący widzą strony na co dzień, narzędzia warsztatowe (KKL, adaptacja, surowe polecenia, adresy) pojawiają się w trybie profesjonalnym.
 - 18 języków; ustawienia działają od razu.
 - Informuje, gdy jest nowa wersja: przy starcie pyta GitHub o najnowsze wydanie i o nic więcej (żadnych danych
   o Tobie ani o samochodzie); można to wyłączyć w ustawieniach.
@@ -464,6 +488,6 @@ właścicieli; Caruspex nie jest powiązany z żadnym producentem pojazdów ani 
 
 ## Licencja
 
-MIT, zobacz [LICENSE](LICENSE). Dołączone czcionki są objęte licencją SIL Open Font License 1.1:
+MIT, zobacz [LICENSE](LICENSE). Wartości producenta dla setek modeli są przekonwertowane z [OBDb](https://github.com/OBDb) i, tak jak OBDb, objęte licencją CC BY-SA 4.0: leżą oddzielnie od kodu w [data/obdb](data/obdb) razem z licencją i listą źródeł ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Dołączone czcionki są objęte licencją SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) i
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

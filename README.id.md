@@ -79,6 +79,28 @@ dipaksa untuk satu kali jalan dengan `--language fr` dan seterusnya. Cara terjem
 
 ![Memori kesalahan](docs/screenshot-faults.png)
 
+### Apa yang harus saya lakukan sekarang?
+- Satu halaman yang memilah semua temuan Caruspex menjadi tiga langkah: berhenti sekarang, segera ke bengkel, bisa menunggu.
+- Setiap poin disertai satu kalimat sederhana tentang alasannya, perkiraan kisaran biaya, dan catatan untuk ditunjukkan di bengkel (kode, unit kontrol, area, penyebab umum).
+- OBD tidak bisa melihat apakah lampu mesin berkedip atau lampu peringatan merah menyala: dua kotak centang menanyakannya, dan lampu berkedip disertai misfire memindahkan poin ke "Berhenti sekarang".
+
+![Apa yang harus saya lakukan sekarang](docs/screenshot-todo.png)
+
+### Periksa mobil bekas
+- Untuk melihat mobil sebelum membeli: apakah VIN pada mobil cocok dengan surat-surat dan katalog, apakah jarak tempuh sama di antara unit kontrol, dan apakah kesalahan baru saja dihapus (jarak dan waktu sejak penghapusan).
+- Monitor kesiapan, kesalahan tersimpan, pemeriksaan kondisi, dan pada mobil listrik status baterai.
+- Lampu lalu lintas, pertanyaan untuk penjual, dan PDF untuk pembelian.
+
+![Periksa mobil bekas](docs/screenshot-used-car.png)
+
+### Tampilan tembus 3D
+- Mobil yang tersambung sebagai model kaca yang bisa diputar: mesin atau motor listrik, girboks, tangki atau baterai tegangan tinggi, knalpot, radiator, aki 12 V, dan soket OBD, ditata menurut bentuk bodi dan penggerak mobil yang terdeteksi.
+- Setiap unit kontrol yang ditemukan pemindaian berada di tempat yang biasanya, dihubungkan oleh jalur datanya (CAN penggerak dan CAN kenyamanan); saat Caruspex membaca, paket-paket kecil bergerak ke unit yang ditanya.
+- Kesalahan menyalakan areanya dan mewarnai unit kontrol yang bertanggung jawab menjadi merah, nilai langsung ditampilkan di bagian yang bersangkutan, dan "Periksa mobil" menerbangkan kamera ke setiap temuan. Lapisan bisa dimatikan satu per satu.
+- Ukuran umum menurut bentuk bodi dan zamannya, bukan tiruan persis model tertentu: data desain dan diagram kabel pabrikan tidak tersedia bebas.
+
+![Tampilan tembus](docs/screenshot-xray.png)
+
 ### Data langsung
 - Setiap nilai mode 01 dari SAE J1979 sampai PID C4: 145 PID dengan lebih dari 300 pembacaan, dikelompokkan dan bisa dicari.
 - Odometer, gigi, suhu oli, laju bahan bakar, torsi, boost, suhu gas buang, filter partikel, AdBlue, NOx, dan baterai hybrid, sejauh dilaporkan oleh mobil.
@@ -139,6 +161,7 @@ BMW, mendengarkan nilai siaran (Tesla), perekaman dan pemutaran ulang.
 
 ### Nilai pabrikan dan nilai kustom
 - Baterai mobil listrik: kondisi kesehatan, pengisian, tegangan sel dengan sebarannya, suhu, untuk Hyundai Kona dan Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf, dan Tesla Model 3 dan Y (dengan mendengarkan bus CAN); setiap nilai dengan sumber yang terdokumentasi.
+- Nilai pabrikan untuk sekitar 550 kendaraan lagi dari proyek [OBDb](https://github.com/OBDb) (baterai, tekanan ban, oli, odometer, dan lainnya), ditawarkan otomatis untuk mobil yang terdeteksi; setiap persamaan diperiksa dengan dekoder milik OBDb sendiri.
 - Muat nilai Anda sendiri dalam format CSV Torque yang banyak dipakai, dengan pengevaluasi lengkap untuk persamaan Torque.
 
 ![Baterai EV](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, mendengarkan nilai siaran (Tesla), perekaman dan pemutaran ulang.
 
 ### Tampilan dan nuansa
 - Antarmuka baru bergaya Odysync: tenang, gelap, dengan transisi yang halus.
-- Penyambungan langkah demi langkah dengan pencarian otomatis di semua port.
+- Penyambungan langkah demi langkah dengan pencarian otomatis di semua port, dan bila gagal ada daftar periksa singkat untuk jenis sambungan itu (driver, pemasangan, kunci kontak, bit rate, adaptor tiruan) beserta yang sudah diketahui Caruspex.
+- Mode Pemula dan Profesional: pemula melihat halaman sehari-hari, alat bengkel (KKL, adaptasi, perintah mentah, alamat) muncul di mode Profesional.
 - 18 bahasa; pengaturan langsung berlaku.
 - Memberi tahu Anda saat ada versi baru: saat dimulai ia menanyakan rilis terbaru ke GitHub dan tidak ada yang lain (tidak ada data
   tentang Anda atau mobil); bisa dimatikan di pengaturan.
@@ -464,6 +488,7 @@ dari pemiliknya masing-masing; Caruspex tidak berafiliasi dengan atau didukung o
 
 ## Lisensi
 
-MIT, lihat [LICENSE](LICENSE). Font yang disertakan dilisensikan di bawah SIL Open Font License 1.1:
+MIT, lihat [LICENSE](LICENSE). Nilai pabrikan untuk ratusan model diubah dari [OBDb](https://github.com/OBDb) dan, seperti OBDb, dilisensikan di bawah CC BY-SA 4.0: nilai itu disimpan terpisah dari kode di [data/obdb](data/obdb) bersama lisensi dan daftar sumbernya ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+Font yang disertakan dilisensikan di bawah SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), dan
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

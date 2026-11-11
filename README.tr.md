@@ -79,6 +79,28 @@ Japonca, Korece, Hintçe ve Endonezce. Sistem dilini izler, ayarlardan değişti
 
 ![Arıza belleği](docs/screenshot-faults.png)
 
+### Şimdi ne yapmalıyım?
+- Caruspex'in bulduğu her şeyi üç adıma ayıran tek bir sayfa: hemen durun, yakında servise, bekleyebilir.
+- Her madde için nedenini anlatan düz bir cümle, kabaca bir maliyet aralığı ve serviste göstermek için bir not (kod, kontrol ünitesi, bölge, olağan nedenler).
+- OBD, motor lambasının yanıp sönüp sönmediğini ya da kırmızı bir uyarı lambasının yanıp yanmadığını göremez: bunu iki işaret kutusu sorar, yanıp sönen lamba ve ateşleme kaçırma birlikteyse madde "Hemen durun" bölümüne taşınır.
+
+![Şimdi ne yapmalıyım](docs/screenshot-todo.png)
+
+### İkinci el aracı kontrol et
+- Satın almadan önce aracı görmeye giderken: araçtaki şasi numarası (VIN) belgelerle ve katalogla uyuşuyor mu, kilometre kontrol üniteleri arasında tutarlı mı, arızalar kısa süre önce mi silinmiş (silmeden bu yana mesafe ve süre)?
+- Hazırlık monitörleri, kayıtlı arızalar, sağlık kontrolü ve elektrikli araçlarda akü durumu.
+- Bir trafik ışığı, satıcıya sorulacak sorular ve satın alma için bir PDF.
+
+![İkinci el aracı kontrol et](docs/screenshot-used-car.png)
+
+### 3D Röntgen görünümü
+- Bağlı araba, çevirebileceğiniz cam bir model olarak: motor veya motorlar, şanzıman, depo veya yüksek gerilim aküsü, egzoz, radyatör, 12 V akü ve OBD soketi; algılanan arabanın kasa tipine ve aktarma sistemine göre yerleştirilir.
+- Taramada bulunan her kontrol ünitesi genelde durduğu yerde durur ve veri hatlarıyla (güç aktarma ve konfor CAN) bağlanır; Caruspex okurken sorulan üniteye küçük paketler gider.
+- Arızalar bölgesini yakar ve sorumlu kontrol ünitesini kırmızıya boyar, canlı değerler ait oldukları parçanın üzerinde durur ve "Aracı kontrol et" kamerayı her bulguya uçurur. Katmanlar tek tek kapatılabilir.
+- Kasa tipi ve döneme göre tipik ölçüler, tam modelin kopyası değil: üreticilerin tasarım verileri ve elektrik şemaları serbestçe bulunmuyor.
+
+![Röntgen görünümü](docs/screenshot-xray.png)
+
 ### Canlı değerler
 - SAE J1979'un PID C4'e kadar her mod 01 değeri: 300'den fazla okumalı 145 PID, gruplanmış ve aranabilir.
 - Kilometre sayacı, vites, yağ sıcaklığı, yakıt tüketimi, tork, turbo basıncı, egzoz sıcaklıkları, partikül filtresi, AdBlue, NOx ve hibrit akü, araba bildirdiği ölçüde.
@@ -139,6 +161,7 @@ adreslemesi, yayın değerlerini dinleme (Tesla), kayıt ve tekrar oynatma.
 
 ### Üretici ve özel değerler
 - Elektrikli araç aküleri: sağlık durumu, şarj, yayılımıyla hücre voltajları, sıcaklıklar; Hyundai Kona ve Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf ve Tesla Model 3 ile Y için (CAN veriyolunu dinleyerek); her değer belgelenmiş bir kaynakla.
+- [OBDb](https://github.com/OBDb) projesinden yaklaşık 550 araç daha için üretici değerleri (akü, lastik basıncı, yağ, kilometre sayacı ve daha fazlası), algılanan araç için otomatik sunulur; her denklem OBDb'nin kendi çözücüsüyle denetlenir.
 - Kendi değerlerinizi yaygın kullanılan Torque CSV biçiminde yükleyin; Torque denklemleri için eksiksiz bir değerlendirici var.
 
 ![EV aküsü](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ adreslemesi, yayın değerlerini dinleme (Tesla), kayıt ve tekrar oynatma.
 
 ### Görünüm ve his
 - Odysync tarzında yeni bir arayüz: sakin, koyu, yumuşak geçişlerle.
-- Tüm portlarda otomatik aramayla adım adım bağlanma.
+- Tüm portlarda otomatik aramayla adım adım bağlanma; başarısız olursa bu bağlantı türü için kısa bir kontrol listesi (sürücü, eşleştirme, kontak, bit hızı, klon adaptörler) ve Caruspex'in zaten öğrendikleri.
+- Başlangıç ve Profesyonel modu: yeni başlayanlar günlük sayfaları görür, servis araçları (KKL, adaptasyon, ham komutlar, adresler) Profesyonel modda belirir.
 - 18 dil; ayarlar hemen uygulanır.
 - Yeni sürüm çıktığında haber verir: başlangıçta GitHub'dan en yeni sürümü sorar ve başka hiçbir şey sormaz (sizinle ya da
   arabayla ilgili hiçbir veri gitmez); ayarlardan kapatılabilir.
@@ -464,6 +488,7 @@ sahiplerinin ticari markalarıdır; Caruspex hiçbir araç üreticisiyle bağlan
 
 ## Lisans
 
-MIT, bkz. [LICENSE](LICENSE). Pakete dahil yazı tipleri SIL Open Font License 1.1 ile lisanslıdır:
+MIT, bkz. [LICENSE](LICENSE). Yüzlerce modelin üretici değerleri [OBDb](https://github.com/OBDb) projesinden dönüştürülmüştür ve OBDb gibi CC BY-SA 4.0 ile lisanslıdır: koddan ayrı olarak [data/obdb](data/obdb) içinde, lisans ve kaynak listesiyle ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)) birlikte durur.
+Pakete dahil yazı tipleri SIL Open Font License 1.1 ile lisanslıdır:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) ve
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
