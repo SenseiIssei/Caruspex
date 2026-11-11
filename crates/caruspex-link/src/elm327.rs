@@ -488,7 +488,41 @@ pub fn decode_messages<S: AsRef<str>>(
 }
 
 /// The ELM327 driver. Owns the transport it talks through.
+/// What the last [`Elm327::connect`] found out, for the connection
+/// assistant. It stays after a failed attempt and after `disconnect`, and is
+/// reset by the next `connect`.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct ConnectTrace {
+    /// The adapter answered the reset (ATZ).
+    pub adapter_answered: bool,
+    /// What it called itself, e.g. "ELM327 v1.5".
+    pub adapter_id: String,
+    /// The protocol numbers tried, in order.
+    pub protocols_tried: String,
+    /// The last error line the adapter reported from the bus, e.g.
+    /// "UNABLE TO CONNECT" or "CAN ERROR".
+    pub bus_error: String,
+}
+
+/// The first line of a reply that is an error report of the adapter about
+/// the bus. A lone "?" (unknown command) is not one.
+fn bus_error_line(result: &ElmResult) -> Option<String> {
+    result.lines.iter().find_map(|line| {
+        let up = to_upper(line.trim());
+        ERRORS
+            .iter()
+            .filter(|err| **err != "?")
+            .any(|err| {
+                up == *err
+                    || up.starts_with(&format!("{err} "))
+                    || up.starts_with(&format!("{err}:"))
+            })
+            .then(|| line.trim().to_string())
+    })
+}
+
 pub struct Elm327 {
+    trace: ConnectTrace,
     transport: Option<Box<dyn Transport>>,
     log: Option<LogFn>,
     timeout_scale: f64,
@@ -515,6 +549,7 @@ impl Default for Elm327 {
 impl Elm327 {
     pub fn new() -> Self {
         Self {
+            trace: ConnectTrace::default(),
             transport: None,
             log: None,
             timeout_scale: 1.0,
@@ -572,6 +607,10 @@ impl Elm327 {
 
     pub fn connected(&self) -> bool {
         self.connected
+    }
+    /// What the last connect attempt found out.
+    pub fn connect_trace(&self) -> &ConnectTrace {
+        &self.trace
     }
     /// Connected only for listening: the car does not answer OBD, but there
     /// is traffic on CAN 500 kbit (Tesla). Values come from broadcast frames.
@@ -1122,6 +1161,7 @@ impl Elm327 {
         self.timing_level = 0;
         self.obd_on_uds = false;
         self.listen_only = false;
+        self.trace = ConnectTrace::default();
         self.drain_greeting();
 
         let banner = self.at("Z", 6000);
@@ -1137,6 +1177,8 @@ impl Elm327 {
         if self.version.is_empty() {
             self.version = "?".to_string();
         }
+        self.trace.adapter_answered = true;
+        self.trace.adapter_id = self.version.clone();
         let up = to_upper(&self.version);
         if !up.contains("ELM") && !up.contains("OBD") {
             self.log(&format!(
@@ -1161,6 +1203,7 @@ impl Elm327 {
         self.detect_stn();
 
         for proto in protocol_order.chars() {
+            self.trace.protocols_tried.push(proto);
             self.at(&format!("SP{proto}"), DEFAULT_SEND_TIMEOUT_MS);
             self.log(&format!(
                 "{}{} ({}) ...",
@@ -1206,6 +1249,9 @@ impl Elm327 {
                 }
                 if probe.status == ElmStatus::AdapterError {
                     return Err(probe.message);
+                }
+                if let Some(line) = bus_error_line(&probe) {
+                    self.trace.bus_error = line;
                 }
                 sleep_ms(400);
             }

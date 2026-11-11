@@ -9,6 +9,7 @@ members = [
     "crates/caruspex-net",
     "crates/caruspex-record",
     "crates/caruspex-analysis",
+    "crates/caruspex-advice",
     "crates/caruspex-demo",
     "crates/caruspex-cli",
     "app/src-tauri",
@@ -31,6 +32,7 @@ caruspex-protocols = { path = "crates/caruspex-protocols" }
 caruspex-net = { path = "crates/caruspex-net" }
 caruspex-record = { path = "crates/caruspex-record" }
 caruspex-analysis = { path = "crates/caruspex-analysis" }
+caruspex-advice = { path = "crates/caruspex-advice" }
 caruspex-demo = { path = "crates/caruspex-demo" }
 
 serde = { version = "1", features = ["derive"] }

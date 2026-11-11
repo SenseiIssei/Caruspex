@@ -499,6 +499,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "caruspex-advice"
+version = "0.9.0"
+dependencies = [
+ "caruspex-analysis",
+ "caruspex-data",
+ "caruspex-i18n",
+]
+
+[[package]]
 name = "caruspex-analysis"
 version = "0.9.0"
 dependencies = [

@@ -26,8 +26,8 @@ pub mod transport;
 
 pub use adapter_probe::{AdapterReport, BilingualText, CommandCheck, probe_adapter};
 pub use elm327::{
-    AdaptiveTiming, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat, decode_messages,
-    header_format_for, hex_to_bytes, protocol_name, split_messages,
+    AdaptiveTiming, ConnectTrace, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat,
+    decode_messages, header_format_for, hex_to_bytes, protocol_name, split_messages,
 };
 pub use kline_stream::KLineStream;
 pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
