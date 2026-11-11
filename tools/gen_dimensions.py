@@ -211,16 +211,31 @@ SELECT ?item ?pred ?time WHERE {{
     return out
 
 
-def do_fetch() -> int:
-    os.makedirs(CACHE, exist_ok=True)
+def fetch_answers(folder: str, log=print) -> None:
+    """Asks the query service and keeps the answers in folder (the cache, or
+    a scratch folder for the monthly data check)."""
+    os.makedirs(folder, exist_ok=True)
     for name, query in queries().items():
-        print(f"query {name} ...")
+        log(f"query {name} ...")
         result = sparql(query)
         rows = result["results"]["bindings"]
-        with open(os.path.join(CACHE, name + ".json"), "w", encoding="utf-8", newline="\n") as f:
+        with open(os.path.join(folder, name + ".json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(result, f, ensure_ascii=False)
-        print(f"  {len(rows)} rows")
+        log(f"  {len(rows)} rows")
         time.sleep(3)
+
+
+def current_rows(folder: str) -> list[dict]:
+    """The Wikidata rows (as in dimensions.csv) the answers in folder give
+    for today's catalog and aliases."""
+    stats: collections.Counter = collections.Counter()
+    items = load_items(load_answers(folder), stats)
+    catalog = load_catalog()
+    return rows_for(catalog, match(catalog, items, load_aliases()))
+
+
+def do_fetch() -> int:
+    fetch_answers(CACHE)
     return 0
 
 

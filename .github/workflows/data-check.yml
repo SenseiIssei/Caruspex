@@ -1,9 +1,10 @@
 name: Data check
 
-# Once a month: are there new VIN codes, new OBDb vehicles or new DBC files
-# upstream? If so, one issue lists what is new. After working it in, run
-# `python tools/check_sources.py --update` and commit data/sources.json and
-# data/wmi_seen.txt, so the next check starts from there.
+# Once a month: are there new VIN codes, new or changed OBDb vehicles, new or
+# changed dimensions in Wikidata or new DBC files upstream? If so, one issue
+# lists what is new, by name. After working it in, run
+# `python tools/check_sources.py --update` and commit data/sources.json,
+# data/wmi_seen.txt and data/obdb_seen.txt, so the next check starts from there.
 on:
   schedule:
     - cron: "17 6 3 * *"
@@ -16,6 +17,8 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # The Wikidata queries take a few minutes, a busy query service longer.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
 
@@ -44,6 +47,6 @@ jobs:
           {
             cat report.md
             echo
-            echo "After working it in: \`python tools/check_sources.py --update\`, then commit data/sources.json and data/wmi_seen.txt."
+            echo "After working it in: \`python tools/check_sources.py --update\`, then commit data/sources.json, data/wmi_seen.txt and data/obdb_seen.txt."
           } > body.md
           gh issue create --title "Datencheck $(date +%Y-%m)" --body-file body.md
