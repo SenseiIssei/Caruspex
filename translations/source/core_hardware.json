@@ -1,0 +1,12 @@
+[
+ {
+  "id": "c-hardware-1",
+  "de": "  Unleserliche Antwort, vermutlich passt die Baudrate nicht: '",
+  "en": "  Garbled answer, probably the baud rate does not match: '"
+ },
+ {
+  "id": "c-hardware-2",
+  "de": "Der Adapter antwortet unleserlich, vermutlich passt die Baudrate nicht.",
+  "en": "The adapter answers garbled, probably the baud rate does not match."
+ }
+]
