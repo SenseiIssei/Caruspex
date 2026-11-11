@@ -1,6 +1,6 @@
 # Values of the built-in demo car, so the custom values can be tried
 # without a car. The identifiers 1001 to 1010 are made up for the demo
-# (src/core/DemoTransport.cpp); no real control unit is meant. The last
+# (crates/caruspex-demo); no real control unit is meant. The last
 # value is a plain OBD PID read without a header, the way a custom value for
 # any car can look.
 #

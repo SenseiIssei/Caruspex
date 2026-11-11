@@ -1,0 +1,22 @@
+/* The health check: the ring with the verdict on top, findings on the left,
+   readiness and what was not checked on the right (3 to 2 like the Qt
+   layout), stacked when the window gets narrow. */
+
+.health-hero { padding: 26px; }
+.health-hero-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+.health-hero-row .score-ring { flex: none; }
+.health-hero-texts { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.health-headline { transition: color 200ms var(--ease); }
+.health-summary { margin: 0 0 6px; }
+.health-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.health-start { min-height: 44px; }
+.health-duration { min-height: 44px; min-width: 200px; }
+
+.health-columns { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.health-findings { flex: 3 1 380px; }
+.health-side { flex: 2 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.health-list { display: flex; flex-direction: column; }
+.health-skipped { display: flex; flex-direction: column; gap: 4px; }
+/* Each finding sits in its own fading wrapper; keep the separator lines
+   between them that the plain list draws. */
+.health-list > div:not(:last-child) > .finding-row::after { display: block; }

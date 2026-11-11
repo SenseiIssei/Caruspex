@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # Prepares a release on its own branch, without pushing anything:
 #
-#   bash tools/release.sh 0.9.0
+#   bash tools/release.sh 0.9.1
 #
 # 1. branch release-<version> from the current main
-# 2. version in CMakeLists.txt
-# 3. changelog/<version>.md with a German and an English part (opened for
-#    writing if it does not exist yet; the script stops until it is filled)
-# 4. translation check, build, tests, packages and smoke test of this system
+# 2. version in Cargo.toml (workspace) and app/package.json
+# 3. changelog/<version>.md with a German and an English part (written as a
+#    skeleton if it does not exist yet; the script stops until it is filled)
+# 4. checks, tests, packages and smoke test of this system
+# 5. fresh README screenshots in both languages
 #
 # Afterwards, by hand and only after an explicit go: push the branch, open
 # the pull request, merge when the CI is green, tag v<version> and push the
@@ -15,7 +16,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-version=${1:?usage: tools/release.sh <version, e.g. 0.9.0>}
+version=${1:?usage: tools/release.sh <version, e.g. 0.9.1>}
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "not a version: $version" >&2; exit 1; }
 
 if [ -n "$(git status --porcelain)" ]; then
@@ -25,8 +26,9 @@ fi
 git fetch -q origin
 git checkout -q -B "release-$version" origin/main
 
-sed -i "s/^project(Caruspex VERSION [0-9.]* LANGUAGES CXX)/project(Caruspex VERSION $version LANGUAGES CXX)/" CMakeLists.txt
-grep -q "VERSION $version " CMakeLists.txt || { echo "version not set in CMakeLists.txt" >&2; exit 1; }
+sed -i '/^\[workspace.package\]/,/^\[/s/^version = "[0-9.]*"/version = "'"$version"'"/' Cargo.toml
+sed -i '0,/"version": "[0-9.]*"/s//"version": "'"$version"'"/' app/package.json
+grep -q "^version = \"$version\"" Cargo.toml || { echo "version not set in Cargo.toml" >&2; exit 1; }
 
 notes="changelog/$version.md"
 if [ ! -f "$notes" ]; then
@@ -51,24 +53,23 @@ if LC_ALL=C grep -q $'\xe2\x80\x94\|\xe2\x80\x93' "$notes"; then   # U+2014, U+2
     exit 2
 fi
 
-cmake_bin=$(command -v cmake || echo "/c/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe")
 python_bin=$(command -v python3 || command -v python || echo "py -I")
-
-$python_bin tools/gen_i18n.py --check --strict
-"$cmake_bin" build >/dev/null
-"$cmake_bin" --build build --config Release
-if [ -x build/bin/Release/caruspex_tests.exe ]; then build/bin/Release/caruspex_tests.exe; else build/bin/caruspex_tests; fi
-REQUIRE_INSTALLER=1 bash tools/package.sh build
-bash tools/smoke_test.sh smoke
+$python_bin tools/i18n_rust.py --strict
+cargo fmt --all --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo update -w   # the new version into Cargo.lock
+REQUIRE_INSTALLER=1 bash tools/package.sh
+# On Windows the smoke test window goes next to the main screen.
+SMOKE_WINDOW_POS=${SMOKE_WINDOW_POS:--1880,40} bash tools/smoke_test.sh smoke
 rm -rf package dist smoke
 
 # Fresh README images, so they show this version (taken here with the real
 # fonts, not on a headless CI machine).
-[ -d /c/Qt/6.8.3/msvc2022_64/bin ] && export PATH="/c/Qt/6.8.3/msvc2022_64/bin:$PATH"
 bash tools/screenshots.sh de
 bash tools/screenshots.sh en
 
-git add CMakeLists.txt "$notes" docs/*.png docs/de/*.png
+git add Cargo.toml Cargo.lock app/package.json app/package-lock.json "$notes" docs/*.png docs/de/*.png
 git commit -q -m "Version $version mit Aenderungsliste auf Deutsch und Englisch"
 echo
 echo "Release $version is ready on branch release-$version. Next, after a go:"

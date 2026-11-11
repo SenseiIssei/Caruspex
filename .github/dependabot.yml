@@ -1,10 +1,32 @@
 version: 2
 updates:
-  # The actions used by the CI (checkout, setup-python, install-qt, upload
-  # and download of artifacts). Conan and Qt are raised by hand.
+  # The actions used by the CI (checkout, toolchains, caches, upload and
+  # download of artifacts).
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
     commit-message:
       prefix: CI
+
+  # The Rust crates of the workspace (one Cargo.lock for all of them).
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: Cargo
+    groups:
+      rust:
+        patterns: ["*"]
+
+  # The interface: React, Vite, TypeScript and the Tauri JavaScript API.
+  - package-ecosystem: npm
+    directory: /app
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: npm
+    groups:
+      interface:
+        patterns: ["*"]

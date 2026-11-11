@@ -1,0 +1,9 @@
+[package]
+name = "caruspex-vehicles"
+description = "VIN decoding and the vehicle catalog: brands, models, generations, sockets, buses"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true

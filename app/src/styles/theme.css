@@ -1,0 +1,125 @@
+/* The look of the Qt version: a calm dark canvas, raised surfaces with soft
+   shadows, an indigo to sky gradient for the one thing that matters on a page.
+   Text in Inter, headlines in Plus Jakarta Sans, codes and numbers in
+   JetBrains Mono. The light palette is the one of Theme::setLight(). */
+
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/Inter-Bold.ttf") format("truetype"); font-weight: 700 900; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("/fonts/PlusJakartaSans-SemiBold.ttf") format("truetype"); font-weight: 400 600; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("/fonts/PlusJakartaSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("/fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype"); font-weight: 800 900; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("/fonts/JetBrainsMono-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("/fonts/JetBrainsMono-Medium.ttf") format("truetype"); font-weight: 500 600; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("/fonts/JetBrainsMono-Bold.ttf") format("truetype"); font-weight: 700 900; font-display: swap; }
+
+:root {
+  /* The bundled fonts cover Latin, Greek and Cyrillic. Other scripts get one
+     fixed system font each (first one present wins), so a word never mixes
+     styles; see loadFonts() in Theme.cpp. */
+  --script: "Segoe UI", system-ui;
+  --font-sans: "Inter", var(--script), sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", var(--script), sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, var(--script), monospace;
+  --tracking-eyebrow: 1.6px;
+  --tracking-section: 1.4px;
+
+  --radius-card: 16px;
+  --radius-flat: 12px;
+  --radius-control: 10px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: dark;
+  --bg: #0a0c11;
+  --surface: #12151d;
+  --surface-high: #1a1e28;
+  --surface-hover: #20253a;
+  --border: #232835;
+  --sidebar: #0d1016;
+  --input: #0e1118;
+  --card-top: #151924;
+  --track: #1d2230;
+  --row-line: #1a1e29;
+  --alternate: #141823;
+  --hover-line: #454e66;
+  --scroll: #2a3040;
+  --scroll-hover: #3a4256;
+  --pressed: #151924;
+  --disabled: #12151c;
+  --border-bright: #323949;
+  --text: #eceef3;
+  --text-muted: #a4abb9;
+  --text-faint: #727a8a;
+  --accent: #8f8cff;
+  --accent-hover: #a5a2ff;
+  --accent-dim: #5a54f0;
+  --sky: #5ab8ff;
+  --purple: #b18cff;
+  --purple-dim: #7c5cf0;
+  --good: #4fd39a;
+  --warn: #f2bc5c;
+  --bad: #ff7a7a;
+  --info: #6fb8ff;
+  --warm: #ffc66d;
+  --shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.35);
+  --primary-hover-a: #a9a6ff;
+  --primary-hover-b: #7cc8ff;
+  --number-top: #ffffff;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f5fa;
+  --surface: #ffffff;
+  --surface-high: #eef0f6;
+  --surface-hover: #e4e7f0;
+  --border: #e2e5ee;
+  --border-bright: #cdd2de;
+  --sidebar: #fbfbfe;
+  --input: #ffffff;
+  --card-top: #ffffff;
+  --track: #e6e8f0;
+  --row-line: #eceef4;
+  --alternate: #f8f9fc;
+  --hover-line: #b8bfcf;
+  --scroll: #cfd4df;
+  --scroll-hover: #b3bacb;
+  --pressed: #e4e7f0;
+  --disabled: #f0f1f5;
+  --text: #141821;
+  --text-muted: #515b6b;
+  --text-faint: #788091;
+  --accent: #5a54f0;
+  --accent-hover: #4842d8;
+  --accent-dim: #4842d8;
+  --sky: #1b8fe0;
+  --purple: #7c5cf0;
+  --purple-dim: #6a48e0;
+  --good: #12875a;
+  --warn: #b97a06;
+  --bad: #c93636;
+  --info: #1b6fc0;
+  --warm: #b97a06;
+  --shadow: 0 10px 30px rgba(20, 24, 33, 0.10);
+  --shadow-soft: 0 4px 16px rgba(20, 24, 33, 0.08);
+  --primary-hover-a: #6e69ff;
+  --primary-hover-b: #3aa2f0;
+  --number-top: #141821;
+}
+
+/* One fixed font per script, the lists of Theme.cpp. */
+:root[lang="zh"] { --script: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Noto Sans SC"; }
+:root[lang="ja"] { --script: "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans CJK JP", "Noto Sans JP"; }
+:root[lang="ko"] { --script: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans CJK KR", "Noto Sans KR"; }
+:root[lang="hi"] { --script: "Nirmala UI", "Kohinoor Devanagari", "Noto Sans Devanagari"; }
+:root[lang="ar"] { --script: "Segoe UI", "Geeza Pro", "Noto Sans Arabic", "Noto Naskh Arabic"; }
+/* Letter spacing tears joined scripts apart (Devanagari, Arabic). */
+:root[lang="hi"], :root[lang="ar"] { --tracking-eyebrow: 0; --tracking-section: 0; }
+/* For CJK, the script font comes first, so Latin letters inside a Chinese
+   sentence do not switch to Inter mid-line. */
+:root[lang="zh"], :root[lang="ja"], :root[lang="ko"] {
+  --font-sans: var(--script), "Inter", sans-serif;
+  --font-display: var(--script), "Plus Jakarta Sans", sans-serif;
+}

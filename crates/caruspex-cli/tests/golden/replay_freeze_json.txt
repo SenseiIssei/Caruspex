@@ -1,0 +1,10 @@
+{
+  "adapter": {
+    "version": "ELM327 v1.5",
+    "connection": "Recording: demo.jsonl",
+    "protocol": "ISO 15765-4 (CAN 11/500)",
+    "can": true
+  },
+  "brand": "",
+  "frames": []
+}

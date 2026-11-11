@@ -1,0 +1,6 @@
+Adapter    : ELM327 v1.5
+Connection : Demo vehicle (built-in)
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Fault memory cleared.

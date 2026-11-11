@@ -1,0 +1,33 @@
+Adapter    : ELM327 v1.5
+Connection : Demo vehicle (built-in)
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Freeze frame 0: P0171 System too lean - bank 1
+  Fuel system status                       closed loop (normal)
+  Calculated engine load                        60.78 %
+  Coolant temperature                           89.00 °C
+  Short-term fuel trim bank 1                    7.03 %
+  Long-term fuel trim bank 1                    17.19 %
+  Intake manifold pressure                      70.00 kPa
+  Engine speed                                2261.75 1/min
+  Vehicle speed                                100.00 km/h
+  Ignition timing advance                       16.00 deg BTDC
+  Intake air temperature                        19.00 °C
+  Mass air flow (MAF)                           19.93 g/s
+  Throttle position                             47.84 %
+
+Freeze frame 1: P0300 Random/multiple cylinder misfire detected
+  Fuel system status                       closed loop (normal)
+  Calculated engine load                        28.63 %
+  Coolant temperature                           91.00 °C
+  Short-term fuel trim bank 1                   -3.12 %
+  Long-term fuel trim bank 1                    17.19 %
+  Intake manifold pressure                      44.00 kPa
+  Engine speed                                1341.00 1/min
+  Vehicle speed                                 49.00 km/h
+  Ignition timing advance                       25.00 deg BTDC
+  Intake air temperature                        20.00 °C
+  Mass air flow (MAF)                            5.55 g/s
+  Throttle position                             26.67 %
+

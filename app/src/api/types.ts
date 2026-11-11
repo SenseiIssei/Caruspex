@@ -1,0 +1,709 @@
+// Data the backend hands to the interface. Each type mirrors a struct of the
+// backend (app/src-tauri/src: worker, settings, garage, report; ported from
+// the Qt version) or of the crates they use. Field names follow the Rust
+// names in camelCase; the backend serialises with
+// #[serde(rename_all = "camelCase")]. Texts arrive in the active language.
+
+// --- Session.h ----------------------------------------------------------------
+
+export interface FaultRow {
+  code: string;
+  // Display text of the kind ("gespeichert", "sporadisch", "permanent").
+  kind: string;
+  text: string;
+  throttleRelated: boolean;
+  // Confirmed (stored) fault, as opposed to pending or permanent.
+  stored: boolean;
+  // Which control unit reported it, e.g. "Motor (7E8)". Empty on the K-line.
+  ecu: string;
+}
+
+export interface LiveRow {
+  // The live key: pid | (sub << 8). Equals the PID for single values.
+  pid: number;
+  name: string;
+  unit: string;
+  // Set for status values ("geschlossener Regelkreis").
+  text: string;
+  value: number;
+  warn: boolean;
+  // Seconds since the program started, taken right after the reply.
+  time: number;
+  // Sensible scale for charts and gauges, 0/0 when the table has none.
+  displayMin: number;
+  displayMax: number;
+}
+
+export interface FreezeFrameRow {
+  frame: number;
+  dtc: string;
+  ecu: string;
+  values: LiveRow[];
+}
+
+export interface UdsDtcRow {
+  code: string;
+  failureText: string;
+  text: string;
+  testFailed: boolean;
+  pending: boolean;
+  confirmed: boolean;
+  warningLamp: boolean;
+}
+
+// EcuKind of core/Uds.h.
+export type EcuKind = number;
+
+export interface UdsEcuRow {
+  request: number;
+  response: number;
+  extended29: boolean;
+  kind: EcuKind;
+  name: string;
+  present: boolean;
+  dtcsRead: boolean;
+  partNumber: string;
+  softwareVersion: string;
+  hardwareVersion: string;
+  systemName: string;
+  serial: string;
+  dtcs: UdsDtcRow[];
+  note: string;
+}
+
+export interface CustomRow {
+  key: number;
+  name: string;
+  shortName: string;
+  unit: string;
+  // Empty for imported values.
+  pack: string;
+  source: string;
+  request: string;
+  header: string;
+  // The English short name, the same in every language; the EV page finds
+  // its values ("SOH", "Batt V") by it. Falls back to shortName when absent.
+  shortNameEn?: string;
+}
+
+// analysis::Level: 0 good, 1 info, 2 warning, 3 critical.
+export type Level = 0 | 1 | 2 | 3;
+
+export interface HealthFindingRow {
+  level: Level;
+  area: string;
+  title: string;
+  explanation: string;
+  advice: string;
+}
+
+export interface MonitorGuideRow {
+  name: string;
+  complete: boolean;
+  explanation: string;
+  drivePattern: string;
+  typicalTime: string;
+  coldStart: boolean;
+}
+
+export interface AdapterCheckRow {
+  command: string;
+  // The ELM version that introduced the command.
+  version: string;
+  supported: boolean;
+  purpose: string;
+}
+
+export interface AdapterRow {
+  reachable: boolean;
+  version: string;
+  description: string;
+  isStn: boolean;
+  stnId: string;
+  voltage: number;
+  hasVoltage: boolean;
+  roundTripMs: number;
+  roundTripWithHintMs: number;
+  behavesLike: string;
+  acceptsUnknown: boolean;
+  verdict: string;
+  facts: string[];
+  speedTips: string[];
+  checks: AdapterCheckRow[];
+}
+
+export interface HealthRow {
+  score: number;
+  // analysis::TrafficLight: 0 green, 1 yellow, 2 red.
+  grade: 0 | 1 | 2;
+  summary: string;
+  findings: HealthFindingRow[];
+  // "title: reason"
+  notChecked: string[];
+  monitors: MonitorGuideRow[];
+  checksRun: number;
+  diesel: boolean;
+}
+
+export interface EcuScanRow {
+  address: number;
+  name: string;
+  present: boolean;
+  identification: string;
+  faults: FaultRow[];
+  note: string;
+}
+
+export interface MonitorRow {
+  name: string;
+  component: string;
+  value: number;
+  minimum: number;
+  maximum: number;
+  unit: string;
+  hasMinimum: boolean;
+  hasMaximum: boolean;
+  passed: boolean;
+}
+
+export interface OxygenRow {
+  name: string;
+  sensor: number;
+  value: number;
+  unit: string;
+}
+
+export interface StatusRow {
+  valid: boolean;
+  mil: boolean;
+  faultCount: number;
+  monitorNames: string[];
+  monitorReady: boolean[];
+}
+
+// --- Settings.h -----------------------------------------------------------------
+
+export interface AppSettings {
+  // Connection. 0 means: try the usual baud rates.
+  baudOverride: number;
+  // Order in which the protocols are tried: "kline" suits the A2, "can" the A4 B7.
+  protocolOrder: string;
+  // All timeouts are multiplied by this factor (percent).
+  timeoutPercent: number;
+  // 0 standard (ATAT1), 1 faster on STN adapters only, 2 always ATAT2.
+  adaptiveTiming: number;
+  lastPort: string;
+  autoConnect: boolean;
+  // Live values. Zero means: as fast as possible.
+  pollIntervalMs: number;
+  chartWindowSeconds: number;
+  // Clearing.
+  clearAttempts: number;
+  confirmClear: boolean;
+  // K-Line.
+  basicSettingSession: number;
+  basicSettingIntervalMs: number;
+  kklEcuAddress: number;
+  // Log.
+  logRaw: boolean;
+  logToFile: boolean;
+  logPath: string;
+  // Window.
+  rememberGeometry: boolean;
+  checkUpdates: boolean;
+  // "auto" or a language code.
+  language: string;
+  // "auto", "dark" or "light".
+  appearance: string;
+}
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  baudOverride: 0,
+  protocolOrder: "kline",
+  timeoutPercent: 100,
+  adaptiveTiming: 0,
+  lastPort: "",
+  autoConnect: false,
+  pollIntervalMs: 20,
+  chartWindowSeconds: 60,
+  clearAttempts: 5,
+  confirmClear: true,
+  basicSettingSession: 0x85,
+  basicSettingIntervalMs: 180,
+  kklEcuAddress: 0x01,
+  logRaw: true,
+  logToFile: false,
+  logPath: "",
+  rememberGeometry: true,
+  checkUpdates: true,
+  language: "auto",
+  appearance: "auto",
+};
+
+// --- Garage.h -------------------------------------------------------------------
+// Dates travel as ISO 8601 strings: date-times as "2026-11-10T21:04:00",
+// plain dates as "2026-11-10", empty for "not set".
+
+export interface GarageCheck {
+  when: string;
+  score: number;
+  mil: boolean;
+  openMonitors: number;
+  odometerKm: number;
+  codes: string[];
+  texts: string[];
+}
+
+export interface GarageTrip {
+  start: string;
+  end: string;
+  distanceKm: number;
+  fuelLitres: number;
+  averageL100: number;
+  cost: number;
+  co2Kg: number;
+  maxSpeedKmh: number;
+  ecoScore: number;
+}
+
+export interface GarageFuel {
+  date: string;
+  odometerKm: number;
+  litres: number;
+  pricePerLitre: number;
+  full: boolean;
+}
+
+export interface GarageService {
+  id: string;
+  title: string;
+  intervalKm: number;
+  intervalMonths: number;
+  lastDate: string;
+  lastKm: number;
+  note: string;
+}
+
+export interface GarageCar {
+  vin: string;
+  name: string;
+  description: string;
+  bodyStyle: number;
+  note: string;
+  firstSeen: string;
+  lastSeen: string;
+  checks: GarageCheck[];
+  trips: GarageTrip[];
+  fuel: GarageFuel[];
+  services: GarageService[];
+}
+
+// --- Report.h -------------------------------------------------------------------
+
+export interface ReportFinding {
+  severity: string;
+  title: string;
+  text: string;
+}
+
+export interface ReportExtras {
+  score: number;
+  scoreCaption: string;
+  findings: ReportFinding[];
+  ecus: UdsEcuRow[];
+}
+
+// --- Knowledge from the core (data/*.h) ---------------------------------------
+
+// data/Severity.h: 0 Info, 1 Low, 2 Medium, 3 High, 4 Critical.
+export type Severity = 0 | 1 | 2 | 3 | 4;
+// data/DtcDatabase.h CostClass: 0 Unknown, 1 Cheap, 2 Medium, 3 Expensive.
+export type CostClass = 0 | 1 | 2 | 3;
+
+export interface DtcInfo {
+  code: string;
+  text: string;
+  severity: Severity;
+  // Short label of the severity in the active language ("Mittel").
+  severityLabel: string;
+  // DtcSystem as a number, plus its name.
+  system: number;
+  systemName: string;
+  advice: string;
+  causes: string[];
+  checks: string[];
+  costClass: CostClass;
+  // costClassLabel() and costClassHint(), empty for Unknown.
+  costLabel: string;
+  costHint: string;
+  manufacturerSpecific: boolean;
+  known: boolean;
+  hasDetails: boolean;
+  throttleRelated: boolean;
+  family: string;
+  familyLabel: string;
+}
+
+// data/DtcLocation.h CarZone, in the order of the enum.
+export enum CarZone {
+  Unknown,
+  Intake,
+  Throttle,
+  Injection,
+  Ignition,
+  Cylinders,
+  Cooling,
+  Turbo,
+  Exhaust,
+  FuelTank,
+  Gearbox,
+  Ecu,
+  Electrics,
+  Network,
+  Wheels,
+  Cabin,
+}
+
+export interface ZoneInfo {
+  zone: CarZone;
+  name: string;
+  hint: string;
+}
+
+export interface DtcLexiconEntry {
+  code: string;
+  family: string;
+  familyLabel: string;
+  text: string;
+  severity: Severity;
+  system: number;
+  // dtcSystemName(system) and severityLabel(severity) in the active
+  // language, for the lexicon columns.
+  systemName?: string;
+  severityLabel?: string;
+}
+
+export interface BrandFamily {
+  key: string;
+  label: string;
+  count: number;
+}
+
+// One K-line control unit of core/Kwp1281.h: the VCDS address and its name
+// ("01 Motor").
+export interface KklEcuInfo {
+  address: number;
+  name: string;
+}
+
+// One value of the PID table (data/Pids.h PidValueSpec plus its PID).
+export interface PidInfo {
+  key: number;
+  pid: number;
+  sub: number;
+  name: string;
+  unit: string;
+  // PidCategory as a number, plus its name in the active language.
+  category: number;
+  categoryName: string;
+  displayMin: number;
+  displayMax: number;
+  warnLow: number;
+  warnHigh: number;
+  // True for status values that come with a text.
+  isText: boolean;
+  // Name of the PID as a whole (PidSpec::title), for PIDs with several
+  // values; the live list shows one entry per PID under this name.
+  title?: string;
+}
+
+// data/PidPacks.h: one pack of manufacturer values.
+export interface PidPackInfo {
+  id: string;
+  title: string;
+  brand: string;
+  description: string;
+  values: CustomRow[];
+  // packCategory(): PidCategory as a number, 8 (HybridEv) for the electric
+  // cars, 10 (Custom) for the demo pack. The EV page lists the first kind.
+  category: number;
+}
+
+// --- core/analysis (the measure pages) -------------------------------------------
+
+// FuelType of analysis/Common.h: 0 unknown, 1 petrol, 2 diesel.
+export type FuelType = 0 | 1 | 2;
+
+// analysis/TripComputer.h
+export interface TripConfig {
+  fuel: FuelType;
+  // Needed for speed density only.
+  displacementLitres: number;
+  volumetricEfficiency: number;
+  // 0 = no cost.
+  fuelPricePerLitre: number;
+  maxGapSeconds: number;
+  liveWindowSeconds: number;
+}
+
+export interface EcoScore {
+  total: number;
+  smoothness: number;
+  // -1 = not known.
+  engineSpeed: number;
+  idling: number;
+  harshAccelerations: number;
+  harshBrakings: number;
+  explanation: string;
+}
+
+// FuelSource: 0 none, 1 fuel rate, 2 mass air flow, 3 speed density.
+export interface TripSummary {
+  distanceKm: number;
+  fuelLitres: number;
+  drivingSeconds: number;
+  movingSeconds: number;
+  idleSeconds: number;
+  gapSeconds: number;
+  averageLitresPer100Km: number;
+  liveLitresPer100Km: number;
+  liveLitresPerHour: number;
+  idleLitresPerHour: number;
+  co2GramsPerKm: number;
+  co2Kg: number;
+  cost: number;
+  averageSpeedKmh: number;
+  averageMovingSpeedKmh: number;
+  maxSpeedKmh: number;
+  idleShare: number;
+  fuelSource: 0 | 1 | 2 | 3;
+  fuelIsRough: boolean;
+  fuelNote: string;
+  eco: EcoScore;
+}
+
+// analysis/PerformanceTimer.h
+export interface SpeedSample {
+  t: number;
+  kmh: number;
+}
+
+export interface TimedRun {
+  found: boolean;
+  seconds: number;
+  startTime: number;
+  endTime: number;
+  distanceMeters: number;
+  trapSpeedKmh: number;
+  reliable: boolean;
+}
+
+export interface PerformanceReport {
+  zeroTo100: TimedRun;
+  eightyTo120: TimedRun;
+  zeroTo60mph: TimedRun;
+  quarterMile: TimedRun;
+  brake100To0: TimedRun;
+  sampleRateHz: number;
+  accuracySeconds: number;
+  samplesUsed: number;
+  samplesDropped: number;
+  accuracyHint: string;
+}
+
+// analysis/BatteryTest.h. BatteryType: 0 unknown, 1 flooded, 2 EFB, 3 AGM.
+export type BatteryType = 0 | 1 | 2 | 3;
+
+export interface VoltageSample {
+  t: number;
+  volts: number;
+}
+
+// The optionals of the C++ struct are null when not measured.
+export interface BatteryInput {
+  type: BatteryType;
+  startStop: boolean;
+  restingVolts: number | null;
+  minutesSinceEngineOff: number | null;
+  cranking: VoltageSample[];
+  crankingMinimumVolts: number | null;
+  idleVolts: number | null;
+  loadedVolts: number | null;
+  ambientCelsius: number | null;
+}
+
+export interface BatteryStepResult {
+  // "resting", "cranking", "charging_idle", "charging_load"
+  id: string;
+  level: Level;
+  volts: number;
+  title: string;
+  explanation: string;
+  advice: string;
+}
+
+export interface BatteryReport {
+  overall: Level;
+  stateOfChargePercent: number | null;
+  steps: BatteryStepResult[];
+  missingSteps: string[];
+  summary: string;
+  crankingSampleRateHz: number;
+}
+
+// batteryTestSteps(): the instruction of each step, in order.
+export interface BatteryStepInfo {
+  id: string;
+  instruction: string;
+}
+
+// data/VehicleCatalog.h, flattened for the interface.
+export enum BodyType {
+  Hatchback,
+  Sedan,
+  Estate,
+  Suv,
+  Van,
+  Coupe,
+  Convertible,
+  Pickup,
+  Mpv,
+  Microcar,
+  Roadster,
+}
+
+export interface VehicleGenerationInfo {
+  // Stable index into the catalog, for passing a generation back.
+  id: number;
+  brand: string;
+  model: string;
+  generation: string;
+  yearFrom: number;
+  yearTo: number;
+  body: BodyType;
+  bodyName: string;
+  powertrains: number;
+  powertrainText: string;
+  displayName: string;
+  yearsText: string;
+  protocolOrder: string;
+  note: string;
+  usMarket: boolean;
+}
+
+// What diagnosis is possible for a generation in a given year.
+export interface VehicleDiagnosisInfo {
+  generation: VehicleGenerationInfo;
+  year: number;
+  // ObdSupport: 0 None, 1 Manufacturer, 2 Kkl, 3 Partial, 4 Full.
+  support: number;
+  supportName: string;
+  connector: number;
+  connectorName: string;
+  locationText: string;
+  diagnosisText: string;
+  kklPossible: boolean;
+  protocolOrder: string;
+}
+
+export interface VinInfo {
+  valid: boolean;
+  vin: string;
+  wmi: string;
+  manufacturer: string;
+  brand: string;
+  brandCandidates: string[];
+  country: string;
+  region: string;
+  northAmerica: boolean;
+  modelYears: number[];
+  modelYear: number;
+  modelYearCertain: boolean;
+  yearCode: string;
+  checkDigitApplies: boolean;
+  checkDigitOk: boolean;
+  checkDigit: string;
+  expectedCheckDigit: string;
+  plant: string;
+  serial: string;
+  modelCode: string;
+  problems: string[];
+  notes: string[];
+}
+
+export interface CatalogMatch {
+  generation: VehicleGenerationInfo | null;
+  brand: string;
+  year: number;
+  confidence: number;
+  alternatives: VehicleGenerationInfo[];
+  reason: string;
+}
+
+// app/VehicleDiagram.h BodyStyle, in the order of the enum.
+export type BodyStyle = number;
+
+// app/VehicleIdentity.h
+export interface IdentifiedVehicle {
+  known: boolean;
+  title: string;
+  subtitle: string;
+  brand: string;
+  year: number;
+  confidence: number;
+  body: BodyStyle;
+  generationId: number | null;
+  socketHint: string;
+}
+
+// --- Ports and adapters ------------------------------------------------------
+
+export interface SerialPortInfo {
+  device: string;
+  description: string;
+  // True for ports that look like an OBD adapter (USB serial chips, Bluetooth SPP).
+  likelyAdapter: boolean;
+  // The chip the USB ids point to ("CH340", "FTDI FT232R"), empty if unknown (PortInfo::chipGuess).
+  chipGuess?: string;
+}
+
+export interface BleDeviceRow {
+  id: string;
+  name: string;
+  score: number;
+  // 1 = Bluetooth LE, 2 = classic, 3 = both.
+  kinds: number;
+}
+
+export interface J2534DeviceRow {
+  name: string;
+  vendor: string;
+  library: string;
+  // False when only a 32 bit driver is installed.
+  usable: boolean;
+}
+
+// --- App ---------------------------------------------------------------------
+
+export interface AppInfo {
+  version: string;
+  // True when the BLE support is compiled in.
+  hasBle: boolean;
+  platform: "windows" | "macos" | "linux" | "browser";
+  documentsDir: string;
+}
+
+export interface UpdateInfo {
+  version: string;
+  url: string;
+}
+
+export interface FileFilter {
+  name: string;
+  extensions: string[];
+}
+
+export interface OpenedTextFile {
+  path: string;
+  content: string;
+}

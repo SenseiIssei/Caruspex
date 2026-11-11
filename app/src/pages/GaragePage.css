@@ -1,0 +1,82 @@
+/* Garage: the list of cars on the left, the file of the picked car on the
+   right; one column on narrow windows. */
+
+.garage-columns {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1080px) {
+  .garage-columns { grid-template-columns: minmax(0, 1fr); }
+}
+
+.garage-list { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.garage-car {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px 8px 10px;
+  padding-inline: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease), background 160ms var(--ease), transform 160ms var(--ease);
+}
+.garage-car:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); transform: translateY(-1px); }
+.garage-car.on {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.garage-car .garage-car-picture { width: 132px; height: 58px; min-width: 0; min-height: 0; flex: none; pointer-events: none; }
+.garage-car-texts { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.garage-car-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.garage-car-vin { font-size: 12px; overflow-wrap: anywhere; }
+.garage-car-state { font-weight: 500; font-size: 13px; }
+.garage-car .pill { align-self: flex-start; font-size: 11px; }
+
+.garage-detail { padding: 24px; min-height: 480px; }
+.garage-head { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+.garage-head .garage-picture { width: 300px; max-width: 100%; height: 126px; min-width: 0; min-height: 0; flex: none; }
+.garage-head-text { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.garage-actions { margin-top: 6px; }
+
+.garage-tab { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
+.garage-rows { display: flex; flex-direction: column; }
+.garage-line { display: flex; align-items: center; gap: 6px; }
+.garage-line > .grow { min-width: 0; }
+.garage-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.garage-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; align-items: start; }
+.garage-tiles-action { display: flex; align-items: flex-start; }
+
+.garage-note { min-height: 260px; width: 100%; font-family: var(--font-sans); font-size: 14px; line-height: 1.5; }
+
+.garage-trend {
+  position: relative;
+  padding: 12px 14px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-flat);
+  background: var(--surface);
+}
+.garage-trend-chart { display: block; width: 100%; height: 70px; margin-top: 6px; }
+.garage-trend-dots { position: absolute; inset: auto 14px 10px 14px; height: 70px; pointer-events: none; }
+.garage-trend-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  margin-inline-start: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  pointer-events: auto;
+}
+[dir="rtl"] .garage-trend-chart { transform: scaleX(-1); }
+
+.garage-form { grid-template-columns: minmax(130px, 190px) minmax(0, 1fr); }
+.garage-form-control { display: flex; align-items: center; min-width: 0; }
+.garage-form-control .select, .garage-form-control .input { width: 100%; }
+
+.garage-empty { min-height: 360px; justify-content: center; }
+.garage-empty-text { max-width: 460px; }

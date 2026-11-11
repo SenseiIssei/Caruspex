@@ -1,0 +1,13 @@
+# A J2534-1 (04.04) driver DLL for the tests of caruspex-net, built and
+# loaded by tests/j2534.rs. Not part of the main workspace.
+[package]
+name = "fake-j2534"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[workspace]

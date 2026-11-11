@@ -1,0 +1,173 @@
+{
+  "seconds": 0,
+  "asked": 6,
+  "present": 6,
+  "ecus": [
+    {
+      "name": "Engine",
+      "request": "7E0",
+      "response": "7E8",
+      "present": true,
+      "info": {
+        "partNumber": "CX5 906 018 B",
+        "softwareVersion": "0417",
+        "hardwareVersion": "H05",
+        "systemName": "ECM 1.4 MPI",
+        "serial": "EM21A0048217",
+        "vin": "YCXDE15C7MC048217"
+      },
+      "dtcsRead": true,
+      "dtcs": [
+        {
+          "code": "P0171",
+          "failureType": 0,
+          "failureText": "",
+          "status": 168,
+          "testFailed": false,
+          "pending": false,
+          "confirmed": true,
+          "warningLamp": true,
+          "text": "System too lean - bank 1"
+        },
+        {
+          "code": "P0420",
+          "failureType": 0,
+          "failureText": "",
+          "status": 168,
+          "testFailed": false,
+          "pending": false,
+          "confirmed": true,
+          "warningLamp": true,
+          "text": "Catalyst system efficiency below threshold - bank 1"
+        },
+        {
+          "code": "P0300",
+          "failureType": 0,
+          "failureText": "",
+          "status": 36,
+          "testFailed": false,
+          "pending": true,
+          "confirmed": false,
+          "warningLamp": false,
+          "text": "Random/multiple cylinder misfire detected"
+        }
+      ]
+    },
+    {
+      "name": "Gearbox",
+      "request": "7E1",
+      "response": "7E9",
+      "present": true,
+      "info": {
+        "partNumber": "CX6 927 156 A",
+        "softwareVersion": "0203",
+        "hardwareVersion": "H03",
+        "systemName": "TCM AT6",
+        "serial": "TA21B0009144",
+        "vin": ""
+      },
+      "dtcsRead": true,
+      "dtcs": []
+    },
+    {
+      "name": "ABS",
+      "request": "760",
+      "response": "768",
+      "present": true,
+      "info": {
+        "partNumber": "CX1 614 517 C",
+        "softwareVersion": "0122",
+        "hardwareVersion": "H11",
+        "systemName": "ABS/ESP 9.3",
+        "serial": "AB21C0031877",
+        "vin": "YCXDE15C7MC048217"
+      },
+      "dtcsRead": true,
+      "dtcs": [
+        {
+          "code": "C0035",
+          "failureType": 28,
+          "failureText": "circuit voltage out of range",
+          "status": 175,
+          "testFailed": true,
+          "pending": true,
+          "confirmed": true,
+          "warningLamp": true,
+          "text": "Left front wheel speed sensor - circuit or signal"
+        }
+      ]
+    },
+    {
+      "name": "Airbag",
+      "request": "737",
+      "response": "73F",
+      "present": true,
+      "info": {
+        "partNumber": "CX0 959 655 F",
+        "softwareVersion": "0310",
+        "hardwareVersion": "H07",
+        "systemName": "AIRBAG 8CH",
+        "serial": "SR21D0007730",
+        "vin": "YCXDE15C7MC048217"
+      },
+      "dtcsRead": true,
+      "dtcs": [
+        {
+          "code": "B0001",
+          "failureType": 26,
+          "failureText": "circuit resistance below threshold",
+          "status": 36,
+          "testFailed": false,
+          "pending": true,
+          "confirmed": false,
+          "warningLamp": false,
+          "text": "Driver frontal stage 1 deployment control"
+        }
+      ]
+    },
+    {
+      "name": "Instruments",
+      "request": "720",
+      "response": "728",
+      "present": true,
+      "info": {
+        "partNumber": "CX2 920 870 D",
+        "softwareVersion": "0805",
+        "hardwareVersion": "H22",
+        "systemName": "INSTRUMENTS",
+        "serial": "IC21A0102265",
+        "vin": "YCXDE15C7MC048217"
+      },
+      "dtcsRead": true,
+      "dtcs": []
+    },
+    {
+      "name": "Climate",
+      "request": "744",
+      "response": "74C",
+      "present": true,
+      "info": {
+        "partNumber": "CX8 907 044 A",
+        "softwareVersion": "0109",
+        "hardwareVersion": "H04",
+        "systemName": "CLIMATE 2Z",
+        "serial": "HV21B0055102",
+        "vin": "YCXDE15C7MC048217"
+      },
+      "dtcsRead": true,
+      "dtcs": [
+        {
+          "code": "U0100",
+          "failureType": 0,
+          "failureText": "",
+          "status": 40,
+          "testFailed": false,
+          "pending": false,
+          "confirmed": true,
+          "warningLamp": false,
+          "text": "Lost communication with ECM/PCM A"
+        }
+      ]
+    }
+  ]
+}

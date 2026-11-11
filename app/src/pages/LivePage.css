@@ -1,0 +1,75 @@
+/* Live values: button bar, chart card, then the value list next to the
+   table of current readings (one column when the window is narrow). */
+
+.live-page .page-inner { container-type: inline-size; }
+
+.live-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.live-bar .btn { min-height: 40px; }
+.live-hint { max-width: 420px; text-align: end; }
+
+.live-chart-card { padding: 16px 18px 14px; }
+
+.live-split {
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+@container (max-width: 760px) {
+  .live-split { grid-template-columns: minmax(0, 1fr); }
+  .live-hint { text-align: start; max-width: none; }
+}
+
+.live-list-box { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.live-list {
+  padding: 6px;
+  max-height: 460px;
+  min-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.live-list-head {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 12px 8px 6px;
+}
+.live-list-head:first-child { padding-top: 6px; }
+.live-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 120ms;
+  min-width: 0;
+}
+.live-list-item:hover { background: var(--surface-high); }
+.live-list-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-list-item.off { color: var(--text-faint); cursor: default; }
+.live-list-item.off:hover { background: none; }
+.live-list-item input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
+  border-radius: 5px;
+  background: var(--input);
+  border: 1.2px solid var(--hover-line);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 140ms var(--ease);
+}
+.live-list-item input:hover { border-color: var(--accent); }
+.live-list-item input:checked { background: linear-gradient(135deg, var(--accent), var(--sky)); border-color: transparent; }
+.live-list-item input:checked::after { content: ""; width: 10px; height: 6px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: translateY(-1px) rotate(-45deg); }
+.live-list-item input:disabled { opacity: 0.45; cursor: default; }
+
+.live-table { max-height: 506px; min-height: 240px; }
+.live-table td.warn .live-value { color: var(--warn); font-weight: 600; }
+.live-value { font-variant-numeric: tabular-nums; }

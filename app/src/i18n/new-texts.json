@@ -1,0 +1,163 @@
+[
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Schließen",
+  "en": "Close",
+  "tr": {
+   "es": "Cerrar",
+   "fr": "Fermer",
+   "pt": "Fechar",
+   "it": "Chiudi",
+   "nl": "Sluiten",
+   "pl": "Zamknij",
+   "cs": "Zavřít",
+   "ru": "Закрыть",
+   "uk": "Закрити",
+   "tr": "Kapat",
+   "ar": "إغلاق",
+   "zh": "关闭",
+   "ja": "閉じる",
+   "ko": "닫기",
+   "hi": "बंद करें",
+   "id": "Tutup"
+  }
+ },
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Drucken",
+  "en": "Print",
+  "tr": {
+   "es": "Imprimir",
+   "fr": "Imprimer",
+   "pt": "Imprimir",
+   "it": "Stampa",
+   "nl": "Afdrukken",
+   "pl": "Drukuj",
+   "cs": "Tisk",
+   "ru": "Печать",
+   "uk": "Друк",
+   "tr": "Yazdır",
+   "ar": "طباعة",
+   "zh": "打印",
+   "ja": "印刷",
+   "ko": "인쇄",
+   "hi": "प्रिंट करें",
+   "id": "Cetak"
+  }
+ },
+ {
+  "context": "caruspex::ReportPreview",
+  "de": "Als PDF speichern",
+  "en": "Save as PDF",
+  "tr": {
+   "es": "Guardar como PDF",
+   "fr": "Enregistrer en PDF",
+   "pt": "Guardar como PDF",
+   "it": "Salva come PDF",
+   "nl": "Opslaan als PDF",
+   "pl": "Zapisz jako PDF",
+   "cs": "Uložit jako PDF",
+   "ru": "Сохранить как PDF",
+   "uk": "Зберегти як PDF",
+   "tr": "PDF olarak kaydet",
+   "ar": "حفظ بتنسيق PDF",
+   "zh": "另存为 PDF",
+   "ja": "PDF として保存",
+   "ko": "PDF로 저장",
+   "hi": "PDF के रूप में सहेजें",
+   "id": "Simpan sebagai PDF"
+  }
+ },
+ {
+  "context": "caruspex::VehiclesPage",
+  "de": "Alle Modelle",
+  "en": "All models",
+  "tr": {
+   "es": "Todos los modelos",
+   "fr": "Tous les modèles",
+   "pt": "Todos os modelos",
+   "it": "Tutti i modelli",
+   "nl": "Alle modellen",
+   "pl": "Wszystkie modele",
+   "cs": "Všechny modely",
+   "ru": "Все модели",
+   "uk": "Усі моделі",
+   "tr": "Tüm modeller",
+   "ar": "كل الطرازات",
+   "zh": "所有车型",
+   "ja": "すべてのモデル",
+   "ko": "모든 모델",
+   "hi": "सभी मॉडल",
+   "id": "Semua model"
+  }
+ },
+ {
+  "context": "caruspex::GaragePage",
+  "de": "Punkte der Prüfungen",
+  "en": "Check scores",
+  "tr": {
+   "es": "Puntos de las revisiones",
+   "fr": "Points des contrôles",
+   "pt": "Pontos das verificações",
+   "it": "Punteggi dei controlli",
+   "nl": "Scores van de controles",
+   "pl": "Punkty kontroli",
+   "cs": "Body kontrol",
+   "ru": "Баллы проверок",
+   "uk": "Бали перевірок",
+   "tr": "Kontrol puanları",
+   "ar": "نقاط الفحوصات",
+   "zh": "检查得分",
+   "ja": "チェックのスコア",
+   "ko": "점검 점수",
+   "hi": "जाँच के अंक",
+   "id": "Skor pemeriksaan"
+  }
+ },
+ {
+  "context": "caruspex::GaragePage",
+  "de": "Wartung bearbeiten",
+  "en": "Edit service item",
+  "tr": {
+   "es": "Editar mantenimiento",
+   "fr": "Modifier l'entretien",
+   "pt": "Editar manutenção",
+   "it": "Modifica manutenzione",
+   "nl": "Onderhoud bewerken",
+   "pl": "Edytuj serwis",
+   "cs": "Upravit údržbu",
+   "ru": "Изменить обслуживание",
+   "uk": "Змінити обслуговування",
+   "tr": "Bakımı düzenle",
+   "ar": "تعديل الصيانة",
+   "zh": "编辑保养项目",
+   "ja": "整備を編集",
+   "ko": "정비 항목 편집",
+   "hi": "रखरखाव संपादित करें",
+   "id": "Ubah perawatan"
+  }
+ },
+ {
+  "context": "QPlatformTheme",
+  "de": "OK",
+  "en": "OK",
+  "tr": {
+   "es": "Aceptar",
+   "fr": "OK",
+   "pt": "OK",
+   "it": "OK",
+   "nl": "OK",
+   "pl": "OK",
+   "cs": "OK",
+   "ru": "ОК",
+   "uk": "ОК",
+   "tr": "Tamam",
+   "ar": "موافق",
+   "zh": "确定",
+   "ja": "OK",
+   "ko": "확인",
+   "hi": "ठीक है",
+   "id": "OK"
+  }
+ }
+]

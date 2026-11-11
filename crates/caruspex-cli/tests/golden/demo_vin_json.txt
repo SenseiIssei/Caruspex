@@ -1,0 +1,38 @@
+{
+  "adapter": {
+    "version": "ELM327 v1.5",
+    "connection": "Demo vehicle (built-in)",
+    "protocol": "ISO 15765-4 (CAN 11/500)",
+    "can": true
+  },
+  "vin": "YCXDE15C7MC048217",
+  "valid": true,
+  "wmi": "YCX",
+  "manufacturer": "",
+  "brand": "",
+  "brandCandidates": [],
+  "country": "Belgium",
+  "region": "Europe",
+  "modelYear": 1991,
+  "modelYearCertain": true,
+  "modelYears": [
+    1991
+  ],
+  "checkDigitApplies": false,
+  "checkDigitOk": true,
+  "serial": "048217",
+  "modelCode": "",
+  "problems": [],
+  "notes": [
+    "The manufacturer is not in the table.",
+    "The check digit at position 9 matches. That suggests a vehicle built for North America."
+  ],
+  "catalog": {
+    "brand": "",
+    "confidence": 0,
+    "reason": "The manufacturer is unknown, so there is no match in the catalog.",
+    "year": 1991,
+    "generation": null,
+    "alternatives": []
+  }
+}

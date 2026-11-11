@@ -1,0 +1,427 @@
+[
+ {
+  "id": "c3457",
+  "de": ",",
+  "en": "."
+ },
+ {
+  "id": "c3458",
+  "de": "14,1",
+  "en": "14.1"
+ },
+ {
+  "id": "c3459",
+  "de": "Technik vom Alfa Romeo Tonale.",
+  "en": "Alfa Romeo Tonale technology."
+ },
+ {
+  "id": "c3460",
+  "de": "Technik vom BMW 5er F10.",
+  "en": "BMW 5 Series F10 technology."
+ },
+ {
+  "id": "c3461",
+  "de": "Technik vom BMW X5 F15.",
+  "en": "BMW X5 F15 technology."
+ },
+ {
+  "id": "c3462",
+  "de": "Technik vom BMW Z4 G29.",
+  "en": "BMW Z4 G29 technology."
+ },
+ {
+  "id": "c3463",
+  "de": "Bluetooth ist ausgeschaltet.",
+  "en": "Bluetooth is switched off."
+ },
+ {
+  "id": "c3464",
+  "de": "Baugleich mit dem Chrysler Town & Country.",
+  "en": "Built alongside the Chrysler Town & Country."
+ },
+ {
+  "id": "c3465",
+  "de": "Baugleich mit Citroën C1 und Toyota Aygo.",
+  "en": "Built alongside the Citroën C1 and Toyota Aygo."
+ },
+ {
+  "id": "c3466",
+  "de": "Baugleich mit dem Mitsubishi i-MiEV.",
+  "en": "Built alongside the Mitsubishi i-MiEV."
+ },
+ {
+  "id": "c3467",
+  "de": "Baugleich mit Peugeot 107 und Citroën C1.",
+  "en": "Built alongside the Peugeot 107 and Citroën C1."
+ },
+ {
+  "id": "c3468",
+  "de": "Baugleich mit Peugeot 107 und Toyota Aygo.",
+  "en": "Built alongside the Peugeot 107 and Toyota Aygo."
+ },
+ {
+  "id": "c3469",
+  "de": "Baugleich mit dem Suzuki Alto.",
+  "en": "Built alongside the Suzuki Alto."
+ },
+ {
+  "id": "c3470",
+  "de": "Baugleich mit dem Suzuki SX4.",
+  "en": "Built alongside the Suzuki SX4."
+ },
+ {
+  "id": "c3471",
+  "de": "Baugleich mit dem Toyota Corolla Touring Sports.",
+  "en": "Built alongside the Toyota Corolla Touring Sports."
+ },
+ {
+  "id": "c3472",
+  "de": "Baugleich mit dem Toyota Matrix.",
+  "en": "Built alongside the Toyota Matrix."
+ },
+ {
+  "id": "c3473",
+  "de": "Baugleich mit dem Toyota RAV4 Plug-in.",
+  "en": "Built alongside the Toyota RAV4 plug-in."
+ },
+ {
+  "id": "c3474",
+  "de": "Baugleich mit dem Toyota Verso-S.",
+  "en": "Built alongside the Toyota Verso-S."
+ },
+ {
+  "id": "c3475",
+  "de": "Baugleich mit dem Toyota Yaris.",
+  "en": "Built alongside the Toyota Yaris."
+ },
+ {
+  "id": "c3476",
+  "de": "Baugleich mit dem Toyota bZ4X.",
+  "en": "Built alongside the Toyota bZ4X."
+ },
+ {
+  "id": "c3477",
+  "de": "Baugleich mit VW Sharan I und SEAT Alhambra I.",
+  "en": "Built alongside the VW Sharan I and SEAT Alhambra I."
+ },
+ {
+  "id": "c3478",
+  "de": "Technik vom Dacia Logan MCV.",
+  "en": "Dacia Logan MCV technology."
+ },
+ {
+  "id": "c3479",
+  "de": "Technik vom Dodge Journey.",
+  "en": "Dodge Journey technology."
+ },
+ {
+  "id": "c3480",
+  "de": "Frühe Baujahre haben zusätzlich den 20-poligen Rundstecker im Motorraum, über die 16-polige Buchse ist dann nur das Motorsteuergerät erreichbar.",
+  "en": "Early years also have the 20-pin round plug in the engine bay; the 16-pin socket then only reaches the engine control unit."
+ },
+ {
+  "id": "c3481",
+  "de": "Frühe Baujahre haben nur die Diagnosedose für Blinkcodes und Tastverhältnis.",
+  "en": "Early years only have the diagnostic socket for blink codes and duty cycle."
+ },
+ {
+  "id": "c3482",
+  "de": "Motorsteuergerät über K-Line, die übrigen Steuergeräte nur mit KKL-Kabel.",
+  "en": "Engine control unit over K-Line, the other control units only with a KKL cable."
+ },
+ {
+  "id": "c3483",
+  "de": "Alle Steuergeräte über die BMW-Adressliste auf der Seite Alle Steuergeräte, mit einem Adapter, der lange Antworten sauber liefert (OBDLink, vLinker). Codieren und Software-Updates gehen nur über ein ENET-Kabel mit Werkstattsoftware.",
+  "en": "Every control unit through the BMW address list on the All control units page, with an adapter that handles long answers cleanly (OBDLink, vLinker). Coding and software updates need an ENET cable and workshop software."
+ },
+ {
+  "id": "c3484",
+  "de": "Technik vom Fiat 500.",
+  "en": "Fiat 500 technology."
+ },
+ {
+  "id": "c3485",
+  "de": "Technik vom Ford Fiesta.",
+  "en": "Ford Fiesta technology."
+ },
+ {
+  "id": "c3486",
+  "de": "Technik vom Ford Ranger.",
+  "en": "Ford Ranger technology."
+ },
+ {
+  "id": "c3487",
+  "de": "Ab etwa 1999 teils schon mit 16-poliger Buchse, aber ohne vollständige OBD-Diagnose.",
+  "en": "From about 1999 partly with a 16-pin socket already, but without complete OBD diagnosis."
+ },
+ {
+  "id": "c3488",
+  "de": "Brennstoffzellenauto, auf OBD antwortet es nur teilweise.",
+  "en": "Fuel cell car, it answers OBD only in part."
+ },
+ {
+  "id": "c3489",
+  "de": "Einspritzer ab 1991 haben ein Motorsteuergerät, aber keinen Stecker für ELM327-Adapter.",
+  "en": "Fuel injected cars from 1991 have an engine control unit, but no socket for ELM327 adapters."
+ },
+ {
+  "id": "c3490",
+  "de": "Einspritzer haben einen herstellereigenen Diagnosestecker für Blinkcodes, aber keinen für ELM327.",
+  "en": "Fuel injected cars have a manufacturer plug for blink codes, but none for ELM327."
+ },
+ {
+  "id": "c3491",
+  "de": "Deutschland (DDR)",
+  "en": "Germany (GDR)"
+ },
+ {
+  "id": "c3492",
+  "de": "Technik vom Holden Monaro.",
+  "en": "Holden Monaro technology."
+ },
+ {
+  "id": "c3493",
+  "de": "Ungültige Adresse.",
+  "en": "Invalid address."
+ },
+ {
+  "id": "c3494",
+  "de": "Technik vom Isuzu D-Max.",
+  "en": "Isuzu D-Max technology."
+ },
+ {
+  "id": "c3495",
+  "de": "Technik vom Isuzu Trooper.",
+  "en": "Isuzu Trooper technology."
+ },
+ {
+  "id": "c3496",
+  "de": "Späte Golf II mit Digifant oder Mono-Motronic haben teils schon den Diagnosestecker, ältere nur Blinkcodes oder gar nichts.",
+  "en": "Late Golf II with Digifant or Mono-Motronic partly have the diagnostic plug already, older ones only blink codes or nothing at all."
+ },
+ {
+  "id": "c3497",
+  "de": "Leichtfahrzeug ohne OBD-Buchse.",
+  "en": "Light quadricycle without an OBD socket."
+ },
+ {
+  "id": "c3498",
+  "de": "Technik vom Mazda MX-5 ND.",
+  "en": "Mazda MX-5 ND technology."
+ },
+ {
+  "id": "c3499",
+  "de": "Technik vom Mercedes SLK R170.",
+  "en": "Mercedes SLK R170 technology."
+ },
+ {
+  "id": "c3500",
+  "de": "Technik von der Mercedes-Benz A-Klasse W176.",
+  "en": "Mercedes-Benz A-Class W176 technology."
+ },
+ {
+  "id": "c3501",
+  "de": "Technik vom Mitsubishi Colt.",
+  "en": "Mitsubishi Colt technology."
+ },
+ {
+  "id": "c3502",
+  "de": "Technik vom Mitsubishi L200.",
+  "en": "Mitsubishi L200 technology."
+ },
+ {
+  "id": "c3503",
+  "de": "Technik vom Mitsubishi Outlander.",
+  "en": "Mitsubishi Outlander technology."
+ },
+ {
+  "id": "c3504",
+  "de": "Technik vom Mitsubishi Pajero.",
+  "en": "Mitsubishi Pajero technology."
+ },
+ {
+  "id": "c3505",
+  "de": "Neuere Einspritzer haben eine OBD-Buchse, die Antworten sind aber oft lückenhaft.",
+  "en": "Newer fuel injected cars have an OBD socket, but the answers are often incomplete."
+ },
+ {
+  "id": "c3506",
+  "de": "Technik vom Nissan Navara.",
+  "en": "Nissan Navara technology."
+ },
+ {
+  "id": "c3507",
+  "de": "Technik vom Nissan X-Trail.",
+  "en": "Nissan X-Trail technology."
+ },
+ {
+  "id": "c3508",
+  "de": "Kein OBD-II-Stecker, die Daten sind nicht genormt.",
+  "en": "No OBD-II socket, the data is not standardised."
+ },
+ {
+  "id": "c3509",
+  "de": "Kein OBD-II-Stecker. Der Diagnoseanschluss sitzt hinten an der Mittelkonsole und braucht ein Adapterkabel; die Daten sind nicht genormt.",
+  "en": "No OBD-II socket. The diagnostic connector sits at the rear of the centre console and needs an adapter cable; the data is not standardised."
+ },
+ {
+  "id": "c3510",
+  "de": "Kein vollwertiger OBD-II-Zugang. Mit einem passenden Adapterkabel lässt sich der CAN-Bus mitlesen, die Daten sind aber nicht genormt.",
+  "en": "No full OBD-II access. With a matching adapter cable the CAN bus can be listened to, but the data is not standardised."
+ },
+ {
+  "id": "c3511",
+  "de": "Kein genormter OBD-Stecker. Herstellerdiagnose nur mit Teslas eigener Software.",
+  "en": "No standard OBD socket. Manufacturer diagnosis only with Tesla's own software."
+ },
+ {
+  "id": "c3512",
+  "de": "Ältere Defender mit Td5-Motor haben eine Buchse, antworten aber oft nicht auf allgemeines OBD.",
+  "en": "Older Defenders with the Td5 engine have a socket, but often do not answer generic OBD."
+ },
+ {
+  "id": "c3513",
+  "de": "Technik vom Opel Omega B.",
+  "en": "Opel Omega B technology."
+ },
+ {
+  "id": "c3514",
+  "de": "Technik von Peugeot und Citroën.",
+  "en": "Peugeot and Citroën technology."
+ },
+ {
+  "id": "c3515",
+  "de": "Technik von Peugeot.",
+  "en": "Peugeot technology."
+ },
+ {
+  "id": "c3516",
+  "de": "Reines E-Auto, auf OBD antwortet es nur teilweise.",
+  "en": "Pure electric car, it answers OBD only in part."
+ },
+ {
+  "id": "c3517",
+  "de": "Reines E-Auto, auf OBD antwortet es nur teilweise. Der REx hat einen kleinen Benzinmotor als Reichweitenverlängerer.",
+  "en": "Pure electric car, it answers OBD only in part. The REx has a small petrol engine as range extender."
+ },
+ {
+  "id": "c3518",
+  "de": "Technik vom Renault 5 E-Tech.",
+  "en": "Renault 5 E-Tech technology."
+ },
+ {
+  "id": "c3519",
+  "de": "Technik vom Renault Captur II.",
+  "en": "Renault Captur II technology."
+ },
+ {
+  "id": "c3520",
+  "de": "Technik vom Renault Clio V.",
+  "en": "Renault Clio V technology."
+ },
+ {
+  "id": "c3521",
+  "de": "Technik vom Renault Kangoo.",
+  "en": "Renault Kangoo technology."
+ },
+ {
+  "id": "c3522",
+  "de": "Technik vom Renault Master.",
+  "en": "Renault Master technology."
+ },
+ {
+  "id": "c3523",
+  "de": "Technik vom Renault Trafic.",
+  "en": "Renault Trafic technology."
+ },
+ {
+  "id": "c3524",
+  "de": "Technik vom Renault Twingo III.",
+  "en": "Renault Twingo III technology."
+ },
+ {
+  "id": "c3525",
+  "de": "Technik vom Saab 9-3 II.",
+  "en": "Saab 9-3 II technology."
+ },
+ {
+  "id": "c3526",
+  "de": "Schweden und China",
+  "en": "Sweden and China"
+ },
+ {
+  "id": "c3527",
+  "de": "Für den US-Markt ab 1996 mit 16-poliger OBD-II-Buchse.",
+  "en": "US market cars from 1996 have a 16-pin OBD-II socket."
+ },
+ {
+  "id": "c3528",
+  "de": "Vereinigtes Königreich und China",
+  "en": "United Kingdom and China"
+ },
+ {
+  "id": "c3529",
+  "de": "Bis etwa 2000 nur der 20-polige Rundstecker im Motorraum.",
+  "en": "Until about 2000 only the 20-pin round plug in the engine bay."
+ },
+ {
+  "id": "c3530",
+  "de": "Technik vom VW Caddy V.",
+  "en": "VW Caddy V technology."
+ },
+ {
+  "id": "c3531",
+  "de": "Technik vom VW ID.4.",
+  "en": "VW ID.4 technology."
+ },
+ {
+  "id": "c3532",
+  "de": "Caruspex darf Bluetooth nicht verwenden. Bitte in den Systemeinstellungen unter Datenschutz erlauben.",
+  "en": "Caruspex is not allowed to use Bluetooth. Please allow it in the system settings under privacy."
+ },
+ {
+  "id": "c3533",
+  "de": "Klassisches Bluetooth braucht die Adresse des Geräts.",
+  "en": "Classic Bluetooth needs the address of the device."
+ },
+ {
+  "id": "c3534",
+  "de": "Verbindung zu %1 kam nicht zustande",
+  "en": "Could not connect to %1"
+ },
+ {
+  "id": "c3535",
+  "de": "Verbindung zu %1 kam nicht zustande. Ist der Adapter im System gekoppelt (PIN meist 1234 oder 0000)?",
+  "en": "Could not connect to %1. Is the adapter paired in the system (PIN usually 1234 or 0000)?"
+ },
+ {
+  "id": "c3536",
+  "de": "Klassisches Bluetooth direkt wird auf diesem System nicht unterstützt. Einen gekoppelten Adapter über seinen seriellen Anschluss (Kabel) verbinden.",
+  "en": "Direct classic Bluetooth is not supported on this system. Connect a paired adapter through its serial port (cable) instead."
+ },
+ {
+  "id": "c3537",
+  "de": "Auf diesem Gerät wurde kein serieller Kanal für OBD gefunden. Ist es ein OBD-Adapter mit Bluetooth LE?",
+  "en": "No serial channel for OBD was found on this device. Is it an OBD adapter with Bluetooth LE?"
+ },
+ {
+  "id": "c3538",
+  "de": "Der Adapter antwortet nicht. Ein Test ist so nicht möglich.",
+  "en": "The adapter does not answer, so it cannot be tested."
+ },
+ {
+  "id": "c3539",
+  "de": "Das Gerät hat seine Dienste nicht gemeldet.",
+  "en": "The device did not report its services."
+ },
+ {
+  "id": "c3540",
+  "de": "Das Gerät sieht nicht wie ein OBD-Adapter aus. An unbekannte Geräte sendet Caruspex nichts.",
+  "en": "The device does not look like an OBD adapter. Caruspex sends nothing to unknown devices."
+ },
+ {
+  "id": "c3541",
+  "de": "Dieser Rechner hat kein Bluetooth LE, das Caruspex nutzen kann.",
+  "en": "This computer has no Bluetooth LE that Caruspex can use."
+ }
+]

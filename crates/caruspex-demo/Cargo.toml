@@ -1,0 +1,10 @@
+[package]
+name = "caruspex-demo"
+description = "Built-in demo car: an ELM327 with simulated control units"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-link.workspace = true

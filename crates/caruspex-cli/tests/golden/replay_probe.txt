@@ -1,0 +1,35 @@
+Duration: 2.6 s
+Commands: 73
+Adapter: ELM327 v1.5
+Protocol: ISO 15765-4 (CAN 11/500)
+Connection: Demo vehicle (built-in)
+Recorded: 2026-11-10T23:10:59Z
+
+Adapter    : ELM327 v1.5
+Connection : Recording: demo.jsonl
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Claims       : ELM327 v1.5
+Behaves like : ELM327 v1.0
+Round trip   : 0 ms
+
+Commands:
+  --   ATPPS      v1.1   Summary of the programmable parameters (read only)
+  --   ATKW1      v1.2   Check key words on K-Line init (default value)
+  ok   ATS0       v1.3   Leave out spaces in responses (already set)
+  --   ATD0       v1.3   Do not show the CAN data length (default)
+  --   ATFE       v1.3a  Forget events
+  --   ATCSM1     v1.4   Silent CAN monitoring (default)
+  --   ATIGN      v1.4   Read the ignition input
+  --   ATCRA      v1.4b  Reset the CAN receive filter (default)
+  --   ATJHF1     v1.4b  Format J1939 headers (default)
+  --   ATAMC      v2.0   Show the activity monitor count
+
+Observed:
+  ATI reports: ELM327 v1.5
+  ELM Electronics never released a v1.5. It appears almost only on clones.
+  Command set like v1.0. Not answered like the original: ATPPS (v1.1), ATKW1 (v1.2), ATD0 (v1.3), ATFE (v1.3a), ATCSM1 (v1.4), ATIGN (v1.4), ATCRA (v1.4b), ATJHF1 (v1.4b), ATAMC (v2.0).
+  Round trip of 0100: 0 ms on average (5 tries)
+
+Verdict: Probably a clone: it reports v1.5, a version the original never had, and behaves like an ELM327 v1.0.

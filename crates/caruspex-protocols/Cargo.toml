@@ -1,0 +1,15 @@
+[package]
+name = "caruspex-protocols"
+description = "Diagnosis protocols over the ELM327: OBD-II, UDS, KWP2000, KWP1281"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-data.workspace = true
+caruspex-link.workspace = true
+log.workspace = true
+
+[dev-dependencies]
+caruspex-demo.workspace = true

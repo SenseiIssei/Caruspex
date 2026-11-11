@@ -1,0 +1,69 @@
+Duration: 3.0 s
+Commands: 105
+Adapter: ELM327 v1.5
+Protocol: ISO 15765-4 (CAN 11/500)
+Connection: Demo vehicle (built-in)
+Recorded: 2026-11-10T23:11:02Z
+
+Adapter    : ELM327 v1.5
+Connection : Recording: demo-uds.jsonl
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+Engine (7E0/7E8): present
+  System    ECM 1.4 MPI
+  Part no.  CX5 906 018 B
+  Software  0417
+  Hardware  H05
+  Serial    EM21A0048217
+  VIN       YCXDE15C7MC048217
+  P0171 [confirmed, warning lamp]
+      System too lean - bank 1
+  P0420 [confirmed, warning lamp]
+      Catalyst system efficiency below threshold - bank 1
+  P0300 [pending]
+      Random/multiple cylinder misfire detected
+Gearbox (7E1/7E9): present
+  System    TCM AT6
+  Part no.  CX6 927 156 A
+  Software  0203
+  Hardware  H03
+  Serial    TA21B0009144
+  No fault codes stored.
+ABS (760/768): present
+  System    ABS/ESP 9.3
+  Part no.  CX1 614 517 C
+  Software  0122
+  Hardware  H11
+  Serial    AB21C0031877
+  VIN       YCXDE15C7MC048217
+  C0035-1C (circuit voltage out of range) [failing now, confirmed, pending, warning lamp]
+      Left front wheel speed sensor - circuit or signal
+Airbag (737/73F): present
+  System    AIRBAG 8CH
+  Part no.  CX0 959 655 F
+  Software  0310
+  Hardware  H07
+  Serial    SR21D0007730
+  VIN       YCXDE15C7MC048217
+  B0001-1A (circuit resistance below threshold) [pending]
+      Driver frontal stage 1 deployment control
+Instruments (720/728): present
+  System    INSTRUMENTS
+  Part no.  CX2 920 870 D
+  Software  0805
+  Hardware  H22
+  Serial    IC21A0102265
+  VIN       YCXDE15C7MC048217
+  No fault codes stored.
+Climate (744/74C): present
+  System    CLIMATE 2Z
+  Part no.  CX8 907 044 A
+  Software  0109
+  Hardware  H04
+  Serial    HV21B0055102
+  VIN       YCXDE15C7MC048217
+  U0100 [confirmed]
+      Lost communication with ECM/PCM A
+
+6 of 6 control units answered, 0.0 s.

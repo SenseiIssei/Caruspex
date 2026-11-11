@@ -1,0 +1,69 @@
+/* Vehicles page: the VIN card on top, below the list and the detail side by
+   side (2 : 3 like the Qt layout), stacked on narrow windows. */
+
+.vehicles-lead { margin: -4px 0 0; }
+
+.vehicles-vin-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+.vehicles-vin-input { flex: 1 1 260px; min-height: 42px; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.vehicles-vin-input::placeholder { text-transform: none; letter-spacing: 0.04em; }
+.vehicles-vin-row .btn { min-height: 42px; }
+
+.vehicles-vin-result { display: flex; flex-direction: column; gap: 4px; }
+.vehicles-facts { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+.vehicles-fact { display: grid; grid-template-columns: minmax(110px, 150px) minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.vehicles-fact .mono { font-size: 13px; }
+
+.vehicles-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .vehicles-columns { grid-template-columns: minmax(0, 1fr); }
+}
+
+.vehicles-list-card { padding: 18px; }
+.vehicles-search { position: relative; display: flex; align-items: center; }
+.vehicles-search .icon { position: absolute; inset-inline-start: 12px; pointer-events: none; }
+.vehicles-search .input { width: 100%; min-height: 40px; padding-inline-start: 36px; }
+.vehicles-browse { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+
+.vehicles-list {
+  min-height: 420px;
+  max-height: 560px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-flat);
+  background: var(--surface);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+.vehicles-list:focus-visible { outline-offset: 0; }
+.vehicles-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  text-align: start;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 10px;
+  transition: background 120ms var(--ease), border-color 120ms var(--ease);
+}
+.vehicles-item:hover { background: var(--surface-high); }
+.vehicles-item.on {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.vehicles-item-name { flex: 1 1 auto; min-width: 0; }
+.vehicles-item-years { flex: none; font-size: 12px; font-variant-numeric: tabular-nums; }
+
+.vehicles-detail { padding: 24px; gap: 10px; }
+.vehicles-picture { min-height: 200px; width: 100%; }
+.vehicles-sub { margin: 0; }
+.vehicles-year { width: 120px; }
+.vehicles-diagnosis { margin: 4px 0 0; line-height: 1.55; }
+.vehicles-line { margin: 0; }
+.vehicles-detail .btn.primary { min-height: 42px; max-width: 100%; }

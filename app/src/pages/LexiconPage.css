@@ -1,0 +1,33 @@
+/* Fault code lexicon: search bar, the table and, once a code is picked, its
+   details beside it (below it on narrow windows). */
+
+.lexicon-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.lexicon-search { position: relative; flex: 1 1 280px; display: flex; align-items: center; }
+.lexicon-search .icon { position: absolute; inset-inline-start: 12px; pointer-events: none; }
+.lexicon-search .input { width: 100%; min-height: 40px; padding-inline-start: 36px; }
+.lexicon-family { min-height: 40px; max-width: 100%; }
+.lexicon-count { white-space: nowrap; }
+
+.lexicon-columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.lexicon-columns.with-detail { grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); }
+@media (max-width: 1100px) {
+  .lexicon-columns.with-detail { grid-template-columns: minmax(0, 1fr); }
+}
+
+.lexicon-table { max-height: calc(100vh - 290px); min-height: 320px; }
+.lexicon-table tbody tr { cursor: pointer; }
+.lexicon-table td { white-space: nowrap; }
+.lexicon-table td.lexicon-text { white-space: normal; min-width: 240px; }
+.lexicon-table td.mono { font-size: 13px; }
+.lexicon-nowrap { white-space: nowrap; }
+
+.lexicon-detail { position: sticky; top: 0; gap: 10px; }
+.lexicon-code { font-size: 26px; font-weight: 700; }
+.lexicon-advice {
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--tone) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+}
+.lexicon-diagram { min-height: 150px; width: 100%; }
+.lexicon-block { gap: 6px; }

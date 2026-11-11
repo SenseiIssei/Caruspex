@@ -3,20 +3,82 @@ name: Build
 on:
   push:
     branches: [main]
-    # A version tag (v0.4.0) also publishes a release with the packages.
+    # A version tag (v0.9.0) also publishes a release with the packages.
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
 # Every step runs in bash so Windows, Linux and macOS share one syntax.
-# PowerShell would otherwise split paths that contain a dot.
 defaults:
   run:
     shell: bash
 
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+
 jobs:
+  # Formatting, lints, generated tables and translations: once, on Linux.
+  checks:
+    name: Checks
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: System packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Formatting
+        run: cargo fmt --all --check
+
+      - name: Generated tables are up to date
+        run: |
+          python tools/gen_dtc.py
+          python tools/gen_vehicles.py
+          python tools/gen_ecus.py
+          python tools/gen_pids.py
+          git add --intent-to-add crates
+          git diff --exit-code -- 'crates/*/src/generated'
+
+      # Every text in every language: new texts in the code must be
+      # translated before they reach main (see translations/TRANSLATING.md).
+      - name: Translations are complete
+        run: python tools/i18n_rust.py --strict
+
+      - name: README language bar is current
+        run: python tools/readme_languages.py --check
+
+      - name: Interface
+        env:
+          I18N_STRICT: "1"
+        run: |
+          npm --prefix app ci
+          npm --prefix app run build
+
+      - name: Lints
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
   build:
     name: ${{ matrix.name }}
+    needs: checks
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -24,97 +86,42 @@ jobs:
         include:
           - name: Windows
             os: windows-latest
-            qt_arch: win64_msvc2022_64
             artifact: caruspex-windows-x64
           # 22.04 on purpose: the AppImage then also runs on older systems,
           # it needs at least the glibc of the machine that built it.
           - name: Linux
             os: ubuntu-22.04
-            qt_arch: linux_gcc_64
             artifact: caruspex-linux-x64
-          # macos-15: GitHub retired the macos-14 image. Its SDK no longer
-          # ships the AGL framework the prebuilt Qt 6.8 libraries still refer
-          # to; CMakeLists.txt removes that reference on Apple.
           - name: macOS
             os: macos-15
-            qt_arch: clang_64
             artifact: caruspex-macos
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
 
-      - name: System packages for Qt (Linux only)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: System packages (Linux only)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libgl1-mesa-dev libglu1-mesa-dev libxkbcommon-x11-0 libxcb-cursor0 \
-            libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
-            libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 \
-            ninja-build
+          sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev \
+            pkg-config file patchelf libfuse2
 
-      - name: Set up Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: "6.8.3"
-          host: ${{ runner.os == 'Windows' && 'windows' || (runner.os == 'macOS' && 'mac' || 'linux') }}
-          target: desktop
-          arch: ${{ matrix.qt_arch }}
-          modules: qtcharts qtconnectivity
-          cache: true
+      - uses: Swatinem/rust-cache@v2
 
-      - name: Set up Conan
-        run: |
-          python -m pip install --upgrade pip
-          pip install conan
-          conan profile detect --force
-
-      - name: Fetch dependencies
-        run: >
-          conan install .
-          --output-folder="${{ github.workspace }}/build/conan"
-          --build=missing
-          -s compiler.cppstd=20
-
-      - name: Trouble-code database is up to date
-        run: |
-          python tools/gen_dtc.py
-          git add --intent-to-add src/data
-          git diff --exit-code -- 'src/data/*.gen.cpp'
-
-      - name: Configure
-        run: >
-          cmake -S . -B build
-          -DCMAKE_BUILD_TYPE=Release
-          -DCARUSPEX_TESTS=ON
-          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan/conan_toolchain.cmake"
-
-      - name: Build
-        run: cmake --build build --config Release --parallel
+      - name: Interface
+        run: npm --prefix app ci
 
       - name: Tests
-        run: ctest --test-dir build -C Release --output-on-failure
+        run: cargo test --workspace
 
-      # Every text in every language: new texts in the code must be
-      # translated before they reach main (see translations/TRANSLATING.md).
-      - name: Translations are complete (Linux only)
-        if: runner.os == 'Linux'
-        run: |
-          cmake --build build --target update_translations
-          python tools/i18n_extract.py
-          if ! git diff --quiet -- translations/source; then
-            echo "::error::New or changed texts. Run the update_translations target and tools/i18n_extract.py, translate the new ids and run tools/gen_i18n.py."
-            git diff --stat -- translations/source
-            exit 1
-          fi
-          python tools/gen_i18n.py --check --strict
-
-      # --- Packages ------------------------------------------------------------
       - name: Inno Setup (Windows only)
         if: runner.os == 'Windows'
         run: |
@@ -125,7 +132,7 @@ jobs:
       - name: Package
         env:
           REQUIRE_INSTALLER: "1"
-        run: bash tools/package.sh build
+        run: bash tools/package.sh
 
       # Install the package like a user, start both programs, uninstall.
       - name: Smoke test
@@ -161,9 +168,9 @@ jobs:
       - name: Tag matches the project version
         id: version
         run: |
-          version=$(sed -n 's/^project(Caruspex VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          version=$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\([0-9.]*\)"/\1/p' Cargo.toml)
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match version $version in CMakeLists.txt" >&2
+            echo "Tag $GITHUB_REF_NAME does not match version $version in Cargo.toml" >&2
             exit 1
           fi
           test -f "changelog/$version.md" || { echo "changelog/$version.md is missing" >&2; exit 1; }

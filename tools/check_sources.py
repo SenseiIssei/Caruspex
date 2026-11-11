@@ -4,7 +4,7 @@
     python tools/check_sources.py --update   also write the current state to data/sources.json
 
 Checked:
-  - the WMI list on Wikibooks: codes there that src/data/Vin.cpp does not know
+  - the WMI list on Wikibooks: codes there that crates/caruspex-vehicles/src/vin.rs does not know
   - OBDb: number of vehicle repositories (github.com/OBDb, CC BY-SA 4.0)
   - opendbc (comma.ai, MIT) and model3dbc (MIT): newest commit
 
@@ -37,8 +37,10 @@ def fetch(url: str, api: bool = False) -> bytes:
 
 
 def known_wmis() -> set[str]:
-    text = open(os.path.join(ROOT, "src", "data", "Vin.cpp"), encoding="utf-8").read()
-    return set(re.findall(r'\{"([A-Z0-9]{2,3})",', text))
+    # One table entry per line: w("WVW", "Volkswagen AG", ...
+    path = os.path.join(ROOT, "crates", "caruspex-vehicles", "src", "vin.rs")
+    text = open(path, encoding="utf-8").read()
+    return set(re.findall(r'^\s*w\("([A-Z0-9]{2,3})",', text, re.MULTILINE))
 
 
 def wikibooks_wmis() -> dict[str, str]:

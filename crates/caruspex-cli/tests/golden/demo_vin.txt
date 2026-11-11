@@ -1,0 +1,14 @@
+Adapter    : ELM327 v1.5
+Connection : Demo vehicle (built-in)
+Protocol   : ISO 15765-4 (CAN 11/500)
+Timing     : ATAT1
+
+VIN          : YCXDE15C7MC048217
+Manufacturer : unknown
+Country      : Belgium, Europe
+Model year   : 1991
+Serial       : 048217
+Note         : The manufacturer is not in the table.
+Note         : The check digit at position 9 matches. That suggests a vehicle built for North America.
+
+Catalog      : no match

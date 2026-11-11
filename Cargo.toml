@@ -1,0 +1,50 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/caruspex-i18n",
+    "crates/caruspex-vehicles",
+    "crates/caruspex-data",
+    "crates/caruspex-link",
+    "crates/caruspex-protocols",
+    "crates/caruspex-net",
+    "crates/caruspex-record",
+    "crates/caruspex-analysis",
+    "crates/caruspex-demo",
+    "crates/caruspex-cli",
+    "app/src-tauri",
+]
+
+[workspace.package]
+version = "0.9.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/SenseiIssei/Caruspex"
+authors = ["SenseiIssei"]
+rust-version = "1.85"
+
+[workspace.dependencies]
+caruspex-i18n = { path = "crates/caruspex-i18n" }
+caruspex-vehicles = { path = "crates/caruspex-vehicles" }
+caruspex-data = { path = "crates/caruspex-data" }
+caruspex-link = { path = "crates/caruspex-link" }
+caruspex-protocols = { path = "crates/caruspex-protocols" }
+caruspex-net = { path = "crates/caruspex-net" }
+caruspex-record = { path = "crates/caruspex-record" }
+caruspex-analysis = { path = "crates/caruspex-analysis" }
+caruspex-demo = { path = "crates/caruspex-demo" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+log = "0.4"
+serialport = "4"
+libloading = "0.8"
+btleplug = "0.11"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
+clap = { version = "4", features = ["derive"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
