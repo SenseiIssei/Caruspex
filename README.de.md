@@ -1,7 +1,7 @@
 # Caruspex
 
 <!-- languages -->
-[English](README.md) · **Deutsch**
+[English](README.md) · **Deutsch** · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
 Freie Fahrzeugdiagnose für Windows, Linux und macOS, geschrieben in Rust mit einer Tauri-2-Oberfläche. Ein Kabel oder Dongle, eine Software, in 18 Sprachen.
