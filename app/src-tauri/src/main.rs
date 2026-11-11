@@ -14,6 +14,10 @@ mod rows;
 mod settings;
 mod texts;
 mod update;
+#[cfg(target_os = "linux")]
+mod webview_gtk;
+#[cfg(target_os = "macos")]
+mod webview_mac;
 #[cfg(windows)]
 mod webview_win;
 mod worker;

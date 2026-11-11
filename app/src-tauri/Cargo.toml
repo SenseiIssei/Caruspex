@@ -46,8 +46,38 @@ windows-core = "0.62.2"
 winreg = "0.55.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
+# The same versions wry uses, so the WKWebView handle of with_webview fits.
+block2 = "0.6.2"
+objc2 = "0.6.4"
+objc2-app-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSBitmapImageRep",
+    "NSImage",
+    "NSImageRep",
+] }
+objc2-foundation = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSData",
+    "NSDictionary",
+    "NSError",
+    "NSString",
+] }
+objc2-web-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "block2",
+    "objc2-app-kit",
+    "WKPDFConfiguration",
+    "WKSnapshotConfiguration",
+    "WKWebView",
+] }
 # The settings of the Qt version (QSettings writes a binary property list).
 plist = "1.10.3"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# The same versions wry uses, so the WebKitGTK handle of with_webview fits.
+cairo-rs = { version = "0.18.5", features = ["png"] }
+gtk = "0.18.2"
+webkit2gtk = { version = "=2.0.2", features = ["v2_38"] }
 
 [dev-dependencies]
 plist = "1.10.3"
