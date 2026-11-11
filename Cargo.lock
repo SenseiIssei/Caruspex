@@ -484,7 +484,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-advice"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-analysis",
  "caruspex-data",
@@ -493,14 +493,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-analysis"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
 ]
 
 [[package]]
 name = "caruspex-app"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "base64 0.23.1",
  "block2",
@@ -541,7 +541,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-cli"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-analysis",
  "caruspex-data",
@@ -557,14 +557,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-data"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
 ]
 
 [[package]]
 name = "caruspex-demo"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
  "caruspex-link",
@@ -572,14 +572,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-i18n"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "caruspex-link"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "btleplug",
  "caruspex-i18n",
@@ -594,7 +594,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-net"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
  "caruspex-link",
@@ -606,7 +606,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-protocols"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-data",
  "caruspex-demo",
@@ -617,7 +617,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-record"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-data",
  "caruspex-demo",
@@ -632,7 +632,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-vehicles"
-version = "0.11.0"
+version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
 ]
