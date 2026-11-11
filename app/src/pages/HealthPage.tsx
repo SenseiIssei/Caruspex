@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { call, type HealthRow } from "../api";
 import type { IconName } from "../components/Icon";
 import { ScoreRing } from "../components/ScoreRing";
+import { Term, TermStrip } from "../components/Term";
 import { FindingRow } from "../components/Tiles";
 import { Button, Card, Page, PageHeader, Progress, Select } from "../components/ui";
 import { t, translator } from "../i18n";
@@ -141,6 +142,7 @@ export default function HealthPage() {
             "Heraus kommt eine Punktzahl, und jeder Abzug wird erklärt.",
         )}
       />
+      <TermStrip ids={["dtc", "readiness", "mil", "ltft"]} />
 
       <Card className="health-hero">
         <div className="health-hero-row">
@@ -216,7 +218,7 @@ export default function HealthPage() {
         </Card>
 
         <div className="health-side">
-          <Card title={tr("Bereit für die AU?")}>
+          <Card title={<Term id="readiness">{tr("Bereit für die AU?")}</Term>}>
             <div className="subtle">{monitorSummary}</div>
             {orderedMonitors.length > 0 ? (
               <div className="health-list" key={generation}>

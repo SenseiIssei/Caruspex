@@ -1090,6 +1090,7 @@ async function scanAllEcus(device: string, clearAttempts: number): Promise<void>
       text: L(f.de, f.en),
       throttleRelated: false,
       stored: !f.sporadic,
+      permanent: false,
       ecu: "",
     });
     row.faults = unit.faults.map(toFault);

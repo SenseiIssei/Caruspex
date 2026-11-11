@@ -14,6 +14,8 @@ export interface FaultRow {
   throttleRelated: boolean;
   // Confirmed (stored) fault, as opposed to pending or permanent.
   stored: boolean;
+  // A permanent code (service 0A): only the car itself clears it.
+  permanent: boolean;
   // Which control unit reported it, e.g. "Motor (7E8)". Empty on the K-line.
   ecu: string;
 }
@@ -274,6 +276,12 @@ export interface AppSettings {
   // Profi mode shows every page, beginners the everyday ones. New installs
   // start as beginners, settings from before the switch as Profi.
   proMode: boolean;
+  // The first-start assistant was shown (finished or skipped).
+  setupDone: boolean;
+  // Stronger colours and borders.
+  highContrast: boolean;
+  // Size of everything on screen in percent, 100 is normal (80 to 160).
+  fontScale: number;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -299,6 +307,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   language: "auto",
   appearance: "auto",
   proMode: false,
+  setupDone: false,
+  highContrast: false,
+  fontScale: 100,
 };
 
 // --- Garage.h -------------------------------------------------------------------
@@ -708,7 +719,9 @@ export interface VehicleAnatomy {
   wheelMm: number;
   // True when length or wheelbase come from Wikidata (CC0).
   measured: boolean;
-  dimensionSource: "wikidata" | "typical";
+  dimensionSource: "wikidata" | "manufacturer" | "typical";
+  // The maker's document the values come from (name and year), "" without.
+  dimensionDocument: string;
   // Bits of the real values: 1 length, 2 width, 4 height, 8 wheelbase, 16 track.
   measuredFields: number;
   // The Wikidata item ("Q62362"), "" without.
@@ -741,6 +754,11 @@ export interface VehicleDiagnosisInfo {
   connector: number;
   connectorName: string;
   locationText: string;
+  // SocketLocation for the sketch: 0 unknown, 1 under the dash on the
+  // driver side, 2 under the steering column, 3 footwell cover, 4 fuse box,
+  // 5 centre console, 6 behind the ashtray, 7 passenger side, 8 engine bay,
+  // 9 rear console.
+  location: number;
   diagnosisText: string;
   kklPossible: boolean;
   protocolOrder: string;

@@ -258,6 +258,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
             commands::set_language,
+            commands::set_zoom,
             commands::check_for_update,
             commands::install_update,
             commands::open_url,

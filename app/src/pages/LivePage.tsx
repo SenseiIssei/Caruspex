@@ -9,8 +9,10 @@ import type { CustomRow, LiveRow, PidInfo, PidPackInfo } from "../api";
 import { SeriesStore, TimeSeriesChart } from "../components/charts/TimeSeriesChart";
 import { Modal } from "../components/Modal";
 import { toast } from "../components/Toast";
+import { Term, TermStrip } from "../components/Term";
 import { Button, Card, Check, Page, PageHeader, TextInput, cx } from "../components/ui";
 import { translator } from "../i18n";
+import type { TermId } from "../lib/glossary";
 import { useAppEvent, useBackendEvent, usePageActive } from "../lib/hooks";
 import { navigate } from "../shell/nav";
 import { useSession, useSettings } from "../state/session";
@@ -18,6 +20,14 @@ import { qtFilters, stamp } from "./measure";
 import "./LivePage.css";
 
 const tr = translator("caruspex::LivePage");
+
+// The fuel trims carry their explanation: short term PIDs 06 and 08, long
+// term 07 and 09 (banks 1 and 2).
+function trimTerm(pid: number): TermId | null {
+  if (pid === 0x06 || pid === 0x08) return "stft";
+  if (pid === 0x07 || pid === 0x09) return "ltft";
+  return null;
+}
 
 interface ListItem {
   kind: "head" | "pid" | "custom";
@@ -286,6 +296,7 @@ export default function LivePage() {
         title={tr("Live-Werte")}
         subtitle={tr("Alles, was das Steuergerät laufend misst, nach Bereichen sortiert. Links ankreuzen, oben starten.")}
       />
+      <TermStrip ids={["pid", "ecu", "stft", "ltft"]} />
 
       <div className="live-bar">
         <Button variant={running ? "danger" : "primary"} icon={running ? "stop" : "play"} disabled={!connected} onClick={toggleRun}>
@@ -368,7 +379,7 @@ export default function LivePage() {
             <tbody>
               {tableRows.map((row) => (
                 <tr key={row.pid} className="fade-in">
-                  <td>{row.name}</td>
+                  <td>{trimTerm(row.pid) ? <Term id={trimTerm(row.pid)!}>{row.name}</Term> : row.name}</td>
                   <td className={cx("num", row.warn && "warn")} title={row.text || undefined}>
                     <span className="ltr live-value">{row.text ? row.text : row.value.toFixed(2)}</span>
                   </td>

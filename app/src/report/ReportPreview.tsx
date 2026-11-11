@@ -13,6 +13,8 @@ import { findCar, isoDate } from "../state/garage";
 import { session } from "../state/session";
 import { usedCarStore } from "../state/usedCar";
 import { collectReportExtras, collectReportState, garageHtml, reportHtml, usedCarHtml } from "./report";
+import { ShareDialog } from "./ShareDialog";
+import { garageFacts, sessionFacts, shareText } from "./share";
 import "./ReportPreview.css";
 
 const R = "caruspex::Report";
@@ -26,7 +28,15 @@ export function ReportPreview() {
   const usedCar = useStore(navStore, (s) => s.usedCarReport);
   const [html, setHtml] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const frame = useRef<HTMLIFrameElement>(null);
+
+  // The summary for the QR code: the garage car of the file, otherwise the
+  // connected car (also for the used car check, which reads the same car).
+  const shareSummary = () => {
+    const car = garageVin ? findCar(garageVin) : undefined;
+    return shareText(car ? garageFacts(car) : sessionFacts());
+  };
 
   // The document is written once when the preview opens: what the car said
   // up to now, or the file of the chosen garage car.
@@ -105,6 +115,9 @@ export function ReportPreview() {
             {t(RP, "Schließen")}
           </Button>
           <span className="spacer" />
+          <Button icon="qr" onClick={() => setSharing(true)}>
+            {t("caruspex::Usability", "Als QR-Code teilen")}
+          </Button>
           <Button icon="printer" disabled={!html} onClick={print}>
             {t(RP, "Drucken")}
           </Button>
@@ -125,6 +138,7 @@ export function ReportPreview() {
           <iframe ref={frame} className="report-frame fade-in" title={title} sandbox="allow-same-origin allow-modals" srcDoc={html} />
         )}
       </div>
+      {sharing ? <ShareDialog text={shareSummary()} onClose={() => setSharing(false)} /> : null}
     </Modal>
   );
 }

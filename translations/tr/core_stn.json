@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  STN çipinin toplu komutları (STBC) etkin: tek satırda birden çok istek.",
+ "c-stn-2": "  Geçildi: ",
+ "c-stn-3": "  STN çipinde toplu komut (STBC) yok, istekler tek tek gider.",
+ "c-stn-4": "Yüksek hızlı CAN (pin 6 ve 14)",
+ "c-stn-5": "Orta hızlı CAN (MS-CAN, pin 3 ve 11, 125 kbaud)",
+ "c-stn-6": "Tek telli CAN (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "Adaptör protokolü reddediyor: ",
+ "c-stn-8": "Bu OBDLink'te şunun için alıcı-verici yok: ",
+ "c-stn-9": "Bunun için CAN'li bir araçta OBDLink (STN çipi) gerekir."
+}

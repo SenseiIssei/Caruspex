@@ -8,11 +8,15 @@ import type { AppSettings } from "../api";
 import { DEFAULT_SETTINGS } from "../api";
 import { Button, Card, Check, NumberInput, Page, PageHeader, Segmented, Select, TextInput } from "../components/ui";
 import { LANGUAGES, translator } from "../i18n";
+import { FONT_SCALES, setFontScale, setHighContrast } from "../lib/access";
 import { setAppearance, type Appearance } from "../lib/theme";
+import { openSetup } from "../state/setup";
 import { applySettings, setProMode, useProMode, useSettings } from "../state/session";
 import "./SettingsPage.css";
 
 const tr = translator("caruspex::SettingsPage");
+// Texts that are new with the assistant and the accessibility settings.
+const tu = translator("caruspex::Usability");
 
 function Group({ title, children, glow }: { title: string; children: ReactNode; glow?: boolean }) {
   return (
@@ -86,15 +90,22 @@ export default function SettingsPage() {
     const next = { ...values, ...patch };
     // The look follows at once.
     if (patch.appearance !== undefined) setAppearance(next.appearance as Appearance);
+    if (patch.highContrast !== undefined) setHighContrast(next.highContrast);
+    if (patch.fontScale !== undefined) setFontScale(next.fontScale);
     void applySettings(next);
   };
 
-  // The last port is no setting of this page; it stays.
+  // The last port is no setting of this page; it stays, and so does the
+  // mode and whether the assistant was shown.
   const reset = () => {
-    const defaults = { ...DEFAULT_SETTINGS, lastPort: values.lastPort, proMode: values.proMode };
+    const defaults = { ...DEFAULT_SETTINGS, lastPort: values.lastPort, proMode: values.proMode, setupDone: values.setupDone };
     setAppearance(defaults.appearance as Appearance);
+    setHighContrast(defaults.highContrast);
+    setFontScale(defaults.fontScale);
     void applySettings(defaults);
   };
+
+  const fontOptions = FONT_SCALES.map((p) => ({ value: p, label: p === 100 ? tu("Normal (100 %)") : `${p} %` }));
 
   const chooseLogPath = async () => {
     const path = await call("pick_save_path", {
@@ -193,6 +204,34 @@ export default function SettingsPage() {
             : tr(
                 "Einsteiger sehen nur die Seiten für den Alltag. Live-Werte, Messungen, alle Steuergeräte, KKL, Anpassung, Drosselklappe, Rohbefehle und das Wissen kommen mit dem Profimodus.",
               )}
+        </Hint>
+        <Full>
+          <Button icon="sparkles" onClick={() => openSetup()}>
+            {tu("Einrichtungs-Assistent öffnen")}
+          </Button>
+        </Full>
+        <Hint>{tu("Führt Schritt für Schritt vom Adapter bis zur ersten Verbindung, wie beim ersten Start.")}</Hint>
+      </Group>
+
+      <Group title={tu("Sehen und Bedienen")}>
+        <Full>
+          <Check checked={values.highContrast} onChange={(v) => change({ highContrast: v })}>
+            {tu("Hoher Kontrast")}
+          </Check>
+        </Full>
+        <Hint>{tu("Schwarzer oder weißer Grund, kräftige Ränder und Farben. Hilft bei schwachen Augen und in der Sonne.")}</Hint>
+        <Row label={tu("Schriftgröße")}>
+          <Select
+            value={pick(fontOptions, values.fontScale)}
+            options={fontOptions}
+            onChange={(v) => change({ fontScale: v })}
+            aria-label={tu("Schriftgröße")}
+          />
+        </Row>
+        <Hint>
+          {tu(
+            "Vergrößert alles im Fenster, Schrift, Knöpfe und Diagramme. Jede Seite lässt sich mit der Tastatur bedienen: Tab springt weiter, Pfeiltasten wandern in der Seitenleiste und in Listen, Esc schließt Fenster.",
+          )}
         </Hint>
       </Group>
 

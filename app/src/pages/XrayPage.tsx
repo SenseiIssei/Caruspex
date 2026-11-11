@@ -15,6 +15,7 @@ import { Icon } from "../components/Icon";
 import { Button, Card, Chip, Page, PageHeader, Select, type Option } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
 import { localeNumber, t, translator } from "../i18n";
+import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent, useInterval, usePageActive } from "../lib/hooks";
 import { onApp } from "../lib/store";
 import { cssColor, toCss, useThemeVersion } from "../lib/theme";
@@ -733,7 +734,7 @@ export default function XrayPage() {
     : "";
   // Values Wikidata lacks for a measured car are estimates: marked with ≈.
   const metres = (mm: number, bit: number) =>
-    `${anatomy && anatomy.dimensionSource === "wikidata" && !(anatomy.measuredFields & bit) ? "≈" : ""}${localeNumber(mm / 1000, 2)}`;
+    `${anatomy && anatomy.dimensionSource !== "typical" && !(anatomy.measuredFields & bit) ? "≈" : ""}${localeNumber(mm / 1000, 2)}`;
   const dims = anatomy
     ? tr(
         "%1 m lang, %2 m breit, %3 m hoch, Radstand %4 m",
@@ -746,9 +747,11 @@ export default function XrayPage() {
   const source =
     modelState?.state === "shown"
       ? tr("Eigenes Modell")
-      : anatomy?.dimensionSource === "wikidata"
-        ? tr("Maße aus Wikidata, Form nachempfunden")
-        : tr("Typische Maße für Aufbau und Baujahr");
+      : anatomy?.dimensionSource === "manufacturer"
+        ? tr("Maße vom Hersteller, Form nachempfunden")
+        : anatomy?.dimensionSource === "wikidata"
+          ? tr("Maße aus Wikidata, Form nachempfunden")
+          : tr("Typische Maße für Aufbau und Baujahr");
   const variantOptions: Option<number>[] = variants.map((b) => ({ value: b, label: anatomy?.bodyNames[b] ?? String(b) }));
   const powertrainOptions: Option<number>[] = (anatomy?.powertrainChoices ?? []).map((c) => ({ value: c.flag, label: c.name }));
   const busesShown = useMemo(() => {
@@ -828,8 +831,20 @@ export default function XrayPage() {
               <div className="xray-tour-buttons">
                 {steps && steps.length > 1 ? (
                   <>
-                    <Button small icon="chevron-left" disabled={!tour} onClick={() => setTour((i) => Math.max(0, (i ?? 0) - 1))} />
-                    <Button small icon="chevron-right" disabled={(tour ?? 0) + 1 >= steps.length} onClick={() => setTour((i) => Math.min(steps.length - 1, (i ?? 0) + 1))} />
+                    <Button
+                      small
+                      icon="chevron-left"
+                      title={t(ACCESS, "Zurück")}
+                      disabled={!tour}
+                      onClick={() => setTour((i) => Math.max(0, (i ?? 0) - 1))}
+                    />
+                    <Button
+                      small
+                      icon="chevron-right"
+                      title={t(ACCESS, "Weiter")}
+                      disabled={(tour ?? 0) + 1 >= steps.length}
+                      onClick={() => setTour((i) => Math.min(steps.length - 1, (i ?? 0) + 1))}
+                    />
                   </>
                 ) : null}
                 <Button small onClick={endTour}>
@@ -849,13 +864,14 @@ export default function XrayPage() {
                 <div className="subtle">{[generation?.bodyName, facts].filter(Boolean).join(" · ")}</div>
                 <div className="xray-reason">{anatomy.reason}</div>
                 <div className="xray-source" data-source={modelState?.state === "shown" ? "model" : anatomy.dimensionSource}>
-                  <Icon name={modelState?.state === "shown" ? "cube" : anatomy.dimensionSource === "wikidata" ? "check-circle" : "info"} size={14} />
+                  <Icon name={modelState?.state === "shown" ? "cube" : anatomy.dimensionSource !== "typical" ? "check-circle" : "info"} size={14} />
                   <span>{source}</span>
                 </div>
                 <div className="hint">
                   {dims}
                   {anatomy.wikidataId ? ` · Wikidata ${anatomy.wikidataId}` : ""}
                 </div>
+                {anatomy.dimensionDocument ? <div className="hint xray-document">{tr("Quelle: %1", anatomy.dimensionDocument)}</div> : null}
                 <div className="hint">{anatomy.dimensionsText}</div>
                 {variantOptions.length > 1 ? (
                   <label className="xray-select">

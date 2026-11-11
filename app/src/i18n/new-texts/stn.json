@@ -1,0 +1,71 @@
+[
+ {
+  "context": "caruspex::EcuPage",
+  "de": "Ford: Karosseriegeräte am MS-CAN (über OBDLink)",
+  "en": "Ford: body modules on the MS-CAN (through OBDLink)",
+  "tr": {
+   "es": "Ford: módulos de carrocería en el MS-CAN (con OBDLink)",
+   "fr": "Ford : modules de carrosserie sur le MS-CAN (via OBDLink)",
+   "pt": "Ford: módulos de carroceria no MS-CAN (via OBDLink)",
+   "it": "Ford: centraline carrozzeria sul MS-CAN (tramite OBDLink)",
+   "nl": "Ford: carrosseriemodules op de MS-CAN (via OBDLink)",
+   "pl": "Ford: moduły nadwozia na MS-CAN (przez OBDLink)",
+   "cs": "Ford: moduly karoserie na MS-CAN (přes OBDLink)",
+   "ru": "Ford: блоки кузова на шине MS-CAN (через OBDLink)",
+   "uk": "Ford: блоки кузова на шині MS-CAN (через OBDLink)",
+   "tr": "Ford: MS-CAN üzerindeki gövde modülleri (OBDLink ile)",
+   "ar": "Ford: وحدات الهيكل على MS-CAN (عبر OBDLink)",
+   "zh": "Ford：MS-CAN 上的车身模块（通过 OBDLink）",
+   "ja": "Ford：MS-CAN 上のボディモジュール（OBDLink 経由）",
+   "ko": "Ford: MS-CAN의 차체 모듈 (OBDLink 사용)",
+   "hi": "Ford: MS-CAN पर बॉडी मॉड्यूल (OBDLink से)",
+   "id": "Ford: modul bodi di MS-CAN (lewat OBDLink)"
+  }
+ },
+ {
+  "context": "caruspex::EcuPage",
+  "de": "GM: Karosseriegeräte am Single-Wire-CAN (über OBDLink)",
+  "en": "GM: body modules on the single wire CAN (through OBDLink)",
+  "tr": {
+   "es": "GM: módulos de carrocería en el CAN de un solo hilo (con OBDLink)",
+   "fr": "GM : modules de carrosserie sur le CAN monofilaire (via OBDLink)",
+   "pt": "GM: módulos de carroceria no CAN de fio único (via OBDLink)",
+   "it": "GM: centraline carrozzeria sul CAN a filo singolo (tramite OBDLink)",
+   "nl": "GM: carrosseriemodules op de single-wire-CAN (via OBDLink)",
+   "pl": "GM: moduły nadwozia na jednoprzewodowym CAN (przez OBDLink)",
+   "cs": "GM: moduly karoserie na jednovodičovém CAN (přes OBDLink)",
+   "ru": "GM: блоки кузова на однопроводной шине CAN (через OBDLink)",
+   "uk": "GM: блоки кузова на однопровідній шині CAN (через OBDLink)",
+   "tr": "GM: Tek telli CAN üzerindeki gövde modülleri (OBDLink ile)",
+   "ar": "GM: وحدات الهيكل على CAN أحادي السلك (عبر OBDLink)",
+   "zh": "GM：单线 CAN 上的车身模块（通过 OBDLink）",
+   "ja": "GM：シングルワイヤ CAN 上のボディモジュール（OBDLink 経由）",
+   "ko": "GM: 단선 CAN의 차체 모듈 (OBDLink 사용)",
+   "hi": "GM: सिंगल-वायर CAN पर बॉडी मॉड्यूल (OBDLink से)",
+   "id": "GM: modul bodi di CAN kabel tunggal (lewat OBDLink)"
+  }
+ },
+ {
+  "context": "caruspex::EcuPage",
+  "de": "Der OBDLink schaltet für die Suche auf den anderen CAN-Bus der Buchse um und danach zurück. Live-Werte pausieren so lange.",
+  "en": "The OBDLink switches to the other CAN bus of the socket for the scan and back afterwards. Live values pause meanwhile.",
+  "tr": {
+   "es": "Para la búsqueda, el OBDLink cambia al otro bus CAN de la toma y después vuelve. Mientras tanto se pausan los valores en vivo.",
+   "fr": "Pour la recherche, l'OBDLink passe sur l'autre bus CAN de la prise, puis revient. Les valeurs en direct sont en pause pendant ce temps.",
+   "pt": "Para a busca, o OBDLink muda para o outro barramento CAN da tomada e depois volta. Os valores ao vivo ficam pausados enquanto isso.",
+   "it": "Per la ricerca l'OBDLink passa all'altro bus CAN della presa e poi torna indietro. Nel frattempo i valori in tempo reale sono in pausa.",
+   "nl": "Voor het zoeken schakelt de OBDLink over naar de andere CAN-bus van de aansluiting en daarna terug. Live-waarden pauzeren zolang.",
+   "pl": "Na czas wyszukiwania OBDLink przełącza się na drugą magistralę CAN gniazda, a potem wraca. W tym czasie wartości na żywo są wstrzymane.",
+   "cs": "Pro hledání se OBDLink přepne na druhou sběrnici CAN v zásuvce a potom zpět. Živé hodnoty se mezitím pozastaví.",
+   "ru": "Для поиска OBDLink переключается на другую шину CAN разъёма, а затем обратно. Текущие значения на это время приостанавливаются.",
+   "uk": "Для пошуку OBDLink перемикається на іншу шину CAN роз'єму, а потім назад. Поточні значення на цей час призупиняються.",
+   "tr": "Arama için OBDLink soketteki diğer CAN veri yoluna geçer ve sonra geri döner. Canlı değerler bu sırada duraklar.",
+   "ar": "للبحث يتحول OBDLink إلى ناقل CAN الآخر في المقبس ثم يعود. تتوقف القيم الحية مؤقتا خلال ذلك.",
+   "zh": "搜索时 OBDLink 会切换到插座上的另一条 CAN 总线，之后再切回。期间实时数值暂停。",
+   "ja": "検索のため OBDLink はソケットのもう一方の CAN バスに切り替え、終わると戻します。その間ライブ値は一時停止します。",
+   "ko": "검색하는 동안 OBDLink는 소켓의 다른 CAN 버스로 전환했다가 다시 돌아옵니다. 그동안 실시간 값은 일시 정지됩니다.",
+   "hi": "खोज के लिए OBDLink सॉकेट की दूसरी CAN बस पर स्विच करता है और फिर वापस आता है। इस दौरान लाइव मान रुके रहते हैं।",
+   "id": "Untuk pencarian, OBDLink beralih ke bus CAN lain di soket lalu kembali. Selama itu nilai langsung dijeda."
+  }
+ }
+]

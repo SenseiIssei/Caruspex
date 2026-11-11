@@ -61,6 +61,8 @@ export interface Commands {
   // Tells the backend which language the interface shows, so core texts
   // (fault descriptions, value names, messages) arrive in it.
   set_language: Cmd<{ code: string }, void>;
+  // Zoom of the whole window (the font size of the settings), 1 is normal.
+  set_zoom: Cmd<{ scale: number }, void>;
   // Asks GitHub for latest.json of the newest release once; null when up
   // to date or offline.
   check_for_update: Cmd<None, UpdateInfo | null>;
@@ -228,7 +230,10 @@ export interface Events {
   log_line: { line: string };
   // Download of an update; total is 0 when the size is unknown.
   update_progress: { received: number; total: number };
-  connected: { adapter: string; transport: string; protocol: string };
+  // rawCan: the connection runs over a raw CAN interface (J2534, SLCAN,
+  // SocketCAN), so the KKL pages can use VAG TP 2.0 on it.
+  // stnBuses: the extra CAN buses an OBDLink can switch to ("ms", "sw").
+  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[] };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };

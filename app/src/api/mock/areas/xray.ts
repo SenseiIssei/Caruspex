@@ -265,20 +265,29 @@ export function anatomyOf(
   const t = drivetrain(brand, model, body, year, chosen);
   const typical = typicalDimensions(body, year);
   const [dims, bits] = measured ? mergeMeasured(typical, measured) : [typical, 0];
-  const wikidata = !!measured && (measured[0] > 0 || measured[3] > 0);
+  const real = !!measured && (measured[0] > 0 || measured[3] > 0);
+  const document = measured ? (measured[7] ?? "") : "";
+  const source: VehicleAnatomy["dimensionSource"] = real ? (document ? "manufacturer" : "wikidata") : "typical";
   return {
     brand,
     model,
     generation,
     year,
     ...dims,
-    measured: wikidata,
-    dimensionSource: wikidata ? "wikidata" : "typical",
+    measured: real,
+    dimensionSource: source,
+    dimensionDocument: document,
     measuredFields: bits,
     wikidataId: measured ? (measured[6].split("|")[0] ?? "") : "",
     massKg: measured ? measured[5] : 0,
     bodyNames: Array.from({ length: 11 }, (_, i) => bodyName(i)),
-    dimensionsText: wikidata
+    dimensionsText:
+      source === "manufacturer"
+        ? L(
+            "Maße dieses Modells aus den technischen Daten des Herstellers, die Form ist ihm nachempfunden; mit ≈ markierte Werte fehlen dort und sind geschätzt.",
+            "Dimensions of this model from the maker's technical data, the shape is modelled after it; values marked ≈ are missing there and estimated.",
+          )
+        : source === "wikidata"
       ? L(
           "Maße dieses Modells aus Wikidata, die Form ist ihm nachempfunden; mit ≈ markierte Werte fehlen dort und sind geschätzt.",
           "Dimensions of this model from Wikidata, the shape is modelled after it; values marked ≈ are missing there and estimated.",

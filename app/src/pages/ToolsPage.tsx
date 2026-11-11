@@ -2,6 +2,7 @@
 // test, the VIN with the freeze frame data, and raw commands to the adapter.
 import { useEffect, useRef, useState } from "react";
 import { call, type LiveRow, type StatusRow } from "../api";
+import { Term } from "../components/Term";
 import { Button, Card, Page, PageHeader } from "../components/ui";
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
@@ -107,7 +108,7 @@ export default function ToolsPage() {
         }
       />
 
-      <Card title={tr("Bereitschaftstests (Abgasuntersuchung)")} icon="shield">
+      <Card title={<Term id="readiness">{tr("Bereitschaftstests (Abgasuntersuchung)")}</Term>} icon="shield">
         <div className="subtle">{readiness ? readiness.summary : tr("Noch nichts gelesen.")}</div>
         <div className="table-wrap tools-table">
           <table className="table">
@@ -134,7 +135,7 @@ export default function ToolsPage() {
         </div>
       </Card>
 
-      <Card title={tr("Fahrzeug und Umgebungsdaten beim Fehler")} icon="car">
+      <Card title={<Term id="freeze-frame">{tr("Fahrzeug und Umgebungsdaten beim Fehler")}</Term>} icon="car">
         <div className="selectable">
           {info?.vin ? withVin(tr("Fahrgestellnummer: %1"), info.vin) : vinText}
         </div>

@@ -64,7 +64,12 @@ export function ScoreRing({
   const tip = { x: c + Math.cos(tipAngle) * radius, y: c - Math.sin(tipAngle) * radius };
 
   return (
-    <div className="score-ring" style={{ width: size, height: size }}>
+    <div
+      className="score-ring"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={[known ? `${Math.round(score)} / 100` : "--", caption, subcaption].filter(Boolean).join(", ")}
+    >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
         <defs>
           <radialGradient id={`${id}-halo`}>

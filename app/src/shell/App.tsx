@@ -9,7 +9,10 @@ import { t, tn } from "../i18n";
 import { PageActiveContext } from "../lib/hooks";
 import { emitApp, onApp, useStore } from "../lib/store";
 import { ReportPreview } from "../report/ReportPreview";
+import { setFontScale, setHighContrast } from "../lib/access";
 import { appendLog, settingsStore } from "../state/session";
+import { openSetup } from "../state/setup";
+import { SetupAssistant } from "./SetupAssistant";
 import { LogDrawer } from "./LogDrawer";
 import { navigate, navStore, useCurrentPage } from "./nav";
 import { PAGES, isPageId, type PageId } from "./pages";
@@ -47,6 +50,40 @@ export function App({ startPage }: { startPage: string | null }) {
 
   useEffect(() => onApp<PageId>("navigate", (page) => navigate(page)), []);
   useEffect(() => onApp("log:open", () => setLogOpen(true)), []);
+
+  // The first start of a new install opens the assistant; runs from the
+  // command line (a page, the demo car) go straight to their page.
+  useEffect(() => {
+    const automated = startPage !== null || new URLSearchParams(location.search).has("demo");
+    if (!settingsStore.get().values.setupDone && !automated) openSetup();
+  }, [startPage]);
+
+  // --page setup, setup-socket, setup-ignition, setup-connect: the
+  // assistant at one of its steps. --page contrast: the settings in high
+  // contrast and larger type, for this run only.
+  useEffect(
+    () =>
+      onApp<string>("dev:page", (name) => {
+        if (name === "setup") openSetup();
+        else if (name === "setup-socket") openSetup({ step: 1, query: "Golf IV" });
+        else if (name === "setup-ignition") openSetup({ step: 2 });
+        else if (name === "setup-connect") openSetup({ step: 3 });
+        else if (name === "term-hint") {
+          // The faults page with the hint of its first word open.
+          navigate("faults");
+          // A pointer over it: an unfocused window gets no focus events.
+          setTimeout(() => {
+            const word = document.querySelectorAll<HTMLElement>('[data-page="faults"] .term')[1];
+            word?.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+          }, 400);
+        } else if (name === "contrast") {
+          navigate("settings");
+          setHighContrast(true);
+          setFontScale(115);
+        }
+      }),
+    [],
+  );
 
   // Start-up of MainWindow: ports, settings, the ready line, auto-connect
   // and the update check.
@@ -119,6 +156,7 @@ export function App({ startPage }: { startPage: string | null }) {
         <UpdateDialog update={update} autoStart={updateDialog.autoStart} onClose={() => setUpdateDialog(null)} />
       ) : null}
       {reportOpen ? <ReportPreview /> : null}
+      <SetupAssistant />
     </div>
   );
 }

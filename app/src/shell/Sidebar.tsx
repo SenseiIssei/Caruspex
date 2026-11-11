@@ -1,8 +1,10 @@
 // The sidebar of MainWindow: entries with icon, text and an optional badge,
 // grouped into sections, the garage, adapter and settings below a divider.
 // Collapses to icons only.
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties, type KeyboardEvent } from "react";
 import { Icon } from "../components/Icon";
+import { t } from "../i18n";
+import { ACCESS } from "../lib/access";
 import { useProMode, useSession } from "../state/session";
 import { navigate, useCurrentPage } from "./nav";
 import { PAGES, type PageEntry } from "./pages";
@@ -23,6 +25,7 @@ function NavEntry({ entry, active, compact, badge }: { entry: PageEntry; active:
       className={`nav-button${active ? " active" : ""}`}
       onClick={() => navigate(entry.id)}
       title={compact ? label : undefined}
+      aria-label={compact ? label : undefined}
       aria-current={active ? "page" : undefined}
     >
       <span className="nav-indicator" />
@@ -66,8 +69,22 @@ export function Sidebar({ compact }: { compact: boolean }) {
   }
   const bottom = PAGES.filter((p) => p.bottom && shown(p));
 
+  // Arrow keys walk the entries, Home and End jump to the first and last,
+  // like a menu; Tab still leaves the sidebar for the page.
+  const onKey = (e: KeyboardEvent<HTMLElement>) => {
+    const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    const buttons = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>(".nav-button"));
+    const at = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (at < 0 || buttons.length === 0) return;
+    e.preventDefault();
+    const next =
+      e.key === "Home" ? 0 : e.key === "End" ? buttons.length - 1 : (at + (e.key === "ArrowDown" ? 1 : -1) + buttons.length) % buttons.length;
+    buttons[next]!.focus();
+  };
+
   return (
-    <nav className={`sidebar${compact ? " compact" : ""}`}>
+    <nav className={`sidebar${compact ? " compact" : ""}`} aria-label={t(ACCESS, "Seiten")} onKeyDown={onKey}>
       <div className="sidebar-scroll" ref={list}>
         {top.map(({ entry, heading }) => (
           <div key={entry.id} className="nav-group">

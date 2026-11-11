@@ -69,9 +69,24 @@ pub struct AppSettings {
     /// missing value means Profi.
     #[serde(default = "pro_mode_for_older_files")]
     pub pro_mode: bool,
+    /// The first-start assistant was shown (finished or skipped). A
+    /// settings file from before it existed belongs to someone who already
+    /// connected once, so a missing value means done.
+    #[serde(default = "setup_done_for_older_files")]
+    pub setup_done: bool,
+
+    // --- Accessibility ---------------------------------------------------------
+    /// Stronger colours and borders, for weak eyes and bright sunlight.
+    pub high_contrast: bool,
+    /// Size of everything on screen in percent, 100 is normal.
+    pub font_scale: i32,
 }
 
 fn pro_mode_for_older_files() -> bool {
+    true
+}
+
+fn setup_done_for_older_files() -> bool {
     true
 }
 
@@ -100,6 +115,9 @@ impl Default for AppSettings {
             language: "auto".into(),
             appearance: "auto".into(),
             pro_mode: false,
+            setup_done: false,
+            high_contrast: false,
+            font_scale: 100,
         }
     }
 }
@@ -123,6 +141,7 @@ impl AppSettings {
         self.chart_window_seconds = self.chart_window_seconds.clamp(10, 3600);
         self.clear_attempts = self.clear_attempts.clamp(1, 20);
         self.basic_setting_interval_ms = self.basic_setting_interval_ms.clamp(50, 2000);
+        self.font_scale = self.font_scale.clamp(80, 160);
         self
     }
 }
@@ -239,6 +258,8 @@ pub mod legacy {
         v.appearance = text("", "erscheinungsbild", &v.appearance);
         // Version 0.8 showed every page: whoever comes from there keeps them.
         v.pro_mode = true;
+        // ... and has connected before, so no first-start assistant.
+        v.setup_done = true;
         v
     }
 
@@ -468,6 +489,35 @@ mod tests {
         assert!(!chosen.pro_mode);
         let v = serde_json::to_value(AppSettings::default()).unwrap();
         assert_eq!(v["proMode"], false);
+    }
+
+    #[test]
+    fn the_assistant_shows_only_on_a_new_install() {
+        assert!(!AppSettings::default().setup_done);
+        let older: AppSettings = serde_json::from_str(r#"{"language": "de"}"#).unwrap();
+        assert!(older.setup_done);
+        assert!(!older.high_contrast);
+        assert_eq!(older.font_scale, 100);
+        let v = serde_json::to_value(AppSettings::default()).unwrap();
+        assert_eq!(v["setupDone"], false);
+        assert_eq!(v["highContrast"], false);
+        assert_eq!(v["fontScale"], 100);
+    }
+
+    #[test]
+    fn the_font_scale_stays_readable() {
+        let small = AppSettings {
+            font_scale: 10,
+            ..AppSettings::default()
+        }
+        .sanitized();
+        assert_eq!(small.font_scale, 80);
+        let huge = AppSettings {
+            font_scale: 900,
+            ..AppSettings::default()
+        }
+        .sanitized();
+        assert_eq!(huge.font_scale, 160);
     }
 
     #[test]

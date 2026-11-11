@@ -4,38 +4,11 @@
 #![cfg(windows)]
 
 mod common;
-
-use std::path::PathBuf;
-use std::process::Command;
+mod fake_driver;
 
 use caruspex_net::can_bus::{CanElm, open_j2534};
 use common::MiniElm;
-
-/// Builds the fake PassThru driver and returns the path of its DLL.
-fn fake_driver() -> PathBuf {
-    let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fake-j2534")
-        .join("Cargo.toml");
-    let target = PathBuf::from(env!("CARGO_TARGET_TMPDIR")).join("fake-j2534");
-    // The output (linker notes included) only matters when the build fails.
-    let output = Command::new(env!("CARGO"))
-        .arg("build")
-        .arg("--quiet")
-        .arg("--manifest-path")
-        .arg(&manifest)
-        .arg("--target-dir")
-        .arg(&target)
-        .env_remove("CARGO_TARGET_DIR")
-        .env_remove("CARGO_BUILD_TARGET")
-        .output()
-        .expect("cargo runs");
-    assert!(
-        output.status.success(),
-        "fake-j2534 builds:\n{}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    target.join("debug").join("fake_j2534.dll")
-}
+use fake_driver::fake_driver;
 
 #[test]
 fn j2534_a_passthru_driver_dll_carries_obd_on_can() {

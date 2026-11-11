@@ -598,6 +598,7 @@ version = "0.11.0"
 dependencies = [
  "caruspex-i18n",
  "caruspex-link",
+ "caruspex-protocols",
  "libc",
  "libloading 0.9.0",
  "winreg",
@@ -625,7 +626,7 @@ dependencies = [
  "caruspex-net",
  "caruspex-protocols",
  "caruspex-vehicles",
- "miniz_oxide 0.8.9",
+ "miniz_oxide 0.9.1",
  "serde_json",
 ]
 
@@ -855,7 +856,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d045de693cb712d0b22c6a64be5b953f67b3ce00ab5ad3dd5d8b441886ab8e1a"
 dependencies = [
  "quote",
- "syn 3.0.10",
+ "syn 2.0.119",
 ]
 
 [[package]]

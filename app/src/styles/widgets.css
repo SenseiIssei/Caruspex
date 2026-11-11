@@ -125,3 +125,43 @@
 .finding-title { font-weight: 600; }
 .finding-text { color: var(--text-muted); font-size: 13px; }
 .finding-meta { color: var(--text-faint); font-size: 12px; align-self: center; white-space: nowrap; }
+
+/* --- Term: a technical word with its hint (components/Term.tsx) ------------------ */
+
+.term {
+  text-decoration: underline dotted color-mix(in srgb, var(--accent) 70%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  cursor: help;
+  border-radius: 4px;
+}
+.term:hover { color: var(--accent-hover); }
+.term-strip { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin-top: -6px; }
+.term-strip .term { color: var(--text-muted); }
+.term-strip .term:hover, .term-strip .term:focus-visible { color: var(--accent-hover); }
+.term-tip {
+  position: fixed;
+  z-index: 80;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  width: max-content;
+  max-width: 320px;
+  padding: 10px 12px;
+  border-radius: var(--radius-control);
+  background: var(--surface-high);
+  border: 1px solid var(--border-bright);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: normal;
+  pointer-events: none;
+  white-space: normal;
+}
+.term-tip.open { display: flex; animation: fade-up 160ms var(--ease) both; }
+.term-tip.above { transform: translateY(-100%); animation: none; }
+.term-tip-title { font-weight: 700; font-family: var(--font-display); }
+.term-tip-text { color: var(--text-muted); }

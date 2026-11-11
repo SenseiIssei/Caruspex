@@ -10,9 +10,11 @@ import { Icon } from "../components/Icon";
 import { ProHint } from "../components/ProHint";
 import { confirm } from "../components/Modal";
 import { toast } from "../components/Toast";
+import { Term, TermStrip } from "../components/Term";
 import { Button, Card, Page, PageHeader, Pill } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
 import { localeNumber, t, translator } from "../i18n";
+import type { TermId } from "../lib/glossary";
 import { emitApp } from "../lib/store";
 import { navigate } from "../shell/nav";
 import { useBackendEvent } from "../lib/hooks";
@@ -258,6 +260,7 @@ export default function FaultsPage() {
           "Jeder Eintrag mit Dringlichkeit. Rechts steht, was er bedeutet, ob das Auto noch fahren darf und wo man nachsehen kann.",
         )}
       />
+      <TermStrip ids={["dtc", "dtc-stored", "dtc-pending", "dtc-permanent", "mil", "freeze-frame"]} />
 
       <div className="faults-actions">
         <Button variant="primary" icon="refresh" disabled={!connected} onClick={() => void call("read_faults")}>
@@ -375,11 +378,13 @@ function FaultDetail({
 }) {
   const { fault, info, where } = entry;
   const tone = severityColor(info.severity);
-  const meta = [fault.kind];
+  // The kind carries its explanation; the rest follows as plain text.
+  const meta: string[] = [];
   if (fault.ecu) meta.push(fault.ecu);
   if (info.systemName) meta.push(info.systemName);
   if (info.manufacturerSpecific && info.familyLabel) meta.push(tr("Herstellercode %1", info.familyLabel));
   if (!info.known) meta.push(tr("genaue Bedeutung unbekannt, das ist die Gruppe"));
+  const kindTerm: TermId = fault.stored ? "dtc-stored" : fault.permanent ? "dtc-permanent" : "dtc-pending";
 
   // The freeze frame the control unit stored together with this code.
   const match = frames.find((f) => f.dtc === fault.code) ?? null;
@@ -393,7 +398,10 @@ function FaultDetail({
           <Pill tone={tone}>{info.severityLabel}</Pill>
         </div>
         <h2 className="section-title">{info.known ? info.text : fault.text}</h2>
-        <div className="hint">{meta.join("  ·  ")}</div>
+        <div className="hint">
+          {fault.kind ? <Term id={kindTerm}>{fault.kind}</Term> : null}
+          {meta.length > 0 ? `${fault.kind ? "  ·  " : ""}${meta.join("  ·  ")}` : null}
+        </div>
 
         <div className="faults-advice">
           <div className="strong">{tr("Darf ich weiterfahren?")}</div>
@@ -451,7 +459,9 @@ function FaultDetail({
 
         {match && match.values.length > 0 ? (
           <section className="faults-section">
-            <div className="eyebrow">{tr("Was im Moment des Fehlers los war")}</div>
+            <div className="eyebrow">
+              <Term id="freeze-frame">{tr("Was im Moment des Fehlers los war")}</Term>
+            </div>
             {frameRows.map((v) => (
               <div key={v.pid} className="faults-frame-row">
                 <span className="subtle grow">{v.name}</span>

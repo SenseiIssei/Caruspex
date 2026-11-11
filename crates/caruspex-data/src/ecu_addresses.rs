@@ -219,6 +219,41 @@ pub fn bmw_address_sweep() -> Vec<EcuDefinition> {
     out
 }
 
+/// What to ask on Ford's medium speed CAN (pins 3 and 11), reachable with an
+/// adapter that switches buses: the Ford list without engine and gearbox,
+/// which sit on the high speed CAN. Units of the list that are on the high
+/// speed CAN in a given model simply do not answer here.
+pub fn ford_ms_can_ecus() -> Vec<EcuDefinition> {
+    ecu_definitions("FORD")
+        .into_iter()
+        .filter(|d| !matches!(d.kind, EcuKind::Engine | EcuKind::Gearbox))
+        .collect()
+}
+
+/// What to ask on GM's single wire CAN (pin 1, GMLAN low speed): the body
+/// range of the GM list, request 0x240 to 0x24F with the answer on 0x640 to
+/// 0x64F, the known units by name and first.
+pub fn gm_single_wire_ecus() -> Vec<EcuDefinition> {
+    let known: Vec<EcuDefinition> = ecu_definitions("GM")
+        .into_iter()
+        .filter(|d| (0x240..=0x24F).contains(&d.request))
+        .collect();
+    let mut out = known.clone();
+    for request in 0x240..=0x24Fu32 {
+        if known.iter().any(|d| d.request == request) {
+            continue;
+        }
+        out.push(EcuDefinition {
+            request,
+            response: request + 0x400,
+            family: "GM".to_string(),
+            name: format!("{}0x{request:03X}", l("Steuergerät ", "Control unit ")),
+            ..Default::default()
+        });
+    }
+    out
+}
+
 /// The definition for a unit by its ids, as the UI keeps them: request 6F1
 /// with a response 6xx means BMW style extended addressing.
 pub fn ecu_from_ids(request: u32, response: u32, extended29: bool, name: &str) -> EcuDefinition {
@@ -466,6 +501,27 @@ mod tests {
         // The known units keep their names and come first.
         assert_eq!(sweep[0].extended_address, 0x12);
         assert_eq!(sweep[0].name, list[0].name);
+    }
+
+    #[test]
+    fn lists_for_the_extra_buses_of_an_obdlink() {
+        let _lang = english();
+        let ford = ford_ms_can_ecus();
+        assert!(
+            ford.iter()
+                .any(|d| d.request == 0x726 && d.response == 0x72E)
+        );
+        assert!(
+            ford.iter()
+                .all(|d| d.request != 0x7E0 && d.request != 0x7E1)
+        );
+
+        let gm = gm_single_wire_ecus();
+        assert_eq!(gm.len(), 16);
+        assert_eq!((gm[0].request, gm[0].response), (0x241, 0x641));
+        assert!(gm[0].name.contains("BCM"));
+        assert!(gm.iter().all(|d| d.response == d.request + 0x400));
+        assert!(gm.iter().any(|d| d.name == "Control unit 0x24F"));
     }
 
     #[test]

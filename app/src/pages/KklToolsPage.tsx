@@ -6,7 +6,7 @@ import type { KklEcuInfo, LiveRow } from "../api";
 import { Button, Card, NumberInput, Page, PageHeader, Select } from "../components/ui";
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
-import { KklMessage, KklState, PortChoice, useMessageBox, usePorts } from "./WorkshopShared";
+import { KklMessage, KklState, PortChoice, noWay, useMessageBox, usePorts } from "./WorkshopShared";
 
 const tr = translator("caruspex::KklToolsPage");
 
@@ -97,7 +97,7 @@ export default function KklToolsPage() {
       return;
     }
     if (!ports.port) {
-      showMessage(tr("Kein Anschluss"), tr("Erst ein KKL-Kabel anstecken und auf Suchen drücken."));
+      showMessage(tr("Kein Anschluss"), noWay());
       return;
     }
     void call("open_kkl", { device: ports.port, ecuAddress: ecu });

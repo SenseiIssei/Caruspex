@@ -244,6 +244,57 @@ pub fn decode_kwp2000_fault(high: u8, low: u8, status: u8, ecu_address: i32) -> 
     }
 }
 
+/// The readable text of a ReadEcuIdentification 0x9B answer (part number
+/// and description), service byte first.
+pub fn identification_text(reply: &[u8]) -> String {
+    reply
+        .iter()
+        .skip(1)
+        .map(|&b| b & 0x7F)
+        .filter(|&c| (0x20..0x7F).contains(&c))
+        .map(char::from)
+        .collect()
+}
+
+/// The entries of a ReadDTCByStatus answer (0x58, count, three bytes per
+/// fault) from the control unit at `ecu_address`.
+pub fn faults_from_reply(reply: &[u8], ecu_address: u8) -> Vec<Kwp1281Fault> {
+    let mut out = Vec::new();
+    if reply.len() < 2 {
+        return out; // response without entries
+    }
+    let count = usize::from(reply[1]);
+    for i in 0..count {
+        let at = 2 + i * 3;
+        if at + 2 >= reply.len() {
+            break;
+        }
+        let fault = decode_kwp2000_fault(
+            reply[at],
+            reply[at + 1],
+            reply[at + 2],
+            i32::from(ecu_address),
+        );
+        if fault.code != 0 && fault.code != 0xFFFF {
+            out.push(fault);
+        }
+    }
+    out
+}
+
+/// The values of a ReadDataByLocalIdentifier answer: 0x61, group number,
+/// then three bytes per display field.
+pub fn values_from_reply(reply: &[u8]) -> Vec<MeasuringValue> {
+    reply
+        .get(2..)
+        .unwrap_or_default()
+        .as_chunks::<3>()
+        .0
+        .iter()
+        .map(|f| decode_measurement(f[0], f[1], f[2]))
+        .collect()
+}
+
 /// KWP2000 on a K-line after the wake-up. Owns the byte stream; get it back
 /// with [`Kwp2000::into_stream`].
 pub struct Kwp2000<S: ByteStream> {
@@ -495,13 +546,7 @@ impl<S: ByteStream> Kwp2000<S> {
         let Ok(reply) = self.request(&[service::READ_ECU_IDENTIFICATION, 0x9B]) else {
             return false;
         };
-        let text: String = reply
-            .iter()
-            .skip(1)
-            .map(|&b| b & 0x7F)
-            .filter(|&c| (0x20..0x7F).contains(&c))
-            .map(char::from)
-            .collect();
+        let text = identification_text(&reply);
         if !text.is_empty() {
             self.identification.push(text);
         }
@@ -525,28 +570,7 @@ impl<S: ByteStream> Kwp2000<S> {
 
         // 0xFF 0x00 means: all faults, regardless of status.
         let reply = self.request(&[service::READ_DTC_BY_STATUS, 0x02, 0xFF, 0x00])?;
-        let mut out = Vec::new();
-        if reply.len() < 2 {
-            return Ok(out); // response without entries
-        }
-
-        let count = usize::from(reply[1]);
-        for i in 0..count {
-            let at = 2 + i * 3;
-            if at + 2 >= reply.len() {
-                break;
-            }
-            let fault = decode_kwp2000_fault(
-                reply[at],
-                reply[at + 1],
-                reply[at + 2],
-                i32::from(self.target),
-            );
-            if fault.code != 0 && fault.code != 0xFFFF {
-                out.push(fault);
-            }
-        }
-        Ok(out)
+        Ok(faults_from_reply(&reply, self.target))
     }
 
     pub fn clear_faults(&mut self) -> Result<(), String> {
@@ -563,15 +587,7 @@ impl<S: ByteStream> Kwp2000<S> {
         }
 
         let reply = self.request(&[service::READ_DATA_BY_LOCAL_ID, group])?;
-        // Response: 0x61, group number, then three bytes per display field.
-        Ok(reply
-            .get(2..)
-            .unwrap_or_default()
-            .as_chunks::<3>()
-            .0
-            .iter()
-            .map(|f| decode_measurement(f[0], f[1], f[2]))
-            .collect())
+        Ok(values_from_reply(&reply))
     }
 
     /// Basic settings over KWP2000.

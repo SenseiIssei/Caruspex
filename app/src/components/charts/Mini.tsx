@@ -89,13 +89,17 @@ export function Histogram({
   height = 120,
   markers = [],
   format = (v: number) => v.toFixed(1),
+  label,
 }: {
   values: readonly number[];
   bins?: number;
   height?: number;
   markers?: HistogramMarker[];
   format?: (v: number) => string;
+  // Name for screen readers; the markers are read after it.
+  label?: string;
 }) {
+  const spoken = [label, ...markers.map((m) => `${m.label} ${format(m.value)}`)].filter(Boolean).join(", ");
   const width = 600;
   const axis = 30;
   const plot = height - axis;
@@ -119,7 +123,7 @@ export function Histogram({
   const barWidth = width / bins;
   const xOf = (v: number) => ((v - lo) / (hi - lo)) * width;
   return (
-    <svg className="histogram" viewBox={`0 0 ${width} ${height}`} role="img">
+    <svg className="histogram" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={spoken || undefined}>
       <defs>
         <linearGradient id="histogram-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="var(--sky)" />

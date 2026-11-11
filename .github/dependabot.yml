@@ -26,6 +26,10 @@ updates:
       - dependency-name: windows
       - dependency-name: windows-core
       - dependency-name: webview2-com
+      # The same for Linux: gtk, webkit2gtk and cairo-rs are wry's versions.
+      - dependency-name: gtk
+      - dependency-name: webkit2gtk
+      - dependency-name: cairo-rs
 
   # The interface: React, Vite, TypeScript and the Tauri JavaScript API.
   - package-ecosystem: npm
@@ -37,3 +41,10 @@ updates:
     groups:
       interface:
         patterns: ["*"]
+    # The types of Node follow the Node the project runs on (24, the
+    # node-version in .github/workflows/build.yml): a new major of
+    # @types/node describes APIs that Node 24 does not have. It is raised by
+    # hand together with Node itself; minor and patch updates still come.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

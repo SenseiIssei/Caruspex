@@ -150,6 +150,14 @@ export default function LexiconPage() {
                   key={`${e.family}|${e.code}`}
                   className={cx(selected?.code === e.code && selected.family === e.family && "selected")}
                   onClick={() => setSelected(e)}
+                  tabIndex={0}
+                  aria-selected={selected?.code === e.code && selected.family === e.family}
+                  onKeyDown={(k) => {
+                    if (k.key === "Enter" || k.key === " ") {
+                      k.preventDefault();
+                      setSelected(e);
+                    }
+                  }}
                 >
                   <td className="mono strong ltr" style={{ color: severityTone(e.severity) }}>
                     {e.code}
@@ -174,7 +182,7 @@ export default function LexiconPage() {
               </span>
               <Pill tone={tone}>{selected.severityLabel}</Pill>
               <span className="spacer" />
-              <Button variant="ghost" small icon="x" onClick={() => setSelected(null)} />
+              <Button variant="ghost" small icon="x" title={t("caruspex::TitleBar", "Schließen")} onClick={() => setSelected(null)} />
             </div>
             <h2 className="section-title selectable">{ownText ? selected.text : (info?.text ?? selected.text)}</h2>
             <div className="subtle">

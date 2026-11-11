@@ -8,7 +8,7 @@ import type { LiveRow } from "../api";
 import { Histogram, RangeBar, Sparkline } from "../components/charts/Mini";
 import { toast } from "../components/Toast";
 import { Button, Card, Page, PageHeader, cx } from "../components/ui";
-import { translator } from "../i18n";
+import { t, translator } from "../i18n";
 import { useBackendEvent, usePageActive } from "../lib/hooks";
 import { useSession } from "../state/session";
 import { qtFilters, stamp } from "./measure";
@@ -248,9 +248,10 @@ export default function StatsPage() {
           className="fade-in"
           title={`${chosen.name}${chosen.unit ? ` (${chosen.unit})` : ""}`}
           icon="chart"
-          actions={<Button variant="ghost" small icon="x" onClick={() => setSelected(null)} />}
+          actions={<Button variant="ghost" small icon="x" title={t("caruspex::TitleBar", "Schließen")} onClick={() => setSelected(null)} />}
         >
           <Histogram
+            label={chosen.name}
             values={chosen.recent}
             height={150}
             format={fmt}

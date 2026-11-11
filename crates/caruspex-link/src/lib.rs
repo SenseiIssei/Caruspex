@@ -26,10 +26,11 @@ pub mod transport;
 
 pub use adapter_probe::{AdapterReport, BilingualText, CommandCheck, probe_adapter};
 pub use elm327::{
-    AdaptiveTiming, ConnectTrace, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat,
-    decode_messages, header_format_for, hex_to_bytes, protocol_name, split_messages,
+    AdaptiveTiming, ConnectTrace, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat, StnBus,
+    decode_messages, header_format_for, hex_to_bytes, protocol_name, split_batch_answer,
+    split_messages, stn_buses,
 };
 pub use kline_stream::KLineStream;
 pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
 pub use tcp::TcpTransport;
-pub use transport::{ByteStream, LogFn, Transport};
+pub use transport::{ByteStream, LogFn, MessageLink, Transport};

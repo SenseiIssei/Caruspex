@@ -23,15 +23,17 @@ type BrandCode = [string, string, string, number, number, number, boolean];
 // [key, label de, label en, brands, records]
 type FamilyRecord = [string, string, string, string, BrandCode[]];
 
-// [length, width, height, wheelbase, track, mass, Wikidata item]; 0 = none.
-export type MeasuredRecord = [number, number, number, number, number, number, string];
+// [length, width, height, wheelbase, track, mass, Wikidata item, maker's
+// document ("" for Wikidata alone)]; 0 = none.
+export type MeasuredRecord = [number, number, number, number, number, number, string, string];
 
 interface CatalogData {
   brands: BrandRecord[];
   generations: GenRecord[];
   wmi: WmiRecord[];
   countries: CountryRecord[];
-  // Wikidata dimensions by generation index (generated/dimensions.rs).
+  // Dimensions from the makers and Wikidata by generation index
+  // (generated/dimensions.rs).
   measured: Record<string, MeasuredRecord>;
 }
 
@@ -335,6 +337,14 @@ function supportFor(g: GenRecord, year: number, powertrain = 0): number {
   // EU: petrol cars (and hybrids, gas cars) from 2001, diesels from 2004.
   const petrolLike = (pt & (PtPetrol | PtHybrid | PtPlugIn | PtGas)) !== 0;
   return y >= (petrolLike ? 2001 : 2004) ? Support.Full : Support.Partial;
+}
+
+// The spot for the sketch (catalog::location_for): the recorded one, the
+// engine bay for the round plugs, otherwise unknown.
+function locationFor(g: GenRecord, year: number): number {
+  if (g[12] !== Location.Unknown) return g[12];
+  const c = connectorFor(g, year);
+  return c === Connector.Bmw20 || c === Connector.Mb38 ? Location.EngineBay : Location.Unknown;
 }
 
 // Location with the connector taken into account (an unknown spot of a BMW
@@ -894,6 +904,7 @@ export const knowledgeHandlers: PartialHandlers = {
       connector,
       connectorName: connectorName(connector),
       locationText: locationText(g, y),
+      location: locationFor(g, y),
       diagnosisText: diagnosisText(data, g, y),
       kklPossible: kklPossible(data, g, y),
       protocolOrder: g[11],

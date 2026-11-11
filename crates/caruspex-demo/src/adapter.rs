@@ -1,5 +1,7 @@
 //! The adapter and the control units behind it.
 
+use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
 use crate::codec::*;
@@ -28,50 +30,52 @@ pub(crate) struct Profile {
     pub stn_id: Option<&'static str>,     // STI, None when not an STN chip
     pub stn_device: Option<&'static str>, // STDI
     pub ok_to_all: bool,                  // answers "OK" to unknown AT commands
+    pub batch: bool,                      // STN: knows the batched commands (STBC)
+    pub medium_speed: bool,               // STN: has the MS-CAN transceiver (STP 51 to 54)
+    pub single_wire: bool,                // STN: has the SW-CAN transceiver (STP 61 to 64)
+}
+
+const fn elm(version: &'static str, level: i32, ok_to_all: bool) -> Profile {
+    Profile {
+        version,
+        description: "OBDII to RS232 Interpreter",
+        level,
+        stn_id: None,
+        stn_device: None,
+        ok_to_all,
+        batch: false,
+        medium_speed: false,
+        single_wire: false,
+    }
+}
+
+// The STN chips answer ATI like an ELM327 v1.4b and AT@1 with the maker.
+const fn stn(id: &'static str, device: &'static str, batch: bool, ms: bool, sw: bool) -> Profile {
+    Profile {
+        version: "ELM327 v1.4b",
+        description: "SCANTOOL.NET LLC",
+        level: V14B,
+        stn_id: Some(id),
+        stn_device: Some(device),
+        ok_to_all: false,
+        batch,
+        medium_speed: ms,
+        single_wire: sw,
+    }
 }
 
 fn profile_for(adapter: DemoAdapter) -> Profile {
     match adapter {
-        DemoAdapter::GenuineV14b => Profile {
-            version: "ELM327 v1.4b",
-            description: "OBDII to RS232 Interpreter",
-            level: V14B,
-            stn_id: None,
-            stn_device: None,
-            ok_to_all: false,
-        },
-        DemoAdapter::CloneV21 => Profile {
-            version: "ELM327 v2.1",
-            description: "OBDII to RS232 Interpreter",
-            level: V14,
-            stn_id: None,
-            stn_device: None,
-            ok_to_all: false,
-        },
-        DemoAdapter::CloneOkToAll => Profile {
-            version: "ELM327 v2.1",
-            description: "OBDII to RS232 Interpreter",
-            level: V14,
-            stn_id: None,
-            stn_device: None,
-            ok_to_all: true,
-        },
-        DemoAdapter::ObdLinkStn => Profile {
-            version: "ELM327 v1.4b",
-            description: "SCANTOOL.NET LLC",
-            level: V14B,
-            stn_id: Some("STN1130 v5.6.19"),
-            stn_device: Some("OBDLink SX r4.2"),
-            ok_to_all: false,
-        },
-        DemoAdapter::CloneV15 => Profile {
-            version: "ELM327 v1.5",
-            description: "OBDII to RS232 Interpreter",
-            level: V14,
-            stn_id: None,
-            stn_device: None,
-            ok_to_all: false,
-        },
+        DemoAdapter::GenuineV14b => elm("ELM327 v1.4b", V14B, false),
+        DemoAdapter::CloneV21 => elm("ELM327 v2.1", V14, false),
+        DemoAdapter::CloneOkToAll => elm("ELM327 v2.1", V14, true),
+        DemoAdapter::CloneV15 => elm("ELM327 v1.5", V14, false),
+        DemoAdapter::ObdLinkStn => stn("STN1130 v5.6.19", "OBDLink SX r4.2", false, false, false),
+        // Firmware ids as in the examples of the OBDLink manual (STI, STDI).
+        DemoAdapter::ObdLinkEx => stn("STN2232 v5.10.3", "OBDLink EX", true, true, false),
+        DemoAdapter::ObdLinkMxPlus => {
+            stn("STN2256 v5.11.4", "OBDLink MX+ r3.2.1", true, true, true)
+        }
     }
 }
 
@@ -147,14 +151,25 @@ struct UdsDid {
 /// One control unit that answers UDS on its own request id. The engine and
 /// the gearbox also speak OBD; the others are reachable only physically, the
 /// way body and chassis units are on a real car. Every id follows the common
-/// "response = request + 8" convention, so a generic sweep finds them too.
+/// "response = request + 8" convention, so a generic sweep finds them too,
+/// except the one on the single wire CAN, which follows GM's 24x/64x scheme.
 struct UdsUnit {
     request: i32,
     response: i32,
     obd: bool, // also answers the OBD services (engine, gearbox)
+    bus: Bus,  // where it is wired
     dids: Vec<UdsDid>,
     faults: Vec<UdsFault>, // fault memory; the engine computes its own
     slow_fault_read: bool, // answers 19 02 with 7F 19 78 first
+}
+
+/// The CAN buses of the OBD socket. An ELM327 only reaches the high speed
+/// one; an OBDLink with the transceivers switches with STP.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Bus {
+    High,       // pins 6 and 14
+    Medium,     // pins 3 and 11, 125 kbit
+    SingleWire, // pin 1, 33.3 kbit
 }
 
 fn did(id: i32, text: &'static str) -> UdsDid {
@@ -176,6 +191,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x7E0,
             response: 0x7E8,
             obd: true,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX5 906 018 B"),
                 did(0xF189, "0417"),
@@ -191,6 +207,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x7E1,
             response: 0x7E9,
             obd: true,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX6 927 156 A"),
                 did(0xF189, "0203"),
@@ -206,6 +223,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x760,
             response: 0x768,
             obd: false,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX1 614 517 C"),
                 did(0xF189, "0122"),
@@ -222,6 +240,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x737,
             response: 0x73F,
             obd: false,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX0 959 655 F"),
                 did(0xF189, "0310"),
@@ -238,6 +257,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x720,
             response: 0x728,
             obd: false,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX2 920 870 D"),
                 did(0xF189, "0805"),
@@ -256,6 +276,7 @@ fn make_uds_units() -> Vec<UdsUnit> {
             request: 0x744,
             response: 0x74C,
             obd: false,
+            bus: Bus::High,
             dids: vec![
                 did(0xF187, "CX8 907 044 A"),
                 did(0xF195, "0109"),
@@ -265,6 +286,40 @@ fn make_uds_units() -> Vec<UdsUnit> {
                 did(0xF190, VIN),
             ],
             faults: vec![fault("U0100", 0x00, UDS_STORED)],
+            slow_fault_read: false,
+        },
+        // Body control on the medium speed CAN: the driver's door switch
+        // reported an open circuit once.
+        UdsUnit {
+            request: 0x726,
+            response: 0x72E,
+            obd: false,
+            bus: Bus::Medium,
+            dids: vec![
+                did(0xF187, "CX7 937 090 B"),
+                did(0xF189, "0214"),
+                did(0xF191, "H09"),
+                did(0xF197, "BODY CTRL MS"),
+                did(0xF18C, "BC21A0077410"),
+                did(0xF190, VIN),
+            ],
+            faults: vec![fault("B1342", 0x13, UDS_STORED)],
+            slow_fault_read: false,
+        },
+        // Body control on the single wire CAN, nothing stored.
+        UdsUnit {
+            request: 0x241,
+            response: 0x641,
+            obd: false,
+            bus: Bus::SingleWire,
+            dids: vec![
+                did(0xF187, "CX7 937 091 A"),
+                did(0xF189, "0108"),
+                did(0xF191, "H02"),
+                did(0xF197, "BODY CTRL SW"),
+                did(0xF18C, "BS21A0012093"),
+            ],
+            faults: vec![],
             slow_fault_read: false,
         },
     ]
@@ -337,6 +392,12 @@ pub(crate) struct Impl {
     pub monitoring: bool,
     last_frame: Bytes,
     saved_byte: i32, // ATSD / ATRD, kept in RAM only
+    bus: Bus,        // STN: the bus selected with STP
+    stp: i32,        // STN: the STP preset, 0 while an AT protocol is set
+    batch: bool,     // STN: STBC 1
+
+    // Simulated adapter time in milliseconds, as f64 bits (adapter_ms).
+    pub adapter_clock: Arc<AtomicU64>,
 
     // The control units that answer UDS, with their own fault memory.
     uds_units: Vec<UdsUnit>,
@@ -374,6 +435,10 @@ impl Impl {
             monitoring: false,
             last_frame: vec![0x00; 8],
             saved_byte: 0x00,
+            bus: Bus::High,
+            stp: 0,
+            batch: false,
+            adapter_clock: Arc::new(AtomicU64::new(0f64.to_bits())),
             uds_units: make_uds_units(),
             cleared: false,
             clear_run: 0.0,
@@ -394,6 +459,21 @@ impl Impl {
 
     fn supports(&self, level: i32) -> bool {
         self.profile.level >= level
+    }
+
+    /// The longest command line the adapter takes: the ELM327 buffer, or
+    /// the 1024 characters of an STN chip (enough for batched commands).
+    pub fn line_limit(&self) -> usize {
+        if self.profile.stn_id.is_some() {
+            1024
+        } else {
+            64
+        }
+    }
+
+    fn spend(&self, ms: f64) {
+        let total = f64::from_bits(self.adapter_clock.load(Ordering::SeqCst)) + ms;
+        self.adapter_clock.store(total.to_bits(), Ordering::SeqCst);
     }
 
     pub fn emit(&mut self, text: Vec<u8>, delay_ms: f64) {
@@ -425,6 +505,9 @@ impl Impl {
         self.can_filter = -1;
         self.can_mask = 0x7FF;
         self.monitoring = false;
+        self.bus = Bus::High;
+        self.stp = 0;
+        self.batch = false; // volatile, a reset ends it
     }
 
     // ---- fault state over time ------------------------------------------
@@ -833,7 +916,9 @@ impl Impl {
         if request == 0x7E1 && !self.options.transmission_ecu {
             return None;
         }
-        self.uds_units.iter().position(|u| u.request == request)
+        self.uds_units
+            .iter()
+            .position(|u| u.request == request && u.bus == self.bus)
     }
 
     // The engine's UDS fault memory is the same as its OBD one: stored codes
@@ -1367,7 +1452,8 @@ impl Impl {
             for payload in answers {
                 replies.push(Reply { id, payload });
             }
-        } else {
+        } else if self.bus == Bus::High {
+            // Engine and gearbox sit on the high speed CAN only.
             if (functional || self.header == 0x7E0)
                 && let Some(payload) = self.engine(&data, !functional, t)
             {
@@ -1453,6 +1539,8 @@ impl Impl {
         self.protocol = hex_value(digit);
         self.auto_search = automatic || self.protocol == 0;
         self.active = false;
+        self.bus = Bus::High; // the ELM327 protocols all use pins 6 and 14
+        self.stp = 0;
         Response::new(&["OK"], 2.0)
     }
 
@@ -1792,18 +1880,177 @@ impl Impl {
         self.unknown()
     }
 
-    // STN (OBDLink) commands; only the read-only identification is modelled.
-    fn stn_command(&self, c: &str) -> Response {
-        if c == "STI" {
-            return Response::one(self.profile.stn_id.unwrap_or(""), 2.0);
+    // STN (OBDLink) commands, as the OBDLink Family Reference and Programming
+    // Manual describes them: identification, protocol presets, monitoring,
+    // filters and the batched commands. Unsupported ones say "?".
+    fn stn_command(&mut self, c: &str) -> Response {
+        let unknown = || Response::new(&["?"], 2.0);
+        let ok = || Response::new(&["OK"], 2.0);
+        match c {
+            "STI" => return Response::one(self.profile.stn_id.unwrap_or(""), 2.0),
+            "STDI" => return Response::one(self.profile.stn_device.unwrap_or(""), 2.0),
+            "STPR" => return Response::one(self.stn_protocol_number().to_string(), 2.0),
+            "STPRS" => return Response::one(self.stn_protocol_text(), 2.0),
+            "STPO" => return ok(),
+            "STPC" => {
+                self.active = false;
+                return ok();
+            }
+            "STBC0" | "STBC1" if self.profile.batch => {
+                self.batch = c == "STBC1";
+                return ok();
+            }
+            "STBCOF0" | "STBCOF1" | "STBCOF2" if self.profile.batch => return ok(),
+            "STCMM0" | "STCMM1" | "STCMM2" => return ok(),
+            "STFA" | "STFAC" | "STFCA" | "STFPC" | "STFCP" | "STFBC" | "STFCB" | "STFFCC"
+            | "STFCFC" => return ok(),
+            _ => {}
         }
-        if c == "STDI" {
-            return Response::one(self.profile.stn_device.unwrap_or(""), 2.0);
+        if let Some(p) = c.strip_prefix("STP")
+            && !p.is_empty()
+            && p.chars().all(|ch| ch.is_ascii_digit())
+        {
+            return self.stn_set_protocol(p.parse().unwrap_or(0));
         }
-        Response::new(&["?"], 2.0)
+        if let Some(mode) = c.strip_prefix("STCSWM") {
+            let valid = matches!(mode, "0" | "1" | "2" | "3" | "5");
+            return if valid && self.profile.single_wire {
+                ok()
+            } else {
+                unknown()
+            };
+        }
+        for filter in ["STFPA", "STFAP", "STFBA", "STFAB", "STFFCA", "STFAFC"] {
+            if let Some(args) = c.strip_prefix(filter) {
+                let parts: Vec<&str> = args.split(',').collect();
+                let valid = parts.len() == 2
+                    && parts[0].len() == parts[1].len()
+                    && parts[0].len() <= 10
+                    && all_hex(parts[0])
+                    && all_hex(parts[1]);
+                return if valid { ok() } else { unknown() };
+            }
+        }
+        // STMA [n] and STM [n]: the bus stays silent, so the count is never
+        // reached and monitoring runs until a character stops it.
+        for monitor in ["STMA", "STM"] {
+            if let Some(count) = c.strip_prefix(monitor)
+                && count.chars().all(|ch| ch.is_ascii_digit())
+            {
+                let n: u32 = count.parse().unwrap_or(1);
+                if !count.is_empty() && !(1..=32767).contains(&n) {
+                    return unknown();
+                }
+                let mut r = Response::empty();
+                r.prompt = false;
+                self.monitoring = true;
+                return r;
+            }
+        }
+        unknown()
+    }
+
+    // STP presets of the manual: 11 and 12 J1850, 21 to 25 ISO 9141 and
+    // 14230, 31 to 36 high speed CAN, 51 to 54 medium speed CAN, 61 to 64
+    // single wire CAN. Only ISO 15765 is modelled on CAN; the car answers 11
+    // bit at 500 kbit on the high speed bus.
+    fn stn_set_protocol(&mut self, p: i32) -> Response {
+        let (protocol, bus) = match p {
+            11 => (1, Bus::High),
+            12 => (2, Bus::High),
+            22 => (3, Bus::High),
+            24 => (4, Bus::High),
+            25 => (5, Bus::High),
+            33 => (6, Bus::High),
+            34 => (7, Bus::High),
+            35 => (8, Bus::High),
+            36 => (9, Bus::High),
+            53 if self.profile.medium_speed => (6, Bus::Medium),
+            54 if self.profile.medium_speed => (7, Bus::Medium),
+            63 if self.profile.single_wire => (6, Bus::SingleWire),
+            64 if self.profile.single_wire => (7, Bus::SingleWire),
+            _ => return Response::new(&["?"], 2.0),
+        };
+        self.protocol = protocol;
+        self.auto_search = false;
+        self.active = false;
+        self.bus = bus;
+        self.stp = p;
+        Response::new(&["OK"], 2.0)
+    }
+
+    fn stn_protocol_number(&self) -> i32 {
+        if self.stp > 0 {
+            return self.stp;
+        }
+        let shown = if self.active { 6 } else { self.protocol };
+        match shown {
+            1 => 11,
+            2 => 12,
+            3 => 22,
+            4 => 24,
+            5 => 25,
+            6 => 33,
+            7 => 34,
+            8 => 35,
+            9 => 36,
+            _ => 0,
+        }
+    }
+
+    fn stn_protocol_text(&self) -> String {
+        match (self.bus, self.stp) {
+            (Bus::Medium, 53) => "ISO 15765, 11-bit Tx, 125kbps, DLC=8".to_string(),
+            (Bus::Medium, _) => "ISO 15765, 29-bit Tx, 125kbps, DLC=8".to_string(),
+            (Bus::SingleWire, 63) => "ISO 15765, 11-bit Tx, 33.3kbps, DLC=8".to_string(),
+            (Bus::SingleWire, _) => "ISO 15765, 29-bit Tx, 33.3kbps, DLC=8".to_string(),
+            (Bus::High, _) => self.describe_protocol(),
+        }
+    }
+
+    // Batched commands (STBC 1): every part runs in turn, each answer after
+    // the first starts with '|', and an error other than NO DATA ends the
+    // batch.
+    fn batched(&mut self, line: &str) -> Response {
+        let mut out = Response::empty();
+        out.delay_ms = 0.0;
+        for (i, part) in line.split('|').enumerate() {
+            let r = self.execute_one(part);
+            out.delay_ms += r.delay_ms;
+            if !r.prompt {
+                // A monitor inside the batch runs until stopped.
+                out.prompt = false;
+                return out;
+            }
+            let failed = r.lines.iter().any(|l| {
+                matches!(
+                    l.as_str(),
+                    "?" | "CAN ERROR" | "BUS ERROR" | "BUS INIT: ERROR" | "BUS INIT: ...ERROR"
+                )
+            });
+            let mut lines = r.lines;
+            if lines.is_empty() {
+                lines.push(String::new());
+            }
+            if i > 0 {
+                lines[0] = format!("|{}", lines[0]);
+            }
+            out.lines.extend(lines);
+            if failed {
+                break;
+            }
+        }
+        out
     }
 
     fn execute(&mut self, command: &str) -> Response {
+        if self.batch && command.contains('|') {
+            return self.batched(command);
+        }
+        self.execute_one(command)
+    }
+
+    fn execute_one(&mut self, command: &str) -> Response {
         if command.starts_with("AT") {
             return self.at_command(after(command, 2));
         }
@@ -1843,6 +2090,7 @@ impl Impl {
         self.last_command = command.clone();
 
         let r = self.execute(&command);
+        self.spend(self.options.round_trip_ms + r.delay_ms);
         if !r.prompt {
             return;
         }

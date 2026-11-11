@@ -1,0 +1,47 @@
+[
+ {
+  "id": "c-stn-1",
+  "de": "  Sammelbefehle des STN-Chips (STBC) aktiv: mehrere Anfragen in einer Zeile.",
+  "en": "  Batched commands of the STN chip (STBC) active: several requests in one line."
+ },
+ {
+  "id": "c-stn-2",
+  "de": "  Umgeschaltet auf ",
+  "en": "  Switched to "
+ },
+ {
+  "id": "c-stn-3",
+  "de": "  Der STN-Chip kennt keine Sammelbefehle (STBC), Anfragen gehen einzeln.",
+  "en": "  The STN chip has no batched commands (STBC), requests go one by one."
+ },
+ {
+  "id": "c-stn-4",
+  "de": "High-Speed-CAN (Pins 6 und 14)",
+  "en": "High speed CAN (pins 6 and 14)"
+ },
+ {
+  "id": "c-stn-5",
+  "de": "Medium-Speed-CAN (MS-CAN, Pins 3 und 11, 125 kBaud)",
+  "en": "Medium speed CAN (MS-CAN, pins 3 and 11, 125 kbaud)"
+ },
+ {
+  "id": "c-stn-6",
+  "de": "Single-Wire-CAN (GMLAN, Pin 1, 33,3 kBaud)",
+  "en": "Single wire CAN (GMLAN, pin 1, 33.3 kbaud)"
+ },
+ {
+  "id": "c-stn-7",
+  "de": "Der Adapter lehnt das Protokoll ab: ",
+  "en": "The adapter refuses the protocol: "
+ },
+ {
+  "id": "c-stn-8",
+  "de": "Dieser OBDLink hat keinen Anschluss für ",
+  "en": "This OBDLink has no transceiver for "
+ },
+ {
+  "id": "c-stn-9",
+  "de": "Das geht nur mit einem OBDLink (STN-Chip) an einem Auto mit CAN.",
+  "en": "This needs an OBDLink (STN chip) on a car with CAN."
+ }
+]

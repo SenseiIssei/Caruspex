@@ -17,6 +17,8 @@ import { emitApp } from "../lib/store";
 import { navigate, openReport } from "../shell/nav";
 import { live, recordCheck, session, useProMode, useSession, type DashboardFinding } from "../state/session";
 import { useAdvice } from "../state/advice";
+import { ShareDialog } from "../report/ShareDialog";
+import { sessionFacts, shareText } from "../report/share";
 import { describeFault, severityColor, severityTone } from "./FaultsPage";
 import { TIER_TONE, reportTone, tierTitle } from "./WhatToDoPage";
 import "./DashboardPage.css";
@@ -101,6 +103,14 @@ export default function DashboardPage() {
   const status = useSession((s) => s.status);
   const pro = useProMode();
   const brand = identity?.brand ?? "";
+  // "Teilen": the summary as a QR code.
+  const [sharing, setSharing] = useState(false);
+  // --page share: the start page with the QR code open.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "share") return;
+    navigate("start");
+    setSharing(true);
+  });
 
   // The result of a full health check replaces the page's own rating until
   // the connection closes.
@@ -296,6 +306,14 @@ export default function DashboardPage() {
               <Button icon="file" disabled={!connected} title={tr("Alles Gelesene als PDF speichern oder drucken")} onClick={openReport}>
                 {tr("Prüfbericht")}
               </Button>
+              <Button
+                icon="qr"
+                disabled={!connected}
+                title={t("caruspex::Usability", "Die Zusammenfassung als QR-Code fürs Handy, ohne Konto und ohne Server")}
+                onClick={() => setSharing(true)}
+              >
+                {t("caruspex::Usability", "Teilen")}
+              </Button>
             </div>
           </div>
           <button
@@ -343,6 +361,7 @@ export default function DashboardPage() {
       </div>
 
       <GaugeCard connected={connected} />
+      {sharing ? <ShareDialog text={shareText(sessionFacts())} onClose={() => setSharing(false)} /> : null}
     </Page>
   );
 }

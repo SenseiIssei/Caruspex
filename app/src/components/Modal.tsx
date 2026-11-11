@@ -1,10 +1,45 @@
 // Dialogs: a modal frame for page dialogs (adding a service, a fuel entry,
 // the report preview) and confirm(), the QMessageBox::question of the Qt
 // version, as a promise.
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useId, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import { t } from "../i18n";
 import { Icon, type IconName } from "./Icon";
 import { Button } from "./ui";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+
+// The elements Tab can reach inside a dialog, in order.
+export function focusables(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => !el.hidden && el.getClientRects().length > 0);
+}
+
+// Keeps Tab and Shift+Tab inside the dialog (the focus trap).
+export function trapTab(root: HTMLElement, e: KeyboardEvent): void {
+  const items = focusables(root);
+  if (items.length === 0) {
+    e.preventDefault();
+    root.focus();
+    return;
+  }
+  const first = items[0]!;
+  const last = items[items.length - 1]!;
+  const active = document.activeElement;
+  if (e.shiftKey && (active === first || !root.contains(active))) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && (active === last || !root.contains(active))) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
+// The last dialog in the document is the one on top.
+function isTopmost(el: HTMLElement): boolean {
+  const all = document.querySelectorAll('[role="dialog"][aria-modal]');
+  return all[all.length - 1] === el;
+}
 
 export function Modal({
   title,
@@ -23,24 +58,51 @@ export function Modal({
   small?: boolean;
   wide?: boolean;
 }) {
+  const box = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
-    const key = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const key = (e: KeyboardEvent) => {
+      // Only the dialog on top answers, when two are open.
+      if (box.current && !isTopmost(box.current)) return;
+      if (e.key === "Escape") closeRef.current();
+      else if (e.key === "Tab" && box.current) trapTab(box.current, e);
+    };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [onClose]);
+  }, []);
+  // Focus moves into the dialog and back to where it came from on close,
+  // so keyboard users keep their place.
+  useEffect(() => {
+    const before = document.activeElement as HTMLElement | null;
+    const el = box.current;
+    if (el && !el.contains(document.activeElement)) {
+      const first = focusables(el).find((f) => !f.classList.contains("modal-close")) ?? el;
+      first.focus({ preventScroll: true });
+    }
+    return () => {
+      if (before && document.contains(before)) before.focus({ preventScroll: true });
+    };
+  }, []);
   return (
     <div className="modal-backdrop" onMouseDown={onClose}>
       <div
+        ref={box}
         className={`modal${small ? " small" : ""}`}
         style={wide ? { width: "min(1180px, 100%)" } : undefined}
         role="dialog"
         aria-modal
+        aria-labelledby={titleId}
+        tabIndex={-1}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="modal-head">
           {icon ? <Icon name={icon} size={18} className="muted" /> : null}
-          <h2 className="section-title grow">{title}</h2>
-          <Button variant="ghost" small icon="x" onClick={onClose} />
+          <h2 className="section-title grow" id={titleId}>
+            {title}
+          </h2>
+          <Button variant="ghost" small icon="x" className="modal-close" title={t("caruspex::TitleBar", "Schließen")} onClick={onClose} />
         </div>
         <div className="modal-body">{children}</div>
         {footer ? <div className="modal-foot">{footer}</div> : null}

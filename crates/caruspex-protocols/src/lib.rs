@@ -4,7 +4,8 @@
 //! [`obd2::Obd2`] and [`uds::Uds`] borrow a connected
 //! [`caruspex_link::Elm327`]; the K-line protocols own a
 //! [`caruspex_link::ByteStream`] (a KKL cable or a simulated control unit)
-//! and hand it back with `into_stream`.
+//! and hand it back with `into_stream`. KWP2000 over VAG TP 2.0 on CAN
+//! ([`vag_tp20::VagTp20`]) owns a [`caruspex_link::MessageLink`] instead.
 #![forbid(unsafe_code)]
 
 pub mod ecu_address;
@@ -13,6 +14,7 @@ pub mod kwp2000;
 pub mod obd2;
 pub mod uds;
 pub mod vag_kline;
+pub mod vag_tp20;
 
 pub use ecu_address::{EcuRole, ecu_display_name, ecu_role, ecu_role_name};
 pub use kwp1281::{Ecu, KLineLog, Kwp1281, Kwp1281Fault, MeasuringValue, decode_measurement};
@@ -29,4 +31,5 @@ pub use uds::{
     ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, decode_bmw_dtc, decode_uds_dtc,
     extended_request, scan_ecus,
 };
-pub use vag_kline::VagKLine;
+pub use vag_kline::{VagDiagnosis, VagKLine};
+pub use vag_tp20::{VagTp20, tp20_label};
