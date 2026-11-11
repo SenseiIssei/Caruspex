@@ -19,6 +19,7 @@ import type {
   CustomRow,
   DtcInfo,
   DtcLexiconEntry,
+  EcuKind,
   EcuScanRow,
   FaultRow,
   FileFilter,
@@ -38,6 +39,7 @@ import type {
   UdsEcuRow,
   UpdateInfo,
   VehicleDiagnosisInfo,
+  VehicleAnatomy,
   VehicleGenerationInfo,
   VinInfo,
   ZoneInfo,
@@ -188,6 +190,14 @@ export interface Commands {
   catalog_size: Cmd<None, number>;
   // Support, connector, socket and the plain sentence for one generation and year.
   catalog_diagnosis: Cmd<{ generationId: number; year: number }, VehicleDiagnosisInfo>;
+  // Dimensions and drivetrain for the X-ray view (vehicles::anatomy). A
+  // generation (generationId >= 0) brings its own body and brand; otherwise
+  // body, brand and model are used, as for the demo car. powertrain is one
+  // PT_* flag, 0 for the default variant.
+  vehicle_anatomy: Cmd<
+    { generationId: number; year: number; body: number; brand: string; model: string; powertrain: number },
+    VehicleAnatomy
+  >;
   decode_vin: Cmd<{ vin: string }, VinInfo>;
   match_vin: Cmd<{ vin: string }, CatalogMatch>;
   // VehicleIdentity (the name and picture for a VIN) is interface code and
@@ -215,7 +225,9 @@ export interface Events {
   kkl_protocol: { protocolName: string; isKwp2000: boolean };
   basic_setting_values: { values: LiveRow[] };
   scan_started: { total: number };
-  scan_progress: { ecuName: string; index: number; total: number };
+  // address: the K-line address of the unit being asked (the X-ray view
+  // sends a packet to it).
+  scan_progress: { ecuName: string; index: number; total: number; address: number };
   scan_ecu_result: { row: EcuScanRow };
   scan_finished: { present: number; withFaults: number; cancelled: boolean };
   clear_progress: { line: string };
@@ -234,7 +246,8 @@ export interface Events {
   custom_imported: { rows: CustomRow[]; errors: string[] };
   freeze_frames: { frames: FreezeFrameRow[] };
   uds_scan_started: { total: number; generic: boolean };
-  uds_scan_progress: { name: string; index: number; total: number };
+  // request and kind of the unit being asked right now.
+  uds_scan_progress: { name: string; index: number; total: number; request: number; kind: EcuKind };
   uds_ecu_result: { row: UdsEcuRow };
   uds_scan_finished: { present: number; withFaults: number; cancelled: boolean; note: string };
   uds_clear_result: { name: string; ok: boolean; message: string };

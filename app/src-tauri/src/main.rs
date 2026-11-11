@@ -292,6 +292,7 @@ fn main() {
             commands::catalog_search,
             commands::catalog_size,
             commands::catalog_diagnosis,
+            commands::vehicle_anatomy,
             commands::decode_vin,
             commands::match_vin,
         ])

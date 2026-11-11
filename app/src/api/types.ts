@@ -591,6 +591,63 @@ export interface VehicleGenerationInfo {
   usMarket: boolean;
 }
 
+// PT_* flags of data/VehicleCatalog.h (VehicleGenerationInfo.powertrains).
+export const Powertrain = {
+  Petrol: 1 << 0,
+  Diesel: 1 << 1,
+  Hybrid: 1 << 2,
+  PlugIn: 1 << 3,
+  Electric: 1 << 4,
+  Gas: 1 << 5,
+} as const;
+
+// vehicles::anatomy, in the order of the enums.
+export enum EngineLayout {
+  None,
+  FrontTransverse,
+  FrontLongitudinal,
+  Mid,
+  Rear,
+}
+
+export enum DrivenAxles {
+  Front,
+  Rear,
+  All,
+}
+
+export enum TractionBattery {
+  None,
+  Hybrid,
+  PlugIn,
+  Floor,
+}
+
+// Shape of a car for the X-ray view: outer dimensions in millimetres and
+// where engine, motors and batteries sit.
+export interface VehicleAnatomy {
+  lengthMm: number;
+  widthMm: number;
+  heightMm: number;
+  wheelbaseMm: number;
+  trackMm: number;
+  wheelMm: number;
+  // False while the catalog has no measured values (typical ones are used).
+  measured: boolean;
+  dimensionsText: string;
+  powertrain: number;
+  powertrainChoices: { flag: number; name: string }[];
+  engine: EngineLayout;
+  engineName: string;
+  driven: DrivenAxles;
+  drivenName: string;
+  frontMotor: boolean;
+  rearMotor: boolean;
+  battery: TractionBattery;
+  fuelTank: boolean;
+  reason: string;
+}
+
 // What diagnosis is possible for a generation in a given year.
 export interface VehicleDiagnosisInfo {
   generation: VehicleGenerationInfo;

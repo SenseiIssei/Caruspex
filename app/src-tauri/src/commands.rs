@@ -820,6 +820,18 @@ pub fn catalog_diagnosis(generation_id: usize, year: i32) -> Result<Value> {
 }
 
 #[tauri::command]
+pub fn vehicle_anatomy(
+    generation_id: i64,
+    year: i32,
+    body: i32,
+    brand: String,
+    model: String,
+    powertrain: u32,
+) -> Value {
+    knowledge::vehicle_anatomy(generation_id, year, body, &brand, &model, powertrain)
+}
+
+#[tauri::command]
 pub fn decode_vin(vin: String) -> Value {
     knowledge::decode_vin(&vin)
 }

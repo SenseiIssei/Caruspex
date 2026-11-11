@@ -1700,7 +1700,13 @@ impl Worker {
             }
             self.emit(
                 "uds_scan_progress",
-                json!({ "name": def.name, "index": index, "total": total }),
+                json!({
+                    "name": def.name,
+                    "index": index,
+                    "total": total,
+                    "request": def.request,
+                    "kind": def.kind as i32,
+                }),
             );
             let cancel = self.cancel.clone();
             let is_cancelled = move || cancel.load(Ordering::SeqCst);
@@ -1960,7 +1966,12 @@ impl Worker {
             };
             self.emit(
                 "scan_progress",
-                json!({ "ecuName": row.name, "index": index, "total": total }),
+                json!({
+                    "ecuName": row.name,
+                    "index": index,
+                    "total": total,
+                    "address": row.address,
+                }),
             );
 
             let mut probe = VagKLine::new(stream, None);
