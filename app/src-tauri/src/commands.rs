@@ -16,6 +16,7 @@ use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
 use crate::AppState;
+use crate::advice::{self, AdviceInputArg};
 use crate::garage::{self, GarageCar};
 use crate::measure::{BatteryInputArg, SpeedSampleArg, TripConfigArg};
 use crate::settings::{self, AppSettings};
@@ -757,6 +758,12 @@ pub fn lookup_dtc(code: String, brand: String) -> Value {
 #[tauri::command]
 pub fn locate_dtc(code: String) -> Value {
     knowledge::locate_dtc(&code)
+}
+
+/// "Was soll ich jetzt tun?" from what the interface knows about the car.
+#[tauri::command]
+pub fn what_to_do(input: AdviceInputArg) -> Value {
+    advice::what_to_do(&input)
 }
 
 #[tauri::command]

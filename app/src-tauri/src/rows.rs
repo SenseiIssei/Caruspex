@@ -85,6 +85,8 @@ pub struct CustomRow {
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct HealthFindingRow {
+    /// The stable rule id ("fuel_trim_bank1"), for "Was soll ich jetzt tun?".
+    pub id: String,
     pub level: i32,
     pub area: String,
     pub title: String,

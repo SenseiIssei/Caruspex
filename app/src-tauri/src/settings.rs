@@ -57,6 +57,18 @@ pub struct AppSettings {
     pub language: String,
     /// "auto" follows the system's light or dark mode, otherwise "dark" or "light".
     pub appearance: String,
+
+    // --- Mode ----------------------------------------------------------------
+    /// Profi mode shows every page; beginners see the everyday ones. New
+    /// installs start as beginners. A settings file from before the switch
+    /// existed belongs to someone who already knew the full interface, so a
+    /// missing value means Profi.
+    #[serde(default = "pro_mode_for_older_files")]
+    pub pro_mode: bool,
+}
+
+fn pro_mode_for_older_files() -> bool {
+    true
 }
 
 impl Default for AppSettings {
@@ -82,6 +94,7 @@ impl Default for AppSettings {
             check_updates: true,
             language: "auto".into(),
             appearance: "auto".into(),
+            pro_mode: false,
         }
     }
 }
@@ -218,6 +231,8 @@ pub mod legacy {
 
         v.language = text("", "sprache", &v.language);
         v.appearance = text("", "erscheinungsbild", &v.appearance);
+        // Version 0.8 showed every page: whoever comes from there keeps them.
+        v.pro_mode = true;
         v
     }
 
@@ -374,6 +389,20 @@ mod tests {
         assert!(v.auto_connect);
         assert_eq!(v.last_port, "/dev/ttyUSB0");
         assert_eq!(v.clear_attempts, 5);
+        // Coming from 0.8: the full interface, as before.
+        assert!(v.pro_mode);
+    }
+
+    #[test]
+    fn new_installs_start_as_beginners_older_files_as_profi() {
+        assert!(!AppSettings::default().pro_mode);
+        // A settings file written before the switch existed.
+        let older: AppSettings = serde_json::from_str(r#"{"language": "de"}"#).unwrap();
+        assert!(older.pro_mode);
+        let chosen: AppSettings = serde_json::from_str(r#"{"proMode": false}"#).unwrap();
+        assert!(!chosen.pro_mode);
+        let v = serde_json::to_value(AppSettings::default()).unwrap();
+        assert_eq!(v["proMode"], false);
     }
 
     #[test]
