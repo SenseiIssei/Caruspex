@@ -2,6 +2,7 @@
 
     py -I tools/i18n_rust.py            list them
     py -I tools/i18n_rust.py --write    append them to translations/source/core_x2.json
+    py -I tools/i18n_rust.py --write --area obdb   ... to translations/source/core_obdb.json
     py -I tools/i18n_rust.py --strict   also fail when a text or a translation is missing (CI)
 
 The Rust core writes texts as l("de", "en"), Text::new("de", "en") or
@@ -68,7 +69,16 @@ def main() -> int:
         print(f"{de!r} / {en!r}")
     print(f"{len(missing)} texts without translation", file=sys.stderr)
     if "--write" in sys.argv and missing:
-        path = os.path.join(source_dir, "core_x2.json")
+        # --area NAME writes to core_NAME.json, so work on one part of the
+        # program does not collide with work on another in core_x2.json.
+        area = "x2"
+        if "--area" in sys.argv:
+            at = sys.argv.index("--area")
+            if at + 1 >= len(sys.argv) or not re.match(r"^[a-z0-9_]+$", sys.argv[at + 1]):
+                print("--area needs a name of lower case letters, digits and _", file=sys.stderr)
+                return 2
+            area = sys.argv[at + 1]
+        path = os.path.join(source_dir, f"core_{area}.json")
         items = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else []
         next_id = max(ids) + 1
         for en, de in sorted(missing.items()):

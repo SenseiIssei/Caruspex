@@ -23,6 +23,7 @@ use caruspex_i18n::{Language, Text, language};
 
 use crate::custom_pids::{CustomPid, PACK_KEY_BASE};
 use crate::generated::pid_packs::{PACKS, VALUES};
+use crate::obdb::{OBDB_PREFIX, obdb_pack, obdb_pack_pids};
 
 /// One pack of the generated table.
 pub struct PackRow {
@@ -91,25 +92,35 @@ pub fn built_in_packs() -> &'static [CustomPid] {
     }
 }
 
-/// Ids of the packs ("caruspex-demo", "hyundai-kona-niro-ev", ...), the demo
-/// pack first.
+/// Ids of the built-in packs ("caruspex-demo", "hyundai-kona-niro-ev", ...),
+/// the demo pack first. The OBDb packs are listed by [`crate::obdb_packs`].
 pub fn pack_names() -> Vec<&'static str> {
     PACKS.iter().map(|p| p.id).collect()
 }
 
 /// Display title of a pack in the active language, empty for an unknown id.
+/// Knows the OBDb packs too ("obdb-...").
 pub fn pack_title(name: &str) -> String {
+    if let Some(p) = obdb_pack(name) {
+        return p.title();
+    }
     find_pack(name).map_or_else(String::new, |p| p.title.get().to_string())
 }
 
 /// Category the values of a pack are shown under (`HybridEv` for the electric
 /// cars, `Custom` for the demo). `Custom` for an unknown id.
 pub fn pack_category(name: &str) -> PidCategory {
+    if let Some(p) = obdb_pack(name) {
+        return p.category();
+    }
     find_pack(name).map_or(PidCategory::Custom, |p| p.category)
 }
 
-/// The values of one pack, empty for an unknown id.
+/// The values of one pack, empty for an unknown id. Knows the OBDb packs too.
 pub fn pack_pids(name: &str) -> Vec<CustomPid> {
+    if name.starts_with(OBDB_PREFIX) {
+        return obdb_pack_pids(name);
+    }
     built_in_packs()
         .iter()
         .filter(|p| p.pack == name)
