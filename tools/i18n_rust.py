@@ -36,6 +36,9 @@ PATTERNS = [
 
 
 def unescape(text: str) -> str:
+    # A backslash at the end of a line continues a Rust string literal and
+    # drops the line break and the indentation of the next line.
+    text = re.sub(r"\\\r?\n\s*", "", text)
     return json.loads('"' + text + '"')
 
 
