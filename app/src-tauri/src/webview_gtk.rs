@@ -81,6 +81,15 @@ pub fn capture_png(webview: &WebviewWindow, path: &Path, done: Sender<Result<(),
             None::<&webkit2gtk::gio::Cancellable>,
             move |result| {
                 let outcome = result.map_err(|e| e.to_string()).and_then(|surface| {
+                    // WebKitGTK hands over a surface of the cairo-rs that gtk
+                    // 0.18 uses; the PNG is written by our newer cairo-rs.
+                    // Both wrap the same C object of the one libcairo, so the
+                    // surface moves over as its C pointer, with a reference of
+                    // its own (from_raw_none adds one).
+                    let raw = surface.to_raw_none().cast::<cairo::ffi::cairo_surface_t>();
+                    // SAFETY: `raw` is a live cairo_surface_t, kept alive by
+                    // `surface` until the new wrapper holds its own reference.
+                    let surface = unsafe { cairo::Surface::from_raw_none(raw) };
                     let image = cairo::ImageSurface::try_from(surface)
                         .map_err(|_| String::from("snapshot is no image"))?;
                     let mut file = std::fs::File::create(&target).map_err(|e| e.to_string())?;
