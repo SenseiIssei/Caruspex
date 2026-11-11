@@ -10,7 +10,8 @@
     "dev": "npm run prepare-assets && vite",
     "build": "npm run prepare-assets && tsc --noEmit && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "dev:app": "tauri dev -- --no-default-features"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",

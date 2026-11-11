@@ -9,6 +9,15 @@ license.workspace = true
 name = "caruspex"
 path = "src/main.rs"
 
+# The interface is built into every binary, also from a plain `cargo build`.
+# Without it the app would load the interface from the dev server
+# (localhost:5287) and show an error page when that is not running. Live
+# reloading during development: `npm --prefix app run dev:app`, which turns
+# this off.
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
 [build-dependencies]
 tauri-build = { version = "2.7", features = [] }
 serde_json = "1.0.154"
@@ -18,6 +27,7 @@ dirs = "7"
 tauri = { version = "2.12", features = [] }
 tauri-plugin-dialog = "2.8.3"
 tauri-plugin-opener = "2.7.3"
+tauri-plugin-single-instance = "2"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.154"
 ureq = { version = "2.12.1", features = ["json"] }

@@ -116,8 +116,11 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      # Built before the tests: the app has the interface built in.
       - name: Interface
-        run: npm --prefix app ci
+        run: |
+          npm --prefix app ci
+          npm --prefix app run build
 
       - name: Tests
         run: cargo test --workspace

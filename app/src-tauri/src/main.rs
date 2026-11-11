@@ -85,6 +85,20 @@ impl Sink for TauriSink {
     }
 }
 
+/// The WebView2 folder of a command-line driven run, see main().
+static WEBVIEW_DIR: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
+
+/// Gives a window the run's own WebView2 folder when there is one; every
+/// window of one process has to use the same folder.
+pub fn isolate<'a, R: tauri::Runtime, M: Manager<R>>(
+    builder: WebviewWindowBuilder<'a, R, M>,
+) -> WebviewWindowBuilder<'a, R, M> {
+    match WEBVIEW_DIR.get() {
+        Some(dir) => builder.data_directory(dir.clone()),
+        None => builder,
+    }
+}
+
 fn print_and_exit(text: &str, code: i32) -> ! {
     if code == 0 {
         println!("{text}");
@@ -129,7 +143,26 @@ fn main() {
         );
     }
 
-    tauri::Builder::default()
+    // Runs driven by the command line (a screenshot, a report) get their own
+    // WebView2 folder, so they work next to an open window and next to each
+    // other. A normal second start brings the open window to the front
+    // instead, like most programs do.
+    let automated = cli.shot.is_some() || cli.report.is_some();
+    if automated {
+        let dir = std::env::temp_dir().join(format!("caruspex-webview-{}", std::process::id()));
+        let _ = WEBVIEW_DIR.set(dir);
+    }
+    let mut builder = tauri::Builder::default();
+    if !automated {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.unminimize();
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
+        }));
+    }
+    builder
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(pdf::ReportPages::default())
@@ -191,7 +224,7 @@ fn main() {
                 config.focus = false;
             }
             let query = cli::start_query(&cli);
-            let mut builder = WebviewWindowBuilder::from_config(&handle, &config)?;
+            let mut builder = isolate(WebviewWindowBuilder::from_config(&handle, &config)?);
             if !query.is_empty() {
                 // Set before the page's own scripts run, so main.tsx finds the
                 // options in location.search like in a browser.
@@ -298,11 +331,16 @@ fn main() {
         .build(tauri::generate_context!())
         .expect("error while building Caruspex")
         .run(|app, event| {
-            if let tauri::RunEvent::Exit = event
-                && let Some(state) = app.try_state::<AppState>()
-            {
-                state.worker.cancel_scan();
-                state.worker.send(worker::Job::Shutdown);
+            if let tauri::RunEvent::Exit = event {
+                if let Some(state) = app.try_state::<AppState>() {
+                    state.worker.cancel_scan();
+                    state.worker.send(worker::Job::Shutdown);
+                }
+                // The WebView2 folder of a command-line run; what the browser
+                // processes still hold is left to the temp folder cleanup.
+                if let Some(dir) = WEBVIEW_DIR.get() {
+                    let _ = std::fs::remove_dir_all(dir);
+                }
             }
         });
 }

@@ -99,17 +99,21 @@ async fn print(app: &AppHandle, id: &str, path: PathBuf) -> Result<Written, Stri
     let label = format!("report-pdf-{id}");
     let started = Arc::new(AtomicBool::new(false));
     let target = path.clone();
-    let window = WebviewWindowBuilder::new(app, &label, WebviewUrl::External(page_url(id)?))
-        .visible(false)
-        .focused(false)
-        .inner_size(820.0, 1160.0)
-        .on_page_load(move |window, payload| {
-            if payload.event() == PageLoadEvent::Finished && !started.swap(true, Ordering::SeqCst) {
-                crate::webview_win::print_to_pdf(&window, &target, tx.clone());
-            }
-        })
-        .build()
-        .map_err(|e| e.to_string())?;
+    let window = crate::isolate(WebviewWindowBuilder::new(
+        app,
+        &label,
+        WebviewUrl::External(page_url(id)?),
+    ))
+    .visible(false)
+    .focused(false)
+    .inner_size(820.0, 1160.0)
+    .on_page_load(move |window, payload| {
+        if payload.event() == PageLoadEvent::Finished && !started.swap(true, Ordering::SeqCst) {
+            crate::webview_win::print_to_pdf(&window, &target, tx.clone());
+        }
+    })
+    .build()
+    .map_err(|e| e.to_string())?;
     let outcome = tauri::async_runtime::spawn_blocking(move || {
         rx.recv_timeout(std::time::Duration::from_secs(60))
             .unwrap_or_else(|_| Err(String::from("timeout")))
@@ -129,16 +133,20 @@ async fn print(app: &AppHandle, id: &str, _path: PathBuf) -> Result<Written, Str
     use tauri::webview::PageLoadEvent;
 
     let label = format!("report-print-{id}");
-    WebviewWindowBuilder::new(app, &label, WebviewUrl::External(page_url(id)?))
-        .title("Caruspex")
-        .inner_size(820.0, 1000.0)
-        .on_page_load(|window, payload| {
-            if payload.event() == PageLoadEvent::Finished {
-                let _ = window.eval("window.print()");
-            }
-        })
-        .build()
-        .map_err(|e| e.to_string())?;
+    crate::isolate(WebviewWindowBuilder::new(
+        app,
+        &label,
+        WebviewUrl::External(page_url(id)?),
+    ))
+    .title("Caruspex")
+    .inner_size(820.0, 1000.0)
+    .on_page_load(|window, payload| {
+        if payload.event() == PageLoadEvent::Finished {
+            let _ = window.eval("window.print()");
+        }
+    })
+    .build()
+    .map_err(|e| e.to_string())?;
     // The page has to stay until the dialog is done with it.
     tokio_sleep(std::time::Duration::from_secs(2)).await;
     Ok(Written::PrintDialog)
