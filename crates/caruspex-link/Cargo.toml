@@ -14,7 +14,7 @@ tokio = { workspace = true, optional = true }
 futures = { version = "0.3.31", optional = true }
 
 [target.'cfg(windows)'.dependencies]
-winreg = "0.55"
+winreg = "0.56.0"
 windows-sys = { version = "0.61.2", optional = true, features = [
     "Win32_Foundation",
     "Win32_Devices_Bluetooth",
