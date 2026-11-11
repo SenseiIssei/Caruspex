@@ -79,6 +79,7 @@ export default function EcuPage() {
   const connected = useSession((s) => s.connected);
   const brand = useSession((s) => s.identity?.brand ?? "");
   const vin = useSession((s) => s.vin);
+  const stnBuses = useSession((s) => s.stnBuses);
 
   const [families, setFamilies] = useState<BrandFamily[]>([]);
   const [family, setFamily] = useState("");
@@ -102,9 +103,18 @@ export default function EcuPage() {
     for (const f of families) {
       out.push({ value: f.key, label: tr("Adressliste %1", f.label) });
       if (f.key === "BMW") out.push({ value: "BMW*", label: tr("BMW und Mini: alle 128 Adressen (langsamer, findet alles)") });
+      // The body buses of Ford and GM, only with an OBDLink that has the
+      // transceiver and only for a car of that brand.
+      if (f.key === "FORD" && brandFamily === "FORD" && stnBuses.includes("ms")) {
+        out.push({ value: "FORD@MS", label: tr("Ford: Karosseriegeräte am MS-CAN (über OBDLink)") });
+      }
+      if (f.key === "GM" && brandFamily === "GM" && stnBuses.includes("sw")) {
+        out.push({ value: "GM@SW", label: tr("GM: Karosseriegeräte am Single-Wire-CAN (über OBDLink)") });
+      }
     }
     return out;
-  }, [families]);
+  }, [families, brandFamily, stnBuses]);
+  const otherBus = family === "FORD@MS" || family === "GM@SW";
 
   // setBrand(): every recognised car preselects its address list, or the
   // generic sweep when its brand has none.
@@ -247,6 +257,13 @@ export default function EcuPage() {
           </Button>
         ) : null}
       </div>
+      {otherBus && !running ? (
+        <div className="subtle ecu-status">
+          {tr(
+            "Der OBDLink schaltet für die Suche auf den anderen CAN-Bus der Buchse um und danach zurück. Live-Werte pausieren so lange.",
+          )}
+        </div>
+      ) : null}
       {progress ? <Progress value={progress.total > 0 ? (100 * progress.value) / progress.total : 0} /> : null}
       {status ? <div className="subtle ecu-status">{status}</div> : null}
 

@@ -48,6 +48,9 @@ export interface SessionState {
   adapter: string;
   transport: string;
   protocol: string;
+  // The extra CAN buses the OBDLink of this connection can switch to:
+  // "ms" (Ford MS-CAN), "sw" (GM single wire CAN). Empty for an ELM327.
+  stnBuses: string[];
   connectedAt: string;
   vin: string;
   identity: IdentifiedVehicle | null;
@@ -84,6 +87,7 @@ const initial: SessionState = {
   adapter: "",
   transport: "",
   protocol: "",
+  stnBuses: [],
   connectedAt: "",
   vin: "",
   identity: null,
@@ -253,6 +257,7 @@ function resetVehicle(): Partial<SessionState> {
     adapter: "",
     transport: "",
     protocol: "",
+    stnBuses: [],
     connectedAt: "",
     vin: "",
     identity: null,
@@ -299,13 +304,14 @@ export function startSession(): void {
   on("log_line", ({ line }) => showLog(line));
   on("busy", ({ active }) => session.set({ busy: active }));
 
-  on("connected", ({ adapter, transport, protocol }) => {
+  on("connected", ({ adapter, transport, protocol, stnBuses }) => {
     session.set({
       ...resetVehicle(),
       connected: true,
       adapter,
       transport,
       protocol,
+      stnBuses: stnBuses ?? [],
       connectedAt: isoNow(),
       link: "online",
       linkText: t(MW, "Verbunden · %1", protocol),

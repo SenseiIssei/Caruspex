@@ -228,7 +228,8 @@ export interface Events {
   log_line: { line: string };
   // Download of an update; total is 0 when the size is unknown.
   update_progress: { received: number; total: number };
-  connected: { adapter: string; transport: string; protocol: string };
+  // stnBuses: the extra CAN buses an OBDLink can switch to ("ms", "sw").
+  connected: { adapter: string; transport: string; protocol: string; stnBuses?: string[] };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };
