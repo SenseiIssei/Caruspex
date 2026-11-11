@@ -227,10 +227,13 @@ pub fn help_text() -> String {
         ),
         (
             "--mode <beginner|pro>",
-            main_text(
+            // New since the Qt version: a core text, translated with the
+            // other texts of "Was soll ich jetzt tun?".
+            caruspex_i18n::l(
                 "Einsteiger- oder Profimodus für diesen Start",
                 "Beginner or pro mode for this run",
-            ),
+            )
+            .to_string(),
         ),
         ("--help, --version", String::new()),
     ];
