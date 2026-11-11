@@ -301,13 +301,13 @@ fn custom_demo_reads_the_demo_pack() {
     let r = run(&["custom", "--demo"]);
     assert_eq!(r.code, 0);
     assert!(r.out.contains("Caruspex demo\n"));
-    assert!(r.out.contains("7 of 7 values read, "));
+    assert!(r.out.contains("9 of 9 values read, "), "{}", r.out);
     let j = run(&["custom", "--demo", "--json"]);
     let v: serde_json::Value = serde_json::from_str(&j.out).unwrap();
     assert_eq!(v["title"], "Caruspex demo");
-    assert_eq!(v["read"], 7);
+    assert_eq!(v["read"], 9);
     assert_eq!(v["failed"], 0);
-    assert_eq!(v["values"].as_array().unwrap().len(), 7);
+    assert_eq!(v["values"].as_array().unwrap().len(), 9);
 }
 
 #[test]

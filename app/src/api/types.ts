@@ -147,6 +147,58 @@ export interface HealthRow {
   diesel: boolean;
 }
 
+// The used car check (analysis::used_car through Worker::runUsedCarCheck).
+export type UsedCarSection = "identity" | "mileage" | "clearing" | "readiness" | "faults" | "health" | "battery";
+
+export interface UsedCarItemRow {
+  // Stable rule id, e.g. "mileage_mismatch".
+  id: string;
+  section: UsedCarSection;
+  level: Level;
+  title: string;
+  explanation: string;
+  // What to ask the seller, empty if nothing.
+  ask: string;
+}
+
+export interface UsedCarMileageRow {
+  source: string;
+  km: number;
+}
+
+// Numbers are -1 where the car said nothing.
+export interface UsedCarRow {
+  // 0 green, 1 yellow, 2 red.
+  light: 0 | 1 | 2;
+  headline: string;
+  summary: string;
+  vin: string;
+  papersVin: string;
+  vehicle: string;
+  modelYear: number;
+  // Engine (PID A6) first, then the other control units.
+  mileage: UsedCarMileageRow[];
+  distanceSinceClearKm: number;
+  minutesSinceClear: number;
+  warmUps: number;
+  readinessComplete: number;
+  readinessTotal: number;
+  storedFaults: number;
+  pendingFaults: number;
+  permanentFaults: number;
+  healthScore: number;
+  electric: boolean;
+  batteryPack: string;
+  batterySoh: number;
+  batterySoc: number;
+  // In the order of the sections.
+  items: UsedCarItemRow[];
+  // The most serious first.
+  questions: string[];
+  // "title: reason"
+  notChecked: string[];
+}
+
 export interface EcuScanRow {
   address: number;
   name: string;

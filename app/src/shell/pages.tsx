@@ -7,6 +7,7 @@ import DashboardPage from "../pages/DashboardPage";
 import ConnectPage from "../pages/ConnectPage";
 import HealthPage from "../pages/HealthPage";
 import WhatToDoPage from "../pages/WhatToDoPage";
+import UsedCarPage from "../pages/UsedCarPage";
 import FaultsPage from "../pages/FaultsPage";
 import XrayPage from "../pages/XrayPage";
 import ToolsPage from "../pages/ToolsPage";
@@ -34,6 +35,7 @@ export type PageId =
   | "connect"
   | "todo"
   | "health"
+  | "used-car"
   | "faults"
   | "xray"
   | "tools"
@@ -72,6 +74,7 @@ export const PAGES: PageEntry[] = [
   { id: "connect", icon: "plug", label: () => t(MW, "Verbinden"), component: ConnectPage },
   { id: "todo", icon: "lightbulb", label: () => t(MW, "Was tun?"), section: () => t(MW, "Diagnose"), component: WhatToDoPage },
   { id: "health", icon: "heart", label: () => t(MW, "Gesundheitscheck"), component: HealthPage },
+  { id: "used-car", icon: "tag", label: () => t("caruspex::UsedCarPage", "Gebrauchtwagen"), component: UsedCarPage },
   { id: "faults", icon: "alert", label: () => t(MW, "Fehlerspeicher"), component: FaultsPage },
   { id: "xray", icon: "cube", label: () => t(MW, "Röntgenansicht"), component: XrayPage },
   { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage, pro: true },

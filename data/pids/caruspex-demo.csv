@@ -1,5 +1,5 @@
 # Values of the built-in demo car, so the custom values can be tried
-# without a car. The identifiers 1001 to 1010 are made up for the demo
+# without a car. The identifiers 1001 to 1011 are made up for the demo
 # (crates/caruspex-demo); no real control unit is meant. The last
 # value is a plain OBD PID read without a header, the way a custom value for
 # any car can look.
@@ -22,3 +22,7 @@ Engine hours,Hours,221010,INT32(A:B:C:D)/3600,0,20000,h,7E0,7E8,Motorbetriebsstu
 Supply voltage (engine control unit),Supply V,221010,INT16(I:J)/1000,10,16,V,7E0,7E8,Versorgungsspannung (Motorsteuergerät),Versorgung
 # Source: SAE J1979 PID 0C, read like a custom value without a header
 Engine speed (OBD),RPM,010C,((A*256)+B)/4,0,7000,1/min,,,Motordrehzahl (OBD),Drehzahl
+# Source: Caruspex demo car, crates/caruspex-demo (instrument cluster 720, identifier 1011, whole km)
+Odometer (instrument cluster),Odo cluster,221011,INT32(A:B:C:D),0,1000000,km,720,728,Kilometerstand (Kombiinstrument),km Kombi
+# Source: Caruspex demo car, crates/caruspex-demo (ABS 760, identifier 1011, steps of 10 km)
+Odometer (ABS),Odo ABS,221011,INT16(A:B)*10,0,655350,km,760,768,Kilometerstand (ABS),km ABS

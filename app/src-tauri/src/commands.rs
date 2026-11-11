@@ -567,6 +567,12 @@ pub fn run_health_check(state: State<'_, AppState>, seconds: i32) {
     job(&state, Job::HealthCheck(seconds));
 }
 
+/// The used car check; `papers_vin` is the VIN from the papers, may be empty.
+#[tauri::command]
+pub fn run_used_car_check(state: State<'_, AppState>, papers_vin: String) {
+    job(&state, Job::UsedCarCheck(papers_vin));
+}
+
 #[tauri::command]
 pub fn probe_adapter(state: State<'_, AppState>) {
     job(&state, Job::ProbeAdapter);
