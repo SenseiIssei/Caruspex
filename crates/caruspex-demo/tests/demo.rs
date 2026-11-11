@@ -270,6 +270,22 @@ fn other_adapters_report_their_own_identity() {
     assert_eq!(stn.ask("STDI"), "STDI\rOBDLink SX r4.2\r\r>");
     assert_eq!(stn.ask("AT@1"), "AT@1\rSCANTOOL.NET LLC\r\r>");
 
+    // The OBDLink EX: batched commands as in the example of the manual
+    // (FRPM 8.15), the MS-CAN preset, but no single wire CAN.
+    let mut ex = Rig::with(10.0, DemoAdapter::ObdLinkEx, true);
+    ex.setup();
+    assert_eq!(ex.ask("STBC1"), "OK\r\r>");
+    assert_eq!(
+        ex.ask("STP33|ATH1|ATSH7E0|0100"),
+        "OK\r|OK\r|OK\r|7E8 06 41 00 BE 3F B8 13 AA \r\r>"
+    );
+    assert_eq!(ex.ask("STPR"), "33\r\r>");
+    assert_eq!(ex.ask("STP53"), "OK\r\r>");
+    assert_eq!(ex.ask("STPRS"), "ISO 15765, 11-bit Tx, 125kbps, DLC=8\r\r>");
+    assert_eq!(ex.ask("STP63"), "?\r\r>");
+    // An error other than NO DATA ends the batch.
+    assert_eq!(ex.ask("ATSH7DF|STXYZ|0100"), "OK\r|?\r\r>");
+
     // The clone with "OK to all" accepts what it does not know; v1.4 level
     // clones refuse commands of v2.0.
     let mut ok_all = Rig::with(10.0, DemoAdapter::CloneOkToAll, true);
