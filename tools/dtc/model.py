@@ -57,7 +57,7 @@ SYSTEMS = {
 COSTS = {"": "Unknown", "cheap": "Cheap", "medium": "Medium", "expensive": "Expensive"}
 
 _CODE = re.compile(r"^[PCBU][0-3][0-9A-F]{3}$")
-_FORBIDDEN = ("—", "–")  # em dash and en dash never reach the user
+_FORBIDDEN = ("\u2014", "\u2013")  # em dash and en dash never reach the user
 
 
 @dataclass

@@ -4,6 +4,7 @@
 #![forbid(unsafe_code)]
 
 pub mod custom_pids;
+#[rustfmt::skip]
 mod generated;
 pub mod json_writer;
 pub mod pid_packs;

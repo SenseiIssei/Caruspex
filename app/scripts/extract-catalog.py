@@ -1,10 +1,12 @@
 # Extracts the vehicle catalog, the WMI table and the manufacturer fault code
-# tables from the generated C++ sources into JSON for the browser preview
+# tables from the Rust sources into JSON for the browser preview
 # (src/api/mock/data/catalog.json and dtc-brands.json). The real backend reads
-# the same tables in Rust; the preview only needs a faithful copy.
+# the same tables; the preview only needs a faithful copy. Sources:
+# crates/caruspex-vehicles/src/generated/catalog.rs, crates/caruspex-vehicles/src/vin.rs
+# and crates/caruspex-data/src/generated/dtc_brands.rs.
 #
 # Run from anywhere:  py -I app/scripts/extract-catalog.py
-# Re-run it whenever tools/gen_vehicles.py, tools/gen_dtc.py or Vin.cpp change.
+# Re-run it whenever tools/gen_vehicles.py, tools/gen_dtc.py or vin.rs change.
 import json
 import re
 import sys
@@ -12,18 +14,19 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-DATA = ROOT / "src" / "data"
+VEHICLES = ROOT / "crates" / "caruspex-vehicles" / "src"
+DTC_BRANDS = ROOT / "crates" / "caruspex-data" / "src" / "generated" / "dtc_brands.rs"
 OUT = HERE.parent / "src" / "api" / "mock" / "data"
 
-# Enum orders of VehicleCatalog.h, Vehicles.h, Vin.h, Severity.h, DtcDatabase.h.
+# Enum orders of catalog.rs, vin.rs, severity.rs and dtc/mod.rs.
 BODY = ["Hatchback", "Sedan", "Estate", "Suv", "Van", "Coupe", "Convertible", "Pickup", "Mpv", "Microcar", "Roadster"]
 CONNECTOR = ["None", "Obd2", "Vag2x2", "Bmw20", "Mb38", "Other"]
 LOCATION = ["Unknown", "UnderDashLeft", "UnderSteeringColumn", "FootwellCover", "FuseBox", "CentreConsole",
             "BehindAshtray", "PassengerSide", "EngineBay", "RearConsole"]
 BUS = ["KLine", "Can", "Pwm", "Vpw", "Mixed"]
-POWERTRAIN = {"PtPetrol": 1, "PtDiesel": 2, "PtHybrid": 4, "PtPlugIn": 8, "PtElectric": 16, "PtGas": 32}
-YEAR_RULE = {"kStd": 0, "kUnk": 1, "kNoYear": 2}
-CODE_RULE = {"kNone": 0, "kVag": 1, "kMb": 2, "kPor": 3, "kTesla": 4}
+POWERTRAIN = {"PT_PETROL": 1, "PT_DIESEL": 2, "PT_HYBRID": 4, "PT_PLUG_IN": 8, "PT_ELECTRIC": 16, "PT_GAS": 32}
+YEAR_RULE = {"STD": 0, "UNK": 1, "NO_YEAR": 2}
+CODE_RULE = {"NO_CODE": 0, "VAG": 1, "MB": 2, "POR": 3, "TESLA": 4}
 SEVERITY = ["Info", "Low", "Medium", "High", "Critical"]
 SYSTEM = ["Unknown", "FuelAir", "AirIntake", "Throttle", "Ignition", "ValveTiming", "Injection", "Turbo", "Cooling",
           "Lubrication", "Exhaust", "Egr", "Evap", "DieselAftertreatment", "Charging", "EngineControl",
@@ -38,11 +41,15 @@ def unescape(s):
 
 
 def catalog():
-    text = (DATA / "VehicleCatalog.gen.cpp").read_text(encoding="utf-8")
-    brand_re = re.compile(r"^\s*\{" + STR + r", \{" + STR + r", " + STR + r"\}, " + STR + r"\},\s*$")
+    text = (VEHICLES / "generated" / "catalog.rs").read_text(encoding="utf-8")
+    brand_re = re.compile(r"^\s*BrandInfo \{ name: " + STR + r", country: Text::new\(" + STR + r", " + STR
+                          + r"\), group: " + STR + r" \},\s*$")
     gen_re = re.compile(
-        r"^\s*\{" + STR + r", " + STR + r", " + STR + r", (\d+), (\d+), B::(\w+), ([\w |]+), C::(\w+), C::(\w+), (\d+), "
-        r"K::(\w+), " + STR + r", L::(\w+), \{" + STR + r", " + STR + r"\}, " + STR + r", " + STR + r", (true|false)\},\s*$")
+        r"^\s*VehicleGeneration \{ brand: " + STR + r", model: " + STR + r", generation: " + STR
+        + r", year_from: (\d+), year_to: (\d+), body: B::(\w+), powertrains: ([\w |]+), connector: C::(\w+), "
+        r"late_connector: C::(\w+), connector_change: (\d+), bus: K::(\w+), protocol_order: " + STR
+        + r", location: L::(\w+), note: Text::new\(" + STR + r", " + STR + r"\), vin_model_codes: " + STR
+        + r", aliases: " + STR + r", us_market: (true|false) \},\s*$")
     brands, gens = [], []
     for line in text.splitlines():
         m = gen_re.match(line)
@@ -66,18 +73,18 @@ def catalog():
 
 
 def vin_tables():
-    text = (DATA / "Vin.cpp").read_text(encoding="utf-8")
+    text = (VEHICLES / "vin.rs").read_text(encoding="utf-8")
     texts = {}
-    for m in re.finditer(r"constexpr Text (\w+) = \{" + STR + r", " + STR + r"\};", text):
+    for m in re.finditer(r"^const (\w+): Text = Text::new\(" + STR + r", " + STR + r"\);", text, re.M):
         texts[m.group(1)] = [m.group(2), m.group(3)]
-    wmi_re = re.compile(r"^\s*\{" + STR + r", " + STR + r", " + STR + r", (\w+), (\w+), (\{\}|\w+)\},")
-    country_re = re.compile(r"^\s*\{'(.)', '(.)', '(.)', \{" + STR + r", " + STR + r"\}\},")
+    wmi_re = re.compile(r"^\s*w\(" + STR + r", " + STR + r", " + STR + r", (\w+), (\w+), (\w+)\),")
+    country_re = re.compile(r"^\s*cr\('(.)', '(.)', '(.)', " + STR + r", " + STR + r"\),")
     wmi, countries = [], []
     for line in text.splitlines():
         m = wmi_re.match(line)
         if m:
             g = m.groups()
-            country = texts[g[5]] if g[5] != "{}" else None
+            country = texts[g[5]] if g[5] != "NO_COUNTRY" else None
             wmi.append([g[0], g[1], g[2], YEAR_RULE[g[3]], CODE_RULE[g[4]], country])
             continue
         m = country_re.match(line)
@@ -89,27 +96,30 @@ def vin_tables():
 
 
 def brand_dtcs():
-    text = (DATA / "DtcBrands.gen.cpp").read_text(encoding="utf-8")
-    rec_re = re.compile(r"^\s*\{" + STR + r", \{" + STR + r", " + STR + r"\}, Severity::(\w+), DtcSystem::(\w+), (\w+), (true|false)\},")
-    fam_re = re.compile(r"^\s*\{" + STR + r", \{" + STR + r", " + STR + r"\}, " + STR + r", (?:std::span<const Record>\((\w+)\)|\{\})\},")
+    text = (DTC_BRANDS).read_text(encoding="utf-8")
+    rec_re = re.compile(r"^\s*r\(" + STR + r", " + STR + r", " + STR + r", Severity::(\w+), DtcSystem::(\w+), (\w+), (true|false)\),")
+    fam_re = re.compile(r"^\s*Family \{ key: " + STR + r", label: Text::new\(" + STR + r", " + STR + r"\), brands: " + STR + r", records: (\w+|&\[\]) \},")
     tables, current = {}, None
     families = []
     for line in text.splitlines():
-        m = re.match(r"^constexpr Record (\w+)\[\] = \{", line)
+        m = re.match(r"^static (\w+): &\[Record\] = &\[", line)
         if m:
             current = m.group(1)
             tables[current] = []
             continue
+        if line.startswith("pub static FAMILIES"):
+            current = None
+            continue
         m = rec_re.match(line)
         if m and current:
             g = m.groups()
-            detail = -1 if g[5] == "kNoDetail" else int(g[5])
+            detail = -1 if g[5] == "NO_DETAIL" else int(g[5])
             tables[current].append([g[0], unescape(g[1]), unescape(g[2]), SEVERITY.index(g[3]), SYSTEM.index(g[4]), detail, g[6] == "true"])
             continue
         m = fam_re.match(line)
         if m:
             g = m.groups()
-            families.append([g[0], unescape(g[1]), unescape(g[2]), g[3], tables.get(g[4], []) if g[4] else []])
+            families.append([g[0], unescape(g[1]), unescape(g[2]), g[3], tables.get(g[4], []) if g[4] != "&[]" else []])
     total = sum(len(f[4]) for f in families)
     header = re.search(r"(\d+) manufacturer-specific codes in (\d+) brand families", text)
     if not header or int(header.group(1)) != total or int(header.group(2)) != len(families):

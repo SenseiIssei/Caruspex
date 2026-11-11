@@ -2,8 +2,8 @@
 // 111 brands, 2247 model generations.
 
 use crate::catalog::{
-    BodyType as B, BrandInfo, Connector as C, PT_DIESEL, PT_ELECTRIC, PT_GAS, PT_HYBRID, PT_PETROL,
-    PT_PLUG_IN, SocketLocation as L, VehicleGeneration,
+    BodyType as B, BrandInfo, Connector as C, PT_DIESEL, PT_ELECTRIC, PT_GAS, PT_HYBRID,
+    PT_PETROL, PT_PLUG_IN, SocketLocation as L, VehicleGeneration,
 };
 use crate::vehicles::BusKind as K;
 use caruspex_i18n::Text;
