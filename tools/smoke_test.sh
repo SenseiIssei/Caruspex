@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Installs or opens the packages from tools/package.sh the way a user would
 # and checks that both programs start: the command line tool reads the demo
-# car, the app reports its version (and on Windows also opens the demo car
-# and writes a screenshot).
+# car, the app reports its version, opens the demo car and writes a
+# screenshot (on macOS and Linux also a PDF report).
 #
 # Usage: bash tools/smoke_test.sh [shot-dir]
-# Windows only: SMOKE_WINDOW_POS=-1880,40 places the window (for example on a
-# second monitor) and keeps it from taking the focus.
+# SMOKE_WINDOW_POS=-1880,40 places the window (for example on a second
+# monitor) and keeps it from taking the focus. On Linux the app runs on a
+# virtual screen through xvfb-run when that is installed.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -14,6 +15,7 @@ ROOT=$(pwd)
 DIST="$ROOT/dist"
 SHOTS=${1:-$ROOT/smoke}
 mkdir -p "$SHOTS"
+SHOTS=$(cd "$SHOTS" && pwd)
 VERSION=$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\([0-9.]*\)"/\1/p' Cargo.toml)
 WORK=$(mktemp -d)
 
@@ -36,6 +38,27 @@ check_app() {
 check_shot() {
     [ -s "$1" ] || { echo "no screenshot at $1" >&2; exit 1; }
     echo "screenshot $1 ($(wc -c < "$1") bytes)"
+}
+
+check_pdf() {
+    [ -s "$1" ] || { echo "no PDF report at $1" >&2; exit 1; }
+    [ "$(head -c 5 "$1")" = "%PDF-" ] || { echo "$1 is no PDF" >&2; exit 1; }
+    echo "PDF report $1 ($(wc -c < "$1") bytes)"
+}
+
+# Opens the demo car with the app given as arguments: once for a picture of
+# the fault page, once for a PDF report. Both runs end the app themselves.
+check_demo() {
+    local name=$1
+    shift
+    local place=()
+    [ -n "${SMOKE_WINDOW_POS:-}" ] && place=(--window-pos "$SMOKE_WINDOW_POS")
+    CARUSPEX_GARAGE="$WORK/garage.json" "$@" --demo --page faults \
+        ${place[@]+"${place[@]}"} --size 1440x920 --shot-delay 5000 --shot "$SHOTS/$name.png"
+    check_shot "$SHOTS/$name.png"
+    CARUSPEX_GARAGE="$WORK/garage.json" "$@" --demo \
+        ${place[@]+"${place[@]}"} --size 1440x920 --report "$SHOTS/$name.pdf"
+    check_pdf "$SHOTS/$name.pdf"
 }
 
 case "$(uname -s)" in
@@ -66,12 +89,21 @@ Linux)
     check_cli "$WORK/caruspex_cli"
     dpkg-deb --info "$DIST/Caruspex-$VERSION-linux-amd64.deb" >/dev/null
     echo "deb package is readable"
+    # The program from the .deb runs against the system's WebKitGTK, like
+    # after an installation. Without a screen it gets a virtual one; the
+    # DMA-BUF renderer of newer WebKitGTK needs a GPU that xvfb lacks.
+    dpkg-deb -x "$DIST/Caruspex-$VERSION-linux-amd64.deb" "$WORK/deb"
+    screen=()
+    command -v xvfb-run >/dev/null && screen=(xvfb-run -a -s "-screen 0 1600x1000x24")
+    export WEBKIT_DISABLE_DMABUF_RENDERER=1
+    check_demo linux ${screen[@]+"${screen[@]}"} "$WORK/deb/usr/bin/caruspex"
     ;;
 
 Darwin)
     MOUNT="$WORK/mnt"
     hdiutil attach "$DIST/Caruspex-$VERSION-macos.dmg" -mountpoint "$MOUNT" -nobrowse -quiet
     check_app "$MOUNT/Caruspex.app/Contents/MacOS/caruspex"
+    check_demo macos "$MOUNT/Caruspex.app/Contents/MacOS/caruspex"
     hdiutil detach "$MOUNT" -quiet
     tar -xzf "$DIST/caruspex_cli-$VERSION-macos.tar.gz" -C "$WORK"
     check_cli "$WORK/caruspex_cli"

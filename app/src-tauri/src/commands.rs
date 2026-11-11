@@ -280,7 +280,7 @@ pub async fn save_pdf(
     if path.extension().is_none() {
         path.set_extension("pdf");
     }
-    match pdf::write_report(&app, html, path.clone()).await? {
+    match pdf::write_report(&app, html, path.clone(), true).await? {
         pdf::Written::File => Ok(Some(path.display().to_string())),
         pdf::Written::PrintDialog => Ok(None),
     }
@@ -296,7 +296,7 @@ pub async fn write_report(
     html: String,
 ) -> Result<bool> {
     let ok = matches!(
-        pdf::write_report(&app, html, PathBuf::from(&path)).await,
+        pdf::write_report(&app, html, PathBuf::from(&path), false).await,
         Ok(pdf::Written::File)
     );
     if state.cli.report.as_deref() == Some(path.as_str()) {

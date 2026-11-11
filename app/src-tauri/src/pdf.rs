@@ -1,8 +1,10 @@
 // The report as a PDF (Report.cpp saveReportPdf / writeReport). The
 // interface writes the HTML; here it is loaded into a hidden webview and
 // printed to a file by the webview itself: WebView2's PrintToPdf on
-// Windows. On macOS and Linux the page opens in a window of its own with the
-// print dialog, where "Save as PDF" is one of the printers.
+// Windows, WKWebView's createPDF on macOS, a WebKitGTK print job to GTK's
+// file printer on Linux. Should that fail on macOS or Linux, the page opens
+// in a window of its own with the print dialog instead, where "Save as PDF"
+// is one of the printers.
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -60,20 +62,52 @@ fn is_html(path: &Path) -> bool {
         .is_some_and(|e| e.eq_ignore_ascii_case("html") || e.eq_ignore_ascii_case("htm"))
 }
 
+// The webview of each system, behind the same two functions.
+#[cfg(target_os = "linux")]
+use crate::webview_gtk as native;
+#[cfg(target_os = "macos")]
+use crate::webview_mac as native;
+#[cfg(windows)]
+use crate::webview_win as native;
+
+/// Other systems: neither PDF nor picture, the dialog stays.
+#[cfg(not(any(windows, target_os = "macos", target_os = "linux")))]
+mod native {
+    use std::path::Path;
+    use std::sync::mpsc::Sender;
+
+    use tauri::WebviewWindow;
+
+    pub fn print_to_pdf(_: &WebviewWindow, _: &Path, done: Sender<Result<(), String>>) {
+        let _ = done.send(Err(String::from("PDF")));
+    }
+
+    pub fn capture_png(_: &WebviewWindow, _: &Path, done: Sender<Result<(), String>>) {
+        let _ = done.send(Err(String::from("--shot")));
+    }
+}
+
 static NEXT_ID: AtomicU64 = AtomicU64::new(1);
 
 /// What happened to the report.
 pub enum Written {
     /// The file is there.
     File,
-    /// The print dialog is open instead (no native PDF writer here).
+    /// The print dialog is open instead (the PDF could not be written
+    /// directly, macOS and Linux only).
     #[cfg_attr(windows, allow(dead_code))]
     PrintDialog,
 }
 
 /// Writes the report: HTML when the path ends in .html or .htm, PDF
-/// otherwise.
-pub async fn write_report(app: &AppHandle, html: String, path: PathBuf) -> Result<Written, String> {
+/// otherwise. `dialog_fallback` opens the print dialog on macOS and Linux
+/// when the PDF cannot be written directly (not in unattended runs).
+pub async fn write_report(
+    app: &AppHandle,
+    html: String,
+    path: PathBuf,
+    dialog_fallback: bool,
+) -> Result<Written, String> {
     if is_html(&path) {
         std::fs::write(&path, html.as_bytes()).map_err(|e| e.to_string())?;
         return Ok(Written::File);
@@ -82,7 +116,7 @@ pub async fn write_report(app: &AppHandle, html: String, path: PathBuf) -> Resul
     if let Ok(mut pages) = app.state::<ReportPages>().0.lock() {
         pages.insert(id.clone(), html);
     }
-    let result = print(app, &id, path).await;
+    let result = print(app, &id, path, dialog_fallback).await;
     if let Ok(mut pages) = app.state::<ReportPages>().0.lock() {
         pages.remove(&id);
     }
@@ -90,7 +124,38 @@ pub async fn write_report(app: &AppHandle, html: String, path: PathBuf) -> Resul
 }
 
 #[cfg(windows)]
-async fn print(app: &AppHandle, id: &str, path: PathBuf) -> Result<Written, String> {
+async fn print(
+    app: &AppHandle,
+    id: &str,
+    path: PathBuf,
+    _dialog_fallback: bool,
+) -> Result<Written, String> {
+    print_native(app, id, path).await.map(|()| Written::File)
+}
+
+#[cfg(not(windows))]
+async fn print(
+    app: &AppHandle,
+    id: &str,
+    path: PathBuf,
+    dialog_fallback: bool,
+) -> Result<Written, String> {
+    match print_native(app, id, path).await {
+        Ok(()) => Ok(Written::File),
+        Err(error) => {
+            eprintln!("{error}");
+            if dialog_fallback {
+                print_dialog(app, id).await
+            } else {
+                Err(error)
+            }
+        }
+    }
+}
+
+/// Loads the waiting page into a hidden window and lets the webview write
+/// it to `path` as a PDF.
+async fn print_native(app: &AppHandle, id: &str, path: PathBuf) -> Result<(), String> {
     use std::sync::Arc;
     use std::sync::atomic::AtomicBool;
     use tauri::webview::PageLoadEvent;
@@ -109,7 +174,7 @@ async fn print(app: &AppHandle, id: &str, path: PathBuf) -> Result<Written, Stri
     .inner_size(820.0, 1160.0)
     .on_page_load(move |window, payload| {
         if payload.event() == PageLoadEvent::Finished && !started.swap(true, Ordering::SeqCst) {
-            crate::webview_win::print_to_pdf(&window, &target, tx.clone());
+            native::print_to_pdf(&window, &target, tx.clone());
         }
     })
     .build()
@@ -122,14 +187,38 @@ async fn print(app: &AppHandle, id: &str, path: PathBuf) -> Result<Written, Stri
     .map_err(|e| e.to_string())?;
     let _ = window.destroy();
     outcome?;
-    if !path.exists() {
+    if !file_written(&path).await {
         return Err(path.display().to_string());
     }
-    Ok(Written::File)
+    Ok(())
 }
 
+#[cfg(windows)]
+async fn file_written(path: &Path) -> bool {
+    path.exists()
+}
+
+/// GTK's file printer may still be closing the file when WebKit reports the
+/// job as done, so the file gets a moment to appear.
 #[cfg(not(windows))]
-async fn print(app: &AppHandle, id: &str, _path: PathBuf) -> Result<Written, String> {
+async fn file_written(path: &Path) -> bool {
+    let path = path.to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        for _ in 0..50 {
+            if path.metadata().is_ok_and(|m| m.len() > 0) {
+                return true;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
+        false
+    })
+    .await
+    .unwrap_or(false)
+}
+
+/// The fallback: the page in a window of its own with the print dialog.
+#[cfg(not(windows))]
+async fn print_dialog(app: &AppHandle, id: &str) -> Result<Written, String> {
     use tauri::webview::PageLoadEvent;
 
     let label = format!("report-print-{id}");
@@ -160,22 +249,12 @@ async fn tokio_sleep(d: std::time::Duration) {
 /// Saves a picture of the main window (--shot).
 pub async fn screenshot(app: &AppHandle, path: PathBuf) -> Result<(), String> {
     let window = app.get_webview_window("main").ok_or("no window")?;
-    #[cfg(windows)]
-    {
-        let (tx, rx) = std::sync::mpsc::channel();
-        crate::webview_win::capture_png(&window, &path, tx);
-        tauri::async_runtime::spawn_blocking(move || {
-            rx.recv_timeout(std::time::Duration::from_secs(20))
-                .unwrap_or_else(|_| Err(String::from("timeout")))
-        })
-        .await
-        .map_err(|e| e.to_string())?
-    }
-    #[cfg(not(windows))]
-    {
-        let _ = (window, path);
-        Err(String::from(
-            "--shot needs Windows (WebView2 CapturePreview)",
-        ))
-    }
+    let (tx, rx) = std::sync::mpsc::channel();
+    native::capture_png(&window, &path, tx);
+    tauri::async_runtime::spawn_blocking(move || {
+        rx.recv_timeout(std::time::Duration::from_secs(20))
+            .unwrap_or_else(|_| Err(String::from("timeout")))
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
