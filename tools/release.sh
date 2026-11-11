@@ -34,6 +34,8 @@ fi
 
 sed -i '/^\[workspace.package\]/,/^\[/s/^version = "[0-9.]*"/version = "'"$version"'"/' Cargo.toml
 sed -i '0,/"version": "[0-9.]*"/s//"version": "'"$version"'"/' app/package.json
+# The lockfile carries the version too; only the lockfile, nothing installed.
+npm --prefix app install --package-lock-only --ignore-scripts --silent
 grep -q "^version = \"$version\"" Cargo.toml || { echo "version not set in Cargo.toml" >&2; exit 1; }
 
 notes="changelog/$version.md"
