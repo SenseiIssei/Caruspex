@@ -455,8 +455,10 @@ export default function XrayPage() {
   // The straight view of the screenshot option, once the car is drawn.
   useEffect(() => {
     if (!devView || mode !== "3d" || !carKey) return;
-    const timer = setTimeout(() => sceneRef.current?.viewFrom(devView), 300);
-    return () => clearTimeout(timer);
+    // Again a little later: the car may be redrawn once more while the demo
+    // connection settles.
+    const timers = [300, 2000, 5000].map((ms) => setTimeout(() => sceneRef.current?.viewFrom(devView), ms));
+    return () => timers.forEach(clearTimeout);
   }, [devView, carKey, mode]);
 
   // --- The owner's own 3D model ----------------------------------------------------------
