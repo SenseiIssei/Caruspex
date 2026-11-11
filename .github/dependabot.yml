@@ -26,6 +26,10 @@ updates:
       - dependency-name: windows
       - dependency-name: windows-core
       - dependency-name: webview2-com
+      # The same for Linux: gtk, webkit2gtk and cairo-rs are wry's versions.
+      - dependency-name: gtk
+      - dependency-name: webkit2gtk
+      - dependency-name: cairo-rs
 
   # The interface: React, Vite, TypeScript and the Tauri JavaScript API.
   - package-ecosystem: npm
