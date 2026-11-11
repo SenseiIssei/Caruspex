@@ -208,8 +208,8 @@ Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 
 ## Phase 16: Mehr Kommunikationswege
 
-- [ ] VAG TP 2.0 über die rohen CAN-Schnittstellen (J2534, SLCAN, SocketCAN): damit alle Steuergeräte bei VW, Audi, Seat und Skoda von etwa 2004 bis 2012, was mit dem ELM327 nicht ging. Groß, Nutzen hoch
-- [ ] K-Line über J2534 (ISO 9141 und 14230 als eigene Protokolle der PassThru-Geräte), damit ältere Autos auch mit Profi-Interfaces gehen. Mittel
+- [x] VAG TP 2.0 über die rohen CAN-Schnittstellen (J2534, SLCAN, SocketCAN): damit alle Steuergeräte bei VW, Audi, Seat und Skoda von etwa 2004 bis 2012, was mit dem ELM327 nicht ging. Groß, Nutzen hoch (Kanalaufbau, Blockgröße, Bestätigung, Kanaltest; KWP2000 mit Kennung, Fehlerspeicher, Messwertblöcken und Grundeinstellung; Suchlauf und KKL-Seiten wählen "TP 2.0", sobald über eine CAN-Schnittstelle verbunden ist; am echten Auto noch zu bestätigen)
+- [x] K-Line über J2534 (ISO 9141 und 14230 als eigene Protokolle der PassThru-Geräte), damit ältere Autos auch mit Profi-Interfaces gehen. Mittel (ByteStream mit FIVE_BAUD_INIT und FAST_INIT, die KKL-Seiten listen J2534-Geräte; am echten Gerät noch zu bestätigen)
 - [ ] 32-Bit-Brücke für alte J2534-Treiber: ein kleines 32-Bit-Hilfsprogramm, das über eine Pipe mit Caruspex spricht. Mittel
 - [ ] GM Single-Wire-CAN und Ford MS-CAN über OBDLink (STN-Befehle), damit Karosseriesteuergeräte dieser Marken erreichbar werden. Mittel
 - [ ] Ältere BMW (E-Reihe) über K+DCAN-Kabel im K-Line-Modus (DS2 und KWP2000 nach BMW-Art), Protokollwissen aus EdiabasLib, Test am Auto Pflicht. Groß
