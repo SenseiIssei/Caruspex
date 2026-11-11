@@ -111,6 +111,11 @@ console.log(`i18n: ${source.length} texts, ${newTexts.length} new; ${summary}; c
 
 // In the CI (I18N_STRICT=1) a missing translation fails the build, so new
 // interface texts get translated before they reach main.
+const noEnglish = source.filter((e) => !e.plural && !e.en).map((e) => e.id);
+if (process.env.I18N_STRICT === "1" && noEnglish.length > 0) {
+  console.error(`i18n: interface texts without English: ${noEnglish.join(", ")} (translations/source/ui_*.json)`);
+  process.exit(1);
+}
 if (process.env.I18N_STRICT === "1" && totalMissing > 0) {
   console.error(`i18n: ${totalMissing} interface translations are missing, see src/i18n/new-texts.json`);
   process.exit(1);
