@@ -67,7 +67,7 @@ export const PAGES: PageEntry[] = [
   { id: "start", icon: "home", label: () => t(MW, "Start"), component: DashboardPage },
   { id: "connect", icon: "plug", label: () => t(MW, "Verbinden"), component: ConnectPage },
   { id: "health", icon: "heart", label: () => t(MW, "Gesundheitscheck"), section: () => t(MW, "Diagnose"), component: HealthPage },
-  { id: "used-car", icon: "tag", label: () => t("caruspex::UsedCarPage", "Gebrauchtwagen prüfen"), component: UsedCarPage },
+  { id: "used-car", icon: "tag", label: () => t("caruspex::UsedCarPage", "Gebrauchtwagen"), component: UsedCarPage },
   { id: "faults", icon: "alert", label: () => t(MW, "Fehlerspeicher"), component: FaultsPage },
   { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage },
   { id: "monitor", icon: "stethoscope", label: () => t(MW, "Bauteilprüfung"), component: MonitorPage },

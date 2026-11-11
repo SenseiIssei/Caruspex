@@ -24,6 +24,29 @@
  },
  {
   "context": "caruspex::UsedCarPage",
+  "de": "Gebrauchtwagen",
+  "en": "Used car",
+  "tr": {
+   "es": "Coche usado",
+   "fr": "Voiture d'occasion",
+   "pt": "Carro usado",
+   "it": "Auto usata",
+   "nl": "Occasion",
+   "pl": "Auto używane",
+   "cs": "Ojeté auto",
+   "ru": "Подержанный авто",
+   "uk": "Вживане авто",
+   "tr": "İkinci el araç",
+   "ar": "سيارة مستعملة",
+   "zh": "二手车",
+   "ja": "中古車",
+   "ko": "중고차",
+   "hi": "पुरानी कार",
+   "id": "Mobil bekas"
+  }
+ },
+ {
+  "context": "caruspex::UsedCarPage",
   "de": "Fahrzeug und Fahrgestellnummer",
   "en": "Vehicle and VIN",
   "tr": {

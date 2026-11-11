@@ -406,7 +406,11 @@ export function usedCarHtml(row: UsedCarRow, when: Date): string {
   if (row.modelYear > 0) fact(uc("Modelljahr"), String(row.modelYear));
   fact(uc("Fahrgestellnummer im Steuergerät"), row.vin || uc("nicht gemeldet"));
   fact(uc("Fahrgestellnummer in den Papieren"), row.papersVin || uc("nicht eingegeben"));
-  for (const m of row.mileage) fact(`${tr("Kilometerstand")}: ${m.source}`, `${localeNumber(m.km, 0)} km`);
+  // The highest reading first, then what each control unit stores.
+  if (row.mileage.length > 0) fact(tr("Kilometerstand"), `${localeNumber(Math.max(...row.mileage.map((m) => m.km)), 0)} km`);
+  if (row.mileage.length > 1) {
+    for (const m of row.mileage) fact(`   ${m.source}`, `${localeNumber(m.km, 0)} km`);
+  }
   const since: string[] = [];
   if (row.distanceSinceClearKm >= 0) since.push(`${localeNumber(row.distanceSinceClearKm, 0)} km`);
   if (row.warmUps >= 0) since.push(uc("%1 Warmläufe", localeNumber(row.warmUps, 0)));

@@ -4,7 +4,7 @@
 // faults, a short health check and the battery of electric cars; the result
 // is a traffic light, every finding in plain words, the questions for the
 // seller and a PDF for the purchase.
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { call, type UsedCarRow } from "../api";
 import type { IconName } from "../components/Icon";
 import { Icon } from "../components/Icon";
@@ -86,8 +86,17 @@ export default function UsedCarPage() {
   const [step, setStep] = useState("");
   const [generation, setGeneration] = useState(0);
 
+  // A run asked for before the connection stood (?page=used-car-run in the
+  // browser) starts once it does.
+  const pendingRun = useRef(false);
+
   useEffect(() => {
     if (!connected) setRunning(false);
+    if (connected && pendingRun.current) {
+      pendingRun.current = false;
+      navigate("used-car");
+      start(DEMO_VIN);
+    }
   }, [connected]);
 
   useBackendEvent("used_car_progress", ({ step: text, percent: value }) => {
@@ -103,7 +112,10 @@ export default function UsedCarPage() {
     setGeneration((g) => g + 1);
   });
 
-  useBackendEvent("failed", () => setRunning(false));
+  useBackendEvent("failed", () => {
+    setRunning(false);
+    setStep("");
+  });
 
   const start = (vin = papers) => {
     setRunning(true);
@@ -118,7 +130,8 @@ export default function UsedCarPage() {
     if (name !== "used-car-run") return;
     navigate("used-car");
     setPapers(DEMO_VIN);
-    start(DEMO_VIN);
+    if (connected) start(DEMO_VIN);
+    else pendingRun.current = true;
   });
 
   const headline = running ? t(HP, "Prüfe ...") : result ? result.headline : tr("Bereit für die Besichtigung");
