@@ -1,0 +1,4 @@
+# Aliases for the fixtures, same columns as data/wikidata/aliases.csv.
+brand,model,generation,item,skip,note
+Fiat,500,I,Q927839,,"Q467767 is the Nuova 500 of 1957"
+Tesla,Model 3,I,,width,"The width includes the mirrors"

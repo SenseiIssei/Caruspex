@@ -1,0 +1,95 @@
+{
+"head": {
+"vars": [
+"item",
+"amount",
+"unit",
+"applies",
+"rank"
+]
+},
+"results": {
+"bindings": [
+{
+"amount": {
+"datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+"type": "literal",
+"value": "1205"
+},
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"rank": {
+"type": "uri",
+"value": "http://wikiba.se/ontology#NormalRank"
+},
+"unit": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q11570"
+}
+},
+{
+"amount": {
+"datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+"type": "literal",
+"value": "1217"
+},
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"rank": {
+"type": "uri",
+"value": "http://wikiba.se/ontology#NormalRank"
+},
+"unit": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q11570"
+}
+},
+{
+"amount": {
+"datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+"type": "literal",
+"value": "2640"
+},
+"applies": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q188886"
+},
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"rank": {
+"type": "uri",
+"value": "http://wikiba.se/ontology#NormalRank"
+},
+"unit": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q100995"
+}
+},
+{
+"amount": {
+"datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+"type": "literal",
+"value": "499"
+},
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"rank": {
+"type": "uri",
+"value": "http://wikiba.se/ontology#NormalRank"
+},
+"unit": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q11570"
+}
+}
+]
+}
+}

@@ -2,8 +2,10 @@
 //! engine, the driven axles, the motors and the batteries sit.
 //!
 //! Nothing here comes from construction data (that belongs to the makers).
-//! The dimensions are typical values per body type and era, which is close
-//! enough for a recognisable model; the drivetrain follows a short rule:
+//! The dimensions come from Wikidata (CC0) where it has them for the
+//! generation (`tools/gen_dimensions.py`, about half of the catalog), and are
+//! typical values per body type and era otherwise; the drivetrain follows a
+//! short rule:
 //!
 //! - A pure electric car has its battery in the floor and one motor on the
 //!   axle its platform drives (rear for Tesla, BMW, the Volkswagen ID family
@@ -19,14 +21,39 @@
 //! - A hybrid keeps that layout and adds a motor at the gearbox and a small
 //!   battery under the rear seat; a plug-in hybrid a larger one.
 //!
-//! Real per-generation dimensions are the next step: once the catalog rows
-//! carry length, width, height and wheelbase (from Wikidata, CC0), they are
-//! returned by [`dimensions_for`] with [`DimensionSource::Catalog`].
+//! A value Wikidata lacks for a generation that has others is derived from
+//! the typical ones in proportion (a missing wheelbase from the real length),
+//! and [`Dimensions::measured`] says which values are real.
 
 use crate::catalog::{
     BodyType, PT_DIESEL, PT_ELECTRIC, PT_GAS, PT_HYBRID, PT_PETROL, PT_PLUG_IN, VehicleGeneration,
 };
+use crate::generated::dimensions::MEASURED;
 use caruspex_i18n::l;
+
+/// Values of one catalog generation from Wikidata (generated table), in
+/// millimetres and kilograms, 0 where Wikidata has none.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Measured {
+    pub brand: &'static str,
+    pub model: &'static str,
+    pub generation: &'static str,
+    pub length: u32,
+    pub width: u32,
+    pub height: u32,
+    pub wheelbase: u32,
+    pub track: u32,
+    pub mass: u32,
+    /// The Wikidata item ids the values come from, "|" between several.
+    pub item: &'static str,
+}
+
+/// Bits of [`Dimensions::measured`]: which values are real.
+pub const MEASURED_LENGTH: u8 = 1;
+pub const MEASURED_WIDTH: u8 = 2;
+pub const MEASURED_HEIGHT: u8 = 4;
+pub const MEASURED_WHEELBASE: u8 = 8;
+pub const MEASURED_TRACK: u8 = 16;
 
 /// Outer dimensions in millimetres.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -39,14 +66,18 @@ pub struct Dimensions {
     pub track: u32,
     /// Outer diameter of a wheel with its tyre.
     pub wheel: u32,
+    /// `MEASURED_*` bits of the values that are real (from Wikidata); the
+    /// others are typical or derived from the real ones.
+    pub measured: u8,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DimensionSource {
     /// Typical values for the body type and era.
     Typical,
-    /// Measured values of this generation (not filled yet, see the module docs).
-    Catalog,
+    /// Length or wheelbase (and what else Wikidata has) of this generation
+    /// from Wikidata.
+    Wikidata,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -136,15 +167,103 @@ pub fn typical_dimensions(body: BodyType, year: i32) -> Dimensions {
         wheelbase: scale(wheelbase, grow),
         track: scale(track, wide),
         wheel,
+        measured: 0,
     }
 }
 
-/// The dimensions for one generation. Measured values per generation are
-/// not in the catalog yet; this is the place where they will be returned
-/// once `data/vehicles` carries them (Wikidata, checked by the data check).
+/// The Wikidata values of a generation, if it has any.
+pub fn measured_for(g: &VehicleGeneration) -> Option<&'static Measured> {
+    MEASURED
+        .binary_search_by(|m| {
+            (
+                m.brand.as_bytes(),
+                m.model.as_bytes(),
+                m.generation.as_bytes(),
+            )
+                .cmp(&(
+                    g.brand.as_bytes(),
+                    g.model.as_bytes(),
+                    g.generation.as_bytes(),
+                ))
+        })
+        .ok()
+        .map(|i| &MEASURED[i])
+}
+
+/// Typical dimensions with the real values put in. A value Wikidata lacks
+/// follows the real ones in proportion: wheelbase and length from each
+/// other, track from the width, so a short car keeps a short wheelbase.
+pub fn merge_measured(typical: Dimensions, m: &Measured) -> Dimensions {
+    let ratio = |real: u32, typ: u32, value: u32| -> u32 {
+        if real == 0 || typ == 0 {
+            value
+        } else {
+            ((u64::from(value) * u64::from(real) + u64::from(typ) / 2) / u64::from(typ)) as u32
+        }
+    };
+    let mut d = typical;
+    let mut measured = 0;
+    // Length and wheelbase stand for each other's proportion.
+    let (length, wheelbase) = match (m.length, m.wheelbase) {
+        (0, 0) => (typical.length, typical.wheelbase),
+        (0, wb) => (ratio(wb, typical.wheelbase, typical.length), wb),
+        (len, 0) => (len, ratio(len, typical.length, typical.wheelbase)),
+        (len, wb) => (len, wb),
+    };
+    d.length = length;
+    d.wheelbase = wheelbase.min(length * 4 / 5);
+    if m.length > 0 {
+        measured |= MEASURED_LENGTH;
+    }
+    if m.wheelbase > 0 && d.wheelbase == m.wheelbase {
+        measured |= MEASURED_WHEELBASE;
+    }
+    if m.width > 0 {
+        d.width = m.width;
+        measured |= MEASURED_WIDTH;
+    }
+    d.track = if m.track > 0 {
+        measured |= MEASURED_TRACK;
+        m.track
+    } else {
+        ratio(d.width, typical.width, typical.track)
+    };
+    d.track = d.track.min(d.width.saturating_sub(150));
+    if m.height > 0 {
+        d.height = m.height;
+        measured |= MEASURED_HEIGHT;
+    }
+    // The wheel stays typical, but fits under the real roof.
+    d.wheel = d.wheel.min(d.height / 2);
+    d.measured = measured;
+    d
+}
+
+/// The dimensions for one generation: from Wikidata where it has its length
+/// or wheelbase, otherwise typical for its body type and year.
 pub fn dimensions_for(g: &VehicleGeneration, year: i32) -> (Dimensions, DimensionSource) {
     let year = if year > 0 { year } else { g.year_from };
-    (typical_dimensions(g.body, year), DimensionSource::Typical)
+    let typical = typical_dimensions(g.body, year);
+    match measured_for(g) {
+        Some(m) if m.length > 0 || m.wheelbase > 0 => {
+            (merge_measured(typical, m), DimensionSource::Wikidata)
+        }
+        Some(m) => (merge_measured(typical, m), DimensionSource::Typical),
+        None => (typical, DimensionSource::Typical),
+    }
+}
+
+/// The Wikidata item a generation's values come from (the first of several),
+/// "" without.
+pub fn wikidata_item(g: &VehicleGeneration) -> &'static str {
+    measured_for(g)
+        .map(|m| m.item.split('|').next().unwrap_or(""))
+        .unwrap_or("")
+}
+
+/// Empty weight from Wikidata in kilograms, 0 if it has none.
+pub fn wikidata_mass(g: &VehicleGeneration) -> u32 {
+    measured_for(g).map_or(0, |m| m.mass)
 }
 
 pub fn dimension_source_text(source: DimensionSource) -> &'static str {
@@ -153,7 +272,10 @@ pub fn dimension_source_text(source: DimensionSource) -> &'static str {
             "Typische Maße für diesen Aufbau und dieses Baujahr, nicht die genauen des Modells.",
             "Typical dimensions for this body type and year, not the exact ones of the model.",
         ),
-        DimensionSource::Catalog => l("Maße dieses Modells.", "Dimensions of this model."),
+        DimensionSource::Wikidata => l(
+            "Maße dieses Modells aus Wikidata, die Form ist ihm nachempfunden; mit ≈ markierte Werte fehlen dort und sind geschätzt.",
+            "Dimensions of this model from Wikidata, the shape is modelled after it; values marked ≈ are missing there and estimated.",
+        ),
     }
 }
 
@@ -546,6 +668,75 @@ mod tests {
                 }
             }
         }
+    }
+
+    fn generation(brand: &str, model: &str, code: &str) -> &'static VehicleGeneration {
+        catalog::all()
+            .iter()
+            .find(|g| g.brand == brand && g.model == model && g.generation == code)
+            .unwrap_or_else(|| panic!("{brand} {model} {code} is in the catalog"))
+    }
+
+    #[test]
+    fn wikidata_dimensions_come_through() {
+        // The table is sorted for the binary search, and every row is a
+        // generation of the catalog.
+        assert!(MEASURED.windows(2).all(|w| {
+            (
+                w[0].brand.as_bytes(),
+                w[0].model.as_bytes(),
+                w[0].generation.as_bytes(),
+            ) < (
+                w[1].brand.as_bytes(),
+                w[1].model.as_bytes(),
+                w[1].generation.as_bytes(),
+            )
+        }));
+        for m in MEASURED {
+            let g = generation(m.brand, m.model, m.generation);
+            assert_eq!(measured_for(g), Some(m));
+        }
+        // Golf VII: everything from Wikidata (Q62362).
+        let golf = generation("Volkswagen", "Golf", "VII");
+        let (d, source) = dimensions_for(golf, 2015);
+        assert_eq!(source, DimensionSource::Wikidata);
+        assert_eq!(
+            (d.length, d.width, d.height, d.wheelbase),
+            (4255, 1799, 1452, 2637)
+        );
+        assert_eq!(
+            d.measured,
+            MEASURED_LENGTH | MEASURED_WIDTH | MEASURED_HEIGHT | MEASURED_WHEELBASE
+        );
+        assert_eq!(wikidata_item(golf), "Q62362");
+        // A value Wikidata lacks follows the real ones: the F36 has length and
+        // wheelbase, width and height stay typical.
+        let f36 = generation("BMW", "4er Gran Coupé", "F36");
+        let (d, source) = dimensions_for(f36, 2016);
+        assert_eq!(source, DimensionSource::Wikidata);
+        assert_eq!((d.length, d.wheelbase), (4641, 2810));
+        assert_eq!(d.measured, MEASURED_LENGTH | MEASURED_WHEELBASE);
+        // Only a wheelbase: the length is derived in proportion, not invented.
+        let m = Measured {
+            brand: "",
+            model: "",
+            generation: "",
+            length: 0,
+            width: 0,
+            height: 0,
+            wheelbase: 2400,
+            track: 0,
+            mass: 0,
+            item: "Q1",
+        };
+        let typical = typical_dimensions(BodyType::Hatchback, 2005);
+        let d = merge_measured(typical, &m);
+        assert_eq!(d.wheelbase, 2400);
+        assert_eq!(
+            d.length,
+            (typical.length * 2400 + typical.wheelbase / 2) / typical.wheelbase
+        );
+        assert_eq!(d.measured, MEASURED_WHEELBASE);
     }
 
     #[test]

@@ -7,6 +7,7 @@ pub mod catalog;
 #[rustfmt::skip]
 mod generated {
     pub mod catalog;
+    pub mod dimensions;
 }
 pub mod vehicles;
 pub mod vin;

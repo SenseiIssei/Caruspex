@@ -1,0 +1,16 @@
+# Outer dimensions per catalog generation from Wikidata (CC0), by tools/gen_dimensions.py --match.
+# Millimetres and kilograms; 0 where Wikidata has no value. Do not edit by hand:
+# set or block an item in aliases.csv and run --match again.
+brand,model,generation,length,width,height,wheelbase,track,mass,item,label
+Audi,A2,8Z,3826,1673,1553,2405,,,Q741656,Audi A2
+BMW,1er,F20,,1765,,2690,,,Q796490,BMW 1 Series
+Chrysler,300,II,5001,1880,1483,3048,,,Q390055,Chrysler 300
+Fiat,500,I,,1627,,2300,,,Q927839,Fiat 500
+Ford,Sierra,I,4530,1698,1398,2608,,,Q366912,Ford Sierra
+Honda,Civic,IX,,1770,1472,2605,,,Q1626573,Honda Civic (ninth generation)
+Hyundai,Atos,MX,3500,,,,,,Q482491,Hyundai Atos
+Tesla,Model 3,I,4694,,1436,2875,,,Q7705507,Tesla Model 3
+Toyota,Corolla,E170,4620,1775,1455,2700,,,Q16879264,Toyota Corolla (E170/E180)
+Volkswagen,Golf,VI,4200,1779,1461,2578,,1217,Q1417956,Volkswagen Golf Mk6
+Volkswagen,Golf,VII,4255,1799,1452,2637,,1205,Q62362,Volkswagen Golf Mk7
+Volvo,Amazon,I,4394,1620,1505,2600,,1197,Q1543111,Volvo Amazon

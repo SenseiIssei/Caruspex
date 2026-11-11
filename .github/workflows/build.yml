@@ -67,8 +67,12 @@ jobs:
           # (see tools/gen_obdb.py); the conversion is checked offline on
           # real OBDb commands with their recorded answers.
           python tools/gen_obdb.py --fixtures
+          # Wikidata dimensions: the Rust table from the committed CSV, and
+          # the conversion and matching on recorded answers (both offline).
+          python tools/gen_dimensions.py
+          python tools/gen_dimensions.py --fixtures
           git add --intent-to-add crates
-          git diff --exit-code -- 'crates/*/src/generated' 'crates/caruspex-record/tests/fixtures'
+          git diff --exit-code -- 'crates/*/src/generated' 'crates/caruspex-record/tests/fixtures' 'crates/caruspex-vehicles/tests/fixtures'
 
       # Every text in every language: new texts in the code must be
       # translated before they reach main (see translations/TRANSLATING.md).

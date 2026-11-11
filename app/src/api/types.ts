@@ -687,14 +687,27 @@ export enum TractionBattery {
 // Shape of a car for the X-ray view: outer dimensions in millimetres and
 // where engine, motors and batteries sit.
 export interface VehicleAnatomy {
+  // The catalog generation (brand and model also for the demo car; generation
+  // is empty without a catalog entry) and the year shown.
+  brand: string;
+  model: string;
+  generation: string;
+  year: number;
   lengthMm: number;
   widthMm: number;
   heightMm: number;
   wheelbaseMm: number;
   trackMm: number;
   wheelMm: number;
-  // False while the catalog has no measured values (typical ones are used).
+  // True when length or wheelbase come from Wikidata (CC0).
   measured: boolean;
+  dimensionSource: "wikidata" | "typical";
+  // Bits of the real values: 1 length, 2 width, 4 height, 8 wheelbase, 16 track.
+  measuredFields: number;
+  // The Wikidata item ("Q62362"), "" without.
+  wikidataId: string;
+  // Empty weight from Wikidata, 0 without.
+  massKg: number;
   dimensionsText: string;
   powertrain: number;
   powertrainChoices: { flag: number; name: string }[];

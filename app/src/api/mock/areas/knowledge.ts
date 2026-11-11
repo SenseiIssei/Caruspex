@@ -23,11 +23,16 @@ type BrandCode = [string, string, string, number, number, number, boolean];
 // [key, label de, label en, brands, records]
 type FamilyRecord = [string, string, string, string, BrandCode[]];
 
+// [length, width, height, wheelbase, track, mass, Wikidata item]; 0 = none.
+export type MeasuredRecord = [number, number, number, number, number, number, string];
+
 interface CatalogData {
   brands: BrandRecord[];
   generations: GenRecord[];
   wmi: WmiRecord[];
   countries: CountryRecord[];
+  // Wikidata dimensions by generation index (generated/dimensions.rs).
+  measured: Record<string, MeasuredRecord>;
 }
 
 // --- Enums of VehicleCatalog.h and Vehicles.h ------------------------------------------
@@ -58,11 +63,20 @@ function loadCatalog(): Promise<CatalogData> {
 }
 
 // Brand, model, body and engines of one generation, for the X-ray demo.
-export async function catalogGeneration(
-  id: number,
-): Promise<{ brand: string; model: string; body: number; powertrains: number; yearFrom: number } | null> {
-  const g = (await loadCatalog()).generations[id];
-  return g ? { brand: g[0], model: g[1], body: g[5], powertrains: g[6], yearFrom: g[3] } : null;
+export async function catalogGeneration(id: number): Promise<{
+  brand: string;
+  model: string;
+  generation: string;
+  body: number;
+  powertrains: number;
+  yearFrom: number;
+  measured: MeasuredRecord | null;
+} | null> {
+  const data = await loadCatalog();
+  const g = data.generations[id];
+  return g
+    ? { brand: g[0], model: g[1], generation: g[2], body: g[5], powertrains: g[6], yearFrom: g[3], measured: data.measured[String(id)] ?? null }
+    : null;
 }
 
 function loadFamilies(): Promise<FamilyRecord[]> {

@@ -434,14 +434,35 @@ pub fn vehicle_anatomy(
             (dims, source, drivetrain, vec![variant], variant)
         }
     };
+    let (gen_brand, gen_model, gen_code, item, mass) = match generation {
+        Some(g) => (
+            g.brand,
+            g.model,
+            g.generation,
+            anatomy::wikidata_item(g),
+            anatomy::wikidata_mass(g),
+        ),
+        None => (brand, model, "", "", 0),
+    };
     json!({
+        "brand": gen_brand,
+        "model": gen_model,
+        "generation": gen_code,
+        "year": if year > 0 { year } else { generation.map_or(0, |g| g.year_from) },
+        "dimensionSource": match source {
+            anatomy::DimensionSource::Wikidata => "wikidata",
+            anatomy::DimensionSource::Typical => "typical",
+        },
+        "measuredFields": dims.measured,
+        "wikidataId": item,
+        "massKg": mass,
         "lengthMm": dims.length,
         "widthMm": dims.width,
         "heightMm": dims.height,
         "wheelbaseMm": dims.wheelbase,
         "trackMm": dims.track,
         "wheelMm": dims.wheel,
-        "measured": source == anatomy::DimensionSource::Catalog,
+        "measured": source == anatomy::DimensionSource::Wikidata,
         "dimensionsText": anatomy::dimension_source_text(source),
         "powertrain": variant,
         "powertrainChoices": variants
