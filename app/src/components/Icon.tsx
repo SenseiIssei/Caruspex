@@ -60,6 +60,7 @@ const SHAPES = {
   "sidebar": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M9 4v16\"/>",
   "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>",
   "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M11 12l9-9\"/><path d=\"M17 6l2.5 2.5\"/><path d=\"M14.5 8.5l2 2\"/>",
+  "cube": "<path d=\"M12 2.8 20.5 7.5v9L12 21.2 3.5 16.5v-9z\"/><path d=\"M3.5 7.5 12 12.2l8.5-4.7\"/><path d=\"M12 12.2v9\"/>",
   "map-pin": "<path d=\"M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z\"/><circle cx=\"12\" cy=\"10\" r=\"2.3\"/>",
   "lightbulb": "<path d=\"M9 18h6M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z\"/>",
   "printer": "<path d=\"M7 8V3.5h10V8\"/><rect x=\"3\" y=\"8\" width=\"18\" height=\"9\" rx=\"2\"/><path d=\"M7 14h10v6.5H7z\"/>",

@@ -111,6 +111,35 @@ export const ECU_PLACES: Record<number, EcuPlace> = {
 
 export type BusKind = "powertrain" | "comfort" | "diagnostic" | "kline";
 
+// The generic address sweep finds units it has no name for; the name they
+// report themselves (DID F197, "INSTRUMENTS", "AIRBAG 8CH") usually says
+// what they are.
+const KIND_WORDS: [RegExp, number][] = [
+  [/AIRBAG|SRS|RESTRAINT/, EcuKind.Airbag],
+  [/INSTRUMENT|KOMBI|CLUSTER|IPC\b/, EcuKind.Instruments],
+  [/CLIMA|KLIMA|HVAC|AIR ?CON/, EcuKind.Climate],
+  [/\bABS\b|\bESP\b|\bESC\b|BRAKE|BREMS/, EcuKind.Brakes],
+  [/GATEWAY|\bGW\b|\bZGW\b/, EcuKind.Gateway],
+  [/STEER|LENK|\bEPS\b/, EcuKind.Steering],
+  [/RADIO|NAVI|INFOTAIN|\bMMI\b|HEAD ?UNIT|AUDIO/, EcuKind.Infotainment],
+  [/\bBCM\b|BODY|ZENTRAL|\bBSI\b|\bSAM\b/, EcuKind.Body],
+  [/PARK|\bPDC\b|\bPAS\b/, EcuKind.Parking],
+  [/DOOR|TUER|TÜR/, EcuKind.Doors],
+  [/SEAT|SITZ/, EcuKind.Seats],
+  [/LIGHT|LICHT|LAMP/, EcuKind.Lighting],
+  [/TRANS|GEARBOX|GETRIEBE|\bTCM\b|\bTCU\b|\bDSG\b/, EcuKind.Gearbox],
+  [/ENGINE|MOTOR|\bECM\b|\bPCM\b|\bDME\b|\bDDE\b/, EcuKind.Engine],
+  [/\bBMS\b|BATTER/, EcuKind.Battery],
+  [/CHARG|\bOBC\b|LADE/, EcuKind.Charger],
+  [/HYBRID|INVERTER/, EcuKind.Hybrid],
+];
+
+export function guessKind(kind: number, name: string): number {
+  if (kind !== EcuKind.Other) return kind;
+  const upper = name.toUpperCase();
+  return KIND_WORDS.find(([re]) => re.test(upper))?.[1] ?? kind;
+}
+
 // Which CAN a kind usually hangs on behind the gateway.
 export function busForKind(kind: number): BusKind {
   switch (kind) {
@@ -636,9 +665,9 @@ export function buildLayout(input: XrayInput): CarLayout {
   const frontEngine = a.engine === EngineLayout.FrontTransverse || a.engine === EngineLayout.FrontLongitudinal;
   const radiatorX = Math.min(hull.front - 0.3, frontEngine ? engineCenter[0] + 0.48 : hull.front - 0.3);
   const radiatorU = hull.station(radiatorX);
-  const radH = Math.min(0.42, (hull.top(radiatorU) - hull.bottom(radiatorU)) * 0.55);
+  const radH = Math.min(0.32, (hull.top(radiatorU) - hull.bottom(radiatorU)) * 0.45);
   const radY = (hull.top(radiatorU) + hull.bottom(radiatorU)) / 2 - 0.02;
-  const radW = Math.min(W * 0.62, 2 * (Math.min(hull.halfWidth(radiatorU, radY - radH / 2), hull.halfWidth(radiatorU, radY + radH / 2)) - 0.06));
+  const radW = Math.min(W * 0.44, 2 * (Math.min(hull.halfWidth(radiatorU, radY - radH / 2), hull.halfWidth(radiatorU, radY + radH / 2)) - 0.06));
   const radiator: Vec3 = [radiatorX, radY, 0];
   parts.push(box("radiator", "cooling", "cooling", radiator, [0.04, radH, radW], [CarZone.Cooling]));
   parts.push(cylinder("fan", "cooling", "cooling", "x", [radiatorX - 0.07, radY, 0], 0.05, Math.min(radH * 0.9, 0.36), [CarZone.Cooling]));
@@ -722,7 +751,8 @@ export function buildLayout(input: XrayInput): CarLayout {
     frontSeatX,
   });
   const used = new Map<EcuPlace, number>();
-  const ecus: EcuNode[] = input.ecus.map((e) => {
+  const ecus: EcuNode[] = input.ecus.map((raw) => {
+    const e = { ...raw, kind: guessKind(raw.kind, raw.name) };
     const place = ECU_PLACES[e.kind] ?? "boot";
     const n = used.get(place) ?? 0;
     used.set(place, n + 1);

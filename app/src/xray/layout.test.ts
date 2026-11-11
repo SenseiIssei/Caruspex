@@ -8,6 +8,8 @@ import { BodyType, CarZone, Powertrain } from "../api/types";
 import {
   ECU_KIND_COUNT,
   ECU_PLACES,
+  EcuKind,
+  guessKind,
   buildLayout,
   insideHull,
   zoneAnchor,
@@ -59,6 +61,15 @@ function checkCar(layout: CarLayout, label: string): void {
 describe("x-ray layout", () => {
   it("has a place for every kind of control unit", () => {
     for (let kind = 0; kind < ECU_KIND_COUNT; kind++) expect(ECU_PLACES[kind], `kind ${kind}`).toBeTruthy();
+  });
+
+  it("recognises units of the generic sweep by their own name", () => {
+    expect(guessKind(EcuKind.Other, "INSTRUMENTS")).toBe(EcuKind.Instruments);
+    expect(guessKind(EcuKind.Other, "AIRBAG 8CH")).toBe(EcuKind.Airbag);
+    expect(guessKind(EcuKind.Other, "ABS/ESP 9.3")).toBe(EcuKind.Brakes);
+    expect(guessKind(EcuKind.Other, "CLIMATE 2Z")).toBe(EcuKind.Climate);
+    expect(guessKind(EcuKind.Other, "XYZ")).toBe(EcuKind.Other);
+    expect(guessKind(EcuKind.Engine, "AIRBAG")).toBe(EcuKind.Engine);
   });
 
   it("builds the demo car: an estate with a 1.4 petrol engine", () => {

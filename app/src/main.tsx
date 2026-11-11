@@ -9,6 +9,7 @@ import { effectiveLanguage, setLanguage, t } from "./i18n";
 import { setAppearance, type Appearance } from "./lib/theme";
 import { emitApp } from "./lib/store";
 import { App } from "./shell/App";
+import { isPageId } from "./shell/pages";
 import { loadGarage } from "./state/garage";
 import { session, settingsStore, startSession } from "./state/session";
 import "./styles/theme.css";
@@ -37,7 +38,13 @@ async function boot(): Promise<void> {
       <App startPage={params.get("page")} />
     </StrictMode>,
   );
-  if (params.has("demo")) setTimeout(() => emitApp("connect:demo"), 300);
+  if (params.has("demo")) {
+    setTimeout(() => emitApp("connect:demo"), 300);
+    // The connection jumps to the start page; ?page follows once it has
+    // settled, the way --page does in the app.
+    const page = params.get("page");
+    if (page) setTimeout(() => (isPageId(page) ? emitApp("navigate", page) : emitApp("dev:page", page)), 2500);
+  }
 }
 
 void boot();
