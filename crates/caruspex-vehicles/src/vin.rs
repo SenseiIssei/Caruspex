@@ -712,7 +712,8 @@ fn transliterate(c: u8) -> i32 {
 const WEIGHTS: [i32; 17] = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
 
 /// The calendar year of the system clock (UTC).
-fn system_year() -> i32 {
+/// The current year from the system clock (UTC).
+pub fn system_year() -> i32 {
     let secs = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_or(0, |d| d.as_secs() as i64);

@@ -251,6 +251,7 @@ fn main() {
             commands::send_raw,
             commands::read_monitors,
             commands::run_health_check,
+            commands::run_used_car_check,
             commands::probe_adapter,
             commands::bruteforce_clear,
             commands::cancel_scan,
