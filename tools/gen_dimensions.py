@@ -46,9 +46,16 @@ over the mirrors). Every line there says why.
 Wikidata has no property for the track of a car, so that column stays empty;
 the X-ray view takes the typical track for the width then.
 
+Values from the makers. Wikidata lacks the dimensions of some popular
+generations (F30, F36, Focus, Octavia) or has only the values of the whole
+series. data/dimensions_manual.csv lists them by hand from the technical data
+the maker published (press kit or data sheet, named with its year in every
+row). Those values come first; Wikidata fills the fields the row leaves
+empty. The Rust table keeps the document, so the app can name it.
+
 Output: data/wikidata/dimensions.csv (brand, model, generation, the values in
-mm and kg, the item ids and the English name), committed, and from it
-crates/caruspex-vehicles/src/generated/dimensions.rs.
+mm and kg, the item ids and the English name), committed, and from it and
+data/dimensions_manual.csv crates/caruspex-vehicles/src/generated/dimensions.rs.
 """
 
 from __future__ import annotations
@@ -73,6 +80,7 @@ VEHICLES = os.path.join(ROOT, "data", "vehicles")
 DATA = os.path.join(ROOT, "data", "wikidata")
 TABLE = os.path.join(DATA, "dimensions.csv")
 ALIASES = os.path.join(DATA, "aliases.csv")
+MANUAL = os.path.join(ROOT, "data", "dimensions_manual.csv")
 TARGET_RS = os.path.join(ROOT, "crates", "caruspex-vehicles", "src", "generated", "dimensions.rs")
 FIXTURES = os.path.join(ROOT, "crates", "caruspex-vehicles", "tests", "fixtures")
 
@@ -203,16 +211,31 @@ SELECT ?item ?pred ?time WHERE {{
     return out
 
 
-def do_fetch() -> int:
-    os.makedirs(CACHE, exist_ok=True)
+def fetch_answers(folder: str, log=print) -> None:
+    """Asks the query service and keeps the answers in folder (the cache, or
+    a scratch folder for the monthly data check)."""
+    os.makedirs(folder, exist_ok=True)
     for name, query in queries().items():
-        print(f"query {name} ...")
+        log(f"query {name} ...")
         result = sparql(query)
         rows = result["results"]["bindings"]
-        with open(os.path.join(CACHE, name + ".json"), "w", encoding="utf-8", newline="\n") as f:
+        with open(os.path.join(folder, name + ".json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(result, f, ensure_ascii=False)
-        print(f"  {len(rows)} rows")
+        log(f"  {len(rows)} rows")
         time.sleep(3)
+
+
+def current_rows(folder: str) -> list[dict]:
+    """The Wikidata rows (as in dimensions.csv) the answers in folder give
+    for today's catalog and aliases."""
+    stats: collections.Counter = collections.Counter()
+    items = load_items(load_answers(folder), stats)
+    catalog = load_catalog()
+    return rows_for(catalog, match(catalog, items, load_aliases()))
+
+
+def do_fetch() -> int:
+    fetch_answers(CACHE)
     return 0
 
 
@@ -675,11 +698,71 @@ def rust_str(text: str) -> str:
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
+def read_manual(path: str, catalog: set[tuple[str, str, str]]) -> dict[tuple[str, str, str], dict]:
+    """The rows of data/dimensions_manual.csv by generation: the values (0 for
+    an empty field) and the document they come from. Every row needs a
+    catalog generation, a source and sane values."""
+    out: dict[tuple[str, str, str], dict] = {}
+    if not os.path.exists(path):
+        return out
+    text = io.open(path, encoding="utf-8-sig").read()
+    lines = [line for line in text.splitlines() if line.strip() and not line.startswith("#")]
+    for row in csv.DictReader(lines):
+        key = (row["brand"], row["model"], row["generation"])
+        where = f"{path}: {' '.join(key)}"
+        if key not in catalog:
+            raise SystemExit(f"error: {where} is not in the catalog")
+        if key in out:
+            raise SystemExit(f"error: {where} is listed twice")
+        source = (row.get("source") or "").strip()
+        if not source or not re.search(r"(19|20)\d\d", source):
+            raise SystemExit(f"error: {where}: the source needs the document and its year")
+        if "\u2014" in source or "\u2013" in source:
+            raise SystemExit(f"error: {where}: no long dashes in the source")
+        values = {}
+        for f in MAIN:
+            v = int(row.get(f) or 0)
+            lo, hi = RANGES[f]
+            if v and not lo <= v <= hi:
+                raise SystemExit(f"error: {where}: {f} {v} is outside {lo} to {hi}")
+            values[f] = v
+        if not any(values.values()):
+            raise SystemExit(f"error: {where}: no values")
+        if values["length"] and values["wheelbase"] and values["wheelbase"] >= values["length"]:
+            raise SystemExit(f"error: {where}: the wheelbase is not shorter than the car")
+        out[key] = {"values": values, "source": source}
+    return out
+
+
+def merge_manual(rows: list[dict], manual: dict[tuple[str, str, str], dict]) -> list[dict]:
+    """The Wikidata rows with the makers' values on top: a value of the manual
+    table wins, Wikidata fills what it leaves empty. "doc" names the
+    document when it gave at least one value."""
+    out = {}
+    for r in rows:
+        out[(r["brand"], r["model"], r["generation"])] = {**r, "doc": ""}
+    for key, m in manual.items():
+        r = out.get(key) or {"brand": key[0], "model": key[1], "generation": key[2],
+                             **{f: 0 for f in FIELDS}, "item": "", "label": "", "doc": ""}
+        # The Wikidata item stays named only while one of its values is still used.
+        if not any(r[f] and not m["values"].get(f) for f in FIELDS):
+            r["item"] = ""
+        for f, v in m["values"].items():
+            if v:
+                r[f] = v
+        r["doc"] = m["source"]
+        out[key] = r
+    return sorted(out.values(), key=lambda r: (r["brand"], r["model"], r["generation"]))
+
+
 def write_rust(rows: list[dict], total: int) -> None:
     complete = sum(1 for r in rows if all(r[f] for f in ("length", "width", "height", "wheelbase")))
+    manual = sum(1 for r in rows if r.get("doc"))
     lines = [
-        "// Generated by tools/gen_dimensions.py from data/wikidata/dimensions.csv, do not edit by hand.",
-        f"// Wikidata (CC0): {len(rows)} of {total} generations, {complete} with length, width, height and wheelbase.",
+        "// Generated by tools/gen_dimensions.py from data/wikidata/dimensions.csv and",
+        "// data/dimensions_manual.csv, do not edit by hand.",
+        f"// Dimensions: {len(rows)} of {total} generations, {complete} with length, width, height and wheelbase;",
+        f"// {manual} with values from the makers' technical data, the rest from Wikidata (CC0).",
         "",
         "use crate::anatomy::Measured as M;",
         "",
@@ -690,7 +773,8 @@ def write_rust(rows: list[dict], total: int) -> None:
     for r in sorted(rows, key=lambda r: (r["brand"].encode(), r["model"].encode(), r["generation"].encode())):
         values = ", ".join(f"{f}: {r[f]}" for f in FIELDS)
         lines.append(f"    M {{ brand: {rust_str(r['brand'])}, model: {rust_str(r['model'])}, "
-                     f"generation: {rust_str(r['generation'])}, {values}, item: {rust_str(r['item'])} }},")
+                     f"generation: {rust_str(r['generation'])}, {values}, item: {rust_str(r['item'])}, "
+                     f"doc: {rust_str(r.get('doc', ''))} }},")
     lines.append("];")
     os.makedirs(os.path.dirname(TARGET_RS), exist_ok=True)
     with open(TARGET_RS, "w", encoding="utf-8", newline="\n") as f:
@@ -700,7 +784,9 @@ def write_rust(rows: list[dict], total: int) -> None:
 def coverage(rows: list[dict], total: int) -> str:
     complete = sum(1 for r in rows if all(r[f] for f in ("length", "width", "height", "wheelbase")))
     per = {f: sum(1 for r in rows if r[f]) for f in FIELDS}
-    return (f"{len(rows)} of {total} generations have dimensions from Wikidata ({100 * len(rows) / max(1, total):.1f} %), "
+    manual = sum(1 for r in rows if r.get("doc"))
+    return (f"{len(rows)} of {total} generations have dimensions ({100 * len(rows) / max(1, total):.1f} %), "
+            f"{manual} of them from the makers' data, "
             f"{complete} complete (length, width, height, wheelbase); "
             + ", ".join(f"{f} {n}" for f, n in per.items()))
 
@@ -726,10 +812,11 @@ def do_match() -> int:
     rows = rows_for(catalog, matched)
     os.makedirs(DATA, exist_ok=True)
     write_csv(TABLE, rows)
-    write_rust(rows, len(catalog))
+    merged = merge_manual(rows, read_manual(MANUAL, {g.key for g in catalog}))
+    write_rust(merged, len(catalog))
     print(f"{len(items)} Wikidata items with dimensions; skipped: "
           + ", ".join(f"{k} {v}" for k, v in sorted(stats.items())))
-    print(coverage(rows, len(catalog)))
+    print(coverage(merged, len(catalog)))
     if "--verbose" in sys.argv:
         for r in rows:
             print(f"  {r['brand']} {r['model']} {r['generation']}: {r['item']} {r['label']}")
@@ -744,8 +831,9 @@ def do_table() -> int:
             print(f"error: {TABLE}: {r['brand']} {r['model']} {r['generation']} is not in the catalog; "
                   "run --match again", file=sys.stderr)
             return 1
-    write_rust(rows, len(catalog))
-    print(coverage(rows, len(catalog)))
+    merged = merge_manual(rows, read_manual(MANUAL, catalog))
+    write_rust(merged, len(catalog))
+    print(coverage(merged, len(catalog)))
     return 0
 
 

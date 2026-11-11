@@ -1,0 +1,48 @@
+[
+ {
+  "context": "caruspex::XrayPage",
+  "de": "Maße vom Hersteller, Form nachempfunden",
+  "en": "Dimensions from the maker, shape modelled after the car",
+  "tr": {
+   "es": "Medidas del fabricante, forma inspirada en el coche",
+   "fr": "Dimensions du constructeur, forme inspirée du modèle",
+   "pt": "Medidas do fabricante, forma inspirada no carro",
+   "it": "Misure del costruttore, forma ispirata all'auto",
+   "nl": "Maten van de fabrikant, vorm nagebootst",
+   "pl": "Wymiary producenta, kształt odwzorowany",
+   "cs": "Rozměry od výrobce, tvar napodobený",
+   "ru": "Размеры от производителя, форма по образцу",
+   "uk": "Розміри від виробника, форма за зразком",
+   "tr": "Ölçüler üreticiden, biçim otomobile benzetilmiş",
+   "ar": "الأبعاد من الشركة المصنّعة، والشكل مستوحى من السيارة",
+   "zh": "尺寸来自制造商，外形仿照车型",
+   "ja": "寸法はメーカー発表値、形状は車に似せたもの",
+   "ko": "치수는 제조사 자료, 형태는 차량을 본뜸",
+   "hi": "माप निर्माता से, आकार कार जैसा बनाया गया",
+   "id": "Ukuran dari pabrikan, bentuk meniru mobilnya"
+  }
+ },
+ {
+  "context": "caruspex::XrayPage",
+  "de": "Quelle: %1",
+  "en": "Source: %1",
+  "tr": {
+   "es": "Fuente: %1",
+   "fr": "Source : %1",
+   "pt": "Fonte: %1",
+   "it": "Fonte: %1",
+   "nl": "Bron: %1",
+   "pl": "Źródło: %1",
+   "cs": "Zdroj: %1",
+   "ru": "Источник: %1",
+   "uk": "Джерело: %1",
+   "tr": "Kaynak: %1",
+   "ar": "المصدر: %1",
+   "zh": "来源：%1",
+   "ja": "出典：%1",
+   "ko": "출처: %1",
+   "hi": "स्रोत: %1",
+   "id": "Sumber: %1"
+  }
+ }
+]

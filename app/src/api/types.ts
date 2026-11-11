@@ -719,7 +719,9 @@ export interface VehicleAnatomy {
   wheelMm: number;
   // True when length or wheelbase come from Wikidata (CC0).
   measured: boolean;
-  dimensionSource: "wikidata" | "typical";
+  dimensionSource: "wikidata" | "manufacturer" | "typical";
+  // The maker's document the values come from (name and year), "" without.
+  dimensionDocument: string;
   // Bits of the real values: 1 length, 2 width, 4 height, 8 wheelbase, 16 track.
   measuredFields: number;
   // The Wikidata item ("Q62362"), "" without.

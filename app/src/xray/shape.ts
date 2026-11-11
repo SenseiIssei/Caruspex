@@ -7,17 +7,22 @@
 //
 // 1. Defaults per body type, adjusted for the era (older cars have steeper
 //    windscreens and lower window lines) and the drivetrain (an engine along
-//    the car means a long bonnet, an electric car a short one).
+//    the car means a long bonnet, an electric car a short one). The era also
+//    sets the lamps and the grille: round or upright lamps and a wide grille
+//    on older cars, lamps that wrap round the corners and sweep back later,
+//    slim strips and a closed front on electric cars.
 // 2. A hand-tuned row of SHAPES for common generations, so a Golf, a BMW Gran
 //    Coupe or a Fiat 500 reads as itself. The rows hold only shape, never
-//    dimensions (those come from Wikidata or stay typical, see anatomy.rs),
+//    dimensions (those come from the makers, Wikidata or stay typical, see
+//    anatomy.rs), and the outlines of lamps and grille openings per maker,
 //    and each says where its values come from: the published dimensions
 //    (overhangs from length minus wheelbase), the standard tyre size, and
 //    well known traits of the body visible on any press photo. They are
 //    estimates of proportions, not measurements of a drawing.
 // 3. The profile: the roof line from end to end, the stations of the
 //    windscreen, roof and rear window, the side window opening with its
-//    pillars and the door seams, all in metres for one car.
+//    pillars, the door seams and the top edges of the front and rear faces
+//    the lamps hang from, all in metres for one car.
 //
 // Coordinates as in layout.ts: x along the car (front is +x, 0 the middle),
 // y up from the road, stations u from 0 (rear end) to 1 (front end). No
@@ -34,6 +39,45 @@ export type RearStyle =
   | "pickup"
   | "roadster"
   | "convertible";
+
+// A lamp on the front or the rear face, measured along the body surface
+// from the centre line outwards (and on round the corner to the side).
+export interface Lamp {
+  // Length along the surface, and where its outer end sits: metres past the
+  // corner of the face on to the side (a lamp that wraps round), negative
+  // when it ends before the corner.
+  width: number;
+  wrap: number;
+  // Metres from the top edge of the face (the bonnet's front edge, the boot
+  // lid or the bottom of the tailgate glass) down to the lamp, and its height.
+  drop: number;
+  height: number;
+  // Corners: 2 a round or oval lamp, 4 soft, 8 and more sharp.
+  round: number;
+  // Metres the outer end sits higher than the inner one (a swept lamp).
+  rise: number;
+  // Two round lamps side by side instead of one (older cars).
+  twin: boolean;
+  // A thin light strip across the car between the two lamps.
+  bar: boolean;
+}
+
+// The air openings in the front: the grille under the bonnet's edge and the
+// intake low in the bumper. Only the openings, never a badge.
+export interface Grille {
+  // Half the width, the height and the drop from the bonnet's front edge in
+  // metres; corners as for the lamps.
+  width: number;
+  height: number;
+  drop: number;
+  round: number;
+  // 1 one opening, 2 two side by side (BMW), 0 closed (most electric cars).
+  openings: 0 | 1 | 2;
+  // The intake in the bumper: half the width and the height in metres, 0
+  // for none.
+  intakeWidth: number;
+  intakeHeight: number;
+}
 
 export interface ShapeSpec {
   style: RearStyle;
@@ -81,9 +125,21 @@ export interface ShapeSpec {
   quarterWindow: boolean;
   // The forward kink at the rear end of the side windows (BMW).
   kink: boolean;
+  // Headlights, tail lights and the openings in the front.
+  headlight: Lamp;
+  taillight: Lamp;
+  grille: Grille;
 }
 
-// Outer wheel diameter in metres, when a row knows the standard tyre.
+// What a row may set: any value, the lamps and the grille in part; outer
+// wheel diameter in metres, when the row knows the standard tyre.
+export type ShapeOverride = Partial<Omit<ShapeSpec, "headlight" | "taillight" | "grille">> & {
+  wheel?: number;
+  headlight?: Partial<Lamp>;
+  taillight?: Partial<Lamp>;
+  grille?: Partial<Grille>;
+};
+
 export interface ShapeRow {
   brand: string;
   model: string;
@@ -91,7 +147,7 @@ export interface ShapeRow {
   // The body this row describes; omitted: the catalog's own. Several rows
   // for one generation are its body variants (saloon, estate, coupe).
   body?: BodyType;
-  shape: Partial<ShapeSpec> & { wheel?: number };
+  shape: ShapeOverride;
   // Where the values come from.
   note: string;
 }
@@ -106,7 +162,9 @@ export interface Shape extends ShapeSpec {
 
 // --- Defaults ----------------------------------------------------------------------
 
-const BASE: Record<BodyType, ShapeSpec> = {
+type BodySpec = Omit<ShapeSpec, "headlight" | "taillight" | "grille">;
+
+const BASE: Record<BodyType, BodySpec> = {
   [BodyType.Hatchback]: {
     style: "hatchback", doors: 4, frontShare: 0.55, cowl: 0.42, windscreen: 28, rearWindow: 58, roofCrown: 0.035, roofPeak: 0.5, roofDrop: 0.05,
     deck: 0, belt: 0.65, beltRise: 0.04, rideHeight: 0.14, nose: 0.5, tail: 0.66, tumblehome: 0.17, noseRound: 4.5, tailRound: 7,
@@ -164,9 +222,54 @@ const BASE: Record<BodyType, ShapeSpec> = {
   },
 };
 
+// Lamps and grille by era: tall upright lamps (round ones before 1980) and
+// a wide grille between them on older cars, then lamps that grow round the
+// corners and sweep back, and slim LED strips with the grille below them
+// on new ones. Values in metres, see Lamp and Grille.
+function eraFront(year: number): { headlight: Lamp; taillight: Lamp; grille: Grille } {
+  const lamp = (width: number, wrap: number, drop: number, height: number, round: number, rise = 0): Lamp => ({
+    width, wrap, drop, height, round, rise, twin: false, bar: false,
+  });
+  const grille = (width: number, height: number, drop: number, round: number, intakeWidth: number, intakeHeight: number): Grille => ({
+    width, height, drop, round, openings: 1, intakeWidth, intakeHeight,
+  });
+  if (year > 0 && year < 1980) {
+    return { headlight: lamp(0.19, -0.07, 0.05, 0.17, 2.2), taillight: lamp(0.3, -0.03, 0.03, 0.12, 8), grille: grille(0.42, 0.16, 0.05, 10, 0, 0) };
+  }
+  if (year > 0 && year < 1995) {
+    return { headlight: lamp(0.36, -0.01, 0.04, 0.14, 9), taillight: lamp(0.42, 0.03, 0.03, 0.14, 8), grille: grille(0.3, 0.1, 0.06, 9, 0.4, 0.06) };
+  }
+  if (year > 0 && year < 2008) {
+    return { headlight: lamp(0.42, 0.08, 0.03, 0.15, 4, 0.04), taillight: lamp(0.36, 0.08, 0.02, 0.16, 4), grille: grille(0.26, 0.1, 0.08, 5, 0.45, 0.1) };
+  }
+  if (year > 0 && year < 2017) {
+    return { headlight: lamp(0.45, 0.14, 0.03, 0.12, 5, 0.05), taillight: lamp(0.4, 0.14, 0.02, 0.12, 5, 0.02), grille: grille(0.3, 0.14, 0.1, 5, 0.5, 0.1) };
+  }
+  return { headlight: lamp(0.46, 0.18, 0.03, 0.08, 6, 0.04), taillight: lamp(0.44, 0.2, 0.03, 0.08, 7, 0.02), grille: grille(0.34, 0.16, 0.1, 5, 0.5, 0.1) };
+}
+
 // The defaults for a body, year and drivetrain.
 export function defaultShape(body: BodyType, year: number, engine: EngineLayout, driven: DrivenAxles): ShapeSpec {
-  const s: ShapeSpec = { ...(BASE[body] ?? BASE[BodyType.Hatchback]) };
+  const s: ShapeSpec = { ...(BASE[body] ?? BASE[BodyType.Hatchback]), ...eraFront(year) };
+  // Tall bodies: a taller grille; estates, SUVs and vans: tail lights that
+  // climb the last pillar beside the tailgate.
+  switch (body) {
+    case BodyType.Suv:
+    case BodyType.Pickup:
+      s.grille = { ...s.grille, height: s.grille.height * 1.45, width: s.grille.width * 1.1 };
+      s.taillight = { ...s.taillight, height: s.taillight.height * 1.5, width: s.taillight.width * 0.85 };
+      break;
+    case BodyType.Van:
+      s.grille = { ...s.grille, height: s.grille.height * 1.3 };
+      s.taillight = { ...s.taillight, width: 0.16, wrap: 0.04, height: 0.42, drop: -0.25, round: 8 };
+      break;
+    case BodyType.Estate:
+    case BodyType.Mpv:
+      s.taillight = { ...s.taillight, height: s.taillight.height * 1.35, width: s.taillight.width * 0.85 };
+      break;
+    default:
+      break;
+  }
   // Older cars: steeper windscreens, lower window lines, flatter roofs,
   // longer boots; newer ones the other way round.
   if (year > 0 && year < 1990) {
@@ -202,6 +305,9 @@ export function defaultShape(body: BodyType, year: number, engine: EngineLayout,
       s.cowl = Math.min(s.cowl, 0.3);
       s.nose -= 0.03;
       s.windscreen -= 2;
+      // No radiator to feed: the grille is closed, a slim intake below
+      // cools the battery and the brakes.
+      s.grille = { ...s.grille, openings: 0, intakeWidth: s.grille.intakeWidth * 0.8, intakeHeight: Math.max(0.05, s.grille.intakeHeight * 0.7) };
       break;
     default:
       break;
@@ -216,62 +322,94 @@ export function defaultShape(body: BodyType, year: number, engine: EngineLayout,
 // tyre (225/45 R18 = 0.66 m); angles and the rest read off side views. The
 // note names the traits the row is about.
 const B = BodyType;
+
+// Front and rear graphics shared by the rows of one maker or family: where
+// the lamps sit and how far they wrap round, the grille opening and the
+// intake. Only the outlines of openings and lamps, never a badge. Read off
+// the same press photos as the rest of a row.
+const BMW: ShapeOverride = {
+  grille: { openings: 2, width: 0.26, height: 0.13, drop: 0.05, round: 4, intakeWidth: 0.55, intakeHeight: 0.1 },
+  headlight: { width: 0.6, wrap: 0.12, drop: 0.03, height: 0.11, round: 5, rise: 0.03 },
+  taillight: { width: 0.44, wrap: 0.24, drop: 0.02, height: 0.11, round: 6, rise: 0 },
+};
+const BMW_LARGE: ShapeOverride = { ...BMW, grille: { ...BMW.grille, width: 0.3, height: 0.16 } };
+const AUDI: ShapeOverride = {
+  grille: { openings: 1, width: 0.3, height: 0.28, drop: 0.05, round: 3.5, intakeWidth: 0, intakeHeight: 0 },
+  headlight: { width: 0.52, wrap: 0.14, drop: 0.03, height: 0.1, round: 5, rise: 0.05 },
+};
+const MERCEDES: ShapeOverride = {
+  grille: { openings: 1, width: 0.32, height: 0.15, drop: 0.05, round: 6 },
+  headlight: { width: 0.5, wrap: 0.14, drop: 0.03, height: 0.11, round: 5, rise: 0.04 },
+};
+// A slim grille band that runs into the lamps, the intake below.
+const VW_BAND: ShapeOverride = {
+  grille: { openings: 1, width: 0.42, height: 0.06, drop: 0.03, round: 8, intakeWidth: 0.48, intakeHeight: 0.12 },
+  headlight: { width: 0.46, wrap: 0.1, drop: 0.02, height: 0.1, round: 6, rise: 0.02 },
+  taillight: { width: 0.42, wrap: 0.18, drop: 0.02, height: 0.1, round: 6, rise: 0 },
+};
+// Electric: closed front, slim lamps that sweep far back.
+const EV_CLOSED: ShapeOverride = {
+  grille: { openings: 0, intakeWidth: 0.32, intakeHeight: 0.06 },
+  headlight: { width: 0.48, wrap: 0.16, drop: 0.03, height: 0.07, round: 4, rise: 0.05 },
+  taillight: { width: 0.42, wrap: 0.24, drop: 0.02, height: 0.1, round: 5, rise: 0 },
+};
+
 export const SHAPES: ShapeRow[] = [
   // --- BMW: engine along the car, long bonnet, short front overhang, the kink
   // at the rear of the side windows.
   {
     brand: "BMW", model: "4er Gran Coupé", generations: ["F36"],
-    shape: { style: "fastback", doors: 4, frameless: true, quarterWindow: true, kink: true, frontShare: 0.43, cowl: 0.78, windscreen: 25, rearWindow: 18, deck: 0.2, roofCrown: 0.045, roofPeak: 0.62, belt: 0.67, beltRise: 0.05, nose: 0.46, tail: 0.69, tumblehome: 0.21, lastPillar: 0.16, rideHeight: 0.13, wheel: 0.66 },
+    shape: { ...BMW, style: "fastback", doors: 4, frameless: true, quarterWindow: true, kink: true, frontShare: 0.43, cowl: 0.78, windscreen: 25, rearWindow: 18, deck: 0.2, roofCrown: 0.045, roofPeak: 0.62, belt: 0.67, beltRise: 0.05, nose: 0.46, tail: 0.69, tumblehome: 0.21, lastPillar: 0.16, rideHeight: 0.13, wheel: 0.66 },
     note: "Four-door coupe with a tailgate: long sloping rear window down to a short boot lid, frameless door windows, small window behind the rear door, BMW kink. Overhangs 790/1038 mm (4638 mm long, 2810 mm wheelbase), 225/45 R18.",
   },
   {
     brand: "BMW", model: "4er", generations: ["F32"],
-    shape: { style: "fastback", doors: 2, frameless: true, quarterWindow: true, kink: true, frontShare: 0.43, cowl: 0.8, windscreen: 25, rearWindow: 21, deck: 0.38, roofCrown: 0.04, belt: 0.68, beltRise: 0.05, nose: 0.46, tail: 0.7, tumblehome: 0.21, wheel: 0.66 },
+    shape: { ...BMW, style: "fastback", doors: 2, frameless: true, quarterWindow: true, kink: true, frontShare: 0.43, cowl: 0.8, windscreen: 25, rearWindow: 21, deck: 0.38, roofCrown: 0.04, belt: 0.68, beltRise: 0.05, nose: 0.46, tail: 0.7, tumblehome: 0.21, wheel: 0.66 },
     note: "Coupe: long doors without frames, short glass house, BMW kink. Overhangs 790/1038 mm, 225/45 R18.",
   },
   {
     brand: "BMW", model: "3er", generations: ["F30"],
-    shape: { style: "notchback", kink: true, frontShare: 0.41, cowl: 0.76, windscreen: 26, rearWindow: 26, deck: 0.5, belt: 0.66, beltRise: 0.04, nose: 0.47, tail: 0.69, wheel: 0.65 },
+    shape: { ...BMW, style: "notchback", kink: true, frontShare: 0.41, cowl: 0.76, windscreen: 26, rearWindow: 26, deck: 0.5, belt: 0.66, beltRise: 0.04, nose: 0.47, tail: 0.69, wheel: 0.65 },
     note: "Saloon with a classic three-box profile, long bonnet, BMW kink. Overhangs 745/1069 mm (4624, 2810), 225/50 R17.",
   },
   {
     brand: "BMW", model: "3er", generations: ["F30"], body: B.Estate,
-    shape: { style: "estate", kink: true, frontShare: 0.41, cowl: 0.76, windscreen: 26, rearWindow: 66, lastPillar: 0.14, wheel: 0.65 },
+    shape: { ...BMW, style: "estate", kink: true, frontShare: 0.41, cowl: 0.76, windscreen: 26, rearWindow: 66, lastPillar: 0.14, wheel: 0.65 },
     note: "Touring (F31): the estate of the F30, sloping D-pillar.",
   },
   {
     brand: "BMW", model: "3er", generations: ["G20"],
-    shape: { style: "notchback", kink: true, frontShare: 0.43, cowl: 0.76, windscreen: 25, rearWindow: 25, deck: 0.48, belt: 0.67, beltRise: 0.05, nose: 0.46, tail: 0.7, wheel: 0.67 },
+    shape: { ...BMW_LARGE, style: "notchback", kink: true, frontShare: 0.43, cowl: 0.76, windscreen: 25, rearWindow: 25, deck: 0.48, belt: 0.67, beltRise: 0.05, nose: 0.46, tail: 0.7, wheel: 0.67 },
     note: "Saloon, a little longer at the front than the F30, BMW kink. Overhangs 798/1060 mm (4709, 2851), 225/45 R18.",
   },
   {
     brand: "BMW", model: "3er", generations: ["G20"], body: B.Estate,
-    shape: { style: "estate", kink: true, frontShare: 0.43, cowl: 0.76, windscreen: 25, rearWindow: 64, lastPillar: 0.14, wheel: 0.67 },
+    shape: { ...BMW_LARGE, style: "estate", kink: true, frontShare: 0.43, cowl: 0.76, windscreen: 25, rearWindow: 64, lastPillar: 0.14, wheel: 0.67 },
     note: "Touring (G21).",
   },
   {
     brand: "BMW", model: "1er", generations: ["F20"],
-    shape: { style: "hatchback", kink: true, frontShare: 0.44, cowl: 0.7, windscreen: 27, rearWindow: 58, belt: 0.66, beltRise: 0.05, nose: 0.47, lastPillar: 0.3, wheel: 0.63 },
+    shape: { ...BMW, style: "hatchback", kink: true, frontShare: 0.44, cowl: 0.7, windscreen: 27, rearWindow: 58, belt: 0.66, beltRise: 0.05, nose: 0.47, lastPillar: 0.3, wheel: 0.63 },
     note: "The rear-wheel drive hatchback: long bonnet for its size, short front overhang, BMW kink. Overhangs 724/910 mm (4324, 2690), 205/55 R16.",
   },
   {
     brand: "BMW", model: "5er", generations: ["F10"],
-    shape: { style: "notchback", kink: true, frontShare: 0.43, cowl: 0.82, windscreen: 26, rearWindow: 25, deck: 0.55, belt: 0.67, beltRise: 0.04, nose: 0.48, tail: 0.69, wheel: 0.68 },
+    shape: { ...BMW, style: "notchback", kink: true, frontShare: 0.43, cowl: 0.82, windscreen: 26, rearWindow: 25, deck: 0.55, belt: 0.67, beltRise: 0.04, nose: 0.48, tail: 0.69, wheel: 0.68 },
     note: "Large saloon with a long bonnet, BMW kink. Overhangs 853/1133 mm (4899, 2968), 225/55 R17.",
   },
   {
     brand: "BMW", model: "5er", generations: ["F10"], body: B.Estate,
-    shape: { style: "estate", kink: true, frontShare: 0.43, cowl: 0.82, windscreen: 26, rearWindow: 64, lastPillar: 0.14, wheel: 0.68 },
+    shape: { ...BMW, style: "estate", kink: true, frontShare: 0.43, cowl: 0.82, windscreen: 26, rearWindow: 64, lastPillar: 0.14, wheel: 0.68 },
     note: "Touring (F11).",
   },
   {
     brand: "BMW", model: "5er", generations: ["G30"],
-    shape: { style: "notchback", kink: true, frontShare: 0.45, cowl: 0.82, windscreen: 25, rearWindow: 24, deck: 0.52, belt: 0.68, beltRise: 0.04, nose: 0.47, tail: 0.7, wheel: 0.69 },
+    shape: { ...BMW_LARGE, style: "notchback", kink: true, frontShare: 0.45, cowl: 0.82, windscreen: 25, rearWindow: 24, deck: 0.52, belt: 0.68, beltRise: 0.04, nose: 0.47, tail: 0.7, wheel: 0.69 },
     note: "Saloon, rear window a little flatter than the F10, BMW kink. Overhangs 880/1093 mm (4936, 2975), 225/55 R17.",
   },
   {
     brand: "BMW", model: "5er", generations: ["G30"], body: B.Estate,
-    shape: { style: "estate", kink: true, frontShare: 0.45, cowl: 0.82, windscreen: 25, rearWindow: 63, lastPillar: 0.14, wheel: 0.69 },
+    shape: { ...BMW_LARGE, style: "estate", kink: true, frontShare: 0.45, cowl: 0.82, windscreen: 25, rearWindow: 63, lastPillar: 0.14, wheel: 0.69 },
     note: "Touring (G31).",
   },
   // --- Volkswagen and the group's compact cars: engine across, broad C-pillar.
@@ -287,17 +425,17 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Volkswagen", model: "Golf", generations: ["VII"],
-    shape: { roofDrop: 0.06, frontShare: 0.53, cowl: 0.46, windscreen: 27, rearWindow: 60, roofCrown: 0.03, belt: 0.66, beltRise: 0.04, nose: 0.5, lastPillar: 0.48, wheel: 0.63 },
+    shape: { ...VW_BAND, roofDrop: 0.06, frontShare: 0.53, cowl: 0.46, windscreen: 27, rearWindow: 60, roofCrown: 0.03, belt: 0.66, beltRise: 0.04, nose: 0.5, lastPillar: 0.48, wheel: 0.63 },
     note: "Hatchback with a long low bonnet line, the windscreen moved back, broad C-pillar. Overhangs 863/755 mm (4255, 2637), 205/55 R16.",
   },
   {
     brand: "Volkswagen", model: "Golf", generations: ["VIII"],
-    shape: { roofDrop: 0.06, frontShare: 0.55, cowl: 0.46, windscreen: 26, rearWindow: 58, roofCrown: 0.03, belt: 0.67, beltRise: 0.04, nose: 0.49, lastPillar: 0.46, wheel: 0.64 },
+    shape: { ...VW_BAND, roofDrop: 0.06, frontShare: 0.55, cowl: 0.46, windscreen: 26, rearWindow: 58, roofCrown: 0.03, belt: 0.67, beltRise: 0.04, nose: 0.49, lastPillar: 0.46, wheel: 0.64 },
     note: "Hatchback, flatter windscreen than the VII, broad C-pillar. 205/55 R16.",
   },
   {
     brand: "Volkswagen", model: "Polo", generations: ["V", "VI"],
-    shape: { frontShare: 0.54, cowl: 0.4, windscreen: 28, rearWindow: 62, belt: 0.65, nose: 0.5, lastPillar: 0.42, wheel: 0.6 },
+    shape: { ...VW_BAND, frontShare: 0.54, cowl: 0.4, windscreen: 28, rearWindow: 62, belt: 0.65, nose: 0.5, lastPillar: 0.42, wheel: 0.6 },
     note: "Small hatchback in the Golf's style, broad C-pillar. 185/65 R15.",
   },
   {
@@ -312,12 +450,12 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Volkswagen", model: "Passat", generations: ["B8"],
-    shape: { style: "estate", frontShare: 0.47, cowl: 0.5, windscreen: 26, rearWindow: 68, belt: 0.67, beltRise: 0.03, lastPillar: 0.12, wheel: 0.66 },
+    shape: { ...VW_BAND, style: "estate", frontShare: 0.47, cowl: 0.5, windscreen: 26, rearWindow: 68, belt: 0.67, beltRise: 0.03, lastPillar: 0.12, wheel: 0.66 },
     note: "Variant, the body most B8 have: long flat roof, upright tailgate. 215/55 R17.",
   },
   {
     brand: "Volkswagen", model: "Passat", generations: ["B8"], body: B.Sedan,
-    shape: { style: "notchback", frontShare: 0.47, cowl: 0.5, windscreen: 26, rearWindow: 26, deck: 0.5, wheel: 0.66 },
+    shape: { ...VW_BAND, style: "notchback", frontShare: 0.47, cowl: 0.5, windscreen: 26, rearWindow: 26, deck: 0.5, wheel: 0.66 },
     note: "Saloon of the B8.",
   },
   {
@@ -332,78 +470,78 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Audi", model: "A2", generations: ["8Z"],
-    shape: { style: "hatchback", frontShare: 0.53, cowl: 0.08, windscreen: 30, rearWindow: 52, roofCrown: 0.09, roofPeak: 0.62, belt: 0.56, beltRise: 0.03, nose: 0.46, tumblehome: 0.22, noseRound: 3.2, tailRound: 5, lastPillar: 0.32, wheel: 0.59 },
+    shape: { grille: { width: 0.18, height: 0.12, drop: 0.06, round: 4, intakeWidth: 0.4, intakeHeight: 0.08 }, headlight: { width: 0.4, wrap: 0.1, drop: 0.03, height: 0.13, round: 4, rise: 0.03 }, style: "hatchback", frontShare: 0.53, cowl: 0.08, windscreen: 30, rearWindow: 52, roofCrown: 0.09, roofPeak: 0.62, belt: 0.56, beltRise: 0.03, nose: 0.46, tumblehome: 0.22, noseRound: 3.2, tailRound: 5, lastPillar: 0.32, wheel: 0.59 },
     note: "Aluminium one-box: the windscreen starts far forward over a short bonnet, the roof is one high arch falling to a short tail with a spoiler, low window line. Overhangs 755/666 mm (3826, 2405), 175/60 R15.",
   },
   {
     brand: "Audi", model: "A3", generations: ["8P"],
-    shape: { roofDrop: 0.06, frontShare: 0.55, cowl: 0.45, windscreen: 28, rearWindow: 54, belt: 0.64, nose: 0.49, lastPillar: 0.36, wheel: 0.63 },
+    shape: { ...AUDI, roofDrop: 0.06, frontShare: 0.55, cowl: 0.45, windscreen: 28, rearWindow: 54, belt: 0.64, nose: 0.49, lastPillar: 0.36, wheel: 0.63 },
     note: "Compact hatchback, more sloping tailgate than the Golf it shares parts with. 205/55 R16.",
   },
   {
     brand: "Audi", model: "A3", generations: ["8V"],
-    shape: { roofDrop: 0.06, frontShare: 0.55, cowl: 0.48, windscreen: 27, rearWindow: 54, belt: 0.66, nose: 0.48, lastPillar: 0.34, wheel: 0.64 },
+    shape: { ...AUDI, roofDrop: 0.06, frontShare: 0.55, cowl: 0.48, windscreen: 27, rearWindow: 54, belt: 0.66, nose: 0.48, lastPillar: 0.34, wheel: 0.64 },
     note: "Hatchback (Sportback), sharp shoulder line. 205/55 R16.",
   },
   {
     brand: "Audi", model: "A4", generations: ["B7", "B8", "B9"],
-    shape: { style: "notchback", frontShare: 0.5, cowl: 0.58, windscreen: 26, rearWindow: 26, deck: 0.5, belt: 0.66, nose: 0.47, wheel: 0.66 },
+    shape: { ...AUDI, style: "notchback", frontShare: 0.5, cowl: 0.58, windscreen: 26, rearWindow: 26, deck: 0.5, belt: 0.66, nose: 0.47, wheel: 0.66 },
     note: "Saloon with the engine along the car ahead of the front axle: long front overhang, short rear one. Overhangs 948/945 mm (B8: 4701, 2808), 225/50 R17.",
   },
   {
     brand: "Audi", model: "A4", generations: ["B7", "B8", "B9"], body: B.Estate,
-    shape: { style: "estate", frontShare: 0.5, cowl: 0.58, windscreen: 26, rearWindow: 62, lastPillar: 0.13, wheel: 0.66 },
+    shape: { ...AUDI, style: "estate", frontShare: 0.5, cowl: 0.58, windscreen: 26, rearWindow: 62, lastPillar: 0.13, wheel: 0.66 },
     note: "Avant: estate with a sloping D-pillar.",
   },
   {
     brand: "Audi", model: "A6", generations: ["C7", "C8"],
-    shape: { style: "notchback", frontShare: 0.48, cowl: 0.62, windscreen: 25, rearWindow: 25, deck: 0.52, belt: 0.67, nose: 0.47, wheel: 0.69 },
+    shape: { ...AUDI, style: "notchback", frontShare: 0.48, cowl: 0.62, windscreen: 25, rearWindow: 25, deck: 0.52, belt: 0.67, nose: 0.47, wheel: 0.69 },
     note: "Large saloon, engine along the car ahead of the front axle, coupe-like roof. 225/55 R18.",
   },
   {
     brand: "Audi", model: "A6", generations: ["C7", "C8"], body: B.Estate,
-    shape: { style: "estate", frontShare: 0.48, cowl: 0.62, windscreen: 25, rearWindow: 58, lastPillar: 0.14, wheel: 0.69 },
+    shape: { ...AUDI, style: "estate", frontShare: 0.48, cowl: 0.62, windscreen: 25, rearWindow: 58, lastPillar: 0.14, wheel: 0.69 },
     note: "Avant: estate with a strongly sloping tailgate.",
   },
   // --- Mercedes-Benz: engine along the car, cabin set back.
   {
     brand: "Mercedes-Benz", model: "C-Klasse", generations: ["W204"],
-    shape: { style: "notchback", frontShare: 0.43, cowl: 0.78, windscreen: 27, rearWindow: 27, deck: 0.5, belt: 0.65, nose: 0.48, wheel: 0.65 },
+    shape: { ...MERCEDES, style: "notchback", frontShare: 0.43, cowl: 0.78, windscreen: 27, rearWindow: 27, deck: 0.5, belt: 0.65, nose: 0.48, wheel: 0.65 },
     note: "Saloon with a long bonnet and short front overhang. 205/55 R16.",
   },
   {
     brand: "Mercedes-Benz", model: "C-Klasse", generations: ["W205"],
-    shape: { style: "notchback", frontShare: 0.43, cowl: 0.8, windscreen: 25, rearWindow: 25, deck: 0.47, roofCrown: 0.05, belt: 0.66, beltRise: 0.03, nose: 0.47, wheel: 0.66 },
+    shape: { ...MERCEDES, style: "notchback", frontShare: 0.43, cowl: 0.8, windscreen: 25, rearWindow: 25, deck: 0.47, roofCrown: 0.05, belt: 0.66, beltRise: 0.03, nose: 0.47, wheel: 0.66 },
     note: "Saloon, rounder roof and flatter windscreen than the W204. Overhangs 789/1057 mm (4686, 2840), 205/60 R16.",
   },
   {
     brand: "Mercedes-Benz", model: "C-Klasse", generations: ["W204", "W205"], body: B.Estate,
-    shape: { style: "estate", frontShare: 0.43, cowl: 0.8, windscreen: 26, rearWindow: 62, lastPillar: 0.14, wheel: 0.66 },
+    shape: { ...MERCEDES, style: "estate", frontShare: 0.43, cowl: 0.8, windscreen: 26, rearWindow: 62, lastPillar: 0.14, wheel: 0.66 },
     note: "T-Modell: estate (S204, S205).",
   },
   {
     brand: "Mercedes-Benz", model: "E-Klasse", generations: ["W212"],
-    shape: { style: "notchback", frontShare: 0.44, cowl: 0.82, windscreen: 26, rearWindow: 26, deck: 0.55, belt: 0.66, nose: 0.48, wheel: 0.68 },
+    shape: { ...MERCEDES, style: "notchback", frontShare: 0.44, cowl: 0.82, windscreen: 26, rearWindow: 26, deck: 0.55, belt: 0.66, nose: 0.48, wheel: 0.68 },
     note: "Large saloon, long bonnet. 225/55 R16.",
   },
   {
     brand: "Mercedes-Benz", model: "E-Klasse", generations: ["W213"],
-    shape: { style: "notchback", frontShare: 0.43, cowl: 0.85, windscreen: 25, rearWindow: 24, deck: 0.52, roofCrown: 0.05, belt: 0.67, beltRise: 0.03, nose: 0.47, wheel: 0.69 },
+    shape: { ...MERCEDES, style: "notchback", frontShare: 0.43, cowl: 0.85, windscreen: 25, rearWindow: 24, deck: 0.52, roofCrown: 0.05, belt: 0.67, beltRise: 0.03, nose: 0.47, wheel: 0.69 },
     note: "Large saloon, long bonnet, flowing roof. Overhangs 850/1134 mm (4923, 2939), 225/55 R17.",
   },
   {
     brand: "Mercedes-Benz", model: "E-Klasse", generations: ["W212", "W213"], body: B.Estate,
-    shape: { style: "estate", frontShare: 0.43, cowl: 0.85, windscreen: 25, rearWindow: 66, roofCrown: 0.03, lastPillar: 0.12, belt: 0.66, wheel: 0.69 },
+    shape: { ...MERCEDES, style: "estate", frontShare: 0.43, cowl: 0.85, windscreen: 25, rearWindow: 66, roofCrown: 0.03, lastPillar: 0.12, belt: 0.66, wheel: 0.69 },
     note: "T-Modell: estate (S212, S213) with a long flat roof and a sloping tailgate.",
   },
   {
     brand: "Mercedes-Benz", model: "E-Klasse", generations: ["W212", "W213"], body: B.Coupe,
-    shape: { style: "fastback", doors: 2, frameless: true, quarterWindow: false, frontShare: 0.43, cowl: 0.85, windscreen: 24, rearWindow: 20, deck: 0.4, belt: 0.68, wheel: 0.69 },
+    shape: { ...MERCEDES, style: "fastback", doors: 2, frameless: true, quarterWindow: false, frontShare: 0.43, cowl: 0.85, windscreen: 24, rearWindow: 20, deck: 0.4, belt: 0.68, wheel: 0.69 },
     note: "Coupe (C207, C238): no B-pillar, one sweep of glass.",
   },
   {
     brand: "Mercedes-Benz", model: "E-Klasse", generations: ["W212", "W213"], body: B.Convertible,
-    shape: { style: "convertible", doors: 2, frontShare: 0.43, cowl: 0.85, windscreen: 26, wheel: 0.69 },
+    shape: { ...MERCEDES, style: "convertible", doors: 2, frontShare: 0.43, cowl: 0.85, windscreen: 26, wheel: 0.69 },
     note: "Cabriolet (A207, A238) with the soft top closed.",
   },
   {
@@ -454,12 +592,12 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Toyota", model: "Prius", generations: ["XW30", "XW50"],
-    shape: { style: "fastback", frontShare: 0.51, cowl: 0.18, windscreen: 23, rearWindow: 22, deck: 0.06, roofCrown: 0.06, roofPeak: 0.68, belt: 0.64, beltRise: 0.05, nose: 0.43, tail: 0.72, lastPillar: 0.25, wheel: 0.63 },
+    shape: { grille: { openings: 0, intakeWidth: 0.5, intakeHeight: 0.14 }, headlight: { width: 0.5, wrap: 0.22, drop: 0.03, height: 0.1, round: 4, rise: 0.1 }, style: "fastback", frontShare: 0.51, cowl: 0.18, windscreen: 23, rearWindow: 22, deck: 0.06, roofCrown: 0.06, roofPeak: 0.68, belt: 0.64, beltRise: 0.05, nose: 0.43, tail: 0.72, lastPillar: 0.25, wheel: 0.63 },
     note: "The hybrid wedge: very flat windscreen starting far forward, one roof arch falling to a cut-off tail (Kamm tail) with a split rear window. 195/65 R15.",
   },
   {
     brand: "Toyota", model: "Prius", generations: ["XW60"],
-    shape: { style: "fastback", frontShare: 0.5, cowl: 0.2, windscreen: 21, rearWindow: 20, deck: 0.08, roofCrown: 0.05, roofPeak: 0.6, belt: 0.66, beltRise: 0.06, nose: 0.42, tail: 0.73, lastPillar: 0.22, wheel: 0.67 },
+    shape: { grille: { openings: 0, intakeWidth: 0.52, intakeHeight: 0.1 }, headlight: { width: 0.5, wrap: 0.18, drop: 0.02, height: 0.05, round: 6, rise: 0.08 }, taillight: { width: 0.5, wrap: 0.2, drop: 0.02, height: 0.06, round: 8, rise: 0, bar: true }, style: "fastback", frontShare: 0.5, cowl: 0.2, windscreen: 21, rearWindow: 20, deck: 0.08, roofCrown: 0.05, roofPeak: 0.6, belt: 0.66, beltRise: 0.06, nose: 0.42, tail: 0.73, lastPillar: 0.22, wheel: 0.67 },
     note: "Low coupe-like hybrid with an extremely flat windscreen. 195/50 R19.",
   },
   {
@@ -499,7 +637,7 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Renault", model: "Zoe", generations: ["I"],
-    shape: { windscreen: 26, rearWindow: 52, roofCrown: 0.05, belt: 0.64, beltRise: 0.04, nose: 0.45, lastPillar: 0.32, wheel: 0.62 },
+    shape: { ...EV_CLOSED, windscreen: 26, rearWindow: 52, roofCrown: 0.05, belt: 0.64, beltRise: 0.04, nose: 0.45, lastPillar: 0.32, wheel: 0.62 },
     note: "Small electric hatchback, rounded with a short bonnet. 195/55 R16.",
   },
   {
@@ -530,22 +668,22 @@ export const SHAPES: ShapeRow[] = [
   // --- Electric cars.
   {
     brand: "Tesla", model: "Model 3", generations: ["I"],
-    shape: { style: "fastback", frontShare: 0.46, cowl: 0.25, windscreen: 22, rearWindow: 20, deck: 0.28, roofCrown: 0.06, roofPeak: 0.55, belt: 0.66, beltRise: 0.04, nose: 0.42, tail: 0.7, frameless: true, quarterWindow: true, lastPillar: 0.14, wheel: 0.67 },
+    shape: { ...EV_CLOSED, style: "fastback", frontShare: 0.46, cowl: 0.25, windscreen: 22, rearWindow: 20, deck: 0.28, roofCrown: 0.06, roofPeak: 0.55, belt: 0.66, beltRise: 0.04, nose: 0.42, tail: 0.7, frameless: true, quarterWindow: true, lastPillar: 0.14, wheel: 0.67 },
     note: "Saloon with a short boot lid behind one long sweep of glass from the windscreen over the roof, short low bonnet, frameless door windows. Overhangs 838/981 mm (4694, 2875), 235/45 R18.",
   },
   {
     brand: "Tesla", model: "Model Y", generations: ["I"],
-    shape: { roofDrop: 0.08, style: "suv", frontShare: 0.46, cowl: 0.25, windscreen: 23, rearWindow: 30, roofCrown: 0.05, roofPeak: 0.6, belt: 0.64, beltRise: 0.04, nose: 0.43, frameless: true, quarterWindow: true, lastPillar: 0.18, rideHeight: 0.17, wheel: 0.7 },
+    shape: { ...EV_CLOSED, roofDrop: 0.08, style: "suv", frontShare: 0.46, cowl: 0.25, windscreen: 23, rearWindow: 30, roofCrown: 0.05, roofPeak: 0.6, belt: 0.64, beltRise: 0.04, nose: 0.43, frameless: true, quarterWindow: true, lastPillar: 0.18, rideHeight: 0.17, wheel: 0.7 },
     note: "Crossover with the Model 3's front and a sloping fastback tailgate. 255/45 R19.",
   },
   {
     brand: "Nissan", model: "Leaf", generations: ["ZE0"],
-    shape: { windscreen: 25, rearWindow: 55, roofCrown: 0.06, belt: 0.62, nose: 0.47, lastPillar: 0.34, wheel: 0.63 },
+    shape: { ...EV_CLOSED, windscreen: 25, rearWindow: 55, roofCrown: 0.06, belt: 0.62, nose: 0.47, lastPillar: 0.34, wheel: 0.63 },
     note: "Tall electric hatchback with a high roof arch and a raked windscreen. 205/55 R16.",
   },
   {
     brand: "Nissan", model: "Leaf", generations: ["ZE1"],
-    shape: { windscreen: 26, rearWindow: 54, roofCrown: 0.045, belt: 0.64, beltRise: 0.04, nose: 0.46, lastPillar: 0.32, wheel: 0.64 },
+    shape: { ...EV_CLOSED, windscreen: 26, rearWindow: 54, roofCrown: 0.045, belt: 0.64, beltRise: 0.04, nose: 0.46, lastPillar: 0.32, wheel: 0.64 },
     note: "Electric hatchback, lower and sharper than the first. 205/55 R16.",
   },
   {
@@ -560,13 +698,13 @@ export const SHAPES: ShapeRow[] = [
   },
   {
     brand: "Fiat", model: "500", generations: ["I"],
-    shape: { roofDrop: 0.04, style: "hatchback", doors: 2, frontShare: 0.53, cowl: 0.18, windscreen: 33, rearWindow: 72, roofCrown: 0.06, roofPeak: 0.45, belt: 0.6, beltRise: 0.02, nose: 0.5, tumblehome: 0.18, noseRound: 2.6, tailRound: 3.5, lastPillar: 0.3, wheel: 0.58 },
-    note: "Three-door city car after the 1957 original: round nose, short bonnet, rounded roof, upright rear. Overhangs 660/586 mm (3546, 2300), 185/55 R15.",
+    shape: { headlight: { width: 0.17, wrap: -0.12, drop: 0.14, height: 0.16, round: 2, rise: 0 }, grille: { openings: 1, width: 0.1, height: 0.035, drop: 0.06, round: 6, intakeWidth: 0.34, intakeHeight: 0.09 }, taillight: { width: 0.14, wrap: -0.02, drop: 0, height: 0.24, round: 3, rise: 0 }, roofDrop: 0.04, style: "hatchback", doors: 2, frontShare: 0.53, cowl: 0.18, windscreen: 33, rearWindow: 72, roofCrown: 0.06, roofPeak: 0.45, belt: 0.6, beltRise: 0.02, nose: 0.5, tumblehome: 0.18, noseRound: 2.6, tailRound: 3.5, lastPillar: 0.3, wheel: 0.58 },
+    note: "Three-door city car after the 1957 original: round nose with round headlights low in it, a slim slot above the intake, short bonnet, rounded roof, upright rear. Overhangs 660/586 mm (3546, 2300), 185/55 R15.",
   },
   {
     brand: "Mini", model: "Mini", generations: ["R50", "R56", "F56"],
-    shape: { roofDrop: 0.0, style: "hatchback", doors: 2, frontShare: 0.53, cowl: 0.32, windscreen: 34, rearWindow: 76, roofCrown: 0.008, roofPeak: 0.5, belt: 0.66, beltRise: 0, nose: 0.53, tumblehome: 0.1, noseRound: 3.4, tailRound: 5, lastPillar: 0.18, wheel: 0.6 },
-    note: "Three-door: upright windscreen, flat 'floating' roof over a band of glass, high window line, short overhangs, wheels at the corners. 175/65 R15 to 195/55 R16.",
+    shape: { headlight: { width: 0.21, wrap: -0.02, drop: 0.02, height: 0.2, round: 2, rise: 0 }, grille: { openings: 1, width: 0.3, height: 0.17, drop: 0.08, round: 3, intakeWidth: 0.3, intakeHeight: 0.06 }, taillight: { width: 0.16, wrap: 0, drop: 0, height: 0.26, round: 3, rise: 0 }, roofDrop: 0.0, style: "hatchback", doors: 2, frontShare: 0.53, cowl: 0.32, windscreen: 34, rearWindow: 76, roofCrown: 0.008, roofPeak: 0.5, belt: 0.66, beltRise: 0, nose: 0.53, tumblehome: 0.1, noseRound: 3.4, tailRound: 5, lastPillar: 0.18, wheel: 0.6 },
+    note: "Three-door: round headlights in the wings, a large grille opening, upright windscreen, flat 'floating' roof over a band of glass, high window line, short overhangs, wheels at the corners. 175/65 R15 to 195/55 R16.",
   },
 ];
 
@@ -594,10 +732,13 @@ export function shapeFor(anatomy: VehicleAnatomy, catalogBody: BodyType, body: B
   const rows = rowsFor(anatomy.brand, anatomy.model, anatomy.generation);
   const row = rows.find((r) => (r.body ?? catalogBody) === body);
   const base = defaultShape(body, anatomy.year, anatomy.engine, anatomy.driven);
-  const { wheel, ...spec } = row?.shape ?? {};
+  const { wheel, headlight, taillight, grille, ...spec } = row?.shape ?? {};
   return {
     ...base,
     ...spec,
+    headlight: { ...base.headlight, ...headlight },
+    taillight: { ...base.taillight, ...taillight },
+    grille: { ...base.grille, ...grille },
     body,
     wheel: wheel ?? anatomy.wheelMm / 1000,
     source: row ? "profile" : "typical",
@@ -644,6 +785,13 @@ export interface Profile {
   // Stations where the underbody starts to rise towards the ends.
   rearLift: number;
   frontLift: number;
+  // Lamps and grille, and the top edges of the front and rear faces they
+  // hang from (metres above the road).
+  headlight: Lamp;
+  taillight: Lamp;
+  grille: Grille;
+  noseTop: number;
+  tailTop: number;
 }
 
 export interface BodyGeometry {
@@ -693,6 +841,8 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
   // The rear: where the roof ends and what follows.
   let roofRearX: number;
   let tailX: number;
+  // The top edge of the rear face: boot lid, deck, bed or tailgate glass.
+  let tailTop: number;
   const rear: [number, number][] = [];
   const glassBottom = beltRear + 0.03;
   const tailY = clamp(s.tail * H, belt - 0.04, H - 0.2);
@@ -705,6 +855,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       tailX = xR + 0.06 + deck;
       roofRearX = tailX + (roofRearY - tailY) / tan(s.rearWindow);
       rear.push([xR, bumperY], [xR + 0.025, tailY - 0.05], [xR + 0.07, tailY - 0.005], [tailX, tailY + 0.01]);
+      tailTop = tailY - 0.04;
       break;
     }
     case "pickup": {
@@ -712,6 +863,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       tailX = xR + 0.05 + clamp(s.deck, 0.8, L * 0.4);
       roofRearX = tailX + 0.1;
       rear.push([xR, bedY - 0.12], [xR + 0.03, bedY], [tailX - 0.06, bedY], [tailX, roofY - 0.2]);
+      tailTop = bedY - 0.02;
       break;
     }
     case "roadster": {
@@ -719,6 +871,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       tailX = xR + 0.06 + deck;
       roofRearX = roofFrontX - 0.08;
       rear.push([xR, bumperY], [xR + 0.03, tailY - 0.04], [xR + 0.08, tailY], [tailX, tailY + 0.02]);
+      tailTop = tailY - 0.03;
       break;
     }
     default: {
@@ -728,6 +881,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       tailX = xR + set;
       roofRearX = tailX + (roofRearY - glassBottom) / tan(s.rearWindow);
       rear.push([xR, bumperY], [xR + 0.025, glassBottom - 0.16], [tailX, glassBottom]);
+      tailTop = glassBottom - 0.02;
       break;
     }
   }
@@ -856,6 +1010,11 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
     tailRound: s.tailRound,
     rearLift: station(rearAxle - r * 0.9),
     frontLift: station(frontAxle + r * 0.9),
+    headlight: s.headlight,
+    taillight: s.taillight,
+    grille: s.grille,
+    noseTop: noseY - 0.02,
+    tailTop,
   };
   return { profile, frontAxle, rearAxle, wheelRadius: r };
 }

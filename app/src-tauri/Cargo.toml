@@ -88,8 +88,10 @@ objc2-web-kit = { version = "0.3.2", default-features = false, features = [
 plist = "1.10.3"
 
 [target.'cfg(target_os = "linux")'.dependencies]
-# The same versions wry uses, so the WebKitGTK handle of with_webview fits.
-cairo-rs = { version = "0.18.5", features = ["png"] }
+# gtk and webkit2gtk: the same versions wry uses, so the WebKitGTK handle of
+# with_webview fits. cairo-rs writes the PNG of --shot and may be newer than
+# the cairo of gtk: webview_gtk.rs hands the snapshot over as the C surface.
+cairo-rs = { version = "0.22.9", features = ["png"] }
 gtk = "0.18.2"
 webkit2gtk = { version = "=2.0.2", features = ["v2_38"] }
 
