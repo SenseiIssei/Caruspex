@@ -6,6 +6,7 @@
 //! of them exactly as through an ELM327.
 
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex, MutexGuard};
 
 use caruspex_i18n::l;
 use caruspex_link::Transport;
@@ -34,6 +35,37 @@ pub trait CanLink: Send {
     }
 }
 
+/// A [`CanLink`] that several users share, one call at a time: the ELM
+/// front end and VAG TP 2.0 ([`crate::tp20::Tp20`]) on the same interface.
+/// The interface closes when the last clone is dropped.
+#[derive(Clone)]
+pub struct SharedCanLink(Arc<Mutex<Box<dyn CanLink>>>);
+
+impl SharedCanLink {
+    pub fn new(link: Box<dyn CanLink>) -> Self {
+        Self(Arc::new(Mutex::new(link)))
+    }
+
+    fn lock(&self) -> MutexGuard<'_, Box<dyn CanLink>> {
+        self.0.lock().unwrap_or_else(|e| e.into_inner())
+    }
+}
+
+impl CanLink for SharedCanLink {
+    fn send(&mut self, frame: &CanFrame) -> bool {
+        self.lock().send(frame)
+    }
+    fn receive(&mut self, timeout_ms: u64) -> Option<CanFrame> {
+        self.lock().receive(timeout_ms)
+    }
+    fn name(&self) -> String {
+        self.lock().name()
+    }
+    fn battery_voltage(&mut self) -> Option<f64> {
+        self.lock().battery_voltage()
+    }
+}
+
 /// ELM327 default answer time (ATST).
 const FIRST_ANSWER_MS: u64 = 1000;
 /// More units after the first one.
@@ -50,7 +82,7 @@ const PENDING_MS: u64 = 5000;
 /// physical), raw frames with auto formatting off (BMW 6F1 addressing) and
 /// the bus monitor (ATMA) with the receive filter.
 pub struct CanElm {
-    link: Box<dyn CanLink>,
+    link: SharedCanLink,
     name: String,
     bitrate: u32,
     pending: Vec<u8>,
@@ -83,7 +115,7 @@ struct Answer {
 impl CanElm {
     pub fn new(link: Box<dyn CanLink>, name: impl Into<String>, bitrate: u32) -> Self {
         Self {
-            link,
+            link: SharedCanLink::new(link),
             name: name.into(),
             bitrate,
             pending: Vec::new(),
@@ -99,6 +131,11 @@ impl CanElm {
             flow_header: None,
             monitoring: false,
         }
+    }
+
+    /// The CAN interface underneath, for VAG TP 2.0 next to the ELM front end.
+    pub fn shared_link(&self) -> SharedCanLink {
+        self.link.clone()
     }
 
     fn reset(&mut self) {
