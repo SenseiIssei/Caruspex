@@ -15,6 +15,7 @@ import { navigate, navStore, useCurrentPage } from "./nav";
 import { PAGES, isPageId, type PageId } from "./pages";
 import { Sidebar } from "./Sidebar";
 import { TitleBar } from "./TitleBar";
+import { UpdateDialog } from "./UpdateDialog";
 
 const MW = "caruspex::MainWindow";
 
@@ -39,6 +40,9 @@ export function App({ startPage }: { startPage: string | null }) {
   const [logOpen, setLogOpen] = useState(false);
   const [version, setVersion] = useState("");
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
+  // The dialog, and whether it installs without asking (only the one
+  // opened at start with "Updates automatisch installieren").
+  const [updateDialog, setUpdateDialog] = useState<{ autoStart: boolean } | null>(null);
   const reportOpen = useStore(navStore, (s) => s.reportOpen);
 
   useEffect(() => onApp<PageId>("navigate", (page) => navigate(page)), []);
@@ -74,6 +78,9 @@ export function App({ startPage }: { startPage: string | null }) {
           if (found && !cancelled) {
             setUpdate(found);
             appendLog(t(MW, "Neue Version verfügbar: %1", found.version));
+            // Asks at start; with the setting on it installs right away.
+            const latest = settingsStore.get().values;
+            setUpdateDialog({ autoStart: latest.autoInstallUpdates && found.canInstall });
           }
         } catch {
           // Offline: say nothing.
@@ -95,6 +102,7 @@ export function App({ startPage }: { startPage: string | null }) {
       <TitleBar
         version={version}
         update={update}
+        onOpenUpdate={() => setUpdateDialog({ autoStart: false })}
         logOpen={logOpen}
         onToggleLog={() => setLogOpen((v) => !v)}
         onToggleSidebar={() => setCompact((v) => !v)}
@@ -107,6 +115,9 @@ export function App({ startPage }: { startPage: string | null }) {
         </main>
       </div>
       <Toaster />
+      {update && updateDialog ? (
+        <UpdateDialog update={update} autoStart={updateDialog.autoStart} onClose={() => setUpdateDialog(null)} />
+      ) : null}
       {reportOpen ? <ReportPreview /> : null}
     </div>
   );

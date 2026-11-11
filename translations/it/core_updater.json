@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Non è stata ancora trovata nessuna nuova versione.",
+ "c-updater-2": "La firma dell'aggiornamento non corrisponde. È stato scartato e non è stato installato nulla.",
+ "c-updater-3": "Impossibile scaricare l'aggiornamento: %1",
+ "c-updater-4": "Impossibile installare l'aggiornamento: %1",
+ "c-updater-5": "L'aggiornamento è già in corso.",
+ "c-updater-6": "Non c'è nessun aggiornamento da installare per questo sistema."
+}

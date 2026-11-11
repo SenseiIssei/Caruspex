@@ -9,7 +9,11 @@
 #            dist/Caruspex-<v>-linux-amd64.deb
 #            dist/caruspex_cli-<v>-linux-x86_64.tar.gz
 #   macOS    dist/Caruspex-<v>-macos.dmg
+#            dist/Caruspex-<v>-macos.app.tar.gz      (the app bundle for the updater)
 #            dist/caruspex_cli-<v>-macos.tar.gz
+#
+# The release job signs the update packages (setup.exe, AppImage,
+# .app.tar.gz) and writes latest.json, see tools/release_assets.py.
 #
 # Usage: bash tools/package.sh
 # REQUIRE_INSTALLER=1 fails instead of skipping the Windows installer when
@@ -74,8 +78,13 @@ Linux)
     ;;
 
 Darwin)
-    npm --prefix app run tauri -- build --bundles dmg
+    npm --prefix app run tauri -- build --bundles app,dmg
     cp "$RELEASE"/bundle/dmg/*.dmg "$DIST/Caruspex-$VERSION-macos.dmg"
+    # The bundle itself for the updater, which replaces the installed one
+    # with it. COPYFILE_DISABLE keeps the ._ files of extended attributes out.
+    BUNDLE=$(ls -d "$RELEASE"/bundle/macos/*.app | head -n 1)
+    COPYFILE_DISABLE=1 tar -czf "$DIST/Caruspex-$VERSION-macos.app.tar.gz" \
+        -C "$(dirname "$BUNDLE")" "$(basename "$BUNDLE")"
     tar -czf "$DIST/caruspex_cli-$VERSION-macos.tar.gz" \
         -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE
     ;;

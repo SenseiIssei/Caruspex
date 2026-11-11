@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Aucune nouvelle version n'a encore été trouvée.",
+ "c-updater-2": "La signature de la mise à jour ne correspond pas. Elle a été rejetée et rien n'a été installé.",
+ "c-updater-3": "Impossible de télécharger la mise à jour : %1",
+ "c-updater-4": "Impossible d'installer la mise à jour : %1",
+ "c-updater-5": "La mise à jour est déjà en cours.",
+ "c-updater-6": "Il n'y a pas de mise à jour à installer pour ce système."
+}

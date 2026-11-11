@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Nie znaleziono jeszcze nowej wersji.",
+ "c-updater-2": "Podpis aktualizacji się nie zgadza. Została odrzucona i nic nie zainstalowano.",
+ "c-updater-3": "Nie udało się pobrać aktualizacji: %1",
+ "c-updater-4": "Nie udało się zainstalować aktualizacji: %1",
+ "c-updater-5": "Aktualizacja już trwa.",
+ "c-updater-6": "Dla tego systemu nie ma aktualizacji do zainstalowania."
+}

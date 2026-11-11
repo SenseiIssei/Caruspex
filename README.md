@@ -178,8 +178,10 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 - Step-by-step connecting with an automatic search over all ports, and when it fails a short checklist for that kind of connection (driver, pairing, ignition, bit rate, clone adapters) with what Caruspex already found out.
 - Beginner and pro mode: beginners see the everyday pages, the workshop tools (KKL, adaptation, raw commands, addresses) appear in pro mode.
 - 18 languages; settings apply immediately.
-- Tells you when a new version is out: at start it asks GitHub for the newest release and nothing else (no data
-  about you or the car); can be switched off in the settings.
+- Updates itself: at start it asks GitHub for the newest release and nothing else (no data about you or the car).
+  A newer version is downloaded from the GitHub releases, installed only if its signature matches the key built into
+  the app, and Caruspex restarts; it asks first unless "Install updates automatically" is on. Both can be switched off
+  in the settings.
 
 ## Supported vehicles
 
@@ -448,7 +450,7 @@ crates/caruspex-analysis/   Health check, drive cycle guide, trip computer, perf
 crates/caruspex-demo/       The built-in demo car: an ELM327 with simulated control units
 crates/caruspex-cli/        The command-line tool, with its golden-file tests
 app/src/                    The interface: React 19 and TypeScript (pages, shell, state, report, i18n)
-app/src-tauri/              The Tauri application: window, commands, update check, command-line options
+app/src-tauri/              The Tauri application: window, commands, updater, command-line options
 translations/               Shared translation files for core and interface, 18 languages
 data/                       The vehicle catalog as hand-maintained CSV, control unit and PID sources
 tools/                      Generators, translation checks, packaging, release and screenshot scripts, ELM327 simulator

@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Todavía no se ha encontrado ninguna versión nueva.",
+ "c-updater-2": "La firma de la actualización no coincide. Se ha descartado y no se ha instalado nada.",
+ "c-updater-3": "No se pudo descargar la actualización: %1",
+ "c-updater-4": "No se pudo instalar la actualización: %1",
+ "c-updater-5": "La actualización ya está en curso.",
+ "c-updater-6": "No hay ninguna actualización para instalar en este sistema."
+}

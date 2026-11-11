@@ -43,6 +43,8 @@ caruspex-record.workspace = true
 caruspex-analysis.workspace = true
 caruspex-advice.workspace = true
 caruspex-demo.workspace = true
+minisign-verify = "0.3.0"
+base64 = "0.23.1"
 
 [target.'cfg(windows)'.dependencies]
 # The same versions wry uses, so the WebView2 handles of with_webview fit.

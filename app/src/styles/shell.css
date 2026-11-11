@@ -70,6 +70,14 @@
 .capsule-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .capsule-online .capsule-icon { filter: drop-shadow(0 0 4px color-mix(in srgb, var(--good) 60%, transparent)); }
 .update-button { height: 30px; padding: 0 14px; font-size: 12px; animation: fade-up 400ms var(--ease) both; }
+.update-dialog { display: flex; flex-direction: column; gap: 12px; }
+.update-notes { max-height: 300px; overflow: auto; font-size: 13px; line-height: 1.5; color: var(--text-muted); }
+.update-notes p { margin: 0 0 8px; }
+.update-heading { margin: 10px 0 4px; font-weight: 600; color: var(--text); }
+.update-heading:first-child { margin-top: 0; }
+.update-points { margin: 0 0 6px; padding-inline-start: 18px; }
+.update-points li { margin: 2px 0; }
+.update-progress { display: flex; flex-direction: column; gap: 6px; }
 .window-buttons { display: flex; margin-inline-start: 6px; align-self: stretch; }
 .window-button {
   width: 46px;

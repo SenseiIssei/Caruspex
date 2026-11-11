@@ -2,7 +2,7 @@
 // connection capsule in the middle, quick toggles and the window buttons.
 // The empty parts are a drag region; double-click maximises.
 import { useEffect, useState, type CSSProperties } from "react";
-import { call, insideTauri, type UpdateInfo } from "../api";
+import { insideTauri, type UpdateInfo } from "../api";
 import { Icon } from "../components/Icon";
 import { Spinner } from "../components/ui";
 import { t } from "../i18n";
@@ -26,12 +26,14 @@ function windowAction(action: "minimize" | "toggleMaximize" | "close"): void {
 export function TitleBar({
   version,
   update,
+  onOpenUpdate,
   logOpen,
   onToggleLog,
   onToggleSidebar,
 }: {
   version: string;
   update: UpdateInfo | null;
+  onOpenUpdate: () => void;
   logOpen: boolean;
   onToggleLog: () => void;
   onToggleSidebar: () => void;
@@ -90,8 +92,8 @@ export function TitleBar({
       {update ? (
         <button
           className="btn primary update-button"
-          title={t(TB, "Öffnet die Seite mit dem Download und der Änderungsliste")}
-          onClick={() => void call("open_url", { url: update.url })}
+          title={t(TB, "Zeigt, was neu ist, und aktualisiert Caruspex")}
+          onClick={onOpenUpdate}
         >
           {t(TB, "Version %1 ist da", update.version)}
         </button>
