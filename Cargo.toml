@@ -21,7 +21,7 @@ edition = "2024"
 license = "MIT"
 repository = "https://github.com/SenseiIssei/Caruspex"
 authors = ["SenseiIssei"]
-rust-version = "1.85"
+rust-version = "1.90"   # what tauri 2.12 needs
 
 [workspace.dependencies]
 caruspex-i18n = { path = "crates/caruspex-i18n" }
@@ -40,8 +40,8 @@ serde_json = "1"
 thiserror = "2"
 log = "0.4"
 serialport = "4"
-libloading = "0.8"
-btleplug = "0.11"
+libloading = "0.9"
+btleplug = "0.13"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
 clap = { version = "4", features = ["derive"] }
 miniz_oxide = "0.8"

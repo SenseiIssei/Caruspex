@@ -75,6 +75,37 @@ fn make_transport(tcp: &str, port: &str, baud: i32) -> Result<Box<dyn Transport>
     Ok(Box::new(t))
 }
 
+/// The baud rate the adapter on `device` speaks: the usual rates in the
+/// order the app tries them, each asked for its identification (ATI). None
+/// when no rate gives a readable answer; the caller then keeps the default,
+/// so the error text stays the one users know.
+fn find_baud(device: &str) -> Option<i32> {
+    for baud in [38400u32, 115200, 9600, 500000] {
+        let mut t = SerialTransport::new();
+        if t.open(device, baud).is_err() {
+            return None;
+        }
+        t.flush_input();
+        t.write(b"\r");
+        std::thread::sleep(std::time::Duration::from_millis(150));
+        t.flush_input();
+        t.write(b"ATI\r");
+        let mut reply = Vec::new();
+        let start = Instant::now();
+        while start.elapsed() < std::time::Duration::from_millis(1200) {
+            reply.extend(t.read(100));
+            if reply.contains(&b'>') {
+                break;
+            }
+        }
+        let text = String::from_utf8_lossy(&reply).to_ascii_uppercase();
+        if text.contains("ELM") || text.contains("STN") || text.contains("OBD") {
+            return Some(baud as i32);
+        }
+    }
+    None
+}
+
 fn open_serial(device: &str, baud: u32) -> Result<Box<dyn Transport>, String> {
     let mut t = SerialTransport::new();
     t.open(device, baud)?;
@@ -253,7 +284,12 @@ fn run(argv: &[String]) -> i32 {
     } else if !opt.enet.is_empty() {
         open_network_car(&opt.enet).map(|car| Box::new(car.transport) as Box<dyn Transport>)
     } else {
-        make_transport(&opt.tcp, &opt.port, opt.baud)
+        let baud = if opt.tcp.is_empty() && !opt.baud_given {
+            find_baud(&opt.port).unwrap_or(opt.baud)
+        } else {
+            opt.baud
+        };
+        make_transport(&opt.tcp, &opt.port, baud)
     };
     let mut transport = match transport {
         Ok(t) => t,

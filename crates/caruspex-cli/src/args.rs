@@ -55,6 +55,8 @@ pub struct Options {
     pub tcp: String,
     pub port: String,
     pub baud: i32,
+    /// --baud was given; otherwise the usual rates are tried.
+    pub baud_given: bool,
     pub seconds: i32,
     pub verbose: bool,
     pub demo: bool,
@@ -77,6 +79,7 @@ impl Options {
             tcp: String::new(),
             port: "COM3".to_string(),
             baud: 38400,
+            baud_given: false,
             seconds: 15,
             verbose: false,
             demo: false,
@@ -117,6 +120,7 @@ impl Options {
                 "--baud" if has_value => {
                     i += 1;
                     o.baud = number(&argv[i])?;
+                    o.baud_given = true;
                 }
                 "--seconds" if has_value => {
                     i += 1;

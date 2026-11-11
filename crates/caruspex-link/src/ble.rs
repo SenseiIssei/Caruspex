@@ -92,7 +92,10 @@ fn describe_error(e: &btleplug::Error) -> String {
             "Caruspex is not allowed to use Bluetooth. Please allow it in the system settings under privacy.",
         )
         .to_string(),
-        btleplug::Error::NotSupported(_) => no_ble(),
+        // NoAdapterAvailable is new in btleplug 0.12; before, a computer
+        // without an adapter only showed up as an empty adapter list, which
+        // central() answers with the same text.
+        btleplug::Error::NotSupported(_) | btleplug::Error::NoAdapterAvailable => no_ble(),
         other => other.to_string(),
     }
 }
@@ -438,8 +441,8 @@ impl BleTransport {
                 WriteType::WithResponse
             },
             write_char,
-            // btleplug does not tell the negotiated MTU; 20 bytes fit into
-            // every ATT packet.
+            // btleplug can tell the negotiated MTU since 0.12, but not every
+            // system reports it reliably; 20 bytes fit into every ATT packet.
             chunk: 20,
             shared,
             tasks,

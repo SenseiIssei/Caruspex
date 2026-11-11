@@ -30,7 +30,7 @@ tauri-plugin-opener = "2.7.3"
 tauri-plugin-single-instance = "2"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.154"
-ureq = { version = "2.12.1", features = ["json"] }
+ureq = { version = "3.5.1", features = ["json"] }
 chrono = { version = "0.4.42", default-features = false, features = ["clock", "std"] }
 
 caruspex-i18n.workspace = true
@@ -46,6 +46,7 @@ caruspex-demo.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 # The same versions wry uses, so the WebView2 handles of with_webview fit.
+# Dependabot leaves these three alone; they are raised together with tauri.
 webview2-com = "0.39.1"
 windows = { version = "0.62.2", features = [
     "Win32_Foundation",
@@ -54,7 +55,7 @@ windows = { version = "0.62.2", features = [
     "Win32_Storage_FileSystem",
 ] }
 windows-core = "0.62.2"
-winreg = "0.55.0"
+winreg = "0.56.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 # The same versions wry uses, so the WKWebView handle of with_webview fits.

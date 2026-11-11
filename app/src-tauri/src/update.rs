@@ -41,14 +41,18 @@ fn segments_text(v: &[u64]) -> String {
 /// nothing).
 pub fn check(current: &str) -> Value {
     let agent = format!("Caruspex/{current}");
+    // timeout_global: the 8 seconds cover the whole request, from resolving
+    // the name to the last byte of the body.
     let response = ureq::get(RELEASES)
-        .set("User-Agent", &agent)
-        .timeout(std::time::Duration::from_secs(8))
+        .header("User-Agent", &agent)
+        .config()
+        .timeout_global(Some(std::time::Duration::from_secs(8)))
+        .build()
         .call();
-    let Ok(response) = response else {
+    let Ok(mut response) = response else {
         return Value::Null;
     };
-    let Ok(release) = response.into_json::<Value>() else {
+    let Ok(release) = response.body_mut().read_json::<Value>() else {
         return Value::Null;
     };
     let tag = release["tag_name"].as_str().unwrap_or("");

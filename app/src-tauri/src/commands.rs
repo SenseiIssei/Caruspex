@@ -882,6 +882,18 @@ fn later(delay_ms: u64, f: impl FnOnce() + Send + 'static) {
 /// What main.cpp did once the window was up: connect, show a page, take a
 /// picture, write the report. Runs when the interface first asks for
 /// app_info, because by then it listens to the events.
+/// The protocol order for a setting: "can" tries CAN first, anything else
+/// the K-line first, like the Connect page does. The setting itself is a
+/// word, not an order; handed over as it is, the adapter was asked for the
+/// protocols "k", "l", "i", "n" and "e".
+pub fn order_from_setting(setting: &str) -> String {
+    if setting.eq_ignore_ascii_case("can") {
+        caruspex_link::elm327::PROTOCOL_ORDER_CAN_FIRST.to_string()
+    } else {
+        caruspex_link::elm327::PROTOCOL_ORDER_KLINE_FIRST.to_string()
+    }
+}
+
 fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
     let cli = state.cli.clone();
     let values = state.settings.lock().map(|s| s.clone()).unwrap_or_default();
@@ -897,7 +909,7 @@ fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
         Some(Job::OpenSerial {
             device,
             baud: values.baud_override,
-            protocol_order: values.protocol_order.clone(),
+            protocol_order: order_from_setting(&values.protocol_order),
         })
     } else if let Some(address) = &cli.tcp {
         let (host, port) = address
@@ -906,7 +918,7 @@ fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
         Some(Job::OpenTcp {
             host: host.to_string(),
             port: port.parse().unwrap_or(35000),
-            protocol_order: values.protocol_order.clone(),
+            protocol_order: order_from_setting(&values.protocol_order),
         })
     } else if let Some(host) = &cli.enet {
         let host = if host.eq_ignore_ascii_case("auto") {
@@ -934,13 +946,13 @@ fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
             id,
             name: String::new(),
             kinds: 3,
-            protocol_order: values.protocol_order.clone(),
+            protocol_order: order_from_setting(&values.protocol_order),
         })
     } else {
         cli.replay.as_ref().map(|path| Job::OpenReplay {
             path: path.clone(),
             real_time: false,
-            protocol_order: values.protocol_order.clone(),
+            protocol_order: order_from_setting(&values.protocol_order),
         })
     };
     if let Some(connect) = connect {
@@ -1088,5 +1100,22 @@ pub fn save_geometry(window: &Window) {
     if let Ok(text) = serde_json::to_string(&g) {
         let _ = std::fs::create_dir_all(&state.config_dir);
         let _ = std::fs::write(geometry_path(&state.config_dir), text);
+    }
+}
+
+#[cfg(test)]
+mod order_tests {
+    use super::order_from_setting;
+
+    #[test]
+    fn the_setting_becomes_a_protocol_order() {
+        assert_eq!(order_from_setting("can"), "67891543");
+        assert_eq!(order_from_setting("kline"), "54312678");
+        assert_eq!(order_from_setting(""), "54312678");
+        assert!(
+            order_from_setting("kline")
+                .chars()
+                .all(|c| c.is_ascii_digit())
+        );
     }
 }

@@ -104,6 +104,35 @@ const ERRORS: [&str; 12] = [
     "?",
 ];
 
+/// True when a reply is mostly bytes no ELM327 sends: the replacement
+/// character of invalid UTF-8 and control characters. That is what a wrong
+/// baud rate looks like.
+fn reply_is_garbled(text: &str) -> bool {
+    let total = text.chars().count();
+    if total == 0 {
+        return false;
+    }
+    let bad = text
+        .chars()
+        .filter(|c| {
+            *c == '\u{FFFD}'
+                || (c.is_control() && *c != '\r' && *c != '\n' && *c != '\t')
+                || !c.is_ascii()
+        })
+        .count();
+    bad * 3 >= total
+}
+
+/// True when the reply to ATZ holds no identification, only STOPPED or
+/// nothing: the adapter was busy and dropped the reset.
+fn reset_was_interrupted(lines: &[String]) -> bool {
+    let useful: Vec<&String> = lines.iter().filter(|l| !l.trim().is_empty()).collect();
+    !useful.is_empty()
+        && useful
+            .iter()
+            .all(|l| l.trim().eq_ignore_ascii_case("STOPPED"))
+}
+
 // ---------------------------------------------------------------------------
 // Small string helpers, ASCII like the C locale
 // ---------------------------------------------------------------------------
@@ -697,6 +726,16 @@ impl Elm327 {
         }
     }
 
+    #[cfg(test)]
+    pub(crate) fn reply_is_garbled_for_test(text: &str) -> bool {
+        reply_is_garbled(text)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn reset_was_interrupted_for_test(lines: &[String]) -> bool {
+        reset_was_interrupted(lines)
+    }
+
     fn drain_greeting(&mut self) {
         // Wi-Fi and Bluetooth adapters announce themselves unprompted. If this
         // greeting is left in the buffer, it answers the first command and all
@@ -1164,9 +1203,19 @@ impl Elm327 {
         self.trace = ConnectTrace::default();
         self.drain_greeting();
 
-        let banner = self.at("Z", 6000);
+        let mut banner = self.at("Z", 6000);
         if banner.status == ElmStatus::AdapterError {
             return Err(banner.message);
+        }
+        // An STN chip that was still busy (a protocol search started by stray
+        // bytes, for example after another baud rate was tried first) answers
+        // the reset with STOPPED and drops it. Once more, then it is idle.
+        if reset_was_interrupted(&banner.lines) {
+            self.drain_greeting();
+            banner = self.at("Z", 6000);
+            if banner.status == ElmStatus::AdapterError {
+                return Err(banner.message);
+            }
         }
         let mut version = String::new();
         for line in &banner.lines {
@@ -1176,6 +1225,24 @@ impl Elm327 {
         self.version = trim(&version).to_string();
         if self.version.is_empty() {
             self.version = "?".to_string();
+        }
+        // At the wrong baud rate the adapter still sends something, but only
+        // scrambled bytes. That is not an answer: the caller tries the next
+        // rate instead of blaming the car.
+        if reply_is_garbled(&self.version) {
+            self.log(&format!(
+                "{}{}'",
+                l(
+                    "  Unleserliche Antwort, vermutlich passt die Baudrate nicht: '",
+                    "  Garbled answer, probably the baud rate does not match: '"
+                ),
+                self.version.escape_default()
+            ));
+            return Err(l(
+                "Der Adapter antwortet unleserlich, vermutlich passt die Baudrate nicht.",
+                "The adapter answers garbled, probably the baud rate does not match.",
+            )
+            .to_string());
         }
         self.trace.adapter_answered = true;
         self.trace.adapter_id = self.version.clone();
@@ -1322,6 +1389,40 @@ fn finish_uds(
         messages: payloads,
         sources: order,
         ..ElmResult::default()
+    }
+}
+
+#[cfg(test)]
+mod reset_tests {
+    use super::Elm327;
+
+    #[test]
+    fn a_reset_answered_with_stopped_counts_as_interrupted() {
+        let lines = |v: &[&str]| v.iter().map(|s| s.to_string()).collect::<Vec<_>>();
+        assert!(Elm327::reset_was_interrupted_for_test(&lines(&["STOPPED"])));
+        assert!(Elm327::reset_was_interrupted_for_test(&lines(&[
+            "", "STOPPED"
+        ])));
+        assert!(!Elm327::reset_was_interrupted_for_test(&lines(&[
+            "ELM327 v1.4b"
+        ])));
+        assert!(!Elm327::reset_was_interrupted_for_test(&lines(&[
+            "STOPPED",
+            "ELM327 v1.4b"
+        ])));
+        assert!(!Elm327::reset_was_interrupted_for_test(&lines(&[])));
+    }
+
+    #[test]
+    fn scrambled_bytes_of_a_wrong_baud_rate_are_no_answer() {
+        assert!(Elm327::reply_is_garbled_for_test("^\u{FFFD}\u{FFFD}"));
+        assert!(Elm327::reply_is_garbled_for_test("~\u{1}\u{FFFD}F"));
+        assert!(!Elm327::reply_is_garbled_for_test("ELM327 v1.4b"));
+        assert!(!Elm327::reply_is_garbled_for_test(
+            "OBDII to RS232 Interpreter"
+        ));
+        assert!(!Elm327::reply_is_garbled_for_test("?"));
+        assert!(!Elm327::reply_is_garbled_for_test(""));
     }
 }
 
