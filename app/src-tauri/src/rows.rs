@@ -10,6 +10,8 @@ pub struct FaultRow {
     pub text: String,
     pub throttle_related: bool,
     pub stored: bool,
+    /// A permanent code (service 0A): only the car itself clears it.
+    pub permanent: bool,
     pub ecu: String,
 }
 

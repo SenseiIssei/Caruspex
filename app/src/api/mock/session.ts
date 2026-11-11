@@ -81,6 +81,7 @@ export function faultRows(): FaultRow[] {
       text: describeDtc(code),
       throttleRelated: false,
       stored,
+      permanent: de === "dauerhaft",
       ecu: engineEcu(),
     });
   };

@@ -67,6 +67,8 @@ const SHAPES = {
   "printer": "<path d=\"M7 8V3.5h10V8\"/><rect x=\"3\" y=\"8\" width=\"18\" height=\"9\" rx=\"2\"/><path d=\"M7 14h10v6.5H7z\"/>",
   "steering": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\"/><path d=\"M3.5 10.5h6M14.5 10.5h6M12 14.5V21\"/>",
   "bolt-circle": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M13 6.5 8.5 13H12l-1 4.5 4.5-6.5H12z\"/>",
+  "help": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8\"/><circle cx=\"12\" cy=\"17\" r=\".6\" fill=\"currentColor\"/>",
+  "qr": "<rect x=\"3.5\" y=\"3.5\" width=\"6.5\" height=\"6.5\" rx=\"1\"/><rect x=\"14\" y=\"3.5\" width=\"6.5\" height=\"6.5\" rx=\"1\"/><rect x=\"3.5\" y=\"14\" width=\"6.5\" height=\"6.5\" rx=\"1\"/><path d=\"M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 19.5h1M19.5 14v1.5\"/>",
 } as const;
 
 export type IconName = keyof typeof SHAPES;

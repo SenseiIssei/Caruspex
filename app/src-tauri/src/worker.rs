@@ -235,6 +235,11 @@ fn is_stored_kind(kind: &str) -> bool {
     kind == "gespeichert" || kind == "stored" || kind == l("gespeichert", "stored")
 }
 
+// Same for "dauerhaft", the permanent codes of service 0A.
+fn is_permanent_kind(kind: &str) -> bool {
+    kind == "dauerhaft" || kind == "permanent" || kind == l("dauerhaft", "permanent")
+}
+
 fn fault_row(f: &Fault) -> FaultRow {
     FaultRow {
         code: f.code.clone(),
@@ -242,6 +247,7 @@ fn fault_row(f: &Fault) -> FaultRow {
         text: f.text.clone(),
         throttle_related: f.throttle_related,
         stored: is_stored_kind(&f.kind),
+        permanent: is_permanent_kind(&f.kind),
         ecu: f.ecu.clone(),
     }
 }
@@ -2571,6 +2577,7 @@ impl Worker {
                             text: f.text.clone(),
                             throttle_related: false,
                             stored: !f.sporadic,
+                            permanent: false,
                             ecu: String::new(),
                         });
                     }

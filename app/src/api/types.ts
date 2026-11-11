@@ -14,6 +14,8 @@ export interface FaultRow {
   throttleRelated: boolean;
   // Confirmed (stored) fault, as opposed to pending or permanent.
   stored: boolean;
+  // A permanent code (service 0A): only the car itself clears it.
+  permanent: boolean;
   // Which control unit reported it, e.g. "Motor (7E8)". Empty on the K-line.
   ecu: string;
 }

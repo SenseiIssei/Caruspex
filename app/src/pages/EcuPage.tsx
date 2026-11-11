@@ -9,6 +9,7 @@ import { Icon, type IconName } from "../components/Icon";
 import { confirm } from "../components/Modal";
 import { FindingRow } from "../components/Tiles";
 import { toast } from "../components/Toast";
+import { TermStrip } from "../components/Term";
 import { Button, Card, Page, PageHeader, Progress, Select, cx, type Option } from "../components/ui";
 import { translator } from "../i18n";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
@@ -229,6 +230,7 @@ export default function EcuPage() {
           "Fragt über CAN jedes Steuergerät einzeln: Motor, Getriebe, ABS, Airbag, Kombi, Klima und mehr. Mit einem normalen ELM327, bei den meisten Autos ab etwa 2008. Ältere VW und Audi gehen über das KKL-Kabel.",
         )}
       />
+      <TermStrip ids={["ecu", "uds", "can", "kwp", "elm327", "kkl"]} />
 
       <div className="ecu-bar">
         <Select className="ecu-family" value={family} options={options} onChange={setFamily} />
