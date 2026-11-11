@@ -412,6 +412,8 @@ fn replay_of_a_session_recorded_with_atat1_answers_atat2_with_a_question_mark() 
 
 #[test]
 fn an_unreadable_path_leaves_a_passing_through_wrapper() {
+    // The name of the demo transport follows the active language.
+    let _english = language(Language::English);
     let clock = DemoClock::new(600.0);
     let path = std::env::temp_dir()
         .join("caruspex_rs_no_such_dir")
