@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Comandos em lote do chip STN (STBC) ativos: várias solicitações numa linha.",
+ "c-stn-2": "  Mudado para ",
+ "c-stn-3": "  O chip STN não tem comandos em lote (STBC), as solicitações vão uma a uma.",
+ "c-stn-4": "CAN de alta velocidade (pinos 6 e 14)",
+ "c-stn-5": "CAN de média velocidade (MS-CAN, pinos 3 e 11, 125 kbaud)",
+ "c-stn-6": "CAN de fio único (GMLAN, pino 1, 33,3 kbaud)",
+ "c-stn-7": "O adaptador recusa o protocolo: ",
+ "c-stn-8": "Este OBDLink não tem transceptor para ",
+ "c-stn-9": "Isto precisa de um OBDLink (chip STN) num carro com CAN."
+}

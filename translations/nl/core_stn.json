@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Batchcommando's van de STN-chip (STBC) actief: meerdere verzoeken in één regel.",
+ "c-stn-2": "  Overgeschakeld naar ",
+ "c-stn-3": "  De STN-chip heeft geen batchcommando's (STBC), verzoeken gaan één voor één.",
+ "c-stn-4": "High-speed-CAN (pinnen 6 en 14)",
+ "c-stn-5": "Medium-speed-CAN (MS-CAN, pinnen 3 en 11, 125 kbaud)",
+ "c-stn-6": "Single-wire-CAN (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "De adapter weigert het protocol: ",
+ "c-stn-8": "Deze OBDLink heeft geen transceiver voor ",
+ "c-stn-9": "Dit vraagt een OBDLink (STN-chip) aan een auto met CAN."
+}

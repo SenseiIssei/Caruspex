@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Dávkové příkazy čipu STN (STBC) zapnuté: více dotazů na jednom řádku.",
+ "c-stn-2": "  Přepnuto na ",
+ "c-stn-3": "  Čip STN nemá dávkové příkazy (STBC), dotazy jdou jednotlivě.",
+ "c-stn-4": "Vysokorychlostní CAN (piny 6 a 14)",
+ "c-stn-5": "Středněrychlostní CAN (MS-CAN, piny 3 a 11, 125 kbaud)",
+ "c-stn-6": "Jednovodičový CAN (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "Adaptér odmítá protokol: ",
+ "c-stn-8": "Tento OBDLink nemá vysílač-přijímač pro ",
+ "c-stn-9": "To vyžaduje OBDLink (čip STN) na autě s CAN."
+}

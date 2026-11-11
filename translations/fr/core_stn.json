@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Commandes groupées de la puce STN (STBC) actives : plusieurs requêtes sur une ligne.",
+ "c-stn-2": "  Basculé sur ",
+ "c-stn-3": "  La puce STN n'a pas de commandes groupées (STBC), les requêtes partent une par une.",
+ "c-stn-4": "CAN haute vitesse (broches 6 et 14)",
+ "c-stn-5": "CAN moyenne vitesse (MS-CAN, broches 3 et 11, 125 kbaud)",
+ "c-stn-6": "CAN monofilaire (GMLAN, broche 1, 33,3 kbaud)",
+ "c-stn-7": "L'adaptateur refuse le protocole : ",
+ "c-stn-8": "Cet OBDLink n'a pas d'émetteur-récepteur pour ",
+ "c-stn-9": "Il faut un OBDLink (puce STN) sur une voiture avec CAN."
+}

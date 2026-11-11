@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  STN 芯片的批量命令（STBC）已启用：一行发送多个请求。",
+ "c-stn-2": "  已切换到 ",
+ "c-stn-3": "  该 STN 芯片没有批量命令（STBC），请求逐个发送。",
+ "c-stn-4": "高速 CAN（针脚 6 和 14）",
+ "c-stn-5": "中速 CAN（MS-CAN，针脚 3 和 11，125 kbaud）",
+ "c-stn-6": "单线 CAN（GMLAN，针脚 1，33.3 kbaud）",
+ "c-stn-7": "适配器拒绝该协议：",
+ "c-stn-8": "此 OBDLink 没有以下总线的收发器：",
+ "c-stn-9": "这需要在带 CAN 的车上使用 OBDLink（STN 芯片）。"
+}
