@@ -18,8 +18,9 @@ use caruspex_net::can_signals::{parse_can_signal, parse_monitor_request};
 use caruspex_protocols::Obd2;
 use caruspex_record::{
     CustomPid, CustomPidReader, PACK_KEY_BASE, TorqueEquation, USER_KEY_BASE, built_in_packs,
-    is_custom_key, pack_category, pack_names, pack_pids, pack_title, parse_request_hex,
-    parse_torque_csv, read_custom, write_torque_csv,
+    is_custom_key, odometer_values, pack_category, pack_names, pack_pids, pack_title,
+    pack_values_en, packs_for_model, parse_request_hex, parse_torque_csv, read_custom,
+    write_torque_csv,
 };
 
 use common::{DemoRig, ScriptCar, approx, german, language};
@@ -758,6 +759,35 @@ fn nissan_leaf_and_renault_zoe_recorded_answers_decode_like_obdb() {
 // ---------------------------------------------------------------------------
 // Packs
 // ---------------------------------------------------------------------------
+
+#[test]
+fn packs_by_model_odometers_and_english_names() {
+    let _lang = german();
+    assert_eq!(packs_for_model("Hyundai", "Kona"), ["hyundai-kona-niro-ev"]);
+    assert_eq!(packs_for_model("Kia", "e-Niro"), ["hyundai-kona-niro-ev"]);
+    assert_eq!(packs_for_model("Renault", "ZOE"), ["renault-zoe-ph1"]);
+    assert_eq!(packs_for_model("Tesla", "Model 3"), ["tesla-model3-y"]);
+    assert!(packs_for_model("Volkswagen", "Golf").is_empty());
+    assert!(packs_for_model("Nissan", "Micra").is_empty());
+
+    // The demo pack has two odometers (cluster and ABS), Tesla one; the
+    // battery packs of the others have none.
+    let demo = odometer_values("caruspex-demo");
+    assert_eq!(demo.len(), 2);
+    assert_eq!(demo[0].header, "720");
+    assert_eq!(demo[1].header, "760");
+    assert_eq!(demo[0].name, "Kilometerstand (Kombiinstrument)");
+    assert_eq!(odometer_values("tesla-model3-y").len(), 1);
+    assert!(odometer_values("renault-zoe-ph1").is_empty());
+    assert!(odometer_values("nope").is_empty());
+
+    // English short names find a value in any language.
+    let kona = pack_values_en("hyundai-kona-niro-ev");
+    assert_eq!(kona.len(), pack_pids("hyundai-kona-niro-ev").len());
+    let soh = kona.iter().find(|v| v.short_en == "SOH").unwrap();
+    assert_eq!(soh.pid.pack, "hyundai-kona-niro-ev");
+    assert!(kona.iter().any(|v| v.short_en == "Cell V max"));
+}
 
 #[test]
 fn built_in_packs_load_and_every_equation_parses() {
