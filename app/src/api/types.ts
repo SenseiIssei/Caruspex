@@ -274,6 +274,12 @@ export interface AppSettings {
   // Profi mode shows every page, beginners the everyday ones. New installs
   // start as beginners, settings from before the switch as Profi.
   proMode: boolean;
+  // The first-start assistant was shown (finished or skipped).
+  setupDone: boolean;
+  // Stronger colours and borders.
+  highContrast: boolean;
+  // Size of everything on screen in percent, 100 is normal (80 to 160).
+  fontScale: number;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -299,6 +305,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   language: "auto",
   appearance: "auto",
   proMode: false,
+  setupDone: false,
+  highContrast: false,
+  fontScale: 100,
 };
 
 // --- Garage.h -------------------------------------------------------------------
@@ -741,6 +750,11 @@ export interface VehicleDiagnosisInfo {
   connector: number;
   connectorName: string;
   locationText: string;
+  // SocketLocation for the sketch: 0 unknown, 1 under the dash on the
+  // driver side, 2 under the steering column, 3 footwell cover, 4 fuse box,
+  // 5 centre console, 6 behind the ashtray, 7 passenger side, 8 engine bay,
+  // 9 rear console.
+  location: number;
   diagnosisText: string;
   kklPossible: boolean;
   protocolOrder: string;

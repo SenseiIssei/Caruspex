@@ -337,6 +337,14 @@ function supportFor(g: GenRecord, year: number, powertrain = 0): number {
   return y >= (petrolLike ? 2001 : 2004) ? Support.Full : Support.Partial;
 }
 
+// The spot for the sketch (catalog::location_for): the recorded one, the
+// engine bay for the round plugs, otherwise unknown.
+function locationFor(g: GenRecord, year: number): number {
+  if (g[12] !== Location.Unknown) return g[12];
+  const c = connectorFor(g, year);
+  return c === Connector.Bmw20 || c === Connector.Mb38 ? Location.EngineBay : Location.Unknown;
+}
+
 // Location with the connector taken into account (an unknown spot of a BMW
 // round plug is still the engine bay).
 function locationText(g: GenRecord, year: number): string {
@@ -894,6 +902,7 @@ export const knowledgeHandlers: PartialHandlers = {
       connector,
       connectorName: connectorName(connector),
       locationText: locationText(g, y),
+      location: locationFor(g, y),
       diagnosisText: diagnosisText(data, g, y),
       kklPossible: kklPossible(data, g, y),
       protocolOrder: g[11],

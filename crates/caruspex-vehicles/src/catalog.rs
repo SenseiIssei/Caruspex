@@ -1087,6 +1087,19 @@ pub fn location_text(location: SocketLocation) -> &'static str {
     }
 }
 
+/// The spot for the sketch of the first-start assistant: the recorded one,
+/// or the engine bay for the round plugs of BMW and Mercedes, otherwise
+/// `Unknown` (the sketch then marks the usual spots).
+pub fn location_for(g: &VehicleGeneration, year: i32) -> SocketLocation {
+    if g.location != SocketLocation::Unknown {
+        return g.location;
+    }
+    match connector_for(g, year) {
+        Connector::Bmw20 | Connector::Mb38 => SocketLocation::EngineBay,
+        _ => SocketLocation::Unknown,
+    }
+}
+
 /// Location with the connector taken into account (an unknown spot of a
 /// BMW round plug is still the engine bay).
 pub fn location_text_for(g: &VehicleGeneration, year: i32) -> &'static str {

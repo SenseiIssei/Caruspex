@@ -389,6 +389,8 @@ pub fn catalog_diagnosis(generation_id: usize, year: i32) -> Result<Value, Strin
         "connector": connector as i32,
         "connectorName": catalog::connector_name(connector),
         "locationText": catalog::location_text_for(g, y),
+        // SocketLocation in declaration order, for the sketch.
+        "location": catalog::location_for(g, y) as i32,
         "diagnosisText": catalog::diagnosis_text(g, y),
         "kklPossible": catalog::kkl_possible(g, y),
         "protocolOrder": catalog::protocol_order_for(g),

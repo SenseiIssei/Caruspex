@@ -97,6 +97,22 @@ pub fn set_language(code: String) {
     apply_language(&code);
 }
 
+/// Size of everything in the window (the font size of the settings), the
+/// way the zoom of a browser does it, so charts and the X-ray view keep
+/// their mouse positions.
+#[tauri::command]
+pub fn set_zoom(app: AppHandle, scale: f64) -> Result<()> {
+    let scale = if scale.is_finite() {
+        scale.clamp(0.8, 1.6)
+    } else {
+        1.0
+    };
+    match app.get_webview_window("main") {
+        Some(window) => window.set_zoom(scale).map_err(|e| e.to_string()),
+        None => Ok(()),
+    }
+}
+
 #[tauri::command]
 pub async fn check_for_update(state: State<'_, AppState>) -> Result<Value> {
     let allowed = state

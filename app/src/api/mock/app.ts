@@ -78,6 +78,11 @@ export const appHandlers: PartialHandlers = {
   set_language: async ({ code }) => {
     await setCoreLanguage(code);
   },
+  // The browser has no window zoom to set; CSS zoom on the root does the same.
+  set_zoom: ({ scale }) => {
+    const root = document.getElementById("root");
+    if (root) root.style.zoom = scale === 1 ? "" : String(scale);
+  },
   // ?update=1 in the address shows the update button and dialog.
   check_for_update: () =>
     new URLSearchParams(location.search).has("update")

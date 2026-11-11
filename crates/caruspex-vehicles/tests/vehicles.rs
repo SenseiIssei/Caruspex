@@ -408,6 +408,32 @@ fn diagnosis_is_described_honestly() {
         ObdSupport::Manufacturer
     );
     assert_eq!(model3.location, SocketLocation::RearConsole);
+    assert_eq!(
+        catalog::location_for(model3, 2022),
+        SocketLocation::RearConsole
+    );
+    assert_eq!(
+        catalog::location_for(golf4, 2003),
+        SocketLocation::CentreConsole
+    );
+}
+
+#[test]
+fn the_sketch_spot_follows_the_record_and_the_round_plugs() {
+    for g in catalog::all() {
+        let year = g.year_from;
+        let spot = catalog::location_for(g, year);
+        if g.location != SocketLocation::Unknown {
+            assert_eq!(spot, g.location, "{} {}", g.brand, g.model);
+        } else if matches!(
+            catalog::connector_for(g, year),
+            Connector::Bmw20 | Connector::Mb38
+        ) {
+            assert_eq!(spot, SocketLocation::EngineBay, "{} {}", g.brand, g.model);
+        } else {
+            assert_eq!(spot, SocketLocation::Unknown, "{} {}", g.brand, g.model);
+        }
+    }
 }
 
 #[test]
