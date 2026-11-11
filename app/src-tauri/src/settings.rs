@@ -52,6 +52,9 @@ pub struct AppSettings {
     pub remember_geometry: bool,
     /// Ask GitHub for a newer version at start.
     pub check_updates: bool,
+    /// Install a newer version found at start without asking first (the
+    /// signature is checked either way).
+    pub auto_install_updates: bool,
 
     // --- Language ------------------------------------------------------------
     /// "auto" follows the system language, otherwise a language code.
@@ -93,6 +96,7 @@ impl Default for AppSettings {
             log_path: String::new(),
             remember_geometry: true,
             check_updates: true,
+            auto_install_updates: false,
             language: "auto".into(),
             appearance: "auto".into(),
             pro_mode: false,
@@ -410,6 +414,8 @@ mod tests {
         assert_eq!(v["protocolOrder"], "kline");
         assert_eq!(v["basicSettingSession"], 0x85);
         assert_eq!(v["pollIntervalMs"], 20);
+        assert_eq!(v["checkUpdates"], true);
+        assert_eq!(v["autoInstallUpdates"], false);
         // Missing fields take their default.
         let partial: AppSettings = serde_json::from_str(r#"{"pollIntervalMs": 50}"#).unwrap();
         assert_eq!(partial.poll_interval_ms, 50);

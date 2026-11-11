@@ -41,6 +41,7 @@ import type {
   StatusRow,
   UdsEcuRow,
   UpdateInfo,
+  UpdateOutcome,
   UsedCarRow,
   VehicleDiagnosisInfo,
   VehicleAnatomy,
@@ -60,8 +61,12 @@ export interface Commands {
   // Tells the backend which language the interface shows, so core texts
   // (fault descriptions, value names, messages) arrive in it.
   set_language: Cmd<{ code: string }, void>;
-  // Asks GitHub for the newest release once; null when up to date or offline.
+  // Asks GitHub for latest.json of the newest release once; null when up
+  // to date or offline.
   check_for_update: Cmd<None, UpdateInfo | null>;
+  // Downloads the release check_for_update found, checks its signature and
+  // installs it; progress comes as update_progress. Rejects with a message.
+  install_update: Cmd<None, UpdateOutcome>;
   open_url: Cmd<{ url: string }, void>;
 
   // --- Settings (Settings.h) -------------------------------------------------
@@ -221,6 +226,8 @@ export interface Commands {
 
 export interface Events {
   log_line: { line: string };
+  // Download of an update; total is 0 when the size is unknown.
+  update_progress: { received: number; total: number };
   connected: { adapter: string; transport: string; protocol: string };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).

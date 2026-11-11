@@ -21,7 +21,7 @@ history and in the v0.8.0 release.
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
 | caruspex-demo | the built-in demo car: an ELM327 with simulated control units and an injectable clock | link |
 | caruspex-cli | `caruspex_cli`, the command-line tool | all of the above |
-| app/src-tauri | the desktop app: the worker thread, settings, garage, report, update check | all of the above |
+| app/src-tauri | the desktop app: the worker thread, settings, garage, report, the signed updater | all of the above |
 
 ## Conventions
 

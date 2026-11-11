@@ -49,6 +49,9 @@ pub struct AppState {
     pub cli: Cli,
     /// Set by the first app_info: the interface is up and listening.
     pub ready: AtomicBool,
+    /// The newer release check_for_update found, for install_update.
+    pub update: Mutex<Option<update::Found>>,
+    pub installing: AtomicBool,
 }
 
 /// The worker's events into the window, the live values into the trip
@@ -204,6 +207,8 @@ fn main() {
                 log_file,
                 cli: cli.clone(),
                 ready: AtomicBool::new(false),
+                update: Mutex::new(None),
+                installing: AtomicBool::new(false),
             });
             commands::open_log_file(&handle, &values);
 
@@ -254,6 +259,7 @@ fn main() {
             commands::app_info,
             commands::set_language,
             commands::check_for_update,
+            commands::install_update,
             commands::open_url,
             commands::load_settings,
             commands::save_settings,

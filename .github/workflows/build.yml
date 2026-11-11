@@ -181,7 +181,8 @@ jobs:
           if-no-files-found: ignore
 
   # Only for version tags: one release with all packages and the change list
-  # from changelog/<version>.md.
+  # from changelog/<version>.md, plus what the updater of the app reads:
+  # signed update packages, latest.json and copies under stable names.
   release:
     name: Release
     if: startsWith(github.ref, 'refs/tags/v')
@@ -209,12 +210,54 @@ jobs:
           pattern: caruspex-*
           path: artifacts
 
+      - name: Collect packages
+        run: |
+          mkdir -p upload
+          find artifacts -path '*-smoke*' -prune -o -type f -print -exec cp {} upload/ \;
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # The private half of the update key is never in the repository; it
+      # comes from the repository secret CARUSPEX_UPDATER_KEY. The app only
+      # installs what this key signed (public half in update.rs).
+      - name: Sign the update packages
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.CARUSPEX_UPDATER_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: none
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::error::The repository secret CARUSPEX_UPDATER_KEY is missing. Add the content of caruspex-updater.key under Settings > Secrets and variables > Actions, then run this job again. Without it the release would have no signed updates."
+            exit 1
+          fi
+          npm --prefix app ci
+          for name in "Caruspex-$VERSION-windows-x64-setup.exe" \
+                      "Caruspex-$VERSION-linux-x86_64.AppImage" \
+                      "Caruspex-$VERSION-macos.app.tar.gz"; do
+            test -f "upload/$name" || { echo "upload/$name is missing" >&2; exit 1; }
+            npm --prefix app exec -- tauri signer sign "$PWD/upload/$name"
+            test -s "upload/$name.sig" || { echo "no signature for $name" >&2; exit 1; }
+          done
+
+      # Checks every signature against the key in update.rs, writes
+      # latest.json and the copies without version in the name.
+      - name: Update manifest and stable names
+        run: |
+          pip install --quiet cryptography
+          python tools/release_assets.py "${{ steps.version.outputs.version }}" upload
+
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p upload
-          find artifacts -path '*-smoke*' -prune -o -type f -print -exec cp {} upload/ \;
           ls -l upload
           gh release create "$GITHUB_REF_NAME" upload/* \
             --title "Caruspex ${{ steps.version.outputs.version }}" \

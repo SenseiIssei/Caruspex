@@ -4,7 +4,7 @@ import type { AppSettings, FileFilter, GarageCar, OpenedTextFile } from "../type
 import { DEFAULT_SETTINGS } from "../types";
 import { setCoreLanguage } from "./core";
 import { applyPollInterval } from "./session";
-import type { PartialHandlers } from "./runtime";
+import { emit, type PartialHandlers } from "./runtime";
 
 const SETTINGS_KEY = "caruspex.settings";
 const GARAGE_KEY = "caruspex.garage";
@@ -78,11 +78,26 @@ export const appHandlers: PartialHandlers = {
   set_language: async ({ code }) => {
     await setCoreLanguage(code);
   },
-  // ?update=1 in the address shows the update button.
+  // ?update=1 in the address shows the update button and dialog.
   check_for_update: () =>
     new URLSearchParams(location.search).has("update")
-      ? { version: "0.9.1", url: "https://github.com/SenseiIssei/Caruspex/releases/latest" }
+      ? {
+          version: "0.10.1",
+          url: "https://github.com/SenseiIssei/Caruspex/releases/latest",
+          notes: "**Neu**\n- Automatische Updates, signiert und geprüft\n- Kleinere Korrekturen",
+          date: "2026-11-20T10:00:00Z",
+          canInstall: true,
+        }
       : null,
+  // Pretends to download for two seconds; the browser preview cannot install.
+  install_update: async () => {
+    const total = 8 * 1024 * 1024;
+    for (let i = 0; i <= 20; i++) {
+      emit("update_progress", { received: (total * i) / 20, total });
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    return "page" as const;
+  },
   open_url: ({ url }) => {
     window.open(url, "_blank", "noopener");
   },
