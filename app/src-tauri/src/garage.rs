@@ -121,6 +121,12 @@ pub struct GarageCar {
     pub fuel: Vec<GarageFuel>,
     #[serde(default)]
     pub services: Vec<GarageService>,
+    /// A 3D model of this car the owner loaded for the X-ray view (path of
+    /// a .glb or .gltf), and whether it had to be turned around.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub xray_model: String,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub xray_model_turned: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -264,6 +270,14 @@ mod tests {
         let again = parse(&serialise(&cars));
         assert_eq!(again, cars);
         assert!(serialise(&cars).contains("\n    \"cars\""));
+        // The X-ray model is only written when there is one.
+        assert!(!serialise(&cars).contains("xrayModel"));
+        let mut with_model = cars.clone();
+        with_model[0].xray_model = "C:/models/golf.glb".into();
+        with_model[0].xray_model_turned = true;
+        let text = serialise(&with_model);
+        assert!(text.contains("\"xrayModel\": \"C:/models/golf.glb\""));
+        assert_eq!(parse(&text), with_model);
     }
 
     #[test]

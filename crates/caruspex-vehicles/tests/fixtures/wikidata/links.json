@@ -1,0 +1,579 @@
+{
+"head": {
+"vars": [
+"item",
+"pred",
+"value",
+"valueLabel"
+]
+},
+"results": {
+"bindings": [
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q125635795"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1117001"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Great Wall Motor",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q246"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q156578"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen Group",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P179"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q247"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen Golf",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q215293"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volvo Cars",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q215293"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volvo Cars",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1626573"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q9584"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Honda",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1626573"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q9584"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Honda",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1626573"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P179"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q216747"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Honda Civic",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q16879264"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q53268"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Toyota",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q16879264"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q53268"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Toyota",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q366912"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q20827633"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Ford",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q366912"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q571934"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Ford of Europe",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q390055"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q29610"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Chrysler",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q390055"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q181114"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Stellantis North America",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q139960054"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Fiat",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q27597"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Fiat",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q55931"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Hyundai Motor Company",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q55931"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Hyundai Motor Company",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q246"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q156578"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen Group",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P179"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q247"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Volkswagen Golf",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q124983953"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Audi",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q23317"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Audi AG",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q7705507"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q124981765"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Tesla",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q7705507"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q478214"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Tesla",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796490"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796364"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796490"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q26678"
+},
+"valueLabel": {
+"type": "literal",
+"value": "BMW",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q927839"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P1716"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q27597"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Fiat",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q927839"
+},
+"pred": {
+"type": "uri",
+"value": "http://www.wikidata.org/prop/direct/P176"
+},
+"value": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q27597"
+},
+"valueLabel": {
+"type": "literal",
+"value": "Fiat",
+"xml:lang": "en"
+}
+}
+]
+}
+}

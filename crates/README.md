@@ -11,7 +11,7 @@ history and in the v0.8.0 release.
 | Crate | What it holds | Builds on |
 |---|---|---|
 | caruspex-i18n | the 18 languages: `l(de, en)`, `Text`, the catalog built from `translations/` at compile time | |
-| caruspex-vehicles | VIN decoding, the WMI table, the vehicle catalog (generated from `data/vehicles/`) | i18n |
+| caruspex-vehicles | VIN decoding, the WMI table, the vehicle catalog (generated from `data/vehicles/`), the shape of a car for the X-ray view with real dimensions per generation from Wikidata (generated from `data/wikidata/`) | i18n |
 | caruspex-data | trouble codes, PIDs, monitor tests, control unit addresses (generated from `data/ecus/`), VAG fault numbers, fault locations | i18n |
 | caruspex-link | the `Transport` and `ByteStream` traits, serial with USB detection, TCP, K-line, Bluetooth LE and classic Bluetooth, the ELM327 driver, the adapter check | i18n |
 | caruspex-protocols | OBD-II with batched requests, UDS with BMW addressing and the control unit scan, KWP1281, KWP2000, the VAG K-line | link, data |

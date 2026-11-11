@@ -9,7 +9,7 @@
 // view with its see-through mode instead.
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { call } from "../api";
-import type { EcuScanRow, LiveRow, VehicleAnatomy, ZoneInfo } from "../api";
+import type { EcuScanRow, LiveRow, VehicleAnatomy, VehicleGenerationInfo, ZoneInfo } from "../api";
 import { BodyType, CarZone, Powertrain } from "../api";
 import { Icon } from "../components/Icon";
 import { Button, Card, Chip, Page, PageHeader, Select, type Option } from "../components/ui";
@@ -20,6 +20,7 @@ import { onApp } from "../lib/store";
 import { cssColor, toCss, useThemeVersion } from "../lib/theme";
 import { DEMO_VIN, bodyStyleFor } from "../lib/vehicleIdentity";
 import { navigate } from "../shell/nav";
+import { setXrayModel, useGarage } from "../state/garage";
 import { live, useSession } from "../state/session";
 import {
   EcuKind,
@@ -33,6 +34,8 @@ import {
   type Vec3,
 } from "../xray/layout";
 import type { XrayLabel, XrayPalette, XrayScene } from "../xray/scene";
+import { bodyVariants } from "../xray/shape";
+import { externalFiles } from "../xray/shell";
 import "./XrayPage.css";
 
 const tr = translator("caruspex::XrayPage");
@@ -162,6 +165,43 @@ function responseOf(ecu: string): number {
   return m ? Number.parseInt(m[1]!, 16) : 0;
 }
 
+// Body variants for the hidden screenshot option "xray-generation:<id or
+// search>|<variant>".
+const VARIANT_NAMES: Record<string, BodyType> = {
+  hatch: BodyType.Hatchback, sedan: BodyType.Sedan, estate: BodyType.Estate, suv: BodyType.Suv, van: BodyType.Van,
+  coupe: BodyType.Coupe, cabrio: BodyType.Convertible, pickup: BodyType.Pickup, mpv: BodyType.Mpv, roadster: BodyType.Roadster,
+};
+
+// A generation by its catalog id or a search ("Golf VII", "Gran Coupe F36").
+async function findGeneration(text: string): Promise<VehicleGenerationInfo | null> {
+  const query = text.trim();
+  if (/^\d+$/.test(query)) {
+    const d = await call("catalog_diagnosis", { generationId: Number(query), year: 0 }).catch(() => null);
+    return d?.generation ?? null;
+  }
+  const found = await call("catalog_search", { query, limit: 1 }).catch(() => []);
+  return found[0] ?? null;
+}
+
+// The folder of a path, with its separator.
+function folderOf(path: string): string {
+  const i = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+  return i >= 0 ? path.slice(0, i + 1) : "";
+}
+
+// The bytes of a model and, for a .gltf, the files it names next to itself.
+async function readModel(path: string): Promise<{ data: ArrayBuffer; files: Map<string, Blob> }> {
+  const data = await call("read_model_file", { path });
+  const files = new Map<string, Blob>();
+  if (/\.gltf$/i.test(path)) {
+    const json = JSON.parse(new TextDecoder().decode(data)) as Parameters<typeof externalFiles>[0];
+    for (const name of externalFiles(json)) {
+      files.set(name, new Blob([await call("read_model_file", { path: folderOf(path) + name })]));
+    }
+  }
+  return { data, files };
+}
+
 interface ZoneFinding {
   zone: CarZone;
   info: ZoneInfo;
@@ -191,13 +231,38 @@ export default function XrayPage() {
   const reduced = useReducedMotion();
 
   // --- Which car -------------------------------------------------------------------
-  const generation = identity?.generation ?? null;
-  const demo = vin === DEMO_VIN;
+  // A generation picked by the hidden screenshot option (xray-generation)
+  // takes the place of the connected car.
+  const [shown, setShown] = useState<VehicleGenerationInfo | null>(null);
+  const generation = shown ?? identity?.generation ?? null;
+  const demo = vin === DEMO_VIN && !shown;
+  // The body of the catalog; variants (an estate of a saloon generation) are
+  // drawn on top of it.
   const body = generation ? generation.body : demo ? BodyType.Estate : BodyType.Hatchback;
-  const year = identity?.year || generation?.yearFrom || (connected ? 2012 : 2018);
+  const [variant, setVariant] = useState<BodyType | null>(null);
+  const year = (shown ? shown.yearFrom : identity?.year) || generation?.yearFrom || (connected ? 2012 : 2018);
   const [powertrain, setPowertrain] = useState(0);
   const [anatomy, setAnatomy] = useState<VehicleAnatomy | null>(null);
-  useEffect(() => setPowertrain(0), [generation?.id]);
+  const pendingVariant = useRef<BodyType | null>(null);
+  useEffect(() => {
+    setPowertrain(0);
+    setVariant(pendingVariant.current);
+    pendingVariant.current = null;
+  }, [generation?.id]);
+  const [devView, setDevView] = useState<"side" | "rear" | "front" | null>(null);
+  const showGeneration = useCallback((arg: string) => {
+    const [query, variantName, view] = arg.split("|");
+    if (view === "side" || view === "rear" || view === "front") setDevView(view);
+    void findGeneration(query ?? "").then((g) => {
+      if (!g) return;
+      pendingVariant.current = variantName ? (VARIANT_NAMES[variantName.trim().toLowerCase()] ?? null) : null;
+      setShown(g);
+    });
+  }, []);
+  useEffect(() => {
+    const arg = new URLSearchParams(window.location.search).get("xray-generation");
+    if (arg) showGeneration(arg);
+  }, [showGeneration]);
   useEffect(() => {
     let stale = false;
     void call("vehicle_anatomy", {
@@ -311,11 +376,13 @@ export default function XrayPage() {
 
   // --- Layout ----------------------------------------------------------------------------
   const turbo = (anatomy?.powertrain ?? 0) === Powertrain.Diesel || zones.includes(CarZone.Turbo);
+  const variants = useMemo(() => (anatomy ? bodyVariants(anatomy, body) : [body]), [anatomy, body]);
+  const drawn = variant !== null && variants.includes(variant) ? variant : body;
   const layout = useMemo<CarLayout | null>(
-    () => (anatomy ? buildLayout({ anatomy, body, ecus: ecuInputs, kline, turbo }) : null),
-    [anatomy, body, ecuInputs, kline, turbo],
+    () => (anatomy ? buildLayout({ anatomy, body, variant: drawn, ecus: ecuInputs, kline, turbo }) : null),
+    [anatomy, body, drawn, ecuInputs, kline, turbo],
   );
-  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${turbo}|${themeVersion}` : "";
+  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${turbo}|${themeVersion}` : "";
 
   // --- The scene ---------------------------------------------------------------------------
   const host = useRef<HTMLDivElement>(null);
@@ -384,6 +451,65 @@ export default function XrayPage() {
       pendingPacket.current = null;
     }
   }, [layout, carKey, mode]);
+
+  // The straight view of the screenshot option, once the car is drawn.
+  useEffect(() => {
+    if (!devView || mode !== "3d" || !carKey) return;
+    // Again a little later: the car may be redrawn once more while the demo
+    // connection settles.
+    const timers = [300, 2000, 5000].map((ms) => setTimeout(() => sceneRef.current?.viewFrom(devView), ms));
+    return () => timers.forEach(clearTimeout);
+  }, [devView, carKey, mode]);
+
+  // --- The owner's own 3D model ----------------------------------------------------------
+  // Kept per car in the garage; a car that is not in the garage keeps it for
+  // this session only.
+  const garageCar = useGarage((s) => (vin ? (s.cars.find((c) => c.vin === vin) ?? null) : null));
+  const [sessionModel, setSessionModel] = useState<{ path: string; turned: boolean } | null | undefined>(undefined);
+  useEffect(() => setSessionModel(undefined), [vin]);
+  const savedModel = garageCar?.xrayModel ? { path: garageCar.xrayModel, turned: !!garageCar.xrayModelTurned } : null;
+  const ownModel = shown ? (sessionModel ?? null) : sessionModel === undefined ? savedModel : sessionModel;
+  const [modelState, setModelState] = useState<{ path: string; state: "loading" | "shown" | "error"; error?: string } | null>(null);
+  const loadedPath = useRef("");
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene || mode !== "3d" || !layout) return;
+    if (!ownModel) {
+      if (loadedPath.current) scene.clearShell();
+      loadedPath.current = "";
+      setModelState(null);
+      return;
+    }
+    if (loadedPath.current === ownModel.path) {
+      scene.turnShell(ownModel.turned);
+      return;
+    }
+    loadedPath.current = ownModel.path;
+    setModelState({ path: ownModel.path, state: "loading" });
+    void readModel(ownModel.path)
+      .then(({ data, files }) => scene.loadShell(data, { turned: ownModel.turned, files }))
+      .then(
+        () => setModelState({ path: ownModel.path, state: "shown" }),
+        (e: unknown) => {
+          loadedPath.current = "";
+          setModelState({ path: ownModel.path, state: "error", error: e instanceof Error ? e.message : String(e) });
+        },
+      );
+    // layout is only needed to be there; the scene re-places the model itself.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownModel?.path, ownModel?.turned, mode, layout !== null]);
+  const keepModel = (model: { path: string; turned: boolean } | null) => {
+    setSessionModel(model);
+    if (garageCar && !shown) setXrayModel(garageCar.vin, model?.path ?? "", model?.turned ?? false);
+  };
+  const pickModel = async () => {
+    const path = await call("pick_open_path", {
+      title: tr("Eigenes 3D-Modell laden"),
+      filters: [{ name: tr("3D-Modell (glTF)"), extensions: ["glb", "gltf"] }],
+    }).catch(() => null);
+    if (path) keepModel({ path, turned: false });
+  };
+  const fileName = (path: string) => path.replace(/^.*[\\/]/, "");
 
   // Packets for everything the OBD side reads.
   const engineKey = useMemo(() => ecuInputs.find((e) => e.kind === EcuKind.Engine)?.key ?? "obd-engine", [ecuInputs]);
@@ -584,25 +710,46 @@ export default function XrayPage() {
   useAppEvent<string>("dev:page", (name) => {
     if (!name.startsWith("xray")) return;
     navigate("xray");
+    if (name.startsWith("xray-generation:")) showGeneration(name.slice("xray-generation:".length));
+    // A model file for pictures of the own-model view, without the dialog.
+    if (name.startsWith("xray-model:")) {
+      const [path, view] = name.slice("xray-model:".length).split("|");
+      setSessionModel({ path: path ?? "", turned: false });
+      if (view === "side" || view === "rear" || view === "front") setDevView(view);
+    }
     if (name === "xray-scan") setTimeout(() => void startScan(), 600);
     if (name === "xray-check") setTimeout(startCheck, 1200);
     if (name === "xray-live") setTimeout(() => !liveOn && toggleLive(), 600);
   });
 
   // --- Text for the side panel -----------------------------------------------------------------------
-  const title = connected ? identity?.title || t("caruspex::DashboardPage", "Verbundenes Fahrzeug") : tr("Beispielauto");
+  const title = shown
+    ? [shown.brand, shown.model, shown.generation].filter(Boolean).join(" ")
+    : connected
+      ? identity?.title || t("caruspex::DashboardPage", "Verbundenes Fahrzeug")
+      : tr("Beispielauto");
   const facts = anatomy
     ? [anatomy.engine !== 0 ? anatomy.engineName : "", anatomy.drivenName].filter(Boolean).join(" · ")
     : "";
+  // Values Wikidata lacks for a measured car are estimates: marked with ≈.
+  const metres = (mm: number, bit: number) =>
+    `${anatomy && anatomy.dimensionSource === "wikidata" && !(anatomy.measuredFields & bit) ? "≈" : ""}${localeNumber(mm / 1000, 2)}`;
   const dims = anatomy
     ? tr(
         "%1 m lang, %2 m breit, %3 m hoch, Radstand %4 m",
-        localeNumber(anatomy.lengthMm / 1000, 2),
-        localeNumber(anatomy.widthMm / 1000, 2),
-        localeNumber(anatomy.heightMm / 1000, 2),
-        localeNumber(anatomy.wheelbaseMm / 1000, 2),
+        metres(anatomy.lengthMm, 1),
+        metres(anatomy.widthMm, 2),
+        metres(anatomy.heightMm, 4),
+        metres(anatomy.wheelbaseMm, 8),
       )
     : "";
+  const source =
+    modelState?.state === "shown"
+      ? tr("Eigenes Modell")
+      : anatomy?.dimensionSource === "wikidata"
+        ? tr("Maße aus Wikidata, Form nachempfunden")
+        : tr("Typische Maße für Aufbau und Baujahr");
+  const variantOptions: Option<number>[] = variants.map((b) => ({ value: b, label: anatomy?.bodyNames[b] ?? String(b) }));
   const powertrainOptions: Option<number>[] = (anatomy?.powertrainChoices ?? []).map((c) => ({ value: c.flag, label: c.name }));
   const busesShown = useMemo(() => {
     const set = new Set<BusKind>();
@@ -701,8 +848,21 @@ export default function XrayPage() {
               <>
                 <div className="subtle">{[generation?.bodyName, facts].filter(Boolean).join(" · ")}</div>
                 <div className="xray-reason">{anatomy.reason}</div>
-                <div className="hint">{dims}</div>
+                <div className="xray-source" data-source={modelState?.state === "shown" ? "model" : anatomy.dimensionSource}>
+                  <Icon name={modelState?.state === "shown" ? "cube" : anatomy.dimensionSource === "wikidata" ? "check-circle" : "info"} size={14} />
+                  <span>{source}</span>
+                </div>
+                <div className="hint">
+                  {dims}
+                  {anatomy.wikidataId ? ` · Wikidata ${anatomy.wikidataId}` : ""}
+                </div>
                 <div className="hint">{anatomy.dimensionsText}</div>
+                {variantOptions.length > 1 ? (
+                  <label className="xray-select">
+                    <span className="hint">{tr("Karosserie")}</span>
+                    <Select value={drawn} options={variantOptions} onChange={(v) => setVariant(Number(v) as BodyType)} />
+                  </label>
+                ) : null}
                 {powertrainOptions.length > 1 ? (
                   <label className="xray-select">
                     <span className="hint">{tr("Antrieb")}</span>
@@ -712,6 +872,34 @@ export default function XrayPage() {
               </>
             ) : null}
             {!connected ? <div className="hint">{tr("Verbinde dich mit deinem Auto oder dem Demo-Auto, dann zeigt das Modell seine Form, seine Steuergeräte und seine Fehler.")}</div> : null}
+            {mode === "3d" ? (
+              <div className="xray-model">
+                <div className="xray-model-buttons">
+                  <Button small icon="cube" onClick={() => void pickModel()}>
+                    {tr("Eigenes 3D-Modell laden")}
+                  </Button>
+                  {ownModel ? (
+                    <>
+                      <Button small icon="refresh" onClick={() => keepModel({ ...ownModel, turned: !ownModel.turned })}>
+                        {tr("Modell umdrehen")}
+                      </Button>
+                      <Button small icon="x" onClick={() => keepModel(null)}>
+                        {tr("Eigenes Modell entfernen")}
+                      </Button>
+                    </>
+                  ) : null}
+                </div>
+                {ownModel ? (
+                  <div className="hint">
+                    {modelState?.state === "loading" ? tr("Das 3D-Modell wird geladen ...") : fileName(ownModel.path)}
+                    {modelState?.state === "shown" && !garageCar ? ` · ${tr("Nur für diese Sitzung: das Auto ist nicht in der Garage.")}` : ""}
+                  </div>
+                ) : (
+                  <div className="hint">{tr("Ein glTF- oder GLB-Modell, das dir gehört, ersetzt die erzeugte Hülle; Antrieb, Steuergeräte und Leitungen bleiben.")}</div>
+                )}
+                {modelState?.state === "error" ? <div className="hint xray-model-error">{tr("Das Modell ließ sich nicht laden: %1", modelState.error ?? "")}</div> : null}
+              </div>
+            ) : null}
           </Card>
 
           <Card className="xray-ecus" title={t("caruspex::MainWindow", "Alle Steuergeräte")} icon="cpu">

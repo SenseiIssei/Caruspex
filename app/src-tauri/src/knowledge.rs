@@ -434,14 +434,36 @@ pub fn vehicle_anatomy(
             (dims, source, drivetrain, vec![variant], variant)
         }
     };
+    let (gen_brand, gen_model, gen_code, item, mass) = match generation {
+        Some(g) => (
+            g.brand,
+            g.model,
+            g.generation,
+            anatomy::wikidata_item(g),
+            anatomy::wikidata_mass(g),
+        ),
+        None => (brand, model, "", "", 0),
+    };
     json!({
+        "brand": gen_brand,
+        "model": gen_model,
+        "generation": gen_code,
+        "year": if year > 0 { year } else { generation.map_or(0, |g| g.year_from) },
+        "dimensionSource": match source {
+            anatomy::DimensionSource::Wikidata => "wikidata",
+            anatomy::DimensionSource::Typical => "typical",
+        },
+        "measuredFields": dims.measured,
+        "wikidataId": item,
+        "massKg": mass,
+        "bodyNames": BodyType::ALL.iter().map(|&b| catalog::body_name(b)).collect::<Vec<_>>(),
         "lengthMm": dims.length,
         "widthMm": dims.width,
         "heightMm": dims.height,
         "wheelbaseMm": dims.wheelbase,
         "trackMm": dims.track,
         "wheelMm": dims.wheel,
-        "measured": source == anatomy::DimensionSource::Catalog,
+        "measured": source == anatomy::DimensionSource::Wikidata,
         "dimensionsText": anatomy::dimension_source_text(source),
         "powertrain": variant,
         "powertrainChoices": variants
@@ -542,6 +564,15 @@ mod tests {
         let golf = vehicle_anatomy(first["id"].as_i64().unwrap(), 2001, 0, "", "", 0);
         assert_eq!(golf["engine"], 1);
         assert!(golf["wheelbaseMm"].as_u64().unwrap() < golf["lengthMm"].as_u64().unwrap());
+        // The Golf IV's dimensions come from Wikidata (Q1419308).
+        assert_eq!(golf["dimensionSource"], "wikidata");
+        assert_eq!(golf["lengthMm"], 4148);
+        assert_eq!(golf["wikidataId"], "Q1419308");
+        assert_eq!(golf["generation"], "IV");
+        assert_eq!(
+            golf["bodyNames"].as_array().unwrap().len(),
+            BodyType::ALL.len()
+        );
         // The demo car: an estate with a petrol engine, no generation.
         let demo = vehicle_anatomy(-1, 2021, 2, "", "", 1);
         assert_eq!(demo["powertrain"], 1);

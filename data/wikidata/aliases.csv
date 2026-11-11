@@ -1,0 +1,25 @@
+# Wikidata items for catalog generations whose names the matching of
+# tools/gen_dimensions.py does not find, or finds wrong. item: one Q-id, or
+# several separated by "|" (each value comes from the first item that has
+# it), "-" for no item at all, or empty to keep the automatic match. skip:
+# values to leave out, separated by "|" (length width height wheelbase mass).
+# Every line says why in note.
+brand,model,generation,item,skip,note
+BMW,4er,F32,Q14404794|Q499497,,"F32 has only the wheelbase, the series item BMW 4 Series the length of the coupe"
+BMW,4er Gran Coupé,F36,Q499497|Q14404794,,"No item of its own; the Gran Coupe shares length (4638 mm) and wheelbase (2810 mm) with the F32 coupe"
+Chevrolet,Bolt EV,I,Q19580435,,"Q105533198 is the larger Bolt EUV"
+Chevrolet,Captiva,C100,-,,"Q55393226 is the Baojun 530 sold as Captiva from 2019, not the C100 of 2006"
+Fiat,500,I,Q927839|Q20411472,,"Q467767 is the Nuova 500 of 1957; Q927839 is the 500 of 2007 (width 1627 mm, wheelbase 2300 mm), its length from the 500C of the same generation (Q20411472, whose width counts the mirrors)"
+Fiat,600,II,-,,"Q1125433 is the Fiat 600 of 1955"
+Hyundai,Kona,OS,Q30322680,,"The item of the first Kona (2017) has no generation in its name"
+Mini,Mini,R50,Q11781425,,"Mini Hatch from 2001"
+Peugeot,208,I,Q1164784,,"The item has no generation in its name; 3960 mm is the length of the first 208"
+Tesla,Model 3,I,,width,"Wikidata's 2088 mm include the mirrors"
+Tesla,Model Y,I,,width,"Wikidata's 2129 mm include the mirrors"
+Polestar,Polestar 3,I,,width,"The width includes the mirrors"
+Polestar,Polestar 4,I,,width,"The width includes the mirrors"
+Škoda,Enyaq,I,,width,"The width includes the mirrors"
+BMW,XM,G09,,width,"The width includes the mirrors"
+Lotus,Eletre,I,,width,"The width includes the mirrors"
+McLaren,720S,I,,width,"The width includes the mirrors"
+Volkswagen,ID. Buzz,I,-,,"Q3222834 is the Transporter T4, found through the nickname Bulli"

@@ -1,0 +1,688 @@
+{
+"head": {
+"vars": [
+"item",
+"name",
+"kind"
+]
+},
+"results": {
+"bindings": [
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q125635795"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Great Wall Shanhai Cannon",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Golf 6",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Golf VI",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "VW Golf 6",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "VW Golf VI",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1417956"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Volkswagen Golf Mk6",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Volvo P120",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Volvo P130",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1543111"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Volvo Amazon",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1626573"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Honda Civic (ninth generation)",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q1626573"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Honda Civic 9. Generation",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q16879264"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Toyota Levin",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q16879264"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Toyota Corolla (E170/E180)",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q366912"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Ford Merkur",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q366912"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Ford Sierra",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q366912"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Ford Sierra",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q390055"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Chrysler 300",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q390055"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Chrysler 300",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Nuova 500",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Fiat 500",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q467767"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Fiat 500",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Dodge Atos",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Hyundai Santro",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Kia Visto",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Hyundai Atos",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q482491"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Hyundai Atos",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Golf 7",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Golf VII",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "VW Golf 7",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Volkswagen Golf 7",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "Volkswagen Golf VII",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "VW Golf VII",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q62362"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Volkswagen Golf Mk7",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "8Z",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "A2",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Audi A2",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q741656"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Audi A2",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q7705507"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "TM3",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q7705507"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Tesla Model 3",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q7705507"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Tesla Model 3",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796490"
+},
+"kind": {
+"type": "literal",
+"value": "alias"
+},
+"name": {
+"type": "literal",
+"value": "BMW F21",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796490"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "BMW 1 Series",
+"xml:lang": "en"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q796490"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "BMW F20",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q927839"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Fiat 500",
+"xml:lang": "de"
+}
+},
+{
+"item": {
+"type": "uri",
+"value": "http://www.wikidata.org/entity/Q927839"
+},
+"kind": {
+"type": "literal",
+"value": "label"
+},
+"name": {
+"type": "literal",
+"value": "Fiat 500",
+"xml:lang": "en"
+}
+}
+]
+}
+}

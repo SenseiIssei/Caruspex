@@ -1,0 +1,16 @@
+# A small catalog for tools/gen_dimensions.py --fixtures, same columns as data/vehicles/.
+brand,model,generation,from,to,body,power,vin,connector,location,aliases,note_de,note_en,bus,protocols
+Volkswagen,Golf,VI,2008,2013,hatch,PD,,,,Golf 6,,,,
+Volkswagen,Golf,VII,2012,2020,hatch,PD,,,,Golf 7,,,,
+Volkswagen,Golf,VIII,2019,0,hatch,PD,,,,Golf 8,,,,
+Audi,A2,8Z,2000,2005,hatch,PD,,,,3L,,,,
+BMW,1er,F20,2011,2019,hatch,PD,,,,1 Series|F21,,,,
+BMW,1er,F40,2019,2024,hatch,PD,,,,1 Series,,,,
+Fiat,500,I,2007,2024,hatch,P,,,,500C,,,,
+Tesla,Model 3,I,2017,0,sedan,E,,,,,,,,
+Toyota,Corolla,E170,2013,2019,sedan,P,,,,,,,,
+Honda,Civic,IX,2011,2015,hatch,P,,,,,,,,
+Hyundai,Atos,MX,1997,2014,hatch,P,,,,,,,,
+Ford,Sierra,I,1982,1993,hatch,PD,,,,,,,,
+Chrysler,300,II,2011,0,sedan,P,,,,,,,,
+Volvo,Amazon,I,1956,1970,sedan,P,,,,,,,,

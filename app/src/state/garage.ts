@@ -154,6 +154,14 @@ export function setNote(vin: string, note: string): void {
   update(vin, (car) => ({ ...car, note }));
 }
 
+// The owner's 3D model for the X-ray view; an empty path removes it.
+export function setXrayModel(vin: string, path: string, turned: boolean): void {
+  update(vin, (car) => {
+    const { xrayModel: _model, xrayModelTurned: _turned, ...rest } = car;
+    return path ? { ...rest, xrayModel: path, xrayModelTurned: turned } : rest;
+  });
+}
+
 export function removeCar(vin: string): void {
   commit(garageStore.get().cars.filter((c) => c.vin !== vin));
 }

@@ -3,7 +3,7 @@
 import { BodyType, DrivenAxles, EngineLayout, Powertrain, TractionBattery, type VehicleAnatomy } from "../../types";
 import { L } from "../core";
 import type { PartialHandlers } from "../runtime";
-import { catalogGeneration, powertrainText } from "./knowledge";
+import { bodyName, catalogGeneration, powertrainText, type MeasuredRecord } from "./knowledge";
 
 // Length, width, height, wheelbase, track from about 1995 to 2009.
 const BASE: Record<BodyType, [number, number, number, number, number]> = {
@@ -35,6 +35,47 @@ function typicalDimensions(body: BodyType, year: number) {
     trackMm: scale(track, wide),
     wheelMm: wheel,
   };
+}
+
+type Dims = ReturnType<typeof typicalDimensions>;
+
+// anatomy::merge_measured: the real values put in, a missing one following
+// the real ones in proportion. Returns the dimensions and the bits of the
+// real values.
+function mergeMeasured(typical: Dims, m: MeasuredRecord): [Dims, number] {
+  const [len, width, height, wb, track] = m;
+  const ratio = (real: number, typ: number, value: number) => (real === 0 || typ === 0 ? value : Math.floor((value * real + Math.floor(typ / 2)) / typ));
+  const d = { ...typical };
+  let bits = 0;
+  const [length, wheelbase] =
+    len === 0 && wb === 0
+      ? [typical.lengthMm, typical.wheelbaseMm]
+      : len === 0
+        ? [ratio(wb, typical.wheelbaseMm, typical.lengthMm), wb]
+        : wb === 0
+          ? [len, ratio(len, typical.lengthMm, typical.wheelbaseMm)]
+          : [len, wb];
+  d.lengthMm = length;
+  d.wheelbaseMm = Math.min(wheelbase, Math.floor((length * 4) / 5));
+  if (len > 0) bits |= 1;
+  if (wb > 0 && d.wheelbaseMm === wb) bits |= 8;
+  if (width > 0) {
+    d.widthMm = width;
+    bits |= 2;
+  }
+  if (track > 0) {
+    d.trackMm = track;
+    bits |= 16;
+  } else {
+    d.trackMm = ratio(d.widthMm, typical.widthMm, typical.trackMm);
+  }
+  d.trackMm = Math.min(d.trackMm, Math.max(0, d.widthMm - 150));
+  if (height > 0) {
+    d.heightMm = height;
+    bits |= 4;
+  }
+  d.wheelMm = Math.min(d.wheelMm, Math.floor(d.heightMm / 2));
+  return [d, bits];
 }
 
 const ORDER = [Powertrain.Petrol, Powertrain.Diesel, Powertrain.Gas, Powertrain.Hybrid, Powertrain.PlugIn, Powertrain.Electric];
@@ -209,17 +250,43 @@ function reason(engine: EngineLayout, battery: TractionBattery): string {
 
 // The anatomy of a catalog entry (powertrains: all its PT_* flags; variant:
 // the one to show, 0 for the default). Also used by the layout tests.
-export function anatomyOf(body: BodyType, brand: string, model: string, year: number, powertrains: number, variant: number): VehicleAnatomy {
+export function anatomyOf(
+  body: BodyType,
+  brand: string,
+  model: string,
+  year: number,
+  powertrains: number,
+  variant: number,
+  generation = "",
+  measured: MeasuredRecord | null = null,
+): VehicleAnatomy {
   const variants = ORDER.filter((f) => powertrains & f);
   const chosen = variant && powertrains & variant ? variant : defaultPowertrain(powertrains);
   const t = drivetrain(brand, model, body, year, chosen);
+  const typical = typicalDimensions(body, year);
+  const [dims, bits] = measured ? mergeMeasured(typical, measured) : [typical, 0];
+  const wikidata = !!measured && (measured[0] > 0 || measured[3] > 0);
   return {
-    ...typicalDimensions(body, year),
-    measured: false,
-    dimensionsText: L(
-      "Typische Maße für diesen Aufbau und dieses Baujahr, nicht die genauen des Modells.",
-      "Typical dimensions for this body type and year, not the exact ones of the model.",
-    ),
+    brand,
+    model,
+    generation,
+    year,
+    ...dims,
+    measured: wikidata,
+    dimensionSource: wikidata ? "wikidata" : "typical",
+    measuredFields: bits,
+    wikidataId: measured ? (measured[6].split("|")[0] ?? "") : "",
+    massKg: measured ? measured[5] : 0,
+    bodyNames: Array.from({ length: 11 }, (_, i) => bodyName(i)),
+    dimensionsText: wikidata
+      ? L(
+          "Maße dieses Modells aus Wikidata, die Form ist ihm nachempfunden; mit ≈ markierte Werte fehlen dort und sind geschätzt.",
+          "Dimensions of this model from Wikidata, the shape is modelled after it; values marked ≈ are missing there and estimated.",
+        )
+      : L(
+          "Typische Maße für diesen Aufbau und dieses Baujahr, nicht die genauen des Modells.",
+          "Typical dimensions for this body type and year, not the exact ones of the model.",
+        ),
     powertrain: chosen,
     powertrainChoices: (variants.length > 0 ? variants : [chosen]).map((flag) => ({ flag, name: powertrainText(flag) })),
     ...t,
@@ -232,7 +299,7 @@ export function anatomyOf(body: BodyType, brand: string, model: string, year: nu
 export const xrayHandlers: PartialHandlers = {
   vehicle_anatomy: async ({ generationId, year, body, brand, model, powertrain }): Promise<VehicleAnatomy> => {
     const g = generationId >= 0 ? await catalogGeneration(generationId) : null;
-    if (g) return anatomyOf(g.body as BodyType, g.brand, g.model, year > 0 ? year : g.yearFrom, g.powertrains, powertrain);
+    if (g) return anatomyOf(g.body as BodyType, g.brand, g.model, year > 0 ? year : g.yearFrom, g.powertrains, powertrain, g.generation, g.measured);
     const variant = defaultPowertrain(powertrain);
     return anatomyOf(body as BodyType, brand, model, year, variant, variant);
   },

@@ -1,0 +1,1047 @@
+# Outer dimensions per catalog generation from Wikidata (CC0), by tools/gen_dimensions.py --match.
+# Millimetres and kilograms; 0 where Wikidata has no value. Do not edit by hand:
+# set or block an item in aliases.csv and run --match again.
+brand,model,generation,length,width,height,wheelbase,track,mass,item,label
+Acura,ILX,I,4549,1794,1413,2670,,,Q2113800,Acura ILX
+Acura,RSX,I,4374,1725,,2570,,1266,Q2140380,Honda Integra DC5
+Acura,ZDX,I,4887,1994,1595,2748,,2510,Q344833,Acura ZDX (2009)
+Aito,M7,I,5020,1945,1775,2820,,,Q111660689,AITO M7
+Aiways,U5,I,4680,1865,1700,,,,Q65154218,Aiways U5
+Aiways,U6,I,4630,1860,1630,2800,,,Q107211543,Aiways U6
+Alfa Romeo,145,I,4061,1712,1425,2540,,,Q1361433,Alfa Romeo 145
+Alfa Romeo,147,I,4223,1729,1442,2546,,,Q174366,Alfa Romeo 147
+Alfa Romeo,155,I,4445,1700,1400,2540,,,Q772561,Alfa Romeo 155
+Alfa Romeo,156,I,4430,1747,,2595,,,Q926738,Alfa Romeo 156
+Alfa Romeo,159,I,4661,1830,1417,2700,,,Q1610,Alfa Romeo 159
+Alfa Romeo,164,I,4557,1760,1390,2660,,1200,Q1124136,Alfa Romeo 164
+Alfa Romeo,166,I,4720,1800,1416,2700,,,Q1130671,Alfa Romeo 166
+Alfa Romeo,33,I,4010,1615,,,,,Q1362760,Alfa Romeo 33
+Alfa Romeo,4C,I,3989,1864,1183,2380,,1020,Q2469805,Alfa Romeo 4C
+Alfa Romeo,75,I,4330,1630,1400,2510,,,Q1358831,Alfa Romeo 75
+Alfa Romeo,Alfasud,I,4020,1620,1295,2455,,,Q249483,Alfa Romeo Sprint
+Alfa Romeo,Alfetta,I,,,,2510,,,Q747595,Alfa Romeo Alfetta
+Alfa Romeo,Brera,I,4410,1830,1370,2525,,,Q1133424,Alfa Romeo Brera
+Alfa Romeo,GT,I,4480,1760,1360,2596,,,Q1130996,Alfa Romeo GT
+Alfa Romeo,GTV,916,4250,1635,,,,,Q1477201,Alfa Romeo Spider
+Alfa Romeo,Giulia,952,4639,1873,1426,2820,,,Q2575932,Alfa Romeo Giulia
+Alfa Romeo,Giulietta,116,4210,1650,1400,2510,,,Q719600,Alfa Romeo Giulietta
+Alfa Romeo,Junior,I,4330,1630,1400,2510,,,Q1358831,Alfa Romeo 75
+Alfa Romeo,MiTo,I,4063,1720,1446,2511,,,Q1137305,Alfa Romeo MiTo
+Alfa Romeo,Stelvio,949,4686,1903,1648,2818,,1660,Q4033699,Alfa Romeo Stelvio
+Alpine,A110,II,4180,1798,1252,2420,,1103,Q24936559,Alpine A110 (2017)
+Alpine,A610,I,4420,1770,1190,2340,,1420,Q1477286,Renault Alpine GTA/A610
+Aston Martin,DB11,I,4739,1940,1279,2805,,,Q23005955,Aston Martin DB11
+Aston Martin,DB12,I,4725,1980,1295,2805,,,Q118470977,Aston Martin DB12
+Aston Martin,DB7,I,,1830,1270,,,1754,Q507385,Aston Martin DB7
+Aston Martin,DB9,I,4710,1875,1320,,,,Q749935,Aston Martin DB9
+Aston Martin,DBX,I,5039,1998,1680,3060,,2245,Q60964375,Aston Martin DBX
+Aston Martin,Rapide,I,5019,1928,1360,2989,,,Q750017,Aston Martin Rapide
+Aston Martin,V8,I,4585,1830,1330,2610,,1820,Q510849,Aston Martin V8
+Aston Martin,V8 Vantage,I,4465,1942,1273,2704,,1530,Q43452497,Aston Martin Vantage
+Aston Martin,Vanquish,II,4730,1912,1295,2740,,,Q16529469,Aston Martin Vanquish II
+Aston Martin,Vantage,II,4585,1830,1325,2610,,1706,Q750050,Aston Martin Vantage
+Aston Martin,Virage,I,4735,1855,1320,2610,,,Q750056,Aston Martin Virage
+Audi,100,C3,4792,1814,1422,2685,,,Q758716,Audi 100 C3
+Audi,100,C4,4792,1778,,,,,Q758717,Audi 100 C4
+Audi,80,B2,4383,1682,1365,2540,,,Q758725,Audi 80 B2
+Audi,80,B3,,1695,1395,,,,Q758726,Audi 80 B3
+Audi,80,B4,,1695,,,,,Q758727,Audi 80 B4
+Audi,A1,GB,4029,1740,1409,2563,,,Q56298654,Audi A1 GB
+Audi,A2,8Z,3826,1673,1553,2405,,,Q741656,Audi A2
+Audi,A3,8L,4152,1735,,,,,Q473441,Audi A3 8L
+Audi,A3,8P,,,,2578,,,Q758740,Audi A3 8P
+Audi,A3,8Y,4343,1820,1430,2636,,1280,Q86849539,Audi A3 8Y
+Audi,A4,B9,,,,2820,,,Q20760348,Audi A4 B9
+Audi,A6,C5,4796,1819,1477,2760,,,Q758749,Audi A6 C5
+Audi,A6,C6,,1855,,,,,Q758750,Audi A6 C6
+Audi,A6,C7,,1874,,2912,,,Q758751,Audi A6 C7
+Audi,A6,C8,4939,1886,,,,,Q50807465,Audi A6 C8
+Audi,A6 e-tron,C9,4960,1960,1440,,,,Q106793330,Audi A6 e-tron
+Audi,A8,D2,,1880,,,,,Q12062533,Audi A8 D2
+Audi,A8,D3,,1894,,,,,Q57004937,Audi A8 D3
+Audi,A8,D4,,1949,,,,,Q12062534,Audi A8 D4
+Audi,A8,D5,,1945,,,,,Q39079927,Audi A8 D5
+Audi,Cabriolet,B4,4370,1720,1380,2560,,,Q209235,Audi Cabriolet
+Audi,Coupé,B3,4366,1716,1375,2555,,,Q156798,Audi Coupé B3
+Audi,Q2,GA,4191,1794,1508,,,1205,Q22927297,Audi Q2
+Audi,Q3,8U,,,,2603,,,Q31836045,Audi Q3 8U
+Audi,Q3,F3,4484,1856,1616,,,,Q56301637,Audi Q3 F3
+Audi,Q4 e-tron,F4,4588,1865,1614,,,,Q62107422,Audi Q4 e-tron
+Audi,Q5,FY,,1893,,,,,Q27670168,Audi Q5 FY
+Audi,Q6 e-tron,GF,4771,,,,,,Q106620903,Audi Q6 e-tron
+Audi,Q7,4L,,1983,1737,3002,,,Q22987799,Audi Q7 4L
+Audi,Q7,4M,,1968,1741,,,,Q25381838,Audi Q7 4M
+Audi,Q8,4M,4986,1995,1705,2995,,2145,Q16687488,Audi Q8
+Audi,Quattro,Ur-quattro,4404,1723,1344,2525,,1335,Q679103,Audi Quattro
+Audi,R8,42,,,,2650,,,Q23737533,Audi R8 42
+Audi,R8,4S,4426,1940,,,,,Q25382191,Audi R8 4S
+Audi,TT,8J,,1842,,2468,,,Q28225736,Audi TT 8J
+Audi,TT,8N,4041,1764,1345,2429,,,Q28225732,Audi TT 8N
+Audi,TT,FV,,1832,,2505,,,Q28225733,Audi TT FV
+Audi,V8,D1,,1810,1420,,,,Q263434,Audi V8
+Audi,e-tron,GE,4901,1935,1629,2928,,2490,Q56669231,Audi Q8 e-tron
+Audi,e-tron GT,F8,4960,1960,1380,,,2200,Q60849683,Audi e-tron GT
+Austin,Maestro,I,4060,1690,1420,2580,,915,Q781121,Austin Maestro
+Austin,Metro,I,3400,1540,1330,2240,,,Q120667744,Austin Metro Mk1
+Austin,Montego,I,4470,1711,1420,2570,,,Q781129,Austin Montego
+Avatr,07,I,4825,1990,1620,2940,,,Q126855590,Avatr 07
+Avatr,11,I,4880,1970,1601,2975,,,Q109616782,Avatr 11
+BMW,1er,E87,,,,2660,,,Q796469,BMW E87
+BMW,1er,F20,,1765,,2690,,,Q796490,BMW 1 Series
+BMW,1er,F40,4319,1799,1434,2670,,1320,Q64085785,BMW 1 Series (F40)
+BMW,2er Coupé,F22,4454,1774,1403,,,,Q20748311,BMW 2 Series (F22)
+BMW,2er Gran Tourer,F46,4556,1800,1641,2780,,,Q19274413,BMW F46
+BMW,3er,E21,4355,1610,1380,2565,,,Q730915,BMW 3 Series
+BMW,3er,E36,,,,2300,,,Q608824,BMW 3 Series
+BMW,3er,E90,4520,1782,1395,2760,,1425,Q1146966,BMW 3 Series (E90)
+BMW,3er,G20,4709,1827,1435,,,,Q56856213,BMW 3 Series (G20)
+BMW,4er,F32,4641,,,2810,,,Q14404794|Q499497,BMW 4 Series
+BMW,4er Gran Coupé,F36,4641,,,2810,,,Q499497|Q14404794,BMW 4 Series
+BMW,5er,E28,4620,1700,1415,2625,,,Q796446,BMW 5 Series (E28)
+BMW,5er,E34,4720,1751,,2761,,,Q1328889,BMW 5 Series
+BMW,5er,E39,,1800,,2830,,,Q1229005,BMW 5 Series (E39)
+BMW,5er,E60,,1846,1491,,,,Q796464,BMW 5 Series
+BMW,5er,F10,,1860,,,,,Q796486,BMW 5 Series
+BMW,6er,E24,,,,2625,,,Q636732,BMW E24
+BMW,6er,E63,4820,1855,1374,2780,,,Q796462,BMW 6 Series (E63)
+BMW,6er,F12,,1894,,,,,Q796478,BMW 6 Series (F12/F13)
+BMW,6er Gran Turismo,G32,5091,1902,1538,3070,,,Q31270264,BMW 6 Series Gran Turismo
+BMW,7er,E23,4860,1800,1430,2795,,,Q796448,BMW E23
+BMW,7er,E32,,1845,,2833,,,Q796453,BMW E32
+BMW,7er,E38,,1862,,,,,Q1141639,BMW E38
+BMW,7er,E65,,1902,1491,,,,Q780998,BMW E65
+BMW,7er,F01,,1902,1479,,,,Q796488,BMW 7 F01 F02
+BMW,7er,G11,,1902,,,,,Q20084075,BMW 7 Series (G11)
+BMW,7er,G70,5391,1950,1544,,,,Q111666207,BMW 7 Series (G70)
+BMW,8er,E31,4780,1855,1340,2684,,,Q11959928,BMW 8 Series (E31)
+BMW,8er,G15,,1902,,2822,,,Q50122041,BMW 8 Series (G15)
+BMW,X1,E84,4454,1798,1545,2760,,,Q20164983,BMW E84
+BMW,X1,F48,4439,1821,1612,2670,,,Q20086818,BMW F48
+BMW,X3,E83,4565,1853,1674,2795,,,Q2647299,BMW X3 (E83)
+BMW,X3,F25,4648,1881,1661,2810,,,Q1860725,BMW X3 (F25)
+BMW,X3,G01,,,1676,2864,,,Q30875579,BMW G01
+BMW,X4,F26,4671,1881,1624,,,,Q50118567,BMW X4 (F26)
+BMW,X4,G02,,,1621,,,,Q50118131,BMW X4 (G02)
+BMW,X5,E53,4667,,,2820,,,Q796458,BMW X5
+BMW,X5,E70,4854,1933,1739,2933,,,Q796465,BMW X5
+BMW,X5,F15,,,,2933,,,Q13411061,BMW F15
+BMW,X5,G05,4922,2004,1745,,,,Q54867748,BMW G05
+BMW,X6,E71,,1983,,2933,,,Q18169801,BMW X6 (E71)
+BMW,X6,F16,4909,1989,,2933,,,Q17987957,BMW X6 (F16)
+BMW,X7,G07,5151,2000,1805,3105,,,Q12062564,BMW X7
+BMW,XM,G09,5110,,1755,3105,,2749,Q109967114,BMW XM
+BMW,Z1,E30/Z,3921,1690,1277,2400,,1250,Q796774,BMW Z1
+BMW,Z3,E36/7,4050,,,2459,,,Q720552,BMW Z3
+BMW,Z4,E85,4090,1781,,2495,,,Q1754362,BMW Z4 E85
+BMW,Z4,E89,4239,1790,1291,2496,,,Q930466,BMW Z4 (E89)
+BMW,Z4,G29,4321,1861,1304,2470,,,Q39076484,BMW Z4 (G29)
+BMW,Z8,E52,4400,1830,1310,2505,,1660,Q796803,BMW Z8
+BMW,i3,I01,3999,1775,1578,2570,,,Q796785,BMW i3 (2013)
+BMW,i4,G26,4783,1852,1448,,,,Q50886612,BMW i4
+BMW,i8,I12,4689,1942,1298,,,1530,Q796799,BMW i8
+BMW,iX,I20,4953,1967,1695,,,,Q86663388,BMW iX
+BMW,iX3,NA5,4782,1895,1635,2897,,2360,Q136100817,BMW iX3
+BYD,Atto 2,I,4310,1830,1675,2620,,1430,Q124415207,BYD Atto 2
+BYD,Atto 3,I,4455,1875,1615,2720,,,Q108894190,BYD Atto 3
+BYD,Dolphin,I,4290,1770,1570,2700,,,Q107400144,BYD Dolphin
+BYD,Han,I,4960,1910,1495,2920,,,Q98886444,BYD Han
+BYD,Seal,I,4800,1875,1460,2920,,,Q114414285,BYD Seal
+BYD,Seal U,I,4790,,,2750,,,Q122639994,BYD Seal U
+BYD,Tang,II,4815,1855,1720,,,,Q21233121,BYD Tang
+Bentley,Arnage,I,,1932,1515,,,,Q818285,Bentley Arnage
+Bentley,Bentayga,I,5141,1998,1742,2995,,,Q19606707,Bentley Bentayga
+Bentley,Flying Spur,III,5299,1924,,3066,,,Q6429876,Bentley Flying Spur
+Bugatti,Chiron,I,4544,2038,1212,2711,,1995,Q19947779,Bugatti Chiron
+Bugatti,EB110,I,4400,1940,1114,2550,,1620,Q731408,Bugatti EB110
+Bugatti,Veyron,I,4462,1998,1204,2710,,1888,Q172610,Bugatti Veyron
+Buick,Century,VI,5169,,,,,,Q651942,Buick Century
+Buick,Enclave,I,5113,2007,1842,,,,Q55407772,Buick Enclave GMT967
+Buick,Enclave,II,5189,2002,1775,3071,,1977,Q55356792,Buick Enclave C1YB
+Buick,Encore,I,4278,1781,1661,2555,,,Q26897869,Buick Encore
+Buick,Encore GX,I,4463,1813,1642,,,,Q65046637,Buick Encore GX
+Buick,Envision,I,4667,1839,,2750,,,Q17461003,Buick Envision
+Buick,Lucerne,I,5161,1875,1473,2936,,,Q1002813,Buick Lucerne
+Buick,Rainier,I,4912,1915,1892,2870,,2004,Q1002843,Buick Rainier
+Buick,Rendezvous,I,4737,1869,1750,2845,,,Q1002847,Buick Rendezvous
+Buick,Verano,I,4671,,,,,,Q1749138,Buick Verano
+Cadillac,ATS,I,4650,,,,,,Q979003,Cadillac ATS
+Cadillac,BLS,I,4680,1752,,2675,,,Q1025157,Cadillac BLS
+Cadillac,CT5,I,4924,1883,1452,2947,,1660,Q62381436,Cadillac CT5
+Cadillac,CT6,I,5184,1880,1472,3109,,,Q20646992,Cadillac CT6
+Cadillac,Catera,I,4882,1786,,2731,,1768,Q1025161,Cadillac Catera
+Cadillac,DTS,I,5273,1900,1463,2936,,1818,Q221754,Cadillac DTS
+Cadillac,Eldorado,XII,5182,1814,1377,2895,,,Q27903028,Cadillac Eldorado
+Cadillac,Lyriq,I,4996,1977,1623,3094,,2545,Q96417982,Cadillac Lyriq
+Cadillac,Seville,V,5019,1844,1478,2957,,,Q1025217,Cadillac STS-V
+Cadillac,XLR,I,4513,1837,1279,2686,,1740,Q545311,Cadillac XLR
+Cadillac,XT4,I,4600,1882,1628,2779,,1680,Q51284872,Cadillac XT4
+Cadillac,XT5,I,4815,1903,1675,2857,,,Q21055461,Cadillac XT5
+Cadillac,XT6,I,5050,1930,1750,,,2010,Q60702330,Cadillac XT6
+Cadillac,XTS,I,5131,1852,1501,2837,,,Q1025269,Cadillac XTS
+Chery,Arrizo 5,I,4572,1825,1482,2670,,,Q31837879,Chery Arrizo 5
+Chery,Tiggo 4,I,4338,1830,1645,2630,,,Q43539709,Chery Tiggo 5x
+Chery,Tiggo 7,I,4505,1837,1670,2670,,1440,Q44954423,Chery Tiggo 7
+Chery,Tiggo 8,I,4688,1860,1695,2800,,,Q134157080,Lepas L8
+Chevrolet,Astro,II,4821,1968,1905,2824,,,Q120647894,Chevrolet Astro (second generation)
+Chevrolet,Beretta,I,4755,1727,1336,2625,,,Q1071042,Chevrolet Beretta
+Chevrolet,Blazer,III,4862,1948,1702,,,,Q55607242,Chevrolet Blazer (2018)
+Chevrolet,Bolt EV,I,4166,1765,1596,2600,,1624,Q19580435,Chevrolet Bolt
+Chevrolet,Camaro,III,,1850,,2565,,,Q3560561,Chevrolet Camaro (third generation)
+Chevrolet,Camaro,IV,4907,1882,,2565,,,Q3560516,Chevrolet Camaro
+Chevrolet,Camaro,V,4840,1920,1377,2852,,,Q2980988,Chevrolet Camaro
+Chevrolet,Camaro,VI,4784,1880,1340,,,,Q21233131,Chevrolet Camaro
+Chevrolet,Celebrity,I,4783,1849,1364,2665,,,Q1071103,Chevrolet Celebrity
+Chevrolet,Chevette,I,,1570,,,,,Q1071100,Chevrolet Chevette
+Chevrolet,Citation,I,4488,1735,1359,2665,,,Q578898,Chevrolet Citation
+Chevrolet,Corvette,C4,4480,,1190,2440,,1530,Q1071134,Chevrolet Corvette (C4)
+Chevrolet,Corvette,C5,4570,1870,1200,2669,,,Q1135711,Chevrolet Corvette C5
+Chevrolet,Corvette,C6,,,1246,2686,,,Q1119538,Chevrolet Corvette C6
+Chevrolet,Corvette,C7,4494,,1239,2710,,1539,Q1135713,Chevrolet Corvette C7
+Chevrolet,Corvette,C8,4630,1933,1234,,,1527,Q60851987,Chevrolet Corvette C8
+Chevrolet,Cruze,J300,,1797,,2685,,,Q57578549,Chevrolet Cruze J300
+Chevrolet,Cruze,J400,4567,1786,,2662,,,Q57580232,Chevrolet Cruze
+Chevrolet,Epica,V250,4805,1810,1450,2700,,,Q495422,Daewoo Tosca
+Chevrolet,Equinox EV,I,4836,1915,1613,2954,,,Q110443261,Chevrolet Equinox EV
+Chevrolet,HHR,I,4475,1755,1603,2629,,,Q39632,Chevrolet HHR
+Chevrolet,Kalos,T200,4310,1670,1495,2480,,,Q488154,Chevrolet Aveo T200
+Chevrolet,Lacetti,J200,4520,1725,1445,2600,,,Q493989,Daewoo Lacetti
+Chevrolet,Matiz,M200,3640,1597,1552,,,,Q14515874,Chevrolet Spark
+Chevrolet,Monte Carlo,VI,5027,1847,1402,2807,,,Q120669053,Chevrolet Monte Carlo (6th Generation)
+Chevrolet,Orlando,J309,4652,1836,1633,2760,,,Q31905,Chevrolet Orlando
+Chevrolet,Rezzo,U100,4350,1755,1580,2600,,,Q371349,Daewoo Tacuma
+Chevrolet,SSR,I,4864,1996,,2946,,2159,Q282151,Chevrolet SSR
+Chevrolet,Sonic,T300,3920,,,,,,Q497226,Chevrolet Aveo
+Chevrolet,Spark,M300,3640,1597,1552,2375,,,Q59823750,Chevrolet Spark M300
+Chevrolet,Spark,M400,,1595,,2385,,,Q59823936,Chevrolet Spark M400
+Chevrolet,Uplander,I,,1829,,,,,Q1071328,Chevrolet Uplander
+Chevrolet,Venture,I,,1829,,,,,Q1071344,Chevrolet Venture
+Chrysler,300M,I,5025,1890,1420,2870,,1660,Q617415,Chrysler 300M
+Chrysler,Concorde,II,5151,,,,,,Q1088654,Chrysler Concorde
+Chrysler,Crossfire,I,4058,1766,,2400,,,Q1088689,Chrysler Crossfire
+Chrysler,PT Cruiser,I,4288,1748,,2616,,1417,Q1046867,Chrysler PT Cruiser
+Citroën,2CV,I,3830,1480,1600,2400,,481,Q326015,Citroën 2CV
+Citroën,AX,I,3490,1560,1350,2285,,,Q1093538,Citroën AX
+Citroën,Ami,I,2410,1390,1520,,,485,Q86733857,Citroën Ami
+Citroën,BX,I,4230,1660,1361,2665,,,Q939640,Citroën BX
+Citroën,Berlingo,II,4380,,,,,,Q18610844,Citroën Berlingo II
+Citroën,C-Crosser,I,4645,1805,,2672,,,Q1093547,Citroën C-Crosser
+Citroën,C1,I,3435,,,,,,Q18589895,Toyota Aygo I
+Citroën,C1,II,3470,,,,,,Q18745484,Citroën C1 II
+Citroën,C2,I,3666,1659,,2315,,,Q728314,Citroën C2
+Citroën,C3,I,3860,,,,,,Q16039942,Citroën C3 I
+Citroën,C3,II,3941,,,,,,Q2974494,Citroën C3 II
+Citroën,C3 Aircross,I,4160,,,,,,Q39076504,Citroën C3 Aircross (2017)
+Citroën,C4,III,4360,1834,1525,2670,,,Q86670161,Citroën C4 (2020)
+Citroën,C4 Cactus,I,4157,1729,1480,2595,,,Q2443038,Citroën C4 Cactus
+Citroën,C5 Aircross,I,4500,1969,1689,2730,,,Q29402168,Citroën C5 Aircross
+Citroën,C5 X,I,4805,1865,1505,2785,,,Q30750112,Citroën C5 X
+Citroën,C6,I,4908,1860,1464,2900,,,Q1093602,Citroën C6
+Citroën,C8,I,4727,,,,,,Q119859,Citroën C8
+Citroën,CX,I,,1760,1360,,,1385,Q1093613,Citroën CX
+Citroën,Evasion,I,4460,,,,,,Q1093635,Citroën Évasion
+Citroën,Saxo,I,3718,,1397,2385,,,Q938850,Citroën Saxo
+Citroën,Visa,I,3689,1511,1410,2426,,735,Q963533,Citroën Visa
+Citroën,XM,I,,1794,1396,2850,,1564,Q658918,Citroën XM
+Citroën,Xantia,I,,1755,,2740,,1339,Q840940,Citroën Xantia
+Citroën,Xsara,I,,1705,1405,2540,,,Q504633,Citroën Xsara
+Citroën,Xsara Picasso,I,4267,1751,1637,2760,,,Q1093728,Citroën Xsara Picasso
+Citroën,ZX,I,,,,2540,,,Q370785,Citroën ZX
+Cupra,Formentor,I,4450,1992,1528,2680,,,Q65129018,Cupra Formentor
+Dacia,1300,I,4340,1636,1435,2441,,930,Q1156864,Dacia 1300
+Dacia,Bigster,I,4570,1810,1710,2700,,,Q104829401,Dacia Bigster
+Dacia,Dokker,I,4363,1751,1814,2810,,,Q933825,Dacia Dokker
+Dacia,Duster,I,4315,2000,1625,2674,,,Q48746330,Dacia Duster I
+Dacia,Duster,II,4320,,,,,,Q39075664,Dacia Duster II
+Dacia,Jogger,I,4547,1784,1632,,,,Q108328699,Dacia Jogger
+Dacia,Lodgy,I,4498,1751,1680,2810,,,Q1156868,Dacia Lodgy
+Dacia,Logan,III,4396,1848,1501,2649,,,Q82258584,Dacia Logan III
+Dacia,Spring,I,3734,1622,1516,,,970,Q85682835,Dacia Spring
+Daewoo,Espero,I,4615,1718,1388,2620,,,Q494447,Daewoo Espero
+Daewoo,Evanda,V200,4770,1816,1440,2700,,1470,Q494469,Daewoo Magnus
+Daewoo,Kalos,T200,4310,1670,1495,2480,,,Q488154,Chevrolet Aveo T200
+Daewoo,Lacetti,J200,4520,1725,1445,2600,,,Q493989,Daewoo Lacetti
+Daewoo,Lanos,T100,,1678,1432,2520,,,Q482548,Daewoo Lanos
+Daewoo,Leganza,V100,4671,1779,1437,2670,,,Q494486,Daewoo Leganza
+Daewoo,Matiz,M100,3495,1495,1485,2340,,851,Q374643,Daewoo Matiz
+Daewoo,Nexia,I,,1662,1393,2520,,,Q498570,Daewoo Nexia
+Daewoo,Nubira,J100,,1720,1430,2585,,,Q482830,Daewoo Nubira
+Daewoo,Tacuma,U100,4350,1755,1580,2600,,,Q371349,Daewoo Tacuma
+Daewoo,Tico,I,3340,1400,1390,2335,,670,Q495402,Daewoo Tico
+Daihatsu,Applause,A101,4260,1660,1375,2470,,970,Q945485,Daihatsu Applause
+Daihatsu,Copen,L880,3395,1475,1245,2230,,,Q1149475,Daihatsu Copen
+Daihatsu,Feroza,F300,3845,1635,1725,2175,,,Q1157577,Daihatsu Rocky (F300)
+Daihatsu,Gran Move,G300,4050,1640,1595,2395,,,Q1157567,Daihatsu Pyzar
+Daihatsu,Materia,M4,3800,1690,1635,2540,,,Q1157561,Daihatsu Coo
+Daihatsu,Trevis,L650,3395,1475,1500,2375,,865,Q580908,Daihatsu Trevis
+Daihatsu,YRV,M2,3765,1620,1550,2355,,,Q1157583,Daihatsu YRV
+DeLorean,DMC-12,I,4216,1857,1140,2413,,1230,Q370524,DeLorean DMC-12
+Dodge,Avenger,II,4755,1740,1346,2635,,,Q14552704,Dodge Avenger
+Dodge,Caliber,I,4415,1800,1534,2635,,,Q672234,Dodge Caliber
+Dodge,Charger,VIII,5248,2027,1496,3073,,,Q115119408,Dodge Charger (2024)
+Dodge,Dart,I,4671,1829,1466,2703,,1456,Q2627582,Dodge Dart
+Dodge,Journey,I,4888,1878,1691,2890,,,Q1165880,Q1165880
+Dodge,Magnum,I,5022,,,,,,Q1234289,Dodge Magnum
+Dodge,Nitro,I,4584,1856,1773,2763,,1875,Q1045792,Dodge Nitro
+Ferrari,296,I,4565,1958,1187,2600,,1470,Q107324636,Ferrari 296
+Ferrari,308,I,4230,1720,1120,2340,,,Q1407659,Ferrari 308
+Ferrari,328,I,4255,1720,1120,2350,,,Q1407669,Ferrari 328
+Ferrari,348,I,4230,1894,1170,2450,,,Q428064,Ferrari 348
+Ferrari,360,I,4477,1922,,2600,,,Q117235,Ferrari 360
+Ferrari,456,I,4730,1920,1300,2600,,,Q900741,Ferrari 456
+Ferrari,458,I,4527,1937,1213,2650,,1485,Q276396,Ferrari 458
+Ferrari,488,I,4568,1952,1213,2650,,1475,Q18943721,Ferrari 488
+Ferrari,550,I,4550,1935,1277,2500,,1690,Q1324461,Ferrari 550
+Ferrari,599,I,4665,1962,1336,2750,,1688,Q385268,Ferrari 599 GTB Fiorano
+Ferrari,612 Scaglietti,I,4902,1957,1344,2949,,1875,Q951004,Ferrari 612 Scaglietti
+Ferrari,California,I,4563,1902,1308,2670,,,Q744792,Ferrari California
+Ferrari,Enzo,I,4702,2035,1147,2650,,1365,Q269880,Ferrari Enzo Ferrari
+Ferrari,F12,I,4618,1942,1273,2720,,1525,Q976334,Ferrari F12 berlinetta
+Ferrari,F355,I,4250,1900,1170,2450,,1350,Q1146729,Ferrari F355
+Ferrari,F40,I,4358,1970,1124,2450,,1254,Q463627,Ferrari F40
+Ferrari,F430,I,4512,1923,1214,2600,,1450,Q239793,Ferrari F430
+Ferrari,F8,I,4611,,,,,,Q121072170,Ferrari F8
+Ferrari,FF,I,4907,1953,1379,2949,,1880,Q943299,Ferrari FF
+Ferrari,Portofino,I,4586,1938,1318,2670,,1664,Q37806207,Ferrari Portofino
+Ferrari,Purosangue,I,4937,2028,1589,,,,Q108542232,Ferrari Purosangue
+Ferrari,Roma,I,4656,1974,1301,,,1570,Q74955156,Ferrari Roma
+Ferrari,Testarossa,I,,1976,,2550,,,Q830375,Ferrari Testarossa
+Fiat,124 Spider,II,4054,1740,1233,2310,,1050,Q21529621,Fiat 124 Spider
+Fiat,126,I,3054,,,1840,,,Q933646,Fiat 126
+Fiat,127,I,3595,1525,1360,2225,,,Q915927,Fiat 127
+Fiat,128,I,3850,1590,1340,2445,,,Q846139,Fiat 128
+Fiat,131,I,4264,,,2490,,,Q121562,Fiat 131
+Fiat,500,I,3571,1627,1488,2300,,,Q927839|Q20411472,Fiat 500
+Fiat,500L,I,4147,1784,1660,2612,,,Q642575,Fiat 500L
+Fiat,500X,I,,1796,,2570,,,Q4038714,Fiat 500X
+Fiat,500e,II,3630,,,,,,Q86991003,Fiat New 500
+Fiat,Barchetta,I,3916,1640,1265,2275,,1135,Q849372,Fiat Barchetta
+Fiat,Cinquecento,I,3230,1490,1435,2200,,,Q923456,Fiat Cinquecento
+Fiat,Coupé,I,4250,1766,1340,2540,,,Q1123868,Fiat Coupé
+Fiat,Fiorino,III,4384,1643,1900,2717,,1117,Q17628312,Fiat Fiorino
+Fiat,Freemont,I,4888,1878,1691,2890,,,Q1165880,Q1165880
+Fiat,Fullback,I,,1815,1775,3000,,,Q26202613,Fiat Fullback
+Fiat,Idea,I,3930,,,,,,Q673533,Fiat Idea
+Fiat,Marea,I,4391,1741,,2540,,,Q1361099,Fiat Marea
+Fiat,Multipla,I,4090,1870,1690,2666,,,Q223621,Fiat Multipla
+Fiat,Regata,I,4280,1651,,,,,Q1359659,Fiat Regata
+Fiat,Ritmo,I,3940,1651,1400,2445,,,Q776618,Fiat Ritmo
+Fiat,Sedici,I,4115,1755,1620,2500,,,Q369293,Fiat Sedici
+Fiat,Seicento,I,3337,1508,1445,2200,,,Q1144404,Fiat Seicento
+Fiat,Stilo,I,,,,2600,,,Q1128244,Fiat Stilo
+Fiat,Uno,I,3644,1548,1432,2360,,,Q741949,Fiat Uno
+Fisker,Karma,I,4998,1985,1330,3160,,2400,Q1420902,Fisker Karma
+Ford,B-Max,JK,4077,1751,1588,2489,,1205,Q1436751,Ford B-Max
+Ford,Bronco Sport,I,4387,1887,1786,2670,,,Q90665373,Ford Bronco Sport
+Ford,Cougar,I,4699,1780,1346,2704,,,Q637592,Ford Cougar
+Ford,EcoSport,B515,4230,,,,,,Q338888,Ford EcoSport
+Ford,Escort,Mk3,4020,1640,1324,2402,,,Q66422645,Ford Escort MK III
+Ford,Excursion,I,5758,,,3482,,3260,Q1325186,Ford Excursion
+Ford,F-150 Lightning,I,5910,2030,2004,,,2948,Q99642802,Ford F-150 Lightning
+Ford,Fiesta,Mk1,3565,1567,1360,2286,,,Q19481222,Ford Fiesta Mk1
+Ford,Fiesta,Mk2,,,1360,2292,,,Q19481225,Ford Fiesta Mk2
+Ford,Fiesta,Mk3,,,1325,2446,,,Q5467775,Ford Fiesta third generation
+Ford,Fiesta,Mk5,,1685,,2486,,,Q31837516,Ford Fiesta (2002)
+Ford,Fiesta,Mk6,,1722,,2489,,,Q12063185,Ford Fiesta MK6
+Ford,Fiesta,Mk7,4040,1734,1476,2493,,,Q31837520,Ford Fiesta (2017)
+Ford,Flex,I,5131,2032,1727,2995,,,Q660121,Ford Flex
+Ford,Freestar,I,5105,,,3068,,,Q1436853,Ford Freestar
+Ford,GT,I,4643,1953,1125,2710,,1595,Q90416964,Ford GT (2004–2006)
+Ford,GT,II,4762,2004,1110,2710,,1385,Q23856323,Ford GT
+Ford,Galaxy,III,4853,1916,1811,2850,,1978,Q123399555,Ford Galaxy third generation
+Ford,Maverick,I,5072,1844,1745,3076,,1666,Q99643351,Ford Maverick pickup
+Ford,Mustang Mach-E,I,4724,1880,1600,2972,,,Q75419891,Ford Mustang Mach-E
+Ford,Orion,I,,1640,,,,,Q838533,Ford Orion
+Ford,Sierra,I,4530,1698,1398,2608,,,Q366912,Ford Sierra
+Ford,Tempo,I,,,,2535,,,Q1436999,Ford Tempo
+Ford,Transit Courier,I,4157,1976,1725,2489,,,Q13569368,Ford Transit Courier
+GMC,Envoy,II,4867,1897,,,,2000,Q1485939,GMC Envoy
+GMC,Jimmy,II,4867,1897,,,,2000,Q1485939,GMC Envoy
+Geely,EX5,I,4615,1901,1670,2750,,,Q127240756,Geely Galaxy E5
+Geely,Emgrand,EC7,4640,1789,1470,2650,,,Q391251,Geely Emgrand EC7
+Genesis,G70,IK,4685,1850,1400,2835,,,Q30641367,Genesis G70
+Genesis,GV60,JW1,4515,1890,1580,2900,,1985,Q108146628,Genesis GV60
+Genesis,GV70,JK1,4715,1910,1630,,,,Q100275450,Genesis GV70
+Genesis,GV80,JX1,4945,1975,1715,,,,Q83111765,Genesis GV80
+Great Wall,Haval H6,III,,,1710,,,,Q12064314,Haval H6
+Holden,Commodore,VF,4966,1897,1471,2915,,1803,Q317181,Holden Commodore (VF)
+Honda,Accord,III,4335,1695,1335,2600,,,Q1626467,Honda Accord (third generation)
+Honda,Accord,IV,4685,1695,1390,2720,,,Q1626468,Honda Accord (fourth generation)
+Honda,Accord,IX,4935,1850,1465,2775,,,Q27576500,Honda Accord (ninth generation)
+Honda,Accord,V,4675,1715,1380,2720,,,Q1626472,Honda Accord (fifth generation)
+Honda,Accord,VI,,,,2670,,,Q1626473,Honda Accord (1997)
+Honda,Accord,VII,,1760,,,,,Q1406171,Honda Accord
+Honda,Accord,VIII,4725,1840,1440,2705,,,Q1626476,Honda Accord
+Honda,Accord,X,4893,1862,1449,,,,Q55525531,Honda Accord (tenth generation)
+Honda,Civic,III,3810,1635,1340,2380,,,Q844767,Honda Civic
+Honda,Civic,IV,,,1335,2500,,,Q1268524,Honda Civic (fourth generation)
+Honda,Civic,IX,,1770,1472,2605,,,Q1626573,Honda Civic (ninth generation)
+Honda,Civic,V,4080,1695,1345,2570,,,Q1518795,Honda Civic (fifth generation)
+Honda,Civic,VI,,1695,,2620,,,Q1626569,Honda Civic (sixth generation)
+Honda,Civic,X,,1799,,,,,Q27061986,Honda Civic 10th generation
+Honda,Civic,XI,,,,2736,,,Q107002471,Honda Civic 11th generation
+Honda,Element,I,4320,1816,,2575,,,Q1510174,Honda Element
+Honda,FR-V,BE,4285,1810,1610,2680,,1466,Q490491,Honda Edix
+Honda,Logo,GA3,3785,1645,1525,2360,,940,Q1310610,Honda Logo
+Honda,Pilot,III,4954,1997,1778,2820,,,Q25385102,Honda Pilot 3
+Honda,Prelude,VI,4520,1880,1355,2605,,,Q136677702,Honda Prelude (sixth generation)
+Honda,S2000,AP1,4135,1750,1285,2400,,1260,Q913796,Honda S2000
+Honda,Stream,RN,4570,1695,,2725,,,Q547675,Honda Stream
+Honda,ZR-V,I,4567,1839,1621,2654,,1433,Q109546578,Honda ZR-V
+Honda,e,ZC7,3985,1750,1495,,,1400,Q64151961,Honda e
+Hongqi,E-HS9,I,5209,2010,1731,,,,Q106010973,Hongqi E-HS9
+Hongqi,EH7,I,4980,1915,1490,3000,,2240,Q130749285,Hongqi EH7
+Hummer,H1,I,4686,2191,2006,3302,,2880,Q1353938,Hummer H1
+Hummer,H2,I,5000,2062,2012,3119,,2903,Q618590,Hummer H2
+Hummer,H3,I,,1897,,,,,Q930417,Hummer H3
+Hyundai,Atos,MX,3610,1645,1560,,,935,Q60486326,Hyundai Santro
+Hyundai,Bayon,BC3,,1775,1490,2580,,,Q102322338,Hyundai Bayon
+Hyundai,Galloper,I,,1780,,,,,Q489012,Hyundai Galloper
+Hyundai,Genesis Coupe,BK,4630,,,,,,Q483491,Hyundai Genesis Coupe
+Hyundai,Getz,TB,3825,1665,,2455,,,Q482462,Hyundai Getz
+Hyundai,Inster,AX1,3595,1595,1575,2400,,,Q108358583,Hyundai Casper
+Hyundai,Ioniq,AE,4470,1820,1450,2700,,1420,Q22672404,Hyundai Ioniq
+Hyundai,Ioniq 5,NE,4635,1890,1605,3000,,,Q99342695,Hyundai Ioniq 5
+Hyundai,Ioniq 6,CE,4855,1880,1495,,,,Q112577811,Hyundai Ioniq 6
+Hyundai,Ioniq 9,I,5060,1980,1790,3130,,,Q131293474,Hyundai Ioniq 9
+Hyundai,Kona,OS,4165,1800,1565,2600,,,Q30322680,Hyundai Kona
+Hyundai,Matrix,FC,,1740,1685,2600,,,Q489649,Hyundai Lavita
+Hyundai,Palisade,LX2,4980,1975,1750,,,1862,Q55735991,Hyundai Palisade
+Hyundai,Santa Cruz,NX4a,4971,1905,1694,,,,Q97619529,Hyundai Santa Cruz
+Hyundai,Staria,US4,5255,1995,1990,3273,,,Q106069882,Hyundai Staria
+Hyundai,Terracan,HP,4710,1860,,2750,,,Q482697,Hyundai Terracan
+Hyundai,Trajet,FO,4695,1840,1760,2830,,,Q489044,Hyundai Trajet
+Hyundai,Veloster,FS,4250,,1399,,,,Q178581,Hyundai Veloster
+Hyundai,i30,FD,4250,1800,1488,2650,,,Q1505303,Hyundai i30 (FD)
+Hyundai,i30,PD,,1795,,2650,,,Q28225793,Hyundai i30 (PD)
+Hyundai,i40,VF,,1815,1470,2770,,,Q483092,Hyundai i40
+Hyundai,ix20,JC,4100,1765,1600,2615,,,Q489212,Hyundai ix20
+Hyundai,ix35,LM,4410,1820,1660,,,,Q1807564,Hyundai ix35
+Infiniti,EX,J50,4630,,,,,,Q28555360,Infiniti EX
+Infiniti,I30,A32,4815,,,,,,Q672060,Nissan Cefiro
+Infiniti,Q30,H15,4425,1805,1495,2700,,1470,Q19332181,Infiniti Q30
+Infiniti,Q50,V37,4790,1825,,2850,,,Q4999061,Infiniti Q50
+Infiniti,Q60,CV37,4690,1850,1395,2850,,,Q1662400,Infiniti Q60
+Infiniti,QX50,J55,4630,1800,,,,,Q1629714,Infiniti QX50
+Isuzu,Ascender,I,,1933,,,,,Q1674938,Isuzu Ascender
+Isuzu,Gemini,JT,4130,1570,1360,2405,,,Q1674962,Isuzu Gemini
+Isuzu,Piazza,JR,4380,,,,,,Q1674974,Isuzu Piazza
+Jaecoo,J8,I,,1930,,,,,Q117455406,Chery Tiggo 9
+Jaguar,E-Pace,X540,4395,1984,1649,2681,,,Q33026750,Jaguar E-Pace
+Jaguar,F-Pace,X761,4731,1936,1652,2874,,1775,Q18972506,Jaguar F-Pace
+Jaguar,I-Pace,X590,4682,2011,1565,2990,,2208,Q27941336,Jaguar I-Pace
+Jaguar,S-Type,I,4769,1696,1380,2727,,1637,Q1291757,Jaguar S-Type
+Jaguar,X-Type,I,,1789,,2710,,,Q475753,Jaguar X-Type
+Jaguar,XE,X760,4672,1850,1416,2835,,1474,Q15939056,Jaguar XE
+Jaguar,XF,X250,,1939,,,,,Q20825949,Jaguar XF (X250)
+Jaguar,XF,X260,,1880,,,,,Q19787640,Jaguar XF (X260)
+Jaguar,XJ,X300,,1798,1349,,,,Q1299383,Jaguar XJ (X300)
+Jaguar,XJ,X308,,1798,,,,,Q1678516,Jaguar XJ (X308)
+Jaguar,XJ,X350,,1898,1448,,,,Q1678522,Jaguar XJ (X350)
+Jaguar,XJ,X351,5130,1899,,,,,Q1678526,Jaguar XJ (X351)
+Jaguar,XJ,XJ40,4989,1798,1349,,,,Q2712946,Jaguar XJ (XJ40)
+Jaguar,XJS,I,4770,1793,1254,2591,,1800,Q554507,Jaguar XJS
+Jaguar,XK,X100,,1829,,2588,,,Q1658078,Jaguar XK (X100)
+Jaguar,XK,X150,4791,,,2752,,,Q1474162,Jaguar XK
+Jeep,Commander,XK,4787,1899,1826,2780,,,Q1563979,Jeep Commander
+Jeep,Gladiator,JT,5537,1875,,,,,Q60756198,Jeep Gladiator
+Jeep,Renegade,BU,4232,1805,,2570,,,Q15907271,Jeep Renegade
+Jeep,Wagoneer,WS,,,1920,,,,Q98990357,Jeep Wagoneer (WS)
+Kia,Cee'd,ED,,1790,,2650,,,Q1740747,Kia cee'd (ED)
+Kia,Ceed,CD,,1800,,,,,Q50380580,Kia Ceed
+Kia,Cerato,TD,4530,1775,1460,2650,,,Q120718318,Kia Cerato (TD)
+Kia,EV6,CV,4680,1880,1550,2900,,,Q105975708,Kia EV6
+Kia,EV9,MV,4930,2055,1790,3100,,,Q110114350,Kia EV9
+Kia,K5,DL3,4844,,,,,,Q498936,Kia K5 (Optima)
+Kia,Opirus,GH,5000,1850,1485,2800,,,Q494441,Kia Opirus
+Kia,Picanto,SA,3495,1595,1480,,,,Q55380620,Kia Picanto (SA)
+Kia,Picanto,TA,3595,1595,1480,,,,Q55380616,Kia Picanto (TA)
+Kia,Pride,DA,,1605,1460,,,,Q169964,Kia Pride
+Kia,Sephia,FA,,1692,1390,2500,,,Q483037,Kia Sephia
+Kia,Shuma,FB,4525,1720,1415,2560,,,Q490280,Kia Shuma
+Kia,Stinger,CK,4830,1870,1400,2905,,,Q28170697,Kia Stinger
+Kia,Stonic,YB,4140,1760,1520,2580,,,Q31208577,Kia Stonic
+Kia,Telluride,ON,5000,1900,1750,2900,,2033,Q23058524,Kia Telluride
+Kia,Venga,YN,4075,1765,1600,2615,,,Q488208,Kia Venga
+Kia,XCeed,CD,4395,1826,1490,,,,Q65145805,Kia XCeed
+Lada,2105,Klassik,4145,1611,1440,2424,,1030,Q1425160,Lada Riva
+Lada,Granta,I,4260,1700,1500,,,,Q1574740,LADA Granta
+Lada,Kalina,I,,1700,,2476,,,Q1146667,LADA Kalina
+Lada,Largus,I,4470,1750,1670,2905,,,Q2568,Lada Largus
+Lada,Niva,2121,3740,1680,1640,2200,,,Q650591,Lada Niva
+Lada,Priora,I,4350,1680,1420,2492,,1088,Q2564,LADA Priora
+Lada,Samara,I,4205,1650,1402,,,,Q126703,VAZ-21099
+Lada,Vesta,I,4410,1764,1497,2635,,,Q17376334,Lada Vesta
+Lamborghini,Aventador,I,4780,2030,1136,2700,,1575,Q318094,Lamborghini Aventador
+Lamborghini,Countach,I,4140,2000,1070,2450,,1450,Q863812,Lamborghini Countach
+Lamborghini,Diablo,I,4460,2040,1100,2650,,,Q462223,Lamborghini Diablo
+Lamborghini,Gallardo,I,4345,1900,1165,2560,,1520,Q152917,Lamborghini Gallardo
+Lamborghini,Huracán,I,4459,1924,1165,2620,,1422,Q15396270,Lamborghini Huracán
+Lamborghini,Murciélago,I,,,1135,2665,,1665,Q216757,Lamborghini Murciélago
+Lamborghini,Revuelto,I,4947,2033,1160,2779,,1772,Q117309045,Lamborghini Revuelto
+Lamborghini,Urus,I,5112,2016,1638,3003,,2200,Q3077088,Lamborghini Urus
+Lancia,Dedra,I,4340,1700,,2540,,,Q276832,Lancia Dedra
+Lancia,Kappa,I,4687,1825,,,,,Q337873,Lancia Kappa
+Lancia,Lybra,I,4466,1743,,2593,,,Q1130692,Lancia Lybra
+Lancia,Musa,I,3985,,,2508,,,Q836286,Lancia Musa
+Lancia,Prisma,I,4180,1620,1380,2475,,,Q287526,Lancia Prisma
+Lancia,Thema,I,4590,1755,1440,2660,,,Q578833,Lancia Thema
+Lancia,Thesis,I,4888,1830,1465,2803,,,Q920836,Lancia Thesis
+Lancia,Y,I,3842,1676,1520,2390,,,Q4843619,Lancia Ypsilon
+Lancia,Y10,I,3390,1510,1420,2159,,780,Q729322,Autobianchi Y10
+Land Rover,Discovery Sport,L550,4600,1895,1724,,,,Q18111920,Land Rover Discovery Sport
+Land Rover,Range Rover Velar,L560,4803,2032,1665,2874,,,Q28843797,Range Rover Velar
+Leapmotor,B10,I,4515,1885,1655,2735,,,Q131684664,Leapmotor B10
+Leapmotor,C10,I,4740,1900,1680,2825,,,Q123248755,Leapmotor C10
+Leapmotor,T03,I,3620,1652,1577,2400,,,Q99511491,Leapmotor T03
+Lexus,CT,A10,4350,1765,1455,2600,,,Q1508311,Lexus CT
+Lexus,IS,XE30,4665,1810,1430,2800,,,Q21208921,Lexus IS (XE30)
+Lexus,LBX,I,4190,1825,1545,2580,,,Q119104237,Lexus LBX
+Lexus,LC,Z100,4770,1920,1345,2870,,,Q22084860,Lexus LC
+Lexus,LFA,I,4505,1895,1220,2605,,,Q1341985,Lexus LFA
+Lexus,NX,AZ20,4660,1865,1660,2690,,,Q109043423,Lexus NX (AZ20)
+Lexus,RZ,I,4805,1895,1635,2850,,,Q110123748,Lexus RZ
+Lexus,UX,ZA10,4495,1840,1520,2640,,,Q50379353,Lexus UX
+Li Auto,L6,I,4925,1960,1735,2920,,,Q126088169,Li L6
+Li Auto,MEGA,I,5350,1965,1850,3300,,2785,Q123512685,Li Mega
+Lincoln,Aviator,II,4909,1931,1814,2889,,2269,Q1760333,Lincoln Aviator
+Lincoln,LS,I,4910,1859,1424,2908,,1675,Q1337514,Lincoln LS
+Lincoln,MKX,I,4735,1925,,,,,Q1825796,Lincoln MKX
+Lincoln,Nautilus,I,4826,1935,1681,2850,,1879,Q77973915,Lincoln Nautilus
+Lotus,Elan,M100,3803,,,,,996,Q3260076,Lotus Elan M100
+Lotus,Eletre,I,5105,,1630,3019,,,Q111210349,Lotus Eletre
+Lotus,Emira,I,4412,1895,1225,2575,,1405,Q106639062,Lotus Emira
+Lotus,Esprit,I,4191,1854,1118,2440,,,Q1420047,Lotus Esprit
+Lotus,Evora,I,,,,2575,,,Q572137,Lotus Evora
+Lynk & Co,01,I,4512,1857,,2734,,,Q28223998,Lynk & Co 01
+Lynk & Co,02,I,4448,1890,1528,,,,Q56320937,Lynk & Co 02
+Lynk & Co,03,I,4657,1840,1460,,,,Q56320934,Lynk & Co 03
+MG,HS,I,4574,1876,,,,,Q57738031,MG HS
+MG,MG4,I,,1855,1488,,,,Q112964039,MG 4 EV
+MG,TF,I,3910,,,,,,Q1816606,MG F
+MG,ZR,I,4011,1688,1400,2500,,1095,Q1476139,MG ZR
+MG,ZT,I,4747,1778,1417,2746,,,Q41859,MG ZT
+Mahindra,BE 6,I,4371,1907,1627,2775,,1907,Q134780679,Mahindra BE 6
+Mahindra,Scorpio-N,I,4320,1820,,2680,,,Q2722862,Mahindra Scorpio
+Mahindra,Thar,II,3920,,,,,,Q962700,Mahindra Thar
+Mahindra,XUV700,I,4850,1960,1845,,,,Q55180084,Mahindra XUV700
+Maserati,3200 GT,I,4510,1822,1305,2659,,1647,Q1322630,Maserati 3200 GT
+Maserati,Biturbo,I,4153,1714,1305,,,1086,Q55523995,Maserati Biturbo
+Maserati,Coupé,I,,1810,1275,2660,,,Q646355,Maserati GranSport
+Maserati,Ghibli,II,4223,1775,1300,2514,,,Q1972293,Maserati Ghibli II
+Maserati,Ghibli,III,4971,1945,1461,2998,,,Q6005400,Maserati Ghibli III
+Maserati,GranTurismo,II,4959,1957,1353,2930,,,Q124737020,Maserati GranCabrio II
+Maserati,Grecale,I,4846,1948,1670,2901,,1870,Q100881867,Maserati Grecale
+Maserati,Levante,I,5003,1968,1679,3004,,,Q80862,Maserati Levante
+Maserati,MC20,I,4669,1965,1221,2700,,1500,Q85846574,Maserati MC20
+Maserati,Quattroporte,IV,4550,1810,1380,2650,,,Q14912925,Maserati Quattroporte IV
+Matra,Murena,I,4070,1752,1220,,,,Q285278,Matra Murena
+Mazda,6e,I,4921,1890,1485,2900,,,Q125597665,Mazda 6e
+Mazda,CX-3,DK,4275,1765,1535,2570,,,Q18702360,Mazda CX-3
+Mazda,CX-30,DM,4395,1795,1540,2655,,,Q61993966,Mazda CX-30
+Mazda,CX-50,I,4719,1920,1613,2814,,,Q109601206,Mazda CX-50
+Mazda,CX-60,KH,4745,1890,1670,2870,,1680,Q111154152,Mazda CX-60
+Mazda,CX-7,ER,4682,1870,1645,2750,,,Q1140384,Mazda CX-7
+Mazda,CX-80,KL,4995,1890,1710,,,,Q125503512,Mazda CX-80
+Mazda,Demio,DW,3820,1670,1535,2390,,,Q500052,Mazda Demio
+Mazda,MX-3,EC,4220,1695,1310,2455,,,Q1755480,Mazda MX-3
+Mazda,MX-30,DR,4395,1795,1570,2655,,,Q72190919,Mazda MX-30
+Mazda,MX-6,GE,4610,,,,,,Q775121,Mazda MX-6
+Mazda,Millenia,TA,4825,1770,1395,2750,,,Q1852384,Mazda Millenia
+Mazda,Premacy,CP,4295,1705,,2670,,,Q1541535,Mazda Premacy
+Mazda,RX-8,SE3P,4430,1770,1340,2700,,,Q520673,Mazda RX-8
+Mazda,Xedos 6,CA,4560,1700,,2610,,,Q1974845,Mazda Xedos 6
+Mazda,Xedos 9,TA,4825,1770,1395,2750,,,Q1852384,Mazda Millenia
+McLaren,570S,I,4530,2093,1200,2670,,1313,Q19759816,McLaren 570S
+McLaren,650S,I,4511,1908,1199,2670,,,Q15770155,McLaren 650S
+McLaren,720S,I,4540,,1196,2670,,,Q28913682,McLaren 720S
+McLaren,Artura,I,4539,1913,1193,,,1395,Q102562479,McLaren Artura
+McLaren,F1,I,4290,1820,1150,2720,,,Q849607,McLaren F1
+McLaren,GT,I,4683,2095,1213,,,1530,Q63968564,McLaren GT
+McLaren,MP4-12C,I,4507,1909,1199,2670,,1302,Q1130427,McLaren MP4-12C
+McLaren,P1,I,4588,1946,1188,2670,,1395,Q6407533,McLaren P1
+Mercedes-Benz,190,W201,4420,,,2665,,,Q656750,Mercedes-Benz W201
+Mercedes-Benz,A-Klasse,W168,3606,1719,,,,,Q442752,Mercedes-Benz W168
+Mercedes-Benz,A-Klasse,W169,3838,1764,1593,2568,,,Q1703678,Mercedes-Benz W169
+Mercedes-Benz,A-Klasse,W176,,1780,,2699,,,Q1921363,Mercedes-Benz W176
+Mercedes-Benz,A-Klasse,W177,,1796,,2729,,,Q47543124,Mercedes-Benz W177
+Mercedes-Benz,B-Klasse,W245,4273,1777,1603,2778,,,Q1921324,Mercedes-Benz W245
+Mercedes-Benz,B-Klasse,W246,,,,2699,,,Q1921367,Mercedes-Benz W246
+Mercedes-Benz,B-Klasse,W247,4419,1796,1562,2729,,,Q56885004,Mercedes-Benz W247
+Mercedes-Benz,C-Klasse,W202,,,,2690,,,Q691904,Mercedes-Benz W202
+Mercedes-Benz,C-Klasse,W203,,1728,,2715,,,Q11344082,Mercedes-Benz W203
+Mercedes-Benz,C-Klasse,W204,4591,,,2760,,,Q2008468,Mercedes-Benz type 204
+Mercedes-Benz,C-Klasse,W205,,,,2840,,,Q15312688,Mercedes-Benz W205
+Mercedes-Benz,CL,C215,4993,1857,1398,2885,,,Q1890875,Mercedes-Benz C215
+Mercedes-Benz,CL,C216,5065,1871,1419,2955,,,Q1921211,Mercedes-Benz C216
+Mercedes-Benz,CLA,C117,,1777,,,,,Q63323782,Mercedes-Benz C117
+Mercedes-Benz,CLA,C118,4688,1830,1439,,,,Q60536728,Mercedes-Benz C118
+Mercedes-Benz,CLK,C208,4567,1722,,2690,,,Q1921187,Mercedes-Benz C208
+Mercedes-Benz,CLK,C209,,1740,,2715,,,Q969104,Mercedes-Benz C209
+Mercedes-Benz,CLS,C218,,1881,,2874,,,Q1857128,Mercedes-Benz C218
+Mercedes-Benz,CLS,C219,4910,1873,1390,2854,,,Q1921215,Mercedes-Benz C219
+Mercedes-Benz,CLS,C257,4988,1890,1435,2939,,,Q44268046,Mercedes-Benz C257
+Mercedes-Benz,E-Klasse,W124,,1740,1425,,,,Q1511429,Mercedes-Benz type 124
+Mercedes-Benz,E-Klasse,W210,4816,1799,,2833,,,Q977429,Mercedes-Benz W210
+Mercedes-Benz,E-Klasse,W211,4852,1822,,2854,,,Q1368464,Mercedes-Benz W211
+Mercedes-Benz,E-Klasse,W212,4874,1854,,2874,,,Q1478248,Mercedes-Benz W212
+Mercedes-Benz,E-Klasse,W213,4920,,,2939,,,Q20731986,Mercedes-Benz W213
+Mercedes-Benz,EQA,H243,4463,1834,1620,,,2040,Q56367800,Mercedes-Benz EQA
+Mercedes-Benz,EQB,X243,4684,1834,1667,,,,Q86671945,Mercedes-Benz EQB
+Mercedes-Benz,EQC,N293,4761,1884,1624,2873,,2425,Q56319401,Mercedes-Benz EQC
+Mercedes-Benz,EQE,V295,4946,1906,1512,,,,Q97120015,Mercedes-Benz EQE
+Mercedes-Benz,EQS,V297,5216,1926,1512,,,,Q97120016,Mercedes-Benz EQS
+Mercedes-Benz,GL,X166,5130,,1850,3075,,,Q1343719,Mercedes-Benz X166
+Mercedes-Benz,GLB,X247,4634,1834,1658,,,,Q18164886,Mercedes-Benz GLB-Class
+Mercedes-Benz,GLC,X253,,,,2873,,,Q27962540,Mercedes-Benz X253
+Mercedes-Benz,GLE,V167,4924,1947,,,,,Q56600097,Mercedes-Benz V167
+Mercedes-Benz,M-Klasse,W163,4638,,,2820,,,Q1419334,Mercedes-Benz W163
+Mercedes-Benz,M-Klasse,W164,4780,1911,1815,2915,,,Q1755651,Mercedes-Benz W164
+Mercedes-Benz,M-Klasse,W166,,,,2915,,,Q535447,Mercedes-Benz W166
+Mercedes-Benz,R-Klasse,W251,,1922,,,,,Q202740,Mercedes-Benz R-Class
+Mercedes-Benz,S-Klasse,W140,,1886,1486,,,,Q1057104,Mercedes-Benz W140
+Mercedes-Benz,S-Klasse,W220,,1855,,,,,Q1755495,Mercedes-Benz W220
+Mercedes-Benz,S-Klasse,W221,,1872,1473,,,,Q1546410,Mercedes-Benz W221
+Mercedes-Benz,SL,R107,,1790,,,,,Q1547602,Mercedes-Benz R107 and C107
+Mercedes-Benz,SL,R129,4499,1812,1296,2515,,,Q1921308,Mercedes-Benz R129
+Mercedes-Benz,SL,R230,4535,1827,,2560,,,Q1921320,Mercedes-Benz R230
+Mercedes-Benz,SL,R231,,1877,,2585,,,Q993698,Mercedes-Benz R231
+Mercedes-Benz,SL,R232,4705,1915,1359,,,,Q107564169,Mercedes-AMG R232
+Mercedes-Benz,SLK,R170,,1715,,2400,,,Q1745178,Mercedes-Benz R170
+Mercedes-Benz,SLK,R171,,1788,,2430,,,Q1921311,Mercedes-Benz R171
+Mercedes-Benz,SLK,R172,,,,2430,,,Q1921310,Mercedes-Benz R172
+Mercedes-Benz,SLR,C199,4656,1908,1261,2700,,1768,Q207624,Mercedes-Benz SLR McLaren
+Mercedes-Benz,SLS AMG,C197,4638,1939,,2680,,1620,Q476636,Mercedes-Benz SLS AMG
+Mercedes-Benz,V-Klasse,W447,,1928,,,,,Q15707845,Mercedes-Benz W447
+Mercedes-Benz,Vaneo,W414,4192,1742,1830,2900,,,Q1273407,Mercedes-Benz Vaneo
+Mercedes-Benz,Vito,W638,4660,1870,1844,3000,,,Q1756653,Mercedes-Benz W638
+Mercedes-Benz,Vito,W639,,1901,,,,,Q1145837,Mercedes-Benz W639
+Mercedes-Benz,W123,W123,4998,1786,1435,2795,,1625,Q844176,Mercedes-Benz W123
+Mercedes-Benz,X-Klasse,470,5340,1920,1819,3150,,,Q27689525,Mercedes-Benz X-Class
+Mercury,Milan,I,4862,1834,,2728,,,Q1921553,Mercury Milan
+Mercury,Villager,I,,,,2450,,,Q1806924,Mercury Villager
+Mini,Clubman,F54,3958,,,,,,Q27639038,Mini Clubman
+Mini,Mini,F56,,1727,,,,,Q17635143,Mini Hatch (F56)
+Mini,Mini,R50,3620,,,,,,Q11781425,Mini Hatch
+Mitsubishi,3000GT,Z16,4600,1840,1285,2470,,,Q767310,Mitsubishi GTO
+Mitsubishi,Carisma,DA0,4480,1695,1405,2500,,,Q1327305,Mitsubishi Carisma
+Mitsubishi,Colt,CJ0,4570,1760,1490,2635,,,Q25638535,Mitsubishi Lancer (2007)
+Mitsubishi,Eclipse Cross,GK,4405,1805,1685,2670,,,Q28956871,Mitsubishi Eclipse Cross
+Mitsubishi,Endeavor,I,4850,1869,,2751,,,Q603079,Mitsubishi Endeavor
+Mitsubishi,Galant,EA0,4630,1740,1415,2635,,,Q1589311,Mitsubishi Galant (8th generation)
+Mitsubishi,Grandis,NA0,4765,1795,1655,2830,,,Q1140239,Mitsubishi Grandis
+Mitsubishi,Lancer,CY,4570,1760,1490,2635,,,Q25638535,Mitsubishi Lancer (2007)
+Mitsubishi,Lancer Evolution,VII-IX,4490,,,,,,Q16040570,Mitsubishi Lancer Evolution IX
+Mitsubishi,Lancer Evolution,X,4495,1811,1481,2649,,,Q15660834,Mitsubishi Lancer Evolution X
+Mitsubishi,Pajero Pinin,H60,,1680,,,,,Q31143,Mitsubishi Pajero iO
+Mitsubishi,Sigma,F16,4750,1775,1435,2720,,,Q1780324,Mitsubishi Sigma
+Mitsubishi,Starion,I,,,,2435,,,Q1531303,Mitsubishi Starion
+Mitsubishi,i-MiEV,HA,3475,1475,1610,2550,,1110,Q1129816,Mitsubishi i-MiEV
+NIO,ES6,I,,1956,1758,,,,Q60767831,NIO ES6
+NIO,ES7,I,4912,1987,1720,,,,Q112613782,NIO ES7
+NIO,ET5,I,4790,1960,1499,2888,,,Q110184725,NIO ET5
+NIO,ET7,I,5098,1987,1505,3060,,,Q104804897,NIO ET7
+Nissan,350Z,Z33,4310,1815,,2650,,,Q269036,Nissan 350Z
+Nissan,370Z,Z34,4247,,,2550,,,Q936668,Nissan 370Z
+Nissan,Almera Tino,V10,4264,1758,1608,2535,,,Q2092725,Nissan Almera Tino
+Nissan,Ariya,FE0,4595,1850,1660,,,,Q86674790,Nissan Ariya
+Nissan,GT-R,R35,4656,1895,1370,2780,,,Q499109,Nissan GT-R
+Nissan,Micra,K10,,,,2300,,,Q131339943,Nissan Micra (K10)
+Nissan,NV200,M20,4400,1695,1860,2725,,1350,Q14551641,Nissan Evalia
+Nissan,Note,E11,4083,1690,1550,2600,,,Q113648974,Nissan Note (E11)
+Nissan,Note,E12,4100,1695,1525,2600,,,Q11509846,Nissan Note (E12)
+Nissan,Pixo,UA0,3565,1680,1470,2360,,,Q1993805,Nissan Pixo
+Nissan,Primastar,I,4782,,,,,,Q109905284,Renault Trafic II
+Nissan,Primera,P10,,,,2550,,,Q1452346,Nissan Primera P10
+Nissan,Primera,P12,4567,1760,1482,2680,,,Q1794866,Nissan Primera P12
+Nissan,Pulsar,C13,4387,1768,1520,2700,,,Q18432709,Nissan Pulsar (Europe)
+Nissan,Quest,V42,5180,,,,,,Q1430887,Nissan Quest
+Nissan,Tiida,C11,4395,1695,1533,2603,,,Q119845666,Nissan Tiida (C11)
+Nissan,Z,RZ34,4379,1844,1316,2550,,,Q87209760,Nissan Z
+ORA,03,I,4235,1825,1596,,,,Q99363923,Ora Good Cat
+Oldsmobile,Alero,I,4742,1781,1384,2718,,,Q964261,Oldsmobile Alero
+Oldsmobile,Cutlass Ciera,I,4785,1765,1374,2665,,,Q533618,Oldsmobile Cutlass Ciera
+Oldsmobile,Eighty-Eight,VIII,,,,2814,,,Q14552214,Oldsmobile LSS
+Oldsmobile,Intrigue,I,4976,1869,1438,2769,,1595,Q1713753,Oldsmobile Intrigue
+Oldsmobile,Silhouette,II,4940,,,,,,Q962634,Oldsmobile Silhouette
+Opel,Adam,I,3698,1720,1484,2311,,,Q1264219,Opel Adam
+Opel,Ampera,I,4498,1787,1439,2685,,1732,Q1634551,Opel Ampera
+Opel,Ampera-e,I,4166,1765,1596,2600,,1624,Q19580435,Chevrolet Bolt
+Opel,Antara,I,4596,1850,,2707,,,Q1348659,Opel Antara
+Opel,Ascona,C,,1668,,2574,,,Q2025067,Opel Ascona C
+Opel,Astra,F,4050,1690,1410,2515,,,Q898479,Opel Astra F
+Opel,Astra,G,4110,1709,1425,2606,,,Q1333038,Opel Astra G
+Opel,Astra,H,4249,1804,1460,2614,,,Q1777731,Opel Astra H
+Opel,Astra,J,4419,1814,1510,2685,,,Q2068639,Opel Astra J
+Opel,Astra,K,4370,1814,1485,2662,,,Q21387421,Opel Astra K
+Opel,Astra,L,,1860,1470,,,,Q108273102,Opel Astra L
+Opel,Calibra,A,4492,1688,1320,2600,,,Q466506,Opel Calibra
+Opel,Corsa,A,3622,,,2343,,,Q725321,Opel Corsa A
+Opel,Corsa,B,3729,1608,1420,2443,,,Q1142757,Opel Corsa B
+Opel,Corsa,C,3839,1646,1440,2491,,,Q2623139,Opel Corsa C
+Opel,Corsa,D,3999,1713,1488,2511,,,Q840279,Opel Corsa D
+Opel,Corsa,E,,,,2510,,,Q17433343,Opel Corsa E
+Opel,Corsa,F,4060,1960,1435,2538,,,Q64864080,Opel Corsa F
+Opel,Crossland,I,4212,1765,1605,2604,,,Q28537847,Opel Crossland
+Opel,GT,I,4100,1813,1274,2415,,,Q205574,Opel GT Roadster
+Opel,Insignia,A,4830,1856,1498,2737,,,Q29561480,Opel Insignia A Sedan
+Opel,Insignia,B,4897,1863,1455,2829,,,Q31837345,Opel Insignia B Grand Sport
+Opel,Kadett,D,,1636,1400,2514,,,Q1752896,Opel Kadett D
+Opel,Kadett,E,,1663,,2520,,,Q2025180,Opel Kadett E
+Opel,Karl,I,3675,1698,1476,2385,,,Q18151071,Opel Karl
+Opel,Meriva,A,4052,1694,1624,2630,,,Q2025198,Opel Meriva A
+Opel,Meriva,B,4288,1812,1615,2644,,,Q2025195,Opel Meriva B
+Opel,Omega,A,4738,1760,1445,2730,,,Q2025217,Opel Omega A
+Opel,Omega,B,4898,1776,,2730,,,Q1559112,Opel Omega B
+Opel,Rekord,E,,1725,1470,2668,,,Q2025253,Opel Rekord E
+Opel,Sintra,I,4670,1830,1757,2845,,1695,Q955725,Opel Sintra
+Opel,Speedster,I,3786,1708,1117,2330,,,Q913055,Opel Speedster
+Opel,Tigra,A,3922,1604,1340,2429,,,Q653699,Opel Tigra
+Opel,Tigra TwinTop,B,3921,1685,1364,2491,,,Q360188,Opel Tigra Twintop
+Opel,Vectra,A,4432,1706,1400,2600,,,Q10788244,Opel Vectra A
+Opel,Vectra,B,4495,1707,1425,2637,,,Q10788208,Opel Vectra B
+Opel,Vectra,C,,1798,,,,,Q10788153,Opel Vectra C
+Opel,Zafira Life,I,,1920,,,,,Q60983319,Opel Zafira Life
+Peugeot,1007,I,3731,1686,1620,2315,,,Q542182,Peugeot 1007
+Peugeot,104,I,,1520,,,,760,Q849464,Peugeot 104
+Peugeot,106,I,3564,,,,,,Q826094,Peugeot 106
+Peugeot,107,I,3430,1630,1470,2340,,,Q214229,Peugeot 107
+Peugeot,108,I,3475,1615,1460,2340,,840,Q3377740,Peugeot 108
+Peugeot,205,I,3705,1572,1350,2420,,,Q215218,Peugeot 205
+Peugeot,206,I,,,,2442,,,Q207976,Peugeot 206
+Peugeot,207,I,4030,1748,1472,2540,,,Q222775,Peugeot 207
+Peugeot,208,I,3960,1739,1460,2538,,,Q1164784,Peugeot 208
+Peugeot,305,I,4240,1635,1400,2620,,,Q1361311,Peugeot 305
+Peugeot,306,I,4240,1635,1400,2620,,,Q1361311,Peugeot 305
+Peugeot,307,I,,1730,,,,,Q215227,Peugeot 307
+Peugeot,308,II,,1804,,,,,Q3377742,Peugeot 308 II
+Peugeot,309,I,4050,1630,1380,2470,,,Q1139986,Peugeot 309
+Peugeot,4007,I,4635,1805,,2670,,,Q914093,Peugeot 4007
+Peugeot,405,I,4410,1716,1390,2669,,,Q825781,Peugeot 405
+Peugeot,406,I,4555,1764,,2482,,,Q328139,Peugeot 406
+Peugeot,408,I,4680,1815,1505,2710,,,Q1339701,Peugeot 408
+Peugeot,5008,II,4641,,,,,,Q28919318,Peugeot 5008 II
+Peugeot,505,I,,1750,,,,,Q181002,Peugeot 505
+Peugeot,508,II,,1859,,,,,Q48751594,Peugeot 508 B
+Peugeot,605,I,4720,1800,,2800,,,Q825790,Peugeot 605
+Peugeot,607,I,4902,1835,1442,2800,,,Q504138,Peugeot 607
+Peugeot,Partner,I,4137,,,,,,Q18589881,Peugeot Partner I
+Peugeot,Partner,II,4380,,,,,,Q18589880,Peugeot Partner II
+Peugeot,RCZ,I,4287,1845,1362,2596,,,Q1357550,Peugeot RCZ
+Plymouth,Acclaim,I,4602,1730,1410,,,,Q1284868,Plymouth Acclaim
+Plymouth,Breeze,I,4732,1821,1318,2745,,1327,Q1290516,Plymouth Breeze
+Plymouth,Horizon,I,4186,1681,1364,2520,,,Q1234324,Dodge Omni
+Plymouth,Prowler,I,4199,1943,1293,2870,,1268,Q1637846,Plymouth Prowler
+Plymouth,Reliant,K,,1742,,2545,,1043,Q1472333,Plymouth Reliant
+Polestar,Polestar 1,I,4585,1935,1352,,,2345,Q49100305,Polestar 1
+Polestar,Polestar 2,I,4606,1859,1482,2735,,,Q60965166,Polestar 2
+Polestar,Polestar 3,I,4900,,1628,2984,,2584,Q114344844,Polestar 3
+Polestar,Polestar 4,I,4839,,1544,2999,,,Q117672376,Polestar 4
+Pontiac,Aztek,I,4625,1872,1694,2751,,1714,Q2103830,Pontiac Aztek
+Pontiac,Fiero,I,4072,1750,1191,2373,,1176,Q348019,Pontiac Fiero
+Pontiac,G6,I,4802,1749,1450,2852,,,Q1851632,Pontiac G6
+Pontiac,G8,I,4981,1900,1466,2913,,1790,Q251986,Pontiac G8
+Pontiac,GTO,V,4821,1842,1397,2789,,1690,Q20826074,Pontiac GTO
+Pontiac,Solstice,I,4090,1810,1270,2416,,1300,Q276837,Pontiac Solstice
+Pontiac,Sunfire,I,,,,2644,,1182,Q1306007,Pontiac Sunfire
+Pontiac,Trans Sport,II,4940,,,,,,Q991256,Pontiac Trans Sport
+Porsche,718 Boxster,982,,1801,,2475,,,Q55394585,Porsche 982
+Porsche,718 Cayman,982c,,1801,,2475,,,Q55394585,Porsche 982
+Porsche,911,964,4250,1652,1320,2272,,,Q1428966,Porsche 964
+Porsche,911,991,4495,,,2350,,,Q1338466,Porsche 997
+Porsche,911,993,4245,1735,1300,2272,,,Q1075802,Porsche 993
+Porsche,911,996,4435,,1295,2350,,,Q936953,Porsche 996
+Porsche,911,997,4495,,,2350,,,Q1338466,Porsche 997
+Porsche,918 Spyder,918,4645,1940,1167,2730,,1642,Q962317,Porsche 918 Spyder
+Porsche,924,I,,,,2400,,,Q615865,Porsche 924
+Porsche,928,I,4520,1890,1282,2500,,,Q578057,Porsche 928
+Porsche,944,I,4200,1735,1275,2400,,,Q1125114,Porsche 944
+Porsche,968,I,4320,1735,,2400,,,Q1360380,Porsche 968
+Porsche,Carrera GT,980,4601,1921,1116,2730,,1380,Q748454,Porsche Carrera GT
+Porsche,Macan,95B,4681,1923,1624,2807,,,Q2753440,Porsche Macan
+Porsche,Macan Electric,XAB,4681,1923,1624,2807,,,Q2753440,Porsche Macan
+Porsche,Taycan,J1,4963,1966,1378,2900,,2295,Q56307011,Porsche Taycan
+Proton,Saga,III,4260,,,,,,Q524558,Proton Saga
+Proton,X50,I,4330,1800,1609,2600,,,Q100964837,Proton X50
+Proton,X70,I,4519,1831,1694,2670,,,Q85794790,Proton X70
+Proton,e.MAS 7,I,4615,1901,1670,2750,,,Q127240756,Geely Galaxy E5
+Renault,18,I,4400,1690,1400,2440,,940,Q531131,Renault 18
+Renault,19,I,4156,1694,1412,2545,,,Q728034,Renault 19
+Renault,21,I,,1730,,,,,Q504166,Renault 21
+Renault,25,I,4620,1770,1400,,,,Q215715,Renault 25
+Renault,4,R4,3663,1430,1470,,,,Q247716,Renault 4
+Renault,5,I,3505,,,,,,Q120599582,Renault 5 (first generation)
+Renault,9,I,,,1405,,,,Q15921870,Renault 9
+Renault,Arkana,I,4545,1820,1565,2721,,,Q56234269,Renault Arkana
+Renault,Austral,I,4510,1825,1618,2667,,,Q111149358,Renault Austral
+Renault,Avantime,I,4642,1834,1627,2702,,,Q1130811,Renault Avantime
+Renault,Clio,I,3713,,1395,2472,,,Q3425018,Renault Clio I
+Renault,Clio,II,3773,1639,,,,,Q5114820,Renault Clio II
+Renault,Clio,III,,,,2575,,,Q2085581,Renault Clio III
+Renault,Clio,IV,,1732,,2589,,,Q3425021,Renault Clio IV
+Renault,Clio,V,4048,1798,1440,,,,Q48756503,Renault Clio V
+Renault,Espace,I,4365,1777,1660,2580,,,Q17651865,Renault Espace I
+Renault,Espace,II,4429,1795,1805,2580,,,Q17651866,Renault Espace II
+Renault,Espace,III,,1810,,,,,Q17651867,Renault Espace III
+Renault,Espace,IV,4660,1894,1730,2800,,1755,Q18145995,Renault Espace IV
+Renault,Espace,V,4857,1888,1675,2870,,,Q18745152,Renault Espace V
+Renault,Fluence,I,4618,1809,,,,,Q1050584,Renault Fluence
+Renault,Fuego,I,4358,1692,1315,2438,,,Q1333796,Renault Fuego
+Renault,Kadjar,I,4449,1836,1600,2646,,1448,Q18913449,Renault Kadjar
+Renault,Kangoo,I,4035,,,,,,Q18589929,Renault Kangoo I
+Renault,Laguna,I,,,,2670,,,Q16595566,Renault Laguna I
+Renault,Laguna,II,,1772,,2748,,,Q16595571,Renault Laguna II
+Renault,Laguna,III,,1811,,2756,,,Q16595574,Renault Laguna III
+Renault,Modus,I,,1695,1589,,,,Q1132584,Renault Modus
+Renault,Mégane,II,,1777,,,,,Q16595583,Renault Mégane II
+Renault,Mégane,III,,1808,,2641,,,Q16595586,Renault Mégane III
+Renault,Mégane,IV,4359,1810,1447,2669,,1205,Q20899924,Renault Mégane IV
+Renault,Rafale,I,4710,1866,1613,2738,,,Q118398898,Renault Rafale
+Renault,Scenic E-Tech,V,4490,1900,1590,,,,Q122167780,Renault Scénic E-Tech
+Renault,Symbioz,I,4413,1797,1576,2638,,,Q124516640,Renault Symbioz
+Renault,Trafic,II,4782,,,,,,Q109905284,Renault Trafic II
+Renault,Vel Satis,I,4860,1860,1577,2840,,,Q930510,Renault Vel Satis
+Renault,Wind,I,3828,1698,1415,2368,,,Q655473,Renault Wind
+Renault,Zoe,I,4085,1730,1562,2588,,,Q1516380,Renault Zoe
+Rivian,R1T,I,5514,2078,1923,,,3100,Q59291760,Rivian R1T
+Rolls-Royce,Cullinan,I,5500,2000,1835,3295,,2660,Q30972583,Rolls Royce Cullinan
+Rolls-Royce,Phantom,VII,,1990,,,,,Q1130591,Rolls-Royce Phantom VII
+Rolls-Royce,Phantom,VIII,,2018,,,,,Q33657874,Rolls-Royce Phantom
+Rolls-Royce,Silver Seraph,I,5390,1932,1515,3116,,2302,Q939070,Rolls-Royce Silver Seraph
+Rolls-Royce,Silver Spirit,I,5350,1880,1470,3160,,2275,Q1414808,Rolls-Royce Silver Spur
+Rolls-Royce,Spectre,I,5453,2080,1559,3210,,2890,Q112567175,Rolls-Royce Spectre
+Rolls-Royce,Wraith,I,5269,1947,1507,3112,,2440,Q10656489,Rolls-Royce Wraith (2013)
+Rover,100,I,3530,,,2270,,,Q1752779,Rover 100 series
+Rover,25,I,3980,1736,1495,,,,Q505157,Rover Streetwise
+Rover,45,I,4510,,,,,1265,Q1131738,Rover 45
+Rover,600,I,4645,1950,1380,2720,,,Q1421449,Rover 600 Series
+Rover,75,I,,1778,,2746,,,Q1352054,Rover 75 R40
+Rover,800,I,4882,1730,1393,2760,,,Q522889,Rover 800 Series
+Rover,SD1,I,4740,1770,1380,2815,,,Q948391,Rover SD1
+SEAT,Alhambra,I,4854,,,,,,Q1334020,SEAT Alhambra
+SEAT,Altea,I,4467,1768,1568,2578,,,Q1521421,SEAT Altea XL/Freetrack
+SEAT,Arona,I,4138,1780,1552,2566,,,Q28662977,SEAT Arona
+SEAT,Arosa,I,3551,1639,1460,2323,,,Q387120,SEAT Arosa
+SEAT,Ateca,I,4363,1841,,,,,Q22680264,SEAT Ateca
+SEAT,Exeo,I,4661,1772,,2642,,,Q1138766,SEAT Exeo
+SEAT,Ibiza,II,3876,,1422,,,,Q20926412,SEAT Ibiza II
+SEAT,Inca,I,4207,1695,1846,2601,,,Q1190050,SEAT Inca
+SEAT,Leon,I,4183,1742,1439,,,,Q15847025,SEAT León I
+SEAT,Leon,II,4315,1768,1458,2578,,,Q15847026,SEAT Leon Mk2
+SEAT,Leon,III,,1816,,2636,,,Q15847027,SEAT Leon Mk3
+SEAT,Malaga,I,4273,1650,1345,2448,,,Q1537322,SEAT Malaga
+SEAT,Marbella,I,3475,1510,1400,2160,,,Q1754781,SEAT Marbella
+SEAT,Mii,I,3557,,1478,2420,,,Q1584867,SEAT Mii
+SEAT,Ronda,I,4011,1650,1400,2448,,970,Q1853794,SEAT Ronda
+SEAT,Tarraco,I,4735,1839,1658,2790,,,Q31087057,SEAT Tarraco
+SEAT,Toledo,I,4321,1662,1423,2471,,,Q3476824,SEAT Toledo I
+SEAT,Toledo,II,4439,1742,1452,2513,,,Q3476819,SEAT Toledo II
+SEAT,Toledo,III,4467,1768,1580,2578,,,Q3476820,SEAT Toledo III
+SEAT,Toledo,IV,4483,1706,1461,2602,,,Q18412995,SEAT Toledo IV
+Saab,9-4X,I,4829,1905,1679,2807,,,Q45180,Saab 9-4X
+Saab,9-7X,I,4907,1915,1740,2870,,,Q420787,Saab 9-7X
+Saab,9000,I,4667,,1420,2670,,,Q169116,Saab 9000
+Saab,99,I,,1680,1450,2470,,,Q727502,Saab 99
+Saturn,Astra,I,4249,1804,1460,2614,,,Q1777731,Opel Astra H
+Saturn,L-Series,I,4836,,,2705,,,Q1516438,Saturn L-Series
+Saturn,Outlook,I,5098,1986,1775,,,,Q2732507,Saturn Outlook
+Saturn,Sky,I,4090,1814,1275,2415,,1334,Q1324293,Saturn Sky
+Scion,FR-S,ZN6,4240,1775,1285,2570,,,Q25536357,Scion FR-S
+Scion,iQ,AJ10,2985,1680,1500,2000,,,Q370674,Toyota iQ
+Scion,xD,XP110,3930,1725,1525,2460,,,Q1915522,Toyota Urban Cruiser
+Smart,#1,HX11,4270,1822,1636,2750,,1820,Q110916004,Smart #1
+Smart,#5,I,,,1705,,,2450,Q126681324,Smart #5
+Smart,Roadster,452,3427,1615,1192,2360,,,Q632358,Smart Roadster
+SsangYong,Actyon,C100,4460,,,,,,Q116644,SsangYong Actyon
+SsangYong,Kyron,D100,4660,1880,1755,2740,,,Q1147961,SsangYong Kyron
+SsangYong,Musso,FJ,5095,1950,1840,,,,Q60983120,SsangYong Musso (2018)
+SsangYong,Rodius,A100,5120,,,,,,Q734363,SsangYong Rodius
+SsangYong,Tivoli,X100,4202,1798,,2600,,,Q18605863,SsangYong Tivoli
+Subaru,Ascent,WM,4999,1930,1819,,,,Q48799438,Subaru Ascent
+Subaru,BRZ,ZD8,4265,1775,1310,2575,,,Q109045180,Subaru BRZ (ZD8)
+Subaru,Crosstrek,GU,4450,1750,1550,2635,,,Q2119417,Subaru XV
+Subaru,Justy,KAD,3770,,,,,,Q265163,Subaru Justy
+Subaru,Leone,III,3995,1660,1390,2470,,,Q781628,Subaru Leone
+Subaru,SVX,CXW,4625,1770,1300,2610,,,Q609454,Subaru Alcyone SVX
+Subaru,Solterra,I,4690,1860,1650,2850,,,Q106798021,Subaru Solterra
+Subaru,Trezia,P120,3990,1695,1595,2550,,,Q2361548,Subaru Trezia
+Subaru,Tribeca,WX,4865,1880,,2750,,,Q1421437,Subaru Tribeca
+Suzuki,Across,AXAP54,,,,2690,,,Q97594498,Suzuki Across
+Suzuki,Cappuccino,EA11R,3295,1395,1185,2060,,725,Q2140029,Suzuki Cappuccino
+Suzuki,Celerio,LF,3600,1600,,2430,,,Q16725870,Suzuki Celerio
+Suzuki,Kizashi,RE,4650,1820,1470,2700,,,Q1783541,Suzuki Kizashi
+Suzuki,Liana,ER,4230,,1550,2480,,,Q743470,Suzuki Aerio
+Suzuki,SJ,SJ410,,1350,1680,,,,Q2260204,Suzuki Samurai
+Suzuki,Splash,EX,3715,1680,1590,2360,,1050,Q679435,Suzuki Splash
+Suzuki,Swace,ZWE211,4630,1790,1435,2700,,,Q99521727,Suzuki Swace
+Suzuki,Vitara,LY,4175,1775,1610,2500,,,Q18413302,Suzuki Vitara (2015)
+Suzuki,Wagon R+,MM,3395,,,,,,Q3090006,Mazda AZ-Wagon
+Suzuki,X-90,LB,3710,1700,1560,2200,,1070,Q1999391,Suzuki X-90
+Suzuki,e Vitara,I,4275,1800,1635,2700,,,Q130899798,Suzuki e Vitara
+Talbot,Horizon,I,3960,1680,1410,2520,,950,Q1362801,Talbot Horizon
+Talbot,Samba,I,,1528,1362,,,740,Q629268,Talbot Samba
+Talbot,Solara,I,4393,1680,,2604,,1040,Q964709,Talbot Solara
+Tata,Nexon,I,3994,1811,1607,2498,,,Q44954468,Tata Nexon
+Tata,Punch,I,3827,1742,1615,2445,,,Q108443942,Tata Punch
+Tata,Safari,II,4650,1918,1925,2650,,1920,Q1110581,Tata Safari
+Tata,Tiago,I,3746,1647,1475,2400,,,Q23637398,Tata Tiago
+Tesla,Cybertruck,I,5885,2027,1905,3807,,,Q66311587,Tesla Cybertruck
+Tesla,Model 3,I,4694,,1436,2875,,,Q7705507,Tesla Model 3
+Tesla,Model X,I,5037,1999,1684,2964,,,Q1634161,Tesla Model X
+Tesla,Model Y,I,4750,,1623,2891,,2003,Q42298250,Tesla Model Y
+Tesla,Roadster,I,3946,1873,1127,2352,,,Q210893,Tesla Roadster
+Toyota,Aygo X,AB70,3700,1740,1525,2430,,940,Q108861786,Toyota Aygo X
+Toyota,C-HR,AX10,4360,1795,1550,2640,,,Q133261543,Toyota C-HR (AX10/AX50)
+Toyota,C-HR,AX20,4360,1830,1540,2640,,,Q124672626,Toyota C-HR (AX20)
+Toyota,Camry,XV70,4880,1840,1450,2820,,,Q104541218,Toyota Camry (XV70)
+Toyota,Carina,E,3912,,,,,,Q1150087,Toyota Corona
+Toyota,Corolla,E120,4530,1705,1490,2600,,,Q2726227,Toyota Corolla E120
+Toyota,Corolla,E170,4620,1775,1455,2700,,,Q16879264,Toyota Corolla (E170/E180)
+Toyota,Corolla Verso,AR10,4135,,,,,,Q1483444,Toyota Corolla Verso
+Toyota,FJ Cruiser,XJ10,4671,1895,1840,2690,,,Q1342708,Toyota FJ Cruiser
+Toyota,GR86,ZN8,4265,1775,1310,2575,,,Q106388685,Toyota GR86
+Toyota,GT86,ZN6,4240,1775,1285,2570,,,Q1138779,Toyota 86
+Toyota,Highlander,XU40,4785,1910,1760,2790,,,Q97183332,Toyota Highlander (XU40)
+Toyota,Highlander,XU70,4950,1930,1730,2850,,,Q97183339,Toyota Highlander (XU70)
+Toyota,Land Cruiser,J100,,,,2850,,,Q90998778,Toyota Land Cruiser (J100)
+Toyota,Land Cruiser,J200,,,,2850,,,Q3536065,Toyota Land Cruiser (J200)
+Toyota,Land Cruiser,J300,,,,2850,,,Q110899824,Toyota Land Cruiser (J300)
+Toyota,Land Cruiser,J80,,,,2850,,,Q110899968,Toyota Land Cruiser (J80)
+Toyota,Mirai,JPD20,4975,1885,1470,2920,,,Q97368241,Toyota Mirai (JPD20)
+Toyota,Picnic,XM10,4530,1695,1660,2735,,,Q14607963,Toyota Picnic
+Toyota,Prius+,ZVW40,4615,1775,1600,2780,,,Q2297034,Toyota Prius V
+Toyota,Supra,A70,4620,1745,1300,2595,,1600,Q90925185,Toyota Supra (A70)
+Toyota,Supra,A80,4520,1810,1275,2550,,1510,Q2447212,Toyota Supra (A80)
+Toyota,Supra,A90,4380,1865,1290,2470,,1520,Q62032729,Toyota Supra (J29/DB)
+Toyota,Urban Cruiser,XP110,3930,1725,1525,2460,,,Q1915522,Toyota Urban Cruiser
+Toyota,Verso,AR20,3990,1695,1595,2550,,,Q14551699,Toyota Verso-S
+Toyota,Yaris,XP10,,,,2370,,,Q106612214,Toyota Yaris (XP10)
+Toyota,Yaris,XP130,3885,1695,1500,2510,,,Q110903182,Toyota Yaris (XP130)
+Toyota,Yaris,XP210,3940,1695,1470,2550,,,Q106244191,Toyota Yaris (XP210)
+Toyota,Yaris Cross,XP210,4180,1765,1560,2560,,1110,Q91621558,Toyota Yaris Cross
+Toyota,bZ4X,EA10,4690,1850,1650,2850,,1920,Q106481505,Toyota bZ4X
+Toyota,iQ,AJ10,2985,1680,1500,2000,,,Q370674,Toyota iQ
+Trabant,1.1,P1.1,,,,2020,,,Q2379210,Trabant 1.1
+Trabant,601,P601,3555,1505,1437,2020,,,Q644067,Trabant 601
+VinFast,Lux A2.0,I,,1900,1414,,,,Q56886475,VinFast LUX A2.0
+VinFast,Lux SA2.0,I,,1960,1773,,,,Q57436089,VinFast LUX SA2.0
+Volkswagen,Arteon,I,4862,1871,1427,2837,,,Q28064385,Volkswagen Arteon
+Volkswagen,Atlas,I,5037,1979,1768,2979,,,Q27765737,Volkswagen Atlas
+Volkswagen,Beetle,II,4278,,,,,,Q1968742,Volkswagen Beetle
+Volkswagen,Bora,IV,4380,1735,,2513,,,Q1417237,Volkswagen Bora
+Volkswagen,Corrado,I,4030,1674,1318,2470,,,Q917166,Volkswagen Corrado
+Volkswagen,Eos,I,4407,1791,1443,2578,,,Q500665,Volkswagen Eos
+Volkswagen,Fox,I,3828,,,,,,Q918047,Volkswagen Fox
+Volkswagen,Golf,I,3705,1610,1390,2400,,750,Q1545536,Volkswagen Golf Mk1
+Volkswagen,Golf,II,3980,1665,1415,2475,,845,Q1393500,Volkswagen Golf Mk2
+Volkswagen,Golf,III,4020,1695,1405,2471,,960,Q1361914,Volkswagen Golf Mk3
+Volkswagen,Golf,IV,4148,1735,1439,2512,,1050,Q1419308,Volkswagen Golf Mk4
+Volkswagen,Golf,V,4202,1759,1470,2578,,1155,Q1428988,Volkswagen Golf Mk5
+Volkswagen,Golf,VI,4200,1779,1461,2578,,1217,Q1417956,Volkswagen Golf Mk6
+Volkswagen,Golf,VII,4255,1799,1452,2637,,1205,Q62362,Volkswagen Golf Mk7
+Volkswagen,Golf,VIII,4284,1789,1466,2619,,1255,Q56403002,Volkswagen Golf Mk8
+Volkswagen,Golf Plus,I,4206,1759,1580,2578,,,Q1886304,Volkswagen Golf Plus
+Volkswagen,Golf Sportsvan,I,4340,1807,,2685,,,Q15305557,Volkswagen Golf Sportsvan
+Volkswagen,ID.3,I,4261,1809,1568,2770,,1600,Q63636478,Volkswagen ID.3
+Volkswagen,ID.4,I,4585,1852,1636,2765,,,Q86668068,Volkswagen ID.4
+Volkswagen,ID.5,I,4599,1852,1618,2771,,,Q107938216,Volkswagen ID.5
+Volkswagen,ID.7,I,4961,1862,1538,2966,,2122,Q116044540,Volkswagen ID.7
+Volkswagen,Jetta,I,4195,1610,1410,2400,,,Q2506811,Volkswagen Jetta I
+Volkswagen,Jetta,II,,,,2475,,,Q282455,Volkswagen Jetta II
+Volkswagen,Jetta,V,4554,1781,1459,2578,,,Q2506848,Volkswagen Jetta V
+Volkswagen,Jetta,VI,,1778,1482,2651,,,Q1537473,Volkswagen Jetta VI
+Volkswagen,Jetta,VII,4702,1799,1474,,,1331,Q56218637,Volkswagen Jetta VII
+Volkswagen,Käfer,Typ 1,,,1500,,,,Q152946,Volkswagen Beetle
+Volkswagen,Lupo,I,3527,1639,1459,2320,,,Q817309,Volkswagen Lupo
+Volkswagen,Multivan,T7,4973,1941,1903,3124,,,Q107185864,Volkswagen Multivan T7
+Volkswagen,New Beetle,I,4080,1721,1498,2515,,,Q622618,Volkswagen New Beetle
+Volkswagen,New Beetle Cabriolet,I,4278,,,,,,Q1968742,Volkswagen Beetle
+Volkswagen,Passat,B2,4545,1685,1385,2550,,,Q2506888,VW Santana B2
+Volkswagen,Passat,B3,4575,1705,,,,,Q1784892,Volkswagen Passat B3
+Volkswagen,Passat,B4,,1720,,,,,Q1785526,Volkswagen Passat B4
+Volkswagen,Passat,B6,,1820,,2709,,,Q2007788,Volkswagen Passat B6
+Volkswagen,Passat,B7,,1820,,2712,,,Q1140232,Volkswagen Passat B7
+Volkswagen,Passat,B8,,1832,,2791,,,Q15305561,Volkswagen Passat B8
+Volkswagen,Passat CC,I,4000,1855,,,,,Q910892,VW CC
+Volkswagen,Passat NMS,I,,,,2803,,,Q2506880,Volkswagen Passat NMS
+Volkswagen,Phaeton,I,,1903,1450,,,,Q158736,Volkswagen Phaeton
+Volkswagen,Polo,I,3512,1560,1344,2335,,,Q2712614,Volkswagen Polo Mk1
+Volkswagen,Polo,II,,1570,,2335,,,Q460634,Volkswagen Polo Mk2
+Volkswagen,Polo,III,3715,1655,1420,2400,,,Q500900,Volkswagen Polo Mk3
+Volkswagen,Polo,IV,3897,,,,,,Q1468621,Volkswagen Polo Mk4
+Volkswagen,Polo,V,,1682,,2470,,,Q2063072,Volkswagen Polo Mk5
+Volkswagen,Polo,VI,4053,1751,1461,2548,,,Q30349121,Volkswagen Polo VI
+Volkswagen,Routan,I,5144,1953,1750,3078,,2100,Q1450822,Volkswagen Routan
+Volkswagen,Scirocco,I,3850,1625,1310,2398,,,Q18029036,Volkswagen Scirocco I
+Volkswagen,Scirocco,II,4050,1625,1230,2400,,,Q18029037,Volkswagen Scirocco II
+Volkswagen,Scirocco,III,4256,1810,,2578,,,Q18029039,Volkswagen Scirocco III
+Volkswagen,Sharan,II,4854,1904,1720,2919,,,Q2506933,Volkswagen Sharan II
+Volkswagen,T-Cross,I,4108,1760,1584,,,1275,Q39075622,Volkswagen T-Cross
+Volkswagen,T-Roc,I,4234,1819,1573,2590,,,Q15966358,Volkswagen T-Roc
+Volkswagen,Taigo,I,,,1493,2566,,1199,Q95984320,Volkswagen Taigo
+Volkswagen,Tayron,I,4792,1853,1666,2789,,1682,Q130526133,Volkswagen Tayron I
+Volkswagen,Tiguan,I,4426,1809,1703,2604,,1501,Q66723843,Volkswagen Tiguan I
+Volkswagen,Tiguan,II,4486,1839,1632,2681,,1490,Q27903023,Volkswagen Tiguan II
+Volkswagen,Tiguan,III,4539,1842,1656,2677,,1598,Q122382000,Volkswagen Tiguan III
+Volkswagen,Touareg,I,4754,1928,1726,2855,,,Q2506940,Volkswagen Touareg I
+Volkswagen,Touareg,II,,1940,1709,2893,,,Q1278173,Volkswagen Touareg II
+Volkswagen,Touareg,III,4878,1984,1717,,,,Q55524893,Volkswagen Touareg III
+Volkswagen,Touran,I,,,,2678,,,Q15229546,Volkswagen Touran I
+Volkswagen,Touran,II,4527,1829,,2786,,,Q15229553,Volkswagen Touran II
+Volkswagen,Transporter,T3,,1844,,,,,Q1340673,Volkswagen Type 2 (T3)
+Volkswagen,Transporter,T4,,1840,,,,,Q3222834,Volkswagen Transporter T4
+Volkswagen,Transporter,T5,4890,,,,,,Q3565043,Volkswagen Transporter T5
+Volkswagen,Vento,III,4380,1695,,2475,,,Q1418315,Volkswagen Vento
+Volkswagen,up!,I,3540,,1478,,,,Q748949,Volkswagen Up!
+Volvo,240,I,,1707,,2640,,,Q1341143,Volvo 200 Series
+Volvo,340,I,4190,1660,1440,,,,Q31197634,Volvo 340
+Volvo,440,I,4345,1686,1378,2505,,,Q1755083,Volvo 440/460
+Volvo,480,I,4258,1710,1318,2505,,,Q580813,Volvo 480
+Volvo,740,I,4785,1760,,2770,,,Q1487993,Volvo 740
+Volvo,760,I,,,,2770,,,Q1935403,Volvo 760
+Volvo,850,I,,1760,,2664,,,Q379074,Volvo 850
+Volvo,C30,I,4252,1782,1447,2640,,,Q835043,Volvo C30
+Volvo,C70,II,4720,1820,1410,2660,,1450,Q90925149,Volvo C70 N
+Volvo,EX30,I,4233,1836,1549,,,,Q116769123,Volvo EX30
+Volvo,EX90,I,5037,2039,1747,2984,,,Q114665967,Volvo EX90
+Volvo,S70,I,4722,1761,1403,2664,,,Q1537829,Volvo S70
+Volvo,S90,II,4963,1879,1443,,,,Q20916608,Volvo S90
+Volvo,V40,II,4369,1802,1445,2647,,,Q1574600,Volvo V40
+Volvo,XC40,I,4425,1863,1652,2702,,,Q28127228,Volvo XC40
+Voyah,Dreamer,I,5315,1980,,,,,Q111938104,Voyah Dreamer
+Voyah,Free,I,4905,1950,,2955,,,Q107123350,Voyah Free
+Wartburg,1.3,1.3,4216,1644,1495,2450,,,Q3559613,Wartburg 1.3
+Wartburg,353,353,,1640,1495,2450,,,Q2536748,Wartburg 353
+Wuling,Air EV,I,2599,1505,1631,1635,,,Q112210974,Wuling Air EV
+Wuling,Hongguang Mini EV,I,2917,1493,1621,1940,,665,Q101479666,Wuling Hongguang Mini EV
+Xiaomi,SU7,I,4997,1963,1455,3000,,,Q123470261,Xiaomi SU7
+Xiaomi,YU7,I,4999,1996,1600,3000,,,Q127792241,Xiaomi YU7
+Xpeng,G3,I,4450,1820,,,,,Q65082073,XPeng G3
+Xpeng,Mona M03,I,4780,1896,1445,2815,,,Q127476103,XPeng Mona M03
+Xpeng,P5,I,4808,1840,1530,2768,,,Q106635160,XPeng P5
+Xpeng,P7,I,5056,1937,1512,3000,,,Q130527663,XPeng P7+
+Xpeng,P7+,I,5056,1937,1512,3000,,,Q130527663,XPeng P7+
+Xpeng,X9,I,5293,1988,1785,3160,,,Q123498159,Xpeng X9
+Zeekr,001,I,4970,1990,1560,3000,,,Q106553049,Zeekr 001
+Zeekr,009,I,5209,2024,,3205,,,Q114608144,Zeekr 009
+Zeekr,7X,I,4825,1930,1656,2925,,,Q127874036,Zeekr 7X
+Zeekr,X,I,,,1572,2750,,1885,Q116817491,Zeekr X
+Škoda,105/120/130,Estelle,4170,1610,1380,2400,,855,Q257346,Škoda Garde
+Škoda,Citigo,I,3563,1641,1478,2420,,,Q391963,Škoda Citigo
+Škoda,Enyaq,I,4655,,1616,,,,Q30753091,Škoda Enyaq iV
+Škoda,Fabia,I,,1646,,2462,,,Q391966,Škoda Fabia I
+Škoda,Fabia,II,,,,2462,,,Q391971,Škoda Fabia II
+Škoda,Fabia,III,,1732,,,,,Q18410434,Škoda Fabia III
+Škoda,Favorit,781,3815,1620,1415,2450,,840,Q391996,Škoda Favorit
+Škoda,Felicia,6U,4065,1600,1380,2400,,,Q391899,Škoda Felicia
+Škoda,Kamiq,I,4390,1781,1593,2610,,1277,Q52054487,Škoda Kamiq
+Škoda,Karoq,I,4382,1841,1603,2638,,1318,Q29584097,Škoda Karoq
+Škoda,Octavia,I,,1731,,,,,Q392017,Škoda Octavia I
+Škoda,Octavia,II,4572,1769,,2578,,,Q392018,Škoda Octavia II
+Škoda,Octavia,III,,1814,,,,,Q1609671,Škoda Octavia III
+Škoda,Rapid,NH,4386,1699,1466,2552,,,Q392036,Škoda Rapid (India)
+Škoda,Roomster,I,4205,1684,,2617,,,Q392071,Škoda Roomster
+Škoda,Scala,I,4362,1793,1471,2649,,,Q57340128,Škoda Scala
+Škoda,Superb,I,4803,1765,1469,2803,,,Q392063,Škoda Superb I
+Škoda,Superb,II,,1817,,2761,,,Q392067,Škoda Superb II
+Škoda,Superb,III,4861,1864,1468,2841,,,Q19758190,Škoda Superb III
+Škoda,Yeti,I,4223,1793,,,,,Q392105,Škoda Yeti

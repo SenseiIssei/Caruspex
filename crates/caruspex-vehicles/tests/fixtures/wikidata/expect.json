@@ -1,0 +1,30 @@
+{
+ "_note": "Expectations for tools/gen_dimensions.py --fixtures. The answers in this folder are real Wikidata answers (CC0), cut down to a few items; the catalog is made up for the test.",
+ "rows": {
+  "Volkswagen|Golf|VII": {"item": "Q62362", "length": 4255, "width": 1799, "height": 1452, "wheelbase": 2637, "mass": 1205},
+  "Volkswagen|Golf|VI": {"item": "Q1417956", "length": 4200, "wheelbase": 2578},
+  "Volkswagen|Golf|VIII": null,
+  "Audi|A2|8Z": {"item": "Q741656", "length": 3826, "width": 1673, "height": 1553, "wheelbase": 2405},
+  "BMW|1er|F20": {"item": "Q796490", "length": 0, "width": 1765, "wheelbase": 2690},
+  "BMW|1er|F40": null,
+  "Fiat|500|I": {"item": "Q927839", "width": 1627, "wheelbase": 2300},
+  "Tesla|Model 3|I": {"item": "Q7705507", "length": 4694, "width": 0, "height": 1436, "wheelbase": 2875},
+  "Toyota|Corolla|E170": {"item": "Q16879264", "length": 4620},
+  "Honda|Civic|IX": {"item": "Q1626573", "wheelbase": 2605},
+  "Hyundai|Atos|MX": {"item": "Q482491", "length": 3500},
+  "Ford|Sierra|I": {"item": "Q366912", "length": 4530, "width": 1698, "height": 1398, "wheelbase": 2608},
+  "Chrysler|300|II": {"item": "Q390055", "length": 5001, "height": 1483},
+  "Volvo|Amazon|I": {"item": "Q1543111", "height": 1505, "mass": 1197}
+ },
+ "skipped": {"skipped height": 1, "skipped wheelbase": 1},
+ "tokens": {
+  "Mk7": ["#7"],
+  "VII": ["#7"],
+  "(ninth generation)": ["#9"],
+  "10th generation": ["#10"],
+  "(F30)": ["f30"],
+  "(E170/E180)": ["e170", "e180"],
+  "(2019)": ["@2019"],
+  "Golf 7": ["#7", "golf"]
+ }
+}

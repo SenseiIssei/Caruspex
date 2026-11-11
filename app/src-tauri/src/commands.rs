@@ -447,6 +447,33 @@ pub async fn pick_open_path(
     Ok(ask_open_path(&app, &title, &filters).map(|p| p.display().to_string()))
 }
 
+/// The bytes of a 3D model the user picked for the X-ray view (a .glb, or a
+/// .gltf with the buffers and pictures it names next to it). Only these file
+/// types, and not more than a large model needs.
+#[tauri::command]
+pub async fn read_model_file(path: String) -> Result<tauri::ipc::Response> {
+    const TYPES: [&str; 8] = ["glb", "gltf", "bin", "png", "jpg", "jpeg", "webp", "ktx2"];
+    const LIMIT: u64 = 512 * 1024 * 1024;
+    let path = PathBuf::from(path);
+    let ext = path
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(str::to_ascii_lowercase)
+        .unwrap_or_default();
+    if !TYPES.contains(&ext.as_str()) {
+        return Err(format!("{}: not a glTF model", path.display()));
+    }
+    let size = std::fs::metadata(&path).map_err(|e| e.to_string())?.len();
+    if size > LIMIT {
+        return Err(format!("{}: larger than 512 MB", path.display()));
+    }
+    tauri::async_runtime::spawn_blocking(move || std::fs::read(&path))
+        .await
+        .map_err(|e| e.to_string())?
+        .map(tauri::ipc::Response::new)
+        .map_err(|e| e.to_string())
+}
+
 // --- Garage ----------------------------------------------------------------------------------
 
 #[tauri::command]

@@ -141,6 +141,26 @@
 .xray-car { display: flex; flex-direction: column; gap: 6px; }
 .xray-reason { margin-top: 6px; line-height: 1.45; }
 .xray-select { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+/* Where the shape comes from: Wikidata, typical values or the own model. */
+.xray-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+}
+.xray-source[data-source="wikidata"] { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.xray-source[data-source="model"] { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.xray-source .hint { font-weight: 400; }
+.xray-model { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border, rgba(127, 127, 127, 0.2)); }
+.xray-model-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+.xray-model-error { color: var(--bad); }
 
 .xray-ecus { display: flex; flex-direction: column; gap: 10px; }
 .xray-ecu-list { display: flex; flex-direction: column; gap: 2px; max-height: 360px; overflow-y: auto; }
