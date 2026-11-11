@@ -34,7 +34,7 @@ shot() {   # name page delay
 shot overview start 7000
 shot faults faults 7000
 shot live live-run 16000
-shot health health-run 16000
+shot health health-run 19000
 shot adapter adapter-run 9000
 shot ecus ecus-run 16000
 shot vehicles vehicles 5000

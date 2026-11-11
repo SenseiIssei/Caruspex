@@ -1,5 +1,9 @@
 # Caruspex
 
+<!-- languages -->
+**English** · [Deutsch](README.de.md)
+<!-- /languages -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -16,7 +20,7 @@ The application speaks 18 languages, the interface and every fault code text ali
 French, Portuguese, Italian, Dutch, Polish, Czech, Russian, Ukrainian, Turkish, Arabic (right to left), Chinese,
 Japanese, Korean, Hindi and Indonesian. It follows the system language, can be switched in the settings, or
 forced per run with `--language fr` and so on. How translations are made and checked is in
-[translations/TRANSLATING.md](translations/TRANSLATING.md). [Deutsche Fassung dieser Seite](README.de.md)
+[translations/TRANSLATING.md](translations/TRANSLATING.md).
 
 ![Overview with live gauges](docs/screenshot-overview.png)
 

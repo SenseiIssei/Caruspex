@@ -92,24 +92,24 @@
   flex: none;
   display: flex;
   flex-direction: column;
-  padding: 14px 10px 12px;
+  padding: 10px 10px 8px;
   background: var(--sidebar);
   border-inline-end: 1px solid var(--border);
   transition: width 240ms var(--ease), padding 240ms var(--ease);
   overflow: hidden;
 }
 .sidebar.compact { width: 68px; }
-.sidebar-scroll { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 2px; padding-inline-end: 2px; }
+.sidebar-scroll { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 1px; padding-inline-end: 2px; }
 .sidebar-divider { height: 1px; background: var(--border); margin: 6px 2px; flex: none; }
-.sidebar-bottom { display: flex; flex-direction: column; gap: 2px; flex: none; }
-.nav-group { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-bottom { display: flex; flex-direction: column; gap: 1px; flex: none; }
+.nav-group { display: flex; flex-direction: column; gap: 1px; }
 .nav-section {
   color: var(--text-faint);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: var(--tracking-section);
   text-transform: uppercase;
-  padding: 10px 12px 2px;
+  padding: 8px 12px 2px;
   white-space: nowrap;
   overflow: hidden;
   transition: max-height 240ms var(--ease), padding 240ms var(--ease);
@@ -122,7 +122,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 36px;
+  height: 34px;
   padding: 0 10px 0 12px;
   border-radius: 10px;
   border: 1px solid transparent;
