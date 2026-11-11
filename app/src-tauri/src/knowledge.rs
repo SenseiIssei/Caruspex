@@ -16,7 +16,9 @@ use caruspex_data::pids::{
 use caruspex_data::severity::severity_label;
 use caruspex_i18n::{Language, language, translate_core_owned, with_language};
 use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
-use caruspex_record::{built_in_packs, pack_category, pack_names, pack_title};
+use caruspex_record::{
+    built_in_packs, obdb_pack_pids, obdb_packs_for, pack_category, pack_names, pack_title,
+};
 use caruspex_vehicles::catalog::{self, VehicleGeneration};
 use caruspex_vehicles::vin::VinInfo;
 use serde_json::{Value, json};
@@ -248,6 +250,46 @@ pub fn pid_packs() -> Value {
     Value::Array(out)
 }
 
+/// The OBDb packs for a car of the catalog (generation id and model year,
+/// 0 = any), in the shape of [`pid_packs`]. Empty without a generation. The
+/// value names stay as OBDb writes them; the titles are translated.
+pub fn obdb_packs(generation_id: Option<usize>, year: i32) -> Value {
+    let Some(g) = generation_id.and_then(|id| catalog::all().get(id)) else {
+        return Value::Array(Vec::new());
+    };
+    let packs = obdb_packs_for(g.brand, g.model, year);
+    Value::Array(
+        packs
+            .into_iter()
+            .map(|pack| {
+                let values: Vec<CustomRow> = obdb_pack_pids(&pack.id)
+                    .into_iter()
+                    .map(|p| CustomRow {
+                        key: p.key,
+                        name: p.name,
+                        short_name_en: p.short_name.clone(),
+                        short_name: p.short_name,
+                        unit: p.unit,
+                        pack: p.pack,
+                        source: p.source,
+                        request: p.request,
+                        header: p.header,
+                    })
+                    .collect();
+                json!({
+                    "id": pack.id,
+                    "title": pack.title(),
+                    "brand": g.brand,
+                    "description": pack.source(),
+                    "values": values,
+                    "category": pack.category() as i32,
+                    "obdb": true,
+                })
+            })
+            .collect(),
+    )
+}
+
 // --- Control units -----------------------------------------------------------------
 
 pub fn ecu_families() -> Value {
@@ -436,5 +478,30 @@ mod tests {
         assert!(match_vin("WVWZZZ1JZ3W000001")["brand"].as_str().is_some());
         assert_eq!(kkl_ecus()[0]["address"], 1);
         assert!(!ecu_families().as_array().unwrap().is_empty());
+    }
+
+    #[test]
+    fn obdb_packs_come_for_the_detected_car() {
+        let ioniq = catalog_search("ioniq 5", 5);
+        let id = ioniq[0]["id"].as_u64().unwrap() as usize;
+        let packs = obdb_packs(Some(id), 2023);
+        let list = packs.as_array().unwrap();
+        assert!(!list.is_empty());
+        let pack = &list[0];
+        assert_eq!(pack["obdb"], true);
+        assert_eq!(pack["brand"], "Hyundai");
+        assert_eq!(pack["category"], PidCategory::HybridEv as i32);
+        assert!(pack["title"].as_str().unwrap().contains("OBDb"));
+        let values = pack["values"].as_array().unwrap();
+        assert!(values.len() > 50);
+        assert!(
+            values[0]["source"]
+                .as_str()
+                .unwrap()
+                .contains("CC BY-SA 4.0")
+        );
+        // No car, a car without OBDb data, a year outside the packs.
+        assert!(obdb_packs(None, 2023).as_array().unwrap().is_empty());
+        assert!(obdb_packs(Some(id), 1990).as_array().unwrap().is_empty());
     }
 }

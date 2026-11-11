@@ -36,7 +36,7 @@ use caruspex_protocols::{
 };
 use caruspex_record::{
     CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, USER_KEY_BASE, active_recording,
-    built_in_packs, parse_torque_csv, recording_summary, start_recording, stop_recording,
+    built_in_packs, obdb_pid, parse_torque_csv, recording_summary, start_recording, stop_recording,
 };
 use serde::Serialize;
 use serde_json::{Value, json};
@@ -1545,6 +1545,7 @@ impl Worker {
             .find(|p| p.key == key)
             .or_else(|| self.user_pids.iter().find(|p| p.key == key))
             .cloned()
+            .or_else(|| obdb_pid(key))
     }
 
     /// Reads custom values and emits them; returns (ok, failed, first error).

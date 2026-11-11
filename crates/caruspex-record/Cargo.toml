@@ -11,6 +11,9 @@ caruspex-data.workspace = true
 caruspex-link.workspace = true
 caruspex-protocols.workspace = true
 caruspex-net.workspace = true
+miniz_oxide.workspace = true
 
 [dev-dependencies]
 caruspex-demo.workspace = true
+caruspex-vehicles.workspace = true
+serde_json.workspace = true

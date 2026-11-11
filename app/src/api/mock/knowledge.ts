@@ -14,4 +14,5 @@ export const knowledgeHandlers: PartialHandlers = {
   pid_table: () => pidTable(),
   default_live_pids: () => DEFAULT_LIVE_PIDS,
   pid_packs: () => [],
+  obdb_packs: () => [],
 };

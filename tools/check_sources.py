@@ -5,7 +5,8 @@
 
 Checked:
   - the WMI list on Wikibooks: codes there that crates/caruspex-vehicles/src/vin.rs does not know
-  - OBDb: number of vehicle repositories (github.com/OBDb, CC BY-SA 4.0)
+  - OBDb: number of vehicle repositories (github.com/OBDb, CC BY-SA 4.0) and how many
+    changed since the packs in data/obdb were made (tools/gen_obdb.py)
   - opendbc (comma.ai, MIT) and model3dbc (MIT): newest commit
 
 Exit code 0 when nothing changed, 10 when there is something to look at, so
@@ -64,6 +65,21 @@ def obdb_count() -> int:
     return int(data["total_count"])
 
 
+def obdb_import_date() -> str:
+    """The date of the OBDb data in data/obdb (written by tools/gen_obdb.py)."""
+    path = os.path.join(ROOT, "data", "obdb", "ATTRIBUTION.md")
+    if not os.path.exists(path):
+        return ""
+    m = re.search(r"as of (\d{4}-\d{2}-\d{2})", open(path, encoding="utf-8").read())
+    return m.group(1) if m else ""
+
+
+def obdb_pushed_after(date: str) -> int:
+    data = json.loads(fetch(f"https://api.github.com/search/repositories?q=org:OBDb+pushed:%3E{date}",
+                            api=True))
+    return int(data["total_count"])
+
+
 def main() -> int:
     state = json.load(open(STATE, encoding="utf-8")) if os.path.exists(STATE) else {}
     current = dict(state)
@@ -97,6 +113,15 @@ def main() -> int:
     if count != state.get("obdb_repositories"):
         changed = True
         lines.append(f"**OBDb: {count} Fahrzeuge (vorher {state.get('obdb_repositories', '?')})**")
+    imported = obdb_import_date()
+    if imported:
+        newer = obdb_pushed_after(imported)
+        current["obdb_changed_since_import"] = newer
+        if newer and newer != state.get("obdb_changed_since_import"):
+            changed = True
+            lines.append(f"**OBDb: {newer} Repositories seit dem Import ({imported}) geändert.** "
+                         "Pakete neu erzeugen: `py -I tools/gen_obdb.py --fetch`, dann "
+                         "`py -I tools/gen_obdb.py`, Tests laufen lassen, `data/obdb` committen.")
     for key, repo in (("opendbc_commit", "commaai/opendbc"), ("model3dbc_commit", "joshwardell/model3dbc")):
         sha = newest_commit(repo)
         current[key] = sha

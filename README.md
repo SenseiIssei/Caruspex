@@ -464,6 +464,9 @@ respective owners; Caruspex is not affiliated with or endorsed by any vehicle ma
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled fonts are licensed under the SIL Open Font License 1.1:
+MIT, see [LICENSE](LICENSE). The manufacturer values for hundreds of models are converted from
+[OBDb](https://github.com/OBDb) and, like OBDb, licensed under CC BY-SA 4.0: they live apart from the code in
+[data/obdb](data/obdb) with the licence and the list of sources ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+The bundled fonts are licensed under the SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) and
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

@@ -200,6 +200,13 @@ fn run(argv: &[String]) -> i32 {
         }
     }
     let mut custom = None;
+    if command == "custom"
+        && opt.csv_path.is_empty()
+        && let Some(query) = commands::obdb_query(&opt.pack)
+    {
+        // Only a list, no adapter needed.
+        return commands::list_obdb_packs(query, as_json);
+    }
     if command == "custom" {
         match commands::load_custom_pids(&opt.pack, &opt.csv_path, opt.demo) {
             Ok(c) => custom = Some(c),

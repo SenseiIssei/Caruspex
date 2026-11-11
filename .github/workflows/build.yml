@@ -55,8 +55,12 @@ jobs:
           python tools/gen_vehicles.py
           python tools/gen_ecus.py
           python tools/gen_pids.py
+          # The OBDb packs need the download cache and are refreshed by hand
+          # (see tools/gen_obdb.py); the conversion is checked offline on
+          # real OBDb commands with their recorded answers.
+          python tools/gen_obdb.py --fixtures
           git add --intent-to-add crates
-          git diff --exit-code -- 'crates/*/src/generated'
+          git diff --exit-code -- 'crates/*/src/generated' 'crates/caruspex-record/tests/fixtures'
 
       # Every text in every language: new texts in the code must be
       # translated before they reach main (see translations/TRANSLATING.md).

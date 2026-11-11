@@ -42,6 +42,7 @@ libloading = "0.8"
 btleplug = "0.11"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
 clap = { version = "4", features = ["derive"] }
+miniz_oxide = "0.8"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
 
 [profile.release]
