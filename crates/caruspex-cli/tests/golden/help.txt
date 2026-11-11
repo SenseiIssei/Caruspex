@@ -43,6 +43,8 @@ Options:
                       adapter refuses it or answers go missing
   --pack NAME         built-in pack for custom (the demo car's pack with --demo if
                       left out); an unknown name lists the packs
+  --pack obdb:QUERY   lists the packs from OBDb for a make, model or model
+                      year ("obdb:toyota prius 2018"); --pack obdb-... reads one
   --csv FILE          Torque CSV for custom (Name,ShortName,ModeAndPID,Equation,
                       Min Value,Max Value,Units,Header), instead of a pack
   -v                  log every command sent to the adapter
