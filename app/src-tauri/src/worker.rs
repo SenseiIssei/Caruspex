@@ -1531,10 +1531,13 @@ impl Worker {
     // and the battery of electric cars, judged by analysis::used_car.
     fn run_used_car_check(&mut self, papers_vin: &str) {
         if !self.obd_ready {
-            self.failed(w(
-                "Für die Gebrauchtwagen-Prüfung erst verbinden.",
-                "Connect first to check a used car.",
-            ));
+            self.failed(
+                l(
+                    "Für die Gebrauchtwagen-Prüfung erst verbinden.",
+                    "Connect first to check a used car.",
+                )
+                .to_string(),
+            );
             return;
         }
         self.stop_live();
@@ -1554,7 +1557,7 @@ impl Worker {
 
         progress(
             self,
-            w("Fahrgestellnummer", "Vehicle identification number"),
+            l("Fahrgestellnummer", "Vehicle identification number").to_string(),
             4,
         );
         let vin = self.with_obd(|o| o.read_vin());
@@ -1609,10 +1612,11 @@ impl Worker {
 
         progress(
             self,
-            w(
+            l(
                 "Kilometerstand und letztes Löschen",
                 "Mileage and last clearing",
-            ),
+            )
+            .to_string(),
             22,
         );
         let supported = self.with_obd(|o| o.supported_pids());
@@ -1648,10 +1652,11 @@ impl Worker {
         if !odometers.is_empty() {
             progress(
                 self,
-                w(
+                l(
                     "Kilometerstand in weiteren Steuergeräten",
                     "Mileage in other control units",
-                ),
+                )
+                .to_string(),
                 30,
             );
             let readings = {
@@ -1676,7 +1681,7 @@ impl Worker {
                 .find(|p| pack_category(p) == PidCategory::HybridEv)
                 .copied();
             if let Some(pack) = battery_pack {
-                progress(self, w("Akku", "Battery"), 36);
+                progress(self, l("Akku", "Battery").to_string(), 36);
                 input.battery = Some(self.read_battery(pack));
             }
         }
