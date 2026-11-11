@@ -1,7 +1,8 @@
 // Settings that are stored permanently (Settings.h/.cpp).
 //
 // The Qt version kept them in QSettings: on Windows the registry under
-// HKCU\Software\Caruspex\Caruspex, on Linux ~/.config/Caruspex/Caruspex.conf.
+// HKCU\Software\Caruspex\Caruspex, on Linux ~/.config/Caruspex/Caruspex.conf,
+// on macOS ~/Library/Preferences/com.caruspex.Caruspex.plist.
 // Here they live in settings.json in the app's config folder; on the first
 // start the old values are read once and carried over.
 use std::path::{Path, PathBuf};
@@ -151,9 +152,10 @@ pub mod legacy {
     /// A value as QSettings stored it: number, flag or text.
     #[derive(Clone, Debug, PartialEq)]
     pub enum Value {
-        /// Only the Windows registry stores numbers as numbers; the Linux and
-        /// macOS files of the Qt version hold everything as text.
-        #[cfg_attr(not(windows), allow(dead_code))]
+        /// The Windows registry and the macOS property list store numbers
+        /// (and on macOS flags) as such; the Linux file holds everything as
+        /// text.
+        #[cfg_attr(not(any(windows, target_os = "macos", test)), allow(dead_code))]
         Int(i64),
         Text(String),
     }
@@ -257,6 +259,45 @@ pub mod legacy {
         out
     }
 
+    /// Parses the property list QSettings writes on macOS (binary or XML).
+    /// qsettings_mac.cpp keeps one flat dictionary and joins group and key
+    /// with a dot ("verbindung.baud"); a slash or a nested dictionary per
+    /// group is read as well. Flags come as booleans, numbers as integers.
+    #[cfg(any(target_os = "macos", test))]
+    pub fn parse_plist(bytes: &[u8]) -> Option<std::collections::HashMap<(String, String), Value>> {
+        fn value(v: &plist::Value) -> Option<Value> {
+            match v {
+                plist::Value::Boolean(b) => Some(Value::Int(i64::from(*b))),
+                plist::Value::Integer(i) => i.as_signed().map(Value::Int),
+                plist::Value::Real(r) if r.fract() == 0.0 && r.abs() < 1e15 => {
+                    Some(Value::Int(*r as i64))
+                }
+                plist::Value::Real(r) => Some(Value::Text(r.to_string())),
+                plist::Value::String(t) => Some(Value::Text(t.clone())),
+                _ => None,
+            }
+        }
+        let root = plist::Value::from_reader(std::io::Cursor::new(bytes)).ok()?;
+        let mut out = std::collections::HashMap::new();
+        for (name, item) in root.as_dictionary()? {
+            if let plist::Value::Dictionary(group) = item {
+                for (key, inner) in group {
+                    if let Some(v) = value(inner) {
+                        out.insert((name.clone(), key.clone()), v);
+                    }
+                }
+                continue;
+            }
+            let Some(v) = value(item) else { continue };
+            let (group, key) = match name.rfind(['.', '/']) {
+                Some(at) => (name[..at].to_string(), name[at + 1..].to_string()),
+                None => (String::new(), name.clone()),
+            };
+            out.insert((group, key), v);
+        }
+        Some(out)
+    }
+
     #[cfg(windows)]
     mod platform {
         use super::{AppSettings, Value, from_lookup};
@@ -312,10 +353,28 @@ pub mod legacy {
         }
     }
 
-    // macOS kept them in a binary property list
-    // (~/Library/Preferences/com.caruspex.Caruspex.plist), which is not read
-    // here; the settings start from their defaults there.
-    #[cfg(not(any(windows, target_os = "linux")))]
+    #[cfg(target_os = "macos")]
+    mod platform {
+        use super::{AppSettings, from_lookup, parse_plist};
+
+        /// QSettings("Caruspex", "Caruspex") on macOS: the organisation
+        /// becomes the domain caruspex.com, reversed to com.caruspex, and the
+        /// application name is appended (qsettings_mac.cpp, comify).
+        pub const DOMAIN: &str = "com.caruspex.Caruspex";
+
+        pub fn read() -> Option<AppSettings> {
+            let file = dirs::home_dir()?
+                .join("Library")
+                .join("Preferences")
+                .join(format!("{DOMAIN}.plist"));
+            let map = parse_plist(&std::fs::read(file).ok()?)?;
+            Some(from_lookup(|group, key| {
+                map.get(&(group.to_string(), key.to_string())).cloned()
+            }))
+        }
+    }
+
+    #[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
     mod platform {
         use super::AppSettings;
 
@@ -327,7 +386,7 @@ pub mod legacy {
 
 #[cfg(test)]
 mod tests {
-    use super::legacy::{Value, from_lookup, parse_ini};
+    use super::legacy::{Value, from_lookup, parse_ini, parse_plist};
     use super::*;
 
     #[test]
@@ -374,6 +433,37 @@ mod tests {
         assert!(v.auto_connect);
         assert_eq!(v.last_port, "/dev/ttyUSB0");
         assert_eq!(v.clear_attempts, 5);
+    }
+
+    #[test]
+    fn reads_the_qt_property_list() {
+        // A binary plist as QSettings writes it on macOS.
+        let bytes = include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/data/qt-settings-macos.plist"
+        ));
+        let map = parse_plist(bytes).unwrap();
+        assert_eq!(
+            map.get(&("verbindung".into(), "baud".into())),
+            Some(&Value::Int(38400))
+        );
+        let v = from_lookup(|g, k| map.get(&(g.to_string(), k.to_string())).cloned());
+        assert_eq!(v.language, "fr");
+        assert_eq!(v.appearance, "light");
+        assert_eq!(v.baud_override, 38400);
+        assert_eq!(v.protocol_order, "can");
+        assert!(v.auto_connect);
+        assert_eq!(v.last_port, "/dev/cu.usbserial-110");
+        assert_eq!(v.poll_interval_ms, 50);
+        assert!(!v.confirm_clear);
+        assert_eq!(v.basic_setting_session, 0x89);
+        assert_eq!(v.log_path, "/Users/fahrer/caruspex.log");
+        assert!(!v.check_updates);
+        // Not in the file: the defaults.
+        assert_eq!(v.clear_attempts, 5);
+        assert!(v.remember_geometry);
+        // Neither a property list nor a dictionary at the top.
+        assert!(parse_plist(b"not a plist").is_none());
     }
 
     #[test]

@@ -520,6 +520,7 @@ dependencies = [
  "caruspex-vehicles",
  "chrono",
  "dirs",
+ "plist",
  "serde",
  "serde_json",
  "tauri",

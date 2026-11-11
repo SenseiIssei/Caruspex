@@ -44,3 +44,10 @@ windows = { version = "0.62.2", features = [
 ] }
 windows-core = "0.62.2"
 winreg = "0.55.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# The settings of the Qt version (QSettings writes a binary property list).
+plist = "1.10.3"
+
+[dev-dependencies]
+plist = "1.10.3"
