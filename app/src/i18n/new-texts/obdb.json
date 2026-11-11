@@ -1,0 +1,94 @@
+[
+ {
+  "context": "caruspex::EvPage",
+  "de": "Für dieses Auto gibt es Werte aus OBDb: %1. Die Namen der Werte stehen dort auf Englisch.",
+  "en": "There are values from OBDb for this car: %1. Their names are in English, as OBDb writes them.",
+  "tr": {
+   "es": "Para este coche hay valores de OBDb: %1. Los nombres de los valores están en inglés, como los escribe OBDb.",
+   "fr": "Pour cette voiture, il existe des valeurs d'OBDb : %1. Leurs noms sont en anglais, comme OBDb les écrit.",
+   "pt": "Para este carro há valores do OBDb: %1. Os nomes dos valores estão em inglês, como o OBDb os escreve.",
+   "it": "Per questa auto ci sono valori da OBDb: %1. I nomi dei valori sono in inglese, come li scrive OBDb.",
+   "nl": "Voor deze auto zijn er waarden uit OBDb: %1. De namen van de waarden zijn Engels, zoals OBDb ze schrijft.",
+   "pl": "Dla tego auta są wartości z OBDb: %1. Nazwy wartości są po angielsku, tak jak zapisuje je OBDb.",
+   "cs": "Pro toto auto jsou k dispozici hodnoty z OBDb: %1. Názvy hodnot jsou anglicky, tak jak je píše OBDb.",
+   "ru": "Для этого автомобиля есть значения из OBDb: %1. Названия значений на английском, как их записывает OBDb.",
+   "uk": "Для цього автомобіля є значення з OBDb: %1. Назви значень англійською, як їх записує OBDb.",
+   "tr": "Bu araç için OBDb'den değerler var: %1. Değerlerin adları, OBDb'nin yazdığı gibi İngilizcedir.",
+   "ar": "توجد لهذه السيارة قيم من OBDb: %1. أسماء القيم بالإنجليزية كما يكتبها OBDb.",
+   "zh": "这辆车有来自 OBDb 的数值：%1。数值名称为英文，与 OBDb 中的写法相同。",
+   "ja": "この車には OBDb の値があります: %1。値の名前は OBDb の表記どおり英語です。",
+   "ko": "이 차량에는 OBDb의 값이 있습니다: %1. 값의 이름은 OBDb 표기 그대로 영어입니다.",
+   "hi": "इस कार के लिए OBDb से मान उपलब्ध हैं: %1. मानों के नाम अंग्रेज़ी में हैं, जैसे OBDb उन्हें लिखता है.",
+   "id": "Untuk mobil ini ada nilai dari OBDb: %1. Nama nilainya dalam bahasa Inggris, seperti yang ditulis OBDb."
+  }
+ },
+ {
+  "context": "caruspex::SettingsPage",
+  "de": "Lizenzen und Datenquellen",
+  "en": "Licences and data sources",
+  "tr": {
+   "es": "Licencias y fuentes de datos",
+   "fr": "Licences et sources de données",
+   "pt": "Licenças e fontes de dados",
+   "it": "Licenze e fonti dei dati",
+   "nl": "Licenties en gegevensbronnen",
+   "pl": "Licencje i źródła danych",
+   "cs": "Licence a zdroje dat",
+   "ru": "Лицензии и источники данных",
+   "uk": "Ліцензії та джерела даних",
+   "tr": "Lisanslar ve veri kaynakları",
+   "ar": "التراخيص ومصادر البيانات",
+   "zh": "许可证和数据来源",
+   "ja": "ライセンスとデータの出典",
+   "ko": "라이선스 및 데이터 출처",
+   "hi": "लाइसेंस और डेटा स्रोत",
+   "id": "Lisensi dan sumber data"
+  }
+ },
+ {
+  "context": "caruspex::SettingsPage",
+  "de": "Caruspex ist freie Software unter der MIT-Lizenz.",
+  "en": "Caruspex is free software under the MIT licence.",
+  "tr": {
+   "es": "Caruspex es software libre bajo la licencia MIT.",
+   "fr": "Caruspex est un logiciel libre sous licence MIT.",
+   "pt": "O Caruspex é software livre sob a licença MIT.",
+   "it": "Caruspex è software libero con licenza MIT.",
+   "nl": "Caruspex is vrije software onder de MIT-licentie.",
+   "pl": "Caruspex to wolne oprogramowanie na licencji MIT.",
+   "cs": "Caruspex je svobodný software pod licencí MIT.",
+   "ru": "Caruspex является свободным программным обеспечением под лицензией MIT.",
+   "uk": "Caruspex є вільним програмним забезпеченням за ліцензією MIT.",
+   "tr": "Caruspex, MIT lisansı altında özgür bir yazılımdır.",
+   "ar": "Caruspex برنامج حر مرخّص بموجب ترخيص MIT.",
+   "zh": "Caruspex 是采用 MIT 许可证的自由软件。",
+   "ja": "Caruspex は MIT ライセンスのフリーソフトウェアです。",
+   "ko": "Caruspex는 MIT 라이선스의 자유 소프트웨어입니다.",
+   "hi": "Caruspex MIT लाइसेंस के तहत मुक्त सॉफ़्टवेयर है.",
+   "id": "Caruspex adalah perangkat lunak bebas dengan lisensi MIT."
+  }
+ },
+ {
+  "context": "caruspex::SettingsPage",
+  "de": "Die Herstellerwerte für viele Modelle stammen aus OBDb (github.com/OBDb) und stehen unter der Lizenz CC BY-SA 4.0 (Namensnennung, Weitergabe unter gleichen Bedingungen). Die umgewandelten Daten liegen mit Lizenz und Liste der Quellen im Ordner data/obdb des Quellcodes.",
+  "en": "The manufacturer values for many models come from OBDb (github.com/OBDb) and are licensed under CC BY-SA 4.0 (attribution, share alike). The converted data is in the folder data/obdb of the source code, with the licence and the list of sources.",
+  "tr": {
+   "es": "Los valores del fabricante de muchos modelos proceden de OBDb (github.com/OBDb) y están bajo la licencia CC BY-SA 4.0 (reconocimiento, compartir igual). Los datos convertidos están en la carpeta data/obdb del código fuente, con la licencia y la lista de fuentes.",
+   "fr": "Les valeurs constructeur de nombreux modèles proviennent d'OBDb (github.com/OBDb) et sont sous licence CC BY-SA 4.0 (attribution, partage dans les mêmes conditions). Les données converties se trouvent dans le dossier data/obdb du code source, avec la licence et la liste des sources.",
+   "pt": "Os valores do fabricante de muitos modelos vêm do OBDb (github.com/OBDb) e estão sob a licença CC BY-SA 4.0 (atribuição, compartilha igual). Os dados convertidos estão na pasta data/obdb do código-fonte, com a licença e a lista de fontes.",
+   "it": "I valori del costruttore di molti modelli provengono da OBDb (github.com/OBDb) e sono sotto licenza CC BY-SA 4.0 (attribuzione, condividi allo stesso modo). I dati convertiti si trovano nella cartella data/obdb del codice sorgente, con la licenza e l'elenco delle fonti.",
+   "nl": "De fabriekswaarden voor veel modellen komen uit OBDb (github.com/OBDb) en vallen onder de licentie CC BY-SA 4.0 (naamsvermelding, gelijk delen). De omgezette gegevens staan met de licentie en de lijst van bronnen in de map data/obdb van de broncode.",
+   "pl": "Wartości producenta dla wielu modeli pochodzą z OBDb (github.com/OBDb) i są objęte licencją CC BY-SA 4.0 (uznanie autorstwa, na tych samych warunkach). Przekształcone dane wraz z licencją i listą źródeł znajdują się w folderze data/obdb kodu źródłowego.",
+   "cs": "Hodnoty výrobce pro mnoho modelů pocházejí z OBDb (github.com/OBDb) a jsou pod licencí CC BY-SA 4.0 (uveďte původ, zachovejte licenci). Převedená data jsou i s licencí a seznamem zdrojů ve složce data/obdb zdrojového kódu.",
+   "ru": "Значения производителя для многих моделей взяты из OBDb (github.com/OBDb) и распространяются по лицензии CC BY-SA 4.0 (с указанием авторства, на тех же условиях). Преобразованные данные вместе с лицензией и списком источников лежат в папке data/obdb исходного кода.",
+   "uk": "Значення виробника для багатьох моделей взято з OBDb (github.com/OBDb), вони поширюються за ліцензією CC BY-SA 4.0 (із зазначенням авторства, на тих самих умовах). Перетворені дані разом із ліцензією та списком джерел лежать у теці data/obdb вихідного коду.",
+   "tr": "Birçok modelin üretici değerleri OBDb'den (github.com/OBDb) gelir ve CC BY-SA 4.0 lisansı (atıf, aynı lisansla paylaş) altındadır. Dönüştürülen veriler, lisans ve kaynak listesiyle birlikte kaynak kodundaki data/obdb klasöründedir.",
+   "ar": "تأتي قيم الشركة المصنّعة لكثير من الطرازات من OBDb (github.com/OBDb) وهي مرخّصة بموجب CC BY-SA 4.0 (نسب المصنَّف، المشاركة بالمثل). توجد البيانات المحوَّلة مع الترخيص وقائمة المصادر في المجلد data/obdb من الشيفرة المصدرية.",
+   "zh": "许多车型的厂商数值来自 OBDb (github.com/OBDb)，采用 CC BY-SA 4.0 许可证（署名，相同方式共享）。转换后的数据连同许可证和来源列表位于源代码的 data/obdb 文件夹中。",
+   "ja": "多くの車種のメーカー値は OBDb (github.com/OBDb) によるもので、CC BY-SA 4.0 ライセンス（表示、継承）で提供されています。変換したデータは、ライセンスと出典の一覧とともにソースコードの data/obdb フォルダーにあります。",
+   "ko": "여러 모델의 제조사 값은 OBDb(github.com/OBDb)에서 가져온 것으로 CC BY-SA 4.0 라이선스(저작자 표시, 동일 조건 변경 허락)를 따릅니다. 변환된 데이터는 라이선스와 출처 목록과 함께 소스 코드의 data/obdb 폴더에 있습니다.",
+   "hi": "कई मॉडलों के निर्माता मान OBDb (github.com/OBDb) से आते हैं और CC BY-SA 4.0 लाइसेंस (श्रेय, समान शर्तों पर साझा) के तहत हैं. रूपांतरित डेटा लाइसेंस और स्रोतों की सूची के साथ सोर्स कोड के data/obdb फ़ोल्डर में है.",
+   "id": "Nilai pabrikan untuk banyak model berasal dari OBDb (github.com/OBDb) dan berlisensi CC BY-SA 4.0 (atribusi, berbagi serupa). Data yang telah dikonversi ada di folder data/obdb pada kode sumber, bersama lisensi dan daftar sumbernya."
+  }
+ }
+]

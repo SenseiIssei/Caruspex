@@ -427,6 +427,9 @@ export interface PidPackInfo {
   // packCategory(): PidCategory as a number, 8 (HybridEv) for the electric
   // cars, 10 (Custom) for the demo pack. The EV page lists the first kind.
   category: number;
+  // True for a pack imported from OBDb (obdb_packs); its value names are
+  // OBDb's own and stay English.
+  obdb?: boolean;
 }
 
 // --- core/analysis (the measure pages) -------------------------------------------

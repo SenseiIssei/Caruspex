@@ -789,6 +789,12 @@ pub fn pid_packs() -> Value {
     knowledge::pid_packs()
 }
 
+/// The OBDb packs for the detected car (catalog generation, model year).
+#[tauri::command]
+pub fn obdb_packs(generation_id: Option<usize>, year: i32) -> Value {
+    knowledge::obdb_packs(generation_id, year)
+}
+
 #[tauri::command]
 pub fn catalog_brands() -> Vec<String> {
     knowledge::catalog_brands()

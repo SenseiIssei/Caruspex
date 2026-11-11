@@ -1,6 +1,7 @@
 // The traction battery of electric cars and hybrids (EvPage.cpp): health,
 // charge, cells and temperatures from the manufacturer values of the
-// built-in packs, read straight from the battery control unit. The source
+// built-in packs and of the OBDb packs for the detected car, read straight
+// from the battery control unit. The source
 // of every value is shown next to it.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { call } from "../api";
@@ -27,7 +28,6 @@ const shortKey = (row: CustomRow) => row.shortNameEn || row.shortName;
 export default function EvPage() {
   const connected = useSession((s) => s.connected);
   const identity = useSession((s) => s.identity);
-  const [packs, setPacks] = useState<PidPackInfo[]>([]);
   const [packId, setPackId] = useState("");
   const [running, setRunning] = useState(false);
   const [status, setStatus] = useState(
@@ -43,33 +43,66 @@ export default function EvPage() {
   const connectedRef = useRef(connected);
   connectedRef.current = connected;
 
+  // The built-in battery packs, then the OBDb packs with battery values that
+  // fit the detected car.
+  const [builtIn, setBuiltIn] = useState<PidPackInfo[]>([]);
+  const [carPacks, setCarPacks] = useState<PidPackInfo[]>([]);
   useEffect(() => {
     void call("pid_packs").then((list) => {
       const ev = list.filter((p) => p.category === HYBRID_EV);
-      setPacks(ev);
+      setBuiltIn(ev);
       setPackId((current) => current || ev[0]?.id || "");
     });
   }, []);
+
+  const generationId = identity?.generation?.id ?? null;
+  const year = identity?.year ?? 0;
+  useEffect(() => {
+    if (generationId === null) {
+      setCarPacks([]);
+      return;
+    }
+    let cancelled = false;
+    void call("obdb_packs", { generationId, year }).then((list) => {
+      if (!cancelled) setCarPacks(list.filter((p) => p.category === HYBRID_EV));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [generationId, year]);
+
+  const packs = useMemo(() => [...builtIn, ...carPacks], [builtIn, carPacks]);
+  // An OBDb pack leaves with the car it was made for.
+  useEffect(() => {
+    if (packs.length > 0 && !packs.some((p) => p.id === packId)) setPackId(packs[0]!.id);
+  }, [packs, packId]);
 
   const pack = packs.find((p) => p.id === packId);
   const packKeys = () => (pack ? pack.values.map((v) => v.key) : []);
   const byKey = useMemo(() => new Map((pack?.values ?? []).map((v) => [v.key, v])), [pack]);
 
-  // Preselects the pack that fits the connected car: the one whose name
-  // mentions the model, else the brand.
+  // Preselects the pack that fits the connected car: a built-in one whose
+  // name mentions the model, else an OBDb pack made for this car, else a
+  // built-in one of the brand.
   useEffect(() => {
     if (!identity || packs.length === 0) return;
     const brand = identity.brand;
     const hay = `${brand} ${identity.title}`.toLowerCase();
     let best = -1;
     packs.forEach((p, i) => {
+      if (p.obdb) return;
       const text = p.title.toLowerCase();
       for (const word of ["ioniq", "kona", "niro", "zoe", "leaf"]) {
         if (hay.includes(word) && text.includes(word)) best = i;
       }
-      if (best < 0 && brand && text.includes(brand.toLowerCase())) best = i;
     });
-    if (best >= 0) choosePack(packs[best]!.id);
+    if (best < 0) best = packs.findIndex((p) => p.obdb);
+    if (best < 0) best = packs.findIndex((p) => !!brand && p.title.toLowerCase().includes(brand.toLowerCase()));
+    if (best >= 0) {
+      const pack = packs[best]!;
+      choosePack(pack.id);
+      if (pack.obdb) setStatus(tr("Für dieses Auto gibt es Werte aus OBDb: %1. Die Namen der Werte stehen dort auf Englisch.", pack.title));
+    }
   }, [identity, packs]);
 
   const choosePack = (id: string) => {

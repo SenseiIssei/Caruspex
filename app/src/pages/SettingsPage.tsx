@@ -341,6 +341,15 @@ export default function SettingsPage() {
         <Hint>{tr("Sprache und Erscheinungsbild wechseln beim nächsten Start.")}</Hint>
       </Group>
 
+      <Group title={tr("Lizenzen und Datenquellen")}>
+        <Hint>{tr("Caruspex ist freie Software unter der MIT-Lizenz.")}</Hint>
+        <Hint>
+          {tr(
+            "Die Herstellerwerte für viele Modelle stammen aus OBDb (github.com/OBDb) und stehen unter der Lizenz CC BY-SA 4.0 (Namensnennung, Weitergabe unter gleichen Bedingungen). Die umgewandelten Daten liegen mit Lizenz und Liste der Quellen im Ordner data/obdb des Quellcodes.",
+          )}
+        </Hint>
+      </Group>
+
       <div className="row wrap-row">
         <Button icon="refresh" onClick={reset}>
           {tr("Auf Vorgabe zurücksetzen")}

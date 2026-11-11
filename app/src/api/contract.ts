@@ -181,6 +181,8 @@ export interface Commands {
   pid_table: Cmd<None, PidInfo[]>;
   default_live_pids: Cmd<None, number[]>;
   pid_packs: Cmd<None, PidPackInfo[]>;
+  // The OBDb packs for the detected car: catalog generation and model year (0 = any).
+  obdb_packs: Cmd<{ generationId: number | null; year: number }, PidPackInfo[]>;
   catalog_brands: Cmd<None, string[]>;
   catalog_models: Cmd<{ brand: string }, string[]>;
   catalog_generations: Cmd<{ brand: string; model: string }, VehicleGenerationInfo[]>;

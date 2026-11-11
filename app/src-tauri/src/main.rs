@@ -286,6 +286,7 @@ fn main() {
             commands::pid_table,
             commands::default_live_pids,
             commands::pid_packs,
+            commands::obdb_packs,
             commands::catalog_brands,
             commands::catalog_models,
             commands::catalog_generations,
