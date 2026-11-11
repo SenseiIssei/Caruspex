@@ -72,6 +72,7 @@ jobs:
         run: |
           npm --prefix app ci
           npm --prefix app run build
+          npm --prefix app test
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
