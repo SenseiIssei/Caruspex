@@ -22,6 +22,8 @@ jobs:
   checks:
     name: Checks
     runs-on: ubuntu-22.04
+    # A hanging package mirror should fail fast, not block for six hours.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 
@@ -41,7 +43,7 @@ jobs:
 
       - name: System packages
         run: |
-          sudo apt-get update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
           sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config
 
       - uses: Swatinem/rust-cache@v2
@@ -85,6 +87,7 @@ jobs:
     name: ${{ matrix.name }}
     needs: checks
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -115,7 +118,7 @@ jobs:
       - name: System packages (Linux only)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
           sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev \
             pkg-config file patchelf libfuse2 xvfb
 
