@@ -9,7 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
 use caruspex_i18n::Language;
-use caruspex_link::{AdaptiveTiming, Elm327, ElmStatus, Transport};
+use caruspex_link::{AdaptiveTiming, Elm327, ElmStatus, StnBus, Transport};
 use common::*;
 
 type Log = Arc<Mutex<Vec<String>>>;
@@ -243,6 +243,50 @@ fn a_car_without_obd_answers_but_with_bus_traffic_is_connected_for_listening() {
         let vin_parts = elm.capture_frames(0x405, 300, 10);
         assert_eq!(vin_parts[0][0], 0x10);
     }
+}
+
+#[test]
+fn an_stn_chip_listens_with_stma_and_captures_one_id_with_a_pass_filter() {
+    let mut bus = tesla();
+    bus.stn = true;
+    let sent = bus.sent.clone();
+    let mut elm = connect(bus, "6");
+    assert!(elm.listen_only());
+    assert!(elm.is_stn());
+    assert!(elm.stn_batch());
+    // A listen-only connection offers no bus switching.
+    assert!(elm.stn_extra_buses().is_empty());
+
+    // Four frames asked: the chip stops by itself after them.
+    let frames = elm.capture_frames(0x332, 300, 4);
+    assert_eq!(frames.len(), 4);
+    assert_eq!(frames[0], [0x09, 0x20, 0xF8, 0x07, 0x00, 0x00]);
+    assert_eq!(frames[1], [0x00, 0x00, 0x82, 0x78, 0x00, 0x00]);
+    let vin_parts = elm.capture_frames(0x405, 300, 3);
+    assert_eq!(vin_parts.len(), 3);
+    assert_eq!(vin_parts[2][0], 0x12);
+
+    let sent = sent.lock().unwrap().clone();
+    assert!(sent.contains(&"STMA12".to_string()), "{sent:?}");
+    assert!(sent.contains(&"STFPA0332,07FF".to_string()), "{sent:?}");
+    assert!(sent.contains(&"STM4".to_string()), "{sent:?}");
+    assert!(!sent.iter().any(|c| c == "ATMA"), "{sent:?}");
+    // Afterwards everything is back to the automatic filters.
+    assert_eq!(sent[sent.len() - 2..], ["ATCAF1", "ATAR"]);
+}
+
+#[test]
+fn bus_switching_needs_a_chip_with_the_transceivers() {
+    let mut elm = connect(FakeAdapter::new(DemoAdapter::ObdLinkStn, true, 0.0), "6");
+    assert!(elm.is_stn());
+    // The OBDLink SX (STN1130) has only the high speed CAN.
+    assert!(elm.stn_extra_buses().is_empty());
+    assert!(elm.switch_stn_bus(StnBus::MediumSpeed).is_err());
+    assert_eq!(elm.stn_bus(), StnBus::HighSpeed);
+    // Without an STN chip there is nothing to switch at all.
+    let mut clone = connect(FakeAdapter::new(DemoAdapter::CloneV15, true, 0.0), "6");
+    assert!(clone.switch_stn_bus(StnBus::SingleWire).is_err());
+    assert!(!clone.stn_batch());
 }
 
 // --- test_recording.cpp ([timing]) --------------------------------------------

@@ -232,7 +232,8 @@ export interface Events {
   update_progress: { received: number; total: number };
   // rawCan: the connection runs over a raw CAN interface (J2534, SLCAN,
   // SocketCAN), so the KKL pages can use VAG TP 2.0 on it.
-  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean };
+  // stnBuses: the extra CAN buses an OBDLink can switch to ("ms", "sw").
+  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[] };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };

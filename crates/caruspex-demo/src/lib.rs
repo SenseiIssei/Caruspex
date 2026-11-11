@@ -24,6 +24,13 @@
 //! and the instrument cluster and the ABS keep the odometer, all read by the
 //! demo pack of the custom values (data/pids/caruspex-demo.csv).
 //!
+//! Two more units sit on buses an ELM327 cannot reach: a body control unit
+//! on the medium speed CAN (726, answers on 72E) and one on the single wire
+//! CAN (241, answers on 641). Only the OBDLink profiles with those
+//! transceivers get there, after switching with STP. The STN profiles also
+//! know the batched commands (STBC), the monitor commands with a count (STMA
+//! n, STM n) and the filter commands of the OBDLink manual.
+//!
 //! For tests the clock can be injected (see [`DemoClock`]) and the answer
 //! delay switched off, so every response is deterministic.
 
@@ -58,8 +65,14 @@ pub enum DemoAdapter {
     CloneV21,
     /// claims v2.1 and answers "OK" even to commands it does not know
     CloneOkToAll,
-    /// STN chip (OBDLink), ELM327 v1.4b compatible plus ST commands
+    /// STN chip (OBDLink SX), ELM327 v1.4b compatible plus ST commands,
+    /// older firmware without batched commands
     ObdLinkStn,
+    /// OBDLink EX (STN2232): ST commands with batched commands and the
+    /// medium speed CAN
+    ObdLinkEx,
+    /// OBDLink MX+ (STN2256): like the EX, plus the single wire CAN
+    ObdLinkMxPlus,
 }
 
 /// A source of "seconds since ignition on".
@@ -110,6 +123,11 @@ pub struct DemoOptions {
 
     /// Whether the transmission control unit (7E9) is present.
     pub transmission_ecu: bool,
+
+    /// What one command line costs on the way to the adapter and back,
+    /// in milliseconds: next to nothing over USB, tens of milliseconds over
+    /// Bluetooth. Only counted in [`DemoTransport::adapter_ms`], never waited.
+    pub round_trip_ms: f64,
 }
 
 impl Default for DemoOptions {
@@ -120,6 +138,7 @@ impl Default for DemoOptions {
             latency_scale: 1.0,
             engine_start_seconds: 4.0,
             transmission_ecu: true,
+            round_trip_ms: 0.0,
         }
     }
 }
@@ -132,6 +151,17 @@ impl DemoOptions {
             latency_scale: 0.0,
             ..DemoOptions::default()
         }
+    }
+}
+
+/// Reads the simulated adapter time of a [`DemoTransport`] from outside.
+#[derive(Clone, Debug)]
+pub struct DemoAdapterClock(Arc<AtomicU64>);
+
+impl DemoAdapterClock {
+    /// Milliseconds, as [`DemoTransport::adapter_ms`].
+    pub fn ms(&self) -> f64 {
+        f64::from_bits(self.0.load(Ordering::SeqCst))
     }
 }
 
@@ -157,6 +187,20 @@ impl DemoTransport {
     /// valid check digit, fictional manufacturer code).
     pub fn vin() -> &'static str {
         adapter::VIN
+    }
+
+    /// The simulated time the adapter has spent so far, in milliseconds:
+    /// for every command line the round trip ([`DemoOptions::round_trip_ms`])
+    /// plus the unscaled answer delay. Independent of the real clock and of
+    /// `latency_scale`, so tests can compare two ways of asking exactly.
+    pub fn adapter_ms(&self) -> f64 {
+        self.adapter_clock().ms()
+    }
+
+    /// Handle on [`DemoTransport::adapter_ms`] that stays readable after the
+    /// transport went into a driver.
+    pub fn adapter_clock(&self) -> DemoAdapterClock {
+        DemoAdapterClock(self.d.adapter_clock.clone())
     }
 }
 
@@ -190,7 +234,7 @@ impl Transport for DemoTransport {
             if ch == b'\r' {
                 let line = std::mem::take(&mut d.input_line);
                 d.handle_line(&line);
-            } else if ch != b'\n' && ch != 0 && d.input_line.len() < 64 {
+            } else if ch != b'\n' && ch != 0 && d.input_line.len() < d.line_limit() {
                 d.input_line.push(ch);
             }
         }

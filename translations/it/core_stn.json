@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Comandi in batch del chip STN (STBC) attivi: più richieste in una riga.",
+ "c-stn-2": "  Passato a ",
+ "c-stn-3": "  Il chip STN non ha comandi in batch (STBC), le richieste partono una alla volta.",
+ "c-stn-4": "CAN ad alta velocità (pin 6 e 14)",
+ "c-stn-5": "CAN a media velocità (MS-CAN, pin 3 e 11, 125 kbaud)",
+ "c-stn-6": "CAN a filo singolo (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "L'adattatore rifiuta il protocollo: ",
+ "c-stn-8": "Questo OBDLink non ha un ricetrasmettitore per ",
+ "c-stn-9": "Serve un OBDLink (chip STN) su un'auto con CAN."
+}

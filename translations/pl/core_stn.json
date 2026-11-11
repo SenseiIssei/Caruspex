@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Polecenia wsadowe układu STN (STBC) włączone: kilka zapytań w jednej linii.",
+ "c-stn-2": "  Przełączono na ",
+ "c-stn-3": "  Układ STN nie ma poleceń wsadowych (STBC), zapytania idą pojedynczo.",
+ "c-stn-4": "CAN wysokiej prędkości (piny 6 i 14)",
+ "c-stn-5": "CAN średniej prędkości (MS-CAN, piny 3 i 11, 125 kbaud)",
+ "c-stn-6": "CAN jednoprzewodowy (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "Adapter odrzuca protokół: ",
+ "c-stn-8": "Ten OBDLink nie ma nadajnika-odbiornika dla ",
+ "c-stn-9": "To wymaga OBDLink (układ STN) w samochodzie z CAN."
+}

@@ -23,7 +23,8 @@ use caruspex_analysis::used_car::{
 };
 use caruspex_data::dtc::lookup_dtc;
 use caruspex_data::ecu_addresses::{
-    EcuDefinition, bmw_address_sweep, ecu_definitions, ecu_from_ids, generic_ecu_sweep,
+    EcuDefinition, bmw_address_sweep, ecu_definitions, ecu_from_ids, ford_ms_can_ecus,
+    generic_ecu_sweep, gm_single_wire_ecus,
 };
 use caruspex_data::pids::PidCategory;
 use caruspex_data::severity::Severity;
@@ -33,8 +34,8 @@ use caruspex_link::adapter_probe::version_text;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
 use caruspex_link::timing::sleep_ms;
 use caruspex_link::{
-    AdaptiveTiming, Elm327, KLineStream, SerialTransport, TcpTransport, Transport, enumerate_ports,
-    probe_adapter,
+    AdaptiveTiming, Elm327, KLineStream, SerialTransport, StnBus, TcpTransport, Transport,
+    enumerate_ports, probe_adapter,
 };
 use caruspex_net::{
     CanElm, KLineKind, SharedCanLink, SlcanLink, Tp20, open_can_interface, open_j2534_kline,
@@ -523,6 +524,9 @@ pub struct Worker {
     poll_timer: Timer,
     poll_pids: Vec<i32>,
     poll_index: usize,
+    /// The bus of the last control unit scan, so clearing a unit found on
+    /// the MS-CAN or SW-CAN of an OBDLink goes to the same bus.
+    uds_bus: StnBus,
     custom_poll_keys: Vec<i32>,
     custom_turn: bool,
     user_pids: Vec<CustomPid>,
@@ -557,6 +561,7 @@ impl Worker {
             poll_timer: Timer::default(),
             poll_pids: Vec::new(),
             poll_index: 0,
+            uds_bus: StnBus::HighSpeed,
             custom_poll_keys: Vec::new(),
             custom_turn: false,
             user_pids: Vec::new(),
@@ -850,6 +855,10 @@ impl Worker {
         }
         self.obd_ready = true;
         self.batch_refused.clear();
+        self.uds_bus = StnBus::HighSpeed;
+        // The extra CAN buses an OBDLink can switch to ("ms", "sw"), for the
+        // control unit page.
+        let stn_buses: Vec<&str> = self.elm.stn_extra_buses().iter().map(|b| b.key()).collect();
         self.emit(
             "connected",
             json!({
@@ -857,6 +866,7 @@ impl Worker {
                 "transport": self.elm.transport_name(),
                 "protocol": self.elm.protocol_text(),
                 "rawCan": self.can_link.is_some(),
+                "stnBuses": stn_buses,
             }),
         );
         Ok(())
@@ -1435,10 +1445,13 @@ impl Worker {
             return;
         }
         // Up to six PIDs per tick: on CAN they go out as one request,
-        // elsewhere the core reads them one by one.
+        // elsewhere the core reads them one by one. With the batched
+        // commands of an STN chip four such requests share one round trip,
+        // so a tick takes four times as many.
+        let per_tick = if self.elm.stn_batch() { 24 } else { 6 };
         let mut slice = Vec::new();
         let n = self.poll_pids.len();
-        for _ in 0..6.min(n) {
+        for _ in 0..per_tick.min(n) {
             slice.push(self.poll_pids[self.poll_index % n]);
             self.poll_index = (self.poll_index + 1) % n;
         }
@@ -2270,16 +2283,35 @@ impl Worker {
             );
             return;
         }
+        // "FORD@MS" and "GM@SW": the body units on the medium speed or the
+        // single wire CAN, through an OBDLink that switches buses.
+        let bus = match family {
+            "FORD@MS" => StnBus::MediumSpeed,
+            "GM@SW" => StnBus::SingleWire,
+            _ => StnBus::HighSpeed,
+        };
         self.stop_live();
         self.voltage_timer.stop();
         self.cancel.store(false, Ordering::SeqCst);
         self.busy(true);
+        if bus != StnBus::HighSpeed
+            && let Err(error) = self.elm.switch_stn_bus(bus)
+        {
+            finished(self, 0, 0, false, error);
+            self.busy(false);
+            return;
+        }
+        self.uds_bus = bus;
 
         // "BMW*" is the full sweep of the BMW diagnostic addresses.
         let mut list: Vec<EcuDefinition> = if family.is_empty() {
             generic_ecu_sweep()
         } else if family == "BMW*" {
             bmw_address_sweep()
+        } else if bus == StnBus::MediumSpeed {
+            ford_ms_can_ecus()
+        } else if bus == StnBus::SingleWire {
+            gm_single_wire_ecus()
         } else {
             ecu_definitions(family)
         };
@@ -2327,8 +2359,20 @@ impl Worker {
             }
             self.emit("uds_ecu_result", json!({ "row": uds_row(ecu) }));
         }
+        self.back_to_high_speed();
         finished(self, present, with_faults, self.cancelled(), String::new());
         self.busy(false);
+    }
+
+    /// After work on the MS-CAN or SW-CAN of an OBDLink: back to the bus of
+    /// the OBD services, so live values and fault codes work again.
+    fn back_to_high_speed(&mut self) {
+        if self.elm.stn_bus() == StnBus::HighSpeed {
+            return;
+        }
+        if let Err(error) = self.elm.switch_stn_bus(StnBus::HighSpeed) {
+            self.log(error);
+        }
     }
 
     fn clear_uds_ecu(&mut self, request: u32, response: u32, extended29: bool, name: &str) {
@@ -2338,6 +2382,17 @@ impl Worker {
         self.stop_live();
         self.busy(true);
         let def = ecu_from_ids(request, response, extended29, name);
+        // A unit found on the MS-CAN or SW-CAN is cleared there.
+        if self.uds_bus != StnBus::HighSpeed
+            && let Err(error) = self.elm.switch_stn_bus(self.uds_bus)
+        {
+            self.emit(
+                "uds_clear_result",
+                json!({ "name": name, "ok": false, "message": error }),
+            );
+            self.busy(false);
+            return;
+        }
         let result = {
             let mut uds = Uds::new(&mut self.elm);
             uds.select(&def).and_then(|_| uds.clear_dtcs())
@@ -2375,6 +2430,7 @@ impl Worker {
             row.name = name.to_string();
             self.emit("uds_ecu_result", json!({ "row": row }));
         }
+        self.back_to_high_speed();
         self.busy(false);
     }
 
@@ -3176,6 +3232,52 @@ mod tests {
         let finished = &Collect::named(&events, "uds_scan_finished")[0];
         assert_eq!(finished["present"].as_u64().unwrap() as usize, found.len());
         assert_eq!(finished["cancelled"], false);
+    }
+
+    fn demo_worker_with(adapter: caruspex_demo::DemoAdapter) -> (Worker, Arc<Collect>) {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.apply_settings(AppSettings::default());
+        let options = DemoOptions {
+            adapter,
+            latency_scale: 0.0,
+            engine_start_seconds: 0.0,
+            ..DemoOptions::default()
+        };
+        worker.handle(Job::OpenTransport {
+            transport: Box::new(DemoTransport::new(options)),
+            protocol_order: "6".into(),
+        });
+        (worker, sink)
+    }
+
+    #[test]
+    fn an_obdlink_ex_reaches_the_body_unit_on_the_ms_can_and_comes_back() {
+        use caruspex_demo::DemoAdapter;
+        let (mut worker, sink) = demo_worker_with(DemoAdapter::ObdLinkEx);
+        let events = sink.take();
+        let connected = &Collect::named(&events, "connected")[0];
+        assert_eq!(connected["stnBuses"], json!(["ms"]));
+
+        worker.handle(Job::ScanUds("FORD@MS".into()));
+        let events = sink.take();
+        let found = Collect::named(&events, "uds_ecu_result");
+        assert_eq!(found.len(), 1, "{events:?}");
+        assert_eq!(found[0]["row"]["request"], 0x726);
+        assert_eq!(worker.elm.stn_bus(), StnBus::HighSpeed);
+        assert!(worker.elm.request("0100", 0x01, 2000).ok());
+
+        // The SW-CAN is not there on the EX: the scan says why.
+        worker.handle(Job::ScanUds("GM@SW".into()));
+        let events = sink.take();
+        let finished = &Collect::named(&events, "uds_scan_finished")[0];
+        assert_eq!(finished["present"], 0);
+        assert!(!finished["note"].as_str().unwrap().is_empty());
+
+        // A plain ELM327 offers no extra bus.
+        let (_plain, sink) = demo_worker();
+        let connected = &Collect::named(&sink.take(), "connected")[0];
+        assert_eq!(connected["stnBuses"], json!([]));
     }
 
     /// Cancels the scan once it reaches the sixth unit, from inside the

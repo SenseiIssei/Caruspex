@@ -1,0 +1,11 @@
+{
+ "c-stn-1": "  Perintah batch chip STN (STBC) aktif: beberapa permintaan dalam satu baris.",
+ "c-stn-2": "  Beralih ke ",
+ "c-stn-3": "  Chip STN tidak punya perintah batch (STBC), permintaan dikirim satu per satu.",
+ "c-stn-4": "CAN kecepatan tinggi (pin 6 dan 14)",
+ "c-stn-5": "CAN kecepatan menengah (MS-CAN, pin 3 dan 11, 125 kbaud)",
+ "c-stn-6": "CAN kabel tunggal (GMLAN, pin 1, 33,3 kbaud)",
+ "c-stn-7": "Adaptor menolak protokol: ",
+ "c-stn-8": "OBDLink ini tidak punya transceiver untuk ",
+ "c-stn-9": "Ini butuh OBDLink (chip STN) pada mobil dengan CAN."
+}

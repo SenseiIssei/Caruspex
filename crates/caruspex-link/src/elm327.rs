@@ -5,6 +5,9 @@ use caruspex_i18n::l;
 use crate::timing::{now_ms, sleep_ms};
 use crate::transport::{LogFn, Transport};
 
+mod stn;
+pub use stn::{StnBus, split_batch_answer, stn_buses};
+
 /// Default wait of [`Elm327::send`] in milliseconds.
 pub const DEFAULT_SEND_TIMEOUT_MS: u64 = 5000;
 /// Default wait of [`Elm327::request`] in milliseconds.
@@ -559,6 +562,10 @@ pub struct Elm327 {
     adaptive_timing: AdaptiveTiming,
     timing_level: u8,
     stn: bool,
+    stn_batching: bool,
+    stn_batch: bool,
+    stn_bus: StnBus,
+    hs_protocol_text: String,
     obd_on_uds: bool,
     listen_only: bool,
     stn_id: String,
@@ -586,6 +593,10 @@ impl Elm327 {
             adaptive_timing: AdaptiveTiming::Standard,
             timing_level: 0,
             stn: false,
+            stn_batching: true,
+            stn_batch: false,
+            stn_bus: StnBus::HighSpeed,
+            hs_protocol_text: String::new(),
             obd_on_uds: false,
             listen_only: false,
             stn_id: String::new(),
@@ -1009,13 +1020,29 @@ impl Elm327 {
 
     /// Listens on the bus (ATMA) for up to `duration_ms` or `max_lines` lines
     /// and stops the adapter again. The lines as printed, status lines removed.
+    /// An STN chip gets STMA with the number of lines instead: it stops by
+    /// itself once that many messages came in, which saves the stop and its
+    /// wait.
     pub fn monitor_lines(&mut self, duration_ms: u64, max_lines: usize) -> Vec<String> {
+        let command = if self.stn {
+            format!("STMA {}", max_lines.clamp(1, 32767))
+        } else {
+            "ATMA".to_string()
+        };
+        self.monitor_with(&command, duration_ms, max_lines)
+    }
+
+    /// The monitor loop behind [`Elm327::monitor_lines`], for any of the
+    /// monitor commands (ATMA, STMA n, STM n).
+    fn monitor_with(&mut self, command: &str, duration_ms: u64, max_lines: usize) -> Vec<String> {
         let mut lines = Vec::new();
         let Some(t) = self.transport.as_mut() else {
             return lines;
         };
         t.flush_input();
-        t.write(b"ATMA\r");
+        let mut line = command.as_bytes().to_vec();
+        line.push(b'\r');
+        t.write(&line);
         let mut buffer: Vec<u8> = Vec::new();
         let deadline = now_ms() + duration_ms;
         let complete = |b: &[u8]| b.iter().filter(|&&c| c == b'\r').count();
@@ -1053,7 +1080,8 @@ impl Elm327 {
                 continue;
             }
             let up = to_upper(t);
-            if SKIP.contains(&up.as_str()) {
+            // The echo of an ST monitor command; data lines are hex only.
+            if SKIP.contains(&up.as_str()) || up.starts_with("STM") {
                 continue;
             }
             lines.push(t.to_string());
@@ -1080,7 +1108,12 @@ impl Elm327 {
         // for an ISO-TP PCI.
         self.at("CAF0", DEFAULT_SEND_TIMEOUT_MS);
         self.at(&filter, DEFAULT_SEND_TIMEOUT_MS);
-        for line in self.monitor_lines(duration_ms, max_frames) {
+        let lines = if self.stn {
+            self.stn_monitor_id(can_id, duration_ms, max_frames)
+        } else {
+            self.monitor_lines(duration_ms, max_frames)
+        };
+        for line in lines {
             let mut hex = strip_spaces(&to_upper(&line));
             if self.headers {
                 if hex.len() < 3 {
@@ -1094,9 +1127,15 @@ impl Elm327 {
             frames.push(hex_to_bytes(&hex));
         }
         self.at("CAF1", DEFAULT_SEND_TIMEOUT_MS);
-        let cra = self.at("CRA", DEFAULT_SEND_TIMEOUT_MS);
-        if !answered_ok(&cra) {
+        if self.stn {
+            // ATAR clears the pass filter of stn_monitor_id together with the
+            // hardware filter and turns the automatic filtering back on.
             self.at("AR", DEFAULT_SEND_TIMEOUT_MS);
+        } else {
+            let cra = self.at("CRA", DEFAULT_SEND_TIMEOUT_MS);
+            if !answered_ok(&cra) {
+                self.at("AR", DEFAULT_SEND_TIMEOUT_MS);
+            }
         }
         frames
     }
@@ -1197,6 +1236,8 @@ impl Elm327 {
         self.connected = false;
         self.stn = false;
         self.stn_id.clear();
+        self.stn_batch = false;
+        self.stn_bus = StnBus::HighSpeed;
         self.timing_level = 0;
         self.obd_on_uds = false;
         self.listen_only = false;
@@ -1312,6 +1353,7 @@ impl Elm327 {
                     self.protocol_id = proto;
                     self.connected = true;
                     self.apply_aggressive_timing();
+                    self.setup_stn();
                     return Ok(());
                 }
                 if probe.status == ElmStatus::AdapterError {
@@ -1347,6 +1389,7 @@ impl Elm327 {
                     "  Kein OBD, aber Verkehr auf dem CAN-Bus: verbunden zum Mithören.",
                     "  No OBD, but traffic on the CAN bus: connected for listening.",
                 ));
+                self.setup_stn();
                 return Ok(());
             }
         }
@@ -1367,6 +1410,8 @@ impl Elm327 {
         self.connected = false;
         self.headers = false;
         self.stn = false;
+        self.stn_batch = false;
+        self.stn_bus = StnBus::HighSpeed;
         self.obd_on_uds = false;
         self.listen_only = false;
         self.stn_id.clear();

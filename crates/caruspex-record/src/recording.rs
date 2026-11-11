@@ -1056,6 +1056,11 @@ pub fn start_recording(elm: &mut Elm327, path: &str) -> Result<RecordingHandle, 
     }
     elm.request("0100", 0x01, 6000);
     elm.send("ATDP", 1500);
+    // Last, as connect does: a replay switches the batched commands of an
+    // STN chip on too and so finds the batched lines that follow.
+    if elm.stn_batch() {
+        elm.send("STBC1", 1500);
+    }
     if headers {
         elm.set_headers(true);
     }
