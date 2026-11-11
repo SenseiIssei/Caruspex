@@ -122,7 +122,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 34px;
+  /* 32 px, so all pages of the Profi mode fit at 920 pixels height. */
+  height: 32px;
   padding: 0 10px 0 12px;
   border-radius: 10px;
   border: 1px solid transparent;
