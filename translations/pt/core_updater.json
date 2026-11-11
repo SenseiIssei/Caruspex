@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Ainda não foi encontrada nenhuma versão nova.",
+ "c-updater-2": "A assinatura da atualização não confere. Ela foi descartada e nada foi instalado.",
+ "c-updater-3": "Não foi possível baixar a atualização: %1",
+ "c-updater-4": "Não foi possível instalar a atualização: %1",
+ "c-updater-5": "A atualização já está em andamento.",
+ "c-updater-6": "Não há atualização para instalar neste sistema."
+}

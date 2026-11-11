@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Er is nog geen nieuwe versie gevonden.",
+ "c-updater-2": "De handtekening van de update klopt niet. De update is verworpen en er is niets geïnstalleerd.",
+ "c-updater-3": "De update kon niet worden gedownload: %1",
+ "c-updater-4": "De update kon niet worden geïnstalleerd: %1",
+ "c-updater-5": "De update loopt al.",
+ "c-updater-6": "Voor dit systeem is er geen update om te installeren."
+}

@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Zatím nebyla nalezena žádná nová verze.",
+ "c-updater-2": "Podpis aktualizace nesouhlasí. Byla zahozena a nic nebylo nainstalováno.",
+ "c-updater-3": "Aktualizaci se nepodařilo stáhnout: %1",
+ "c-updater-4": "Aktualizaci se nepodařilo nainstalovat: %1",
+ "c-updater-5": "Aktualizace už probíhá.",
+ "c-updater-6": "Pro tento systém není žádná aktualizace k instalaci."
+}

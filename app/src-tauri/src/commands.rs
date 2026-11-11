@@ -108,9 +108,95 @@ pub async fn check_for_update(state: State<'_, AppState>) -> Result<Value> {
     if !allowed {
         return Ok(Value::Null);
     }
-    tauri::async_runtime::spawn_blocking(|| update::check(env!("CARGO_PKG_VERSION")))
+    let found = tauri::async_runtime::spawn_blocking(|| update::check(env!("CARGO_PKG_VERSION")))
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    let Some(found) = found else {
+        return Ok(Value::Null);
+    };
+    let can_install = found.package.is_some() && update::this_method() != update::Method::PageOnly;
+    let german = caruspex_i18n::language() == caruspex_i18n::Language::German;
+    let info = json!({
+        "version": found.version,
+        "url": if can_install { found.page() } else { update::fallback_url(&found) },
+        "notes": update::notes_in(&found.notes, german),
+        "date": found.date,
+        "canInstall": can_install,
+    });
+    // install_update takes the package from here, never from the interface.
+    if let Ok(mut slot) = state.update.lock() {
+        *slot = Some(found);
+    }
+    Ok(info)
+}
+
+/// Downloads the release found by check_for_update, checks its signature
+/// and installs it. Answers "quit" (the app ends a moment later and the new
+/// version starts) or "page" (this copy cannot be replaced, the download
+/// is open in the browser). Progress comes as update_progress events.
+#[tauri::command]
+pub async fn install_update(app: AppHandle, state: State<'_, AppState>) -> Result<String> {
+    let found = state
+        .update
+        .lock()
+        .ok()
+        .and_then(|slot| slot.clone())
+        .ok_or_else(|| {
+            caruspex_i18n::l(
+                "Es wurde noch keine neue Version gefunden.",
+                "No new version has been found yet.",
+            )
+            .to_string()
+        })?;
+    if state.installing.swap(true, Ordering::SeqCst) {
+        return Err(caruspex_i18n::l(
+            "Die Aktualisierung läuft schon.",
+            "The update is already running.",
+        )
+        .to_string());
+    }
+    let emitter = app.clone();
+    let result = tauri::async_runtime::spawn_blocking(move || {
+        let mut last = (0u64, std::time::Instant::now());
+        let mut progress = |received: u64, total: u64| {
+            // A few updates per second are enough for the bar.
+            let done = total > 0 && received >= total;
+            if done || received == 0 || last.1.elapsed() >= Duration::from_millis(100) {
+                last = (received, std::time::Instant::now());
+                let _ = emitter.emit(
+                    "update_progress",
+                    json!({ "received": received, "total": total }),
+                );
+            }
+        };
+        update::install(&found, &mut progress).map(|outcome| (outcome, found))
+    })
+    .await
+    .map_err(|e| e.to_string())
+    .and_then(|r| r);
+    state.installing.store(false, Ordering::SeqCst);
+    let (outcome, found) = result?;
+    match outcome {
+        update::Outcome::Quit => {
+            // Give the interface a moment to say so, then make room for the
+            // installer or the new version.
+            if let Some(window) = app.get_webview_window("main") {
+                save_geometry(&window.as_ref().window());
+            }
+            let handle = app.clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(Duration::from_millis(800));
+                handle.exit(0);
+            });
+            Ok("quit".into())
+        }
+        update::Outcome::Page => {
+            app.opener()
+                .open_url(update::fallback_url(&found), None::<&str>)
+                .map_err(|e| e.to_string())?;
+            Ok("page".into())
+        }
+    }
 }
 
 #[tauri::command]

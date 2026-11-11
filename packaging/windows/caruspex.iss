@@ -99,8 +99,20 @@ Root: HKA; Subkey: "{code:EnvKey}"; ValueType: expandsz; ValueName: "Path"; \
 [Run]
 Filename: "{tmp}\MicrosoftEdgeWebview2Setup.exe"; Parameters: "/silent /install"; StatusMsg: "{cm:WebView2}"; Check: NeedsWebView2; Flags: waituntilterminated
 Filename: "{app}\caruspex.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
+; The update of the app itself (update.rs) runs this installer with
+; /VERYSILENT /CARUSPEXRESTART=1 after Caruspex has quit, so the entry above
+; is skipped and this one starts the new version once, as the same user.
+Filename: "{app}\caruspex.exe"; Flags: nowait runasoriginaluser; Check: RestartAfterUpdate
 
 [Code]
+// Only in the silent run of the app's own update. /RESTARTAPPLICATIONS
+// alone does not help there: it restarts programs that registered with the
+// Restart Manager, and Caruspex has already ended before the files change.
+function RestartAfterUpdate: Boolean;
+begin
+  Result := WizardSilent and (ExpandConstant('{param:CARUSPEXRESTART|0}') = '1');
+end;
+
 // The interface runs in Microsoft's WebView2, part of Windows 10 and 11 in
 // almost every case. Installed per machine or per user, its version sits here.
 function NeedsWebView2: Boolean;

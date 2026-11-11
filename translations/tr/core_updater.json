@@ -1,0 +1,8 @@
+{
+ "c-updater-1": "Henüz yeni bir sürüm bulunmadı.",
+ "c-updater-2": "Güncellemenin imzası tutmuyor. Güncelleme silindi, hiçbir şey kurulmadı.",
+ "c-updater-3": "Güncelleme indirilemedi: %1",
+ "c-updater-4": "Güncelleme kurulamadı: %1",
+ "c-updater-5": "Güncelleme zaten sürüyor.",
+ "c-updater-6": "Bu sistem için kurulacak bir güncelleme yok."
+}

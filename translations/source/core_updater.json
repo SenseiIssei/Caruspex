@@ -1,0 +1,32 @@
+[
+ {
+  "id": "c-updater-1",
+  "de": "Es wurde noch keine neue Version gefunden.",
+  "en": "No new version has been found yet."
+ },
+ {
+  "id": "c-updater-2",
+  "de": "Die Signatur der Aktualisierung stimmt nicht. Sie wurde verworfen, nichts wurde installiert.",
+  "en": "The signature of the update does not match. It was discarded and nothing was installed."
+ },
+ {
+  "id": "c-updater-3",
+  "de": "Die Aktualisierung konnte nicht geladen werden: %1",
+  "en": "The update could not be downloaded: %1"
+ },
+ {
+  "id": "c-updater-4",
+  "de": "Die Aktualisierung konnte nicht installiert werden: %1",
+  "en": "The update could not be installed: %1"
+ },
+ {
+  "id": "c-updater-5",
+  "de": "Die Aktualisierung läuft schon.",
+  "en": "The update is already running."
+ },
+ {
+  "id": "c-updater-6",
+  "de": "Für dieses System gibt es keine Aktualisierung zum Installieren.",
+  "en": "There is no update to install for this system."
+ }
+]
