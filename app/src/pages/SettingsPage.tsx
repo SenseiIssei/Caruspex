@@ -353,6 +353,20 @@ export default function SettingsPage() {
             {tr("Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)")}
           </Check>
         </Full>
+        <Full>
+          <Check
+            checked={values.autoInstallUpdates}
+            disabled={!values.checkUpdates}
+            onChange={(v) => change({ autoInstallUpdates: v })}
+          >
+            {tr("Updates automatisch installieren")}
+          </Check>
+        </Full>
+        <Hint>
+          {tr(
+            "Caruspex installiert nur Pakete, deren Signatur zum eingebauten Schlüssel passt. Ohne automatische Installation fragt es vorher.",
+          )}
+        </Hint>
         <Row label={tr("Sprache")}>
           <Select value={pick(languageOptions, values.language)} options={languageOptions} onChange={(v) => change({ language: v })} />
         </Row>

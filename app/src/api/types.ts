@@ -265,6 +265,8 @@ export interface AppSettings {
   // Window.
   rememberGeometry: boolean;
   checkUpdates: boolean;
+  // Installs a newer version found at start without asking first.
+  autoInstallUpdates: boolean;
   // "auto" or a language code.
   language: string;
   // "auto", "dark" or "light".
@@ -293,6 +295,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   logPath: "",
   rememberGeometry: true,
   checkUpdates: true,
+  autoInstallUpdates: false,
   language: "auto",
   appearance: "auto",
   proMode: false,
@@ -813,8 +816,20 @@ export interface AppInfo {
 
 export interface UpdateInfo {
   version: string;
+  // The release page, or where this copy gets its update by hand (the
+  // download page, on macOS the dmg) when canInstall is false.
   url: string;
+  // The change list in the interface language (German or English part).
+  notes: string;
+  // ISO date of the release, may be empty.
+  date: string;
+  // This copy can download, verify and install the update itself.
+  canInstall: boolean;
 }
+
+// What install_update did: "quit" (the app ends, the new version starts) or
+// "page" (this copy cannot be replaced, the download is open in the browser).
+export type UpdateOutcome = "quit" | "page";
 
 export interface FileFilter {
   name: string;
