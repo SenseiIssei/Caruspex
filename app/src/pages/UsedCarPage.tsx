@@ -129,6 +129,8 @@ export default function UsedCarPage() {
   useAppEvent<string>("dev:page", (name) => {
     if (name !== "used-car-run") return;
     navigate("used-car");
+    // The app asks twice (start page, then --page after connecting): one run.
+    if (running || pendingRun.current || usedCarStore.get().result) return;
     setPapers(DEMO_VIN);
     if (connected) start(DEMO_VIN);
     else pendingRun.current = true;
