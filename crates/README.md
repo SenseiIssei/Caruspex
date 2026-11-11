@@ -13,13 +13,13 @@ history and in the v0.8.0 release.
 | caruspex-i18n | the 18 languages: `l(de, en)`, `Text`, the catalog built from `translations/` at compile time | |
 | caruspex-vehicles | VIN decoding, the WMI table, the vehicle catalog (generated from `data/vehicles/`), the shape of a car for the X-ray view with real dimensions per generation from Wikidata (generated from `data/wikidata/`) | i18n |
 | caruspex-data | trouble codes, PIDs, monitor tests, control unit addresses (generated from `data/ecus/`), VAG fault numbers, fault locations | i18n |
-| caruspex-link | the `Transport` and `ByteStream` traits, serial with USB detection, TCP, K-line, Bluetooth LE and classic Bluetooth, the ELM327 driver, the adapter check | i18n |
+| caruspex-link | the `Transport` and `ByteStream` traits, serial with USB detection, TCP, K-line, Bluetooth LE and classic Bluetooth, the ELM327 driver with the extras of STN chips (batched commands, monitoring with a count, MS-CAN and SW-CAN), the adapter check | i18n |
 | caruspex-protocols | OBD-II with batched requests, UDS with BMW addressing and the control unit scan, KWP1281, KWP2000, the VAG K-line | link, data |
 | caruspex-net | BMW ENET (HSFZ), DoIP, raw CAN interfaces (SLCAN, SocketCAN, J2534) with their own ISO-TP and an ELM327 front end, CAN signals | link |
 | caruspex-record | recordings and replay, custom PIDs with Torque equations, the built-in PID packs (generated from `data/pids/`), JSON output | link, protocols, net, data |
 | caruspex-analysis | health check, battery test, readiness, drive cycles, trip computer, performance timer | i18n |
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
-| caruspex-demo | the built-in demo car: an ELM327 with simulated control units and an injectable clock | link |
+| caruspex-demo | the built-in demo car: an ELM327 or an OBDLink (STN commands, MS-CAN and SW-CAN) with simulated control units, an injectable clock and a count of the simulated adapter time | link |
 | caruspex-cli | `caruspex_cli`, the command-line tool | all of the above |
 | app/src-tauri | the desktop app: the worker thread, settings, garage, report, the signed updater | all of the above |
 
