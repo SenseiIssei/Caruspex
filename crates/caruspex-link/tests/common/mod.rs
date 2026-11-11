@@ -153,10 +153,55 @@ impl Transport for SettingsTransport {
 pub struct ListeningBus {
     /// By id, sent in turn.
     pub frames: BTreeMap<u32, Vec<Vec<u8>>>,
+    /// Behaves like an STN chip (OBDLink EX): STI, STBC, STMA n, STM n and
+    /// the pass filter STFPA, as the OBDLink manual describes them.
+    pub stn: bool,
+    /// Every command line as received, for the tests to check.
+    pub sent: Arc<Mutex<Vec<String>>>,
     pending: Vec<u8>,
     headers: bool,
     monitoring: bool,
     filter: Option<u32>,
+    pass: Option<u32>,
+}
+
+impl ListeningBus {
+    /// Three rounds of every frame the hardware filter (and, for STM, the
+    /// pass filter) lets through; with a count the monitor ends by itself.
+    fn monitor(&mut self, all: bool, use_pass: bool, count: Option<usize>) {
+        let mut printed = 0;
+        for _ in 0..3 {
+            for (id, list) in &self.frames {
+                if !all && self.filter.is_some_and(|f| f != *id) {
+                    continue;
+                }
+                if use_pass && self.pass.is_some_and(|p| p != *id) {
+                    continue;
+                }
+                for f in list {
+                    if count.is_some_and(|n| printed >= n) {
+                        continue;
+                    }
+                    let mut line = if self.headers {
+                        format!("{id:03X} ")
+                    } else {
+                        String::new()
+                    };
+                    for b in f {
+                        line.push_str(&format!("{b:02X} "));
+                    }
+                    self.pending.extend_from_slice(line.as_bytes());
+                    self.pending.push(b'\r');
+                    printed += 1;
+                }
+            }
+        }
+        if count.is_some_and(|n| printed >= n) {
+            self.pending.extend_from_slice(b"\r>");
+        } else {
+            self.monitoring = true;
+        }
+    }
 }
 
 impl Transport for ListeningBus {
@@ -172,6 +217,37 @@ impl Transport for ListeningBus {
             self.pending.extend_from_slice(b"STOPPED\r\r>");
             return true;
         }
+        self.sent.lock().unwrap().push(cmd.clone());
+        if self.stn {
+            let count = |rest: &str| rest.parse::<usize>().ok();
+            if let Some(rest) = cmd.strip_prefix("STMA") {
+                self.monitor(true, false, count(rest));
+                return true;
+            }
+            if let Some(rest) = cmd.strip_prefix("STM") {
+                self.monitor(false, true, count(rest));
+                return true;
+            }
+            let lines: Vec<&str> = if cmd == "STI" {
+                vec!["STN2232 v5.10.3"]
+            } else if cmd == "STBC1" {
+                vec!["OK"]
+            } else if let Some(args) = cmd.strip_prefix("STFPA") {
+                let pattern = args.split(',').next().unwrap_or("");
+                self.pass = u32::from_str_radix(pattern, 16).ok();
+                vec!["OK"]
+            } else if cmd == "ATAR" {
+                self.filter = None;
+                self.pass = None;
+                vec!["OK"]
+            } else {
+                Vec::new()
+            };
+            if !lines.is_empty() {
+                self.pending.extend(answer(&lines));
+                return true;
+            }
+        }
         let lines: Vec<&str> = if cmd == "ATZ" {
             vec!["ELM327 v1.5"]
         } else if cmd == "ATH1" || cmd == "ATH0" {
@@ -184,26 +260,7 @@ impl Transport for ListeningBus {
             self.filter = u32::from_str_radix(id, 16).ok();
             vec!["OK"]
         } else if cmd == "ATMA" {
-            self.monitoring = true;
-            for _ in 0..3 {
-                for (id, list) in &self.frames {
-                    if self.filter.is_some_and(|f| f != *id) {
-                        continue;
-                    }
-                    for f in list {
-                        let mut line = if self.headers {
-                            format!("{id:03X} ")
-                        } else {
-                            String::new()
-                        };
-                        for b in f {
-                            line.push_str(&format!("{b:02X} "));
-                        }
-                        self.pending.extend_from_slice(line.as_bytes());
-                        self.pending.push(b'\r');
-                    }
-                }
-            }
+            self.monitor(false, false, None);
             return true;
         } else if cmd.starts_with("AT") {
             vec!["OK"]
