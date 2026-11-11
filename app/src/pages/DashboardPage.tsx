@@ -292,9 +292,18 @@ export default function DashboardPage() {
               </Button>
             </div>
           </div>
-          <div className="dash-hero-car">
+          <button
+            type="button"
+            className="dash-hero-car"
+            title={t("caruspex::XrayPage", "Röntgenansicht öffnen")}
+            onClick={() => navigate("xray")}
+          >
             <VehicleDiagram body={connected ? (identity?.body ?? 0) : 0} scanning={busy && connected} />
-          </div>
+            <span className="dash-hero-xray">
+              <Icon name="cube" size={14} />
+              {t("caruspex::XrayPage", "In 3D ansehen")}
+            </span>
+          </button>
         </div>
       </Card>
 

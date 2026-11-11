@@ -11,7 +11,9 @@ import { confirm } from "../components/Modal";
 import { toast } from "../components/Toast";
 import { Button, Card, Page, PageHeader, Pill } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
-import { localeNumber, translator } from "../i18n";
+import { localeNumber, t, translator } from "../i18n";
+import { emitApp } from "../lib/store";
+import { navigate } from "../shell/nav";
 import { useBackendEvent } from "../lib/hooks";
 import type { DashboardFinding } from "../state/session";
 import { useSession, useSettings } from "../state/session";
@@ -398,9 +400,23 @@ function FaultDetail({
           focus={where.zone}
           onZoneClick={onZoneClick}
         />
-        {where.zone !== CarZone.Unknown ? (
-          <div className="subtle">{tr("Wo nachsehen: %1. %2", where.name, where.hint)}</div>
-        ) : null}
+        <div className="faults-where">
+          {where.zone !== CarZone.Unknown ? (
+            <div className="subtle grow">{tr("Wo nachsehen: %1. %2", where.name, where.hint)}</div>
+          ) : (
+            <span className="grow" />
+          )}
+          <Button
+            small
+            icon="cube"
+            onClick={() => {
+              navigate("xray");
+              if (where.zone !== CarZone.Unknown) emitApp("xray:zone", where.zone);
+            }}
+          >
+            {t("caruspex::XrayPage", "In 3D ansehen")}
+          </Button>
+        </div>
 
         {info.causes.length > 0 ? (
           <section className="faults-section">
