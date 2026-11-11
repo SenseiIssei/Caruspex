@@ -151,6 +151,9 @@ pub mod legacy {
     /// A value as QSettings stored it: number, flag or text.
     #[derive(Clone, Debug, PartialEq)]
     pub enum Value {
+        /// Only the Windows registry stores numbers as numbers; the Linux and
+        /// macOS files of the Qt version hold everything as text.
+        #[cfg_attr(not(windows), allow(dead_code))]
         Int(i64),
         Text(String),
     }
