@@ -136,56 +136,56 @@
   "id": "u1019",
   "context": "caruspex::ConnectPage",
   "de": "CAN-Interface",
-  "en": "",
+  "en": "CAN interface",
   "plural": false
  },
  {
   "id": "u1020",
   "context": "caruspex::ConnectPage",
   "de": "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.",
-  "en": "",
+  "en": "For devices that deliver raw CAN messages: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik and many more, with the maker's 64-bit driver), SLCAN sticks (CANable, USBtin, CANUSB) and SocketCAN on Linux. Cars with OBD over CAN run at 500 kbit/s.",
   "plural": false
  },
  {
   "id": "u1021",
   "context": "caruspex::ConnectPage",
   "de": "nur 32-Bit-Treiber",
-  "en": "",
+  "en": "32-bit driver only",
   "plural": false
  },
  {
   "id": "u1022",
   "context": "caruspex::ConnectPage",
   "de": "Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?",
-  "en": "",
+  "en": "No CAN interface found. Driver installed and device plugged in?",
   "plural": false
  },
  {
   "id": "u1023",
   "context": "caruspex::MainWindow",
   "de": "Verbinde über das CAN-Interface %1 ...",
-  "en": "",
+  "en": "Connecting through the CAN interface %1 ...",
   "plural": false
  },
  {
   "id": "u1024",
   "context": "caruspex::Worker",
   "de": "SLCAN-Adapter an %1 gefunden",
-  "en": "",
+  "en": "SLCAN adapter found on %1",
   "plural": false
  },
  {
   "id": "u1025",
   "context": "caruspex::Worker",
   "de": "CAN-Schnittstelle offen: %1",
-  "en": "",
+  "en": "CAN interface open: %1",
   "plural": false
  },
  {
   "id": "u1026",
   "context": "main",
   "de": "CAN-Interface verbinden: j2534:<treiber.dll>, slcan:COM5 oder socketcan:can0, mit @250000 für die Bitrate",
-  "en": "",
+  "en": "Connect a CAN interface: j2534:<driver.dll>, slcan:COM5 or socketcan:can0, with @250000 for the bit rate",
   "plural": false
  },
  {
