@@ -37,6 +37,7 @@ import type {
   StatusRow,
   UdsEcuRow,
   UpdateInfo,
+  UsedCarRow,
   VehicleDiagnosisInfo,
   VehicleGenerationInfo,
   VinInfo,
@@ -122,6 +123,9 @@ export interface Commands {
   send_raw: Cmd<{ command: string }, void>;
   read_monitors: Cmd<None, void>;
   run_health_check: Cmd<{ seconds: number }, void>;
+  // The used car check; papersVin is the VIN from the papers, may be empty.
+  // Answers with used_car_progress and used_car_result.
+  run_used_car_check: Cmd<{ papersVin: string }, void>;
   probe_adapter: Cmd<None, void>;
   bruteforce_clear: Cmd<{ attempts: number }, void>;
   // Cancels a running scan or health check.
@@ -227,6 +231,8 @@ export interface Events {
   identity: { vin: string; calibration: string; checksum: string; ecuName: string };
   health_progress: { step: string; percent: number };
   health_result: { row: HealthRow };
+  used_car_progress: { step: string; percent: number };
+  used_car_result: { row: UsedCarRow };
   adapter_voltage: { volts: number; time: number };
   adapter_report: { row: AdapterRow };
   recording_state: { active: boolean; path: string; exchanges: number; error: string };

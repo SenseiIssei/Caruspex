@@ -1812,8 +1812,7 @@ mod tests {
 
     #[test]
     fn messages_fill_their_arguments() {
-        let m = text("%1 von %2", "%1 of %2").num(3.0, 0).num(8.0, 0);
-        assert_eq!(fill(m.en, &["3".into(), "8".into()]), "3 of 8");
+        assert_eq!(fill("%1 of %2", &["3".into(), "8".into()]), "3 of 8");
         // Arguments that contain a placeholder themselves stay as they are.
         assert_eq!(fill("%1 / %2", &["%2".into(), "x".into()]), "%2 / x");
         assert_eq!(raw("Fertig").args.len(), 1);

@@ -20,8 +20,18 @@ export function listenToCommandLine(): void {
   });
 
   void listen<Events["cli_report"]>("cli_report", async ({ payload }) => {
-    const { collectReportExtras, collectReportState, reportHtml } = await import("../report/report");
-    const html = reportHtml(await collectReportState(), collectReportExtras());
+    const [{ collectReportExtras, collectReportState, reportHtml, usedCarHtml }, { navStore }, { usedCarStore }] = await Promise.all([
+      import("../report/report"),
+      import("../shell/nav"),
+      import("../state/usedCar"),
+    ]);
+    // On the used car page with a finished check (--page used-car-run), the
+    // document for the purchase; otherwise the inspection report.
+    const check = usedCarStore.get();
+    const html =
+      navStore.get().page === "used-car" && check.result
+        ? usedCarHtml(check.result, new Date(check.when))
+        : reportHtml(await collectReportState(), collectReportExtras());
     await invoke("write_report", { path: payload.path, html });
   });
 }

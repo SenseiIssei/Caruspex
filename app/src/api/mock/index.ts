@@ -9,6 +9,7 @@ import { sessionHandlers } from "./session";
 import { diagnoseHandlers } from "./areas/diagnose";
 import { measureHandlers } from "./areas/measure";
 import { workshopHandlers } from "./areas/workshop";
+import { usedCarHandlers } from "./areas/usedCar";
 import { knowledgeHandlers as catalogHandlers } from "./areas/knowledge";
 
 const handlers: PartialHandlers = {
@@ -19,6 +20,7 @@ const handlers: PartialHandlers = {
   ...measureHandlers,
   ...workshopHandlers,
   ...catalogHandlers,
+  ...usedCarHandlers,
 };
 
 export function createMockBackend(): Backend {

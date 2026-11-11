@@ -6,6 +6,7 @@ import { t } from "../i18n";
 import DashboardPage from "../pages/DashboardPage";
 import ConnectPage from "../pages/ConnectPage";
 import HealthPage from "../pages/HealthPage";
+import UsedCarPage from "../pages/UsedCarPage";
 import FaultsPage from "../pages/FaultsPage";
 import ToolsPage from "../pages/ToolsPage";
 import MonitorPage from "../pages/MonitorPage";
@@ -31,6 +32,7 @@ export type PageId =
   | "start"
   | "connect"
   | "health"
+  | "used-car"
   | "faults"
   | "tools"
   | "monitor"
@@ -65,6 +67,7 @@ export const PAGES: PageEntry[] = [
   { id: "start", icon: "home", label: () => t(MW, "Start"), component: DashboardPage },
   { id: "connect", icon: "plug", label: () => t(MW, "Verbinden"), component: ConnectPage },
   { id: "health", icon: "heart", label: () => t(MW, "Gesundheitscheck"), section: () => t(MW, "Diagnose"), component: HealthPage },
+  { id: "used-car", icon: "tag", label: () => t("caruspex::UsedCarPage", "Gebrauchtwagen prüfen"), component: UsedCarPage },
   { id: "faults", icon: "alert", label: () => t(MW, "Fehlerspeicher"), component: FaultsPage },
   { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage },
   { id: "monitor", icon: "stethoscope", label: () => t(MW, "Bauteilprüfung"), component: MonitorPage },
