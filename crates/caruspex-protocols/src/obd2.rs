@@ -363,6 +363,43 @@ fn make_value(spec: &PidSpec, reading: &PidReading<'_>, source: &str) -> LiveVal
     }
 }
 
+/// The mode 01 request for these PIDs: "010C", "010C0D05".
+fn pid_command(pids: &[i32]) -> String {
+    let mut command = String::from("01");
+    for pid in pids {
+        command.push_str(&format!("{pid:02X}"));
+    }
+    command
+}
+
+/// The values of one PID in the answer to its single request, optionally
+/// those of every control unit.
+fn pid_values(pid: i32, result: &ElmResult, every_ecu: bool) -> Vec<LiveValue> {
+    let mut out = Vec::new();
+    let Some(spec) = find_pid(pid) else {
+        return out;
+    };
+    if !result.ok() || result.messages.is_empty() {
+        return out;
+    }
+    // Several control units may answer (vehicle speed comes from engine and
+    // transmission); the first answer counts, which is the engine on CAN.
+    for (i, message) in result.messages.iter().enumerate() {
+        if message.first().map(|&b| i32::from(b)) != Some(pid) {
+            continue;
+        }
+        let data = ints(&message[1..]);
+        let source = source_at(result, i);
+        for reading in decode_pid(spec, &data) {
+            out.push(make_value(spec, &reading, &source));
+        }
+        if !out.is_empty() && !every_ecu {
+            break;
+        }
+    }
+    out
+}
+
 // ---------------------------------------------------------------------------
 // Several PIDs per request (CAN only)
 // ---------------------------------------------------------------------------
@@ -869,31 +906,11 @@ impl<'a> Obd2<'a> {
 
     /// `read_live_all`, optionally keeping the values of every control unit.
     fn read_pid(&mut self, pid: i32, every_ecu: bool) -> Vec<LiveValue> {
-        let mut out = Vec::new();
-        let Some(spec) = find_pid(pid) else {
-            return out;
-        };
+        if find_pid(pid).is_none() {
+            return Vec::new();
+        }
         let result = self.elm.request(&format!("01{pid:02X}"), 0x01, 4000);
-        if !result.ok() || result.messages.is_empty() {
-            return out;
-        }
-
-        // Several control units may answer (vehicle speed comes from engine and
-        // transmission); the first answer counts, which is the engine on CAN.
-        for (i, message) in result.messages.iter().enumerate() {
-            if message.first().map(|&b| i32::from(b)) != Some(pid) {
-                continue;
-            }
-            let data = ints(&message[1..]);
-            let source = source_at(&result, i);
-            for reading in decode_pid(spec, &data) {
-                out.push(make_value(spec, &reading, &source));
-            }
-            if !out.is_empty() && !every_ecu {
-                break;
-            }
-        }
-        out
+        pid_values(pid, &result, every_ecu)
     }
 
     /// Primary value of a PID (sub 0). If the control unit does not report
@@ -919,19 +936,14 @@ impl<'a> Obd2<'a> {
         self.read_pid(pid, false)
     }
 
-    /// One group request; `None` if it has to be read PID by PID instead,
-    /// otherwise the PIDs the answers left out.
-    fn read_group(
-        &mut self,
+    /// The answer to one group request; `None` if it has to be read PID by
+    /// PID instead, otherwise the PIDs the answers left out.
+    fn take_group(
         group: &[i32],
+        result: &ElmResult,
         every_ecu: bool,
         values: &mut BTreeMap<i32, Vec<LiveValue>>,
     ) -> Option<Vec<i32>> {
-        let mut command = String::from("01");
-        for pid in group {
-            command.push_str(&format!("{pid:02X}"));
-        }
-        let result = self.elm.request(&command, 0x01, 4000);
         if !result.ok() || result.messages.is_empty() {
             return None;
         }
@@ -954,7 +966,7 @@ impl<'a> Obd2<'a> {
                 let Some(spec) = find_pid(pid) else {
                     continue;
                 };
-                let source = source_at(&result, i);
+                let source = source_at(result, i);
                 for reading in decode_pid(spec, &ints(&data)) {
                     found
                         .entry(pid)
@@ -995,6 +1007,10 @@ impl<'a> Obd2<'a> {
     /// the first control unit that answers it (the engine on CAN). With
     /// `every_ecu` the values of every control unit are kept, each with its
     /// ecu/ecu_source (needs headers on to tell them apart).
+    ///
+    /// With the batched commands of an STN chip ([`Elm327::stn_batch`]) the
+    /// groups and the single requests go out together in one line, so a
+    /// whole round of live values costs one round trip to the adapter.
     pub fn read_live_batch(&mut self, pids: &[i32], every_ecu: bool) -> Vec<LiveValue> {
         // Every PID once, in the order asked; unknown PIDs are dropped like in
         // read_live_all.
@@ -1018,13 +1034,26 @@ impl<'a> Obd2<'a> {
             }
             // SAE J1979 on ISO 15765-4
             const MAX_PER_REQUEST: usize = 6;
+            let mut groups: Vec<&[i32]> = Vec::new();
             for group in grouped.chunks(MAX_PER_REQUEST) {
                 if group.len() == 1 {
                     single.push(group[0]);
-                    continue;
+                } else {
+                    groups.push(group);
                 }
-                let missing = self
-                    .read_group(group, every_ecu, &mut values)
+            }
+            // Batched, the singles known by now ride along with the groups;
+            // otherwise they follow the groups as before.
+            let mut early: Vec<i32> = Vec::new();
+            if self.elm.stn_batch() {
+                single.sort_by_key(|pid| order.iter().position(|p| p == pid));
+                early = std::mem::take(&mut single);
+            }
+            let mut commands: Vec<String> = groups.iter().map(|g| pid_command(g)).collect();
+            commands.extend(early.iter().map(|&pid| pid_command(&[pid])));
+            let results = self.elm.request_many(&commands, 0x01, 4000);
+            for (group, result) in groups.iter().zip(&results) {
+                let missing = Self::take_group(group, result, every_ecu, &mut values)
                     .unwrap_or_else(|| group.to_vec());
                 // Left out or spoilt: from now on these are asked one by one.
                 // That also catches control units that only answer the first
@@ -1034,6 +1063,12 @@ impl<'a> Obd2<'a> {
                     single.push(pid);
                 }
             }
+            for (&pid, result) in early.iter().zip(results.iter().skip(groups.len())) {
+                values
+                    .entry(pid)
+                    .or_default()
+                    .extend(pid_values(pid, result, every_ecu));
+            }
             // Single requests go out in the order asked, which keeps a log of
             // the traffic easy to follow.
             single.sort_by_key(|pid| order.iter().position(|p| p == pid));
@@ -1041,9 +1076,13 @@ impl<'a> Obd2<'a> {
             single = order.clone();
         }
 
-        for pid in single {
-            let list = self.read_pid(pid, every_ecu);
-            values.entry(pid).or_default().extend(list);
+        let commands: Vec<String> = single.iter().map(|&pid| pid_command(&[pid])).collect();
+        let results = self.elm.request_many(&commands, 0x01, 4000);
+        for (&pid, result) in single.iter().zip(&results) {
+            values
+                .entry(pid)
+                .or_default()
+                .extend(pid_values(pid, result, every_ecu));
         }
 
         let mut out = Vec::new();
