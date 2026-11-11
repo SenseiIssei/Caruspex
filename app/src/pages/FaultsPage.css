@@ -87,6 +87,8 @@
 }
 
 .faults-diagram { min-height: 190px; }
+.faults-where { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.faults-where .btn { flex: none; }
 
 .faults-section { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
 .faults-section .eyebrow { margin-bottom: 2px; }
