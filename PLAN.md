@@ -184,15 +184,15 @@ Damit nichts veraltet, ohne dass jemand daran denken muss.
 
 Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 
-- [ ] Einrichtungs-Assistent beim ersten Start: Welcher Adapter (mit Bildern der üblichen Bauformen), wo ist die Buchse bei diesem Auto (Lage aus dem Katalog, mit Skizze), Zündung an, fertig. Groß, Nutzen sehr hoch
+- [x] Einrichtungs-Assistent beim ersten Start: Welcher Adapter (mit Bildern der üblichen Bauformen), wo ist die Buchse bei diesem Auto (Lage aus dem Katalog, mit Skizze), Zündung an, fertig. Groß, Nutzen sehr hoch. Umgesetzt mit SVG-Zeichnungen für USB, Bluetooth, WLAN, ENET und KKL, Skizze von oben je SocketLocation (`catalog::location_for`), überspringbar, wieder aufrufbar unter Einstellungen und Verbinden; erscheint nur bei neuen Installationen (`setupDone`)
 - [x] Seite "Was soll ich jetzt tun?": aus Fehlern, Bereitschaft und Werten eine Liste in drei Stufen (sofort anhalten, bald in die Werkstatt, kann warten) mit grober Kostenspanne und einem Satz Begründung. Mittel
 - [x] Gebrauchtwagen-Check als eigener Ablauf: VIN gegen Katalog, Kilometerstand aus mehreren Steuergeräten vergleichen (wo die Kennungen belegt sind), Zeit und Strecke seit dem letzten Löschen (PID 31 und 4E), Bereitschaft, Akkuzustand bei E-Autos; Ergebnis als PDF für den Kauf. Mittel, Nutzen sehr hoch. Umgesetzt als Seite Gebrauchtwagen unter Diagnose (Bewertung in caruspex-analysis used_car); belegte Kilometerstand-Kennungen bisher nur Tesla und das Demo-Auto, weitere kommen mit OBDb aus Phase 15
 - [x] Verbindungs-Assistent bei Fehlschlägen: statt einer Meldung eine kurze Prüfliste je Schnittstelle (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat. Mittel
 - [x] Einsteiger- und Profimodus: Einsteiger sehen Start, Fehler, Gesundheit, Akku, Garage; KKL, Anpassung, Rohbefehle und Adressen erst im Profimodus. Klein
-- [ ] Erklärungen direkt am Begriff: kurzer Hinweis beim Darüberfahren für Fachwörter (Bereitschaft, Freeze Frame, Langzeitkorrektur), ein Glossar in allen Sprachen. Mittel
-- [ ] Fahrmodus mit großer Schrift und wenigen Werten, für den Halter am Armaturenbrett; Warnung, nicht während der Fahrt zu bedienen. Klein
-- [ ] Barrierefreiheit: Namen für Bildschirmleser, Tastaturbedienung überall, hoher Kontrast, Schriftgröße einstellbar. Mittel
-- [ ] Bericht teilen: QR-Code mit der Zusammenfassung, damit der Bericht aufs Handy oder zur Werkstatt kommt, ohne Konto und ohne Server. Klein
+- [x] Erklärungen direkt am Begriff: kurzer Hinweis beim Darüberfahren für Fachwörter (Bereitschaft, Freeze Frame, Langzeitkorrektur), ein Glossar in allen Sprachen. Mittel. 18 Begriffe (auch PID, Steuergerät, UDS, KWP, CAN, die drei Fehlerarten), Glossar unter Wissen auch für Einsteiger
+- [x] Fahrmodus mit großer Schrift und wenigen Werten, für den Halter am Armaturenbrett; Warnung, nicht während der Fahrt zu bedienen. Klein. Tempo, Drehzahl, Kühlmittel, Bordspannung und Warnungen, liest nur, solange die Seite offen ist
+- [x] Barrierefreiheit: Namen für Bildschirmleser, Tastaturbedienung überall, hoher Kontrast, Schriftgröße einstellbar. Mittel. Fokusfalle in Dialogen, Pfeiltasten in der Seitenleiste, Schriftgröße als Zoom des Fensters (80 bis 160 %)
+- [x] Bericht teilen: QR-Code mit der Zusammenfassung, damit der Bericht aufs Handy oder zur Werkstatt kommt, ohne Konto und ohne Server. Klein. Eigener QR-Kodierer (`app/src/lib/qr.ts`, Byte-Modus, Stufe M), auf der Startseite und in der Berichtsvorschau
 - [ ] Übersetzungen von Muttersprachlern gegenlesen lassen; Knopf "Übersetzung verbessern", der zur Anleitung führt. Laufend
 
 ## Phase 15: Mehr Autos und mehr Daten
