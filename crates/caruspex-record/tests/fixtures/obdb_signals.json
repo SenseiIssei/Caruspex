@@ -1,0 +1,1801 @@
+{
+ "_note": "Commands and recorded answers from OBDb (github.com/OBDb), CC BY-SA 4.0. Each entry is one command of the named repository with one of its test cases.",
+ "entries": [
+  {
+   "repo": "Acura-TLX",
+   "year": 2025,
+   "command": {
+    "hdr": "DA10",
+    "rax": "10",
+    "cmd": {
+     "22": "2612"
+    },
+    "freq": 0.25,
+    "dbgfilter": {
+     "years": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2022,
+      2023,
+      2024
+     ]
+    },
+    "signals": [
+     {
+      "id": "TLX_VTEC_PSW",
+      "path": "Engine",
+      "fmt": {
+       "bix": 174,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "VTEC pressure switch"
+     },
+     {
+      "id": "TLX_VTEC_SOL",
+      "path": "Engine",
+      "fmt": {
+       "bix": 175,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "VTEC solenoid valve"
+     }
+    ]
+   },
+   "response": [
+    "18DAF1101039622612FFF3F0",
+    "18DAF1102170024331180000",
+    "18DAF1102222DD01DC01D71E",
+    "18DAF11023E2000001000100",
+    "18DAF1102428000000000000",
+    "18DAF1102527000200000000",
+    "18DAF1102600000000000000",
+    "18DAF1102700005F00000000",
+    "18DAF1102826675555555555"
+   ],
+   "expected": {
+    "TLX_VTEC_PSW": 0.0,
+    "TLX_VTEC_SOL": 0.0
+   }
+  },
+  {
+   "repo": "Acura-TLX",
+   "year": 2025,
+   "command": {
+    "hdr": "DA26",
+    "rax": "26",
+    "cmd": {
+     "22": "6001"
+    },
+    "freq": 5,
+    "dbgfilter": {
+     "years": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2022,
+      2023
+     ]
+    },
+    "signals": [
+     {
+      "id": "TLX_TP_FR",
+      "path": "Tires",
+      "fmt": {
+       "bix": 64,
+       "len": 16,
+       "max": 65535,
+       "unit": "kilopascal"
+      },
+      "name": "Front right tire pressure",
+      "suggestedMetric": "frontRightTirePressure"
+     },
+     {
+      "id": "TLX_TP_FL",
+      "path": "Tires",
+      "fmt": {
+       "bix": 80,
+       "len": 16,
+       "max": 65535,
+       "unit": "kilopascal"
+      },
+      "name": "Front left tire pressure",
+      "suggestedMetric": "frontLeftTirePressure"
+     },
+     {
+      "id": "TLX_TP_RR",
+      "path": "Tires",
+      "fmt": {
+       "bix": 96,
+       "len": 16,
+       "max": 65535,
+       "unit": "kilopascal"
+      },
+      "name": "Rear right tire pressure",
+      "suggestedMetric": "rearRightTirePressure"
+     },
+     {
+      "id": "TLX_TP_RL",
+      "path": "Tires",
+      "fmt": {
+       "bix": 112,
+       "len": 16,
+       "max": 65535,
+       "unit": "kilopascal"
+      },
+      "name": "Rear left tire pressure",
+      "suggestedMetric": "rearLeftTirePressure"
+     },
+     {
+      "id": "TLX_TT_FR",
+      "path": "Tires",
+      "fmt": {
+       "bix": 192,
+       "len": 8,
+       "max": 127,
+       "min": -128,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Front right tire temperature"
+     },
+     {
+      "id": "TLX_TT_FL",
+      "path": "Tires",
+      "fmt": {
+       "bix": 200,
+       "len": 8,
+       "max": 127,
+       "min": -128,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Front left tire temperature"
+     },
+     {
+      "id": "TLX_TT_RR",
+      "path": "Tires",
+      "fmt": {
+       "bix": 208,
+       "len": 8,
+       "max": 127,
+       "min": -128,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Rear right tire temperature"
+     },
+     {
+      "id": "TLX_TT_RL",
+      "path": "Tires",
+      "fmt": {
+       "bix": 216,
+       "len": 8,
+       "max": 127,
+       "min": -128,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Rear left tire temperature"
+     }
+    ]
+   },
+   "response": [
+    "18DAF126103B6260010000FF",
+    "18DAF1262100F000000000C6",
+    "18DAF1262200BC00B900C000",
+    "18DAF1262300000000000000",
+    "18DAF12624FAFAF9FB000000",
+    "18DAF1262500000000000000",
+    "18DAF1262600000000000000",
+    "18DAF1262700000000000000",
+    "18DAF1262800000000555555"
+   ],
+   "expected": {
+    "TLX_TP_FL": 188.0,
+    "TLX_TP_FR": 198.0,
+    "TLX_TP_RL": 192.0,
+    "TLX_TP_RR": 185.0,
+    "TLX_TT_FL": -6.0,
+    "TLX_TT_FR": -6.0,
+    "TLX_TT_RL": -5.0,
+    "TLX_TT_RR": -7.0
+   }
+  },
+  {
+   "repo": "Acura-TLX",
+   "year": 2025,
+   "command": {
+    "hdr": "DA60",
+    "rax": "60",
+    "cmd": {
+     "22": "7028"
+    },
+    "freq": 5,
+    "filter": {
+     "from": 2025
+    },
+    "signals": [
+     {
+      "id": "TLX_AAT_C",
+      "path": "Climate",
+      "fmt": {
+       "bix": 132,
+       "len": 12,
+       "max": 2047,
+       "min": -40,
+       "sign": true,
+       "nullmax": 61,
+       "unit": "celsius"
+      },
+      "name": "Outside air temperature"
+     }
+    ]
+   },
+   "response": [
+    "18DAF1601039627028F8F000",
+    "18DAF1602100000004010000",
+    "18DAF160220200000007FF07",
+    "18DAF16023FF000000000000",
+    "18DAF1602400000000000000",
+    "18DAF1602500000000000000",
+    "18DAF1602600000000000000",
+    "18DAF1602700000000000000",
+    "18DAF1602800005555555555"
+   ],
+   "expected": {
+    "TLX_AAT_C": "null"
+   }
+  },
+  {
+   "repo": "Dacia-Dokker",
+   "year": 2016,
+   "command": {
+    "hdr": "743",
+    "rax": "763",
+    "din": "C0",
+    "cmd": {
+     "22": "0207"
+    },
+    "freq": 30,
+    "dbgfilter": {
+     "to": 2015,
+     "from": 2017
+    },
+    "signals": [
+     {
+      "id": "DOKKER_ODO_KM",
+      "path": "Trips",
+      "fmt": {
+       "len": 24,
+       "max": 16777215,
+       "unit": "kilometers"
+      },
+      "name": "Odometer in km"
+     }
+    ]
+   },
+   "response": [
+    "763066202070185CF"
+   ],
+   "expected": {
+    "DOKKER_ODO_KM": 99791.0
+   }
+  },
+  {
+   "repo": "Ford-Explorer",
+   "year": 2026,
+   "command": {
+    "hdr": "726",
+    "rax": "72E",
+    "cmd": {
+     "22": "41A9"
+    },
+    "freq": 5,
+    "dbgfilter": {
+     "to": 2019,
+     "years": [
+      2021,
+      2023
+     ],
+     "from": 2027
+    },
+    "signals": [
+     {
+      "id": "EXPLORER_BAT_CURRENT_TOO_HIGH",
+      "path": "Battery",
+      "fmt": {
+       "bix": 2,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery current too high for start/stop"
+     },
+     {
+      "id": "EXPLORER_BAT_V_TOO_LOW_START",
+      "path": "Battery",
+      "fmt": {
+       "bix": 3,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery voltage too low for start/stop"
+     },
+     {
+      "id": "EXPLORER_BAT_ST_CHG_TOO_LOW",
+      "path": "Battery",
+      "fmt": {
+       "bix": 4,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery state of charge too low for start/stop"
+     },
+     {
+      "id": "EXPLORER_BAT_CAP_TOO_LOW",
+      "path": "Battery",
+      "fmt": {
+       "bix": 5,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery capacity too low for start/stop"
+     },
+     {
+      "id": "EXPLORER_BAT_V_TOO_LOW_COLD",
+      "path": "Battery",
+      "fmt": {
+       "bix": 6,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery voltage too low for cold cranking capability"
+     },
+     {
+      "id": "EXPLORER_BAT_V_TOO_LOW_AUTO",
+      "path": "Battery",
+      "fmt": {
+       "bix": 12,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery voltage too low for auto restart"
+     },
+     {
+      "id": "EXPLORER_BAT_T_TOO_LOW_AUTO",
+      "path": "Battery",
+      "fmt": {
+       "bix": 13,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery temperature too low for auto stop"
+     },
+     {
+      "id": "EXPLORER_BAT_REFRESH_CYCLE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 14,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Battery refresh cycle in progress for start/stop"
+     }
+    ]
+   },
+   "response": [
+    "72E076241A900000000"
+   ],
+   "expected": {
+    "EXPLORER_BAT_CAP_TOO_LOW": 0.0,
+    "EXPLORER_BAT_CURRENT_TOO_HIGH": 0.0,
+    "EXPLORER_BAT_REFRESH_CYCLE": 0.0,
+    "EXPLORER_BAT_ST_CHG_TOO_LOW": 0.0,
+    "EXPLORER_BAT_T_TOO_LOW_AUTO": 0.0,
+    "EXPLORER_BAT_V_TOO_LOW_AUTO": 0.0,
+    "EXPLORER_BAT_V_TOO_LOW_COLD": 0.0,
+    "EXPLORER_BAT_V_TOO_LOW_START": 0.0
+   }
+  },
+  {
+   "repo": "Hyundai-IONIQ-5",
+   "year": 2024,
+   "command": {
+    "hdr": "7E3",
+    "rax": "7EB",
+    "cmd": {
+     "22": "E001"
+    },
+    "freq": 1,
+    "filter": {
+     "to": 2024
+    },
+    "dbgfilter": {
+     "to": 2021
+    },
+    "signals": [
+     {
+      "id": "IONIQ5_IGN_VOLTAGE",
+      "path": "Engine",
+      "fmt": {
+       "bix": 120,
+       "len": 16,
+       "blsb": true,
+       "max": 65.535,
+       "mul": 10,
+       "div": 10000,
+       "unit": "volts"
+      },
+      "name": "Ignition voltage"
+     },
+     {
+      "id": "IONIQ5_MOTOR_RPM",
+      "path": "Engine",
+      "fmt": {
+       "bix": 136,
+       "len": 16,
+       "blsb": true,
+       "max": 32767,
+       "min": -32768,
+       "sign": true,
+       "unit": "rpm"
+      },
+      "name": "Motor RPM"
+     },
+     {
+      "id": "IONIQ5_NOMINAL_TORQUE_VALUE",
+      "path": "Engine",
+      "fmt": {
+       "bix": 152,
+       "len": 16,
+       "blsb": true,
+       "max": 3276.7,
+       "min": -3276.8,
+       "div": 10,
+       "sign": true,
+       "unit": "newtonMeters"
+      },
+      "name": "Nominal torque value"
+     },
+     {
+      "id": "IONIQ5_MOTOR_ACTUAL_TORQUE",
+      "path": "Engine",
+      "fmt": {
+       "bix": 168,
+       "len": 16,
+       "blsb": true,
+       "max": 3276.7,
+       "min": -3276.8,
+       "div": 10,
+       "sign": true,
+       "unit": "newtonMeters"
+      },
+      "name": "Motor actual torque"
+     },
+     {
+      "id": "IONIQ5_MOTOR_PHASE_CURRENT_RMS",
+      "path": "Engine",
+      "fmt": {
+       "bix": 184,
+       "len": 16,
+       "blsb": true,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "amps"
+      },
+      "name": "Motor phase current"
+     },
+     {
+      "id": "IONIQ5_MOTOR_T",
+      "path": "Engine",
+      "fmt": {
+       "bix": 200,
+       "len": 16,
+       "blsb": true,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Motor temperature"
+     },
+     {
+      "id": "IONIQ5_INVERTER_T",
+      "path": "Engine",
+      "fmt": {
+       "bix": 216,
+       "len": 16,
+       "blsb": true,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Inverter temperature"
+     },
+     {
+      "id": "IONIQ5_HEAT_SINK_T",
+      "path": "Engine",
+      "fmt": {
+       "bix": 448,
+       "len": 16,
+       "blsb": true,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Heat sink temperature"
+     }
+    ]
+   },
+   "response": [
+    "22E001",
+    "7EB10CB62E001FFFFFF",
+    "7EB21FF6009408E9337",
+    "7EB2200B0072C05FC38",
+    "7EB23EA0F1901190107",
+    "7EB240187071D07FDFF",
+    "7EB25FEFFFAFFCDAB1C",
+    "7EB2609053E05100BC7",
+    "7EB270EC2CD1500D4FA",
+    "7EB280600E0FC4906C1",
+    "7EB29CDEF0397FFC1CD",
+    "7EB2AE5032506000000",
+    "7EB2B00000000000000",
+    "7EB2C00000000000000",
+    "7EB2D00000000000000",
+    "7EB2E00000000000000",
+    "7EB2F00000000000000",
+    "7EB2000000000000000",
+    "7EB2100000000000000",
+    "7EB2200000000000000",
+    "7EB2300000000000000",
+    "7EB2400000000000000",
+    "7EB2500000000000000",
+    "7EB2600000000000000",
+    "7EB2700000000000000",
+    "7EB2800000000000000",
+    "7EB2900000000000000",
+    "7EB2A00000000000000",
+    "7EB2B00000000000000",
+    "7EB2C00000000000000",
+    "7EB2D00AAAAAAAAAAAA"
+   ],
+   "expected": {
+    "IONIQ5_HEAT_SINK_T": 16.09,
+    "IONIQ5_IGN_VOLTAGE": 14.588,
+    "IONIQ5_INVERTER_T": 18.21,
+    "IONIQ5_MOTOR_ACTUAL_TORQUE": 28.1,
+    "IONIQ5_MOTOR_PHASE_CURRENT_RMS": 26.3,
+    "IONIQ5_MOTOR_RPM": 4074.0,
+    "IONIQ5_MOTOR_T": 19.27,
+    "IONIQ5_NOMINAL_TORQUE_VALUE": 28.1
+   }
+  },
+  {
+   "repo": "Hyundai-IONIQ-5",
+   "year": 2026,
+   "command": {
+    "hdr": "744",
+    "rax": "74C",
+    "fcm1": true,
+    "cmd": {
+     "22": "E003"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2021,
+     "from": 2027
+    },
+    "signals": [
+     {
+      "id": "IONIQ5_HVBAT_CP_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 48,
+       "len": 8,
+       "max": 25.5,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "Control pilot voltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_CP_DUTY_CYCLE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 56,
+       "len": 16,
+       "max": 100,
+       "div": 10,
+       "unit": "percent"
+      },
+      "name": "Control pilot duty cycle"
+     },
+     {
+      "id": "IONIQ5_HVBAT_PD_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 88,
+       "len": 16,
+       "max": 65.535,
+       "mul": 10,
+       "div": 10000,
+       "unit": "volts"
+      },
+      "name": "Proximity detection voltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_HV_BATTERY_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 104,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "nullmin": 0,
+       "nullmax": 6553.5,
+       "unit": "volts"
+      },
+      "name": "High voltage battery, voltage",
+      "suggestedMetric": "tractionBatteryVoltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_SOC_VCMS",
+      "path": "Battery",
+      "fmt": {
+       "bix": 120,
+       "len": 8,
+       "max": 100,
+       "div": 2,
+       "unit": "percent"
+      },
+      "name": "High voltage battery, state of charge",
+      "suggestedMetric": "stateOfCharge"
+     },
+     {
+      "id": "IONIQ5_HVBAT_TARGET_VOLT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 128,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "Electric vehicle supply equipment, target voltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_TARGET_CURR",
+      "path": "Battery",
+      "fmt": {
+       "bix": 144,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "amps"
+      },
+      "name": "Electric vehicle supply equipment, target current"
+     },
+     {
+      "id": "IONIQ5_HVBAT_EV_MAX_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 160,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "High voltage battery, max voltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_EV_MAX_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 176,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "amps"
+      },
+      "name": "High voltage battery, max current"
+     },
+     {
+      "id": "IONIQ5_HVBAT_BMS_TARGET_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 192,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "High voltage battery, target voltage"
+     },
+     {
+      "id": "IONIQ5_HVBAT_BMS_TARGET_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 208,
+       "len": 16,
+       "max": 6553.5,
+       "div": 10,
+       "unit": "amps"
+      },
+      "name": "High voltage battery, target current"
+     },
+     {
+      "id": "IONIQ5_HVBAT_AC_CHARGING_COUNTER",
+      "path": "Battery",
+      "fmt": {
+       "bix": 240,
+       "len": 16,
+       "max": 65535,
+       "unit": "scalar"
+      },
+      "name": "A/C charging counter"
+     },
+     {
+      "id": "IONIQ5_HVBAT_CHRG_CNT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 256,
+       "len": 16,
+       "max": 65535,
+       "unit": "scalar"
+      },
+      "name": "DC charging counter"
+     },
+     {
+      "id": "IONIQ5_VCMS__AC_CHARGING_TIME",
+      "path": "Battery",
+      "fmt": {
+       "bix": 272,
+       "len": 16,
+       "max": 65535,
+       "unit": "hours"
+      },
+      "name": "A/C charging time"
+     },
+     {
+      "id": "IONIQ5_DC_CHRG_TIME",
+      "path": "Battery",
+      "fmt": {
+       "bix": 288,
+       "len": 16,
+       "max": 65535,
+       "unit": "hours"
+      },
+      "name": "Cumulative DC charging time"
+     },
+     {
+      "id": "IONIQ5_AC_CHARGER_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 304,
+       "len": 16,
+       "max": 655.35,
+       "div": 100,
+       "unit": "amps"
+      },
+      "name": "A/C charger current"
+     },
+     {
+      "id": "IONIQ5_DC_CHARGER_CURRENT_CAPABILITY",
+      "path": "Battery",
+      "fmt": {
+       "bix": 320,
+       "len": 16,
+       "max": 655.35,
+       "div": 100,
+       "unit": "amps"
+      },
+      "name": "DC charger current capability"
+     },
+     {
+      "id": "IONIQ5_AC_CHARGING_TIME_AFTER_PLUG_IN",
+      "path": "Battery",
+      "fmt": {
+       "bix": 336,
+       "len": 16,
+       "max": 65535,
+       "unit": "minutes"
+      },
+      "name": "A/C charging time, after plug-in"
+     },
+     {
+      "id": "IONIQ5_DC_CHARGING_TIME_AFTER_PLUG_IN",
+      "path": "Battery",
+      "fmt": {
+       "bix": 352,
+       "len": 16,
+       "max": 65535,
+       "unit": "minutes"
+      },
+      "name": "DC charging time, after plug-in"
+     }
+    ]
+   },
+   "response": [
+    "74C103F62E003FFFFFF",
+    "74C21FE532D3C00FE27",
+    "74C221005D41E0D9E00",
+    "74C2300000020400DAC",
+    "74C2420400192000D00",
+    "74C250F000100A30000",
+    "74C2600980000001D00",
+    "74C270008E002E110E4",
+    "74C280B0613520F7F00",
+    "74C2908AAAAAAAAAAAA"
+   ],
+   "expected": {
+    "IONIQ5_AC_CHARGER_CURRENT": 1.52,
+    "IONIQ5_AC_CHARGING_TIME_AFTER_PLUG_IN": 29.0,
+    "IONIQ5_DC_CHARGER_CURRENT_CAPABILITY": 0.0,
+    "IONIQ5_DC_CHARGING_TIME_AFTER_PLUG_IN": 0.0,
+    "IONIQ5_DC_CHRG_TIME": 0.0,
+    "IONIQ5_HVBAT_AC_CHARGING_COUNTER": 15.0,
+    "IONIQ5_HVBAT_BMS_TARGET_CURRENT": 40.2,
+    "IONIQ5_HVBAT_BMS_TARGET_VOLTAGE": 825.6,
+    "IONIQ5_HVBAT_CHRG_CNT": 1.0,
+    "IONIQ5_HVBAT_CP_DUTY_CYCLE": 25.4,
+    "IONIQ5_HVBAT_CP_VOLTAGE": 6.0,
+    "IONIQ5_HVBAT_EV_MAX_CURRENT": 350.0,
+    "IONIQ5_HVBAT_EV_MAX_VOLTAGE": 825.6,
+    "IONIQ5_HVBAT_HV_BATTERY_VOLTAGE": 769.3,
+    "IONIQ5_HVBAT_PD_VOLTAGE": 1.492,
+    "IONIQ5_HVBAT_SOC_VCMS": 79.0,
+    "IONIQ5_HVBAT_TARGET_CURR": 0.0,
+    "IONIQ5_HVBAT_TARGET_VOLT": 0.0,
+    "IONIQ5_VCMS__AC_CHARGING_TIME": 163.0
+   }
+  },
+  {
+   "repo": "Hyundai-IONIQ-5",
+   "year": 2027,
+   "command": {
+    "hdr": "7E4",
+    "rax": "7EC",
+    "fcm1": true,
+    "cmd": {
+     "22": "0101"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2021,
+     "from": 2028
+    },
+    "signals": [
+     {
+      "id": "IONIQ5_HVBAT_SOC",
+      "path": "Battery",
+      "fmt": {
+       "bix": 32,
+       "len": 8,
+       "max": 100,
+       "div": 2,
+       "unit": "percent"
+      },
+      "name": "HV battery charge, dashboard",
+      "suggestedMetric": "stateOfCharge"
+     },
+     {
+      "id": "IONIQ5_HV_CHARGING",
+      "path": "Battery",
+      "fmt": {
+       "bix": 72,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Charging?",
+      "suggestedMetric": "isCharging"
+     },
+     {
+      "id": "IONIQ5_RAPID_CHARGE_PORT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 73,
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "Rapid charge port"
+     },
+     {
+      "id": "IONIQ5_NORMAL_CHARGE_PORT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 74,
+       "len": 1,
+       "max": 1,
+       "unit": "scalar"
+      },
+      "name": "Normal charge port"
+     },
+     {
+      "id": "IONIQ5_BMS_MAIN_RELAY",
+      "path": "Battery",
+      "fmt": {
+       "bix": 79,
+       "len": 1,
+       "max": 1,
+       "unit": "scalar"
+      },
+      "name": "Battery management system main relay"
+     },
+     {
+      "id": "IONIQ5_BATTERY_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 80,
+       "len": 16,
+       "max": 3276.7,
+       "min": -3276.8,
+       "div": 10,
+       "sign": true,
+       "unit": "amps"
+      },
+      "name": "Battery current"
+     },
+     {
+      "id": "IONIQ5_BATTERY_DC_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 96,
+       "len": 16,
+       "max": 1000,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "Battery DC voltage",
+      "suggestedMetric": "tractionBatteryVoltage"
+     },
+     {
+      "id": "IONIQ5_BATTERY_MAX_T",
+      "path": "Battery",
+      "fmt": {
+       "bix": 112,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery max temperature"
+     },
+     {
+      "id": "IONIQ5_BATTERY_MIN_T",
+      "path": "Battery",
+      "fmt": {
+       "bix": 120,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery min temperature"
+     },
+     {
+      "id": "IONIQ5_BATTERY_PACK_B01",
+      "path": "Battery",
+      "fmt": {
+       "bix": 128,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery pack B01"
+     },
+     {
+      "id": "IONIQ5_BATTERY_PACK_B02",
+      "path": "Battery",
+      "fmt": {
+       "bix": 136,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery pack B02"
+     },
+     {
+      "id": "IONIQ5_BATTERY_PACK_B03",
+      "path": "Battery",
+      "fmt": {
+       "bix": 144,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery pack B03"
+     },
+     {
+      "id": "IONIQ5_BATTERY_PACK_B04",
+      "path": "Battery",
+      "fmt": {
+       "bix": 152,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery pack B04"
+     },
+     {
+      "id": "IONIQ5_BATTERY_PACK_B05",
+      "path": "Battery",
+      "fmt": {
+       "bix": 160,
+       "len": 8,
+       "max": 80,
+       "min": -40,
+       "sign": true,
+       "unit": "celsius"
+      },
+      "name": "Battery pack B05"
+     },
+     {
+      "id": "IONIQ5_BATTERY_INLET_T",
+      "path": "Battery",
+      "fmt": {
+       "bix": 176,
+       "len": 8,
+       "max": 215,
+       "min": -40,
+       "add": -40,
+       "unit": "celsius"
+      },
+      "name": "Battery inlet temperature"
+     },
+     {
+      "id": "IONIQ5_MAXIMUM_CELL_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 184,
+       "len": 8,
+       "max": 4.2,
+       "min": 2.8,
+       "div": 50,
+       "unit": "volts"
+      },
+      "name": "Maximum cell voltage"
+     },
+     {
+      "id": "IONIQ5_MAXIMUM_CELL_VOLTAGE_NO",
+      "path": "Battery",
+      "fmt": {
+       "bix": 192,
+       "len": 8,
+       "max": 255,
+       "unit": "scalar"
+      },
+      "name": "Maximum cell voltage no"
+     },
+     {
+      "id": "IONIQ5_MINIMUM_CELL_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 200,
+       "len": 8,
+       "max": 4.2,
+       "min": 2.8,
+       "div": 50,
+       "unit": "volts"
+      },
+      "name": "Minimum cell voltage"
+     },
+     {
+      "id": "IONIQ5_MINIMUM_CELL_VOLTAGE_NO",
+      "path": "Battery",
+      "fmt": {
+       "bix": 208,
+       "len": 8,
+       "max": 255,
+       "unit": "scalar"
+      },
+      "name": "Minimum cell voltage no"
+     },
+     {
+      "id": "IONIQ5_BATTERY_FAN_STATUS",
+      "path": "Battery",
+      "fmt": {
+       "bix": 216,
+       "len": 8,
+       "max": 9,
+       "unit": "scalar"
+      },
+      "name": "Battery fan status"
+     },
+     {
+      "id": "IONIQ5_BATTERY_FAN_FEEDBACK",
+      "path": "Battery",
+      "fmt": {
+       "bix": 224,
+       "len": 8,
+       "max": 120,
+       "unit": "hertz"
+      },
+      "name": "Battery fan feedback"
+     },
+     {
+      "id": "IONIQ5_AUXILLARY_BATTERY_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 232,
+       "len": 8,
+       "max": 14.6,
+       "min": 11,
+       "div": 10,
+       "unit": "volts"
+      },
+      "name": "Auxiliary battery voltage"
+     },
+     {
+      "id": "IONIQ5_CUMULATIVE_CHARGE_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 240,
+       "len": 32,
+       "max": 429496729.5,
+       "div": 10,
+       "unit": "ampereHours"
+      },
+      "name": "Cumulative charge current"
+     },
+     {
+      "id": "IONIQ5_CUMULATIVE_DISCHARGE_CURRENT",
+      "path": "Battery",
+      "fmt": {
+       "bix": 272,
+       "len": 32,
+       "max": 429496729.5,
+       "div": 10,
+       "unit": "ampereHours"
+      },
+      "name": "Cumulative discharge current"
+     },
+     {
+      "id": "IONIQ5_CUMULATIVE_ENERGY_CHARGED",
+      "path": "Battery",
+      "fmt": {
+       "bix": 304,
+       "len": 32,
+       "max": 429496729.5,
+       "div": 10,
+       "unit": "kilowattHours"
+      },
+      "name": "Cumulative energy charged"
+     },
+     {
+      "id": "IONIQ5_CUMULATIVE_ENERGY_DISCHARGED",
+      "path": "Battery",
+      "fmt": {
+       "bix": 336,
+       "len": 32,
+       "max": 429496729.5,
+       "div": 10,
+       "unit": "kilowattHours"
+      },
+      "name": "Cumulative energy discharged"
+     },
+     {
+      "id": "IONIQ5_BATTERY_WORK_TIME_TOTAL_SEC",
+      "path": "Battery",
+      "fmt": {
+       "bix": 368,
+       "len": 32,
+       "max": 4294967295,
+       "unit": "seconds"
+      },
+      "name": "Battery work time total"
+     },
+     {
+      "id": "IONIQ5_BMS_IGNITION",
+      "path": "Battery",
+      "fmt": {
+       "bix": 405,
+       "len": 1,
+       "max": 1,
+       "unit": "scalar"
+      },
+      "name": "Battery management system ignition"
+     },
+     {
+      "id": "IONIQ5_INVERTER_CAPACITOR_VOLTAGE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 408,
+       "len": 16,
+       "max": 1000,
+       "nullmax": 1000,
+       "unit": "volts"
+      },
+      "name": "Inverter capacitor voltage"
+     },
+     {
+      "id": "IONIQ5_DRIVE_MOTOR_SPEED_1",
+      "path": "Movement",
+      "fmt": {
+       "bix": 424,
+       "len": 16,
+       "max": 32767,
+       "min": -32768,
+       "sign": true,
+       "unit": "rpm"
+      },
+      "name": "Drive motor speed 1"
+     },
+     {
+      "id": "IONIQ5_DRIVE_MOTOR_SPEED_2",
+      "path": "Movement",
+      "fmt": {
+       "bix": 440,
+       "len": 16,
+       "max": 32767,
+       "min": -32768,
+       "sign": true,
+       "unit": "rpm"
+      },
+      "name": "Drive motor speed 2"
+     },
+     {
+      "id": "IONIQ5_ISOLATION_RESISTANCE",
+      "path": "Battery",
+      "fmt": {
+       "bix": 456,
+       "len": 16,
+       "max": 3000,
+       "unit": "kiloohms"
+      },
+      "name": "Isolation resistance"
+     }
+    ]
+   },
+   "response": [
+    "7EC103E620101EFFBE7",
+    "7EC21EF2E0000000000",
+    "7EC2200161A671B191B",
+    "7EC231A191B1B003BB0",
+    "7EC241FAF0C00008600",
+    "7EC25000F0200001078",
+    "7EC2600000B4800000C",
+    "7EC27060008F9B40002",
+    "7EC28A0048600000BB8"
+   ],
+   "expected": {
+    "IONIQ5_AUXILLARY_BATTERY_VOLTAGE": 13.4,
+    "IONIQ5_BATTERY_CURRENT": 2.2,
+    "IONIQ5_BATTERY_DC_VOLTAGE": 675.9,
+    "IONIQ5_BATTERY_FAN_FEEDBACK": 0.0,
+    "IONIQ5_BATTERY_FAN_STATUS": 0.0,
+    "IONIQ5_BATTERY_INLET_T": 19.0,
+    "IONIQ5_BATTERY_MAX_T": 27.0,
+    "IONIQ5_BATTERY_MIN_T": 25.0,
+    "IONIQ5_BATTERY_PACK_B01": 27.0,
+    "IONIQ5_BATTERY_PACK_B02": 26.0,
+    "IONIQ5_BATTERY_PACK_B03": 25.0,
+    "IONIQ5_BATTERY_PACK_B04": 27.0,
+    "IONIQ5_BATTERY_PACK_B05": 27.0,
+    "IONIQ5_BATTERY_WORK_TIME_TOTAL_SEC": 588212.0,
+    "IONIQ5_BMS_IGNITION": 0.0,
+    "IONIQ5_BMS_MAIN_RELAY": 0.0,
+    "IONIQ5_CUMULATIVE_CHARGE_CURRENT": 384.2,
+    "IONIQ5_CUMULATIVE_DISCHARGE_CURRENT": 421.6,
+    "IONIQ5_CUMULATIVE_ENERGY_CHARGED": 288.8,
+    "IONIQ5_CUMULATIVE_ENERGY_DISCHARGED": 307.8,
+    "IONIQ5_DRIVE_MOTOR_SPEED_1": 1158.0,
+    "IONIQ5_DRIVE_MOTOR_SPEED_2": 0.0,
+    "IONIQ5_HVBAT_SOC": 23.0,
+    "IONIQ5_HV_CHARGING": 0.0,
+    "IONIQ5_INVERTER_CAPACITOR_VOLTAGE": 672.0,
+    "IONIQ5_ISOLATION_RESISTANCE": 3000.0,
+    "IONIQ5_MAXIMUM_CELL_VOLTAGE": 3.52,
+    "IONIQ5_MAXIMUM_CELL_VOLTAGE_NO": 31.0,
+    "IONIQ5_MINIMUM_CELL_VOLTAGE": 3.5,
+    "IONIQ5_MINIMUM_CELL_VOLTAGE_NO": 12.0,
+    "IONIQ5_NORMAL_CHARGE_PORT": 0.0,
+    "IONIQ5_RAPID_CHARGE_PORT": 0.0
+   }
+  },
+  {
+   "repo": "Renault-ZOE",
+   "year": 2021,
+   "command": {
+    "hdr": "744",
+    "rax": "764",
+    "cmd": {
+     "22": "4341"
+    },
+    "freq": 5,
+    "dbgfilter": {
+     "to": 2020,
+     "from": 2022
+    },
+    "signals": [
+     {
+      "id": "ZOE_PTC_REQ",
+      "path": "Climate",
+      "fmt": {
+       "bix": 4,
+       "len": 4,
+       "max": 15,
+       "unit": "scalar"
+      },
+      "name": "Electric heater request"
+     }
+    ]
+   },
+   "response": [
+    "7640462434100"
+   ],
+   "expected": {
+    "ZOE_PTC_REQ": 0.0
+   }
+  },
+  {
+   "repo": "Renault-ZOE",
+   "year": 2021,
+   "command": {
+    "hdr": "DADA",
+    "rax": "DA",
+    "cmd": {
+     "22": "21CF"
+    },
+    "freq": 10,
+    "dbgfilter": {
+     "to": 2020,
+     "from": 2022
+    },
+    "signals": [
+     {
+      "id": "ZOE_INV_STATE",
+      "path": "Drivetrain",
+      "name": "Inverter state",
+      "fmt": {
+       "bix": 4,
+       "len": 4,
+       "map": {
+        "1": {
+         "description": "Off",
+         "value": "OFF"
+        },
+        "2": {
+         "description": "On",
+         "value": "ON"
+        },
+        "3": {
+         "description": "Discharging",
+         "value": "DISCHARGING"
+        },
+        "4": {
+         "description": "Alternator mode",
+         "value": "ALTERNATOR"
+        },
+        "5": {
+         "description": "Ready to sleep",
+         "value": "SLEEP_READY"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "response": [
+    "18DAF1DA046221CF02"
+   ],
+   "expected": {
+    "ZOE_INV_STATE": "ON"
+   }
+  },
+  {
+   "repo": "Renault-ZOE",
+   "year": 2021,
+   "command": {
+    "hdr": "DADA",
+    "rax": "DA",
+    "cmd": {
+     "22": "2B85"
+    },
+    "freq": 2,
+    "dbgfilter": {
+     "to": 2020,
+     "from": 2022
+    },
+    "signals": [
+     {
+      "id": "ZOE_PLUG",
+      "path": "Battery",
+      "fmt": {
+       "bix": 4,
+       "len": 4,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Charge plug present",
+      "suggestedMetric": "pluggedIn"
+     }
+    ]
+   },
+   "response": [
+    "18DAF1DA04622B8500"
+   ],
+   "expected": {
+    "ZOE_PLUG": 0.0
+   }
+  },
+  {
+   "repo": "Toyota-Prius",
+   "year": 2009,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "21": "21"
+    },
+    "freq": 1,
+    "filter": {
+     "to": 2015,
+     "from": 2023
+    },
+    "dbgfilter": {
+     "to": 2004,
+     "years": [
+      2006
+     ],
+     "from": 2011
+    },
+    "signals": [
+     {
+      "id": "PRIUS_CC_S",
+      "path": "Cruise control",
+      "fmt": {
+       "bix": 8,
+       "len": 8,
+       "max": 255,
+       "unit": "kilometersPerHour"
+      },
+      "name": "Cruise control speed"
+     }
+    ]
+   },
+   "response": [
+    "21211",
+    "7E80461210001"
+   ],
+   "expected": {
+    "PRIUS_CC_S": 1.0
+   }
+  },
+  {
+   "repo": "Toyota-Prius",
+   "year": 2013,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "21": "06"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2008,
+     "years": [
+      2010,
+      2012
+     ],
+     "from": 2014
+    },
+    "signals": [
+     {
+      "id": "PRIUS_MIL",
+      "path": "DTCs",
+      "fmt": {
+       "len": 1,
+       "max": 1,
+       "unit": "offon"
+      },
+      "name": "MIL"
+     },
+     {
+      "id": "PRIUS_NUMBER_OF_EMISSION_DTC",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 1,
+       "len": 7,
+       "max": 127,
+       "unit": "scalar"
+      },
+      "name": "Number of emission DTC"
+     },
+     {
+      "id": "PRIUS_COMPLETE_PARTS_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 13,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Complete parts monitor available?"
+     },
+     {
+      "id": "PRIUS_FUEL_SYSTEM_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 14,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Fuel system monitor available?"
+     },
+     {
+      "id": "PRIUS_MISFIRE_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 15,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Misfire monitor available?"
+     },
+     {
+      "id": "PRIUS_EGR_VVT_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 16,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "EGR/VVT monitor available?"
+     },
+     {
+      "id": "PRIUS_O2S_A_FS_HEATER_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 17,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "O2S heater monitor available?"
+     },
+     {
+      "id": "PRIUS_O2S_A_FS_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 18,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "O2S monitor available?"
+     },
+     {
+      "id": "PRIUS_A_C_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 19,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "A/C monitor available?"
+     },
+     {
+      "id": "PRIUS_2ND_AIR_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 20,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "2nd air monitor available?"
+     },
+     {
+      "id": "PRIUS_EVAP_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 21,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "EVAP monitor available?"
+     },
+     {
+      "id": "PRIUS_HEATED_CATALYST_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 22,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Heated catalyst monitor available?"
+     },
+     {
+      "id": "PRIUS_CATALYST_MONITOR_AVAIL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 23,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Catalyst monitor available?"
+     },
+     {
+      "id": "PRIUS_EGR_VVT_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 24,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "EGR/VVT monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_O2S_A_FS_HEATER_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 25,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "O2S heater monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_O2S_A_FS_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 26,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "O2S monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_A_C_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 27,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "A/C monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_2ND_AIR_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 28,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "2nd air monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_EVAP_MONITOR_ICMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 29,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "EVAP monitor_icmpl"
+     },
+     {
+      "id": "PRIUS_HEATED_CATALYST_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 30,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Heated catalyst monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_CATALYST_MONITOR_INCMPL",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 31,
+       "len": 1,
+       "max": 1,
+       "unit": "noyes"
+      },
+      "name": "Catalyst monitor incomplete?"
+     },
+     {
+      "id": "PRIUS_MILON_RUN_DISTANCE",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 48,
+       "len": 16,
+       "max": 65535,
+       "unit": "kilometers"
+      },
+      "name": "MIL ON run distance"
+     },
+     {
+      "id": "PRIUS_RUNNING_TIME_FROM_MIL_ON",
+      "path": "DTCs",
+      "fmt": {
+       "bix": 64,
+       "len": 16,
+       "max": 65535,
+       "unit": "minutes"
+      },
+      "name": "Running time from MIL ON"
+     }
+    ]
+   },
+   "response": [
+    "7E8101061060007E500",
+    "7E821030100000007E5",
+    "7E822E4000000000000"
+   ],
+   "expected": {
+    "PRIUS_2ND_AIR_MONITOR_AVAIL": 0.0,
+    "PRIUS_2ND_AIR_MONITOR_INCMPL": 0.0,
+    "PRIUS_A_C_MONITOR_AVAIL": 0.0,
+    "PRIUS_A_C_MONITOR_INCMPL": 0.0,
+    "PRIUS_CATALYST_MONITOR_AVAIL": 1.0,
+    "PRIUS_CATALYST_MONITOR_INCMPL": 0.0,
+    "PRIUS_COMPLETE_PARTS_MONITOR_AVAIL": 1.0,
+    "PRIUS_EGR_VVT_MONITOR_AVAIL": 1.0,
+    "PRIUS_EGR_VVT_MONITOR_INCMPL": 0.0,
+    "PRIUS_EVAP_MONITOR_AVAIL": 1.0,
+    "PRIUS_EVAP_MONITOR_ICMPL": 0.0,
+    "PRIUS_FUEL_SYSTEM_MONITOR_AVAIL": 1.0,
+    "PRIUS_HEATED_CATALYST_MONITOR_AVAIL": 0.0,
+    "PRIUS_HEATED_CATALYST_MONITOR_INCMPL": 0.0,
+    "PRIUS_MIL": 0.0,
+    "PRIUS_MILON_RUN_DISTANCE": 0.0,
+    "PRIUS_MISFIRE_MONITOR_AVAIL": 1.0,
+    "PRIUS_NUMBER_OF_EMISSION_DTC": 0.0,
+    "PRIUS_O2S_A_FS_HEATER_MONITOR_AVAIL": 1.0,
+    "PRIUS_O2S_A_FS_HEATER_MONITOR_INCMPL": 0.0,
+    "PRIUS_O2S_A_FS_MONITOR_AVAIL": 1.0,
+    "PRIUS_O2S_A_FS_MONITOR_INCMPL": 0.0,
+    "PRIUS_RUNNING_TIME_FROM_MIL_ON": 7.0
+   }
+  }
+ ]
+}

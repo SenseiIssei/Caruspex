@@ -1,0 +1,43 @@
+# OBDb repositories whose model is named differently in the vehicle catalog
+# (data/vehicles/), for tools/gen_obdb.py. Without a line here the generator
+# matches by name: the same model, a search alias of one of its generations,
+# or the name without trim words at the end ("Camry-Hybrid" -> Camry,
+# "Sierra-2500HD" -> Sierra). One repository may have several lines; a model
+# of "-" means it has no catalog model, so nothing is guessed for it.
+# This file is part of the Caruspex code (MIT).
+repo,brand,model
+Audi-A3-e-tron,Audi,A3
+Audi-S3,Audi,A3
+Audi-RS-3,Audi,A3
+Audi-S4,Audi,A4
+Audi-S5,Audi,A5
+Audi-RS-5,Audi,A5
+Audi-S6,Audi,A6
+Audi-SQ2,Audi,Q2
+Audi-SQ5,Audi,Q5
+Audi-SQ7,Audi,Q7
+Audi-SQ8,Audi,Q8
+Audi-TTS,Audi,TT
+Audi-RS-e-tron,Audi,e-tron GT
+Ford-F-250,Ford,F-250 Super Duty
+Ford-Focus-RS,Ford,Focus
+Ford-Focus-ST,Ford,Focus
+GMC-Yukon-XL,GMC,Yukon
+Hyundai-IONIQ-PlugIn-Hybrid,Hyundai,Ioniq
+Jeep-Wagoneer-L,Jeep,Wagoneer
+Jeep-Wrangler-JK,Jeep,Wrangler
+Lexus-LS-600h-L,Lexus,LS
+Mazda-Mazdaspeed-3,Mazda,3
+Mazda-Mazdaspeed-MX-5,Mazda,MX-5
+Mercedes-Benz-A-180,Mercedes-Benz,A-Klasse
+Nissan-Titan-XD,Nissan,Titan
+Porsche-718,Porsche,718 Boxster
+Porsche-718,Porsche,718 Cayman
+Ram-1500-Classic,Ram,1500
+Toyota-GR-Corolla,Toyota,Corolla
+Volkswagen-T6-Transporter,Volkswagen,Transporter
+Chevrolet-Trailblazer,Chevrolet,TrailBlazer
+Chevrolet-Trailblazer,Chevrolet,Trailblazer
+Hyundai-Avante,Hyundai,Elantra
+Ram-ProMaster-Window-Van,Ram,ProMaster
+Skoda-Citigo-e-iV,Škoda,Citigo
