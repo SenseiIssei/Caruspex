@@ -139,7 +139,7 @@ async function connectDemo(): Promise<void> {
   await wait(250);
   car.restart();
   link.connected = true;
-  emit("connected", { adapter: ADAPTER_VERSION, transport: L("Demo-Fahrzeug (eingebaut)", "Demo vehicle (built-in)"), protocol: PROTOCOL_TEXT });
+  emit("connected", { adapter: ADAPTER_VERSION, transport: L("Demo-Fahrzeug (eingebaut)", "Demo vehicle (built-in)"), protocol: PROTOCOL_TEXT, rawCan: false });
   emit("busy", { active: false });
   refreshStatusAndFaults();
 }

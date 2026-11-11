@@ -12,6 +12,29 @@ use caruspex_link::ByteStream;
 use crate::kwp1281::{Ecu, KLineLog, Kwp1281, Kwp1281Fault, MeasuringValue};
 use crate::kwp2000::{KLineProtocol, Kwp2000, protocol_label, session, wake_up_kline};
 
+/// A VAG control unit session, whichever way it travels: the K-line
+/// ([`VagKLine`], KWP1281 or KWP2000) or TP 2.0 on CAN
+/// ([`crate::vag_tp20::VagTp20`]). The app's KKL pages and the scan of all
+/// units work through this.
+pub trait VagDiagnosis: Send {
+    fn connect(&mut self, ecu: Ecu) -> Result<(), String>;
+    fn disconnect(&mut self);
+    fn connected(&self) -> bool;
+    fn protocol(&self) -> KLineProtocol;
+    fn protocol_name(&self) -> &'static str;
+    fn identification(&self) -> Vec<String>;
+    fn read_faults(&mut self) -> Result<Vec<Kwp1281Fault>, String>;
+    fn clear_faults(&mut self) -> Result<(), String>;
+    fn read_group(&mut self, group: u8) -> Result<Vec<MeasuringValue>, String>;
+    fn basic_setting(&mut self, group: u8) -> Result<Vec<MeasuringValue>, String>;
+    /// Keeps the session open while nothing else is asked.
+    fn keep_alive(&mut self) -> Result<(), String>;
+    fn read_adaptation(&mut self, channel: u8) -> Result<(i32, Vec<MeasuringValue>), String>;
+    fn actuator_test(&mut self) -> Result<String, String>;
+    /// KWP2000 only: session type for basic settings.
+    fn set_basic_setting_session(&mut self, mode: u8);
+}
+
 /// Who holds the stream right now.
 enum Link<S: ByteStream> {
     Idle(S),
@@ -230,6 +253,51 @@ impl<S: ByteStream> VagKLine<S> {
 
     pub fn basic_setting_session(&self) -> u8 {
         self.basic_setting_session
+    }
+}
+
+impl<S: ByteStream> VagDiagnosis for VagKLine<S> {
+    fn connect(&mut self, ecu: Ecu) -> Result<(), String> {
+        VagKLine::connect(self, ecu)
+    }
+    fn disconnect(&mut self) {
+        VagKLine::disconnect(self)
+    }
+    fn connected(&self) -> bool {
+        VagKLine::connected(self)
+    }
+    fn protocol(&self) -> KLineProtocol {
+        VagKLine::protocol(self)
+    }
+    fn protocol_name(&self) -> &'static str {
+        VagKLine::protocol_name(self)
+    }
+    fn identification(&self) -> Vec<String> {
+        VagKLine::identification(self)
+    }
+    fn read_faults(&mut self) -> Result<Vec<Kwp1281Fault>, String> {
+        VagKLine::read_faults(self)
+    }
+    fn clear_faults(&mut self) -> Result<(), String> {
+        VagKLine::clear_faults(self)
+    }
+    fn read_group(&mut self, group: u8) -> Result<Vec<MeasuringValue>, String> {
+        VagKLine::read_group(self, group)
+    }
+    fn basic_setting(&mut self, group: u8) -> Result<Vec<MeasuringValue>, String> {
+        VagKLine::basic_setting(self, group)
+    }
+    fn keep_alive(&mut self) -> Result<(), String> {
+        VagKLine::keep_alive(self)
+    }
+    fn read_adaptation(&mut self, channel: u8) -> Result<(i32, Vec<MeasuringValue>), String> {
+        VagKLine::read_adaptation(self, channel)
+    }
+    fn actuator_test(&mut self) -> Result<String, String> {
+        VagKLine::actuator_test(self)
+    }
+    fn set_basic_setting_session(&mut self, mode: u8) {
+        VagKLine::set_basic_setting_session(self, mode)
     }
 }
 

@@ -5,13 +5,32 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { call } from "../api";
 import { Modal } from "../components/Modal";
 import { Button, Select, type Option } from "../components/ui";
-import { t, type Translator } from "../i18n";
+import { t, translator, type Translator } from "../i18n";
+import { useSession } from "../state/session";
 import "./Workshop.css";
 
-// The serial ports as choices. With no port the list holds one entry with an
-// empty device, which the pages answer with the "Kein Anschluss" message.
+const ways = translator("caruspex::KklWays");
+
+// The port choice for VAG TP 2.0 on the CAN interface of the connection
+// (worker.rs TP20_DEVICE), and the prefix for the K-line of a J2534 device
+// (J2534_DEVICE_PREFIX).
+export const TP20_DEVICE = "tp20";
+export const J2534_DEVICE_PREFIX = "j2534:";
+
+// Why the list is empty and what helps.
+export const noWay = () =>
+  ways(
+    "Erst ein KKL-Kabel anstecken und auf Suchen drücken. VW, Audi, Seat und Skoda von etwa 2004 bis 2012 gehen auch ohne: über eine CAN-Schnittstelle (J2534, SLCAN, SocketCAN) mit dem Auto verbinden, dann steht TP 2.0 in der Liste.",
+  );
+
+// The serial ports as choices, with the ways that need no KKL cable in front:
+// TP 2.0 while the car is connected through a raw CAN interface (VW, Audi,
+// Seat, Skoda of about 2004 to 2012), then the K-line of every usable J2534
+// device. With nothing at all the list holds one entry with an empty device,
+// which the pages answer with the "Kein Anschluss" message.
 // label: how a port is shown; the Qt pages differ a little in this.
 export function usePorts(tr: Translator, label: (device: string, description: string) => string) {
+  const rawCan = useSession((s) => s.connected && s.rawCan);
   const [options, setOptions] = useState<Option<string>[]>([{ value: "", label: tr("kein Anschluss gefunden") }]);
   const [port, setPort] = useState("");
   const refresh = useCallback(async () => {
@@ -22,13 +41,22 @@ export function usePorts(tr: Translator, label: (device: string, description: st
     } catch {
       // No ports is the same as no answer.
     }
+    try {
+      const devices = await call("list_j2534_devices");
+      for (const d of devices.filter((x) => x.usable)) {
+        list.push({ value: J2534_DEVICE_PREFIX + d.library, label: ways("K-Line über J2534: %1", d.name) });
+      }
+    } catch {
+      // No PassThru drivers, or not on Windows.
+    }
+    if (rawCan) list.unshift({ value: TP20_DEVICE, label: ways("TP 2.0 über die CAN-Schnittstelle (VAG etwa 2004 bis 2012)") });
     if (list.length === 0) list = [{ value: "", label: tr("kein Anschluss gefunden") }];
     setOptions(list);
     // A rebuilt QComboBox starts at its first entry.
     setPort(list[0]!.value);
-    // The label function and the translator are fixed per page, so the
-    // callback never needs to change.
-  }, []);
+    // The label function and the translator are fixed per page; the list is
+    // built again when the connection changes.
+  }, [rawCan]);
   useEffect(() => {
     void refresh();
   }, [refresh]);

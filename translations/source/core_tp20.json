@@ -1,0 +1,112 @@
+[
+ {
+  "id": "c-tp20-1",
+  "de": " antwortet nicht auf den TP-2.0-Kanalaufbau, vermutlich nicht verbaut",
+  "en": " does not answer the TP 2.0 channel setup, probably not fitted"
+ },
+ {
+  "id": "c-tp20-2",
+  "de": " statt ",
+  "en": " instead of "
+ },
+ {
+  "id": "c-tp20-3",
+  "de": "Für TP 2.0 erst über eine CAN-Schnittstelle (J2534, SLCAN, SocketCAN) mit dem Auto verbinden.",
+  "en": "For TP 2.0, connect to the car through a CAN interface (J2534, SLCAN, SocketCAN) first."
+ },
+ {
+  "id": "c-tp20-4",
+  "de": "K-Line über %1",
+  "en": "K-line via %1"
+ },
+ {
+  "id": "c-tp20-5",
+  "de": "Kein TP-2.0-Kanal offen",
+  "en": "No TP 2.0 channel open"
+ },
+ {
+  "id": "c-tp20-6",
+  "de": "Öffne den TP-2.0-Kanal zum Steuergerät ...",
+  "en": "Opening the TP 2.0 channel to the control unit ..."
+ },
+ {
+  "id": "c-tp20-7",
+  "de": "TP-2.0-Bestätigung außer der Reihe (erwartet ",
+  "en": "TP 2.0 acknowledgement out of order (expected "
+ },
+ {
+  "id": "c-tp20-8",
+  "de": "TP-2.0-Nachricht kürzer als angekündigt: ",
+  "en": "TP 2.0 message shorter than announced: "
+ },
+ {
+  "id": "c-tp20-9",
+  "de": "TP-2.0-Nachricht ohne Länge",
+  "en": "TP 2.0 message without length"
+ },
+ {
+  "id": "c-tp20-10",
+  "de": "TP 2.0 über %1",
+  "en": "TP 2.0 via %1"
+ },
+ {
+  "id": "c-tp20-11",
+  "de": "TP 2.0: öffne den Kanal zu ",
+  "en": "TP 2.0: opening the channel to "
+ },
+ {
+  "id": "c-tp20-12",
+  "de": "Die CAN-Schnittstelle nimmt den Rahmen nicht an",
+  "en": "The CAN interface does not take the frame"
+ },
+ {
+  "id": "c-tp20-13",
+  "de": "Die K-Line lässt sich am J2534-Gerät nicht verbinden: ",
+  "en": "The K-line cannot be connected on the J2534 device: "
+ },
+ {
+  "id": "c-tp20-14",
+  "de": "Die TP-2.0-Nachricht bricht mittendrin ab",
+  "en": "The TP 2.0 message breaks off halfway"
+ },
+ {
+  "id": "c-tp20-15",
+  "de": "Das Steuergerät hat den TP-2.0-Kanal geschlossen",
+  "en": "The control unit closed the TP 2.0 channel"
+ },
+ {
+  "id": "c-tp20-16",
+  "de": "Das Steuergerät bestätigt das TP-2.0-Paket nicht",
+  "en": "The control unit does not acknowledge the TP 2.0 packet"
+ },
+ {
+  "id": "c-tp20-17",
+  "de": "Das Steuergerät antwortet nicht auf die TP-2.0-Kanalparameter",
+  "en": "The control unit does not answer the TP 2.0 channel parameters"
+ },
+ {
+  "id": "c-tp20-18",
+  "de": "Das Steuergerät antwortet nicht auf den TP-2.0-Kanaltest, die Verbindung ist weg",
+  "en": "The control unit does not answer the TP 2.0 channel test, the connection is gone"
+ },
+ {
+  "id": "c-tp20-19",
+  "de": "Das Steuergerät nennt keine gültigen CAN-Kennungen für den Kanal",
+  "en": "The control unit names no valid CAN ids for the channel"
+ },
+ {
+  "id": "c-tp20-20",
+  "de": "Das Steuergerät lehnt den TP-2.0-Kanal ab (Code ",
+  "en": "The control unit refuses the TP 2.0 channel (code "
+ },
+ {
+  "id": "c-tp20-21",
+  "de": "Blockgröße ",
+  "en": "block size "
+ },
+ {
+  "id": "c-tp20-22",
+  "de": "Kanal geschlossen, ",
+  "en": "channel closed, "
+ }
+]

@@ -9,7 +9,7 @@ import { Button, Page, PageHeader, Progress } from "../components/ui";
 import { translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
 import { useSettings } from "../state/session";
-import { PortChoice, useMessageBox, usePorts } from "./WorkshopShared";
+import { PortChoice, noWay, useMessageBox, usePorts } from "./WorkshopShared";
 
 const tr = translator("caruspex::ScanPage");
 
@@ -74,7 +74,7 @@ export default function ScanPage() {
     );
   });
 
-  const noPort = () => showMessage(tr("Kein Anschluss"), tr("Erst ein KKL-Kabel anstecken und auf Suchen drücken."));
+  const noPort = () => showMessage(tr("Kein Anschluss"), noWay());
 
   const startOrCancel = () => {
     if (running) {
