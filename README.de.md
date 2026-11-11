@@ -130,7 +130,7 @@ Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
 - Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse und, wenn es nicht klappt, einer kurzen Checkliste für diese Art von Verbindung (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat
 - Einsteiger- und Profi-Modus: Einsteiger sehen die Seiten für den Alltag, die Werkstatt-Werkzeuge (KKL, Anpassung, Rohbefehle, Adressen) erscheinen im Profi-Modus
 - 18 Sprachen für Oberfläche und alle Fehlertexte: Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Italienisch, Niederländisch, Polnisch, Tschechisch, Russisch, Ukrainisch, Türkisch, Arabisch (von rechts nach links), Chinesisch, Japanisch, Koreanisch, Hindi und Indonesisch. Folgt der Systemsprache, umschaltbar in den Einstellungen, Einstellungen wirken sofort
-- Meldet neue Versionen: beim Start fragt die App nur GitHub nach dem neuesten Release, sonst nichts (keine Daten über dich oder das Auto), abschaltbar in den Einstellungen
+- Aktualisiert sich selbst: beim Start fragt die App nur GitHub nach dem neuesten Release, sonst nichts (keine Daten über dich oder das Auto). Eine neuere Version wird von den GitHub-Releases geladen, nur mit passender Signatur zum eingebauten Schlüssel installiert, und Caruspex startet neu; vorher fragt es, außer "Updates automatisch installieren" ist an. Beides ist in den Einstellungen abschaltbar
 
 ## Welche Autos
 
@@ -347,7 +347,7 @@ crates/caruspex-analysis/   Gesundheitscheck, Fahrzyklus-Hilfe, Bordcomputer, Le
 crates/caruspex-demo/       Das eingebaute Demo-Auto: ein ELM327 mit simulierten Steuergeräten
 crates/caruspex-cli/        Das Konsolenwerkzeug, mit seinen Vergleichsdatei-Tests
 app/src/                    Die Oberfläche: React 19 und TypeScript (Seiten, Rahmen, Zustand, Bericht, i18n)
-app/src-tauri/              Die Tauri-Anwendung: Fenster, Befehle, Update-Prüfung, Kommandozeilenoptionen
+app/src-tauri/              Die Tauri-Anwendung: Fenster, Befehle, Updater, Kommandozeilenoptionen
 translations/               Gemeinsame Übersetzungsdateien für Kern und Oberfläche, 18 Sprachen
 data/                       Fahrzeugkatalog als CSV, von Hand gepflegt, dazu Quellen für Steuergeräte und PIDs
 tools/                      Generatoren, Übersetzungsprüfung, Paket-, Release- und Bildschirmfoto-Skripte, Simulator
