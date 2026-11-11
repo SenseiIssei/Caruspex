@@ -19,12 +19,18 @@ cd "$(dirname "$0")/.."
 version=${1:?usage: tools/release.sh <version, e.g. 0.9.1>}
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "not a version: $version" >&2; exit 1; }
 
-if [ -n "$(git status --porcelain)" ]; then
+# Only the change list of this version may already be there (written first,
+# then this script run again).
+if [ -n "$(git status --porcelain | grep -v " changelog/$version.md\$")" ]; then
     echo "The working tree is not clean; commit or stash first." >&2
     exit 1
 fi
-git fetch -q origin
-git checkout -q -B "release-$version" origin/main
+# On the release branch already (second run after writing the change list,
+# or a fix to this script on the branch): keep it, otherwise start it fresh.
+if [ "$(git branch --show-current)" != "release-$version" ]; then
+    git fetch -q origin
+    git checkout -q -B "release-$version" origin/main
+fi
 
 sed -i '/^\[workspace.package\]/,/^\[/s/^version = "[0-9.]*"/version = "'"$version"'"/' Cargo.toml
 sed -i '0,/"version": "[0-9.]*"/s//"version": "'"$version"'"/' app/package.json
@@ -53,7 +59,13 @@ if LC_ALL=C grep -q $'\xe2\x80\x94\|\xe2\x80\x93' "$notes"; then   # U+2014, U+2
     exit 2
 fi
 
-python_bin=$(command -v python3 || command -v python || echo "py -I")
+# The first Python that really runs (on Windows "python3" can be a stub that
+# only points to the Microsoft Store).
+python_bin=""
+for candidate in python3 python "py -I"; do
+    if $candidate -c "pass" >/dev/null 2>&1; then python_bin=$candidate; break; fi
+done
+[ -n "$python_bin" ] || { echo "no working Python found" >&2; exit 1; }
 $python_bin tools/i18n_rust.py --strict
 cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
