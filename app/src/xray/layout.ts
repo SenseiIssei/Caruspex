@@ -9,6 +9,7 @@
 // the car), y up (the road is 0), z across (+z is the left side, the
 // driver's side in a left-hand drive car).
 import { BodyType, CarZone, DrivenAxles, EngineLayout, TractionBattery, type VehicleAnatomy } from "../api/types";
+import { bodyGeometry, shapeFor, type Profile, type Shape } from "./shape";
 
 export type Vec3 = [number, number, number];
 
@@ -183,71 +184,9 @@ export interface Route {
   points: Vec3[];
 }
 
-export interface Profile {
-  // Roof line: (station from the rear 0 to the front 1, share of the height).
-  top: [number, number][];
-  belt: number;
-  // Stations of the base of the windscreen, the front and rear end of the
-  // roof, the base of the rear window and the pillars between the doors.
-  cowl: number;
-  roofFront: number;
-  roofRear: number;
-  tail: number;
-  pillars: number[];
-  clearance: number;
-  rearSeats: boolean;
-}
-
-const PROFILES: Record<BodyType, Profile> = {
-  [BodyType.Hatchback]: {
-    top: [[0, 0.5], [0.015, 0.66], [0.05, 0.86], [0.14, 0.985], [0.33, 1], [0.54, 0.99], [0.71, 0.68], [0.84, 0.63], [0.96, 0.56], [1, 0.4]],
-    belt: 0.66, cowl: 0.71, roofFront: 0.54, roofRear: 0.14, tail: 0.03, pillars: [0.36], clearance: 0.14, rearSeats: true,
-  },
-  [BodyType.Estate]: {
-    top: [[0, 0.5], [0.012, 0.68], [0.03, 0.92], [0.07, 0.978], [0.3, 1], [0.53, 0.995], [0.71, 0.68], [0.84, 0.63], [0.96, 0.56], [1, 0.4]],
-    belt: 0.67, cowl: 0.71, roofFront: 0.53, roofRear: 0.06, tail: 0.016, pillars: [0.36, 0.15], clearance: 0.14, rearSeats: true,
-  },
-  [BodyType.Sedan]: {
-    top: [[0, 0.55], [0.02, 0.69], [0.1, 0.72], [0.14, 0.735], [0.27, 0.97], [0.36, 1], [0.52, 0.995], [0.71, 0.68], [0.84, 0.63], [0.96, 0.56], [1, 0.41]],
-    belt: 0.67, cowl: 0.71, roofFront: 0.52, roofRear: 0.3, tail: 0.14, pillars: [0.4], clearance: 0.14, rearSeats: true,
-  },
-  [BodyType.Suv]: {
-    top: [[0, 0.5], [0.012, 0.7], [0.03, 0.93], [0.08, 0.985], [0.3, 1], [0.55, 0.99], [0.69, 0.74], [0.8, 0.71], [0.95, 0.67], [1, 0.52]],
-    belt: 0.7, cowl: 0.69, roofFront: 0.55, roofRear: 0.07, tail: 0.02, pillars: [0.37, 0.15], clearance: 0.2, rearSeats: true,
-  },
-  [BodyType.Van]: {
-    top: [[0, 0.46], [0.008, 0.75], [0.02, 0.97], [0.05, 1], [0.7, 1], [0.79, 0.96], [0.88, 0.56], [0.97, 0.5], [1, 0.4]],
-    belt: 0.53, cowl: 0.88, roofFront: 0.77, roofRear: 0.04, tail: 0.01, pillars: [0.68, 0.42, 0.18], clearance: 0.17, rearSeats: true,
-  },
-  [BodyType.Coupe]: {
-    top: [[0, 0.55], [0.02, 0.7], [0.1, 0.735], [0.15, 0.76], [0.32, 0.97], [0.43, 1], [0.53, 0.99], [0.69, 0.72], [0.82, 0.68], [0.95, 0.63], [1, 0.48]],
-    belt: 0.7, cowl: 0.69, roofFront: 0.53, roofRear: 0.36, tail: 0.15, pillars: [], clearance: 0.13, rearSeats: true,
-  },
-  [BodyType.Convertible]: {
-    top: [[0, 0.56], [0.02, 0.71], [0.12, 0.75], [0.18, 0.78], [0.32, 0.95], [0.4, 1], [0.5, 0.99], [0.65, 0.75], [0.8, 0.69], [0.95, 0.64], [1, 0.49]],
-    belt: 0.72, cowl: 0.65, roofFront: 0.5, roofRear: 0.33, tail: 0.18, pillars: [], clearance: 0.13, rearSeats: true,
-  },
-  [BodyType.Pickup]: {
-    top: [[0, 0.55], [0.01, 0.64], [0.37, 0.645], [0.385, 0.95], [0.41, 1], [0.58, 0.995], [0.68, 0.74], [0.8, 0.72], [0.95, 0.69], [1, 0.55]],
-    belt: 0.64, cowl: 0.68, roofFront: 0.58, roofRear: 0.41, tail: 0.385, pillars: [0.49], clearance: 0.22, rearSeats: true,
-  },
-  [BodyType.Mpv]: {
-    top: [[0, 0.48], [0.012, 0.72], [0.03, 0.93], [0.08, 0.99], [0.4, 1], [0.6, 0.98], [0.76, 0.64], [0.85, 0.61], [0.96, 0.57], [1, 0.44]],
-    belt: 0.62, cowl: 0.76, roofFront: 0.6, roofRear: 0.07, tail: 0.02, pillars: [0.42, 0.18], clearance: 0.15, rearSeats: true,
-  },
-  [BodyType.Microcar]: {
-    top: [[0, 0.5], [0.01, 0.72], [0.04, 0.94], [0.12, 1], [0.52, 0.99], [0.74, 0.66], [0.86, 0.62], [0.97, 0.58], [1, 0.46]],
-    belt: 0.62, cowl: 0.74, roofFront: 0.52, roofRear: 0.1, tail: 0.02, pillars: [], clearance: 0.14, rearSeats: false,
-  },
-  [BodyType.Roadster]: {
-    top: [[0, 0.6], [0.02, 0.75], [0.2, 0.79], [0.33, 0.82], [0.37, 0.98], [0.44, 1], [0.53, 0.97], [0.6, 0.8], [0.8, 0.72], [0.95, 0.66], [1, 0.52]],
-    belt: 0.78, cowl: 0.6, roofFront: 0.53, roofRear: 0.4, tail: 0.33, pillars: [], clearance: 0.12, rearSeats: false,
-  },
-};
-
-export function profileFor(body: BodyType): Profile {
-  return PROFILES[body] ?? PROFILES[BodyType.Hatchback];
-}
+// The profile of the body comes from shape.ts (defaults per body type and
+// era, hand-tuned rows for common generations).
+export type { Profile } from "./shape";
 
 // --- Curves ----------------------------------------------------------------------
 
@@ -305,6 +244,7 @@ export interface Hull {
   width: number;
   height: number;
   profile: Profile;
+  // Height of the window line at the windscreen.
   belt: number;
   // x of the front and rear end.
   front: number;
@@ -314,6 +254,8 @@ export interface Hull {
   xAt(u: number): number;
   top(u: number): number;
   bottom(u: number): number;
+  // Height of the window line at a station (it may rise towards the back).
+  beltAt(u: number): number;
   // Half the width in plan view at a station.
   planHalf(u: number): number;
   // Half the width at a station and height; 0 outside the hull.
@@ -323,26 +265,30 @@ export interface Hull {
 }
 
 const SECTION_EXPONENT = 5;
-// How much narrower the roof is than the body at the beltline.
-const TUMBLEHOME = 0.17;
 
-export function makeHull(lengthM: number, widthM: number, heightM: number, body: BodyType): Hull {
-  const profile = profileFor(body);
+export function makeHull(lengthM: number, widthM: number, heightM: number, profile: Profile): Hull {
   const topCurve = monotone(profile.top);
   const height = heightM;
   const front = lengthM / 2;
   const rear = -lengthM / 2;
   const belt = profile.belt * height;
+  const beltRear = profile.beltRear * height;
   const clearance = profile.clearance;
+  const dloRear = profile.dlo[2];
+  const beltAt = (u: number) => beltRear + (belt - beltRear) * smoothstep(dloRear, profile.cowl, u);
+  // The underbody rises from behind the rear wheels and ahead of the front ones.
   const bottom = (u: number) =>
-    clearance + 0.17 * (1 - smoothstep(0, 0.09, u)) + 0.15 * smoothstep(0.91, 1, u) + 0.03 * smoothstep(0.75, 0.95, u);
+    clearance +
+    0.17 * (1 - smoothstep(0, Math.max(0.02, profile.rearLift), u)) +
+    0.15 * smoothstep(Math.min(0.98, profile.frontLift), 1, u) +
+    0.02 * smoothstep(0.75, 0.95, u);
   const top = (u: number) => topCurve(u) * height;
   const planHalf = (u: number) => {
     const s = Math.abs(2 * u - 1);
-    const p = u > 0.5 ? 4.5 : 7;
+    const p = u > 0.5 ? profile.noseRound : profile.tailRound;
     return (widthM / 2) * Math.pow(Math.max(0, 1 - Math.pow(s, p)), 1 / p);
   };
-  const tumble = (y: number, u: number) => 1 - TUMBLEHOME * smoothstep(belt - 0.05, top(u), y);
+  const tumble = (y: number, u: number) => 1 - profile.tumblehome * smoothstep(beltAt(u) - 0.05, top(u), y);
   const n = SECTION_EXPONENT;
   const hull: Hull = {
     length: lengthM,
@@ -356,6 +302,7 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, body:
     xAt: (u) => rear + u * lengthM,
     top,
     bottom,
+    beltAt,
     planHalf,
     halfWidth(u, y) {
       if (u < 0 || u > 1) return 0;
@@ -416,10 +363,14 @@ export interface XrayInput {
   kline: boolean;
   // A turbocharger is drawn for diesels and when a fault points at one.
   turbo: boolean;
+  // The body variant to draw (an estate of a saloon generation); omitted:
+  // the catalog's body.
+  variant?: BodyType;
 }
 
 export interface CarLayout {
   hull: Hull;
+  shape: Shape;
   frontAxle: number;
   rearAxle: number;
   wheels: Wheel[];
@@ -455,17 +406,6 @@ const cylinder = (
   zones: CarZone[] = [],
 ): Part => ({ id, layer, shape: "cylinder", axis, center, size: [length, diameter, diameter], material, zones });
 
-function frontShare(engine: EngineLayout, body: BodyType): number {
-  if (body === BodyType.Van) return 0.47;
-  switch (engine) {
-    case EngineLayout.FrontTransverse: return 0.54;
-    case EngineLayout.FrontLongitudinal: return 0.47;
-    case EngineLayout.Mid: return 0.5;
-    case EngineLayout.Rear: return 0.4;
-  }
-  return 0.5;
-}
-
 export function buildLayout(input: XrayInput): CarLayout {
   const a = input.anatomy;
   const L = a.lengthMm / 1000;
@@ -473,13 +413,14 @@ export function buildLayout(input: XrayInput): CarLayout {
   const H = a.heightMm / 1000;
   const wheelbase = Math.min(a.wheelbaseMm / 1000, L * 0.8);
   const track = Math.min(a.trackMm / 1000, W - 0.2);
-  const hull = makeHull(L, W, H, input.body);
+  const body = input.variant ?? input.body;
+  const shape = shapeFor(a, input.body, body);
+  const geometry = bodyGeometry(L, H, wheelbase, shape.wheel / 2, shape);
+  const hull = makeHull(L, W, H, geometry.profile);
   const p = hull.profile;
-  const overhang = L - wheelbase;
-  const frontAxle = hull.front - overhang * frontShare(a.engine, input.body);
-  const rearAxle = frontAxle - wheelbase;
-  const radius = Math.min(a.wheelMm / 2000, (H - 0.2) / 2.6);
-  const tyre = input.body === BodyType.Suv || input.body === BodyType.Pickup ? 0.24 : input.body === BodyType.Microcar ? 0.17 : 0.21;
+  const { frontAxle, rearAxle } = geometry;
+  const radius = geometry.wheelRadius;
+  const tyre = body === BodyType.Suv || body === BodyType.Pickup ? 0.24 : body === BodyType.Microcar ? 0.17 : 0.21;
   const clear = p.clearance;
   const cowlX = hull.xAt(p.cowl);
   const floor = clear + 0.12;
@@ -709,7 +650,7 @@ export function buildLayout(input: XrayInput): CarLayout {
   }
 
   // --- Electrics: 12 V battery, alternator, the main harness to the back.
-  const batteryAtBack = a.engine === EngineLayout.FrontLongitudinal && input.body !== BodyType.Pickup && input.body !== BodyType.Suv;
+  const batteryAtBack = a.engine === EngineLayout.FrontLongitudinal && body !== BodyType.Pickup && body !== BodyType.Suv;
   const battery12 = clampInside(
     hull,
     batteryAtBack ? [rearAxle - 0.45, clear + 0.32, -0.45] : combustion && a.engine !== EngineLayout.FrontTransverse ? [frontAxle + 0.15, clear + 0.5, 0.42] : [frontAxle + 0.05, clear + 0.5, 0.44],
@@ -792,7 +733,7 @@ export function buildLayout(input: XrayInput): CarLayout {
   for (const r of routes) r.points = r.points.map((q, i) => (i === r.points.length - 1 ? q : clampInside(hull, q, 0.02)));
   for (const key of Object.keys(anchors)) anchors[key] = clampInside(hull, anchors[key]!, 0.03);
 
-  return { hull, frontAxle, rearAxle, wheels, parts, tubes, ecus, routes, obd, hub, anchors };
+  return { hull, shape, frontAxle, rearAxle, wheels, parts, tubes, ecus, routes, obd, hub, anchors };
 }
 
 function across3(engine: EngineLayout): "x" | "z" {
