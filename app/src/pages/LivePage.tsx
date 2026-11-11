@@ -1,6 +1,6 @@
 // Live values (LivePage.cpp): everything the control unit measures, grouped
-// by area, with the manufacturer values of the built-in packs and the user's
-// own Torque CSV values below. Tick values on the left, start at the top;
+// by area, with the manufacturer values of the built-in packs, the OBDb packs
+// that fit the detected car and the user's own Torque CSV values below. Tick values on the left, start at the top;
 // the chart shows every curve as a share of its own range, the table the
 // current readings, and the recording can be saved as CSV.
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -41,6 +41,9 @@ export default function LivePage() {
 
   const [table, setTable] = useState<PidInfo[]>([]);
   const [packs, setPacks] = useState<PidPackInfo[]>([]);
+  // The OBDb packs that fit the detected car, offered below the built-in ones.
+  const [carPacks, setCarPacks] = useState<PidPackInfo[]>([]);
+  const identity = useSession((s) => s.identity);
   const [imports, setImports] = useState<CustomRow[][]>([]);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [supported, setSupported] = useState<Set<number>>(new Set());
@@ -77,6 +80,22 @@ export default function LivePage() {
       cancelled = true;
     };
   }, []);
+
+  const generationId = identity?.generation?.id ?? null;
+  const year = identity?.year ?? 0;
+  useEffect(() => {
+    if (generationId === null) {
+      setCarPacks([]);
+      return;
+    }
+    let cancelled = false;
+    void call("obdb_packs", { generationId, year }).then((list) => {
+      if (!cancelled) setCarPacks(list);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [generationId, year]);
 
   useEffect(() => {
     store.setWindow(settings.chartWindowSeconds);
@@ -120,7 +139,7 @@ export default function LivePage() {
         out.push({ kind: "pid", key: pid, label, tooltip: values.length > 1 ? tr.n("%n Werte", values.length) : undefined });
       }
     }
-    for (const pack of packs) {
+    for (const pack of [...packs, ...carPacks]) {
       out.push({ kind: "head", key: -1, label: pack.title.toUpperCase() });
       for (const v of pack.values) {
         out.push({ kind: "custom", key: v.key, label: v.name, tooltip: v.source ? tr("Quelle: %1", v.source) : undefined });
@@ -133,7 +152,7 @@ export default function LivePage() {
       }
     }
     return out;
-  }, [table, packs, imports]);
+  }, [table, packs, carPacks, imports]);
 
   const unsupported = (item: ListItem) => item.kind === "pid" && supported.size > 0 && !supported.has(item.key);
 

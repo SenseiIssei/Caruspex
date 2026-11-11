@@ -264,17 +264,50 @@ fn custom_without_a_pack_lists_the_packs() {
 }
 
 #[test]
+fn custom_lists_and_reads_obdb_packs() {
+    let r = run(&["custom", "--pack", "obdb:hyundai ioniq 5 2024"]);
+    assert_eq!(r.code, 0, "{}", r.out);
+    assert!(r.out.contains("CC BY-SA 4.0"));
+    let id = r
+        .out
+        .lines()
+        .find_map(|l| l.trim().strip_prefix("obdb-hyundai-ioniq-5"))
+        .map(|rest| format!("obdb-hyundai-ioniq-5{}", rest.split(' ').next().unwrap()))
+        .expect("the IONIQ 5 pack is listed");
+    let j = run(&["custom", "--pack", "obdb:ioniq 5", "--json"]);
+    let v: serde_json::Value = serde_json::from_str(&j.out).unwrap();
+    assert!(
+        v["packs"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|p| p["id"] == id.as_str())
+    );
+    assert_eq!(run(&["custom", "--pack", "obdb:trabant 601"]).code, 1);
+    // The demo car does not answer the IONIQ 5, but the pack is loaded and
+    // every value is asked for.
+    let read = run(&["custom", "--demo", "--pack", &id, "--json"]);
+    let v: serde_json::Value = serde_json::from_str(&read.out).unwrap();
+    assert!(
+        v["title"].as_str().unwrap().contains("(OBDb)"),
+        "{}",
+        read.out
+    );
+    assert!(v["values"].as_array().unwrap().len() > 50);
+}
+
+#[test]
 fn custom_demo_reads_the_demo_pack() {
     let r = run(&["custom", "--demo"]);
     assert_eq!(r.code, 0);
     assert!(r.out.contains("Caruspex demo\n"));
-    assert!(r.out.contains("7 of 7 values read, "));
+    assert!(r.out.contains("9 of 9 values read, "), "{}", r.out);
     let j = run(&["custom", "--demo", "--json"]);
     let v: serde_json::Value = serde_json::from_str(&j.out).unwrap();
     assert_eq!(v["title"], "Caruspex demo");
-    assert_eq!(v["read"], 7);
+    assert_eq!(v["read"], 9);
     assert_eq!(v["failed"], 0);
-    assert_eq!(v["values"].as_array().unwrap().len(), 7);
+    assert_eq!(v["values"].as_array().unwrap().len(), 9);
 }
 
 #[test]

@@ -1525,6 +1525,7 @@ function runAnalysis(input: HealthInput): HealthRow {
   }
 
   const rows: HealthFindingRow[] = findings.map((f) => ({
+    id: f.id,
     level: f.level,
     area: "",
     title: text(f.title),
@@ -1541,6 +1542,46 @@ function runAnalysis(input: HealthInput): HealthRow {
     checksRun: c.checksRun,
     diesel: input.diesel,
   };
+}
+
+// For the used car check (areas/usedCar.ts): the supported monitors by
+// name, and the health check without its own events, the way
+// Worker::runUsedCarCheck runs it along the way.
+export function demoMonitors(): { name: string; complete: boolean }[] {
+  return readinessStates()
+    .filter((m) => m.supported)
+    .map((m) => ({ name: text(MONITOR_NAMES[m.monitor]), complete: m.complete }));
+}
+
+export async function quietHealthCheck(seconds: number, onTick: (elapsed: number) => void): Promise<HealthRow | null> {
+  const status = statusRow();
+  const pending = car.pendingCodes();
+  const faults: HealthFault[] = faultRows().map((r) => ({
+    code: r.code,
+    text: r.text,
+    kind: r.stored ? "stored" : pending.includes(r.code) ? "pending" : "permanent",
+  }));
+  const monitorResults = monitorRecords();
+  const pids = HEALTH_LIVE_PIDS.filter((p) => SUPPORTED_PIDS.includes(p));
+  const live = new Map<number, TimedValue[]>();
+  const start = appSeconds();
+  while (appSeconds() - start < seconds && !link.cancel) {
+    const now = car.now();
+    const sample = simulate(now);
+    const elapsedAtRead = appSeconds() - start;
+    for (const pid of pids) {
+      const row = liveRow(pid, sample, car, now, appSeconds());
+      if (!row) continue;
+      emit("live_value", { row });
+      const series = live.get(pid) ?? [];
+      series.push({ t: elapsedAtRead, value: row.value });
+      live.set(pid, series);
+    }
+    await wait(220);
+    onTick(appSeconds() - start);
+  }
+  if (link.cancel) return null;
+  return runAnalysis({ milOn: status.mil, readiness: readinessStates(), faults, monitorResults, diesel: false, live });
 }
 
 async function healthCheck(seconds: number): Promise<void> {

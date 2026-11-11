@@ -3,7 +3,7 @@
 // saved as PDF by the backend or printed. The garage file of one car is the
 // second document of this kind.
 import { call } from "../api";
-import type { FaultRow, GarageCar, LiveRow, MonitorRow, ReportExtras } from "../api";
+import type { FaultRow, GarageCar, LiveRow, MonitorRow, ReportExtras, UsedCarRow, UsedCarSection } from "../api";
 import { localeNumber, locale, t } from "../i18n";
 import { fuelLogConsumption, odometerJumps, parseIso, serviceStatus } from "../state/garage";
 import { live, readiness, reportFindings, session, type ReadinessRow } from "../state/session";
@@ -333,6 +333,130 @@ export function garageHtml(car: GarageCar): string {
     h += `<h2>${esc(tr("Notiz"))}</h2><p>${note}</p>`;
   }
   h += `<p class='muted' style='margin-top:22px; font-size:8.5pt'>${esc(tr("Erstellt mit Caruspex aus der Garage auf diesem Rechner."))}</p>`;
+  h += "</body></html>";
+  return h;
+}
+
+// --- The used car check ---------------------------------------------------------------------
+
+const UC = "caruspex::UsedCarPage";
+const uc = (de: string, ...args: unknown[]) => t(UC, de, ...args);
+const HP = "caruspex::HealthPage";
+
+export const USED_CAR_SECTIONS: UsedCarSection[] = ["identity", "mileage", "clearing", "readiness", "faults", "health", "battery"];
+
+// Section headings of the check, shared with the page.
+export function usedCarSectionTitle(section: UsedCarSection): string {
+  switch (section) {
+    case "identity": return uc("Fahrzeug und Fahrgestellnummer");
+    case "mileage": return tr("Kilometerstand");
+    case "clearing": return uc("Zuletzt gelöscht");
+    case "readiness": return tr("Bereitschaftstests");
+    case "faults": return tr("Fehlerspeicher");
+    case "health": return t("caruspex::MainWindow", "Gesundheitscheck");
+    case "battery": return uc("Akku");
+  }
+}
+
+export function usedCarLevelLabel(level: number): string {
+  switch (level) {
+    case 0: return t(HP, "In Ordnung");
+    case 1: return t(HP, "Hinweis");
+    case 2: return t(HP, "Bald ansehen");
+    default: return t(HP, "Dringend");
+  }
+}
+
+const LIGHT_COLOURS = ["#12875a", "#b97a06", "#c93636"];
+const LEVEL_COLOURS = ["#12875a", "#3b6fd8", "#b97a06", "#c93636"];
+
+// The document for the purchase: what the car said at the viewing, the
+// questions for the seller and room for both signatures.
+export function usedCarHtml(row: UsedCarRow, when: Date): string {
+  let h =
+    "<html><head><meta charset='utf-8'><style>" +
+    STYLE +
+    "h1 { font-size: 20pt; margin: 0; } h2 { font-size: 12.5pt; margin-top: 18px; margin-bottom: 6px; color: #3b3fb8; }" +
+    ".muted { color: #515b6b; }" +
+    "table { border-collapse: collapse; width: 100%; }" +
+    "th { text-align: left; background: #eef0f6; color: #515b6b; padding: 5px 6px; font-size: 9pt; }" +
+    "td { padding: 5px 6px; border-bottom: 1px solid #e2e5ee; vertical-align: top; }" +
+    "ol { margin: 4px 0 0 0; padding-left: 22px; } li { margin: 3px 0; }" +
+    "tr { page-break-inside: avoid; }" +
+    ".sign td { border: none; padding-top: 38px; width: 50%; } .line { border-top: 1px solid #141821; padding-top: 4px; }" +
+    "</style></head><body>";
+
+  const colour = LIGHT_COLOURS[row.light] ?? "#141821";
+  h += "<table><tr><td style='border:none'>";
+  h += "<div style='color:#5a54f0; font-weight:bold; letter-spacing:2px; font-size:9pt'>CARUSPEX</div>";
+  h += `<h1>${esc(uc("Gebrauchtwagen-Check"))}</h1>`;
+  h += `<div class='muted'>${esc(`${pad(when.getDate())}.${pad(when.getMonth() + 1)}.${when.getFullYear()}, ${pad(when.getHours())}:${pad(when.getMinutes())}`)}</div>`;
+  h += "</td><td style='border:none; text-align:right; width:42%'>";
+  h += `<div style='display:inline-block; padding:8px 14px; border-radius:8px; border:2px solid ${colour}; color:${colour}; font-weight:bold; font-size:12pt'>${esc(row.headline)}</div>`;
+  h += "</td></tr></table>";
+  h += `<p>${esc(row.summary)}</p>`;
+
+  // The facts in one table.
+  h += `<h2>${esc(tr("Fahrzeug"))}</h2><table>`;
+  const fact = (k: string, v: string) => {
+    if (!v) return;
+    h += `<tr><td style='width:38%' class='muted'>${esc(k)}</td><td>${esc(v)}</td></tr>`;
+  };
+  fact(tr("Bezeichnung"), row.vehicle);
+  if (row.modelYear > 0) fact(uc("Modelljahr"), String(row.modelYear));
+  fact(uc("Fahrgestellnummer im Steuergerät"), row.vin || uc("nicht gemeldet"));
+  fact(uc("Fahrgestellnummer in den Papieren"), row.papersVin || uc("nicht eingegeben"));
+  // The highest reading first, then what each control unit stores.
+  if (row.mileage.length > 0) fact(tr("Kilometerstand"), `${localeNumber(Math.max(...row.mileage.map((m) => m.km)), 0)} km`);
+  if (row.mileage.length > 1) {
+    for (const m of row.mileage) fact(`   ${m.source}`, `${localeNumber(m.km, 0)} km`);
+  }
+  const since: string[] = [];
+  if (row.distanceSinceClearKm >= 0) since.push(`${localeNumber(row.distanceSinceClearKm, 0)} km`);
+  if (row.warmUps >= 0) since.push(uc("%1 Warmläufe", localeNumber(row.warmUps, 0)));
+  if (row.minutesSinceClear >= 0) since.push(uc("%1 h Betrieb", localeNumber(row.minutesSinceClear / 60, 0)));
+  fact(uc("Seit dem letzten Löschen"), since.join(", "));
+  if (row.readinessTotal >= 0) fact(tr("Bereitschaftstests"), uc("%1 von %2 abgeschlossen", row.readinessComplete, row.readinessTotal));
+  if (row.storedFaults >= 0) {
+    fact(tr("Fehlerspeicher"), uc("%1 gespeichert, %2 vorläufig, %3 dauerhaft", row.storedFaults, row.pendingFaults, row.permanentFaults));
+  }
+  if (row.healthScore >= 0) fact(t("caruspex::MainWindow", "Gesundheitscheck"), uc("%1 von 100 Punkten", row.healthScore));
+  if (row.batterySoh >= 0) fact(t("caruspex::EvPage", "Akkugesundheit"), `${localeNumber(row.batterySoh, 0)} %`);
+  h += "</table>";
+
+  if (row.questions.length > 0) {
+    h += `<h2>${esc(uc("Fragen an den Verkäufer"))}</h2><ol>`;
+    for (const q of row.questions) h += `<li>${esc(q)}</li>`;
+    h += "</ol>";
+  }
+
+  h += `<h2>${esc(tr("Befunde"))}</h2><table><tr><th>${esc(tr("Stufe"))}</th><th>${esc(tr("Befund"))}</th></tr>`;
+  for (const section of USED_CAR_SECTIONS) {
+    const items = row.items.filter((i) => i.section === section);
+    if (items.length === 0) continue;
+    h += `<tr><td colspan='2' style='background:#f6f7fb; font-weight:bold'>${esc(usedCarSectionTitle(section))}</td></tr>`;
+    for (const i of items) {
+      h +=
+        `<tr><td style='width:16%; color:${LEVEL_COLOURS[i.level] ?? "#141821"}'>${esc(usedCarLevelLabel(i.level))}</td>` +
+        `<td><b>${esc(i.title)}</b><br/><span class='muted'>${esc(i.explanation)}</span></td></tr>`;
+    }
+  }
+  h += "</table>";
+
+  if (row.notChecked.length > 0) {
+    h += `<h2>${esc(t(HP, "Nicht geprüft"))}</h2>`;
+    for (const n of row.notChecked) h += `<p class='muted' style='margin:3px 0'>${esc(n)}</p>`;
+  }
+
+  h += `<p style='margin-top:20px'>${esc(uc("Ausgelesen bei der Besichtigung, im Beisein von Käufer und Verkäufer."))}</p>`;
+  h +=
+    "<table class='sign'><tr>" +
+    `<td><div class='line'>${esc(uc("Ort, Datum, Käufer"))}</div></td>` +
+    `<td><div class='line'>${esc(uc("Ort, Datum, Verkäufer"))}</div></td>` +
+    "</tr></table>";
+  h += `<p class='muted' style='margin-top:22px; font-size:8.5pt'>${esc(
+    tr("Erstellt mit Caruspex, freie Fahrzeugdiagnose. Der Bericht gibt wieder, was die Steuergeräte gemeldet haben. Er ersetzt keine Prüfung in der Werkstatt."),
+  )}</p>`;
   h += "</body></html>";
   return h;
 }

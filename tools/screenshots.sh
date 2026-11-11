@@ -26,7 +26,7 @@ size="1440x920"
 shot() {   # name page delay
     local file="$out/screenshot-$1.png"
     command -v cygpath >/dev/null && file="$(cygpath -w "$file")"
-    CARUSPEX_GARAGE="$garage" "$app" --theme dark --language "$lang" --demo --page "$2" \
+    CARUSPEX_GARAGE="$garage" "$app" --theme dark --mode pro --language "$lang" --demo --page "$2" \
         --window-pos "$pos" --size "$size" --shot "$file" --shot-delay "$3"
 }
 
@@ -40,4 +40,7 @@ shot ecus ecus-run 16000
 shot vehicles vehicles 5000
 shot connect connect 5000
 shot battery battery 7000
+shot todo todo 8000
+shot used-car used-car-run 30000
+shot xray xray-scan 16000
 echo "screenshots in $out"

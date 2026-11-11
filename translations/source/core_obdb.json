@@ -1,0 +1,22 @@
+[
+ {
+  "id": "c3542",
+  "de": "%1, Modelljahr %2 (OBDb)",
+  "en": "%1, model year %2 (OBDb)"
+ },
+ {
+  "id": "c3543",
+  "de": "%1, ab Modelljahr %2 (OBDb)",
+  "en": "%1, model year %2 on (OBDb)"
+ },
+ {
+  "id": "c3544",
+  "de": "%1, Modelljahre %2 bis %3 (OBDb)",
+  "en": "%1, model years %2 to %3 (OBDb)"
+ },
+ {
+  "id": "c3545",
+  "de": "%1, bis Modelljahr %2 (OBDb)",
+  "en": "%1, up to model year %2 (OBDb)"
+ }
+]

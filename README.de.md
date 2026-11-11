@@ -36,6 +36,25 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Löschen mit klarer Warnung und automatischer Gegenprobe, Export als CSV
 ![Fehlerspeicher](docs/de/screenshot-faults.png)
 
+**Was soll ich jetzt tun?**
+- Eine Seite, die alles, was Caruspex gefunden hat, in drei Schritte sortiert: sofort anhalten, bald in die Werkstatt, kann warten
+- Zu jedem Punkt ein einfacher Satz, warum, eine grobe Kostenspanne und ein Zettel für die Werkstatt (Code, Steuergerät, Bereich, typische Ursachen)
+- OBD kann nicht sehen, ob die Motorkontrollleuchte blinkt oder eine rote Warnleuchte brennt: zwei Kästchen fragen danach, und eine blinkende Leuchte mit Zündaussetzern setzt den Punkt auf "sofort anhalten"
+![Was soll ich jetzt tun?](docs/de/screenshot-todo.png)
+
+**Gebrauchtwagen prüfen**
+- Für die Besichtigung vor dem Kauf: Stimmt die Fahrzeug-Identnummer im Auto mit den Papieren und dem Katalog überein, passt der Kilometerstand zwischen den Steuergeräten, wurden Fehler kurz vorher gelöscht (Strecke und Zeit seit dem Löschen)?
+- Bereitschaftstests, gespeicherte Fehler, der Gesundheitscheck und bei E-Autos der Zustand des Akkus
+- Eine Ampel, die Fragen an den Verkäufer und ein PDF für den Kauf
+![Gebrauchtwagen prüfen](docs/de/screenshot-used-car.png)
+
+**Röntgenansicht in 3D**
+- Das verbundene Auto als drehbares Glasmodell: Motor oder Motoren, Getriebe, Tank oder Hochvoltakku, Auspuff, Kühler, die 12-V-Batterie und die OBD-Buchse, angeordnet nach Karosserie und Antrieb des erkannten Autos
+- Jedes beim Durchsuchen gefundene Steuergerät sitzt dort, wo es meistens sitzt, verbunden über seine Datenleitungen (Antriebs- und Komfort-CAN); während Caruspex liest, wandern kleine Pakete zum gefragten Steuergerät
+- Fehler lassen ihren Bereich aufleuchten und färben das zuständige Steuergerät rot, Live-Werte sitzen auf dem Bauteil, zu dem sie gehören, und "Auto prüfen" fliegt mit der Kamera zu jedem Befund. Ebenen lassen sich einzeln ausblenden
+- Typische Maße für Karosserie und Baujahr, kein Abbild des genauen Modells: Konstruktionsdaten und Schaltpläne der Hersteller sind nicht frei verfügbar
+![Röntgenansicht](docs/de/screenshot-xray.png)
+
 **Live-Werte**
 - Alle Messwerte nach SAE J1979 bis PID C4, 145 PIDs mit über 300 Einzelwerten, nach Bereichen sortiert und durchsuchbar
 - Darunter Kilometerstand, Gang, Öltemperatur, Kraftstoffdurchfluss, Drehmoment, Ladedruck, Abgastemperatur, Partikelfilter, AdBlue, NOx und Hybridakku, soweit das Auto sie liefert
@@ -94,6 +113,7 @@ Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
 
 **Herstellerwerte und eigene Werte**
 - Akku von E-Autos: Akkugesundheit, Ladestand, Zellspannungen mit Spreizung, Temperaturen, für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören am CAN-Bus); jeder Wert mit belegter Quelle
+- Herstellerwerte für rund 550 weitere Fahrzeuge aus dem Projekt [OBDb](https://github.com/OBDb) (Akku, Reifendruck, Öl, Kilometerstand und mehr), automatisch für das erkannte Auto angeboten; jede Gleichung wird mit dem eigenen Decoder von OBDb gegengeprüft
 - Eigene Messwerte im verbreiteten Torque-CSV-Format laden, mit vollständigem Rechner für die Torque-Gleichungen
 
 ![E-Auto-Akku](docs/de/screenshot-battery.png)
@@ -107,7 +127,8 @@ Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
 
 **Bedienung**
 - Neue Oberfläche im Stil von Odysync: ruhig, dunkel, mit weichen Übergängen
-- Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse
+- Verbinden Schritt für Schritt, mit automatischer Suche über alle Anschlüsse und, wenn es nicht klappt, einer kurzen Checkliste für diese Art von Verbindung (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat
+- Einsteiger- und Profi-Modus: Einsteiger sehen die Seiten für den Alltag, die Werkstatt-Werkzeuge (KKL, Anpassung, Rohbefehle, Adressen) erscheinen im Profi-Modus
 - 18 Sprachen für Oberfläche und alle Fehlertexte: Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Italienisch, Niederländisch, Polnisch, Tschechisch, Russisch, Ukrainisch, Türkisch, Arabisch (von rechts nach links), Chinesisch, Japanisch, Koreanisch, Hindi und Indonesisch. Folgt der Systemsprache, umschaltbar in den Einstellungen, Einstellungen wirken sofort
 - Meldet neue Versionen: beim Start fragt die App nur GitHub nach dem neuesten Release, sonst nichts (keine Daten über dich oder das Auto), abschaltbar in den Einstellungen
 
@@ -357,4 +378,4 @@ Modus 04 löscht Fehlerspeicher, Freeze Frame und die Bereitschaftstests. Direkt
 
 ## Lizenz
 
-MIT, siehe [LICENSE](LICENSE). Die mitgelieferten Schriften stehen unter der SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) und Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+MIT, siehe [LICENSE](LICENSE). Die Herstellerwerte für Hunderte Modelle sind aus [OBDb](https://github.com/OBDb) umgewandelt und stehen wie OBDb unter CC BY-SA 4.0: Sie liegen getrennt vom Code in [data/obdb](data/obdb) mit der Lizenz und der Liste der Quellen ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Die mitgelieferten Schriften stehen unter der SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) und Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

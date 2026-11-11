@@ -1,0 +1,135 @@
+/* "Was soll ich jetzt tun?" and its card on the start page. */
+
+.todo-page .page-inner { gap: 20px; }
+
+.todo-hero { padding: 24px; border-inline-start: 4px solid var(--tone); }
+.todo-hero-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.todo-hero-text { flex: 3 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.todo-headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+.todo-headline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--tone);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--tone) 60%, transparent);
+}
+.todo-hero-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+
+.todo-observe {
+  flex: 2 1 260px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--radius-flat);
+  background: var(--surface-high);
+  border: 1px solid var(--border);
+}
+.todo-observe-title { font-weight: 700; }
+
+.todo-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.todo-tier { padding: 18px; border-top: 3px solid var(--tone); display: flex; flex-direction: column; gap: 14px; }
+.todo-tier-head { display: flex; align-items: flex-start; gap: 12px; }
+.todo-tier-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+.todo-tier-count {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tone);
+  min-width: 28px;
+  text-align: end;
+}
+.todo-tier-empty { padding: 4px 2px; }
+.todo-tier-list { display: flex; flex-direction: column; gap: 12px; }
+
+.todo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-flat);
+  background: color-mix(in srgb, var(--tone) 5%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--tone) 25%, var(--border));
+}
+.todo-item-head { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.todo-item-title { font-weight: 700; flex: 1 1 180px; min-width: 0; overflow-wrap: anywhere; }
+.todo-item-why { color: var(--text); }
+.todo-item-evidence,
+.todo-item-cost { display: flex; align-items: flex-start; gap: 6px; }
+.todo-item-evidence svg,
+.todo-item-cost svg { flex: none; margin-top: 3px; color: var(--text-muted); }
+.todo-item-cost { color: var(--text-muted); font-size: 13px; }
+.todo-item-actions { display: flex; justify-content: flex-end; }
+
+.todo-workshop {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-flat);
+  background: var(--surface-high);
+  border: 1px dashed var(--border-bright);
+}
+.todo-workshop-head { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.todo-workshop-text { font-size: 13px; overflow-wrap: anywhere; }
+
+.todo-footnote { max-width: 900px; }
+
+/* --- The card on the start page ------------------------------------------------------- */
+
+.dash-todo { padding: 20px 24px; border-inline-start: 4px solid var(--tone); }
+.dash-todo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+.dash-todo-text { flex: 3 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.dash-todo-counts { display: flex; flex-wrap: wrap; gap: 8px; }
+.dash-todo-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+  font-size: 13px;
+}
+.dash-todo-count strong { color: var(--tone); font-size: 15px; }
+.dash-todo-first { overflow-wrap: anywhere; }
+
+/* --- Hint for beginners ---------------------------------------------------------------- */
+
+.pro-hint {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-flat);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  font-size: 13px;
+}
+.pro-hint .grow { flex: 1 1 200px; min-width: 0; }
+.pro-hint-icon { color: var(--accent); flex: none; }

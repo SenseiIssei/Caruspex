@@ -5,3 +5,4 @@ Unknown pack: nope. Built-in packs:
   nissan-leaf-ze0-aze0  (Nissan Leaf first generation (2011 to 2017))
   renault-zoe-ph1  (Renault Zoe phase 1 (2013 to 2019))
   tesla-model3-y  (Tesla Model 3 and Model Y (listening on the CAN bus))
+And the packs from OBDb (CC BY-SA 4.0): --pack "obdb:MAKE MODEL YEAR" lists them.

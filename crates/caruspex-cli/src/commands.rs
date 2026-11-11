@@ -19,8 +19,8 @@ use caruspex_protocols::{
     Fault, LiveValue, Obd2, UdsDtc, UdsEcu, VehicleStatus, misfire_counts, scan_ecus,
 };
 use caruspex_record::{
-    CustomPid, CustomPidReader, JsonWriter, USER_KEY_BASE, pack_names, pack_pids, pack_title,
-    parse_torque_csv,
+    CustomPid, CustomPidReader, JsonWriter, USER_KEY_BASE, obdb_search, obdb_stats, pack_names,
+    pack_pids, pack_title, parse_torque_csv,
 };
 use caruspex_vehicles::catalog::{self, CatalogMatch};
 use caruspex_vehicles::vin::{VinInfo, decode_vin};
@@ -1288,6 +1288,9 @@ pub fn load_custom_pids(
         for n in pack_names() {
             names.push_str(&format!("\n  {}  ({})", n, pack_title(n)));
         }
+        names.push_str(
+            "\nAnd the packs from OBDb (CC BY-SA 4.0): --pack \"obdb:MAKE MODEL YEAR\" lists them.",
+        );
         names
     };
     if !csv_path.is_empty() {
@@ -1322,6 +1325,60 @@ pub fn load_custom_pids(
     }
     let title = pack_title(&name);
     Ok((pids, title, Vec::new()))
+}
+
+/// The query of `--pack obdb:QUERY` (or `--pack obdb` for all), None for any
+/// other pack name.
+pub fn obdb_query(pack: &str) -> Option<&str> {
+    if pack.eq_ignore_ascii_case("obdb") {
+        return Some("");
+    }
+    pack.strip_prefix("obdb:")
+}
+
+/// Lists the OBDb packs whose make, model or years fit the query. 0 when
+/// something was found.
+pub fn list_obdb_packs(query: &str, as_json: bool) -> i32 {
+    let hits = obdb_search(query);
+    let stats = obdb_stats();
+    if as_json {
+        let mut json = JsonWriter::new();
+        json.begin_object()
+            .field("query", query)
+            .field("source", "OBDb, github.com/OBDb, CC BY-SA 4.0")
+            .key("packs")
+            .begin_array();
+        for p in &hits {
+            json.begin_object()
+                .field("id", &p.id)
+                .field("title", &p.title())
+                .field("repository", &p.repo)
+                .field("yearFrom", &p.year_from)
+                .field("yearTo", &p.year_to)
+                .field("values", &(p.values as i32))
+                .end_object();
+        }
+        json.end_array().end_object();
+        say(&json.text());
+    } else {
+        say(&format!(
+            "OBDb packs (github.com/OBDb, CC BY-SA 4.0): {} of {} for \"{query}\"\n",
+            hits.len(),
+            stats.packs
+        ));
+        for p in &hits {
+            say(&format!(
+                "  {}  ({}, {} values)\n",
+                p.id,
+                p.title(),
+                p.values
+            ));
+        }
+        if !hits.is_empty() {
+            say("Read one with --pack ID.\n");
+        }
+    }
+    if hits.is_empty() { 1 } else { 0 }
 }
 
 /// Up to three decimals, without trailing zeros: 36.5, 3.6, 5614.8, 12.

@@ -8,7 +8,35 @@
 .dash-hero-row { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
 .dash-hero-text { flex: 5 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 .dash-hero-text .headline { overflow-wrap: anywhere; }
-.dash-hero-car { flex: 6 1 360px; min-width: min(360px, 100%); }
+.dash-hero-car {
+  flex: 6 1 360px;
+  min-width: min(360px, 100%);
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-flat);
+}
+.dash-hero-car:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent); }
+.dash-hero-xray {
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface-high) 85%, transparent);
+  border: 1px solid var(--border);
+  opacity: 0;
+  transition: opacity 180ms var(--ease);
+}
+.dash-hero-car:hover .dash-hero-xray, .dash-hero-car:focus-visible .dash-hero-xray { opacity: 1; }
 
 .dash-state { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
 .dash-state-dot {

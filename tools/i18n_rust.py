@@ -3,6 +3,9 @@
     py -I tools/i18n_rust.py            list them
     py -I tools/i18n_rust.py --write    append them to translations/source/core_x2.json
     py -I tools/i18n_rust.py --strict   also fail when a text or a translation is missing (CI)
+    py -I tools/i18n_rust.py --write --area used-car
+                                        own file core_used-car.json with ids c-used-car-N,
+                                        translators fill translations/<code>/core_used-car.json
 
 The Rust core writes texts as l("de", "en"), Text::new("de", "en") or
 Text { de: "de", en: "en" }. The other 16 languages are looked up by the
@@ -33,6 +36,9 @@ PATTERNS = [
 
 
 def unescape(text: str) -> str:
+    # A backslash at the end of a line continues a Rust string literal and
+    # drops the line break and the indentation of the next line.
+    text = re.sub(r"\\\r?\n\s*", "", text)
     return json.loads('"' + text + '"')
 
 
@@ -62,18 +68,25 @@ def main() -> int:
     for path in sorted(glob.glob(os.path.join(source_dir, "core_*.json"))):
         for item in json.load(open(path, encoding="utf-8")):
             known.add(item["en"])
-            ids.append(int(item["id"][1:]))
+            if item["id"][1:].isdigit():
+                ids.append(int(item["id"][1:]))
     missing = {en: de for en, de in rust_texts().items() if en not in known}
     for en, de in sorted(missing.items()):
         print(f"{de!r} / {en!r}")
     print(f"{len(missing)} texts without translation", file=sys.stderr)
     if "--write" in sys.argv and missing:
-        path = os.path.join(source_dir, "core_x2.json")
+        # --area NAME keeps the new texts of one piece of work apart, with
+        # ids like "c-name-3", so parallel branches never hand out the same id.
+        area = sys.argv[sys.argv.index("--area") + 1] if "--area" in sys.argv else ""
+        path = os.path.join(source_dir, f"core_{area}.json" if area else "core_x2.json")
         items = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else []
         next_id = max(ids) + 1
         for en, de in sorted(missing.items()):
-            items.append({"id": f"c{next_id}", "de": de, "en": en})
-            next_id += 1
+            if area:
+                items.append({"id": f"c-{area}-{len(items) + 1}", "de": de, "en": en})
+            else:
+                items.append({"id": f"c{next_id}", "de": de, "en": en})
+                next_id += 1
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(items, f, ensure_ascii=False, indent=1)
             f.write("\n")

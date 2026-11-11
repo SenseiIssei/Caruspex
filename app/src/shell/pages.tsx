@@ -6,7 +6,10 @@ import { t } from "../i18n";
 import DashboardPage from "../pages/DashboardPage";
 import ConnectPage from "../pages/ConnectPage";
 import HealthPage from "../pages/HealthPage";
+import WhatToDoPage from "../pages/WhatToDoPage";
+import UsedCarPage from "../pages/UsedCarPage";
 import FaultsPage from "../pages/FaultsPage";
+import XrayPage from "../pages/XrayPage";
 import ToolsPage from "../pages/ToolsPage";
 import MonitorPage from "../pages/MonitorPage";
 import LivePage from "../pages/LivePage";
@@ -30,8 +33,11 @@ const MW = "caruspex::MainWindow";
 export type PageId =
   | "start"
   | "connect"
+  | "todo"
   | "health"
+  | "used-car"
   | "faults"
+  | "xray"
   | "tools"
   | "monitor"
   | "live"
@@ -58,30 +64,35 @@ export interface PageEntry {
   section?: () => string;
   // Garage, Adapter and Settings sit below the divider.
   bottom?: boolean;
+  // Only in Profi mode; beginners see the everyday pages.
+  pro?: boolean;
   component: ComponentType;
 }
 
 export const PAGES: PageEntry[] = [
   { id: "start", icon: "home", label: () => t(MW, "Start"), component: DashboardPage },
   { id: "connect", icon: "plug", label: () => t(MW, "Verbinden"), component: ConnectPage },
-  { id: "health", icon: "heart", label: () => t(MW, "Gesundheitscheck"), section: () => t(MW, "Diagnose"), component: HealthPage },
+  { id: "todo", icon: "lightbulb", label: () => t(MW, "Was tun?"), section: () => t(MW, "Diagnose"), component: WhatToDoPage },
+  { id: "health", icon: "heart", label: () => t(MW, "Gesundheitscheck"), component: HealthPage },
+  { id: "used-car", icon: "tag", label: () => t("caruspex::UsedCarPage", "Gebrauchtwagen"), component: UsedCarPage },
   { id: "faults", icon: "alert", label: () => t(MW, "Fehlerspeicher"), component: FaultsPage },
-  { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage },
-  { id: "monitor", icon: "stethoscope", label: () => t(MW, "Bauteilprüfung"), component: MonitorPage },
-  { id: "live", icon: "activity", label: () => t(MW, "Live-Werte"), section: () => t(MW, "Messen"), component: LivePage },
-  { id: "trip", icon: "fuel", label: () => t(MW, "Bordcomputer"), component: TripPage },
-  { id: "performance", icon: "timer", label: () => t(MW, "Leistung"), component: PerformancePage },
+  { id: "xray", icon: "cube", label: () => t(MW, "Röntgenansicht"), component: XrayPage },
+  { id: "tools", icon: "shield", label: () => t(MW, "Prüfen und AU"), component: ToolsPage, pro: true },
+  { id: "monitor", icon: "stethoscope", label: () => t(MW, "Bauteilprüfung"), component: MonitorPage, pro: true },
+  { id: "live", icon: "activity", label: () => t(MW, "Live-Werte"), section: () => t(MW, "Messen"), component: LivePage, pro: true },
+  { id: "trip", icon: "fuel", label: () => t(MW, "Bordcomputer"), component: TripPage, pro: true },
+  { id: "performance", icon: "timer", label: () => t(MW, "Leistung"), component: PerformancePage, pro: true },
   { id: "battery", icon: "battery", label: () => t(MW, "Batterie"), component: BatteryPage },
   { id: "ev", icon: "bolt-circle", label: () => t(MW, "E-Auto-Akku"), component: EvPage },
-  { id: "stats", icon: "chart", label: () => t(MW, "Statistik"), component: StatsPage },
-  { id: "ecus", icon: "cpu", label: () => t(MW, "Alle Steuergeräte"), section: () => t(MW, "Werkstatt"), component: EcuPage },
-  { id: "scan", icon: "cable", label: () => t(MW, "Steuergeräte über KKL"), component: ScanPage },
-  { id: "throttle", icon: "throttle", label: () => t(MW, "Drosselklappe"), component: ThrottlePage },
-  { id: "kkl", icon: "sliders", label: () => t(MW, "Anpassung und Stellglieder"), component: KklToolsPage },
-  { id: "vehicles", icon: "car", label: () => t(MW, "Fahrzeuge"), section: () => t(MW, "Wissen"), component: VehiclesPage },
-  { id: "lexicon", icon: "book", label: () => t(MW, "Fehlercode-Lexikon"), component: LexiconPage },
+  { id: "stats", icon: "chart", label: () => t(MW, "Statistik"), component: StatsPage, pro: true },
+  { id: "ecus", icon: "cpu", label: () => t(MW, "Alle Steuergeräte"), section: () => t(MW, "Werkstatt"), component: EcuPage, pro: true },
+  { id: "scan", icon: "cable", label: () => t(MW, "Steuergeräte über KKL"), component: ScanPage, pro: true },
+  { id: "throttle", icon: "throttle", label: () => t(MW, "Drosselklappe"), component: ThrottlePage, pro: true },
+  { id: "kkl", icon: "sliders", label: () => t(MW, "Anpassung und Stellglieder"), component: KklToolsPage, pro: true },
+  { id: "vehicles", icon: "car", label: () => t(MW, "Fahrzeuge"), section: () => t(MW, "Wissen"), component: VehiclesPage, pro: true },
+  { id: "lexicon", icon: "book", label: () => t(MW, "Fehlercode-Lexikon"), component: LexiconPage, pro: true },
   { id: "garage", icon: "garage", label: () => t(MW, "Garage"), bottom: true, component: GaragePage },
-  { id: "adapter", icon: "cable", label: () => t(MW, "Adapter"), bottom: true, component: AdapterPage },
+  { id: "adapter", icon: "cable", label: () => t(MW, "Adapter"), bottom: true, component: AdapterPage, pro: true },
   { id: "settings", icon: "settings", label: () => t(MW, "Einstellungen"), bottom: true, component: SettingsPage },
 ];
 

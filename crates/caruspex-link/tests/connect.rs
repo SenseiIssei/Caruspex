@@ -391,6 +391,30 @@ fn the_fake_demo_adapter_connects_with_echo_and_greeting() {
 }
 
 #[test]
+fn a_failed_connect_leaves_a_trace_for_the_assistant() {
+    // The adapter answers, the car does not: the K-line init fails.
+    let rule = |c: &str| (c == "0100").then(|| b"BUS INIT: ...ERROR\r\r>".to_vec());
+    let t = InterceptTransport::new(
+        Box::new(FakeAdapter::new(DemoAdapter::CloneV15, true, 0.0)),
+        rule,
+    );
+    let mut elm = Elm327::new();
+    assert!(elm.connect(Box::new(t), "3").is_err());
+    elm.disconnect();
+    let trace = elm.connect_trace();
+    assert!(trace.adapter_answered);
+    assert_eq!(trace.adapter_id, "ELM327 v1.5");
+    assert_eq!(trace.protocols_tried, "3");
+    assert_eq!(trace.bus_error, "BUS INIT: ...ERROR");
+
+    // A good connect starts a fresh trace.
+    let elm = connect(FakeAdapter::new(DemoAdapter::GenuineV14b, true, 0.0), "6");
+    let trace = elm.connect_trace();
+    assert_eq!(trace.protocols_tried, "6");
+    assert!(trace.bus_error.is_empty());
+}
+
+#[test]
 fn wrapping_the_transport_keeps_the_session() {
     let mut elm = connect(FaultTransport::default(), "6");
     let seen: Log = Arc::new(Mutex::new(Vec::new()));

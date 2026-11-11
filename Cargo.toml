@@ -9,6 +9,7 @@ members = [
     "crates/caruspex-net",
     "crates/caruspex-record",
     "crates/caruspex-analysis",
+    "crates/caruspex-advice",
     "crates/caruspex-demo",
     "crates/caruspex-cli",
     "app/src-tauri",
@@ -31,6 +32,7 @@ caruspex-protocols = { path = "crates/caruspex-protocols" }
 caruspex-net = { path = "crates/caruspex-net" }
 caruspex-record = { path = "crates/caruspex-record" }
 caruspex-analysis = { path = "crates/caruspex-analysis" }
+caruspex-advice = { path = "crates/caruspex-advice" }
 caruspex-demo = { path = "crates/caruspex-demo" }
 
 serde = { version = "1", features = ["derive"] }
@@ -42,6 +44,7 @@ libloading = "0.8"
 btleplug = "0.11"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
 clap = { version = "4", features = ["derive"] }
+miniz_oxide = "0.8"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
 
 [profile.release]

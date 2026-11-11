@@ -7,6 +7,7 @@ import type {
   AppSettings,
   FaultRow,
   FreezeFrameRow,
+  HealthFindingRow,
   LiveRow,
   MonitorRow,
   ReportFinding,
@@ -65,6 +66,8 @@ export interface SessionState {
   score: number;
   scoreCaption: string;
   findings: DashboardFinding[];
+  // The findings of the last full health check, for "Was soll ich jetzt tun?".
+  healthFindings: HealthFindingRow[];
   recording: boolean;
   // Due and nearly due service items of the connected car (badge).
   servicesDue: number;
@@ -97,6 +100,7 @@ const initial: SessionState = {
   score: -1,
   scoreCaption: "",
   findings: [],
+  healthFindings: [],
   recording: false,
   servicesDue: 0,
   udsEcus: [],
@@ -127,13 +131,27 @@ export function readiness(status: StatusRow | null = session.get().status): Read
 
 // --- Settings -------------------------------------------------------------------------
 
-export const settingsStore = createStore<{ values: AppSettings; loaded: boolean }>({
+// modeOverride: the mode of --mode or ?mode= for this run only, null for the
+// setting.
+export const settingsStore = createStore<{ values: AppSettings; loaded: boolean; modeOverride: boolean | null }>({
   values: DEFAULT_SETTINGS,
   loaded: false,
+  modeOverride: null,
 });
 
 export function useSettings(): AppSettings {
   return useStore(settingsStore, (s) => s.values);
+}
+
+// Profi mode: every page. Beginners see the everyday ones.
+export function useProMode(): boolean {
+  return useStore(settingsStore, (s) => s.modeOverride ?? s.values.proMode);
+}
+
+// Switches the mode for good (the settings switch and the hints on the pages).
+export function setProMode(on: boolean): void {
+  settingsStore.set({ modeOverride: null });
+  void applySettings({ ...settingsStore.get().values, proMode: on });
 }
 
 // Saves, passes them on to the backend and to the pages (applySettings).
@@ -249,6 +267,7 @@ function resetVehicle(): Partial<SessionState> {
     ecuName: "",
     supportedPids: [],
     score: -1,
+    healthFindings: [],
     udsEcus: [],
   };
 }
@@ -368,6 +387,7 @@ export function startSession(): void {
   });
 
   on("health_result", ({ row }) => {
+    session.set({ healthFindings: row.findings });
     const caption = row.grade === 0 ? t(MW, "Gut in Schuss") : row.grade === 1 ? t(MW, "Braucht Pflege") : t(MW, "Bitte ansehen");
     toast(t(MW, "Gesundheitscheck fertig: %1 Punkte.", row.score), row.grade === 0 ? "success" : "warning");
     emitApp("dashboard:health", { score: row.score, caption, findings: row.findings });

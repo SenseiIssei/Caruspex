@@ -20,3 +20,6 @@ __pycache__/
 # Leftovers of the C++ build up to 0.8 in older checkouts
 build/
 CMakeUserPresets.json
+
+# Download cache of tools/gen_obdb.py --fetch
+.cache/

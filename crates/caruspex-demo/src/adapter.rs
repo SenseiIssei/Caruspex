@@ -875,6 +875,27 @@ impl Impl {
     //   1010  operating data, 16 bytes and so a multi-frame answer: total
     //         engine run time in seconds (32 bit), four reserved bytes,
     //         supply voltage in millivolts (16 bit), six reserved bytes
+    //
+    // The instrument cluster and the ABS keep the odometer too, so the used
+    // car check has something to compare PID A6 with. Made up for the demo
+    // as well, the same identifier on both units:
+    //   1011  cluster 720: total distance in whole km, 32 bit
+    //   1011  ABS 760: total distance in steps of 10 km, 16 bit (it only
+    //         stores every ten kilometres, so it lags a little behind)
+    fn odometer_did(&self, unit_request: i32, id: i32, t: f64) -> Option<Bytes> {
+        if id != 0x1011 {
+            return None;
+        }
+        let km = simulate(t, self.options.engine_start_seconds).odometer;
+        let mut out: Bytes = vec![0x62, 0x10, 0x11];
+        match unit_request {
+            0x720 => out.extend_from_slice(&(km.floor() as u32).to_be_bytes()),
+            0x760 => out.extend_from_slice(&((km / 10.0).floor() as u16).to_be_bytes()),
+            _ => return None,
+        }
+        Some(out)
+    }
+
     fn engine_did(&self, id: i32, t: f64) -> Option<Bytes> {
         let s = simulate(t, self.options.engine_start_seconds);
         let running = s.run_time > 0.0;
@@ -955,6 +976,9 @@ impl Impl {
                 if unit_request == 0x7E0
                     && let Some(value) = self.engine_did(id, t)
                 {
+                    return vec![value];
+                }
+                if let Some(value) = self.odometer_did(unit_request, id, t) {
                     return vec![value];
                 }
                 for did in &self.uds_units[unit_index].dids {

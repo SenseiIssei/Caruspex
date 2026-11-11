@@ -85,6 +85,8 @@ pub struct CustomRow {
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct HealthFindingRow {
+    /// The stable rule id ("fuel_trim_bank1"), for "Was soll ich jetzt tun?".
+    pub id: String,
     pub level: i32,
     pub area: String,
     pub title: String,
@@ -211,4 +213,89 @@ pub struct BleDeviceRow {
     pub name: String,
     pub score: i32,
     pub kinds: i32,
+}
+
+/// One finding of the used car check.
+#[derive(Clone, Debug, Default, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct UsedCarItemRow {
+    pub id: String,
+    /// "identity", "mileage", "clearing", "readiness", "faults", "health", "battery".
+    pub section: String,
+    /// 0 good .. 3 critical.
+    pub level: i32,
+    pub title: String,
+    pub explanation: String,
+    /// What to ask the seller, empty if nothing.
+    pub ask: String,
+}
+
+#[derive(Clone, Debug, Default, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct UsedCarMileageRow {
+    pub source: String,
+    pub km: f64,
+}
+
+/// The result of the used car check. Numbers are -1 where the car said
+/// nothing.
+#[derive(Clone, Debug, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct UsedCarRow {
+    /// 0 green, 1 yellow, 2 red.
+    pub light: i32,
+    pub headline: String,
+    pub summary: String,
+    pub vin: String,
+    pub papers_vin: String,
+    pub vehicle: String,
+    pub model_year: i32,
+    pub mileage: Vec<UsedCarMileageRow>,
+    pub distance_since_clear_km: f64,
+    pub minutes_since_clear: f64,
+    pub warm_ups: f64,
+    pub readiness_complete: i32,
+    pub readiness_total: i32,
+    pub stored_faults: i32,
+    pub pending_faults: i32,
+    pub permanent_faults: i32,
+    pub health_score: i32,
+    pub electric: bool,
+    pub battery_pack: String,
+    pub battery_soh: f64,
+    pub battery_soc: f64,
+    pub items: Vec<UsedCarItemRow>,
+    pub questions: Vec<String>,
+    pub not_checked: Vec<String>,
+}
+
+impl Default for UsedCarRow {
+    fn default() -> Self {
+        Self {
+            light: 0,
+            headline: String::new(),
+            summary: String::new(),
+            vin: String::new(),
+            papers_vin: String::new(),
+            vehicle: String::new(),
+            model_year: 0,
+            mileage: Vec::new(),
+            distance_since_clear_km: -1.0,
+            minutes_since_clear: -1.0,
+            warm_ups: -1.0,
+            readiness_complete: -1,
+            readiness_total: -1,
+            stored_faults: -1,
+            pending_faults: -1,
+            permanent_faults: -1,
+            health_score: -1,
+            electric: false,
+            battery_pack: String::new(),
+            battery_soh: -1.0,
+            battery_soc: -1.0,
+            items: Vec::new(),
+            questions: Vec::new(),
+            not_checked: Vec::new(),
+        }
+    }
 }

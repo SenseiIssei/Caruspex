@@ -11,6 +11,9 @@
 
 import type {
   AdapterRow,
+  AdviceInput,
+  AdviceReport,
+  ConnectHelp,
   AppInfo,
   AppSettings,
   BleDeviceRow,
@@ -19,6 +22,7 @@ import type {
   CustomRow,
   DtcInfo,
   DtcLexiconEntry,
+  EcuKind,
   EcuScanRow,
   FaultRow,
   FileFilter,
@@ -37,7 +41,9 @@ import type {
   StatusRow,
   UdsEcuRow,
   UpdateInfo,
+  UsedCarRow,
   VehicleDiagnosisInfo,
+  VehicleAnatomy,
   VehicleGenerationInfo,
   VinInfo,
   ZoneInfo,
@@ -122,6 +128,9 @@ export interface Commands {
   send_raw: Cmd<{ command: string }, void>;
   read_monitors: Cmd<None, void>;
   run_health_check: Cmd<{ seconds: number }, void>;
+  // The used car check; papersVin is the VIN from the papers, may be empty.
+  // Answers with used_car_progress and used_car_result.
+  run_used_car_check: Cmd<{ papersVin: string }, void>;
   probe_adapter: Cmd<None, void>;
   bruteforce_clear: Cmd<{ attempts: number }, void>;
   // Cancels a running scan or health check.
@@ -174,6 +183,9 @@ export interface Commands {
   // --- Knowledge (core data, answered directly) --------------------------------
   lookup_dtc: Cmd<{ code: string; brand: string }, DtcInfo>;
   locate_dtc: Cmd<{ code: string }, ZoneInfo>;
+  // "Was soll ich jetzt tun?" (crate caruspex-advice): everything the
+  // interface knows about the car in, one list in three steps out.
+  what_to_do: Cmd<{ input: AdviceInput }, AdviceReport>;
   dtc_lexicon: Cmd<None, DtcLexiconEntry[]>;
   brand_families: Cmd<None, BrandFamily[]>;
   // Family key of a brand ("Skoda" -> "VAG"), empty if none.
@@ -181,6 +193,8 @@ export interface Commands {
   pid_table: Cmd<None, PidInfo[]>;
   default_live_pids: Cmd<None, number[]>;
   pid_packs: Cmd<None, PidPackInfo[]>;
+  // The OBDb packs for the detected car: catalog generation and model year (0 = any).
+  obdb_packs: Cmd<{ generationId: number | null; year: number }, PidPackInfo[]>;
   catalog_brands: Cmd<None, string[]>;
   catalog_models: Cmd<{ brand: string }, string[]>;
   catalog_generations: Cmd<{ brand: string; model: string }, VehicleGenerationInfo[]>;
@@ -188,6 +202,14 @@ export interface Commands {
   catalog_size: Cmd<None, number>;
   // Support, connector, socket and the plain sentence for one generation and year.
   catalog_diagnosis: Cmd<{ generationId: number; year: number }, VehicleDiagnosisInfo>;
+  // Dimensions and drivetrain for the X-ray view (vehicles::anatomy). A
+  // generation (generationId >= 0) brings its own body and brand; otherwise
+  // body, brand and model are used, as for the demo car. powertrain is one
+  // PT_* flag, 0 for the default variant.
+  vehicle_anatomy: Cmd<
+    { generationId: number; year: number; body: number; brand: string; model: string; powertrain: number },
+    VehicleAnatomy
+  >;
   decode_vin: Cmd<{ vin: string }, VinInfo>;
   match_vin: Cmd<{ vin: string }, CatalogMatch>;
   // VehicleIdentity (the name and picture for a VIN) is interface code and
@@ -197,7 +219,9 @@ export interface Commands {
 export interface Events {
   log_line: { line: string };
   connected: { adapter: string; transport: string; protocol: string };
-  failed: { error: string };
+  // help: the checklist of the connection assistant when connecting
+  // failed (absent for other failures and for recordings).
+  failed: { error: string; help?: ConnectHelp };
   // The automatic search found the adapter on this port.
   adapter_found: { device: string };
   ble_adapter_found: { id: string; name: string; kinds: number };
@@ -215,7 +239,9 @@ export interface Events {
   kkl_protocol: { protocolName: string; isKwp2000: boolean };
   basic_setting_values: { values: LiveRow[] };
   scan_started: { total: number };
-  scan_progress: { ecuName: string; index: number; total: number };
+  // address: the K-line address of the unit being asked (the X-ray view
+  // sends a packet to it).
+  scan_progress: { ecuName: string; index: number; total: number; address: number };
   scan_ecu_result: { row: EcuScanRow };
   scan_finished: { present: number; withFaults: number; cancelled: boolean };
   clear_progress: { line: string };
@@ -227,6 +253,8 @@ export interface Events {
   identity: { vin: string; calibration: string; checksum: string; ecuName: string };
   health_progress: { step: string; percent: number };
   health_result: { row: HealthRow };
+  used_car_progress: { step: string; percent: number };
+  used_car_result: { row: UsedCarRow };
   adapter_voltage: { volts: number; time: number };
   adapter_report: { row: AdapterRow };
   recording_state: { active: boolean; path: string; exchanges: number; error: string };
@@ -234,7 +262,8 @@ export interface Events {
   custom_imported: { rows: CustomRow[]; errors: string[] };
   freeze_frames: { frames: FreezeFrameRow[] };
   uds_scan_started: { total: number; generic: boolean };
-  uds_scan_progress: { name: string; index: number; total: number };
+  // request and kind of the unit being asked right now.
+  uds_scan_progress: { name: string; index: number; total: number; request: number; kind: EcuKind };
   uds_ecu_result: { row: UdsEcuRow };
   uds_scan_finished: { present: number; withFaults: number; cancelled: boolean; note: string };
   uds_clear_result: { name: string; ok: boolean; message: string };

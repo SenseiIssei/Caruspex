@@ -11,16 +11,19 @@ import { useStore } from "../lib/store";
 import { closeReport, navStore } from "../shell/nav";
 import { findCar, isoDate } from "../state/garage";
 import { session } from "../state/session";
-import { collectReportExtras, collectReportState, garageHtml, reportHtml } from "./report";
+import { usedCarStore } from "../state/usedCar";
+import { collectReportExtras, collectReportState, garageHtml, reportHtml, usedCarHtml } from "./report";
 import "./ReportPreview.css";
 
 const R = "caruspex::Report";
 const MW = "caruspex::MainWindow";
 const GP = "caruspex::GaragePage";
 const RP = "caruspex::ReportPreview";
+const UC = "caruspex::UsedCarPage";
 
 export function ReportPreview() {
   const garageVin = useStore(navStore, (s) => s.garageReportVin);
+  const usedCar = useStore(navStore, (s) => s.usedCarReport);
   const [html, setHtml] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const frame = useRef<HTMLIFrameElement>(null);
@@ -30,7 +33,10 @@ export function ReportPreview() {
   useEffect(() => {
     let cancelled = false;
     setHtml(null);
-    if (garageVin) {
+    const check = usedCarStore.get();
+    if (usedCar) {
+      setHtml(check.result ? usedCarHtml(check.result, new Date(check.when)) : "");
+    } else if (garageVin) {
       const car = findCar(garageVin);
       setHtml(car ? garageHtml(car) : "");
     } else {
@@ -41,9 +47,9 @@ export function ReportPreview() {
     return () => {
       cancelled = true;
     };
-  }, [garageVin]);
+  }, [garageVin, usedCar]);
 
-  const title = garageVin ? t(R, "Fahrzeugakte") : t(R, "Prüfbericht");
+  const title = usedCar ? t(UC, "Gebrauchtwagen-Check") : garageVin ? t(R, "Fahrzeugakte") : t(R, "Prüfbericht");
 
   const savePdf = async () => {
     if (!html) return;
@@ -51,7 +57,15 @@ export function ReportPreview() {
     try {
       const today = isoDate();
       let path: string | null;
-      if (garageVin) {
+      if (usedCar) {
+        const vin = usedCarStore.get().result?.vin || session.get().vin;
+        path = await call("save_pdf", {
+          title: t(UC, "Gebrauchtwagen-Check speichern"),
+          suggestedName: `${vin || "Caruspex"}_Gebrauchtwagen_${today}.pdf`,
+          html,
+        });
+        if (path) toast(t(MW, "Prüfbericht gespeichert: %1", path), "success");
+      } else if (garageVin) {
         path = await call("save_pdf", {
           title: t(R, "Fahrzeugakte speichern"),
           suggestedName: `${garageVin}_Akte_${today}.pdf`,

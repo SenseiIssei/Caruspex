@@ -109,7 +109,7 @@
   font-weight: 600;
   letter-spacing: var(--tracking-section);
   text-transform: uppercase;
-  padding: 8px 12px 2px;
+  padding: 6px 12px 1px;
   white-space: nowrap;
   overflow: hidden;
   transition: max-height 240ms var(--ease), padding 240ms var(--ease);
@@ -122,7 +122,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 34px;
+  /* 30 px, so all pages of the Profi mode fit at 920 pixels height. */
+  height: 30px;
   padding: 0 10px 0 12px;
   border-radius: 10px;
   border: 1px solid transparent;

@@ -79,6 +79,28 @@ vynutit pro jedno spuštění přes `--language fr` a podobně. Jak se překlady
 
 ![Paměť závad](docs/screenshot-faults.png)
 
+### Co mám teď dělat?
+- Jedna stránka, která seřadí vše, co Caruspex našel, do tří kroků: zastavit hned, brzy do servisu, počká.
+- U každého bodu jedna jednoduchá věta proč, orientační rozmezí ceny a poznámka k ukázání v servisu (kód, řídicí jednotka, oblast, obvyklé příčiny).
+- OBD nevidí, zda kontrolka motoru bliká nebo svítí červená výstraha: ptají se na to dvě zaškrtávací políčka a blikající kontrolka při vynechávání zapalování přesune bod do "zastavit hned".
+
+![Co mám teď dělat](docs/screenshot-todo.png)
+
+### Zkontrolovat ojeté auto
+- Pro prohlídku před koupí: sedí VIN v autě s doklady a katalogem, shoduje se stav kilometrů mezi řídicími jednotkami, byly závady smazány těsně předtím (vzdálenost a čas od smazání)?
+- Monitory připravenosti, uložené závady, kontrola zdraví a u elektromobilů stav baterie.
+- Semafor, otázky pro prodejce a PDF pro nákup.
+
+![Zkontrolovat ojeté auto](docs/screenshot-used-car.png)
+
+### Rentgenový pohled ve 3D
+- Připojené auto jako skleněný model, který můžete otáčet: motor nebo motory, převodovka, nádrž nebo vysokonapěťová baterie, výfuk, chladič, 12V baterie a zásuvka OBD, rozložené podle karoserie a pohonu rozpoznaného auta.
+- Každá řídicí jednotka nalezená při skenování sedí tam, kde obvykle bývá, spojená svými datovými vedeními (CAN pohonu a komfortu); zatímco Caruspex čte, putují malé pakety k dotazované jednotce.
+- Závady rozsvítí svou oblast a zbarví odpovědnou řídicí jednotku červeně, živé hodnoty leží na dílu, ke kterému patří, a "Zkontrolovat auto" přesune kameru ke každému nálezu. Vrstvy lze vypínat po jedné.
+- Typické rozměry pro karoserii a dobu, ne kopie přesného modelu: konstrukční data a schémata zapojení výrobců nejsou volně dostupná.
+
+![Rentgenový pohled](docs/screenshot-xray.png)
+
 ### Živé hodnoty
 - Každá hodnota režimu 01 podle SAE J1979 až po PID C4: 145 PID s více než 300 údaji, seskupených a prohledávatelných.
 - Stav tachometru, převodový stupeň, teplota oleje, spotřeba paliva, točivý moment, plnicí tlak, teploty výfukových plynů, filtr pevných částic, AdBlue, NOx a hybridní baterie, pokud je auto hlásí.
@@ -139,6 +161,7 @@ BMW, poslech vysílaných hodnot (Tesla), záznam a přehrávání.
 
 ### Hodnoty výrobců a vlastní hodnoty
 - Baterie elektromobilů: stav zdraví, nabití, napětí článků s rozptylem, teploty, pro Hyundai Kona a Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf a Teslu Model 3 a Y (poslechem na sběrnici CAN); každá hodnota s doloženým zdrojem.
+- Hodnoty výrobce pro asi 550 dalších vozidel z projektu [OBDb](https://github.com/OBDb) (baterie, tlak v pneumatikách, olej, tachometr a další), nabízené automaticky pro rozpoznané auto; každá rovnice se kontroluje dekodérem samotného OBDb.
 - Načtěte vlastní hodnoty v rozšířeném formátu Torque CSV, s úplným vyhodnocováním rovnic Torque.
 
 ![Baterie elektromobilu](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, poslech vysílaných hodnot (Tesla), záznam a přehrávání.
 
 ### Vzhled a ovládání
 - Nové rozhraní ve stylu Odysync: klidné, tmavé, s plynulými přechody.
-- Připojování krok za krokem s automatickým hledáním na všech portech.
+- Připojení krok za krokem s automatickým hledáním na všech portech a při nezdaru krátký kontrolní seznam pro daný druh připojení (ovladač, párování, zapalování, přenosová rychlost, klony adaptérů) s tím, co už Caruspex zjistil.
+- Režim pro začátečníky a profesionály: začátečníci vidí stránky pro každý den, dílenské nástroje (KKL, adaptace, surové příkazy, adresy) se objeví v profesionálním režimu.
 - 18 jazyků; nastavení se projeví hned.
 - Řekne vám, že je venku nová verze: při startu se zeptá GitHubu na nejnovější vydání a na nic jiného (žádná data
   o vás ani o autu); v nastavení lze vypnout.
@@ -464,6 +488,6 @@ příslušných vlastníků; Caruspex není spojen s žádným výrobcem vozidel
 
 ## Licence
 
-MIT, viz [LICENSE](LICENSE). Přibalená písma podléhají licenci SIL Open Font License 1.1:
+MIT, viz [LICENSE](LICENSE). Hodnoty výrobce pro stovky modelů jsou převedeny z [OBDb](https://github.com/OBDb) a stejně jako OBDb podléhají licenci CC BY-SA 4.0: leží odděleně od kódu v [data/obdb](data/obdb) s licencí a seznamem zdrojů ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Přibalená písma podléhají licenci SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) a
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

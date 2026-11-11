@@ -79,6 +79,28 @@ forzare a ogni avvio con `--language fr` e simili. Come vengono fatte e controll
 
 ![Memoria errori](docs/screenshot-faults.png)
 
+### Cosa devo fare adesso?
+- Una pagina che ordina tutto ciò che Caruspex ha trovato in tre passi: fermarsi subito, presto in officina, può aspettare.
+- Ogni punto con una frase semplice che spiega il perché, una fascia di costo indicativa e una nota da mostrare in officina (codice, centralina, zona, cause abituali).
+- L'OBD non può vedere se la spia motore lampeggia o se è accesa una spia rossa: due caselle lo chiedono, e una spia che lampeggia con mancate accensioni sposta il punto su "fermarsi subito".
+
+![Cosa devo fare adesso?](docs/screenshot-todo.png)
+
+### Controlla un'auto usata
+- Per la visita prima dell'acquisto: il VIN dell'auto corrisponde ai documenti e al catalogo, i chilometri concordano tra le centraline, gli errori sono stati cancellati poco prima (distanza e tempo dalla cancellazione)?
+- Monitor di prontezza, errori memorizzati, il controllo della salute e, sulle auto elettriche, lo stato della batteria.
+- Un semaforo, le domande da fare al venditore e un PDF per l'acquisto.
+
+![Controlla un'auto usata](docs/screenshot-used-car.png)
+
+### Vista a raggi X in 3D
+- L'auto collegata come un modello di vetro che puoi ruotare: motore o motori, cambio, serbatoio o batteria ad alta tensione, scarico, radiatore, batteria da 12 V e presa OBD, disposti secondo la carrozzeria e la trazione dell'auto riconosciuta.
+- Ogni centralina trovata dalla scansione sta dove di solito si trova, collegata dalle sue linee dati (CAN del gruppo propulsore e del comfort); mentre Caruspex legge, piccoli pacchetti viaggiano verso la centralina interrogata.
+- Gli errori illuminano la loro zona e colorano di rosso la centralina responsabile, i valori live stanno sul componente a cui appartengono e "Controlla auto" porta la telecamera su ogni risultato. I livelli si possono disattivare uno a uno.
+- Dimensioni tipiche per la carrozzeria e l'epoca, non una replica del modello esatto: i dati di progetto e gli schemi elettrici dei costruttori non sono liberamente disponibili.
+
+![Vista a raggi X](docs/screenshot-xray.png)
+
 ### Valori live
 - Tutti i valori del modo 01 della SAE J1979 fino al PID C4: 145 PID con oltre 300 letture, raggruppate e ricercabili.
 - Contachilometri, marcia, temperatura dell'olio, consumo di carburante, coppia, pressione del turbo, temperature di scarico, filtro antiparticolato, AdBlue, NOx e batteria ibrida, nella misura in cui l'auto li comunica.
@@ -139,6 +161,7 @@ BMW, ascolto dei valori in broadcast (Tesla), registrazione e riproduzione.
 
 ### Valori del costruttore e personalizzati
 - Batterie delle auto elettriche: stato di salute, carica, tensioni delle celle con dispersione, temperature, per Hyundai Kona e Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf e Tesla Model 3 e Y (ascoltando il bus CAN); ogni valore con una fonte documentata.
+- Valori del costruttore per circa 550 veicoli in più dal progetto [OBDb](https://github.com/OBDb) (batteria, pressione degli pneumatici, olio, contachilometri e altro), proposti automaticamente per l'auto riconosciuta; ogni equazione è verificata con il decodificatore di OBDb stesso.
 - Carica i tuoi valori nel diffuso formato CSV di Torque, con un valutatore completo delle equazioni di Torque.
 
 ![Batteria EV](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ BMW, ascolto dei valori in broadcast (Tesla), registrazione e riproduzione.
 
 ### Aspetto e uso
 - Una nuova interfaccia nello stile di Odysync: calma, scura, con transizioni fluide.
-- Collegamento passo dopo passo con una ricerca automatica su tutte le porte.
+- Collegamento passo dopo passo con una ricerca automatica su tutte le porte e, se fallisce, una breve lista di controllo per quel tipo di collegamento (driver, associazione, quadro, velocità in bit, adattatori cloni) con ciò che Caruspex ha già scoperto.
+- Modalità principiante ed esperto: i principianti vedono le pagine di ogni giorno, gli strumenti da officina (KKL, adattamento, comandi grezzi, indirizzi) compaiono in modalità esperto.
 - 18 lingue; le impostazioni si applicano subito.
 - Ti avvisa quando esce una nuova versione: all'avvio chiede a GitHub l'ultima versione e nient'altro (nessun dato
   su di te o sull'auto); si può disattivare nelle impostazioni.
@@ -464,6 +488,6 @@ proprietari; Caruspex non è affiliato né approvato da alcun costruttore di vei
 
 ## Licenza
 
-MIT, vedi [LICENSE](LICENSE). I font inclusi sono concessi in licenza SIL Open Font License 1.1:
+MIT, vedi [LICENSE](LICENSE). I valori del costruttore per centinaia di modelli sono convertiti da [OBDb](https://github.com/OBDb) e, come OBDb, concessi in licenza CC BY-SA 4.0: si trovano separati dal codice in [data/obdb](data/obdb) con la licenza e l'elenco delle fonti ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). I font inclusi sono concessi in licenza SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) e
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

@@ -16,6 +16,7 @@ use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
 use crate::AppState;
+use crate::advice::{self, AdviceInputArg};
 use crate::garage::{self, GarageCar};
 use crate::measure::{BatteryInputArg, SpeedSampleArg, TripConfigArg};
 use crate::settings::{self, AppSettings};
@@ -280,7 +281,7 @@ pub async fn save_pdf(
     if path.extension().is_none() {
         path.set_extension("pdf");
     }
-    match pdf::write_report(&app, html, path.clone()).await? {
+    match pdf::write_report(&app, html, path.clone(), true).await? {
         pdf::Written::File => Ok(Some(path.display().to_string())),
         pdf::Written::PrintDialog => Ok(None),
     }
@@ -296,7 +297,7 @@ pub async fn write_report(
     html: String,
 ) -> Result<bool> {
     let ok = matches!(
-        pdf::write_report(&app, html, PathBuf::from(&path)).await,
+        pdf::write_report(&app, html, PathBuf::from(&path), false).await,
         Ok(pdf::Written::File)
     );
     if state.cli.report.as_deref() == Some(path.as_str()) {
@@ -566,6 +567,12 @@ pub fn run_health_check(state: State<'_, AppState>, seconds: i32) {
     job(&state, Job::HealthCheck(seconds));
 }
 
+/// The used car check; `papers_vin` is the VIN from the papers, may be empty.
+#[tauri::command]
+pub fn run_used_car_check(state: State<'_, AppState>, papers_vin: String) {
+    job(&state, Job::UsedCarCheck(papers_vin));
+}
+
 #[tauri::command]
 pub fn probe_adapter(state: State<'_, AppState>) {
     job(&state, Job::ProbeAdapter);
@@ -759,6 +766,12 @@ pub fn locate_dtc(code: String) -> Value {
     knowledge::locate_dtc(&code)
 }
 
+/// "Was soll ich jetzt tun?" from what the interface knows about the car.
+#[tauri::command]
+pub fn what_to_do(input: AdviceInputArg) -> Value {
+    advice::what_to_do(&input)
+}
+
 #[tauri::command]
 pub async fn dtc_lexicon() -> Result<Value> {
     Ok(knowledge::dtc_lexicon())
@@ -789,6 +802,12 @@ pub fn pid_packs() -> Value {
     knowledge::pid_packs()
 }
 
+/// The OBDb packs for the detected car (catalog generation, model year).
+#[tauri::command]
+pub fn obdb_packs(generation_id: Option<usize>, year: i32) -> Value {
+    knowledge::obdb_packs(generation_id, year)
+}
+
 #[tauri::command]
 pub fn catalog_brands() -> Vec<String> {
     knowledge::catalog_brands()
@@ -817,6 +836,18 @@ pub fn catalog_size() -> usize {
 #[tauri::command]
 pub fn catalog_diagnosis(generation_id: usize, year: i32) -> Result<Value> {
     knowledge::catalog_diagnosis(generation_id, year)
+}
+
+#[tauri::command]
+pub fn vehicle_anatomy(
+    generation_id: i64,
+    year: i32,
+    body: i32,
+    brand: String,
+    model: String,
+    powertrain: u32,
+) -> Value {
+    knowledge::vehicle_anatomy(generation_id, year, body, &brand, &model, powertrain)
 }
 
 #[tauri::command]

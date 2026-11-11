@@ -1,0 +1,11 @@
+[package]
+name = "caruspex-advice"
+description = "Plain advice for car owners: what to do now, and what to check when connecting fails"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+caruspex-i18n.workspace = true
+caruspex-data.workspace = true
+caruspex-analysis.workspace = true

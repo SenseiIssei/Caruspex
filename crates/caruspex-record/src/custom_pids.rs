@@ -143,28 +143,25 @@ fn is_space(c: u8) -> bool {
 
 /// A decimal number in the C locale: optional sign, digits, optional point
 /// and fraction, optional exponent. Locale independent on purpose: the GUI
-/// may run under a German one where the point is a comma.
+/// may run under a German one where the point is a comma. The syntax is
+/// checked here; the value itself comes from the standard library, which
+/// rounds correctly, so "8.354" is exactly the double other programs read
+/// (the OBDb import relies on that).
 fn parse_number(text: &str) -> Option<f64> {
-    let s = trim(text).as_bytes();
+    let t = trim(text);
+    let s = t.as_bytes();
     let mut i = 0;
-    let mut negative = false;
     if i < s.len() && (s[i] == b'+' || s[i] == b'-') {
-        negative = s[i] == b'-';
         i += 1;
     }
-    let mut value = 0.0_f64;
     let mut digits = false;
     while i < s.len() && s[i].is_ascii_digit() {
-        value = value * 10.0 + f64::from(s[i] - b'0');
         i += 1;
         digits = true;
     }
     if i < s.len() && s[i] == b'.' {
         i += 1;
-        let mut scale = 0.1;
         while i < s.len() && s[i].is_ascii_digit() {
-            value += f64::from(s[i] - b'0') * scale;
-            scale /= 10.0;
             i += 1;
             digits = true;
         }
@@ -174,27 +171,22 @@ fn parse_number(text: &str) -> Option<f64> {
     }
     if i < s.len() && (s[i] == b'e' || s[i] == b'E') {
         i += 1;
-        let mut exp_negative = false;
         if i < s.len() && (s[i] == b'+' || s[i] == b'-') {
-            exp_negative = s[i] == b'-';
             i += 1;
         }
-        let mut exponent: i32 = 0;
         let mut exp_digits = false;
         while i < s.len() && s[i].is_ascii_digit() {
-            exponent = (exponent * 10 + i32::from(s[i] - b'0')).min(400);
             i += 1;
             exp_digits = true;
         }
         if !exp_digits {
             return None;
         }
-        value *= 10.0_f64.powi(if exp_negative { -exponent } else { exponent });
     }
-    if i != s.len() || !value.is_finite() {
+    if i != s.len() {
         return None;
     }
-    Some(if negative { -value } else { value })
+    t.parse::<f64>().ok().filter(|v| v.is_finite())
 }
 
 /// The opposite, also independent of the locale: `%.10g`.

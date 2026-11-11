@@ -23,17 +23,17 @@ jobs:
     name: Checks
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
@@ -55,8 +55,12 @@ jobs:
           python tools/gen_vehicles.py
           python tools/gen_ecus.py
           python tools/gen_pids.py
+          # The OBDb packs need the download cache and are refreshed by hand
+          # (see tools/gen_obdb.py); the conversion is checked offline on
+          # real OBDb commands with their recorded answers.
+          python tools/gen_obdb.py --fixtures
           git add --intent-to-add crates
-          git diff --exit-code -- 'crates/*/src/generated'
+          git diff --exit-code -- 'crates/*/src/generated' 'crates/caruspex-record/tests/fixtures'
 
       # Every text in every language: new texts in the code must be
       # translated before they reach main (see translations/TRANSLATING.md).
@@ -72,6 +76,7 @@ jobs:
         run: |
           npm --prefix app ci
           npm --prefix app run build
+          npm --prefix app test
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
@@ -97,11 +102,11 @@ jobs:
             artifact: caruspex-macos
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: dtolnay/rust-toolchain@stable
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
@@ -112,12 +117,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev \
-            pkg-config file patchelf libfuse2
+            pkg-config file patchelf libfuse2 xvfb
 
       - uses: Swatinem/rust-cache@v2
 
+      # Built before the tests: the app has the interface built in.
       - name: Interface
-        run: npm --prefix app ci
+        run: |
+          npm --prefix app ci
+          npm --prefix app run build
 
       - name: Tests
         run: cargo test --workspace
@@ -139,7 +147,7 @@ jobs:
         run: bash tools/smoke_test.sh smoke
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: dist/
@@ -147,7 +155,7 @@ jobs:
 
       - name: Upload smoke test screenshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}-smoke
           path: smoke/
@@ -163,7 +171,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Tag matches the project version
         id: version
@@ -177,7 +185,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Download packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: caruspex-*
           path: artifacts

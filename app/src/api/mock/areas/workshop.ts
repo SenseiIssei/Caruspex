@@ -444,7 +444,7 @@ async function scanUds(family: string): Promise<void> {
   let index = 0;
   for (const def of list) {
     if (link.cancel || !link.connected) break;
-    emit("uds_scan_progress", { name: def.name, index: index++, total });
+    emit("uds_scan_progress", { name: def.name, index: index++, total, request: def.request, kind: def.kind });
     const row = await scanOne(def);
     if (!row.present) continue;
     present++;
@@ -1071,7 +1071,7 @@ async function scanAllEcus(device: string, clearAttempts: number): Promise<void>
     ++index;
     const name = kklEcuName(address);
     const row: EcuScanRow = { address, name, present: false, identification: "", faults: [], note: "" };
-    emit("scan_progress", { ecuName: name, index, total });
+    emit("scan_progress", { ecuName: name, index, total, address });
     const unit = klineCar.get(address);
     if (!unit) {
       // The wake-up address plus the wait for a sync byte that never comes.

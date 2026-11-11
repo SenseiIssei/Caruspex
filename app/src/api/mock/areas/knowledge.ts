@@ -57,6 +57,14 @@ function loadCatalog(): Promise<CatalogData> {
   return catalogPromise;
 }
 
+// Brand, model, body and engines of one generation, for the X-ray demo.
+export async function catalogGeneration(
+  id: number,
+): Promise<{ brand: string; model: string; body: number; powertrains: number; yearFrom: number } | null> {
+  const g = (await loadCatalog()).generations[id];
+  return g ? { brand: g[0], model: g[1], body: g[5], powertrains: g[6], yearFrom: g[3] } : null;
+}
+
 function loadFamilies(): Promise<FamilyRecord[]> {
   familiesPromise ??= import("../data/dtc-brands.json").then((m) => (m.default as unknown as { families: FamilyRecord[] }).families);
   return familiesPromise;
@@ -250,7 +258,7 @@ function socketText(location: number): string {
   return "";
 }
 
-function powertrainText(pt: number): string {
+export function powertrainText(pt: number): string {
   const names: [number, string, string][] = [
     [PtPetrol, "Benzin", "Petrol"],
     [PtDiesel, "Diesel", "Diesel"],

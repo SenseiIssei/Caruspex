@@ -95,7 +95,7 @@ export async function identifyVin(vinText: string): Promise<IdentifiedVehicle> {
       subtitle: t(V, "Baujahr 2021 · 1.4 Benziner · Automatik · simuliert"),
       year: 2021,
       confidence: 100,
-      body: BodyStyles.Hatchback,
+      body: BodyStyles.Estate,
     };
   }
 

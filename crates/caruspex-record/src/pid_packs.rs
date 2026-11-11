@@ -23,6 +23,7 @@ use caruspex_i18n::{Language, Text, language};
 
 use crate::custom_pids::{CustomPid, PACK_KEY_BASE};
 use crate::generated::pid_packs::{PACKS, VALUES};
+use crate::obdb::{OBDB_PREFIX, obdb_pack, obdb_pack_pids};
 
 /// One pack of the generated table.
 pub struct PackRow {
@@ -91,28 +92,101 @@ pub fn built_in_packs() -> &'static [CustomPid] {
     }
 }
 
-/// Ids of the packs ("caruspex-demo", "hyundai-kona-niro-ev", ...), the demo
-/// pack first.
+/// Ids of the built-in packs ("caruspex-demo", "hyundai-kona-niro-ev", ...),
+/// the demo pack first. The OBDb packs are listed by [`crate::obdb_packs`].
 pub fn pack_names() -> Vec<&'static str> {
     PACKS.iter().map(|p| p.id).collect()
 }
 
 /// Display title of a pack in the active language, empty for an unknown id.
+/// Knows the OBDb packs too ("obdb-...").
 pub fn pack_title(name: &str) -> String {
+    if let Some(p) = obdb_pack(name) {
+        return p.title();
+    }
     find_pack(name).map_or_else(String::new, |p| p.title.get().to_string())
 }
 
 /// Category the values of a pack are shown under (`HybridEv` for the electric
 /// cars, `Custom` for the demo). `Custom` for an unknown id.
 pub fn pack_category(name: &str) -> PidCategory {
+    if let Some(p) = obdb_pack(name) {
+        return p.category();
+    }
     find_pack(name).map_or(PidCategory::Custom, |p| p.category)
 }
 
-/// The values of one pack, empty for an unknown id.
+/// The values of one pack, empty for an unknown id. Knows the OBDb packs too.
 pub fn pack_pids(name: &str) -> Vec<CustomPid> {
+    if name.starts_with(OBDB_PREFIX) {
+        return obdb_pack_pids(name);
+    }
     built_in_packs()
         .iter()
         .filter(|p| p.pack == name)
         .cloned()
+        .collect()
+}
+
+/// One value of a pack with its English short name, which stays the same in
+/// every language and so is what code finds a value by ("SOH", "Cell V max").
+#[derive(Clone, Debug, PartialEq)]
+pub struct NamedValue {
+    pub short_en: &'static str,
+    pub name_en: &'static str,
+    pub pid: CustomPid,
+}
+
+/// The values of one pack with their English names, empty for an unknown id.
+pub fn pack_values_en(name: &str) -> Vec<NamedValue> {
+    let all = built_in_packs();
+    VALUES
+        .iter()
+        .zip(all.iter())
+        .filter(|(row, _)| PACKS[row.pack].id == name)
+        .map(|(row, pid)| NamedValue {
+            short_en: row.short_name.en,
+            name_en: row.name.en,
+            pid: pid.clone(),
+        })
+        .collect()
+}
+
+/// The odometer values of a pack: every value whose English name starts
+/// with "Odometer". Only documented identifiers are in the packs, so this is
+/// the list a mileage comparison may ask.
+pub fn odometer_values(name: &str) -> Vec<CustomPid> {
+    pack_values_en(name)
+        .into_iter()
+        .filter(|v| v.name_en.starts_with("Odometer"))
+        .map(|v| v.pid)
+        .collect()
+}
+
+/// The packs that fit a car, from the brand and model name of the catalog
+/// ("Hyundai", "Kona"). The demo pack is never in it; the caller knows the
+/// demo car by its VIN.
+pub fn packs_for_model(brand: &str, model: &str) -> Vec<&'static str> {
+    let brand = brand.to_lowercase();
+    let model = model.to_lowercase();
+    // Pack id, brands, words of the model name.
+    const TABLE: [(&str, &[&str], &[&str]); 5] = [
+        ("hyundai-ioniq-28", &["hyundai"], &["ioniq"]),
+        (
+            "hyundai-kona-niro-ev",
+            &["hyundai", "kia"],
+            &["kona", "niro"],
+        ),
+        ("nissan-leaf-ze0-aze0", &["nissan"], &["leaf"]),
+        ("renault-zoe-ph1", &["renault"], &["zoe"]),
+        ("tesla-model3-y", &["tesla"], &["model 3", "model y"]),
+    ];
+    TABLE
+        .iter()
+        .filter(|(_, brands, words)| {
+            brands.iter().any(|b| brand.contains(b)) && words.iter().any(|w| model.contains(w))
+        })
+        .map(|(id, _, _)| *id)
+        .filter(|id| find_pack(id).is_some())
         .collect()
 }

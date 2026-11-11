@@ -1,0 +1,77 @@
+[
+ {
+  "id": "c-xray-1",
+  "de": "Allradantrieb",
+  "en": "All-wheel drive"
+ },
+ {
+  "id": "c-xray-2",
+  "de": "Maße dieses Modells.",
+  "en": "Dimensions of this model."
+ },
+ {
+  "id": "c-xray-3",
+  "de": "Elektroauto: der Akku liegt flach im Boden zwischen den Achsen, die Motoren sitzen direkt an den angetriebenen Achsen.",
+  "en": "Electric car: the battery lies flat in the floor between the axles, the motors sit right at the driven axles."
+ },
+ {
+  "id": "c-xray-4",
+  "de": "Motor hinten: bei diesem Modell sitzt er hinter dem Fahrer und treibt die Hinterräder an.",
+  "en": "Engine at the back: in this model it sits behind the driver and drives the rear wheels."
+ },
+ {
+  "id": "c-xray-5",
+  "de": "Motor vorn quer mit Frontantrieb: so sind die meisten Autos seit den 1980ern gebaut.",
+  "en": "Front engine across the car with front-wheel drive: the layout of most cars since the 1980s."
+ },
+ {
+  "id": "c-xray-6",
+  "de": "Motor vorn längs: typisch für diese Marke oder dieses Modell, meist mit Hinterrad- oder Allradantrieb.",
+  "en": "Front engine along the car: typical for this brand or model, mostly with rear or all-wheel drive."
+ },
+ {
+  "id": "c-xray-7",
+  "de": "Motor vorn längs",
+  "en": "Front engine, longitudinal"
+ },
+ {
+  "id": "c-xray-8",
+  "de": "Motor vorn quer",
+  "en": "Front engine, transverse"
+ },
+ {
+  "id": "c-xray-9",
+  "de": "Frontantrieb",
+  "en": "Front-wheel drive"
+ },
+ {
+  "id": "c-xray-10",
+  "de": "Hybrid: der Verbrenner bleibt, wo er bei diesem Modell sitzt, dazu ein Elektromotor am Getriebe und ein Akku unter der Rückbank.",
+  "en": "Hybrid: the combustion engine stays where it sits in this model, plus an electric motor at the gearbox and a battery under the rear seat."
+ },
+ {
+  "id": "c-xray-11",
+  "de": "Mittelmotor",
+  "en": "Mid engine"
+ },
+ {
+  "id": "c-xray-12",
+  "de": "Kein Verbrennungsmotor",
+  "en": "No combustion engine"
+ },
+ {
+  "id": "c-xray-13",
+  "de": "Heckmotor",
+  "en": "Rear engine"
+ },
+ {
+  "id": "c-xray-14",
+  "de": "Hinterradantrieb",
+  "en": "Rear-wheel drive"
+ },
+ {
+  "id": "c-xray-15",
+  "de": "Typische Maße für diesen Aufbau und dieses Baujahr, nicht die genauen des Modells.",
+  "en": "Typical dimensions for this body type and year, not the exact ones of the model."
+ }
+]

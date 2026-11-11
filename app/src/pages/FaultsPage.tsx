@@ -7,17 +7,21 @@ import { call } from "../api";
 import type { DtcInfo, FaultRow, FreezeFrameRow, ZoneInfo } from "../api";
 import { CarZone } from "../api";
 import { Icon } from "../components/Icon";
+import { ProHint } from "../components/ProHint";
 import { confirm } from "../components/Modal";
 import { toast } from "../components/Toast";
 import { Button, Card, Page, PageHeader, Pill } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
-import { localeNumber, translator } from "../i18n";
+import { localeNumber, t, translator } from "../i18n";
+import { emitApp } from "../lib/store";
+import { navigate } from "../shell/nav";
 import { useBackendEvent } from "../lib/hooks";
 import type { DashboardFinding } from "../state/session";
 import { useSession, useSettings } from "../state/session";
 import "./FaultsPage.css";
 
 const tr = translator("caruspex::FaultsPage");
+const tw = translator("caruspex::WhatToDoPage");
 
 // Colour for a Severity value (severityColour in FaultsPage.cpp): Info, Low,
 // Medium, High, Critical.
@@ -281,6 +285,7 @@ export default function FaultsPage() {
           {tr("Mindestens ein Code betrifft die Drosselklappe. Löschen allein reicht da erfahrungsgemäß nicht, die Klappe muss angelernt werden.")}
         </div>
       ) : null}
+      {connected && throttle ? <ProHint text={tw("Die Drosselklappe anlernen kann der Profimodus.")} page="throttle" /> : null}
 
       {clearLogVisible ? (
         <pre ref={logRef} className="faults-clear-log mono selectable fade-in">
@@ -341,6 +346,11 @@ export default function FaultsPage() {
         )}
       </div>
 
+      <ProHint
+        text={tw("Hier steht der Fehlerspeicher des Motors. Airbag, ABS, Getriebe und alle anderen Steuergeräte liest der Profimodus.")}
+        page="ecus"
+      />
+
       <div className="hint faults-footer">
         {tr(
           "Löschen setzt auch die Bereitschaftstests zurück. Direkt danach fällt eine Abgasuntersuchung durch, bis das Auto wieder ein paar vollständige Fahrzyklen gelaufen ist. Ein Fehler, dessen Ursache noch da ist, kommt nach kurzer Fahrt zurück.",
@@ -398,9 +408,23 @@ function FaultDetail({
           focus={where.zone}
           onZoneClick={onZoneClick}
         />
-        {where.zone !== CarZone.Unknown ? (
-          <div className="subtle">{tr("Wo nachsehen: %1. %2", where.name, where.hint)}</div>
-        ) : null}
+        <div className="faults-where">
+          {where.zone !== CarZone.Unknown ? (
+            <div className="subtle grow">{tr("Wo nachsehen: %1. %2", where.name, where.hint)}</div>
+          ) : (
+            <span className="grow" />
+          )}
+          <Button
+            small
+            icon="cube"
+            onClick={() => {
+              navigate("xray");
+              if (where.zone !== CarZone.Unknown) emitApp("xray:zone", where.zone);
+            }}
+          >
+            {t("caruspex::XrayPage", "In 3D ansehen")}
+          </Button>
+        </div>
 
         {info.causes.length > 0 ? (
           <section className="faults-section">

@@ -79,6 +79,28 @@ forced per run with `--language fr` and so on. How translations are made and che
 
 ![Fault memory](docs/screenshot-faults.png)
 
+### What should I do now?
+- One page that sorts everything Caruspex found into three steps: stop now, to the workshop soon, can wait.
+- Every point with one plain sentence why, a rough cost range and a note to show at the workshop (code, control unit, area, usual causes).
+- OBD cannot see whether the engine light flashes or a red warning light is on: two tick boxes ask, and a flashing light with misfires moves the point to "stop now".
+
+![What should I do now](docs/screenshot-todo.png)
+
+### Used car check
+- For the viewing before you buy: does the VIN in the car match the papers and the catalog, does the mileage agree between control units, were the faults cleared shortly before (distance and time since clearing)?
+- Readiness monitors, stored faults, the health check and, on electric cars, the battery state.
+- A traffic light, the questions to ask the seller and a PDF for the purchase.
+
+![Used car check](docs/screenshot-used-car.png)
+
+### X-ray view in 3D
+- The connected car as a glass model you can turn: engine or motors, gearbox, tank or high-voltage battery, exhaust, radiator, the 12 V battery and the OBD socket, laid out after the body type and drivetrain of the detected car.
+- Every control unit found by the scan sits where it usually is, joined by its data lines (powertrain and comfort CAN); while Caruspex reads, small packets travel to the unit being asked.
+- Faults light up their area and turn the responsible control unit red, live values sit on the part they belong to, and "Check car" flies the camera to each finding. Layers can be switched off one by one.
+- Typical dimensions for the body type and era, not a replica of the exact model: the makers' design data and wiring diagrams are not freely available.
+
+![X-ray view](docs/screenshot-xray.png)
+
 ### Live data
 - Every mode 01 value of SAE J1979 up to PID C4: 145 PIDs with more than 300 readings, grouped and searchable.
 - Odometer, gear, oil temperature, fuel rate, torque, boost, exhaust temperatures, particulate filter, AdBlue, NOx and hybrid battery, as far as the car reports them.
@@ -139,6 +161,7 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 
 ### Manufacturer and custom values
 - Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening on the CAN bus); every value with a documented source.
+- Manufacturer values for about 550 more vehicles from the [OBDb](https://github.com/OBDb) project (battery, tyre pressure, oil, odometer and more), offered automatically for the detected car; every equation is checked against OBDb's own decoder.
 - Load your own values in the widely used Torque CSV format, with a complete evaluator for Torque equations.
 
 ![EV battery](docs/screenshot-battery.png)
@@ -152,7 +175,8 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 
 ### Look and feel
 - A new interface in the style of Odysync: calm, dark, with smooth transitions.
-- Step-by-step connecting with an automatic search over all ports.
+- Step-by-step connecting with an automatic search over all ports, and when it fails a short checklist for that kind of connection (driver, pairing, ignition, bit rate, clone adapters) with what Caruspex already found out.
+- Beginner and pro mode: beginners see the everyday pages, the workshop tools (KKL, adaptation, raw commands, addresses) appear in pro mode.
 - 18 languages; settings apply immediately.
 - Tells you when a new version is out: at start it asks GitHub for the newest release and nothing else (no data
   about you or the car); can be switched off in the settings.
@@ -464,6 +488,9 @@ respective owners; Caruspex is not affiliated with or endorsed by any vehicle ma
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled fonts are licensed under the SIL Open Font License 1.1:
+MIT, see [LICENSE](LICENSE). The manufacturer values for hundreds of models are converted from
+[OBDb](https://github.com/OBDb) and, like OBDb, licensed under CC BY-SA 4.0: they live apart from the code in
+[data/obdb](data/obdb) with the licence and the list of sources ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+The bundled fonts are licensed under the SIL Open Font License 1.1:
 JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) and
 Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).

@@ -26,6 +26,8 @@ pub struct Cli {
     /// taking the focus, so test runs stay off the screen in use.
     pub window_pos: Option<(f64, f64)>,
     pub theme: Option<String>,
+    /// "beginner" or "pro" for this run, without changing the setting.
+    pub mode: Option<String>,
     pub help: bool,
     pub version: bool,
 }
@@ -50,7 +52,8 @@ impl Cli {
     }
 }
 
-const WITH_VALUE: [&str; 15] = [
+const WITH_VALUE: [&str; 16] = [
+    "mode",
     "tcp",
     "port",
     "bluetooth",
@@ -122,6 +125,7 @@ pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Cli, String
                 })
             }
             "theme" => cli.theme = value,
+            "mode" => cli.mode = value,
             "help" => cli.help = true,
             "version" => cli.version = true,
             _ => {}
@@ -132,7 +136,7 @@ pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Cli, String
 
 /// The help text, in the active language.
 pub fn help_text() -> String {
-    let lines: [(&str, String); 14] = [
+    let lines: [(&str, String); 15] = [
         (
             "--tcp <host:port>",
             main_text(
@@ -221,6 +225,16 @@ pub fn help_text() -> String {
                 "Appearance for this run: dark or light",
             ),
         ),
+        (
+            "--mode <beginner|pro>",
+            // New since the Qt version: a core text, translated with the
+            // other texts of "Was soll ich jetzt tun?".
+            caruspex_i18n::l(
+                "Einsteiger- oder Profimodus für diesen Start",
+                "Beginner or pro mode for this run",
+            )
+            .to_string(),
+        ),
         ("--help, --version", String::new()),
     ];
     let mut out = main_text(
@@ -259,6 +273,9 @@ pub fn start_query(cli: &Cli) -> String {
         && !cli.connects()
     {
         parts.push(format!("page={}", enc(p)));
+    }
+    if let Some(m) = &cli.mode {
+        parts.push(format!("mode={}", enc(m)));
     }
     if cli.demo {
         parts.push("demo".into());
@@ -300,6 +317,8 @@ mod tests {
         assert_eq!(start_query(&cli), "?lang=en&demo");
         let plain = parse(args(&["--theme", "light", "--page", "live"])).unwrap();
         assert_eq!(start_query(&plain), "?theme=light&page=live");
+        let beginner = parse(args(&["--mode", "beginner", "--demo"])).unwrap();
+        assert_eq!(start_query(&beginner), "?mode=beginner&demo");
         assert!(parse(args(&["--tcp"])).is_err());
         assert!(help_text().contains("--report"));
     }

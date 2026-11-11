@@ -152,9 +152,9 @@ Erledigt im November 2026: die ganze Anwendung neu, mit gleichem Verhalten.
 - [x] Garage im alten Format, Einstellungen aus der Registry übernommen, Windows-Installer mit gleicher AppId aktualisiert eine 0.8 an Ort und Stelle
 - [x] Klassisches Bluetooth direkt über RFCOMM (Windows, Linux), Bluetooth LE über btleplug
 - [x] Neue CI: Prüfungen, Tests und Pakete für Windows, Linux (AppImage und .deb) und macOS
-- [ ] PDF-Bericht ohne Druckdialog auch auf macOS und Linux (Windows schreibt direkt über WebView2)
-- [ ] `--shot` für Bilder auch auf macOS und Linux
-- [ ] Übernahme der macOS-Einstellungen (plist) der Qt-Fassung
+- [x] PDF-Bericht ohne Druckdialog auch auf macOS und Linux: Windows über WebView2 (PrintToPdf), macOS über WKWebView (createPDF), Linux über einen WebKitGTK-Druckauftrag an GTKs Dateidrucker; der Druckdialog bleibt nur als Ausweg, wenn das scheitert
+- [x] `--shot` für Bilder auch auf macOS und Linux (WKWebView takeSnapshot, WebKitGTK get_snapshot); der Rauchtest öffnet dort das Demo-Auto und schreibt Bild und PDF-Bericht, unter Linux mit xvfb
+- [x] Übernahme der macOS-Einstellungen der Qt-Fassung aus `~/Library/Preferences/com.caruspex.Caruspex.plist`
 
 # Großer Ausbauplan ab 0.8.0
 
@@ -184,10 +184,10 @@ Damit nichts veraltet, ohne dass jemand daran denken muss.
 Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 
 - [ ] Einrichtungs-Assistent beim ersten Start: Welcher Adapter (mit Bildern der üblichen Bauformen), wo ist die Buchse bei diesem Auto (Lage aus dem Katalog, mit Skizze), Zündung an, fertig. Groß, Nutzen sehr hoch
-- [ ] Seite "Was soll ich jetzt tun?": aus Fehlern, Bereitschaft und Werten eine Liste in drei Stufen (sofort anhalten, bald in die Werkstatt, kann warten) mit grober Kostenspanne und einem Satz Begründung. Mittel
-- [ ] Gebrauchtwagen-Check als eigener Ablauf: VIN gegen Katalog, Kilometerstand aus mehreren Steuergeräten vergleichen (wo die Kennungen belegt sind), Zeit und Strecke seit dem letzten Löschen (PID 31 und 4E), Bereitschaft, Akkuzustand bei E-Autos; Ergebnis als PDF für den Kauf. Mittel, Nutzen sehr hoch
-- [ ] Verbindungs-Assistent bei Fehlschlägen: statt einer Meldung eine kurze Prüfliste je Schnittstelle (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat. Mittel
-- [ ] Einsteiger- und Profimodus: Einsteiger sehen Start, Fehler, Gesundheit, Akku, Garage; KKL, Anpassung, Rohbefehle und Adressen erst im Profimodus. Klein
+- [x] Seite "Was soll ich jetzt tun?": aus Fehlern, Bereitschaft und Werten eine Liste in drei Stufen (sofort anhalten, bald in die Werkstatt, kann warten) mit grober Kostenspanne und einem Satz Begründung. Mittel
+- [x] Gebrauchtwagen-Check als eigener Ablauf: VIN gegen Katalog, Kilometerstand aus mehreren Steuergeräten vergleichen (wo die Kennungen belegt sind), Zeit und Strecke seit dem letzten Löschen (PID 31 und 4E), Bereitschaft, Akkuzustand bei E-Autos; Ergebnis als PDF für den Kauf. Mittel, Nutzen sehr hoch. Umgesetzt als Seite Gebrauchtwagen unter Diagnose (Bewertung in caruspex-analysis used_car); belegte Kilometerstand-Kennungen bisher nur Tesla und das Demo-Auto, weitere kommen mit OBDb aus Phase 15
+- [x] Verbindungs-Assistent bei Fehlschlägen: statt einer Meldung eine kurze Prüfliste je Schnittstelle (Treiber, Kopplung, Zündung, Bitrate, Nachbau-Adapter) mit dem, was Caruspex schon herausgefunden hat. Mittel
+- [x] Einsteiger- und Profimodus: Einsteiger sehen Start, Fehler, Gesundheit, Akku, Garage; KKL, Anpassung, Rohbefehle und Adressen erst im Profimodus. Klein
 - [ ] Erklärungen direkt am Begriff: kurzer Hinweis beim Darüberfahren für Fachwörter (Bereitschaft, Freeze Frame, Langzeitkorrektur), ein Glossar in allen Sprachen. Mittel
 - [ ] Fahrmodus mit großer Schrift und wenigen Werten, für den Halter am Armaturenbrett; Warnung, nicht während der Fahrt zu bedienen. Klein
 - [ ] Barrierefreiheit: Namen für Bildschirmleser, Tastaturbedienung überall, hoher Kontrast, Schriftgröße einstellbar. Mittel
@@ -196,7 +196,7 @@ Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 
 ## Phase 15: Mehr Autos und mehr Daten
 
-- [ ] OBDb einbinden: Generator, der die Signale der 898 Fahrzeuge in Herstellerpakete übersetzt (Modus 22 und 01, Akku, Reifendruck, Ölstand, Kilometerstand je Modell). Damit E-Auto-Akku und Herstellerwerte für hunderte Modelle statt fünf. Groß, Nutzen sehr hoch
+- [x] OBDb einbinden: `tools/gen_obdb.py` lädt die Signalsätze (Zwischenspeicher `.cache/obdb`, nicht im Repo) und setzt jedes Signal exakt in eine Torque-Gleichung um, geprüft gegen den Decoder von OBDb; je Modelljahrbereich ein Paket, gepackt in `data/obdb` unter CC BY-SA 4.0 (1,5 MB, die CLI wird 1,6 MB größer). Stand 11.11.2026: 810 Repositories gelesen, 545 Fahrzeuge mit Werten, 968 Pakete, 153.794 Signale übernommen, 19.587 übersprungen (erweiterte Adressierung 8.224, Diagnosesitzung 6.366, Null-Grenzen 3.510, Aufzählungen 832, funktionale Anfrage 527, sonst 128). Zuordnung zum Fahrzeugkatalog über Namen, Suchbegriffe und `data/obdb_aliases.csv` (491 von 545 Fahrzeugen). Die App bietet die Pakete für das erkannte Auto auf Live-Werte und E-Auto-Akku an, die CLI mit `custom --pack obdb:MARKE MODELL JAHR`. Offen: BMW und andere mit erweiterter Adressierung, Werte hinter einer Diagnosesitzung, Aufzählungen als Text
 - [ ] opendbc einbinden: Rundfunkwerte zum Mithören für Toyota, Honda, Hyundai/Kia, GM, Ford, VW, Nissan, Subaru, Tesla Model S und X und weitere. Ehrlich dazu: viele dieser Busse liegen hinter dem Gateway und sind an der OBD-Buchse nicht zu hören. Mittel
 - [ ] Mehr Steuergerätelisten über Mitschnitte: Knopf "Mitschnitt teilen", der eine Aufnahme ohne VIN-Endziffern und ohne Standortdaten als Datei für ein GitHub-Issue packt. So kommen Mercedes, Volvo, Stellantis und DoIP-Autos ins Projekt, belegt am echten Auto. Mittel
 - [ ] Herstellercodes (P1, B, C, U) für weitere Marken, nur aus frei nutzbaren Quellen oder eigenen Mitschnitten. Laufend
@@ -257,15 +257,22 @@ Antrieb, Akku und Tank, die Steuergeräte, die der Suchlauf wirklich gefunden
 hat, und die Bussysteme, über die sie verbunden sind. Für einzelne Modelle
 kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 
-- [ ] 3D-Unterbau mit Three.js in der Tauri-Oberfläche: Kamera zum Drehen, Zoomen und Schwenken mit Maus, Touch und Tastatur, Glas-Material mit Fresnel-Rand für die Karosserie, feste Teile darin, glTF-Lader schon dabei. Rückfall auf die 2D-Ansicht (SVG) ohne WebGL oder über Remote Desktop. Mittel
+- [x] 3D-Unterbau mit Three.js in der Tauri-Oberfläche: Kamera zum Drehen, Zoomen und Schwenken mit Maus, Touch und Tastatur, Glas-Material mit Fresnel-Rand für die Karosserie, feste Teile darin, glTF-Lader schon dabei. Rückfall auf die 2D-Ansicht (SVG) ohne WebGL oder über Remote Desktop. Mittel
+  Stand: Seite "Röntgenansicht" unter Diagnose, Three.js wird erst beim Öffnen geladen (eigener Teil des Pakets), Einstieg auch vom Fehlerspeicher und vom Autobild der Startseite. Der Rückfall greift, wenn kein WebGL-Kontext entsteht; Remote Desktop mit Software-WebGL zeigt weiter 3D. `XrayScene.loadShell()` lädt schon ein glTF als Hülle, eine Bedienung dafür fehlt noch.
 - [ ] Karosserie aus Maßen: ein Formgenerator baut aus Aufbau (`BodyType`), Länge, Breite, Höhe, Radstand und Spurweite eine glatte Karosserie mit Fenstern, Rädern und Radhäusern. Die Maße je Generation kommen aus Wikidata (CC0) in den Katalog, mit Prüfung im Datencheck aus Phase 13. Groß, Nutzen hoch
-- [ ] Antriebslayout je Generation: Motor vorn quer, vorn längs, Mitte oder hinten, Front-, Heck- oder Allradantrieb, Elektro mit Akku im Boden und ein oder zwei Motoren, Hybrid mit beidem. Daraus liegen Motor, Getriebe, Antriebswellen, Tank oder Akku, Auspuffstrang und Kühler an der richtigen Stelle. Quelle Wikidata und der vorhandene Katalog (`powertrains`). Mittel
+  Stand: der Formgenerator steht (`app/src/xray/layout.ts`, Profil je Aufbau, Fenster, Säulen, Radhäuser als Linien), die Maße sind typische Werte je Aufbau und Baujahr (`caruspex_vehicles::anatomy::typical_dimensions`). Offen: echte Maße je Generation aus Wikidata, der Haken dafür ist `anatomy::dimensions_for`.
+- [x] Antriebslayout je Generation: Motor vorn quer, vorn längs, Mitte oder hinten, Front-, Heck- oder Allradantrieb, Elektro mit Akku im Boden und ein oder zwei Motoren, Hybrid mit beidem. Daraus liegen Motor, Getriebe, Antriebswellen, Tank oder Akku, Auspuffstrang und Kühler an der richtigen Stelle. Quelle Wikidata und der vorhandene Katalog (`powertrains`). Mittel
+  Stand: aus dem Katalog mit einer kurzen Regel und einer Ausnahmetabelle je Marke und Modell (`caruspex_vehicles::anatomy::drivetrain`), Wikidata als Quelle kommt mit den Maßen.
 - [ ] Steuergeräte und Datenleitungen: jedes Steuergerät aus dem Suchlauf als Baustein an seinem üblichen Einbauort (Motor im Motorraum, Airbag unter der Mittelkonsole, Gateway hinter dem Handschuhfach, Einbauorte je Marke in `data/ecus/*.csv` ergänzt). Die Busse als Leitungen dazwischen: Antriebs-CAN, Komfort-CAN, LIN, FlexRay, Ethernet und die K-Leitung, farbig nach Bus. Beim Lesen laufen Pakete sichtbar über die Leitung zum Gerät, das gerade antwortet. Klick auf ein Gerät öffnet seine Seite. Mittel bis Groß, Nutzen hoch
+  Stand: Geräte aus dem UDS-Suchlauf, dem KKL-Suchlauf und Motor und Getriebe über OBD stehen an ihrem üblichen Ort je Art, Antriebs-CAN, Komfort-CAN, Diagnose-CAN und K-Leitung farbig, Pakete laufen beim Suchlauf und beim Lesen über OBD. Offen: LIN, FlexRay, Ethernet, Einbauorte je Marke in `data/ecus/*.csv`; ein Klick wählt das Gerät und fliegt hin, die Seite öffnet der Knopf darunter.
 - [ ] Der Hauptkabelbaum als Strang: Batterie, Hauptsicherungen, Masse, Motorkabelbaum, Strang durch den Innenraum zum Heck und die OBD-Buchse an ihrem wirklichen Ort (`SocketLocation`), mit dem gesteckten Adapter darin. Kein Einzeldraht, aber man sieht, wo was entlangläuft und wo man suchen muss. Mittel
-- [ ] Fehler und Live-Werte im Modell: Fehlercodes färben ihre Zone (`locateDtc`) und das zuständige Steuergerät, Live-Werte hängen als Schild am Teil (Ladedruck am Turbo, Lambda am Krümmer, Zellspannungen am Akku), "Auto prüfen" fliegt nacheinander alle gefundenen Stellen an. Mittel
+- [x] Fehler und Live-Werte im Modell: Fehlercodes färben ihre Zone (`locateDtc`) und das zuständige Steuergerät, Live-Werte hängen als Schild am Teil (Ladedruck am Turbo, Lambda am Krümmer, Zellspannungen am Akku), "Auto prüfen" fliegt nacheinander alle gefundenen Stellen an. Mittel
+  Stand: Kühlmittel am Kühler, Drehzahl am Motor, Spannung an der Batterie, Tank, Ansaugluft, Geschwindigkeit, Hochvoltakku; Ladedruck, Lambda und Zellspannungen folgen mit den Herstellerwerten.
 - [ ] Echte Modelle, wo die Lizenz es erlaubt: glTF-Modelle mit CC0 oder CC BY für einzelne Generationen, nachgeladen bei Bedarf statt im Installer, mit Herkunft und Lizenz in der App. Dazu ein eigenes glTF laden, wer selbst eins hat. Das Innenleben bleibt aus dem Layout, nur die Hülle wird ersetzt. Mittel
 - [ ] Röntgen-Schnitte: Ebenen einzeln ein- und ausblenden (Karosserie, Antrieb, Kühlung, Kraftstoff oder Hochvolt, Elektrik, Netz), Schnittebene durchs Auto ziehen, Explosionsansicht für den Antriebsstrang. Klein bis Mittel
+  Stand: die sechs Ebenen lassen sich schalten. Offen: Schnittebene und Explosionsansicht.
 - [ ] Bilder und Tests: `--shot` und `--render-cars` auch für die 3D-Ansicht, damit README und CI sie zeigen, ein Test, dass jede Katalog-Generation ein gültiges Modell ergibt (keine Lücken, Räder auf dem Boden, Teile innerhalb der Hülle). Klein
+  Stand: der Test steht (`app/src/xray/layout.test.ts`, jede Generation des Katalogs, läuft in der CI), `--shot` geht mit `--page xray`. Offen: `--render-cars` für 3D.
 
 ## Empfohlene Reihenfolge
 

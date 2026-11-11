@@ -9,6 +9,15 @@ license.workspace = true
 name = "caruspex"
 path = "src/main.rs"
 
+# The interface is built into every binary, also from a plain `cargo build`.
+# Without it the app would load the interface from the dev server
+# (localhost:5287) and show an error page when that is not running. Live
+# reloading during development: `npm --prefix app run dev:app`, which turns
+# this off.
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
 [build-dependencies]
 tauri-build = { version = "2.7", features = [] }
 serde_json = "1.0.154"
@@ -18,6 +27,7 @@ dirs = "7"
 tauri = { version = "2.12", features = [] }
 tauri-plugin-dialog = "2.8.3"
 tauri-plugin-opener = "2.7.3"
+tauri-plugin-single-instance = "2"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.154"
 ureq = { version = "2.12.1", features = ["json"] }
@@ -31,6 +41,7 @@ caruspex-protocols.workspace = true
 caruspex-net.workspace = true
 caruspex-record.workspace = true
 caruspex-analysis.workspace = true
+caruspex-advice.workspace = true
 caruspex-demo.workspace = true
 
 [target.'cfg(windows)'.dependencies]
@@ -44,3 +55,40 @@ windows = { version = "0.62.2", features = [
 ] }
 windows-core = "0.62.2"
 winreg = "0.55.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# The same versions wry uses, so the WKWebView handle of with_webview fits.
+block2 = "0.6.2"
+objc2 = "0.6.4"
+objc2-app-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSBitmapImageRep",
+    "NSImage",
+    "NSImageRep",
+] }
+objc2-foundation = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSData",
+    "NSDictionary",
+    "NSError",
+    "NSString",
+] }
+objc2-web-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "block2",
+    "objc2-app-kit",
+    "WKPDFConfiguration",
+    "WKSnapshotConfiguration",
+    "WKWebView",
+] }
+# The settings of the Qt version (QSettings writes a binary property list).
+plist = "1.10.3"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# The same versions wry uses, so the WebKitGTK handle of with_webview fits.
+cairo-rs = { version = "0.18.5", features = ["png"] }
+gtk = "0.18.2"
+webkit2gtk = { version = "=2.0.2", features = ["v2_38"] }
+
+[dev-dependencies]
+plist = "1.10.3"

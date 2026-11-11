@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod anatomy;
 pub mod catalog;
 #[rustfmt::skip]
 mod generated {
