@@ -53,6 +53,51 @@ export interface LegendEntry {
   hidden: boolean;
 }
 
+// Thinning long recordings: the window is cut into THIN_BUCKETS equal
+// pieces of time, and every piece older than the newest THIN_KEEP readings
+// keeps only its lowest and its highest reading, in their order. Peaks and
+// dips survive, a track never holds much more than THIN_TRIGGER points, and
+// a canvas a few thousand pixels wide loses nothing it could show.
+export const THIN_BUCKETS = 1000;
+export const THIN_KEEP = 500;
+export const THIN_TRIGGER = 2 * THIN_BUCKETS + 2 * THIN_KEEP;
+
+export function thinTrack(track: Pick<Track, "times" | "values">, windowSeconds: number): void {
+  const { times, values } = track;
+  const end = times.length - THIN_KEEP;
+  if (end <= 2) return;
+  const width = Math.max(windowSeconds, 1e-6) / THIN_BUCKETS;
+  const outTimes: number[] = [];
+  const outValues: number[] = [];
+  let i = 0;
+  while (i < end) {
+    const bucket = Math.floor(times[i]! / width);
+    let low = i;
+    let high = i;
+    let j = i + 1;
+    while (j < end && Math.floor(times[j]! / width) === bucket) {
+      if (values[j]! < values[low]!) low = j;
+      if (values[j]! > values[high]!) high = j;
+      j++;
+    }
+    const first = Math.min(low, high);
+    const second = Math.max(low, high);
+    outTimes.push(times[first]!);
+    outValues.push(values[first]!);
+    if (second !== first) {
+      outTimes.push(times[second]!);
+      outValues.push(values[second]!);
+    }
+    i = j;
+  }
+  for (let k = end; k < times.length; k++) {
+    outTimes.push(times[k]!);
+    outValues.push(values[k]!);
+  }
+  track.times = outTimes;
+  track.values = outValues;
+}
+
 export class SeriesStore {
   readonly tracks = new Map<number, Track>();
   windowSeconds = 60;
@@ -140,6 +185,9 @@ export class SeriesStore {
       track.times.splice(0, drop);
       track.values.splice(0, drop);
     }
+    // A long window fills up: thin the older part, so drawing stays quick
+    // after an hour.
+    if (track.times.length > THIN_TRIGGER) thinTrack(track, this.windowSeconds);
     if (t > this.now) this.now = t;
     this.dirty = true;
     if (rangeChanged) this.legendChanged();
