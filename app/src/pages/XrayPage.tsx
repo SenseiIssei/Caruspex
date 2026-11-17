@@ -34,7 +34,8 @@ import {
   type Layer,
   type Vec3,
 } from "../xray/layout";
-import type { XrayLabel, XrayPalette, XrayScene } from "../xray/scene";
+import { MOTO_STYLES, motoSpec, type MotoStyle } from "../xray/moto";
+import type { FrameStats, SectionAxis, XrayLabel, XrayPalette, XrayScene } from "../xray/scene";
 import { bodyVariants } from "../xray/shape";
 import { externalFiles } from "../xray/shell";
 import "./XrayPage.css";
@@ -63,9 +64,9 @@ const KKL_KINDS: Record<number, number> = {
 
 const udsKey = (request: number) => `uds-${request.toString(16)}`;
 
-function layerName(layer: Layer, energy: string): string {
+function layerName(layer: Layer, energy: string, moto: boolean): string {
   switch (layer) {
-    case "body": return tr("Karosserie");
+    case "body": return moto ? tr("Rahmen") : tr("Karosserie");
     case "drivetrain": return tr("Antrieb");
     case "cooling": return t(VD, "Kühlung");
     case "energy": return energy;
@@ -80,6 +81,20 @@ function busName(bus: BusKind): string {
     case "comfort": return tr("Komfort-CAN");
     case "diagnostic": return tr("Diagnose-CAN");
     case "kline": return tr("K-Leitung");
+    case "infotainment": return tr("Infotainment-CAN");
+    case "mscan": return tr("MS-CAN (Ford)");
+    case "swcan": return tr("SW-CAN (GM)");
+  }
+}
+
+function motoStyleName(style: MotoStyle): string {
+  switch (style) {
+    case "naked": return tr("Naked Bike");
+    case "sport": return tr("Sportler mit Verkleidung");
+    case "touring": return tr("Tourer");
+    case "enduro": return tr("Reiseenduro");
+    case "cruiser": return tr("Cruiser");
+    case "scooter": return tr("Roller");
   }
 }
 
@@ -87,6 +102,27 @@ function busName(bus: BusKind): string {
 // where they fit).
 function partName(id: string): string {
   const is = (...prefixes: string[]) => prefixes.some((p) => id === p || id.startsWith(`${p}-`));
+  // The harness and the socket.
+  if (is("main-fuses")) return tr("Hauptsicherungen");
+  if (is("ground", "ground-point")) return tr("Masse");
+  if (is("starter", "starter-cable")) return tr("Anlasser");
+  if (is("engine-harness")) return tr("Motorkabelbaum");
+  if (is("harness", "harness-front", "harness-rear", "obd-feed")) return tr("Kabelbaum");
+  if (is("obd-adapter")) return tr("OBD-Adapter");
+  if (is("obd-cable")) return tr("Adapterkabel");
+  // The motorcycle.
+  if (is("frame", "steering-head")) return tr("Rahmen");
+  if (is("fork", "fork-slider", "clamp")) return tr("Gabel");
+  if (is("swingarm")) return tr("Schwinge");
+  if (is("shock")) return tr("Federbein");
+  if (id === "seat" || id === "pillion") return tr("Sitzbank");
+  if (is("handlebar", "grip")) return tr("Lenker");
+  if (is("headlight")) return tr("Scheinwerfer");
+  if (is("tail-light")) return tr("Rücklicht");
+  if (is("dash")) return tr("Instrumente");
+  if (is("chain", "belt", "shaft", "final-drive", "sprocket")) return tr("Endantrieb");
+  if (is("silencer")) return t(VD, "Abgas");
+  if (is("footrest")) return tr("Fußrasten");
   if (is("engine", "cylinder")) return t(VD, "Motor");
   if (is("coil")) return t(VD, "Zündung");
   if (is("intake", "airbox")) return t(VD, "Ansaugung");
@@ -102,7 +138,7 @@ function partName(id: string): string {
   if (is("hv-cable", "inverter")) return tr("Hochvolt");
   if (is("motor")) return tr("Elektromotor");
   if (is("battery12", "alternator", "fuse-box", "harness")) return t(VD, "Bordnetz");
-  if (is("obd")) return tr("OBD-Buchse");
+  if (id === "obd") return tr("OBD-Buchse");
   return t(VD, "Innenraum");
 }
 
@@ -144,6 +180,9 @@ function readPalette(): XrayPalette {
       comfort: css("--bus-comfort"),
       diagnostic: css("--bus-diagnostic"),
       kline: css("--bus-kline"),
+      infotainment: css("--bus-infotainment"),
+      mscan: css("--bus-mscan"),
+      swcan: css("--bus-swcan"),
     },
   };
 }
@@ -241,22 +280,33 @@ export default function XrayPage() {
   // drawn on top of it.
   const body = generation ? generation.body : demo ? BodyType.Estate : BodyType.Hatchback;
   const [variant, setVariant] = useState<BodyType | null>(null);
+  // The kind of a motorcycle picked in the view, null for the one of the table.
+  const [motoStyle, setMotoStyle] = useState<MotoStyle | null>(null);
   const year = (shown ? shown.yearFrom : identity?.year) || generation?.yearFrom || (connected ? 2012 : 2018);
   const [powertrain, setPowertrain] = useState(0);
   const [anatomy, setAnatomy] = useState<VehicleAnatomy | null>(null);
-  const pendingVariant = useRef<BodyType | null>(null);
+  const pendingVariant = useRef<{ body: BodyType | null; moto: MotoStyle | null }>({ body: null, moto: null });
   useEffect(() => {
     setPowertrain(0);
-    setVariant(pendingVariant.current);
-    pendingVariant.current = null;
+    setVariant(pendingVariant.current.body);
+    setMotoStyle(pendingVariant.current.moto);
+    pendingVariant.current = { body: null, moto: null };
   }, [generation?.id]);
   const [devView, setDevView] = useState<"side" | "rear" | "front" | null>(null);
+  // Further switches of the screenshot option after the view: "stats",
+  // "explode", "section=x:0.4", "hide=body,cooling".
+  const [devFlags, setDevFlags] = useState<string[]>([]);
   const showGeneration = useCallback((arg: string) => {
-    const [query, variantName, view] = arg.split("|");
+    const [query, variantName, view, ...flags] = arg.split("|");
     if (view === "side" || view === "rear" || view === "front") setDevView(view);
+    setDevFlags(flags.map((f) => f.trim()).filter(Boolean));
     void findGeneration(query ?? "").then((g) => {
       if (!g) return;
-      pendingVariant.current = variantName ? (VARIANT_NAMES[variantName.trim().toLowerCase()] ?? null) : null;
+      const name = variantName?.trim().toLowerCase() ?? "";
+      pendingVariant.current = {
+        body: VARIANT_NAMES[name] ?? null,
+        moto: (MOTO_STYLES as string[]).includes(name) ? (name as MotoStyle) : null,
+      };
       setShown(g);
     });
   }, []);
@@ -283,21 +333,45 @@ export default function XrayPage() {
   }, [generation, year, body, powertrain]);
 
   // --- Control units ------------------------------------------------------------------
-  const [asking, setAsking] = useState<{ key: string; kind: number; name: string; source: "uds" | "kline" } | null>(null);
+  const [asking, setAsking] = useState<{ key: string; kind: number; name: string; source: "uds" | "kline"; bus?: string } | null>(null);
   const [scanning, setScanning] = useState<{ index: number; total: number; name: string } | null>(null);
   const [kklRows, setKklRows] = useState<EcuScanRow[]>([]);
   const [kklOpen, setKklOpen] = useState(false);
   const kline = /9141|14230|KWP/i.test(protocol) || kklOpen;
 
-  useBackendEvent("uds_scan_started", ({ total }) => setScanning({ index: 0, total, name: "" }));
+  // The bus the running scan asks on ("hs", "ms", "sw").
+  const scanBus = useRef("hs");
+  // Scans still to run one after the other (the dev option "xray-scan-all").
+  const scanQueue = useRef<string[]>([]);
+  useBackendEvent("uds_scan_started", ({ total, bus }) => {
+    scanBus.current = bus ?? "hs";
+    setScanning({ index: 0, total, name: "" });
+  });
+  // A sweep asks hundreds of addresses in a few seconds: the unit being
+  // asked is shown at most every 150 ms, so the scene is not rebuilt for each.
+  const nextAsk = useRef<{ scanning: { index: number; total: number; name: string }; asking: { key: string; kind: number; name: string; source: "uds"; bus: string } } | null>(null);
+  const askTimer = useRef<number | null>(null);
+  const flushAsk = () => {
+    askTimer.current = null;
+    const next = nextAsk.current;
+    if (!next) return;
+    setScanning(next.scanning);
+    setAsking(next.asking);
+    pendingPacket.current = next.asking.key;
+  };
   useBackendEvent("uds_scan_progress", ({ name, index, total, request, kind }) => {
-    setScanning({ index, total, name });
-    setAsking({ key: udsKey(request), kind, name, source: "uds" });
-    pendingPacket.current = udsKey(request);
+    const key = scanBus.current !== "hs" ? `${udsKey(request)}-${scanBus.current}` : udsKey(request);
+    nextAsk.current = { scanning: { index, total, name }, asking: { key, kind, name, source: "uds", bus: scanBus.current } };
+    askTimer.current ??= window.setTimeout(flushAsk, 150);
   });
   useBackendEvent("uds_scan_finished", () => {
+    if (askTimer.current !== null) window.clearTimeout(askTimer.current);
+    askTimer.current = null;
+    nextAsk.current = null;
     setScanning(null);
     setAsking(null);
+    const next = scanQueue.current.shift();
+    if (next !== undefined) setTimeout(() => void call("scan_uds", { family: next }), 400);
   });
   useBackendEvent("scan_started", ({ total }) => {
     setKklRows([]);
@@ -321,11 +395,16 @@ export default function XrayPage() {
     setAsking(null);
   }, [connected]);
 
+  const otherBuses = useSession((s) => s.udsOtherBuses);
   const ecuInputs = useMemo<EcuInput[]>(() => {
     const list: EcuInput[] = [];
-    for (const r of udsEcus) {
+    // The units of this scan and those an earlier scan found on another bus
+    // (the MS-CAN or SW-CAN of an OBDLink).
+    for (const r of [...otherBuses, ...udsEcus]) {
       if (!r.present) continue;
-      list.push({ key: udsKey(r.request), kind: r.kind, name: r.kind === EcuKind.Other && r.systemName ? r.systemName : r.name, faulty: r.dtcs.length > 0, source: "uds" });
+      const key = r.bus && r.bus !== "hs" ? `${udsKey(r.request)}-${r.bus}` : udsKey(r.request);
+      if (list.some((e) => e.key === key)) continue;
+      list.push({ key, kind: r.kind, name: r.kind === EcuKind.Other && r.systemName ? r.systemName : r.name, faulty: r.dtcs.length > 0, source: "uds", bus: r.bus });
     }
     for (const r of kklRows) {
       if (!r.present) continue;
@@ -343,10 +422,10 @@ export default function XrayPage() {
       else if (gearboxFaults.length > 0) list.push({ key: "obd-gearbox", kind: EcuKind.Gearbox, name: t(VD, "Getriebe"), faulty: true, source: kline ? "kline" : "obd" });
     }
     if (asking && !list.some((e) => e.key === asking.key)) {
-      list.push({ key: asking.key, kind: asking.kind, name: asking.name, faulty: false, source: asking.source, asking: true });
+      list.push({ key: asking.key, kind: asking.kind, name: asking.name, faulty: false, source: asking.source, asking: true, bus: asking.bus });
     }
     return list;
-  }, [udsEcus, kklRows, faults, connected, kline, asking]);
+  }, [udsEcus, otherBuses, kklRows, faults, connected, kline, asking]);
 
   // --- Faults and their zones -----------------------------------------------------------
   const [zoneFindings, setZoneFindings] = useState<ZoneFinding[]>([]);
@@ -379,11 +458,12 @@ export default function XrayPage() {
   const turbo = (anatomy?.powertrain ?? 0) === Powertrain.Diesel || zones.includes(CarZone.Turbo);
   const variants = useMemo(() => (anatomy ? bodyVariants(anatomy, body) : [body]), [anatomy, body]);
   const drawn = variant !== null && variants.includes(variant) ? variant : body;
+  const isMoto = body === BodyType.Motorcycle;
   const layout = useMemo<CarLayout | null>(
-    () => (anatomy ? buildLayout({ anatomy, body, variant: drawn, ecus: ecuInputs, kline, turbo }) : null),
-    [anatomy, body, drawn, ecuInputs, kline, turbo],
+    () => (anatomy ? buildLayout({ anatomy, body, variant: drawn, ecus: ecuInputs, kline, turbo, motoStyle: motoStyle ?? undefined }) : null),
+    [anatomy, body, drawn, ecuInputs, kline, turbo, motoStyle],
   );
-  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${turbo}|${themeVersion}` : "";
+  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${motoStyle}|${turbo}|${themeVersion}` : "";
 
   // --- The scene ---------------------------------------------------------------------------
   const host = useRef<HTMLDivElement>(null);
@@ -412,6 +492,8 @@ export default function XrayPage() {
           sceneRef.current = new mod.XrayScene(host.current, readPalette(), reduced, {
             onHover: (id) => setHovered(id),
             onPick: (id) => pickRef.current(id),
+            onSection: (t) => setSection((s) => (s ? { ...s, t } : s)),
+            onStats: (s) => setStats(s),
           });
           setMode("3d");
         } catch {
@@ -527,9 +609,28 @@ export default function XrayPage() {
   useBackendEvent("status", obdPacket);
   useBackendEvent("freeze_frames", obdPacket);
 
-  // --- Layers ---------------------------------------------------------------------------------
+  // --- Layers and cuts --------------------------------------------------------------------------
   const [layers, setLayers] = useState<Record<Layer, boolean>>({ body: true, drivetrain: true, cooling: true, energy: true, electrics: true, network: true });
   useEffect(() => sceneRef.current?.setLayers(layers), [layers, mode]);
+  // The section plane (dragged in the view or with the slider) and the
+  // exploded drivetrain.
+  const [section, setSection] = useState<{ axis: SectionAxis; t: number } | null>(null);
+  useEffect(() => sceneRef.current?.setSection(section), [section, mode, carKey]);
+  const [exploded, setExploded] = useState(false);
+  useEffect(() => sceneRef.current?.setExplode(exploded), [exploded, mode, carKey]);
+  // The frame counter of the screenshot option ("stats").
+  const [stats, setStats] = useState<FrameStats | null>(null);
+  const statsOn = devFlags.includes("stats");
+  useEffect(() => sceneRef.current?.setStats(statsOn), [statsOn, mode]);
+  useEffect(() => {
+    for (const flag of devFlags) {
+      if (flag === "explode") setExploded(true);
+      const cut = flag.match(/^section=([xyz]):([\d.]+)$/);
+      if (cut) setSection({ axis: cut[1] as SectionAxis, t: Number(cut[2]) });
+      const hide = flag.match(/^hide=([a-z,]+)$/);
+      if (hide) setLayers((l) => ({ ...l, ...Object.fromEntries(hide[1]!.split(",").filter((x) => (LAYERS as string[]).includes(x)).map((x) => [x, false])) }));
+    }
+  }, [devFlags]);
   const energyName =
     anatomy && anatomy.battery !== 0 ? (anatomy.fuelTank ? tr("Kraftstoff und Hochvolt") : tr("Hochvolt")) : tr("Kraftstoff");
 
@@ -642,7 +743,7 @@ export default function XrayPage() {
     }
     const part = layout.parts.find((p) => p.id === id);
     const tube = layout.tubes.find((p) => p.id === id);
-    const at = part?.center ?? tube?.points[Math.floor((tube.points.length - 1) / 2)] ?? (id === "obd" ? layout.obd : null);
+    const at = part?.center ?? tube?.points[Math.floor((tube.points.length - 1) / 2)] ?? (id.startsWith("obd") ? layout.adapter.socket : null);
     if (at) scene.flyTo(at, 2.8);
   };
 
@@ -671,6 +772,10 @@ export default function XrayPage() {
       const value = row.text ? row.text : `${localeNumber(row.value, key.decimals)} ${row.unit}`.trim();
       labels.push({ id: `live-${row.pid}`, anchor: [anchor[0], anchor[1] + 0.05, anchor[2]], title: row.name, value, tone: row.warn ? "warn" : "info" });
     }
+    // The name of every bus on its line.
+    if (layers.network) {
+      for (const b of layout.busLabels) labels.push({ id: `bus-${b.bus}`, anchor: b.anchor, title: busName(b.bus), tone: "bus", bus: b.bus });
+    }
     const pointed = hovered ?? selected;
     if (pointed) {
       if (pointed.startsWith("ecu:")) {
@@ -679,14 +784,20 @@ export default function XrayPage() {
       } else {
         const part = layout.parts.find((p) => p.id === pointed);
         const tube = layout.tubes.find((p) => p.id === pointed);
-        const at = part ? ([part.center[0], part.center[1] + part.size[1] / 2 + 0.03, part.center[2]] as Vec3) : tube ? tube.points[Math.floor((tube.points.length - 1) / 2)]! : pointed === "obd" ? layout.obd : null;
+        const at = part
+          ? ([part.center[0], part.center[1] + part.size[1] / 2 + 0.03, part.center[2]] as Vec3)
+          : tube
+            ? tube.points[Math.floor((tube.points.length - 1) / 2)]!
+            : pointed.startsWith("obd")
+              ? layout.adapter.socket
+              : null;
         if (at && !zoneFindings.some((z) => (part?.zones ?? tube?.zones ?? []).includes(z.zone))) {
           labels.push({ id: "pointed", anchor: at, title: partName(pointed), tone: "accent" });
         }
       }
     }
     scene.setLabels(labels);
-  }, [layout, zoneFindings, liveRows, hovered, selected, mode]);
+  }, [layout, zoneFindings, liveRows, hovered, selected, mode, layers.network]);
 
   // --- Entries from other pages ------------------------------------------------------------------
   useEffect(
@@ -707,6 +818,19 @@ export default function XrayPage() {
     void call("scan_uds", { family });
   }, [connected, brand]);
 
+  // The switches "scan" and "scan-all" of xray-generation: the units of the
+  // connected (demo) car on the generation shown, once connected.
+  const devScanned = useRef(false);
+  useEffect(() => {
+    const all = devFlags.includes("scan-all");
+    if (devScanned.current || !connected || !(all || devFlags.includes("scan"))) return;
+    devScanned.current = true;
+    if (all) scanQueue.current = ["FORD@MS", "GM@SW"];
+    setTimeout(() => void startScan(), 1500);
+    // startScan only needs to exist; the scan runs once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [devFlags, connected]);
+
   // "xray-scan", "xray-check" and "xray-live" of --page, for pictures.
   useAppEvent<string>("dev:page", (name) => {
     if (!name.startsWith("xray")) return;
@@ -719,6 +843,13 @@ export default function XrayPage() {
       if (view === "side" || view === "rear" || view === "front") setDevView(view);
     }
     if (name === "xray-scan") setTimeout(() => void startScan(), 600);
+    // Every bus one after the other: the CAN of the socket, then the MS-CAN
+    // and the SW-CAN (with CARUSPEX_DEMO_ADAPTER=obdlink-mx for the demo).
+    if (name === "xray-scan-all") {
+      scanQueue.current = ["FORD@MS", "GM@SW"];
+      setTimeout(() => void startScan(), 600);
+    }
+    if (name === "xray-stats") setDevFlags((f) => [...f, "stats"]);
     if (name === "xray-check") setTimeout(startCheck, 1200);
     if (name === "xray-live") setTimeout(() => !liveOn && toggleLive(), 600);
   });
@@ -797,21 +928,56 @@ export default function XrayPage() {
               <div className="xray-layers" role="group" aria-label={tr("Ebenen")}>
                 {LAYERS.map((layer) => (
                   <Chip key={layer} on={layers[layer]} onClick={() => setLayers((l) => ({ ...l, [layer]: !l[layer] }))}>
-                    {layerName(layer, energyName)}
+                    {layerName(layer, energyName, isMoto)}
                   </Chip>
                 ))}
               </div>
               <div className="xray-view-buttons">
                 <Button small icon="refresh" title={tr("Ansicht zurücksetzen")} onClick={() => sceneRef.current?.resetView()} />
               </div>
-              {layers.network && busesShown.length > 0 ? (
+              <div className="xray-tools" role="group" aria-label={tr("Schnitte")}>
+                <Chip on={exploded} onClick={() => setExploded((e) => !e)} title={tr("Motor, Getriebe und Auspuff auseinanderziehen")}>
+                  {tr("Antrieb zerlegen")}
+                </Chip>
+                <Chip on={section !== null} onClick={() => setSection((s) => (s ? null : { axis: "x", t: 0.55 }))} title={tr("Eine Ebene durch das Fahrzeug ziehen, die alles davor ausblendet")}>
+                  {tr("Schnitt")}
+                </Chip>
+                {section ? (
+                  <>
+                    {(["x", "z", "y"] as SectionAxis[]).map((axis) => (
+                      <Chip key={axis} on={section.axis === axis} onClick={() => setSection({ axis, t: section.axis === axis ? section.t : 0.5 })}>
+                        {axis === "x" ? tr("Quer") : axis === "z" ? tr("Längs") : tr("Von oben")}
+                      </Chip>
+                    ))}
+                    <input
+                      className="xray-section-slider"
+                      type="range"
+                      min={2}
+                      max={98}
+                      value={Math.round(section.t * 100)}
+                      aria-label={tr("Schnittebene verschieben")}
+                      title={tr("Schnittebene verschieben")}
+                      onChange={(e) => setSection({ axis: section.axis, t: Number(e.target.value) / 100 })}
+                    />
+                  </>
+                ) : null}
+              </div>
+              {(layers.network && busesShown.length > 0) || layers.electrics ? (
                 <div className="xray-legend">
-                  {busesShown.map((bus) => (
-                    <span key={bus} className="xray-legend-item">
-                      <span className="xray-legend-line" style={{ "--bus": `var(--bus-${bus})` } as CSSProperties} />
-                      {busName(bus)}
-                    </span>
-                  ))}
+                  {layers.network
+                    ? busesShown.map((bus) => (
+                        <span key={bus} className="xray-legend-item">
+                          <span className="xray-legend-line" style={{ "--bus": `var(--bus-${bus})` } as CSSProperties} />
+                          {busName(bus)}
+                        </span>
+                      ))
+                    : null}
+                  {layers.electrics ? <span className="xray-legend-note">{tr("Kabelbaum vereinfacht: er zeigt, wo die Stränge laufen, kein Stromlaufplan.")}</span> : null}
+                </div>
+              ) : null}
+              {stats ? (
+                <div className="xray-stats hint">
+                  {tr("%1 Bilder pro Sekunde, %2 ms je Bild (%3 ms Zeichnen), %4 Zeichenaufrufe", localeNumber(stats.fps, 0), localeNumber(stats.frameMs, 1), localeNumber(stats.renderMs, 1), stats.calls)}
                 </div>
               ) : null}
               <div className="xray-help hint">{tr("Ziehen dreht, Mausrad zoomt, rechte Maustaste verschiebt.")}</div>
@@ -873,6 +1039,19 @@ export default function XrayPage() {
                 </div>
                 {anatomy.dimensionDocument ? <div className="hint xray-document">{tr("Quelle: %1", anatomy.dimensionDocument)}</div> : null}
                 <div className="hint">{anatomy.dimensionsText}</div>
+                {isMoto ? (
+                  <>
+                    <div className="hint">{tr("Gezeichnet wird ein Motorrad dieser Bauart mit diesem Motor, nicht das genaue Modell.")}</div>
+                    <label className="xray-select">
+                      <span className="hint">{tr("Bauart")}</span>
+                      <Select
+                        value={layout?.moto?.style ?? motoSpec(anatomy.brand, anatomy.model).style}
+                        options={MOTO_STYLES.map((s) => ({ value: s, label: motoStyleName(s) }))}
+                        onChange={(v) => setMotoStyle(v as MotoStyle)}
+                      />
+                    </label>
+                  </>
+                ) : null}
                 {variantOptions.length > 1 ? (
                   <label className="xray-select">
                     <span className="hint">{tr("Karosserie")}</span>

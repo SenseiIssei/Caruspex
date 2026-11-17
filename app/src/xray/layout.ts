@@ -9,6 +9,7 @@
 // the car), y up (the road is 0), z across (+z is the left side, the
 // driver's side in a left-hand drive car).
 import { BodyType, CarZone, DrivenAxles, EngineLayout, TractionBattery, type VehicleAnatomy } from "../api/types";
+import { buildMotoLayout, type MotoSpec, type MotoStyle } from "./moto";
 import { bodyGeometry, shapeFor, type Profile, type Shape } from "./shape";
 
 export type Vec3 = [number, number, number];
@@ -28,28 +29,49 @@ export type Material =
   | "battery"
   | "electric"
   | "cabin"
-  | "motor";
+  | "motor"
+  // Bodywork of a motorcycle, drawn in the glass of the car body; "screen"
+  // is a windscreen (darker glass).
+  | "shell"
+  | "screen"
+  | "seat"
+  // Headlight and tail light.
+  | "lamp"
+  | "rearlamp";
 
 export interface Part {
   id: string;
   layer: Layer;
-  // "box" with rounded edges, or a cylinder along an axis.
-  shape: "box" | "cylinder";
+  // "box" with rounded edges, a cylinder along an axis, or an ellipsoid
+  // filling the box.
+  shape: "box" | "cylinder" | "ellipsoid";
   axis: "x" | "y" | "z";
   center: Vec3;
-  // Box: the full extents. Cylinder: [length, diameter, diameter] along its axis.
+  // Box and ellipsoid: the full extents. Cylinder: [length, diameter,
+  // diameter] along its axis.
   size: Vec3;
   material: Material;
   zones: CarZone[];
+  // Turned about the z axis (across the car) in radians, positive lifts the
+  // front end: a raked fork, a leaning cylinder, a windscreen.
+  tilt?: number;
+  // Corner radius of a box as a share of its smallest side (0.22 default,
+  // 0.5 for a pill).
+  round?: number;
+  // Where the part moves in the exploded view of the drivetrain (metres).
+  explode?: Vec3;
 }
 
 export interface Tube {
   id: string;
   layer: Layer;
   points: Vec3[];
+  // More strands drawn as one mesh with the first (the tubes of a frame).
+  branches?: Vec3[][];
   radius: number;
   material: Material;
   zones: CarZone[];
+  explode?: Vec3;
 }
 
 export interface Wheel {
@@ -58,6 +80,9 @@ export interface Wheel {
   width: number;
   front: boolean;
   driven: boolean;
+  // A motorcycle wheel: its brake discs (side +1 left, -1 right, and the
+  // radius) and its rim.
+  moto?: { discs: { side: number; radius: number }[]; spokes: "cast" | "wire" };
 }
 
 // EcuKind of data/EcuAddresses.h.
@@ -80,11 +105,17 @@ export type EcuPlace =
   | "dashCentre"
   | "headlight"
   | "driverDoor"
+  | "passengerDoor"
   | "underSeat"
+  | "passengerSeat"
   | "boot"
   | "battery"
   | "rearBumper"
-  | "inverter";
+  | "inverter"
+  | "roof"
+  | "windscreen"
+  | "fuelPump"
+  | "rearAxle";
 
 // The usual mounting place per kind. Makers differ (and a few put the
 // gateway in the instrument cluster or the radio in the boot), but this is
@@ -110,7 +141,52 @@ export const ECU_PLACES: Record<number, EcuPlace> = {
   [EcuKind.Other]: "boot",
 };
 
-export type BusKind = "powertrain" | "comfort" | "diagnostic" | "kline";
+// Places the name of a unit gives away, before the place of its kind. The
+// abbreviations in brackets come with the names of data/ecus/*.csv in every
+// language (REM is BMW's rear electronics, FZD its roof function centre,
+// KAFAS the camera behind the mirror, EKPM the fuel pump control, GHAS the
+// rear differential lock, DDM and PDM Ford's door modules); the words cover
+// German and English names a unit reports itself.
+const PLACE_WORDS: [RegExp, EcuPlace, number[] | null][] = [
+  [/\bREM\b|HECKELEKTRONIK|REAR ELECTRONIC|\bSAM-?H\b/, "boot", null],
+  [/\bFZD\b|\bDACH|\bROOF/, "roof", null],
+  [/\bKAFAS\b|FRONTKAMERA|FRONT CAMERA|\bKAMERA FAHRERASSISTENZ|CAMERA DRIVER ASSIST/, "windscreen", null],
+  [/\bEKPM\b|KRAFTSTOFFPUMPE|FUEL PUMP/, "fuelPump", null],
+  [/\bGHAS\b|DIFFERENTIAL/, "rearAxle", null],
+  [/\bAMP\b|VERSTÄRKER|AMPLIFIER/, "boot", null],
+  [/\bSCCM\b|LENKSÄULE|STEERING COLUMN/, "steeringColumn", null],
+  [/\bPDM\b|BEIFAHRERTÜR|PASSENGER DOOR/, "passengerDoor", null],
+  [/BEIFAHRER|PASSENGER/, "passengerSeat", [EcuKind.Seats]],
+];
+
+// Where a maker puts a unit differently, only where the data says so:
+// BMW's gateway is part of the front electronics module (FEM/ZGM in
+// data/ecus/bmw.csv, the same module as the body electronics FEM/BDC), so
+// it sits with the body unit in the footwell rather than behind the
+// glovebox.
+const BRAND_PLACES: { brands: string[]; kind: number; place: EcuPlace }[] = [
+  { brands: ["BMW", "MINI", "Mini", "Alpina"], kind: EcuKind.Gateway, place: "footwell" },
+];
+
+// The place of one unit: by its name, by the maker, by its kind. mirror:
+// the second of a pair (the second light module) on the passenger side.
+export function placeFor(kind: number, name: string, brand = ""): { place: EcuPlace; mirror: boolean } {
+  const upper = name.toUpperCase();
+  const mirror = kind === EcuKind.Lighting && /\b2\b/.test(upper);
+  for (const [re, place, kinds] of PLACE_WORDS) {
+    if ((kinds === null || kinds.includes(kind)) && re.test(upper)) return { place, mirror };
+  }
+  const row = BRAND_PLACES.find((r) => r.kind === kind && r.brands.includes(brand));
+  if (row) return { place: row.place, mirror };
+  return { place: ECU_PLACES[kind] ?? "boot", mirror };
+}
+
+// The buses a scan can report: the CANs behind the gateway (drivetrain,
+// comfort, infotainment), the diagnosis CAN from the socket to the gateway,
+// the K-line, and the second CANs on the socket that an OBDLink reaches:
+// Ford's MS-CAN (pins 3 and 11) and GM's single wire CAN (pin 1).
+export type BusKind = "powertrain" | "comfort" | "infotainment" | "diagnostic" | "kline" | "mscan" | "swcan";
+export const BUSES: BusKind[] = ["powertrain", "comfort", "infotainment", "diagnostic", "kline", "mscan", "swcan"];
 
 // The generic address sweep finds units it has no name for; the name they
 // report themselves (DID F197, "INSTRUMENTS", "AIRBAG 8CH") usually says
@@ -155,9 +231,23 @@ export function busForKind(kind: number): BusKind {
       return "powertrain";
     case EcuKind.Gateway:
       return "diagnostic";
+    case EcuKind.Infotainment:
+      return "infotainment";
   }
   return "comfort";
 }
+
+// The bus of one unit: how it was read first (K-line, the MS-CAN or SW-CAN
+// of an OBDLink), then by its kind.
+export function busFor(e: EcuInput, kline: boolean): BusKind {
+  if (e.source === "kline" || (kline && e.source === "obd")) return "kline";
+  if (e.bus === "ms") return "mscan";
+  if (e.bus === "sw") return "swcan";
+  return busForKind(e.kind);
+}
+
+// Buses that start at the socket itself instead of behind the gateway.
+export const SOCKET_BUSES: BusKind[] = ["kline", "mscan", "swcan"];
 
 export interface EcuInput {
   key: string;
@@ -168,6 +258,8 @@ export interface EcuInput {
   source: "uds" | "obd" | "kline";
   // Being asked by a running scan, not answered yet.
   asking?: boolean;
+  // The CAN a UDS scan found it on: "hs", "ms" (Ford MS-CAN), "sw" (GM SW-CAN).
+  bus?: string;
 }
 
 export interface EcuNode extends EcuInput {
@@ -182,6 +274,51 @@ export interface Route {
   ecu: string;
   // From the hub (gateway or socket) to the unit.
   points: Vec3[];
+}
+
+// Where the name of a bus stands in the view: on its trunk.
+export interface BusLabel {
+  bus: BusKind;
+  anchor: Vec3;
+}
+
+// --- The diagnostic socket -------------------------------------------------------
+
+// SocketSpot of the catalog (data/obd_sockets.csv) in declaration order.
+export const SocketSpot = {
+  Unknown: 0, DashLeftOfColumn: 1, DashRightOfColumn: 2, AbovePedals: 3, BelowColumn: 4, FootwellLeft: 5,
+  FuseBoxLower: 6, ConsoleFront: 7, ConsoleSide: 8, Passenger: 9, RearConsole: 10, EngineBay: 11, UnderSeat: 12,
+} as const;
+
+// The exact spot of the socket: the one of data/obd_sockets.csv, else the
+// coarse SocketLocation turned into its most likely spot, else the most
+// common one (under the dashboard left of the steering column).
+export function socketSpotOf(location: number, spot: number): number {
+  if (spot > 0 && spot <= SocketSpot.UnderSeat) return spot;
+  switch (location) {
+    case 1: return SocketSpot.DashLeftOfColumn;
+    case 2: return SocketSpot.BelowColumn;
+    case 3: return SocketSpot.FootwellLeft;
+    case 4: return SocketSpot.FuseBoxLower;
+    case 5:
+    case 6: return SocketSpot.ConsoleFront;
+    case 7: return SocketSpot.Passenger;
+    case 8: return SocketSpot.EngineBay;
+    case 9: return SocketSpot.RearConsole;
+    case 10: return SocketSpot.UnderSeat;
+  }
+  return SocketSpot.DashLeftOfColumn;
+}
+
+// The socket with the adapter in it. For a motorcycle the maker's plug sits
+// under the seat and an adapter cable leads to the 16-pin socket the
+// adapter is plugged into.
+export interface Adapter {
+  // The 16-pin socket and the direction the adapter sticks out of it.
+  socket: Vec3;
+  dir: Vec3;
+  // The adapter cable from the maker's plug to that socket, null in a car.
+  cable: Vec3[] | null;
 }
 
 // The profile of the body comes from shape.ts (defaults per body type and
@@ -531,9 +668,13 @@ export interface XrayInput {
   // The body variant to draw (an estate of a saloon generation); omitted:
   // the catalog's body.
   variant?: BodyType;
+  // The kind of motorcycle to draw (naked, sport, touring ...); omitted: the
+  // one moto.ts knows for the model.
+  motoStyle?: MotoStyle;
 }
 
 export interface CarLayout {
+  vehicle: "car" | "moto";
   hull: Hull;
   shape: Shape;
   frontAxle: number;
@@ -543,13 +684,20 @@ export interface CarLayout {
   tubes: Tube[];
   ecus: EcuNode[];
   routes: Route[];
+  busLabels: BusLabel[];
+  // The diagnostic socket (on a motorcycle the maker's plug), the spot it
+  // was put at (SocketSpot) and the adapter in it.
   obd: Vec3;
+  socketSpot: number;
+  adapter: Adapter;
   hub: Vec3;
   // Positions for the zones of fault codes and for the live labels.
   anchors: Record<string, Vec3>;
+  // The motorcycle drawn (kind, engine, final drive), null for a car.
+  moto: MotoSpec | null;
 }
 
-const box = (id: string, layer: Layer, material: Material, center: Vec3, size: Vec3, zones: CarZone[] = []): Part => ({
+export const box = (id: string, layer: Layer, material: Material, center: Vec3, size: Vec3, zones: CarZone[] = []): Part => ({
   id,
   layer,
   shape: "box",
@@ -560,7 +708,7 @@ const box = (id: string, layer: Layer, material: Material, center: Vec3, size: V
   zones,
 });
 
-const cylinder = (
+export const cylinder = (
   id: string,
   layer: Layer,
   material: Material,
@@ -571,7 +719,76 @@ const cylinder = (
   zones: CarZone[] = [],
 ): Part => ({ id, layer, shape: "cylinder", axis, center, size: [length, diameter, diameter], material, zones });
 
+// --- Control units and their lines, for cars and motorcycles --------------------------
+
+export interface NetworkFrame {
+  // The base position of a place in this vehicle.
+  placeAt: (place: EcuPlace) => Vec3;
+  // The line between two points along the harness of this vehicle.
+  route: (from: Vec3, to: Vec3, bus: BusKind) => Vec3[];
+  // Pulls a point inside the vehicle.
+  clamp: (p: Vec3) => Vec3;
+  obd: Vec3;
+  // Spacing of several units at one place.
+  step: number;
+}
+
+// Every unit at its place with its bus, the gateway as the hub, and one
+// line per unit: from the gateway, or from the socket for the K-line, the
+// MS-CAN and the SW-CAN, which do not pass the gateway.
+export function buildNetwork(input: XrayInput, frame: NetworkFrame): { ecus: EcuNode[]; routes: Route[]; hub: Vec3; busLabels: BusLabel[] } {
+  const used = new Map<string, number>();
+  const brand = input.anatomy.brand;
+  const ecus: EcuNode[] = input.ecus.map((raw) => {
+    const e = { ...raw, kind: guessKind(raw.kind, raw.name) };
+    const { place, mirror } = placeFor(e.kind, e.name, brand);
+    const key = mirror ? `${place}-2` : place;
+    const n = used.get(key) ?? 0;
+    used.set(key, n + 1);
+    const base = frame.placeAt(place);
+    const b: Vec3 = mirror ? [base[0], base[1], -base[2]] : base;
+    // Several units at one place stand next to each other.
+    const s = frame.step;
+    const shifted: Vec3 = [b[0] - Math.floor(n / 2) * s * 1.2, b[1] + (n % 2) * s, b[2] - (n > 0 ? Math.sign(b[2] || 1) * s * 0.92 * Math.ceil(n / 2) : 0)];
+    return { ...e, place, position: frame.clamp(shifted), bus: busFor(e, input.kline) };
+  });
+  const gateway = ecus.find((e) => e.kind === EcuKind.Gateway);
+  const hub = gateway ? gateway.position : frame.obd;
+  const routes: Route[] = [];
+  if (gateway) routes.push({ bus: input.kline ? "kline" : "diagnostic", ecu: "", points: frame.route(frame.obd, hub, "diagnostic") });
+  for (const e of ecus) {
+    if (e === gateway) continue;
+    const start = SOCKET_BUSES.includes(e.bus) ? frame.obd : hub;
+    routes.push({ bus: e.bus, ecu: e.key, points: frame.route(start, e.position, e.bus) });
+  }
+  return { ecus, routes, hub, busLabels: labelBuses(routes) };
+}
+
+// One name per bus, in the middle of the longest run of its first line.
+function labelBuses(routes: Route[]): BusLabel[] {
+  const out: BusLabel[] = [];
+  for (const r of routes) {
+    if (out.some((l) => l.bus === r.bus) || r.points.length < 2) continue;
+    let best = 0;
+    let at: Vec3 = r.points[0]!;
+    for (let i = 0; i + 1 < r.points.length; i++) {
+      const p = r.points[i]!;
+      const q = r.points[i + 1]!;
+      const d = Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]);
+      if (d > best) {
+        best = d;
+        at = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2 + 0.015, (p[2] + q[2]) / 2];
+      }
+    }
+    out.push({ bus: r.bus, anchor: at });
+  }
+  return out;
+}
+
+// --- The car ----------------------------------------------------------------------------
+
 export function buildLayout(input: XrayInput): CarLayout {
+  if (input.body === BodyType.Motorcycle) return buildMotoLayout(input);
   const a = input.anatomy;
   const L = a.lengthMm / 1000;
   const W = a.widthMm / 1000;
@@ -631,10 +848,14 @@ export function buildLayout(input: XrayInput): CarLayout {
   const combustion = a.engine !== EngineLayout.None;
   let engineCenter: Vec3 = [frontAxle, clear + 0.45, 0];
   let gearboxCenter: Vec3 = [frontAxle, clear + 0.3, 0];
+  let blockSize: Vec3 = [0.4, 0.42, 0.5];
+  let coilLine: [Vec3, Vec3] | null = null;
+  const across = a.engine === EngineLayout.FrontTransverse || a.engine === EngineLayout.Mid || a.engine === EngineLayout.Rear;
+  const intakeDir = across ? (a.engine === EngineLayout.FrontTransverse ? -1 : 1) : 1;
+  const exhaustSide = across ? -intakeDir : -1;
   const engineTop = (c: Vec3, h: number) => c[1] + h / 2;
   if (combustion) {
     const blockH = 0.42;
-    let blockSize: Vec3;
     if (a.engine === EngineLayout.FrontTransverse) {
       engineCenter = [frontAxle + 0.12, clear + 0.38, -0.1];
       blockSize = [0.36, blockH, 0.52];
@@ -660,24 +881,27 @@ export function buildLayout(input: XrayInput): CarLayout {
     const head: Vec3 = [engineCenter[0], headY, engineCenter[2]];
     parts.push(box("cylinder-head", "drivetrain", "metal", head, [blockSize[0] * 0.8, 0.14, blockSize[2] * 0.92], [CarZone.Cylinders]));
     // Ignition coils (or glow plugs) along the head.
-    const across = blockSize[2] > blockSize[0];
+    const wide = blockSize[2] > blockSize[0];
     for (let i = 0; i < 4; i++) {
-      const t = (i - 1.5) * (across ? blockSize[2] : blockSize[0]) * 0.2;
-      const c: Vec3 = across ? [head[0], headY + 0.1, head[2] + t] : [head[0] + t, headY + 0.1, head[2]];
+      const t = (i - 1.5) * (wide ? blockSize[2] : blockSize[0]) * 0.2;
+      const c: Vec3 = wide ? [head[0], headY + 0.1, head[2] + t] : [head[0] + t, headY + 0.1, head[2]];
       parts.push(cylinder(`coil-${i}`, "drivetrain", "electric", "y", c, 0.1, 0.045, [CarZone.Ignition]));
     }
+    const coilSpan = (wide ? blockSize[2] : blockSize[0]) * 0.36;
+    coilLine = wide
+      ? [[head[0] - 0.09, headY + 0.13, head[2] + coilSpan], [head[0] - 0.09, headY + 0.13, head[2] - coilSpan]]
+      : [[head[0] + coilSpan, headY + 0.13, head[2] + 0.09], [head[0] - coilSpan, headY + 0.13, head[2] + 0.09]];
     // Intake side (towards the cabin for a transverse engine) with the
     // manifold, the throttle body and the air box.
-    const intakeDir = across ? (a.engine === EngineLayout.FrontTransverse ? -1 : 1) : 1;
-    const intakeOffset = across ? blockSize[0] / 2 + 0.07 : blockSize[2] / 2 + 0.07;
-    const manifold: Vec3 = across
+    const intakeOffset = wide ? blockSize[0] / 2 + 0.07 : blockSize[2] / 2 + 0.07;
+    const manifold: Vec3 = wide
       ? [engineCenter[0] + intakeDir * intakeOffset, headY - 0.04, engineCenter[2]]
       : [engineCenter[0], headY - 0.04, engineCenter[2] + intakeDir * intakeOffset];
-    parts.push(box("intake-manifold", "drivetrain", "metal", manifold, across ? [0.1, 0.16, blockSize[2] * 0.8] : [blockSize[0] * 0.8, 0.16, 0.1], [CarZone.Intake]));
-    const rail: Vec3 = across ? [manifold[0] - intakeDir * 0.04, manifold[1] - 0.09, manifold[2]] : [manifold[0], manifold[1] - 0.09, manifold[2] - intakeDir * 0.04];
-    parts.push(cylinder("fuel-rail", "drivetrain", "fuel", across ? "z" : "x", rail, (across ? blockSize[2] : blockSize[0]) * 0.75, 0.03, [CarZone.Injection]));
-    const throttle: Vec3 = across ? [manifold[0], manifold[1] + 0.02, manifold[2] + blockSize[2] * 0.45] : [manifold[0] + blockSize[0] * 0.45, manifold[1] + 0.02, manifold[2]];
-    parts.push(cylinder("throttle", "drivetrain", "metal", across ? "z" : "x", throttle, 0.09, 0.09, [CarZone.Throttle]));
+    parts.push(box("intake-manifold", "drivetrain", "metal", manifold, wide ? [0.1, 0.16, blockSize[2] * 0.8] : [blockSize[0] * 0.8, 0.16, 0.1], [CarZone.Intake]));
+    const rail: Vec3 = wide ? [manifold[0] - intakeDir * 0.04, manifold[1] - 0.09, manifold[2]] : [manifold[0], manifold[1] - 0.09, manifold[2] - intakeDir * 0.04];
+    parts.push(cylinder("fuel-rail", "drivetrain", "fuel", wide ? "z" : "x", rail, (wide ? blockSize[2] : blockSize[0]) * 0.75, 0.03, [CarZone.Injection]));
+    const throttle: Vec3 = wide ? [manifold[0], manifold[1] + 0.02, manifold[2] + blockSize[2] * 0.45] : [manifold[0] + blockSize[0] * 0.45, manifold[1] + 0.02, manifold[2]];
+    parts.push(cylinder("throttle", "drivetrain", "metal", wide ? "z" : "x", throttle, 0.09, 0.09, [CarZone.Throttle]));
     let airbox: Vec3 = a.engine === EngineLayout.FrontTransverse ? [engineCenter[0] + 0.05, headY + 0.08, 0.38] : [engineCenter[0] + 0.1, headY + 0.08, -0.38];
     airbox = clampInside(hull, airbox, 0.12);
     parts.push(box("airbox", "drivetrain", "metal", airbox, [0.3, 0.14, 0.2], [CarZone.Intake]));
@@ -697,8 +921,7 @@ export function buildLayout(input: XrayInput): CarLayout {
     anchors.gearbox = [gearboxCenter[0], gearboxCenter[1] + 0.2, gearboxCenter[2]];
 
     // Exhaust: manifold, catalytic converter, silencers, tail pipe.
-    const exhaustSide = across ? -intakeDir : -1;
-    const exManifold: Vec3 = across
+    const exManifold: Vec3 = wide
       ? [engineCenter[0] + exhaustSide * (blockSize[0] / 2 + 0.05), engineCenter[1] + 0.08, engineCenter[2]]
       : [engineCenter[0], engineCenter[1] + 0.08, engineCenter[2] - (blockSize[2] / 2 + 0.05)];
     const underY = clear + 0.06;
@@ -723,7 +946,7 @@ export function buildLayout(input: XrayInput): CarLayout {
     parts.push(cylinder("rear-silencer", "drivetrain", "exhaust", "z", rearMuffler, 0.6, 0.2, [CarZone.Exhaust]));
     anchors.exhaust = catalyst;
     if (input.turbo) {
-      const turbo: Vec3 = [exManifold[0] + (across ? exhaustSide * 0.06 : 0), exManifold[1] - 0.06, exManifold[2] + (across ? 0.12 : -0.08)];
+      const turbo: Vec3 = [exManifold[0] + (wide ? exhaustSide * 0.06 : 0), exManifold[1] - 0.06, exManifold[2] + (wide ? 0.12 : -0.08)];
       parts.push(cylinder("turbo", "drivetrain", "metal", "z", turbo, 0.12, 0.17, [CarZone.Turbo]));
       anchors.turbo = turbo;
     }
@@ -741,6 +964,7 @@ export function buildLayout(input: XrayInput): CarLayout {
         radius: 0.022,
         material: "metal",
         zones: [CarZone.Gearbox],
+        explode: [0, 0.05, side * 0.3],
       });
     }
   };
@@ -814,7 +1038,12 @@ export function buildLayout(input: XrayInput): CarLayout {
     }
   }
 
-  // --- Electrics: 12 V battery, alternator, the main harness to the back.
+  // --- Electrics: the main harness as strands. The 12 V battery with the
+  // main fuses on its plus pole and the ground straps to the body and the
+  // engine, alternator and starter, the engine harness to the coils, the
+  // strand through the bulkhead to the fuse box and along the sill to the
+  // rear lamps, the lamps in front. Where the strands run and where to look,
+  // not a wiring diagram.
   const batteryAtBack = a.engine === EngineLayout.FrontLongitudinal && body !== BodyType.Pickup && body !== BodyType.Suv;
   const battery12 = clampInside(
     hull,
@@ -823,25 +1052,6 @@ export function buildLayout(input: XrayInput): CarLayout {
   );
   parts.push(box("battery12", "electrics", "electric", battery12, [0.26, 0.19, 0.17], [CarZone.Electrics]));
   anchors.battery = [battery12[0], battery12[1] + 0.12, battery12[2]];
-  if (combustion) {
-    const alternator: Vec3 = [engineCenter[0] + (a.engine === EngineLayout.FrontLongitudinal ? 0.36 : 0), engineCenter[1] + 0.02, engineCenter[2] + (a.engine === EngineLayout.FrontLongitudinal ? -0.22 : -0.32)];
-    parts.push(cylinder("alternator", "electrics", "electric", across3(a.engine), clampInside(hull, alternator, 0.08), 0.16, 0.13, [CarZone.Electrics]));
-  }
-  const fuseBox = clampInside(hull, [cowlX - 0.3, clear + 0.5, lhd * 0.52], 0.08);
-  parts.push(box("fuse-box", "electrics", "electric", fuseBox, [0.16, 0.14, 0.06], [CarZone.Electrics]));
-  const sillZ = (x: number, y: number) => lhd * (hull.halfWidth(hull.station(x), y) - 0.12);
-  tubes.push({
-    id: "harness",
-    layer: "electrics",
-    points: [battery12, [battery12[0], clear + 0.62, battery12[2] * 0.8], [cowlX - 0.05, clear + 0.62, sillZ(cowlX - 0.05, clear + 0.62)], fuseBox, [cowlX - 0.35, floor + 0.04, sillZ(cowlX - 0.35, floor + 0.04)], [rearAxle + 0.1, floor + 0.04, sillZ(rearAxle + 0.1, floor + 0.04)], clampInside(hull, [hull.rear + 0.3, clear + 0.55, lhd * 0.5], 0.1)],
-    radius: 0.016,
-    material: "electric",
-    zones: [CarZone.Electrics],
-  });
-
-  // --- Network: the OBD socket, the control units and their buses.
-  const obd = clampInside(hull, [cowlX - 0.38, clear + 0.42, lhd * 0.3], 0.08);
-  anchors.obd = obd;
   const placeAt = placeFinder(hull, {
     frontAxle,
     rearAxle,
@@ -856,56 +1066,217 @@ export function buildLayout(input: XrayInput): CarLayout {
     motor: motors[0] ?? null,
     frontSeatX,
   });
-  const used = new Map<EcuPlace, number>();
-  const ecus: EcuNode[] = input.ecus.map((raw) => {
-    const e = { ...raw, kind: guessKind(raw.kind, raw.name) };
-    const place = ECU_PLACES[e.kind] ?? "boot";
-    const n = used.get(place) ?? 0;
-    used.set(place, n + 1);
-    const base = placeAt(place);
-    // Several units at one place stand next to each other.
-    const shifted: Vec3 = [base[0] - Math.floor(n / 2) * 0.16, base[1] + (n % 2) * 0.13, base[2] - (n > 0 ? Math.sign(base[2] || 1) * 0.12 * Math.ceil(n / 2) : 0)];
-    const position = clampInside(hull, shifted, 0.09);
-    const bus: BusKind = e.source === "kline" || (input.kline && e.source === "obd") ? "kline" : busForKind(e.kind);
-    return { ...e, place, position, bus };
+  const minusPole: Vec3 = [battery12[0] - 0.08, battery12[1] + 0.1, battery12[2] - 0.04];
+  const mainFuses = clampInside(hull, [battery12[0] + 0.06, battery12[1] + 0.13, battery12[2] - 0.05], 0.05);
+  parts.push(box("main-fuses", "electrics", "electric", mainFuses, [0.1, 0.05, 0.09], [CarZone.Electrics]));
+  const bodyGround = clampInside(hull, [battery12[0] - 0.2, battery12[1] + 0.05, battery12[2] + Math.sign(battery12[2] || 1) * 0.12], 0.05);
+  parts.push(box("ground-point", "electrics", "metal", bodyGround, [0.04, 0.04, 0.04], [CarZone.Electrics]));
+  const ground: Tube = { id: "ground", layer: "electrics", points: [minusPole, [minusPole[0] - 0.06, minusPole[1] + 0.03, minusPole[2]], bodyGround], radius: 0.01, material: "metal", zones: [CarZone.Electrics] };
+  tubes.push(ground);
+  const fuseBox = clampInside(hull, [cowlX - 0.3, clear + 0.5, lhd * 0.52], 0.08);
+  parts.push(box("fuse-box", "electrics", "electric", fuseBox, [0.16, 0.14, 0.06], [CarZone.Electrics]));
+  if (combustion) {
+    const alternator = clampInside(hull, [engineCenter[0] + (a.engine === EngineLayout.FrontLongitudinal ? 0.36 : 0), engineCenter[1] + 0.02, engineCenter[2] + (a.engine === EngineLayout.FrontLongitudinal ? -0.22 : -0.32)], 0.08);
+    parts.push(cylinder("alternator", "electrics", "electric", across3(a.engine), alternator, 0.16, 0.13, [CarZone.Electrics]));
+    // The starter at the flange between engine and gearbox, low down.
+    const starter = clampInside(
+      hull,
+      a.engine === EngineLayout.FrontLongitudinal
+        ? [engineCenter[0] - blockSize[0] / 2 - 0.06, clear + 0.22, -0.2]
+        : [(engineCenter[0] + gearboxCenter[0]) / 2 + 0.12, clear + 0.22, (engineCenter[2] + gearboxCenter[2]) / 2],
+      0.07,
+    );
+    parts.push(cylinder("starter", "electrics", "electric", a.engine === EngineLayout.FrontLongitudinal ? "x" : "z", starter, 0.2, 0.09, [CarZone.Electrics]));
+    tubes.push({ id: "starter-cable", layer: "electrics", points: [mainFuses, [mainFuses[0], clear + 0.3, mainFuses[2]], [starter[0], clear + 0.3, starter[2]], starter], radius: 0.012, material: "electric", zones: [CarZone.Electrics] });
+    ground.branches = [[minusPole, [minusPole[0] - 0.05, engineCenter[1], (minusPole[2] + engineCenter[2]) / 2], [engineCenter[0], engineCenter[1] + 0.05, engineCenter[2] + blockSize[2] / 2 * Math.sign(minusPole[2] || 1) * 0.9]]];
+    // The engine harness: from the engine control unit along the coils and
+    // injectors, to the alternator and the starter.
+    const ecu = placeAt("engineBay");
+    const strand: Vec3[] = [ecu, [ecu[0], ecu[1] + 0.02, (ecu[2] + coilLine![0][2]) / 2], coilLine![0], coilLine![1]];
+    tubes.push({
+      id: "engine-harness",
+      layer: "electrics",
+      points: strand,
+      branches: [[coilLine![0], [alternator[0], coilLine![0][1] - 0.1, alternator[2] * 0.6], alternator], [ecu, [ecu[0], clear + 0.32, ecu[2] * 0.7], starter]],
+      radius: 0.012,
+      material: "electric",
+      zones: [CarZone.Electrics, CarZone.Ignition],
+    });
+  }
+  // The main strand: from the main fuses through the bulkhead to the fuse
+  // box, down to the sill on the driver's side and along it to the rear.
+  const sillZ = (x: number, y: number) => lhd * (hull.halfWidth(hull.station(x), y) - 0.12);
+  const rearEnd = clampInside(hull, [hull.rear + 0.3, clear + 0.55, lhd * 0.5], 0.1);
+  tubes.push({
+    id: "harness",
+    layer: "electrics",
+    points: [mainFuses, [mainFuses[0], clear + 0.62, mainFuses[2] * 0.8], [cowlX - 0.05, clear + 0.62, sillZ(cowlX - 0.05, clear + 0.62)], fuseBox, [cowlX - 0.35, floor + 0.04, sillZ(cowlX - 0.35, floor + 0.04)], [rearAxle + 0.1, floor + 0.04, sillZ(rearAxle + 0.1, floor + 0.04)], rearEnd],
+    radius: 0.016,
+    material: "electric",
+    zones: [CarZone.Electrics],
   });
-  const gateway = ecus.find((e) => e.kind === EcuKind.Gateway);
-  const hub = gateway ? gateway.position : obd;
-  anchors.network = hub;
-  const engineEcu = ecus.find((e) => e.kind === EcuKind.Engine);
+  // The lamps: a strand to each headlight and each tail light.
+  const lampAt = (end: "front" | "rear", side: number): Vec3 => {
+    const x = end === "front" ? hull.front - 0.22 : hull.rear + 0.16;
+    const y = (end === "front" ? p.noseTop : p.tailTop) - 0.08;
+    return clampInside(hull, [x, y, side * (hull.halfWidth(hull.station(x), y) - 0.15)], 0.06);
+  };
+  const frontSplit = clampInside(hull, [Math.min(hull.front - 0.45, mainFuses[0] + 0.3), clear + 0.55, 0], 0.08);
+  tubes.push({ id: "harness-front", layer: "electrics", points: [mainFuses, frontSplit, lampAt("front", 1)], branches: [[frontSplit, lampAt("front", -1)]], radius: 0.01, material: "electric", zones: [CarZone.Electrics] });
+  const rearSplit = clampInside(hull, [hull.rear + 0.2, rearEnd[1], 0], 0.08);
+  tubes.push({ id: "harness-rear", layer: "electrics", points: [rearEnd, lampAt("rear", 1)], branches: [[rearEnd, rearSplit, lampAt("rear", -1)]], radius: 0.01, material: "electric", zones: [CarZone.Electrics] });
+
+  // --- The OBD socket at its spot (data/obd_sockets.csv or the catalog's
+  // location), the adapter in it and its feed from the fuse box (pin 16).
+  const spot = socketSpotOf(a.socketLocation ?? 0, a.socketSpot ?? 0);
+  const socket = carSocket(hull, spot, { cowlX, clear, floor, frontSeatX, lhd });
+  const obd = socket.at;
+  anchors.obd = obd;
+  tubes.push({ id: "obd-feed", layer: "electrics", points: [fuseBox, [fuseBox[0], obd[1] + 0.02, (fuseBox[2] + obd[2]) / 2], obd], radius: 0.006, material: "electric", zones: [CarZone.Electrics, CarZone.Network] });
+
+  // --- Network: the control units and their buses.
+  const harnessY = floor + 0.08;
+  const lane: Record<BusKind, number> = { powertrain: -0.07, comfort: 0.07, infotainment: 0.17, diagnostic: 0, kline: 0.13, mscan: -0.15, swcan: -0.22 };
+  const network = buildNetwork(input, {
+    placeAt,
+    obd,
+    step: 0.13,
+    clamp: (q) => clampInside(hull, q, 0.09),
+    route: (from, to, bus) => {
+      const z = lane[bus];
+      const y = Math.max(harnessY, Math.min(from[1], to[1]) - 0.4);
+      return dedupe([from, [from[0], y, from[2]], [from[0], y, z], [to[0], y, z], [to[0], y, to[2]], to]);
+    },
+  });
+  anchors.network = network.hub;
+  const engineEcu = network.ecus.find((e) => e.kind === EcuKind.Engine);
   anchors.ecu = engineEcu ? engineEcu.position : placeAt("engineBay");
 
-  const harnessY = floor + 0.08;
-  const lane: Record<BusKind, number> = { powertrain: -0.07, comfort: 0.07, diagnostic: 0, kline: 0.13 };
-  const route = (from: Vec3, to: Vec3, bus: BusKind): Vec3[] => {
-    const z = lane[bus];
-    const y = Math.max(harnessY, Math.min(from[1], to[1]) - 0.4);
-    return dedupe([from, [from[0], y, from[2]], [from[0], y, z], [to[0], y, z], [to[0], y, to[2]], to]);
+  // The drivetrain taken apart: the engine lifts, its head and coils
+  // further, the gearbox moves out, the exhaust out to the right.
+  const gearboxOut: Vec3 =
+    a.engine === EngineLayout.FrontLongitudinal ? [-0.45, 0.18, 0] : a.engine === EngineLayout.FrontTransverse ? [0, 0.2, 0.55] : [-0.4, 0.2, 0];
+  const intakeOut: Vec3 = across ? [intakeDir * 0.3, 0.55, 0] : [0, 0.55, intakeDir * 0.3];
+  const explodeOf = (id: string): Vec3 | undefined => {
+    const is = (...prefixes: string[]) => prefixes.some((q) => id === q || id.startsWith(`${q}-`));
+    if (id === "engine") return [0, 0.42, 0];
+    if (is("cylinder-head")) return [0, 0.68, 0];
+    if (is("coil")) return [0, 0.92, 0];
+    if (is("intake-manifold", "fuel-rail", "throttle")) return intakeOut;
+    if (is("airbox", "intake-pipe")) return [intakeOut[0], 0.85, intakeOut[2]];
+    if (is("turbo")) return across ? [exhaustSide * 0.35, 0.3, 0] : [0, 0.3, -0.35];
+    if (is("gearbox")) return gearboxOut;
+    if (is("front-diff")) return [0.3, 0.2, 0];
+    if (is("rear-diff")) return [-0.3, 0.2, 0];
+    if (is("prop-shaft")) return [0, 0.14, 0];
+    if (is("exhaust", "catalyst", "middle-silencer", "rear-silencer")) return [0, 0, -0.75];
+    if (is("motor")) return [0, 0.35, 0];
+    return undefined;
   };
-  const routes: Route[] = [];
-  if (gateway) routes.push({ bus: input.kline ? "kline" : "diagnostic", ecu: "", points: route(obd, hub, "diagnostic") });
-  for (const e of ecus) {
-    if (e === gateway) continue;
-    // A K-line goes straight from the socket to the unit, past the gateway.
-    const start = e.bus === "kline" ? obd : hub;
-    routes.push({ bus: e.bus, ecu: e.key, points: route(start, e.position, e.bus) });
-  }
+  for (const part of parts) if (part.layer === "drivetrain") part.explode ??= explodeOf(part.id);
+  for (const tube of tubes) if (tube.layer === "drivetrain") tube.explode ??= explodeOf(tube.id);
 
   // Small or unusual bodies (a Smart, a roadster) leave less room than the
   // offsets above assume: whatever ended up outside is pulled back in.
   for (const part of parts) part.center = clampInside(hull, part.center, 0.03);
-  for (const tube of tubes) tube.points = tube.points.map((q) => clampInside(hull, q, tube.radius + 0.01));
+  for (const tube of tubes) {
+    tube.points = tube.points.map((q) => clampInside(hull, q, tube.radius + 0.01));
+    if (tube.branches) tube.branches = tube.branches.map((b) => b.map((q) => clampInside(hull, q, tube.radius + 0.01)));
+  }
+  const routes = network.routes;
   for (const r of routes) r.points = r.points.map((q, i) => (i === r.points.length - 1 ? q : clampInside(hull, q, 0.02)));
   for (const key of Object.keys(anchors)) anchors[key] = clampInside(hull, anchors[key]!, 0.03);
 
-  return { hull, shape, frontAxle, rearAxle, wheels, parts, tubes, ecus, routes, obd, hub, anchors };
+  return {
+    vehicle: "car",
+    hull,
+    shape,
+    frontAxle,
+    rearAxle,
+    wheels,
+    parts,
+    tubes,
+    ecus: network.ecus,
+    routes,
+    busLabels: network.busLabels,
+    obd,
+    socketSpot: spot,
+    adapter: { socket: obd, dir: socket.dir, cable: null },
+    hub: network.hub,
+    anchors,
+    moto: null,
+  };
+}
+
+// The socket of a car at its spot, inside the cabin (in the engine bay for
+// the BMW and Mercedes round plugs), and the direction the plugged adapter
+// points: down into the footwell under the dashboard, up out of the
+// console, sideways out of a side panel.
+function carSocket(
+  hull: Hull,
+  spot: number,
+  c: { cowlX: number; clear: number; floor: number; frontSeatX: number; lhd: number },
+): { at: Vec3; dir: Vec3 } {
+  const side = (x: number, y: number, inset: number) => c.lhd * (hull.halfWidth(hull.station(x), y) - inset);
+  const dash = c.clear + 0.47;
+  const down: Vec3 = [-0.55, -0.83, 0];
+  let at: Vec3;
+  let dir: Vec3 = down;
+  switch (spot) {
+    case SocketSpot.DashRightOfColumn:
+      at = [c.cowlX - 0.42, dash, c.lhd * 0.17];
+      break;
+    case SocketSpot.AbovePedals:
+      at = [c.cowlX - 0.3, c.clear + 0.44, c.lhd * 0.4];
+      break;
+    case SocketSpot.BelowColumn:
+      at = [c.cowlX - 0.45, c.clear + 0.45, c.lhd * 0.37];
+      break;
+    case SocketSpot.FootwellLeft:
+      at = [c.cowlX - 0.25, c.clear + 0.3, side(c.cowlX - 0.25, c.clear + 0.3, 0.08)];
+      dir = [0, 0, -c.lhd];
+      break;
+    case SocketSpot.FuseBoxLower:
+      at = [c.cowlX - 0.44, c.clear + 0.42, side(c.cowlX - 0.44, c.clear + 0.42, 0.12)];
+      dir = [-0.4, -0.3, -c.lhd * 0.87];
+      break;
+    case SocketSpot.ConsoleFront:
+      at = [c.cowlX - 0.55, c.clear + 0.38, 0];
+      dir = [-0.6, 0.8, 0];
+      break;
+    case SocketSpot.ConsoleSide:
+      at = [c.cowlX - 0.7, c.floor + 0.13, c.lhd * 0.12];
+      dir = [0, 0, c.lhd];
+      break;
+    case SocketSpot.Passenger:
+      at = [c.cowlX - 0.42, dash, -c.lhd * 0.4];
+      break;
+    case SocketSpot.RearConsole:
+      at = [c.frontSeatX - 0.34, c.floor + 0.2, 0];
+      dir = [-1, 0, 0];
+      break;
+    case SocketSpot.EngineBay:
+      at = [c.cowlX + 0.2, c.clear + 0.58, c.lhd * 0.42];
+      dir = [0, 1, 0];
+      break;
+    case SocketSpot.UnderSeat:
+      at = [c.frontSeatX + 0.2, c.floor + 0.06, c.lhd * 0.37];
+      dir = [1, 0, 0];
+      break;
+    default:
+      at = [c.cowlX - 0.42, dash, c.lhd * 0.58];
+  }
+  // The engine bay is in front of the bulkhead, everything else behind it.
+  const clamped = clampInside(hull, at, 0.07);
+  if (spot !== SocketSpot.EngineBay) clamped[0] = Math.min(clamped[0], c.cowlX - 0.12);
+  return { at: clampInside(hull, clamped, 0.07), dir };
 }
 
 function across3(engine: EngineLayout): "x" | "z" {
   return engine === EngineLayout.FrontLongitudinal ? "x" : "z";
 }
 
-function dedupe(points: Vec3[]): Vec3[] {
+export function dedupe(points: Vec3[]): Vec3[] {
   const out: Vec3[] = [];
   for (const p of points) {
     const last = out[out.length - 1];
@@ -969,8 +1340,14 @@ export function placeFinder(hull: Hull, c: PlaceContext): (place: EcuPlace) => V
       case "driverDoor":
         p = [c.frontSeatX + 0.1, c.clear + 0.55, side(c.frontSeatX + 0.1, c.clear + 0.55, 0.07)];
         break;
+      case "passengerDoor":
+        p = [c.frontSeatX + 0.1, c.clear + 0.55, -side(c.frontSeatX + 0.1, c.clear + 0.55, 0.07)];
+        break;
       case "underSeat":
         p = [c.frontSeatX, c.floor + 0.06, 0.37];
+        break;
+      case "passengerSeat":
+        p = [c.frontSeatX, c.floor + 0.06, -0.37];
         break;
       case "boot":
         p = [c.rearAxle - 0.35, c.clear + 0.42, 0.35];
@@ -983,6 +1360,24 @@ export function placeFinder(hull: Hull, c: PlaceContext): (place: EcuPlace) => V
         break;
       case "inverter":
         p = c.motor ? [c.motor[0], c.motor[1] + 0.4, c.motor[2] - 0.25] : [c.frontAxle + 0.25, c.clear + 0.6, -0.3];
+        break;
+      case "roof": {
+        // Behind the windscreen header, between the sun visors.
+        const x = hull.xAt(hull.profile.roofFront) - 0.15;
+        p = [x, hull.top(hull.station(x)) - 0.1, 0];
+        break;
+      }
+      case "windscreen": {
+        // The camera behind the mirror, at the top of the windscreen.
+        const x = hull.xAt(hull.profile.roofFront) + 0.05;
+        p = [x, hull.top(hull.station(x)) - 0.12, 0];
+        break;
+      }
+      case "fuelPump":
+        p = [c.rearAxle + 0.45, c.floor + 0.12, -0.3];
+        break;
+      case "rearAxle":
+        p = [c.rearAxle + 0.05, c.clear + 0.38, 0];
         break;
     }
     return clampInside(hull, p, 0.09);
