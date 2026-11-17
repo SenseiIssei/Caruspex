@@ -18,10 +18,10 @@ the brand group, the market and the years, the same rules a person would
 apply. Fill them in by hand only where a model differs from the rule.
 
     from, to     production years, to = 0 or empty while still built
-    body         hatch sedan estate suv van coupe cabrio pickup mpv micro roadster moto
+    body         hatch sedan estate suv van coupe cabrio pickup mpv micro roadster moto truck
     power        letters: P petrol, D diesel, H hybrid, X plug-in, E electric, G gas
     vin          model codes from the VIN, space separated (VAG "1J", Mercedes "203")
-    connector    none obd2 vag2x2 bmw20 mb38 other moto, optionally with a later
+    connector    none obd2 vag2x2 bmw20 mb38 other moto j1939, optionally with a later
                  connector: "vag2x2>obd2@1996" means round plugs, from about
                  1996 the 16-pin socket
     location     dashleft (driver side under the dashboard, near the steering
@@ -33,6 +33,11 @@ apply. Fill them in by hand only where a model differs from the rule.
 
 Motorcycles (moto.csv) have body moto and connector moto: the maker's
 diagnostic plug with an adapter cable to OBD-II (crates/caruspex-vehicles/src/moto.rs).
+
+Trucks (trucks.csv) have body truck and are diagnosed over SAE J1939, not
+OBD-II, so they get no ELM327 protocol order: connector j1939 is the round
+9-pin socket of North American trucks, obd2 the 16-pin socket European
+trucks have since Euro 6 (crates/caruspex-vehicles/src/truck.rs).
 
 data/obd_sockets.csv names the exact spot of the socket for the most common
 generations (brand,model,generation,spot,cover) and overrides the location
@@ -63,11 +68,13 @@ BODY = {
     "hatch": "Hatchback", "sedan": "Sedan", "estate": "Estate", "suv": "Suv",
     "van": "Van", "coupe": "Coupe", "cabrio": "Convertible", "pickup": "Pickup",
     "mpv": "Mpv", "micro": "Microcar", "roadster": "Roadster", "moto": "Motorcycle",
+    "truck": "Truck",
 }
 POWER = {"P": "PtPetrol", "D": "PtDiesel", "H": "PtHybrid", "X": "PtPlugIn",
          "E": "PtElectric", "G": "PtGas"}
 CONNECTOR = {"none": "None", "obd2": "Obd2", "vag2x2": "Vag2x2", "bmw20": "Bmw20",
-             "mb38": "Mb38", "other": "Other", "moto": "Moto"}
+             "mb38": "Mb38", "other": "Other", "moto": "Moto",
+             "j1939": "J1939"}
 LOCATION = {
     "": "Unknown", "dashleft": "UnderDashLeft", "column": "UnderSteeringColumn",
     "footwell": "FootwellCover", "fusebox": "FuseBox", "console": "CentreConsole",
@@ -322,7 +329,16 @@ def build_row(r: dict, brands: dict, market_override: str, where: str) -> dict:
     if switch and not (y0 < switch <= y1eff):
         raise DataError(f"connector change {switch} outside {y0}-{y1eff}")
 
-    if "moto" in (early, late):
+    if r["body"] == "truck" or "j1939" in (early, late):
+        if r["body"] != "truck":
+            raise DataError("connector j1939 only on trucks")
+        if r["protocols"]:
+            raise DataError("trucks speak J1939, no ELM327 protocol order")
+        bus = r["bus"] or "can"
+        if bus != "can":
+            raise DataError("J1939 runs on CAN")
+        order = ""
+    elif "moto" in (early, late):
         bus = r["bus"] or "mixed"
         if bus not in BUS:
             raise DataError(f"unknown bus '{bus}'")

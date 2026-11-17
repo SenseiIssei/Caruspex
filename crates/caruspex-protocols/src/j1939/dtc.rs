@@ -20,6 +20,7 @@
 //! (some makers document it), otherwise the version that gives a known SPN
 //! wins, version 3 when none or several do.
 
+use super::fmi::fmi_text;
 use super::params::find_param;
 
 /// One of the four lamps a control unit reports with its faults.
@@ -252,6 +253,27 @@ fn guess_older(bytes: [u8; 3]) -> SpnConversion {
     }
 }
 
+/// What a fault means: the name of the SPN (or "SPN n" when the table
+/// does not know it) and what the FMI says.
+pub fn describe(spn: u32, fmi: u8) -> String {
+    let name = find_param(spn).map_or_else(|| format!("SPN {spn}"), |p| p.name().to_string());
+    format!("{name}: {}", fmi_text(fmi))
+}
+
+/// "SPN 110 FMI 0" (as [`J1939Dtc::code`] writes it) back into SPN and FMI.
+pub fn parse_code(code: &str) -> Option<(u32, u8)> {
+    let mut parts = code.split_whitespace();
+    if !parts.next()?.eq_ignore_ascii_case("SPN") {
+        return None;
+    }
+    let spn: u32 = parts.next()?.parse().ok()?;
+    if !parts.next()?.eq_ignore_ascii_case("FMI") {
+        return None;
+    }
+    let fmi: u8 = parts.next()?.parse().ok()?;
+    (parts.next().is_none() && spn <= 0x7FFFF && fmi <= 31).then_some((spn, fmi))
+}
+
 /// A DM1 or DM2: the lamps and the faults.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct DiagnosticMessage {
@@ -364,6 +386,16 @@ mod tests {
         let dtc = J1939Dtc::decode(bytes, None);
         assert_eq!(dtc.conversion, SpnConversion::V1);
         assert_eq!(dtc.spn, 190);
+    }
+
+    #[test]
+    fn codes_and_their_meaning() {
+        assert_eq!(parse_code("SPN 110 FMI 0"), Some((110, 0)));
+        assert_eq!(parse_code("spn 3251 fmi 31"), Some((3251, 31)));
+        assert_eq!(parse_code("P0171"), None);
+        assert_eq!(parse_code("SPN 110 FMI 32"), None);
+        assert!(describe(110, 0).contains(':'));
+        assert!(describe(999_999 & 0x7FFFF, 2).starts_with("SPN "));
     }
 
     #[test]

@@ -286,10 +286,11 @@ fn the_catalog_is_large_and_consistent() {
         assert!(!has_long_dash(g.note.de), "{name}");
         assert!(!has_long_dash(g.note.en), "{name}");
         // An OBD-II socket (or a motorcycle plug with its adapter cable) at
-        // some point means there is a protocol order.
-        let obd = [Connector::Obd2, Connector::Moto]
-            .iter()
-            .any(|c| g.connector == *c || g.late_connector == *c);
+        // some point means there is a protocol order; trucks speak J1939.
+        let obd = g.body != BodyType::Truck
+            && [Connector::Obd2, Connector::Moto]
+                .iter()
+                .any(|c| g.connector == *c || g.late_connector == *c);
         assert_eq!(obd, !g.protocol_order.is_empty(), "{name}");
     }
 
@@ -613,4 +614,63 @@ fn engine_codes_give_target_values() {
     // A generation without a row has no codes.
     let golf2 = catalog::find_generation("Volkswagen", "Golf", 1985).unwrap();
     assert!(engine_codes(golf2).is_empty());
+}
+
+#[test]
+fn trucks_speak_j1939_and_vans_stay_cars() {
+    let _g = lock();
+    set_language(Language::English);
+    let brand_of = |wmi: &str| find_wmi(wmi).map(|e| e.brands).unwrap_or("");
+    for (wmi, brand) in [
+        ("WMA", "MAN"),
+        ("YS2", "Scania"),
+        ("YV2", "Volvo Trucks"),
+        ("4V4", "Volvo Trucks"),
+        ("XLR", "DAF"),
+        ("W1T", "Mercedes-Benz"),
+        ("ZCF", "Iveco"),
+        ("VF6", "Renault Trucks|Renault"),
+        ("1FU", "Freightliner"),
+        ("3AK", "Freightliner"),
+        ("1XK", "Kenworth"),
+        ("1XP", "Peterbilt"),
+        ("1HS", "International"),
+        ("1M1", "Mack"),
+    ] {
+        assert_eq!(brand_of(wmi), brand, "{wmi}");
+        for b in brand.split('|') {
+            assert!(catalog::brand_info(b).is_some(), "{b}");
+        }
+    }
+    let trucks: Vec<_> = catalog::all()
+        .iter()
+        .filter(|g| g.body == BodyType::Truck)
+        .collect();
+    assert!(trucks.len() >= 20);
+    for g in &trucks {
+        assert!(caruspex_vehicles::truck::speaks_j1939(g, 0));
+        assert!(g.protocol_order.is_empty());
+        assert!(catalog::diagnosis_text(g, 0).contains("J1939"));
+    }
+    let actros = catalog::find_generation("Mercedes-Benz", "Actros", 2015).unwrap();
+    assert_eq!(actros.generation, "MP4");
+    assert!(catalog::diagnosis_text(actros, 2015).contains("24 V"));
+    let kenworth = catalog::find_generation("Kenworth", "T680", 2020).unwrap();
+    assert_eq!(catalog::connector_for(kenworth, 2020), Connector::J1939);
+    assert_eq!(catalog::support_for(kenworth, 2020, 0), ObdSupport::Full);
+    assert!(catalog::diagnosis_text(kenworth, 2020).contains("9-pin"));
+    assert!(catalog::location_text_for(kenworth, 2020).contains("cab"));
+    // Vans are cars for diagnosis: OBD-II with a protocol order.
+    for (brand, model, year) in [
+        ("Mercedes-Benz", "Sprinter", 2015),
+        ("Ford", "Transit", 2015),
+        ("Volkswagen", "Crafter", 2018),
+    ] {
+        let van = catalog::find_generation(brand, model, year).unwrap();
+        assert_eq!(van.body, BodyType::Van, "{model}");
+        assert!(!van.protocol_order.is_empty(), "{model}");
+        assert!(!caruspex_vehicles::truck::speaks_j1939(van, year));
+    }
+    assert_eq!(body_name(BodyType::Truck), "Truck");
+    set_language(Language::German);
 }

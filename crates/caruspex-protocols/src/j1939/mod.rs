@@ -29,10 +29,12 @@ pub mod tp;
 
 use caruspex_i18n::l;
 
-pub use dtc::{DiagnosticMessage, J1939Dtc, LampState, Lamps, SpnConversion, decode_dm};
-pub use fmi::fmi_text;
+pub use dtc::{
+    DiagnosticMessage, J1939Dtc, LampState, Lamps, SpnConversion, decode_dm, describe, parse_code,
+};
+pub use fmi::{fmi_text, fmi_weight};
 pub use params::{J1939Param, J1939Value, decode_params, find_param, j1939_params};
-pub use session::{AckKind, ClearResult, J1939Session, J1939Unit, UnitFaults};
+pub use session::{AckKind, ClearResult, ComponentId, J1939Session, J1939Unit, UnitFaults};
 
 /// PGN 59904: request for another PGN.
 pub const PGN_REQUEST: u32 = 0xEA00;

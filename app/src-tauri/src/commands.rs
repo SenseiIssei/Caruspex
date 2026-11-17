@@ -32,8 +32,15 @@ fn job(state: &State<'_, AppState>, job: Job) {
 }
 
 /// A connect job, after the way that worked last time for this car when
-/// the interface knows one.
-fn connect_job(state: &State<'_, AppState>, remembered: Option<ConnectRoute>, then: Job) {
+/// the interface knows one. `truck`: the J1939 bit rate in kbit/s (0 for
+/// both in turn) when the interface connects to a truck, `None` for cars.
+fn connect_job(
+    state: &State<'_, AppState>,
+    remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
+    then: Job,
+) {
+    job(state, Job::SetTruck(truck));
     match remembered {
         Some(route) => job(
             state,
@@ -599,10 +606,12 @@ pub fn open_serial(
     baud: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenSerial {
             device,
             baud,
@@ -618,10 +627,12 @@ pub fn open_tcp(
     port: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenTcp {
             host,
             port,
@@ -631,9 +642,9 @@ pub fn open_tcp(
 }
 
 #[tauri::command]
-pub fn open_demo(state: State<'_, AppState>, protocol_order: String) {
+pub fn open_demo(state: State<'_, AppState>, protocol_order: String, truck: Option<u32>) {
     let _ = protocol_order;
-    job(&state, Job::OpenDemo);
+    connect_job(&state, None, truck, Job::OpenDemo);
 }
 
 #[tauri::command]
@@ -644,7 +655,7 @@ pub fn open_enet(
     remembered: Option<ConnectRoute>,
 ) {
     let _ = protocol_order;
-    connect_job(&state, remembered, Job::OpenEnet { host });
+    connect_job(&state, remembered, None, Job::OpenEnet { host });
 }
 
 #[tauri::command]
@@ -653,9 +664,10 @@ pub fn open_can(
     spec: String,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     let _ = protocol_order;
-    connect_job(&state, remembered, Job::OpenCan { spec });
+    connect_job(&state, remembered, truck, Job::OpenCan { spec });
 }
 
 #[tauri::command]
@@ -671,10 +683,12 @@ pub fn open_ble(
     kinds: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenBle {
             id,
             name,
@@ -691,6 +705,7 @@ pub fn open_replay(
     real_time: bool,
     protocol_order: String,
 ) {
+    job(&state, Job::SetTruck(None));
     job(
         &state,
         Job::OpenReplay {

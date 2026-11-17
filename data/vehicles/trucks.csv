@@ -1,0 +1,35 @@
+# Heavy trucks: diagnosis over SAE J1939 (29-bit CAN), not OBD-II.
+# European trucks since Euro 6 have the 16-pin socket of the cars with
+# J1939 on its CAN pins and 24 V on pin 16 (connector obd2); North American
+# trucks the round 9-pin Deutsch socket of SAE J1939-13 (connector j1939),
+# black type 1 at 250 kbit/s, green type 2 at 500 kbit/s from about 2016.
+# Older North American trucks with the 6-pin plug (SAE J1708) are left out.
+# Vans and light commercial vehicles (Mercedes Sprinter, Ford Transit,
+# VW Crafter, Iveco Daily, Fiat Ducato, Renault Master) are not here: they
+# speak normal OBD-II and are listed with the cars.
+# Mercedes VIN codes are the model series at positions 4 to 6 (963 tractor,
+# 964 rigid of the Actros since 2011).
+brand,model,generation,from,to,body,power,vin,connector,location,aliases,note_de,note_en,bus,protocols
+MAN,TGX,I,2007,2020,truck,D,,obd2,,,,,,
+MAN,TGX,II,2020,0,truck,D,,obd2,,,,,,
+MAN,TGS,I,2007,2020,truck,D,,obd2,,,,,,
+MAN,TGS,II,2020,0,truck,D,,obd2,,,,,,
+Scania,R,PGR,2004,2016,truck,D,,obd2,,R-Serie|R-series,,,,
+Scania,R,NTG,2016,0,truck,D,,obd2,,R-Serie|R-series,,,,
+Scania,S,NTG,2016,0,truck,D,,obd2,,S-Serie|S-series,,,,
+Volvo Trucks,FH,FH4,2012,2020,truck,D,,obd2,,Volvo FH,,,,
+Volvo Trucks,FH,FH5,2020,0,truck,DE,,obd2,,Volvo FH|FH Electric,,,,
+DAF,XF,XF105,2006,2013,truck,D,,obd2,,,,,,
+DAF,XF,Euro 6,2013,2021,truck,D,,obd2,,XF106,,,,
+DAF,XF,NGD,2021,0,truck,D,,obd2,,New Generation,,,,
+Mercedes-Benz,Actros,MP4,2011,2019,truck,D,963 964,obd2,,Lkw|truck,,,,
+Mercedes-Benz,Actros,MP5,2019,0,truck,D,963 964,obd2,,Lkw|truck,,,,
+Iveco,Stralis,AS,2002,2019,truck,DG,,obd2,,,,,,
+Iveco,S-Way,I,2019,0,truck,DG,,obd2,,,,,,
+Renault Trucks,T,I,2013,0,truck,D,,obd2,,Renault T,,,,
+Freightliner,Cascadia,I,2007,2017,truck,D,,j1939,,,,,,
+Freightliner,Cascadia,II,2017,0,truck,DE,,j1939,,eCascadia,,,,
+Kenworth,T680,I,2012,0,truck,D,,j1939,,,,,,
+Peterbilt,579,I,2012,0,truck,D,,j1939,,,,,,
+International,LT,I,2017,0,truck,D,,j1939,,Navistar,,,,
+Mack,Anthem,I,2018,0,truck,D,,j1939,,,,,,
