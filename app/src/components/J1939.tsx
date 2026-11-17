@@ -150,9 +150,11 @@ export function J1939LivePage() {
               <tbody>
                 {g.rows.map((r) => (
                   <tr key={`${r.source}-${r.spn}`} title={r.about}>
-                    <td className="j1939-name">{r.name}</td>
+                    <td className="j1939-name">
+                      {r.name}
+                      <span className="faint mono ltr j1939-spn">SPN {r.spn}</span>
+                    </td>
                     <td className={`j1939-value num${r.state === "error" ? " bad" : ""}`}>{shown(r)}</td>
-                    <td className="faint mono ltr j1939-spn">SPN {r.spn}</td>
                   </tr>
                 ))}
               </tbody>

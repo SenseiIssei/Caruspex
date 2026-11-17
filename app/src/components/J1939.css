@@ -32,10 +32,11 @@
 .j1939-table { width: 100%; border-collapse: collapse; }
 .j1939-table td { padding: 4px 6px; border-bottom: 1px solid var(--border); vertical-align: baseline; }
 .j1939-table tr:last-child td { border-bottom: none; }
-.j1939-name { width: 55%; }
+.j1939-name { width: 60%; }
 .j1939-value { text-align: end; white-space: nowrap; font-weight: 600; }
-.j1939-value.bad { color: var(--bad); font-weight: 500; }
-.j1939-spn { white-space: nowrap; font-size: 12px; }
+.j1939-value.bad { color: var(--bad); font-weight: 500; white-space: normal; }
+/* The SPN sits under the name, so the card never gets wider than its column. */
+.j1939-spn { display: block; white-space: nowrap; font-size: 11px; }
 
 .connect-truck { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
 .connect-truck .connect-line { align-items: center; }
