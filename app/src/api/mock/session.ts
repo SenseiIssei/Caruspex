@@ -272,6 +272,8 @@ export const sessionHandlers: PartialHandlers = {
     await busy(() => wait(Math.min(milliseconds, 2500)));
     emit("ble_scan_finished", { devices: [], error: L("Bluetooth ist im Browser nicht verfügbar.", "Bluetooth is not available in the browser.") });
   },
+  bluetooth_access: () => ({ available: true, needsPermission: false, granted: true, enabled: true }),
+  request_bluetooth_access: () => ({ available: true, needsPermission: false, granted: true, enabled: true }),
   open_ble: () => {
     log(t(W, "Suche Bluetooth-Adapter ..."));
     void noHardware(L("Kein Bluetooth-Adapter gefunden.", "No Bluetooth adapter found."), { kind: "bluetooth", deviceFound: false });

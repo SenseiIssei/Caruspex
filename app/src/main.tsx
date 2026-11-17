@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client";
 import { call, DEFAULT_SETTINGS } from "./api";
 import { effectiveLanguage, setLanguage, t } from "./i18n";
 import { setFontScale, setHighContrast } from "./lib/access";
+import { isAndroid } from "./lib/platform";
 import { setAppearance, type Appearance } from "./lib/theme";
 import { emitApp } from "./lib/store";
 import { App } from "./shell/App";
@@ -21,6 +22,8 @@ import "./styles/widgets.css";
 
 async function boot(): Promise<void> {
   const params = new URLSearchParams(location.search);
+  // No window frame on a phone: the window buttons go (shell.css).
+  document.documentElement.classList.toggle("android", isAndroid);
   const settings = await call("load_settings").catch(() => settingsStore.get().values);
   // ?mode=beginner or ?mode=pro (--mode) for this run, the setting stays.
   const mode = params.get("mode");

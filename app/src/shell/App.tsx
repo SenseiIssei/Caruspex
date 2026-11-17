@@ -10,6 +10,7 @@ import { PageActiveContext } from "../lib/hooks";
 import { emitApp, onApp, useStore } from "../lib/store";
 import { ReportPreview } from "../report/ReportPreview";
 import { setFontScale, setHighContrast } from "../lib/access";
+import { isAndroid, usePhoneLayout } from "../lib/platform";
 import { appendLog, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import { SetupAssistant } from "./SetupAssistant";
@@ -41,6 +42,9 @@ function PageHost() {
 
 export function App({ startPage }: { startPage: string | null }) {
   const [compact, setCompact] = useState(false);
+  // Phone width: the sidebar is a menu that slides in over the page.
+  const phone = usePhoneLayout();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
   const [version, setVersion] = useState("");
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
@@ -108,15 +112,19 @@ export function App({ startPage }: { startPage: string | null }) {
       } catch {
         setVersion("");
       }
-      try {
-        const ports = await call("list_serial_ports");
-        appendLog(
-          ports.length === 0
-            ? t(MW, "Kein COM-Anschluss gefunden. Steckt der Adapter am Rechner?")
-            : tn(MW, "%n Anschluss/Anschlüsse gefunden.", ports.length),
-        );
-      } catch {
-        // Listing ports is best effort.
+      // A phone has no COM ports; its USB adapters are listed on the
+      // connection page.
+      if (!isAndroid) {
+        try {
+          const ports = await call("list_serial_ports");
+          appendLog(
+            ports.length === 0
+              ? t(MW, "Kein COM-Anschluss gefunden. Steckt der Adapter am Rechner?")
+              : tn(MW, "%n Anschluss/Anschlüsse gefunden.", ports.length),
+          );
+        } catch {
+          // Listing ports is best effort.
+        }
       }
       appendLog(t(MW, "Caruspex bereit. Adapter einstecken, Zündung an, dann verbinden."));
       const settings = settingsStore.get().values;
@@ -154,10 +162,12 @@ export function App({ startPage }: { startPage: string | null }) {
         onOpenUpdate={() => setUpdateDialog({ autoStart: false })}
         logOpen={logOpen}
         onToggleLog={() => setLogOpen((v) => !v)}
-        onToggleSidebar={() => setCompact((v) => !v)}
+        onToggleSidebar={() => (phone ? setMenuOpen((v) => !v) : setCompact((v) => !v))}
+        menuOpen={phone && menuOpen}
       />
       <div className="window-body">
-        <Sidebar compact={compact} />
+        <Sidebar compact={compact && !phone} menuOpen={phone && menuOpen} onNavigate={() => setMenuOpen(false)} />
+        {phone && menuOpen ? <div className="menu-backdrop" onClick={() => setMenuOpen(false)} /> : null}
         <main className="content">
           <PageHost />
           <LogDrawer open={logOpen} onClose={() => setLogOpen(false)} />

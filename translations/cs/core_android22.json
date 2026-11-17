@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android nepovolil přístup k adaptéru USB.",
+ "c-android22-2": "Bluetooth LE v aplikaci pro Android zatím není. Klasické adaptéry Bluetooth fungují, jakmile jsou spárované.",
+ "c-android22-3": "Bluetooth je vypnutý. Zapněte ho v nastavení Androidu.",
+ "c-android22-4": "Caruspex zatím nesmí používat Bluetooth. Povolte přístup k zařízením v okolí.",
+ "c-android22-5": "Žádný spárovaný adaptér Bluetooth. Spárujte ho jednou v nastavení Androidu, PIN bývá 1234 nebo 0000.",
+ "c-android22-6": "Spojení Bluetooth s adaptérem se nezdařilo: %1",
+ "c-android22-7": "Adaptér USB se nepodařilo otevřít: %1",
+ "c-android22-8": "Toto zařízení nemá Bluetooth."
+}

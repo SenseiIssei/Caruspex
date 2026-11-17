@@ -17,13 +17,28 @@ function Badge({ text, tone }: { text: string; tone: string }) {
   );
 }
 
-function NavEntry({ entry, active, compact, badge }: { entry: PageEntry; active: boolean; compact: boolean; badge?: { text: string; tone: string } }) {
+function NavEntry({
+  entry,
+  active,
+  compact,
+  badge,
+  onNavigate,
+}: {
+  entry: PageEntry;
+  active: boolean;
+  compact: boolean;
+  badge?: { text: string; tone: string };
+  onNavigate?: () => void;
+}) {
   const label = entry.label();
   return (
     <button
       type="button"
       className={`nav-button${active ? " active" : ""}`}
-      onClick={() => navigate(entry.id)}
+      onClick={() => {
+        navigate(entry.id);
+        onNavigate?.();
+      }}
       title={compact ? label : undefined}
       aria-label={compact ? label : undefined}
       aria-current={active ? "page" : undefined}
@@ -36,7 +51,9 @@ function NavEntry({ entry, active, compact, badge }: { entry: PageEntry; active:
   );
 }
 
-export function Sidebar({ compact }: { compact: boolean }) {
+// menuOpen: at phone width the sidebar is a menu over the page (shell.css),
+// shown while this is set; onNavigate closes it after a choice.
+export function Sidebar({ compact, menuOpen = false, onNavigate }: { compact: boolean; menuOpen?: boolean; onNavigate?: () => void }) {
   const page = useCurrentPage();
   const faults = useSession((s) => (s.connected ? s.faults.length : 0));
   const due = useSession((s) => s.servicesDue);
@@ -84,19 +101,26 @@ export function Sidebar({ compact }: { compact: boolean }) {
   };
 
   return (
-    <nav className={`sidebar${compact ? " compact" : ""}`} aria-label={t(ACCESS, "Seiten")} onKeyDown={onKey}>
+    <nav
+      className={`sidebar${compact ? " compact" : ""}${menuOpen ? " menu-open" : ""}`}
+      aria-label={t(ACCESS, "Seiten")}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onNavigate?.();
+        onKey(e);
+      }}
+    >
       <div className="sidebar-scroll" ref={list}>
         {top.map(({ entry, heading }) => (
           <div key={entry.id} className="nav-group">
             {heading ? <div className="nav-section">{compact ? "" : heading()}</div> : null}
-            <NavEntry entry={entry} active={page === entry.id} compact={compact} badge={badgeFor(entry)} />
+            <NavEntry entry={entry} active={page === entry.id} compact={compact} badge={badgeFor(entry)} onNavigate={onNavigate} />
           </div>
         ))}
       </div>
       <div className="sidebar-divider" />
       <div className="sidebar-bottom">
         {bottom.map((entry) => (
-          <NavEntry key={entry.id} entry={entry} active={page === entry.id} compact={compact} badge={badgeFor(entry)} />
+          <NavEntry key={entry.id} entry={entry} active={page === entry.id} compact={compact} badge={badgeFor(entry)} onNavigate={onNavigate} />
         ))}
       </div>
     </nav>

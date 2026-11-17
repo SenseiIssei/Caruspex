@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android no ha permitido el acceso al adaptador USB.",
+ "c-android22-2": "Bluetooth LE aún no está en la app de Android. Los adaptadores Bluetooth clásicos funcionan una vez emparejados.",
+ "c-android22-3": "El Bluetooth está apagado. Actívalo en los ajustes de Android.",
+ "c-android22-4": "Caruspex aún no puede usar el Bluetooth. Permite el acceso a los dispositivos cercanos.",
+ "c-android22-5": "No hay ningún adaptador Bluetooth emparejado. Emparéjalo una vez en los ajustes de Android; el PIN suele ser 1234 o 0000.",
+ "c-android22-6": "No se pudo conectar por Bluetooth con el adaptador: %1",
+ "c-android22-7": "No se pudo abrir el adaptador USB: %1",
+ "c-android22-8": "Este dispositivo no tiene Bluetooth."
+}

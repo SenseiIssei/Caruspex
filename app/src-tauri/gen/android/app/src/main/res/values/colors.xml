@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The background of the interface (theme.css), shown until the page is there. -->
+    <color name="caruspex_background">#FF0A0C11</color>
+</resources>

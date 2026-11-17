@@ -3,4 +3,6 @@ dist/
 # Generated before dev and build
 src/i18n/generated/
 public/fonts/
-src-tauri/gen/
+# The Android project in src-tauri/gen/android is kept in git, as Tauri
+# recommends; the schemas are written by every build.
+src-tauri/gen/schemas/

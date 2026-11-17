@@ -312,3 +312,69 @@
   .titlebar .capsule-text { max-width: 140px; }
   .window-button { width: 38px; }
 }
+
+/* --- Phones (Android app, or a desktop window this narrow) ------------------------------- */
+
+/* The phone has no window frame. */
+:root.android .window-buttons { display: none; }
+:root.android .titlebar { padding-inline-end: 6px; }
+
+@media (max-width: 640px) {
+  /* The sidebar becomes a menu that slides in over the page. */
+  .sidebar {
+    position: fixed;
+    top: 46px;
+    bottom: 0;
+    inset-inline-start: 0;
+    z-index: 30;
+    width: min(300px, 86vw);
+    padding: 10px 10px 12px;
+    transform: translateX(-104%);
+    transition: transform 240ms var(--ease), visibility 240ms;
+    visibility: hidden;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.45);
+  }
+  :root[dir="rtl"] .sidebar { transform: translateX(104%); }
+  .sidebar.menu-open, :root[dir="rtl"] .sidebar.menu-open { transform: none; visibility: visible; }
+  /* Full entries again (the 900 px rules above make them icons). */
+  .sidebar .nav-text { opacity: 1; width: auto; flex: 1 1 auto; }
+  .sidebar .nav-button { justify-content: flex-start; height: 44px; padding: 0 10px 0 12px; gap: 12px; }
+  .sidebar .nav-section { max-height: 40px; padding: 10px 12px 2px; font-size: 11px; }
+  .sidebar .nav-badge { position: static; min-width: 20px; height: 20px; font-size: 11px; padding: 0 6px; }
+  .menu-backdrop {
+    position: fixed;
+    inset: 46px 0 0 0;
+    z-index: 29;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+    animation: fade-up 160ms var(--ease) both;
+  }
+
+  .titlebar { gap: 4px; padding-inline-start: 6px; }
+  .titlebar .logo-mark { display: none; }
+  .titlebar .capsule { padding: 4px 10px; gap: 6px; }
+  .titlebar .capsule-text { max-width: 42vw; }
+  .update-button { padding: 0 10px; }
+
+  .page-inner { padding: 14px 12px 20px; gap: 14px; }
+  .page-header { gap: 10px; }
+  .page-header-text { flex-basis: 100%; }
+  .page-header-actions { width: 100%; }
+
+  .modal-backdrop { padding: 8px; }
+  .modal-head, .modal-foot { padding: 12px 14px; }
+  .modal-body { padding: 14px; }
+
+  .toaster { inset-inline: 12px; bottom: 12px; align-items: stretch; }
+  .toast { max-width: none; }
+  .log-inner { padding: 8px 10px 12px; }
+}
+
+/* Fingers: controls at least about 40 px high. */
+@media (pointer: coarse) {
+  .btn { min-height: 42px; }
+  .btn.small { min-height: 36px; }
+  .chip { min-height: 36px; padding-inline: 14px; }
+  .input, .select { min-height: 42px; }
+  .tool-button { width: 40px; height: 40px; }
+  .tab { padding: 12px 14px; }
+}

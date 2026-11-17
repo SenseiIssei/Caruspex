@@ -892,8 +892,17 @@ export interface AppInfo {
   version: string;
   // True when the BLE support is compiled in.
   hasBle: boolean;
-  platform: "windows" | "macos" | "linux" | "browser";
+  platform: "windows" | "macos" | "linux" | "android" | "browser";
   documentsDir: string;
+}
+
+// Whether Bluetooth may be used. Android 12 and newer ask at run time;
+// elsewhere everything is true and needsPermission false.
+export interface BluetoothAccess {
+  available: boolean;
+  needsPermission: boolean;
+  granted: boolean;
+  enabled: boolean;
 }
 
 export interface UpdateInfo {

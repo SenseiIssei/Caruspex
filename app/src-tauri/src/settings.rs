@@ -183,6 +183,8 @@ pub fn write_atomically(path: &Path, data: &[u8]) -> Result<(), String> {
 
 /// The QSettings keys of the Qt version: (group, key).
 pub mod legacy {
+    // The Qt version never ran on a phone: nothing to take over there.
+    #![cfg_attr(mobile, allow(dead_code))]
     use super::AppSettings;
 
     /// A value as QSettings stored it: number, flag or text.

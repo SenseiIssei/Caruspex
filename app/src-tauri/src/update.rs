@@ -475,7 +475,7 @@ fn file_name(url: &str) -> String {
 }
 
 /// Whether files can be created in this folder.
-#[cfg_attr(windows, allow(dead_code))]
+#[cfg_attr(not(any(target_os = "linux", target_os = "macos")), allow(dead_code))]
 fn writable(dir: &Path) -> bool {
     let probe = dir.join(format!(".caruspex-probe-{}", std::process::id()));
     let ok = File::create(&probe).is_ok();
@@ -620,7 +620,7 @@ fn install_bundle(_: &Path, _: &Package, _: &mut dyn FnMut(u64, u64)) -> Result<
 
 /// A shell that waits until this process has ended and then starts the new
 /// version, so the single-instance lock of the old one is gone by then.
-#[cfg(unix)]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 fn relaunch_command(
     program: &std::ffi::OsStr,
     arguments: &[&std::ffi::OsStr],

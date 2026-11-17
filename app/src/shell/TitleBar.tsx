@@ -30,6 +30,7 @@ export function TitleBar({
   logOpen,
   onToggleLog,
   onToggleSidebar,
+  menuOpen,
 }: {
   version: string;
   update: UpdateInfo | null;
@@ -37,6 +38,8 @@ export function TitleBar({
   logOpen: boolean;
   onToggleLog: () => void;
   onToggleSidebar: () => void;
+  // Phone width: the sidebar is a menu and this button opens it.
+  menuOpen?: boolean;
 }) {
   const link = useSession((s) => s.link);
   const linkText = useSession((s) => s.linkText);
@@ -64,9 +67,10 @@ export function TitleBar({
     <header className="titlebar" data-tauri-drag-region>
       <button
         type="button"
-        className="tool-button"
+        className={`tool-button sidebar-toggle${menuOpen ? " on" : ""}`}
         title={t(TB, "Seitenleiste ein- oder ausklappen")}
         aria-label={t(TB, "Seitenleiste ein- oder ausklappen")}
+        aria-expanded={menuOpen}
         onClick={onToggleSidebar}
       >
         <Icon name="sidebar" size={18} />

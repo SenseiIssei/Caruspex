@@ -4,13 +4,22 @@
 // Worker signals MainWindow connected to it, and writes the log lines
 // MainWindow wrote before each attempt.
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { call, type BleDeviceRow, type ConnectHelp, type ConnectRoute, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
+import {
+  call,
+  type BleDeviceRow,
+  type BluetoothAccess,
+  type ConnectHelp,
+  type ConnectRoute,
+  type SerialPortInfo,
+  type VehicleGenerationInfo,
+} from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { TermStrip } from "../components/Term";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
 import { t, translator } from "../i18n";
 import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
+import { isAndroid } from "../lib/platform";
 import { navigate } from "../shell/nav";
 import { garageStore, rememberedRoute } from "../state/garage";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
@@ -19,6 +28,37 @@ import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
 
 const tr = translator("caruspex::ConnectPage");
+
+// Texts of the Android app.
+const ta = translator("caruspex::Android");
+
+// Android 12 and newer: before the system asks for "nearby devices", the
+// page says why, and where to allow it later when it was refused.
+function BluetoothPermission({ refused, onAllow }: { refused: boolean; onAllow: () => void }) {
+  return (
+    <div className="connect-permission">
+      <div className="connect-permission-head">
+        <Icon name="bluetooth" size={18} />
+        <span>{ta("Zugriff auf Geräte in der Nähe")}</span>
+      </div>
+      <div className="subtle">
+        {ta(
+          "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
+            "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
+            "liest keinen Standort und schickt nichts weg.",
+        )}
+      </div>
+      {refused ? (
+        <div className="hint">
+          {ta("Der Zugriff ist abgelehnt. Erlauben lässt er sich in den Android-Einstellungen unter Apps, Caruspex, Berechtigungen.")}
+        </div>
+      ) : null}
+      <Button variant="primary" icon="shield" onClick={onAllow}>
+        {ta("Zugriff erlauben")}
+      </Button>
+    </div>
+  );
+}
 
 // CAN FD goes through SocketCAN and J2534 devices only.
 const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.startsWith("j2534:");
@@ -186,13 +226,22 @@ export default function ConnectPage() {
   const [ble, setBle] = useState(initialBle);
   const [bleScanning, setBleScanning] = useState(false);
   const [bleNote, setBleNote] = useState(() =>
-    tr(
-      "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
-        "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
-        "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
-        "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
-    ),
+    isAndroid
+      ? ta(
+          "Klassische Bluetooth-Adapter einmal in den Android-Einstellungen koppeln, die PIN ist " +
+            "meist 1234 oder 0000, danach stehen sie hier in der Liste. Adapter mit Bluetooth LE " +
+            "folgen in einer späteren Version.",
+        )
+      : tr(
+          "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
+            "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
+            "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
+            "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
+        ),
   );
+  // Android: may the app use Bluetooth, and whether the user was asked.
+  const [btAccess, setBtAccess] = useState<BluetoothAccess | null>(null);
+  const [btAsked, setBtAsked] = useState(false);
   // ENET
   const [enetHost, setEnetHost] = useState("");
   // CAN
@@ -632,6 +681,22 @@ export default function ConnectPage() {
     void call("scan_ble", { milliseconds: 8000 });
   };
 
+  // Android: the permission state each time the Bluetooth choice opens.
+  useEffect(() => {
+    if (!isAndroid || mode !== "ble") return;
+    void call("bluetooth_access")
+      .then(setBtAccess)
+      .catch(() => undefined);
+  }, [mode]);
+  const askBluetooth = async () => {
+    setBtAsked(true);
+    const access = await call("request_bluetooth_access").catch(() => null);
+    if (!access) return;
+    setBtAccess(access);
+    if (access.granted) scanBle();
+  };
+  const btBlocked = isAndroid && !!btAccess && btAccess.needsPermission && !btAccess.granted;
+
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
   const canOptions = canDevices.map((d, i) => ({ value: i, label: d.label }));
@@ -702,13 +767,20 @@ export default function ConnectPage() {
           {/* Two rows, so the card keeps its width in every language: the
               cables first, then the ways without one. */}
           <div className="connect-chips">
-            <ModeChip mode="cable" current={mode} icon="usb" label={tr("USB oder COM-Port")} onPick={setMode} />
+            <ModeChip
+              mode="cable"
+              current={mode}
+              icon="usb"
+              label={isAndroid ? ta("USB-Kabel (OTG)") : tr("USB oder COM-Port")}
+              onPick={setMode}
+            />
             {hasBle ? <ModeChip mode="ble" current={mode} icon="bluetooth" label={tr("Bluetooth")} onPick={setMode} /> : null}
             <ModeChip mode="wifi" current={mode} icon="wifi" label={tr("WLAN")} onPick={setMode} />
-            <ModeChip mode="enet" current={mode} icon="ethernet" label={tr("Netzwerkkabel")} onPick={setMode} />
+            {/* A phone has neither a network cable nor CAN interfaces. */}
+            {isAndroid ? null : <ModeChip mode="enet" current={mode} icon="ethernet" label={tr("Netzwerkkabel")} onPick={setMode} />}
           </div>
           <div className="connect-chips">
-            <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />
+            {isAndroid ? null : <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />}
             <ModeChip mode="demo" current={mode} icon="sparkles" label={tr("Demo-Auto")} onPick={setMode} />
             <ModeChip mode="replay" current={mode} icon="play" label={tr("Aufnahme")} onPick={setMode} />
           </div>
@@ -721,11 +793,16 @@ export default function ConnectPage() {
                   <RefreshButton title={tr("Anschlüsse neu suchen")} onClick={() => void refreshPorts()} />
                 </div>
                 <div className="hint">
-                  {tr(
-                    "Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als " +
-                      "eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle " +
-                      "Anschlüsse der Reihe nach.",
-                  )}
+                  {isAndroid
+                    ? ta(
+                        "Ein USB-Adapter braucht ein OTG-Kabel am Handy. Android fragt beim ersten " +
+                          "Verbinden, ob Caruspex ihn benutzen darf.",
+                      )
+                    : tr(
+                        "Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als " +
+                          "eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle " +
+                          "Anschlüsse der Reihe nach.",
+                      )}
                 </div>
               </>
             ) : null}
@@ -774,7 +851,9 @@ export default function ConnectPage() {
               </>
             ) : null}
 
-            {mode === "ble" ? (
+            {mode === "ble" && btBlocked ? <BluetoothPermission refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
+
+            {mode === "ble" && !btBlocked ? (
               <>
                 <div className="connect-line">
                   <Select

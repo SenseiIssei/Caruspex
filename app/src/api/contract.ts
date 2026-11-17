@@ -19,6 +19,7 @@ import type {
   AppInfo,
   AppSettings,
   BleDeviceRow,
+  BluetoothAccess,
   BrandFamily,
   CatalogMatch,
   CustomRow,
@@ -132,6 +133,9 @@ export interface Commands {
   open_can: Cmd<{ spec: string; protocolOrder: string; remembered?: ConnectRoute }, void>;
   // Answers with the ble_scan_finished event.
   scan_ble: Cmd<{ milliseconds: number }, void>;
+  // Android: may the app use Bluetooth, and the system question for it.
+  bluetooth_access: Cmd<None, BluetoothAccess>;
+  request_bluetooth_access: Cmd<None, BluetoothAccess>;
   // kinds: 1 = Bluetooth LE, 2 = classic, 3 = both. Empty id scans.
   open_ble: Cmd<{ id: string; name: string; kinds: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
   open_replay: Cmd<{ path: string; realTime: boolean; protocolOrder: string }, void>;
