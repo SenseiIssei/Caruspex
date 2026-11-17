@@ -708,9 +708,15 @@ pub fn share_recording(path: String, vin: String) -> Result<Value> {
     Ok(share_json(&shared))
 }
 
-/// The newest crash report the user has not decided about, if any.
+/// The newest crash report the user has not decided about, if any. Runs
+/// for a screenshot or a report show none, unless they bring their own
+/// folder (CARUSPEX_CRASH_DIR).
 #[tauri::command]
-pub fn crash_report_pending() -> Option<crate::crash::CrashReport> {
+pub fn crash_report_pending(state: State<'_, AppState>) -> Option<crate::crash::CrashReport> {
+    let automated = state.cli.shot.is_some() || state.cli.report.is_some();
+    if automated && std::env::var_os("CARUSPEX_CRASH_DIR").is_none() {
+        return None;
+    }
     crate::crash::dir().and_then(|dir| crate::crash::pending(dir))
 }
 
