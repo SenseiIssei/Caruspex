@@ -170,6 +170,18 @@ function rearMotorPlatform(brand: string, model: string): boolean {
 
 function drivetrain(brand: string, model: string, body: BodyType, year: number, variant: number) {
   if (variant === 0) variant = Powertrain.Petrol;
+  // A motorcycle: the engine in the frame drives the rear wheel.
+  if (body === BodyType.Motorcycle) {
+    const electric = (variant & Powertrain.Electric) !== 0;
+    return {
+      engine: electric ? EngineLayout.None : EngineLayout.Mid,
+      driven: Rear,
+      frontMotor: false,
+      rearMotor: electric,
+      battery: electric ? TractionBattery.Floor : TractionBattery.None,
+      fuelTank: !electric,
+    };
+  }
   if (variant & Powertrain.Electric) {
     const dual =
       (body === BodyType.Suv && !["Volkswagen", "Škoda", "Cupra"].includes(brand)) ||
@@ -251,6 +263,19 @@ function reason(engine: EngineLayout, battery: TractionBattery): string {
   );
 }
 
+const MOTO_ENGINE = () => L("Motor im Rahmen zwischen den Rädern", "Engine in the frame between the wheels");
+const MOTO_REASON = () =>
+  L(
+    "Motorrad: der Motor hängt im Rahmen unter dem Tank, Kette, Riemen oder Kardan treiben das Hinterrad; Batterie, Steuergerät und Diagnosestecker sitzen meist unter der Sitzbank.",
+    "Motorcycle: the engine hangs in the frame under the tank, a chain, belt or shaft drives the rear wheel; battery, control unit and diagnostic plug usually sit under the seat.",
+  );
+
+// Where the socket sits: SocketLocation and SocketSpot of the catalog.
+export interface SocketPlace {
+  location: number;
+  spot: number;
+}
+
 // The anatomy of a catalog entry (powertrains: all its PT_* flags; variant:
 // the one to show, 0 for the default). Also used by the layout tests.
 export function anatomyOf(
@@ -262,6 +287,7 @@ export function anatomyOf(
   variant: number,
   generation = "",
   measured: MeasuredRecord | null = null,
+  socket: SocketPlace = { location: 0, spot: 0 },
 ): VehicleAnatomy {
   const variants = ORDER.filter((f) => powertrains & f);
   const chosen = variant && powertrains & variant ? variant : defaultPowertrain(powertrains);
@@ -283,7 +309,7 @@ export function anatomyOf(
     measuredFields: bits,
     wikidataId: measured ? (measured[6].split("|")[0] ?? "") : "",
     massKg: measured ? measured[5] : 0,
-    bodyNames: Array.from({ length: 11 }, (_, i) => bodyName(i)),
+    bodyNames: Array.from({ length: 12 }, (_, i) => bodyName(i)),
     dimensionsText:
       source === "manufacturer"
         ? L(
@@ -302,16 +328,21 @@ export function anatomyOf(
     powertrain: chosen,
     powertrainChoices: (variants.length > 0 ? variants : [chosen]).map((flag) => ({ flag, name: powertrainText(flag) })),
     ...t,
-    engineName: engineName(t.engine),
+    engineName: body === BodyType.Motorcycle && t.engine !== EngineLayout.None ? MOTO_ENGINE() : engineName(t.engine),
     drivenName: drivenName(t.driven),
-    reason: reason(t.engine, t.battery),
+    reason: body === BodyType.Motorcycle ? MOTO_REASON() : reason(t.engine, t.battery),
+    socketLocation: socket.location,
+    socketSpot: socket.spot,
   };
 }
 
 export const xrayHandlers: PartialHandlers = {
   vehicle_anatomy: async ({ generationId, year, body, brand, model, powertrain }): Promise<VehicleAnatomy> => {
     const g = generationId >= 0 ? await catalogGeneration(generationId) : null;
-    if (g) return anatomyOf(g.body as BodyType, g.brand, g.model, year > 0 ? year : g.yearFrom, g.powertrains, powertrain, g.generation, g.measured);
+    if (g) {
+      const socket = { location: g.location, spot: g.spot };
+      return anatomyOf(g.body as BodyType, g.brand, g.model, year > 0 ? year : g.yearFrom, g.powertrains, powertrain, g.generation, g.measured, socket);
+    }
     const variant = defaultPowertrain(powertrain);
     return anatomyOf(body as BodyType, brand, model, year, variant, variant);
   },

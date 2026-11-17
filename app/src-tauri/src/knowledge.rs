@@ -529,6 +529,19 @@ pub fn vehicle_anatomy(
             (dims, source, drivetrain, vec![variant], variant)
         }
     };
+    // Where the diagnostic socket sits (SocketLocation and SocketSpot in
+    // declaration order, 0 = not known): the X-ray view puts it there.
+    let (socket_location, socket_spot) = match generation {
+        Some(g) => (catalog::location_for(g, year) as i32, g.spot as i32),
+        None => (0, 0),
+    };
+    let motorcycle = match generation {
+        Some(g) => g.body == BodyType::Motorcycle,
+        None => usize::try_from(body)
+            .ok()
+            .and_then(|i| BodyType::ALL.get(i))
+            .is_some_and(|b| *b == BodyType::Motorcycle),
+    };
     let (gen_brand, gen_model, gen_code, item, mass, document) = match generation {
         Some(g) => (
             g.brand,
@@ -569,14 +582,24 @@ pub fn vehicle_anatomy(
             .map(|&flag| json!({ "flag": flag, "name": catalog::powertrain_text(flag) }))
             .collect::<Vec<_>>(),
         "engine": drivetrain.engine as i32,
-        "engineName": anatomy::engine_layout_name(drivetrain.engine),
+        "engineName": if motorcycle && drivetrain.engine != anatomy::EngineLayout::None {
+            anatomy::motorcycle_engine_name()
+        } else {
+            anatomy::engine_layout_name(drivetrain.engine)
+        },
         "driven": drivetrain.driven as i32,
         "drivenName": anatomy::driven_axles_name(drivetrain.driven),
         "frontMotor": drivetrain.front_motor,
         "rearMotor": drivetrain.rear_motor,
         "battery": drivetrain.battery as i32,
         "fuelTank": drivetrain.fuel_tank,
-        "reason": anatomy::drivetrain_reason(&drivetrain),
+        "reason": if motorcycle {
+            anatomy::motorcycle_reason()
+        } else {
+            anatomy::drivetrain_reason(&drivetrain)
+        },
+        "socketLocation": socket_location,
+        "socketSpot": socket_spot,
     })
 }
 
@@ -635,6 +658,7 @@ pub fn match_vin(vin: &str) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use caruspex_vehicles::catalog::SocketSpot;
 
     #[test]
     fn lookups_have_the_interface_shape() {
@@ -671,9 +695,19 @@ mod tests {
             golf["bodyNames"].as_array().unwrap().len(),
             BodyType::ALL.len()
         );
+        // The Golf IV has its socket in the centre console in front of the
+        // gear lever (data/obd_sockets.csv).
+        assert_eq!(golf["socketSpot"], SocketSpot::ConsoleFront as i32);
+        // A motorcycle: engine in the frame, plug under the seat.
+        let mt07 = catalog_search("MT-07", 5);
+        let mt07 = vehicle_anatomy(mt07[0]["id"].as_i64().unwrap(), 2020, 0, "", "", 0);
+        assert_eq!(mt07["engine"], anatomy::EngineLayout::Mid as i32);
+        assert_eq!(mt07["socketSpot"], SocketSpot::UnderSeat as i32);
+        assert_eq!(mt07["reason"], anatomy::motorcycle_reason());
         // The demo car: an estate with a petrol engine, no generation.
         let demo = vehicle_anatomy(-1, 2021, 2, "", "", 1);
         assert_eq!(demo["powertrain"], 1);
+        assert_eq!(demo["socketSpot"], 0);
         assert!(demo["fuelTank"].as_bool().unwrap());
         let vin = decode_vin("WVWZZZ1JZ3W000001");
         assert_eq!(vin["wmi"], "WVW");

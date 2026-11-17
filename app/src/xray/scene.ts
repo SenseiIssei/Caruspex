@@ -7,9 +7,10 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { CarZone } from "../api/types";
-import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3 } from "./layout";
-import { LAYERS, lampOutlines } from "./layout";
+import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3, Wheel } from "./layout";
+import { BUSES, LAYERS, lampOutlines } from "./layout";
 import { contactAxles, fitShell, looksLikeGlass, looksLikeWheel, orientation, type Bounds, type ShellFit } from "./shell";
 
 export interface XrayPalette {
@@ -30,7 +31,27 @@ export interface XrayLabel {
   anchor: Vec3;
   title: string;
   value?: string;
-  tone?: "bad" | "warn" | "good" | "info" | "accent";
+  tone?: "bad" | "warn" | "good" | "info" | "accent" | "bus";
+  // The bus whose colour a "bus" label takes.
+  bus?: BusKind;
+}
+
+// The section plane: across the car (x, cut from the front), along it (z,
+// cut from the driver's side) or level (y, cut from above), and where it
+// stands from 0 to 1 over the car.
+export type SectionAxis = "x" | "y" | "z";
+export interface Section {
+  axis: SectionAxis;
+  t: number;
+}
+
+// What the frame counter measured over the last half second.
+export interface FrameStats {
+  fps: number;
+  frameMs: number;
+  renderMs: number;
+  calls: number;
+  triangles: number;
 }
 
 export interface Highlight {
@@ -44,9 +65,13 @@ export interface Highlight {
 export interface SceneEvents {
   onHover?: (id: string | null) => void;
   onPick?: (id: string | null) => void;
+  // The section plane was dragged in the view.
+  onSection?: (t: number) => void;
+  onStats?: (stats: FrameStats) => void;
 }
 
 const GLASS_VERTEX = /* glsl */ `
+#include <clipping_planes_pars_vertex>
 attribute float aTop;
 varying vec3 vWorld;
 varying vec3 vNormalW;
@@ -56,7 +81,9 @@ void main() {
   vWorld = world.xyz;
   vNormalW = normalize(mat3(modelMatrix) * normal);
   vTop = aTop;
-  gl_Position = projectionMatrix * viewMatrix * world;
+  vec4 mvPosition = viewMatrix * world;
+  gl_Position = projectionMatrix * mvPosition;
+  #include <clipping_planes_vertex>
 }
 `;
 
@@ -86,12 +113,14 @@ uniform float uWindowAll;
 varying vec3 vWorld;
 varying vec3 vNormalW;
 varying float vTop;
+#include <clipping_planes_pars_fragment>
 
 float band(float a, float b, float soft, float x) {
   return smoothstep(a, a + soft, x) * (1.0 - smoothstep(b - soft, b, x));
 }
 
 void main() {
+  #include <clipping_planes_fragment>
   vec3 n = normalize(vNormalW);
   if (!gl_FrontFacing) n = -n;
   vec3 v = normalize(cameraPosition - vWorld);
@@ -340,7 +369,9 @@ export class XrayScene {
   private diagRoute: { curve: THREE.CatmullRomCurve3; bus: BusKind } | null = null;
   private packets: Packet[] = [];
   private flashes = new Map<string, number>();
-  private labels = new Map<string, { el: HTMLDivElement; data: XrayLabel }>();
+  // The labels with their measured size (measured once per text, so placing
+  // them every frame does not make the page lay itself out again).
+  private labels = new Map<string, { el: HTMLDivElement; data: XrayLabel; w?: number; h?: number }>();
   private highlight: Highlight = { zones: [], focusZone: null, focusEcu: null, selectedEcu: null };
   private visible: Record<Layer, boolean> = { body: true, drivetrain: true, cooling: true, energy: true, electrics: true, network: true };
   private layout: CarLayout | null = null;
@@ -358,6 +389,26 @@ export class XrayScene {
   private disposed = false;
   private home = { position: new THREE.Vector3(), target: new THREE.Vector3() };
   private shell: { outer: THREE.Group; inner: THREE.Object3D; turned: boolean; fit: ShellFit | null } | null = null;
+  // The bodywork of a motorcycle in glass (not picked, not highlighted).
+  private shells: THREE.Mesh[] = [];
+  // The exploded view: every part of the drivetrain with its place and the
+  // way it moves out; the share it has moved and where it is heading.
+  private explodeMeshes: { mesh: THREE.Object3D; home: THREE.Vector3; offset: THREE.Vector3 }[] = [];
+  private explodeTarget = 0;
+  private explodeT = 0;
+  // The section plane: one plane shared by every material of the car (an
+  // empty list when off), its frame in the view and the drag on it.
+  private clip: THREE.Plane[] = [];
+  private clipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
+  private section: Section | null = null;
+  private sectionGroup = new THREE.Group();
+  private sectionHandle: THREE.Mesh | null = null;
+  private dragging = false;
+  // The frame counter of the demo (statsOn: draw every frame and measure).
+  private statsOn = false;
+  private statsFrames: number[] = [];
+  private statsRender: number[] = [];
+  private statsAt = 0;
 
   constructor(container: HTMLElement, palette: XrayPalette, reducedMotion: boolean, events: SceneEvents = {}) {
     this.container = container;
@@ -370,6 +421,7 @@ export class XrayScene {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.setClearColor(0x000000, 0);
+    this.renderer.localClippingEnabled = true;
     const canvas = this.renderer.domElement;
     canvas.className = "xray-canvas";
     container.appendChild(canvas);
@@ -404,8 +456,13 @@ export class XrayScene {
     this.layerGroups.get("network")!.add(this.packetGroup);
     this.scene.add(this.wheelGroup);
     this.scene.add(this.floorGroup);
+    this.sectionGroup.visible = false;
+    this.scene.add(this.sectionGroup);
     this.glow = glowTexture();
 
+    // Before the orbit controls see the press: a press on the section plane
+    // drags the plane instead of turning the view.
+    container.addEventListener("pointerdown", this.onSectionDown, true);
     canvas.addEventListener("pointermove", this.onPointerMove);
     canvas.addEventListener("pointerleave", this.onPointerLeave);
     canvas.addEventListener("pointerdown", this.onPointerDown);
@@ -441,8 +498,11 @@ export class XrayScene {
     this.partMeshes.clear();
     this.partInfo.clear();
     this.glass = [];
+    this.shells = [];
+    this.explodeMeshes = [];
 
-    this.buildHull(layout);
+    // A motorcycle has no closed body: its bodywork comes as glass parts.
+    if (layout.vehicle === "car") this.buildHull(layout);
     this.buildWheels(layout);
     this.wheelGroup.visible = true;
     this.buildFloor(layout);
@@ -455,13 +515,19 @@ export class XrayScene {
     }
     this.applyHighlight();
     this.applyLayers();
+    this.applyExplode();
+    this.placeSection();
+    this.applyClipping();
 
     const L = layout.hull.length;
     const H = layout.hull.height;
     this.controls.minDistance = Math.max(0.8, L * 0.2);
     this.controls.maxDistance = L * 3.2;
-    // Three quarters from the front left, far enough for the whole car.
-    const distance = (L * 0.5) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    // Three quarters from the front left, far enough for the whole car, also
+    // when the stage is narrow (the near front corner comes out large).
+    const vfov = THREE.MathUtils.degToRad(this.camera.fov);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(0.5, this.camera.aspect));
+    const distance = ((L * 0.5) / Math.tan(Math.min(vfov, hfov) / 2)) * 1.12;
     this.home.target.set(0, H * 0.38, 0);
     this.home.position.copy(new THREE.Vector3(0.62, 0.55, 0.62).normalize().multiplyScalar(distance).add(this.home.target));
     if (!keepView) {
@@ -524,6 +590,7 @@ export class XrayScene {
         fragmentShader: GLASS_FRAGMENT,
         transparent: true,
         depthWrite: false,
+        clipping: true,
         side,
         uniforms: {
           uTint: { value: tint },
@@ -600,6 +667,8 @@ export class XrayScene {
     this.layerGroups.get("body")!.add(lines);
   }
 
+  // The wheels: per wheel one mesh for the tyre, one for rim, spokes and hub
+  // merged, and the brake discs and calipers, which glow on a fault.
   private buildWheels(layout: CarLayout): void {
     const pal = this.palette;
     const tyreMat = new THREE.MeshStandardMaterial({ color: pal.light ? 0x2a2d34 : 0x15171c, roughness: 0.85, metalness: 0.05 });
@@ -607,55 +676,96 @@ export class XrayScene {
     const discMat = new THREE.MeshStandardMaterial({ color: 0x5b6270, roughness: 0.5, metalness: 0.8 });
     const caliperMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(pal.accent), roughness: 0.4, metalness: 0.3 });
     for (const w of layout.wheels) {
-      const g = new THREE.Group();
-      const R = w.radius;
-      const half = w.width / 2;
-      const inner = R * 0.66;
-      // Tyre: a rounded profile turned round the axle.
-      const profile: THREE.Vector2[] = [];
-      const shoulder = Math.min(0.045, half * 0.4);
-      profile.push(new THREE.Vector2(inner, -half * 0.92));
-      for (let k = 0; k <= 6; k++) {
-        const a = -Math.PI / 2 + (k / 6) * (Math.PI / 2);
-        profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, -half + shoulder + Math.sin(a) * shoulder));
-      }
-      for (let k = 0; k <= 6; k++) {
-        const a = (k / 6) * (Math.PI / 2);
-        profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, half - shoulder + Math.sin(a) * shoulder));
-      }
-      profile.push(new THREE.Vector2(inner, half * 0.92));
-      const tyre = new THREE.Mesh(new THREE.LatheGeometry(profile, 48), tyreMat);
-      tyre.rotation.x = Math.PI / 2;
-      g.add(tyre);
-      const out = Math.sign(w.center[2]) || 1;
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(inner, inner, w.width * 0.8, 40), rimMat);
-      rim.rotation.x = Math.PI / 2;
-      g.add(rim);
-      // Spokes on the outer face.
-      for (let s = 0; s < 5; s++) {
-        const spoke = new THREE.Mesh(new THREE.BoxGeometry(inner * 0.9, inner * 0.16, 0.025), rimMat);
-        const a = (s / 5) * Math.PI * 2;
-        spoke.position.set(Math.cos(a) * inner * 0.48, Math.sin(a) * inner * 0.48, out * (w.width * 0.42));
-        spoke.rotation.z = a;
-        g.add(spoke);
-      }
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(inner * 0.22, inner * 0.22, 0.03, 20), rimMat);
-      hub.rotation.x = Math.PI / 2;
-      hub.position.z = out * w.width * 0.43;
-      g.add(hub);
-      const disc = new THREE.Mesh(new THREE.CylinderGeometry(inner * 0.82, inner * 0.82, 0.028, 36), discMat.clone());
-      disc.rotation.x = Math.PI / 2;
-      disc.position.z = -out * w.width * 0.1;
-      disc.userData.glow = true;
-      g.add(disc);
-      const caliper = new THREE.Mesh(new RoundedBoxGeometry(0.07, inner * 0.55, 0.06, 2, 0.015), caliperMat.clone());
-      caliper.position.set(w.front ? -inner * 0.62 : inner * 0.62, inner * 0.25, -out * w.width * 0.05);
-      caliper.userData.glow = true;
-      g.add(caliper);
+      const g = w.moto ? this.motoWheel(w, tyreMat, rimMat, discMat, caliperMat) : this.carWheel(w, tyreMat, rimMat, discMat, caliperMat);
       g.position.set(w.center[0], w.center[1], w.center[2]);
       g.userData.zones = [CarZone.Wheels];
       this.wheelGroup.add(g);
     }
+  }
+
+  private carWheel(w: Wheel, tyreMat: THREE.Material, rimMat: THREE.Material, discMat: THREE.MeshStandardMaterial, caliperMat: THREE.MeshStandardMaterial): THREE.Group {
+    const g = new THREE.Group();
+    const R = w.radius;
+    const half = w.width / 2;
+    const inner = R * 0.66;
+    // Tyre: a rounded profile turned round the axle.
+    const profile: THREE.Vector2[] = [];
+    const shoulder = Math.min(0.045, half * 0.4);
+    profile.push(new THREE.Vector2(inner, -half * 0.92));
+    for (let k = 0; k <= 6; k++) {
+      const a = -Math.PI / 2 + (k / 6) * (Math.PI / 2);
+      profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, -half + shoulder + Math.sin(a) * shoulder));
+    }
+    for (let k = 0; k <= 6; k++) {
+      const a = (k / 6) * (Math.PI / 2);
+      profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, half - shoulder + Math.sin(a) * shoulder));
+    }
+    profile.push(new THREE.Vector2(inner, half * 0.92));
+    const tyreGeo = new THREE.LatheGeometry(profile, 48);
+    tyreGeo.rotateX(Math.PI / 2);
+    g.add(new THREE.Mesh(tyreGeo, tyreMat));
+    const out = Math.sign(w.center[2]) || 1;
+    // Rim, five spokes on the outer face and the hub as one mesh.
+    const pieces: THREE.BufferGeometry[] = [];
+    pieces.push(new THREE.CylinderGeometry(inner, inner, w.width * 0.8, 40).rotateX(Math.PI / 2));
+    for (let s = 0; s < 5; s++) {
+      const a = (s / 5) * Math.PI * 2;
+      pieces.push(new THREE.BoxGeometry(inner * 0.9, inner * 0.16, 0.025).rotateZ(a).translate(Math.cos(a) * inner * 0.48, Math.sin(a) * inner * 0.48, out * (w.width * 0.42)));
+    }
+    pieces.push(new THREE.CylinderGeometry(inner * 0.22, inner * 0.22, 0.03, 20).rotateX(Math.PI / 2).translate(0, 0, out * w.width * 0.43));
+    g.add(new THREE.Mesh(merged(pieces), rimMat));
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(inner * 0.82, inner * 0.82, 0.028, 36).rotateX(Math.PI / 2), discMat.clone());
+    disc.position.z = -out * w.width * 0.1;
+    disc.userData.glow = true;
+    g.add(disc);
+    const caliper = new THREE.Mesh(new RoundedBoxGeometry(0.07, inner * 0.55, 0.06, 2, 0.015), caliperMat.clone());
+    caliper.position.set(w.front ? -inner * 0.62 : inner * 0.62, inner * 0.25, -out * w.width * 0.05);
+    caliper.userData.glow = true;
+    g.add(caliper);
+    return g;
+  }
+
+  // A motorcycle wheel: a round tyre on a narrow rim, cast spokes or wire
+  // spokes, the discs on one or both sides with their calipers.
+  private motoWheel(w: Wheel, tyreMat: THREE.Material, rimMat: THREE.Material, discMat: THREE.MeshStandardMaterial, caliperMat: THREE.MeshStandardMaterial): THREE.Group {
+    const g = new THREE.Group();
+    const R = w.radius;
+    const half = w.width / 2;
+    const rim = R - w.width * 0.78;
+    const profile: THREE.Vector2[] = [];
+    for (let k = 0; k <= 16; k++) {
+      const a = -Math.PI * 0.42 + (k / 16) * Math.PI * 0.84;
+      // A round crown: wide at the sides, round over the tread.
+      profile.push(new THREE.Vector2(rim + (R - rim) * Math.cos(a) ** 0.6, half * Math.sin(a) * 1.05));
+    }
+    const tyreGeo = new THREE.LatheGeometry(profile, 48);
+    tyreGeo.rotateX(Math.PI / 2);
+    g.add(new THREE.Mesh(tyreGeo, tyreMat));
+    const pieces: THREE.BufferGeometry[] = [];
+    pieces.push(new THREE.CylinderGeometry(rim, rim, w.width * 0.7, 40, 1, true).rotateX(Math.PI / 2));
+    pieces.push(new THREE.CylinderGeometry(0.045, 0.045, w.width * 0.9, 16).rotateX(Math.PI / 2));
+    const spokes = w.moto!.spokes === "wire" ? 28 : 6;
+    for (let s = 0; s < spokes; s++) {
+      const a = (s / spokes) * Math.PI * 2;
+      const thick = w.moto!.spokes === "wire" ? 0.004 : 0.02;
+      const side = w.moto!.spokes === "wire" ? (s % 2 ? 1 : -1) * half * 0.35 : 0;
+      pieces.push(new THREE.BoxGeometry(rim - 0.04, thick, thick * 1.4).translate((rim - 0.04) / 2 + 0.03, 0, side).rotateZ(a));
+    }
+    g.add(new THREE.Mesh(merged(pieces), rimMat));
+    for (const d of w.moto!.discs) {
+      const z = d.side * (half * 0.75 + 0.03);
+      const disc = new THREE.Mesh(new THREE.CylinderGeometry(d.radius, d.radius, 0.006, 40).rotateX(Math.PI / 2), discMat.clone());
+      disc.position.z = z;
+      disc.userData.glow = true;
+      g.add(disc);
+      const caliper = new THREE.Mesh(new RoundedBoxGeometry(0.06, 0.1, 0.045, 2, 0.012), caliperMat.clone());
+      const a = w.front ? Math.PI * 0.8 : Math.PI * 1.15;
+      caliper.position.set(Math.cos(a) * d.radius * 0.9, Math.sin(a) * d.radius * 0.9, z + d.side * 0.012);
+      caliper.rotation.z = a - Math.PI / 2;
+      caliper.userData.glow = true;
+      g.add(caliper);
+    }
+    return g;
   }
 
   private buildFloor(layout: CarLayout): void {
@@ -694,33 +804,102 @@ export class XrayScene {
       case "electric": return { color: c(p.light ? "#3b6fd8" : "#6fa8ff"), metal: 0.3, rough: 0.5, opacity: 1 };
       case "motor": return { color: c(p.light ? "#b5652a" : "#e08f4f"), metal: 0.75, rough: 0.35, opacity: 1 };
       case "cabin": return { color: c(p.light ? "#7d879c" : "#8f99ad"), metal: 0, rough: 0.9, opacity: p.light ? 0.3 : 0.22 };
+      case "seat": return { color: c(p.light ? "#3a3f4a" : "#2a2e37"), metal: 0, rough: 0.95, opacity: p.light ? 0.75 : 0.7 };
+      case "lamp": return { color: c(p.light ? "#e8eefc" : "#f4f8ff"), metal: 0.1, rough: 0.2, opacity: 1 };
+      case "rearlamp": return { color: c(p.light ? "#c0362c" : "#ff5f57"), metal: 0.1, rough: 0.3, opacity: 1 };
+      // Glass parts get the glass shader; these values are not used.
+      case "shell":
+      case "screen": return { color: c(p.accent), metal: 0, rough: 0.5, opacity: 0.2 };
     }
   }
 
   private makeMaterial(m: Material): THREE.MeshStandardMaterial {
     const s = this.materialColor(m);
+    const lamp = m === "lamp" || m === "rearlamp";
     return new THREE.MeshStandardMaterial({
       color: s.color,
       metalness: s.metal,
       roughness: s.rough,
       emissive: s.color,
-      emissiveIntensity: this.palette.light ? 0.05 : 0.16,
+      emissiveIntensity: lamp ? 0.9 : this.palette.light ? 0.05 : 0.16,
       transparent: true,
       opacity: s.opacity,
       depthWrite: s.opacity >= 1,
     });
   }
 
-  private addPart(part: Part): void {
+  // The glass of the body for parts of a motorcycle's bodywork: the fresnel
+  // rim without the window graphics of a car; a windscreen darker.
+  private glassMaterial(window: boolean): THREE.ShaderMaterial {
+    const pal = this.palette;
+    const tint = pal.light ? new THREE.Color("#5f7196") : new THREE.Color(pal.accent).lerp(new THREE.Color(pal.sky), 0.45).multiplyScalar(0.55);
+    const rim = pal.light ? new THREE.Color("#2b3b63") : new THREE.Color(pal.sky).lerp(new THREE.Color("#ffffff"), 0.25);
+    const m = new THREE.ShaderMaterial({
+      vertexShader: GLASS_VERTEX,
+      fragmentShader: GLASS_FRAGMENT,
+      transparent: true,
+      depthWrite: false,
+      clipping: true,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTint: { value: tint },
+        uRim: { value: rim },
+        uWindow: { value: pal.light ? new THREE.Color("#22304f") : new THREE.Color("#03060c") },
+        uSky: { value: pal.light ? new THREE.Color("#f2f5fb") : new THREE.Color("#2a3552") },
+        uGround: { value: pal.light ? new THREE.Color("#8a93a8") : new THREE.Color("#06080d") },
+        uOpacity: { value: pal.light ? 0.16 : 0.13 },
+        uWindowAlpha: { value: pal.light ? 0.36 : 0.42 },
+        uFade: { value: 1 },
+        uBelt: { value: 0 },
+        uBeltRear: { value: 0 },
+        uRear: { value: -1 },
+        uLength: { value: 2 },
+        uCowl: { value: 0 },
+        uRoofFront: { value: 0 },
+        uRoofRear: { value: 0 },
+        uTail: { value: 0 },
+        uDlo: { value: new THREE.Vector4() },
+        uPillars: { value: new THREE.Vector4(-1, -1, -1, -1) },
+        uPillarW: { value: new THREE.Vector4() },
+        uKink: { value: 0 },
+        uGraphic: { value: 0 },
+        uWindowAll: { value: window ? 1 : 0 },
+      },
+    });
+    this.glass.push(m);
+    return m;
+  }
+
+  private partGeometry(part: Part): THREE.BufferGeometry {
     let geo: THREE.BufferGeometry;
     if (part.shape === "box") {
       const [x, y, z] = part.size;
-      geo = new RoundedBoxGeometry(x, y, z, 3, Math.min(x, y, z) * 0.22);
+      geo = new RoundedBoxGeometry(x, y, z, 3, Math.min(x, y, z) * (part.round ?? 0.22));
+    } else if (part.shape === "ellipsoid") {
+      geo = new THREE.SphereGeometry(0.5, 28, 18).scale(...part.size);
     } else {
       const [len, d] = part.size;
       geo = new THREE.CylinderGeometry(d / 2, d / 2, len, 28);
       if (part.axis === "x") geo.rotateZ(Math.PI / 2);
       else if (part.axis === "z") geo.rotateX(Math.PI / 2);
+    }
+    if (part.tilt) geo.rotateZ(part.tilt);
+    return geo;
+  }
+
+  private addPart(part: Part): void {
+    const geo = this.partGeometry(part);
+    if (part.material === "shell" || part.material === "screen") {
+      // Bodywork: glass, seen through, not picked.
+      const top = new Float32Array(geo.getAttribute("position").count).fill(9);
+      geo.setAttribute("aTop", new THREE.BufferAttribute(top, 1));
+      const mesh = new THREE.Mesh(geo, this.glassMaterial(part.material === "screen"));
+      mesh.position.set(...part.center);
+      mesh.renderOrder = part.material === "screen" ? 11 : 10;
+      mesh.name = part.id;
+      this.layerGroups.get(part.layer)!.add(mesh);
+      this.shells.push(mesh);
+      return;
     }
     const mat = this.makeMaterial(part.material);
     const mesh = new THREE.Mesh(geo, mat);
@@ -730,23 +909,29 @@ export class XrayScene {
     this.layerGroups.get(part.layer)!.add(mesh);
     this.partMeshes.set(part.id, mesh);
     this.partInfo.set(part.id, { zones: part.zones, baseOpacity: mat.opacity, color: mat.color.clone() });
+    if (part.explode) this.explodeMeshes.push({ mesh, home: mesh.position.clone(), offset: v3(part.explode) });
   }
 
+  // A tube and its branches as one mesh.
   private addTube(tube: Tube): void {
-    const curve = pathCurve(tube.points, 0.08);
-    const len = curve.getLength();
-    const geo = new THREE.TubeGeometry(curve, Math.max(24, Math.round(len * 50)), tube.radius, 8, false);
+    const strands = [tube.points, ...(tube.branches ?? [])].filter((s) => s.length >= 2);
+    const geos = strands.map((s) => {
+      const curve = pathCurve(s, 0.08);
+      return new THREE.TubeGeometry(curve, Math.max(12, Math.round(curve.getLength() * 50)), tube.radius, 8, false);
+    });
+    if (!geos.length) return;
     const mat = this.makeMaterial(tube.material);
-    const mesh = new THREE.Mesh(geo, mat);
+    const mesh = new THREE.Mesh(merged(geos), mat);
     mesh.name = tube.id;
     mesh.userData.pick = tube.id;
     this.layerGroups.get(tube.layer)!.add(mesh);
     this.partMeshes.set(tube.id, mesh);
     this.partInfo.set(tube.id, { zones: tube.zones, baseOpacity: mat.opacity, color: mat.color.clone() });
+    if (tube.explode) this.explodeMeshes.push({ mesh, home: new THREE.Vector3(), offset: v3(tube.explode) });
   }
 
   // The control units and bus lines. Cheap enough to call on every step of
-  // a scan.
+  // a scan: the lines of one bus are one mesh.
   setNetwork(layout: CarLayout): void {
     this.layout = layout;
     for (const child of [...this.networkGroup.children]) {
@@ -758,27 +943,58 @@ export class XrayScene {
     this.routes.clear();
     this.diagRoute = null;
     const pal = this.palette;
+    const moto = layout.vehicle === "moto";
 
-    // The OBD socket.
-    const socket = new THREE.Mesh(
-      new RoundedBoxGeometry(0.07, 0.04, 0.05, 2, 0.01),
-      new THREE.MeshStandardMaterial({ color: pal.light ? 0x2b2f38 : 0x3a4150, roughness: 0.6, emissive: new THREE.Color(pal.bus.diagnostic), emissiveIntensity: 0.35 }),
-    );
-    socket.position.set(...layout.obd);
+    // The socket with the adapter in it; on a motorcycle the maker's plug,
+    // the adapter cable and the 16-pin socket at its end.
+    const socketMat = new THREE.MeshStandardMaterial({ color: pal.light ? 0x2b2f38 : 0x3a4150, roughness: 0.6, emissive: new THREE.Color(pal.bus.diagnostic), emissiveIntensity: 0.35 });
+    const ad = layout.adapter;
+    const dir = v3(ad.dir).normalize();
+    const along = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir);
+    const socket = new THREE.Mesh(new RoundedBoxGeometry(0.03, 0.045, 0.06, 2, 0.008), socketMat);
+    socket.position.set(...ad.socket);
+    socket.quaternion.copy(along);
     socket.userData.pick = "obd";
     this.networkGroup.add(socket);
+    const adapterMat = new THREE.MeshStandardMaterial({ color: pal.light ? 0x39404d : 0x252a33, roughness: 0.5, metalness: 0.2, emissive: new THREE.Color(pal.accent), emissiveIntensity: 0.12 });
+    const adapter = new THREE.Mesh(new RoundedBoxGeometry(0.075, 0.052, 0.04, 2, 0.012), adapterMat);
+    adapter.position.copy(v3(ad.socket).add(dir.clone().multiplyScalar(0.05)));
+    adapter.quaternion.copy(along);
+    adapter.userData.pick = "obd-adapter";
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.006, 8, 6), new THREE.MeshBasicMaterial({ color: new THREE.Color(pal.good), toneMapped: false }));
+    led.position.set(0.02, 0.027, 0);
+    adapter.add(led);
+    this.networkGroup.add(adapter);
+    if (ad.cable) {
+      const plug = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.035, 0.04, 2, 0.008), socketMat);
+      plug.position.set(...layout.obd);
+      plug.userData.pick = "obd";
+      this.networkGroup.add(plug);
+      const curve = pathCurve(ad.cable, 0.05);
+      const cable = new THREE.Mesh(new THREE.TubeGeometry(curve, 48, 0.005, 6, false), new THREE.MeshStandardMaterial({ color: pal.light ? 0x2b2f38 : 0x1c2028, roughness: 0.7 }));
+      cable.userData.pick = "obd-cable";
+      this.networkGroup.add(cable);
+    }
 
+    const byBus = new Map<BusKind, THREE.BufferGeometry[]>();
     for (const r of layout.routes) {
       const curve = pathCurve(r.points, 0.05);
-      const geo = new THREE.TubeGeometry(curve, Math.max(24, Math.round(curve.getLength() * 60)), 0.0065, 6, false);
-      const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(pal.bus[r.bus]), transparent: true, opacity: pal.light ? 0.9 : 0.75, toneMapped: false });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.renderOrder = 2;
-      this.networkGroup.add(mesh);
+      const geo = new THREE.TubeGeometry(curve, Math.max(16, Math.round(curve.getLength() * 50)), moto ? 0.004 : 0.0065, 6, false);
+      byBus.set(r.bus, [...(byBus.get(r.bus) ?? []), geo]);
       if (r.ecu) this.routes.set(r.ecu, { curve, bus: r.bus });
       else this.diagRoute = { curve, bus: r.bus };
     }
+    for (const bus of BUSES) {
+      const geos = byBus.get(bus);
+      if (!geos) continue;
+      const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(pal.bus[bus]), transparent: true, opacity: pal.light ? 0.9 : 0.75, toneMapped: false });
+      const mesh = new THREE.Mesh(merged(geos), mat);
+      mesh.renderOrder = 2;
+      mesh.name = `bus-${bus}`;
+      this.networkGroup.add(mesh);
+    }
 
+    const unit = moto ? new RoundedBoxGeometry(0.11, 0.045, 0.085, 2, 0.012) : new RoundedBoxGeometry(0.19, 0.065, 0.14, 2, 0.018);
     for (const e of layout.ecus) {
       const mat = new THREE.MeshStandardMaterial({
         color: new THREE.Color(pal.light ? "#e9ecf3" : "#d7dcea").lerp(new THREE.Color(pal.bus[e.bus]), 0.35),
@@ -789,7 +1005,7 @@ export class XrayScene {
         transparent: true,
         opacity: e.asking ? 0.45 : 1,
       });
-      const mesh = new THREE.Mesh(new RoundedBoxGeometry(0.19, 0.065, 0.14, 2, 0.018), mat);
+      const mesh = new THREE.Mesh(unit, mat);
       mesh.position.set(...e.position);
       mesh.userData.pick = `ecu:${e.key}`;
       mesh.userData.base = mat.emissive.clone();
@@ -798,6 +1014,7 @@ export class XrayScene {
       this.ecuNodes.set(e.key, e);
     }
     this.applyHighlight();
+    this.applyClipping();
     this.dirty = true;
   }
 
@@ -896,12 +1113,16 @@ export class XrayScene {
       }
       entry.data = l;
       entry.el.dataset.tone = l.tone ?? "";
+      if (l.bus) entry.el.style.setProperty("--tone", `var(--bus-${l.bus})`);
+      else entry.el.style.removeProperty("--tone");
       const title = l.title;
       const value = l.value ?? "";
       if (entry.el.dataset.title !== title || entry.el.dataset.value !== value) {
         entry.el.dataset.title = title;
         entry.el.dataset.value = value;
         entry.el.replaceChildren();
+        entry.w = undefined;
+        entry.h = undefined;
         const t = document.createElement("span");
         t.className = "xray-label-title";
         t.textContent = title;
@@ -930,6 +1151,169 @@ export class XrayScene {
       this.last = 0;
       this.raf = requestAnimationFrame(this.loop);
     }
+  }
+
+  // --- Cuts ------------------------------------------------------------------------------
+
+  // The exploded view of the drivetrain: on, the parts move out over half a
+  // second (at once with reduced motion).
+  setExplode(on: boolean): void {
+    this.explodeTarget = on ? 1 : 0;
+    if (this.reducedMotion) {
+      this.explodeT = this.explodeTarget;
+      this.applyExplode();
+    }
+    this.dirty = true;
+  }
+
+  private applyExplode(): void {
+    const k = ease(this.explodeT);
+    for (const e of this.explodeMeshes) e.mesh.position.copy(e.home).addScaledVector(e.offset, k);
+    this.dirty = true;
+  }
+
+  // The section plane through the car, null for none.
+  setSection(section: Section | null): void {
+    this.section = section ? { axis: section.axis, t: Math.min(0.98, Math.max(0.02, section.t)) } : null;
+    this.placeSection();
+    this.applyClipping();
+  }
+
+  // The extent of the car along an axis.
+  private extent(axis: "x" | "y" | "z"): [number, number] {
+    const hull = this.layout?.hull;
+    if (!hull) return [-2, 2];
+    if (axis === "x") return [hull.rear, hull.front];
+    if (axis === "y") return [0, hull.height];
+    return [-hull.width / 2, hull.width / 2];
+  }
+
+  // The plane keeps what lies behind it (towards the rear, the passenger
+  // side or the floor), and its frame shows where it cuts.
+  private placeSection(): void {
+    for (const child of [...this.sectionGroup.children]) {
+      this.sectionGroup.remove(child);
+      disposeTree(child);
+    }
+    this.sectionHandle = null;
+    const s = this.section;
+    const hull = this.layout?.hull;
+    if (!s || !hull) {
+      this.clip.length = 0;
+      this.sectionGroup.visible = false;
+      this.dirty = true;
+      return;
+    }
+    const [lo, hi] = this.extent(s.axis);
+    const at = lo + (hi - lo) * s.t;
+    const normal = s.axis === "x" ? new THREE.Vector3(-1, 0, 0) : s.axis === "y" ? new THREE.Vector3(0, -1, 0) : new THREE.Vector3(0, 0, -1);
+    this.clipPlane.set(normal, at);
+    this.clip.length = 0;
+    this.clip.push(this.clipPlane);
+    // The frame: a little larger than the car's cross-section there.
+    const L = hull.length * 1.08;
+    const W = hull.width * 1.15;
+    const H = hull.height * 1.12;
+    const [w, h] = s.axis === "x" ? [W, H] : s.axis === "y" ? [L, W] : [L, H];
+    const color = new THREE.Color(this.palette.accent);
+    const quad = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, h),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: this.palette.light ? 0.08 : 0.07, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }),
+    );
+    quad.renderOrder = 30;
+    const frame = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.PlaneGeometry(w, h)),
+      new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85, toneMapped: false }),
+    );
+    frame.renderOrder = 31;
+    const g = new THREE.Group();
+    g.add(quad, frame);
+    if (s.axis === "x") {
+      g.rotation.y = Math.PI / 2;
+      g.position.set(at, hull.height / 2, 0);
+    } else if (s.axis === "y") {
+      g.rotation.x = -Math.PI / 2;
+      g.position.set(0, at, 0);
+    } else {
+      g.position.set(0, hull.height / 2, at);
+    }
+    this.sectionGroup.add(g);
+    this.sectionHandle = quad;
+    this.sectionGroup.visible = true;
+    this.dirty = true;
+  }
+
+  // Every material of the car and the network shares the plane list, so
+  // switching the cut on and off needs no walk over the scene afterwards.
+  private applyClipping(): void {
+    const roots: THREE.Object3D[] = [...this.layerGroups.values(), this.wheelGroup];
+    for (const root of roots) {
+      root.traverse((o) => {
+        const mat = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
+        if (!mat) return;
+        for (const m of Array.isArray(mat) ? mat : [mat]) m.clippingPlanes = this.clip;
+      });
+    }
+    this.dirty = true;
+  }
+
+  private onSectionDown = (e: PointerEvent) => {
+    if (!this.section || !this.sectionHandle) return;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(ndc, this.camera);
+    if (!this.raycaster.intersectObject(this.sectionHandle, false).length) return;
+    // The plane takes the press: the view does not turn.
+    this.dragging = true;
+    this.controls.enabled = false;
+    this.renderer.domElement.setPointerCapture(e.pointerId);
+    this.renderer.domElement.addEventListener("pointermove", this.onSectionMove);
+    this.renderer.domElement.addEventListener("pointerup", this.onSectionUp);
+    e.stopPropagation();
+  };
+
+  private onSectionMove = (e: PointerEvent) => {
+    const s = this.section;
+    if (!this.dragging || !s) return;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(ndc, this.camera);
+    // The point of the axis through the car nearest to the ray.
+    const ray = this.raycaster.ray;
+    const axis = s.axis === "x" ? new THREE.Vector3(1, 0, 0) : s.axis === "y" ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(0, 0, 1);
+    const origin = new THREE.Vector3(0, (this.layout?.hull.height ?? 1.4) / 2, 0);
+    const w0 = origin.clone().sub(ray.origin);
+    const b = axis.dot(ray.direction);
+    const d = axis.dot(w0);
+    const f = ray.direction.dot(w0);
+    const denom = 1 - b * b;
+    if (denom < 1e-4) return;
+    const along = (b * f - d) / denom;
+    const pos = (s.axis === "x" ? origin.x : s.axis === "y" ? origin.y : origin.z) + along;
+    const [lo, hi] = this.extent(s.axis);
+    const t = Math.min(0.98, Math.max(0.02, (pos - lo) / (hi - lo)));
+    this.setSection({ axis: s.axis, t });
+    this.events.onSection?.(t);
+  };
+
+  private onSectionUp = (e: PointerEvent) => {
+    this.dragging = false;
+    this.controls.enabled = true;
+    const canvas = this.renderer.domElement;
+    if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+    canvas.removeEventListener("pointermove", this.onSectionMove);
+    canvas.removeEventListener("pointerup", this.onSectionUp);
+    // No click on what lies under the plane.
+    this.downAt = null;
+  };
+
+  // The frame counter: on, the scene draws every frame and reports the
+  // frame time, the time of the draw call, draw calls and triangles.
+  setStats(on: boolean): void {
+    this.statsOn = on;
+    this.statsFrames = [];
+    this.statsRender = [];
+    this.dirty = true;
   }
 
   // --- Camera ----------------------------------------------------------------------------
@@ -1056,7 +1440,11 @@ export class XrayScene {
     if (!this.pointer) return null;
     this.raycaster.setFromCamera(new THREE.Vector2(this.pointer.x, this.pointer.y), this.camera);
     const candidates: THREE.Object3D[] = [];
-    if (this.visible.network) candidates.push(...this.ecuMeshes.values());
+    if (this.visible.network) {
+      candidates.push(...this.ecuMeshes.values());
+      // The socket, the adapter in it and a motorcycle's adapter cable.
+      for (const o of this.networkGroup.children) if (String(o.userData.pick ?? "").startsWith("obd")) candidates.push(o);
+    }
     for (const [, mesh] of this.partMeshes) {
       if (mesh.parent?.visible && (mesh.material as THREE.MeshStandardMaterial).opacity > 0.25) candidates.push(mesh);
     }
@@ -1104,6 +1492,13 @@ export class XrayScene {
       this.dirty = true;
     }
     if (this.controls.update()) this.dirty = true;
+
+    // The drivetrain moving apart or back together.
+    if (this.explodeT !== this.explodeTarget) {
+      const step = dt / 0.6;
+      this.explodeT = this.explodeTarget > this.explodeT ? Math.min(this.explodeTarget, this.explodeT + step) : Math.max(this.explodeTarget, this.explodeT - step);
+      this.applyExplode();
+    }
 
     // Packets.
     if (this.packets.length > 0) {
@@ -1170,24 +1565,56 @@ export class XrayScene {
     // Hover, at most once per frame.
     if (this.pointer && !this.downAt) this.setHovered(this.pick());
 
+    if (this.statsOn) this.dirty = true;
     if (!this.dirty) return;
     this.dirty = false;
+    const before = performance.now();
     this.renderer.render(this.scene, this.camera);
     this.placeLabels();
+    if (this.statsOn) this.countFrame(now, performance.now() - before);
   };
+
+  private countFrame(now: number, renderMs: number): void {
+    this.statsFrames.push(now);
+    this.statsRender.push(renderMs);
+    if (now - this.statsAt < 500 || this.statsFrames.length < 3) return;
+    this.statsAt = now;
+    const frames = this.statsFrames;
+    const span = frames[frames.length - 1]! - frames[0]!;
+    const frameMs = span / (frames.length - 1);
+    const info = this.renderer.info.render;
+    this.events.onStats?.({
+      fps: 1000 / frameMs,
+      frameMs,
+      renderMs: this.statsRender.reduce((a, b) => a + b, 0) / this.statsRender.length,
+      calls: info.calls,
+      triangles: info.triangles,
+    });
+    this.statsFrames = [now];
+    this.statsRender = [];
+  }
 
   private placeLabels(): void {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
     const v = new THREE.Vector3();
-    const placed: { el: HTMLDivElement; x: number; y: number; w: number; h: number }[] = [];
-    for (const [, { el, data }] of this.labels) {
-      v.set(...data.anchor).project(this.camera);
+    const shown: { entry: { el: HTMLDivElement; w?: number; h?: number }; x: number; y: number }[] = [];
+    // First every write of the visibility, then the reads of the sizes that
+    // are not known yet, then the positions: one layout pass at most.
+    for (const [, entry] of this.labels) {
+      v.set(...entry.data.anchor).project(this.camera);
       const visible = v.z < 1 && Math.abs(v.x) < 1.1 && Math.abs(v.y) < 1.1;
-      el.style.display = visible ? "" : "none";
-      if (!visible) continue;
-      placed.push({ el, x: (v.x * 0.5 + 0.5) * w, y: (-v.y * 0.5 + 0.5) * h, w: el.offsetWidth, h: el.offsetHeight });
+      const display = visible ? "" : "none";
+      if (entry.el.style.display !== display) entry.el.style.display = display;
+      if (visible) shown.push({ entry, x: (v.x * 0.5 + 0.5) * w, y: (-v.y * 0.5 + 0.5) * h });
     }
+    for (const s of shown) {
+      if (s.entry.w === undefined) {
+        s.entry.w = s.entry.el.offsetWidth;
+        s.entry.h = s.entry.el.offsetHeight;
+      }
+    }
+    const placed = shown.map((s) => ({ el: s.entry.el, x: s.x, y: s.y, w: s.entry.w ?? 0, h: s.entry.h ?? 0 }));
     // Labels that would cover each other move up, the lower one first.
     placed.sort((a, b) => b.y - a.y);
     for (let i = 0; i < placed.length; i++) {
@@ -1375,6 +1802,9 @@ export class XrayScene {
     canvas.removeEventListener("pointerdown", this.onPointerDown);
     canvas.removeEventListener("pointerup", this.onPointerUp);
     this.container.removeEventListener("keydown", this.onKeyDown);
+    this.container.removeEventListener("pointerdown", this.onSectionDown, true);
+    canvas.removeEventListener("pointermove", this.onSectionMove);
+    canvas.removeEventListener("pointerup", this.onSectionUp);
     this.controls.dispose();
     disposeTree(this.scene);
     this.glow.dispose();
@@ -1383,6 +1813,16 @@ export class XrayScene {
     canvas.remove();
     this.overlay.remove();
   }
+}
+
+// Several geometries as one mesh (fewer draw calls on a weak graphics
+// chip). They are all indexed and have the same attributes.
+function merged(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  if (geos.length === 1) return geos[0]!;
+  const out = mergeGeometries(geos, false);
+  if (!out) return geos[0]!;
+  for (const g of geos) g.dispose();
+  return out;
 }
 
 function disposeTree(root: THREE.Object3D): void {

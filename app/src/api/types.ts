@@ -112,6 +112,9 @@ export interface UdsEcuRow {
   serial: string;
   dtcs: UdsDtcRow[];
   note: string;
+  // The CAN the unit answered on: "hs" (the CAN of the OBD socket), "ms"
+  // (Ford MS-CAN), "sw" (GM single wire CAN); absent from older answers.
+  bus?: string;
 }
 
 export interface CustomRow {
@@ -808,6 +811,10 @@ export interface VehicleAnatomy {
   battery: TractionBattery;
   fuelTank: boolean;
   reason: string;
+  // Where the diagnostic socket sits: SocketLocation and SocketSpot (see
+  // VehicleDiagnosisInfo), 0 when not known.
+  socketLocation: number;
+  socketSpot: number;
 }
 
 // What diagnosis is possible for a generation in a given year.

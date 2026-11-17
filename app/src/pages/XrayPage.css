@@ -5,12 +5,18 @@
   --bus-comfort: #4fd39a;
   --bus-diagnostic: #5ab8ff;
   --bus-kline: #f2d25c;
+  --bus-infotainment: #b48cff;
+  --bus-mscan: #ff6fb0;
+  --bus-swcan: #e6e9f2;
 }
 :root[data-theme="light"] {
   --bus-powertrain: #d9690b;
   --bus-comfort: #13996a;
   --bus-diagnostic: #1f7fd6;
   --bus-kline: #b38600;
+  --bus-infotainment: #7a4fd6;
+  --bus-mscan: #c2306f;
+  --bus-swcan: #5a6478;
 }
 
 .xray-page .page-inner { min-height: 100%; }
@@ -21,13 +27,17 @@
   grid-template-columns: minmax(0, 1fr) 330px;
   gap: 18px;
   min-height: 560px;
+  align-items: start;
 }
 
+/* The stage keeps the height of the window: a long list of control units
+   beside it makes the page longer, not the car larger. */
 .xray-stage {
   position: relative;
   overflow: hidden;
   padding: 0;
   min-height: 520px;
+  height: max(520px, calc(100vh - 210px));
   outline: none;
   background:
     radial-gradient(120% 90% at 50% 30%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%),
@@ -70,6 +80,8 @@
 .xray-label[data-tone="warn"] { --tone: var(--warn); }
 .xray-label[data-tone="good"] { --tone: var(--good); }
 .xray-label[data-tone="info"] { --tone: var(--info); }
+.xray-label[data-tone="bus"] { padding: 1px 7px; font-size: 10px; opacity: 0.92; }
+.xray-label[data-tone="bus"] .xray-label-title { color: var(--tone); font-weight: 600; }
 .xray-label-title { color: var(--text-muted); font-weight: 500; }
 .xray-label-value { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 12px; }
 .xray-label[data-tone="bad"] .xray-label-value { color: var(--bad); }
@@ -102,12 +114,34 @@
   border: 1px solid var(--border);
   font-size: 12px;
   color: var(--text-muted);
+  max-width: 42%;
   z-index: 2;
 }
 .xray-legend-item { display: inline-flex; align-items: center; gap: 7px; }
 .xray-legend-line { width: 18px; height: 3px; border-radius: 2px; background: var(--bus); box-shadow: 0 0 6px var(--bus); }
 
+.xray-legend-note { flex-basis: 100%; font-size: 11px; }
+
 .xray-help { position: absolute; right: 14px; bottom: 16px; z-index: 2; pointer-events: none; }
+
+/* Cuts: the exploded drivetrain and the section plane with its axis and
+   slider, at the lower right above the help line. */
+.xray-tools {
+  position: absolute;
+  right: 14px;
+  bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  max-width: min(520px, 60%);
+  z-index: 2;
+}
+.xray-tools .chip { backdrop-filter: blur(6px); background: color-mix(in srgb, var(--surface-high) 80%, transparent); }
+.xray-tools .chip.on { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+.xray-section-slider { width: 140px; accent-color: var(--accent); }
+.xray-stats { position: absolute; top: 52px; right: 14px; z-index: 2; pointer-events: none; font-variant-numeric: tabular-nums; }
 
 .xray-loading { position: absolute; inset: 0; display: grid; place-items: center; }
 .xray-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
@@ -187,7 +221,7 @@
 
 @media (max-width: 1100px) {
   .xray-grid { grid-template-columns: minmax(0, 1fr); }
-  .xray-stage { min-height: 460px; }
+  .xray-stage { min-height: 460px; height: max(460px, calc(100vh - 260px)); }
 }
 /* Phones: the help goes above the legend instead of next to it. */
 @media (max-width: 640px) {

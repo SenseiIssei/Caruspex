@@ -22,6 +22,8 @@
 //!   engines (911, Beetle, Smart Fortwo, Twingo III).
 //! - A hybrid keeps that layout and adds a motor at the gearbox and a small
 //!   battery under the rear seat; a plug-in hybrid a larger one.
+//! - A motorcycle has its engine in the frame between the wheels and drives
+//!   the rear wheel.
 //!
 //! A value Wikidata lacks for a generation that has others is derived from
 //! the typical ones in proportion (a missing wheelbase from the real length),
@@ -563,6 +565,28 @@ fn rear_motor_platform(brand: &str, model: &str) -> bool {
 /// variant (`PT_*`, one flag; 0 takes petrol).
 pub fn drivetrain(brand: &str, model: &str, body: BodyType, year: i32, variant: u32) -> Drivetrain {
     let variant = if variant == 0 { PT_PETROL } else { variant };
+    // A motorcycle: the engine sits in the frame between the wheels and
+    // drives the rear wheel by chain, belt or shaft; an electric one has its
+    // battery in the frame and the motor at the swingarm.
+    if body == BodyType::Motorcycle {
+        let electric = variant & PT_ELECTRIC != 0;
+        return Drivetrain {
+            engine: if electric {
+                EngineLayout::None
+            } else {
+                EngineLayout::Mid
+            },
+            driven: Rear,
+            front_motor: false,
+            rear_motor: electric,
+            battery: if electric {
+                TractionBattery::Floor
+            } else {
+                TractionBattery::None
+            },
+            fuel_tank: !electric,
+        };
+    }
     if variant & PT_ELECTRIC != 0 {
         let dual = body == BodyType::Suv && !matches!(brand, "Volkswagen" | "Škoda" | "Cupra")
             || (brand == "Tesla" && (model.contains('S') || model.contains('X')))
@@ -661,6 +685,23 @@ pub fn drivetrain_reason(d: &Drivetrain) -> &'static str {
             "Engine at the back: in this model it sits behind the driver and drives the rear wheels.",
         ),
     }
+}
+
+/// The engine layout of a motorcycle, in place of [`engine_layout_name`].
+pub fn motorcycle_engine_name() -> &'static str {
+    l(
+        "Motor im Rahmen zwischen den Rädern",
+        "Engine in the frame between the wheels",
+    )
+}
+
+/// One sentence on how a motorcycle is laid out, in place of
+/// [`drivetrain_reason`].
+pub fn motorcycle_reason() -> &'static str {
+    l(
+        "Motorrad: der Motor hängt im Rahmen unter dem Tank, Kette, Riemen oder Kardan treiben das Hinterrad; Batterie, Steuergerät und Diagnosestecker sitzen meist unter der Sitzbank.",
+        "Motorcycle: the engine hangs in the frame under the tank, a chain, belt or shaft drives the rear wheel; battery, control unit and diagnostic plug usually sit under the seat.",
+    )
 }
 
 #[cfg(test)]
@@ -823,6 +864,12 @@ mod tests {
         assert!(prius.front_motor && prius.fuel_tank);
         let hilux = drivetrain("Toyota", "Hilux", BodyType::Pickup, 2018, PT_DIESEL);
         assert_eq!(hilux.engine, Long);
+        // A motorcycle drives its rear wheel from the engine in the frame.
+        let mt07 = drivetrain("Yamaha", "MT-07", BodyType::Motorcycle, 2020, PT_PETROL);
+        assert_eq!((mt07.engine, mt07.driven), (Mid, Rear));
+        assert!(mt07.fuel_tank && !mt07.front_motor && !mt07.rear_motor);
+        let electric = drivetrain("Zero", "SR", BodyType::Motorcycle, 2022, PT_ELECTRIC);
+        assert!(electric.rear_motor && !electric.fuel_tank);
     }
 
     #[test]

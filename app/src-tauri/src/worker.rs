@@ -319,7 +319,7 @@ fn status_row(st: &VehicleStatus) -> StatusRow {
     }
 }
 
-fn uds_row(ecu: &UdsEcu) -> UdsEcuRow {
+fn uds_row(ecu: &UdsEcu, bus: StnBus) -> UdsEcuRow {
     UdsEcuRow {
         request: ecu.definition.request,
         response: ecu.definition.response,
@@ -347,6 +347,7 @@ fn uds_row(ecu: &UdsEcu) -> UdsEcuRow {
             })
             .collect(),
         note: ecu.note.clone(),
+        bus: bus.key().to_string(),
     }
 }
 
@@ -1450,7 +1451,18 @@ impl Worker {
             kind: "demo".into(),
             ..ConnectRoute::default()
         };
-        let ok = self.finish_connect(Box::new(caruspex_demo::DemoTransport::default()), "6", true);
+        // CARUSPEX_DEMO_ADAPTER=obdlink-mx lets the demo car answer like an
+        // OBDLink MX+ (MS-CAN and SW-CAN), for pictures of those buses.
+        let adapter = match std::env::var("CARUSPEX_DEMO_ADAPTER").as_deref() {
+            Ok("obdlink-mx") => caruspex_demo::DemoAdapter::ObdLinkMxPlus,
+            Ok("obdlink-ex") => caruspex_demo::DemoAdapter::ObdLinkEx,
+            _ => caruspex_demo::DemoAdapter::default(),
+        };
+        let demo = caruspex_demo::DemoTransport::new(caruspex_demo::DemoOptions {
+            adapter,
+            ..caruspex_demo::DemoOptions::default()
+        });
+        let ok = self.finish_connect(Box::new(demo), "6", true);
         self.busy(false);
         if ok {
             self.refresh_status_and_faults();
@@ -2587,7 +2599,7 @@ impl Worker {
         let total = list.len();
         self.emit(
             "uds_scan_started",
-            json!({ "total": total, "generic": generic }),
+            json!({ "total": total, "generic": generic, "bus": bus.key() }),
         );
 
         // Over a raw CAN interface the missing units are found first, many
@@ -2633,7 +2645,7 @@ impl Worker {
             if !ecu.dtcs.is_empty() {
                 with_faults += 1;
             }
-            self.emit("uds_ecu_result", json!({ "row": uds_row(ecu) }));
+            self.emit("uds_ecu_result", json!({ "row": uds_row(ecu, bus) }));
         }
         self.back_to_high_speed();
         finished(self, present, with_faults, self.cancelled(), String::new());
@@ -2702,7 +2714,7 @@ impl Worker {
             Some(&never),
         );
         if let Some(ecu) = again.first().filter(|e| e.present) {
-            let mut row = uds_row(ecu);
+            let mut row = uds_row(ecu, self.uds_bus);
             row.name = name.to_string();
             self.emit("uds_ecu_result", json!({ "row": row }));
         }
@@ -3622,6 +3634,9 @@ mod tests {
         let found = Collect::named(&events, "uds_ecu_result");
         assert_eq!(found.len(), 1, "{events:?}");
         assert_eq!(found[0]["row"]["request"], 0x726);
+        // The row and the start of the scan name the bus, for the X-ray view.
+        assert_eq!(found[0]["row"]["bus"], "ms");
+        assert_eq!(Collect::named(&events, "uds_scan_started")[0]["bus"], "ms");
         assert_eq!(worker.elm.stn_bus(), StnBus::HighSpeed);
         assert!(worker.elm.request("0100", 0x01, 2000).ok());
 
