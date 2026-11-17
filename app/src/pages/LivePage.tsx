@@ -54,6 +54,8 @@ export default function LivePage() {
   // The OBDb packs that fit the detected car, offered below the built-in ones.
   const [carPacks, setCarPacks] = useState<PidPackInfo[]>([]);
   const identity = useSession((s) => s.identity);
+  // Only the K-line is slow enough to mention: ISO 9141-2, ISO 14230 (KWP2000) and KWP1281.
+  const onKLine = useSession((s) => s.connected && /9141|14230|KWP|K-Line/i.test(s.protocol));
   const [imports, setImports] = useState<CustomRow[][]>([]);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [supported, setSupported] = useState<Set<number>>(new Set());
@@ -314,7 +316,9 @@ export default function LivePage() {
           {tr("mitschreiben")}
         </Check>
         <span className="spacer" />
-        <span className="hint live-hint">{tr("Die Werte laufen einzeln über den Bus, daher aktualisiert es auf der K-Line gemächlich.")}</span>
+        {onKLine && (
+          <span className="hint live-hint">{tr("Die Werte laufen einzeln über den Bus, daher aktualisiert es auf der K-Line gemächlich.")}</span>
+        )}
       </div>
 
       <Card className="live-chart-card">
