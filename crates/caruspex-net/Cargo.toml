@@ -17,4 +17,5 @@ winreg = "0.56.0"
 libc = "0.2.191"
 
 [dev-dependencies]
+proptest.workspace = true
 caruspex-protocols.workspace = true
