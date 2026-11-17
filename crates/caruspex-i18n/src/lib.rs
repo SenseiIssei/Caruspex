@@ -186,24 +186,49 @@ pub fn language() -> Language {
     TABLE[CURRENT.load(Ordering::Relaxed) as usize].id
 }
 
-type Catalog = HashMap<String, HashMap<String, String>>;
+// The packed catalogs from build.rs: (code, deflate of "en\0text\0...").
+include!(concat!(env!("OUT_DIR"), "/catalogs.rs"));
 
-fn catalog() -> &'static Catalog {
-    static CATALOG: OnceLock<Catalog> = OnceLock::new();
-    CATALOG.get_or_init(|| {
-        serde_json::from_str(include_str!(concat!(env!("OUT_DIR"), "/core_catalog.json")))
-            .expect("generated catalog is valid")
-    })
+type Catalog = HashMap<&'static str, &'static str>;
+
+/// Unpacks one catalog. The texts stay in one block for the rest of the
+/// run, the map only points into it.
+fn unpack(packed: &[u8]) -> Catalog {
+    let Ok(raw) = miniz_oxide::inflate::decompress_to_vec(packed) else {
+        return Catalog::new();
+    };
+    let Ok(text) = String::from_utf8(raw) else {
+        return Catalog::new();
+    };
+    let text: &'static str = Box::leak(text.into_boxed_str());
+    let mut parts = text.split('\0');
+    let mut map = Catalog::new();
+    while let (Some(en), Some(translated)) = (parts.next(), parts.next()) {
+        map.insert(en, translated);
+    }
+    map
+}
+
+/// The catalog of one language, unpacked the first time it is needed; a
+/// program that only speaks German or English never unpacks any.
+fn catalog(language: Language) -> Option<&'static Catalog> {
+    static CATALOGS: [OnceLock<Catalog>; 16] = [const { OnceLock::new() }; 16];
+    let code = language_info(language).code;
+    let index = PACKED.iter().position(|(c, _)| *c == code)?;
+    Some(CATALOGS[index].get_or_init(|| unpack(PACKED[index].1)))
+}
+
+/// Packed bytes of all catalogs together, for the size check in the tests.
+pub fn packed_catalog_bytes() -> usize {
+    PACKED.iter().map(|(_, bytes)| bytes.len()).sum()
 }
 
 /// The catalog text of `en` in the given language, `en` itself if there is none.
 pub fn translate_core(language: Language, en: &'static str) -> &'static str {
     match language {
         Language::German | Language::English => en,
-        other => catalog()
-            .get(language_info(other).code)
-            .and_then(|m| m.get(en))
-            .map(|s| s.as_str())
+        other => catalog(other)
+            .and_then(|m| m.get(en).copied())
             .unwrap_or(en),
     }
 }
@@ -212,11 +237,10 @@ pub fn translate_core(language: Language, en: &'static str) -> &'static str {
 pub fn translate_core_owned(language: Language, en: &str) -> String {
     match language {
         Language::German | Language::English => en.to_string(),
-        other => catalog()
-            .get(language_info(other).code)
-            .and_then(|m| m.get(en))
-            .cloned()
-            .unwrap_or_else(|| en.to_string()),
+        other => catalog(other)
+            .and_then(|m| m.get(en).copied())
+            .unwrap_or(en)
+            .to_string(),
     }
 }
 
@@ -275,11 +299,12 @@ mod tests {
     fn catalog_has_every_language() {
         for info in languages().iter().skip(2) {
             assert!(
-                catalog().get(info.code).map(|m| m.len()).unwrap_or(0) > 3000,
+                catalog(info.id).map(|m| m.len()).unwrap_or(0) > 3000,
                 "{}",
                 info.code
             );
         }
+        assert!(catalog(Language::German).is_none());
         let text = Text::new("Zündkerzen", "Spark plugs");
         assert_eq!(with_language(Language::German, || text.get()), "Zündkerzen");
         assert_eq!(
@@ -289,6 +314,21 @@ mod tests {
         assert_eq!(
             translate_core(Language::Spanish, "no such text 123"),
             "no such text 123"
+        );
+    }
+
+    #[test]
+    fn catalogs_are_packed() {
+        // About 6.9 MB of texts as JSON; packed they must stay far below.
+        let packed = packed_catalog_bytes();
+        assert!(packed > 100_000 && packed < 3_000_000, "{packed}");
+        // A known text of the oldest files, in a language unpacked here.
+        let es = catalog(Language::Spanish).unwrap();
+        assert!(es.values().all(|t| !t.is_empty()));
+        assert_ne!(
+            translate_core(Language::Japanese, "unknown"),
+            "unknown",
+            "Japanese has the word"
         );
     }
 }

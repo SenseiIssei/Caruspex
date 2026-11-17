@@ -574,6 +574,7 @@ dependencies = [
 name = "caruspex-i18n"
 version = "0.12.0"
 dependencies = [
+ "miniz_oxide 0.9.1",
  "serde_json",
 ]
 

@@ -1,7 +1,13 @@
 //! Joins translations/source/core_*.json (id, de, en) with
 //! translations/<code>/core_*.json (id -> text) into one catalog per language,
-//! keyed by the English text, written to OUT_DIR/core_catalog.json.
-//! The same files the Qt version used; nothing is translated twice.
+//! keyed by the English text. The same files the Qt version used; nothing is
+//! translated twice.
+//!
+//! Each catalog is written to OUT_DIR/core_<code>.bin as pairs of English
+//! text and translation, every text ended by a zero byte, and packed with
+//! deflate. The program carries the packed catalogs and unpacks only the one
+//! of the language in use, the first time a text of it is asked for
+//! (see `catalog` in lib.rs). OUT_DIR/catalogs.rs lists them.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -27,6 +33,7 @@ fn json_files(dir: &Path, prefix: &str) -> Vec<PathBuf> {
 fn main() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../translations");
     println!("cargo:rerun-if-changed={}", root.display());
+    let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
 
     let mut en_by_id: BTreeMap<String, String> = BTreeMap::new();
     for file in json_files(&root.join("source"), "core_") {
@@ -41,9 +48,10 @@ fn main() {
         }
     }
 
-    let mut catalog = serde_json::Map::new();
+    let mut list = String::from("pub(crate) static PACKED: [(&str, &[u8]); 16] = [\n");
     for code in CODES {
-        let mut map = serde_json::Map::new();
+        // Sorted by the English text, so the file is the same on every build.
+        let mut map: BTreeMap<&str, String> = BTreeMap::new();
         for file in json_files(&root.join(code), "core_") {
             let texts: serde_json::Value =
                 serde_json::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
@@ -51,13 +59,28 @@ fn main() {
                 if let (Some(en), Some(text)) = (en_by_id.get(id), text.as_str())
                     && !text.is_empty()
                 {
-                    map.insert(en.clone(), serde_json::Value::String(text.to_string()));
+                    map.insert(en.as_str(), text.to_string());
                 }
             }
         }
-        catalog.insert(code.to_string(), serde_json::Value::Object(map));
+        let mut raw = Vec::new();
+        for (en, text) in &map {
+            assert!(
+                !en.contains('\0') && !text.contains('\0'),
+                "a text with a zero byte: {en}"
+            );
+            raw.extend_from_slice(en.as_bytes());
+            raw.push(0);
+            raw.extend_from_slice(text.as_bytes());
+            raw.push(0);
+        }
+        let packed = miniz_oxide::deflate::compress_to_vec(&raw, 10);
+        let name = format!("core_{code}.bin");
+        fs::write(out_dir.join(&name), packed).unwrap();
+        list += &format!(
+            "    (\"{code}\", include_bytes!(concat!(env!(\"OUT_DIR\"), \"/{name}\"))),\n"
+        );
     }
-
-    let out = PathBuf::from(std::env::var("OUT_DIR").unwrap()).join("core_catalog.json");
-    fs::write(out, serde_json::to_string(&catalog).unwrap()).unwrap();
+    list += "];\n";
+    fs::write(out_dir.join("catalogs.rs"), list).unwrap();
 }
