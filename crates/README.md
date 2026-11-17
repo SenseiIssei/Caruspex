@@ -22,7 +22,7 @@ history and in the v0.8.0 release.
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
 | caruspex-demo | the built-in demo car: an ELM327 or an OBDLink (STN commands, MS-CAN and SW-CAN) with simulated control units, an injectable clock and a count of the simulated adapter time | link |
 | caruspex-cli | `caruspex_cli`, the command-line tool | all of the above |
-| app/src-tauri | the desktop app: the worker thread, settings, garage, report, the signed updater | all of the above |
+| app/src-tauri | the app: the worker thread, settings, garage, report, the signed updater; a library (`lib.rs`) that `main.rs` starts on the desktop and the Android project in `gen/android` loads, with USB and classic Bluetooth adapters through `android.rs` and its Kotlin plugin (see `docs/android.md`) | all of the above |
 
 ## Conventions
 

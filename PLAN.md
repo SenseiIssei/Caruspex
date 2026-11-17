@@ -259,7 +259,9 @@ Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 
 ## Phase 19: Mehr Plattformen
 
-- [ ] Android-App mit Qt: Bluetooth LE und klassisches Bluetooth sind schon da, das Handy ist im Auto sowieso dabei. Groß, Nutzen sehr hoch
+- [x] Android-App (früher mit Qt geplant, jetzt Tauri 2 mobile): das Handy ist im Auto sowieso dabei. Groß, Nutzen sehr hoch
+  Stand (0.14.0): die App ist eine Bibliothek (`lib.rs` mit dem Einstieg für Android, `main.rs` ruft sie auf dem Desktop auf), das Android-Projekt liegt in `app/src-tauri/gen/android`. Eigener Updater, PDF-Druck über WebView2/GTK/WebKit, Single-Instance und Fensterlage sind auf dem Handy aus. Wege zum Adapter: WLAN (TCP, Sockets an das WLAN gebunden), Demo-Auto und Aufnahmen, klassisches Bluetooth (gekoppelte Adapter, SPP) und USB-Adapter am OTG-Kabel über das kleine Kotlin-Plugin `AdapterPlugin.kt` (usb-serial-for-android, MIT), das die Bytes an einen Rust-`Transport` gibt (`android.rs`). Ab Android 12 erklärt die Verbindungsseite vor der Frage nach "Geräten in der Nähe", wozu sie dient. Handy-Ansicht ab 360 px: Seitenleiste als Menü, Tabellen scrollen, Knöpfe für Finger, Röntgenansicht mit Touch. Speichern über den Dateidialog des Systems, der Prüfbericht als HTML. CI-Job "Android" baut ein APK für arm64, auf Tags signiert und angehängt nur mit den Schlüssel-Secrets (`docs/android.md`). Gebaut und auf dem Desktop im schmalen Fenster geprüft; auf einem echten Handy oder Emulator noch nicht gelaufen (kein Systemabbild auf dem Entwicklungsrechner).
+  Nächste Schritte: Bluetooth LE auf Android (btleplug braucht droidplug, die Java-Seite, und einen JNI-Start aus der Activity; alternativ LE im eigenen Kotlin-Plugin); klassisches Bluetooth und USB-OTG an echten Adaptern prüfen; KKL-Kabel über USB (5-Baud-Reiz und Break) und Suche nach ungekoppelten Bluetooth-Geräten; der Release-Schlüssel und die vier Secrets legt der Besitzer an; Google Play erst danach
 - [ ] Verteilen über winget, Homebrew, Flathub und Snap, damit Installieren und Aktualisieren ein Befehl ist. Klein bis Mittel
 - [ ] iOS später: nur Bluetooth LE und WLAN, App Store braucht ein Entwicklerkonto. Groß
 
@@ -309,7 +311,7 @@ kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 4. 3D-Röntgenansicht aus Phase 20, zuerst Unterbau, Karosserie aus Maßen und Steuergeräte mit Datenleitungen: macht sichtbar, was die Diagnose findet
 5. VAG TP 2.0 und K-Line über J2534 aus Phase 16
 6. Mitschnitte teilen (Phase 15) und das Testprogramm (Phase 18) zusammen: daraus kommen Mercedes, DoIP-Listen und die Bestätigung am echten Auto
-7. Android (Phase 19)
+7. Android (Phase 19): erster Stand in 0.14.0, als Nächstes Bluetooth LE und die Prüfung an echten Adaptern
 
 ## Was bewusst nicht kommt
 
