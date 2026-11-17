@@ -19,6 +19,7 @@ use crate::AppState;
 use crate::advice::{self, AdviceInputArg};
 use crate::garage::{self, GarageCar};
 use crate::measure::{BatteryInputArg, SpeedSampleArg, TripConfigArg};
+use crate::rows::ConnectRoute;
 use crate::settings::{self, AppSettings};
 use crate::texts::{args, mw};
 use crate::worker::Job;
@@ -28,6 +29,21 @@ type Result<T> = std::result::Result<T, String>;
 
 fn job(state: &State<'_, AppState>, job: Job) {
     state.worker.send(job);
+}
+
+/// A connect job, after the way that worked last time for this car when
+/// the interface knows one.
+fn connect_job(state: &State<'_, AppState>, remembered: Option<ConnectRoute>, then: Job) {
+    match remembered {
+        Some(route) => job(
+            state,
+            Job::OpenRemembered {
+                route,
+                then: Box::new(then),
+            },
+        ),
+        None => job(state, then),
+    }
 }
 
 // --- Language -----------------------------------------------------------------------
@@ -557,9 +573,16 @@ pub fn list_socketcan_interfaces() -> Vec<String> {
 }
 
 #[tauri::command]
-pub fn open_serial(state: State<'_, AppState>, device: String, baud: i32, protocol_order: String) {
-    job(
+pub fn open_serial(
+    state: State<'_, AppState>,
+    device: String,
+    baud: i32,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
+    connect_job(
         &state,
+        remembered,
         Job::OpenSerial {
             device,
             baud,
@@ -569,9 +592,16 @@ pub fn open_serial(state: State<'_, AppState>, device: String, baud: i32, protoc
 }
 
 #[tauri::command]
-pub fn open_tcp(state: State<'_, AppState>, host: String, port: i32, protocol_order: String) {
-    job(
+pub fn open_tcp(
+    state: State<'_, AppState>,
+    host: String,
+    port: i32,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
+    connect_job(
         &state,
+        remembered,
         Job::OpenTcp {
             host,
             port,
@@ -587,15 +617,25 @@ pub fn open_demo(state: State<'_, AppState>, protocol_order: String) {
 }
 
 #[tauri::command]
-pub fn open_enet(state: State<'_, AppState>, host: String, protocol_order: String) {
+pub fn open_enet(
+    state: State<'_, AppState>,
+    host: String,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
     let _ = protocol_order;
-    job(&state, Job::OpenEnet { host });
+    connect_job(&state, remembered, Job::OpenEnet { host });
 }
 
 #[tauri::command]
-pub fn open_can(state: State<'_, AppState>, spec: String, protocol_order: String) {
+pub fn open_can(
+    state: State<'_, AppState>,
+    spec: String,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
     let _ = protocol_order;
-    job(&state, Job::OpenCan { spec });
+    connect_job(&state, remembered, Job::OpenCan { spec });
 }
 
 #[tauri::command]
@@ -610,9 +650,11 @@ pub fn open_ble(
     name: String,
     kinds: i32,
     protocol_order: String,
+    remembered: Option<ConnectRoute>,
 ) {
-    job(
+    connect_job(
         &state,
+        remembered,
         Job::OpenBle {
             id,
             name,

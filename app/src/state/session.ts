@@ -5,6 +5,7 @@
 import { call, on } from "../api";
 import type {
   AppSettings,
+  ConnectRoute,
   FaultRow,
   FreezeFrameRow,
   HealthFindingRow,
@@ -19,7 +20,7 @@ import { toast } from "../components/Toast";
 import { t, tn } from "../i18n";
 import { createStore, emitApp, useStore } from "../lib/store";
 import { identifyVin, type IdentifiedVehicle } from "../lib/vehicleIdentity";
-import { addCheck, findCar, garageStore, isoNow, latestOdometer, serviceStatus, touchCar } from "./garage";
+import { addCheck, findCar, garageStore, isoNow, latestOdometer, rememberConnection, serviceStatus, touchCar } from "./garage";
 
 const MW = "caruspex::MainWindow";
 
@@ -53,6 +54,8 @@ export interface SessionState {
   // The extra CAN buses the OBDLink of this connection can switch to:
   // "ms" (Ford MS-CAN), "sw" (GM single wire CAN). Empty for an ELM327.
   stnBuses: string[];
+  // The way the connection went, remembered in the garage with the VIN.
+  route: ConnectRoute | null;
   connectedAt: string;
   vin: string;
   identity: IdentifiedVehicle | null;
@@ -91,6 +94,7 @@ const initial: SessionState = {
   protocol: "",
   rawCan: false,
   stnBuses: [],
+  route: null,
   connectedAt: "",
   vin: "",
   identity: null,
@@ -262,6 +266,7 @@ function resetVehicle(): Partial<SessionState> {
     protocol: "",
     rawCan: false,
     stnBuses: [],
+    route: null,
     connectedAt: "",
     vin: "",
     identity: null,
@@ -288,6 +293,7 @@ async function onVin(vin: string): Promise<void> {
   session.set({ identity: car });
   if (car.known) toast(t(MW, "Erkannt: %1", car.title), "success");
   touchCar(vin, car.title, car.subtitle, car.body);
+  rememberConnection(vin, session.get().route, session.get().adapter);
   setTimeout(() => remindServices(true), 1500);
   recordCheck();
 }
@@ -308,7 +314,7 @@ export function startSession(): void {
   on("log_line", ({ line }) => showLog(line));
   on("busy", ({ active }) => session.set({ busy: active }));
 
-  on("connected", ({ adapter, transport, protocol, rawCan, stnBuses }) => {
+  on("connected", ({ adapter, transport, protocol, rawCan, stnBuses, route }) => {
     session.set({
       ...resetVehicle(),
       connected: true,
@@ -317,6 +323,7 @@ export function startSession(): void {
       protocol,
       rawCan: rawCan === true,
       stnBuses: stnBuses ?? [],
+      route: route ?? null,
       connectedAt: isoNow(),
       link: "online",
       linkText: t(MW, "Verbunden · %1", protocol),

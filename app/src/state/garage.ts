@@ -2,7 +2,7 @@
 // VIN, with the history of its checks, its trips, a fuel log and its service
 // plan. The backend only stores the file; the rules live here.
 import { call } from "../api";
-import type { GarageCar, GarageCheck, GarageFuel, GarageService, GarageTrip } from "../api";
+import type { ConnectRoute, GarageCar, GarageCheck, GarageFuel, GarageService, GarageTrip } from "../api";
 import { t, tn } from "../i18n";
 import { createStore, useStore } from "../lib/store";
 
@@ -160,6 +160,35 @@ export function setXrayModel(vin: string, path: string, turned: boolean): void {
     const { xrayModel: _model, xrayModelTurned: _turned, ...rest } = car;
     return path ? { ...rest, xrayModel: path, xrayModelTurned: turned } : rest;
   });
+}
+
+// The kinds of connection worth remembering; the demo car and recordings
+// need no search.
+export const REMEMBERED_KINDS = ["serial", "tcp", "ble", "can", "enet"];
+
+// Notes the way the connection to this car went, for the next connect.
+export function rememberConnection(vin: string, route: ConnectRoute | null, adapter: string): void {
+  if (!route || !REMEMBERED_KINDS.includes(route.kind) || !route.device) return;
+  update(vin, (car) => {
+    const before = car.connection;
+    const next: ConnectRoute = { ...route, adapter, when: isoNow() };
+    // Unchanged apart from the time: no write for every connect.
+    if (before && before.kind === next.kind && before.device === next.device && before.baud === next.baud && before.protocol === next.protocol && before.adapter === next.adapter) return null;
+    return { ...car, connection: next };
+  });
+}
+
+// The way to try first for a connection of this kind: the one of the car
+// seen last that has one. The VIN only comes after connecting, so the car
+// that was there last time is the best guess; a wrong guess costs one
+// quiet attempt before the usual search.
+export function rememberedRoute(cars: GarageCar[], kind: string): ConnectRoute | null {
+  let best: GarageCar | null = null;
+  for (const car of cars) {
+    if (car.connection?.kind !== kind) continue;
+    if (!best || car.lastSeen > best.lastSeen) best = car;
+  }
+  return best?.connection ?? null;
 }
 
 export function removeCar(vin: string): void {

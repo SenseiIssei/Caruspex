@@ -14,6 +14,7 @@ import type {
   AdviceInput,
   AdviceReport,
   ConnectHelp,
+  ConnectRoute,
   AppInfo,
   AppSettings,
   BleDeviceRow,
@@ -111,17 +112,19 @@ export interface Commands {
   // SocketCAN interfaces of this computer (core/CanBus.h socketCanInterfaces), empty off Linux.
   list_socketcan_interfaces: Cmd<None, string[]>;
   // Empty device: search every port.
-  open_serial: Cmd<{ device: string; baud: number; protocolOrder: string }, void>;
-  open_tcp: Cmd<{ host: string; port: number; protocolOrder: string }, void>;
+  // remembered: the way that worked last time for this car; it is tried
+  // first, quietly, and only if no adapter answers there the search runs.
+  open_serial: Cmd<{ device: string; baud: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
+  open_tcp: Cmd<{ host: string; port: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
   open_demo: Cmd<{ protocolOrder: string }, void>;
   // Empty host: look for the car (ENET and DoIP).
-  open_enet: Cmd<{ host: string; protocolOrder: string }, void>;
+  open_enet: Cmd<{ host: string; protocolOrder: string; remembered?: ConnectRoute }, void>;
   // "j2534:<dll>", "slcan:COM5", "socketcan:can0", with "@<bitrate>".
-  open_can: Cmd<{ spec: string; protocolOrder: string }, void>;
+  open_can: Cmd<{ spec: string; protocolOrder: string; remembered?: ConnectRoute }, void>;
   // Answers with the ble_scan_finished event.
   scan_ble: Cmd<{ milliseconds: number }, void>;
   // kinds: 1 = Bluetooth LE, 2 = classic, 3 = both. Empty id scans.
-  open_ble: Cmd<{ id: string; name: string; kinds: number; protocolOrder: string }, void>;
+  open_ble: Cmd<{ id: string; name: string; kinds: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
   open_replay: Cmd<{ path: string; realTime: boolean; protocolOrder: string }, void>;
   close_adapter: Cmd<None, void>;
   start_recording: Cmd<{ path: string }, void>;
@@ -233,7 +236,8 @@ export interface Events {
   // rawCan: the connection runs over a raw CAN interface (J2534, SLCAN,
   // SocketCAN), so the KKL pages can use VAG TP 2.0 on it.
   // stnBuses: the extra CAN buses an OBDLink can switch to ("ms", "sw").
-  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[] };
+  // route: the way the connection went, for the garage.
+  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[]; route?: ConnectRoute };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };

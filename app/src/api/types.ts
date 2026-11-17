@@ -372,6 +372,25 @@ export interface GarageCar {
   // whether it had to be turned around; absent without one.
   xrayModel?: string;
   xrayModelTurned?: boolean;
+  // The last way the connection to this car worked; the next connect
+  // tries it first.
+  connection?: ConnectRoute;
+}
+
+// How a connection went (rows.rs ConnectRoute). kind: "serial", "tcp",
+// "ble", "can", "enet"; "demo", "replay" and "transport" are only reported.
+// device: port, "host:port", Bluetooth id, CAN spec with "@bitrate" or ENET
+// host. protocol: the protocol number the adapter answered on ("6").
+export interface ConnectRoute {
+  kind: string;
+  device: string;
+  baud?: number;
+  protocol?: string;
+  name?: string;
+  kinds?: number;
+  // Only in the garage: the adapter and when it last worked.
+  adapter?: string;
+  when?: string;
 }
 
 // --- Report.h -------------------------------------------------------------------
