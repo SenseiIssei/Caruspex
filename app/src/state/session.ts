@@ -84,6 +84,9 @@ export interface SessionState {
   // Control units of the last scan of all units (EcuPage::results()), for
   // the report.
   udsEcus: UdsEcuRow[];
+  // Units an earlier scan found on another bus of the same connection (the
+  // MS-CAN or SW-CAN of an OBDLink), for the X-ray view.
+  udsOtherBuses: UdsEcuRow[];
 }
 
 const initial: SessionState = {
@@ -118,6 +121,7 @@ const initial: SessionState = {
   lastRecording: "",
   servicesDue: 0,
   udsEcus: [],
+  udsOtherBuses: [],
 };
 
 export const session = createStore<SessionState>(initial);
@@ -190,19 +194,32 @@ export function appendLog(line: string): void {
 }
 
 // Only shows the line. The worker's own lines (log_line) are already in the
-// log file when they arrive.
-function showLog(line: string): void {
-  const now = new Date();
-  const p = (n: number) => String(n).padStart(2, "0");
-  const stamped = `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}  ${line}`;
+// log file when they arrive. A scan sends hundreds of lines a second: they
+// reach the log panel together every 150 ms, so the page (and the X-ray
+// view) is not drawn again for every single line.
+let pendingLines: string[] = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+
+function flushLog(): void {
+  flushTimer = null;
+  const add = pendingLines;
+  pendingLines = [];
+  if (!add.length) return;
   logStore.set((s) => {
-    const lines = s.lines.length >= 5000 ? s.lines.slice(-4999) : s.lines.slice();
-    lines.push(stamped);
-    return { lines };
+    const lines = s.lines.concat(add);
+    return { lines: lines.length > 5000 ? lines.slice(-5000) : lines };
   });
 }
 
+function showLog(line: string): void {
+  const now = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  pendingLines.push(`${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}  ${line}`);
+  flushTimer ??= setTimeout(flushLog, 150);
+}
+
 export function clearLog(): void {
+  pendingLines = [];
   logStore.set({ lines: [] });
 }
 
@@ -286,6 +303,7 @@ function resetVehicle(): Partial<SessionState> {
     score: -1,
     healthFindings: [],
     udsEcus: [],
+    udsOtherBuses: [],
   };
 }
 
@@ -371,7 +389,15 @@ export function startSession(): void {
   });
 
   on("monitor_results", ({ rows }) => session.set({ monitors: rows }));
-  on("uds_scan_started", () => session.set({ udsEcus: [] }));
+  // A scan of another bus (MS-CAN, SW-CAN of an OBDLink) keeps the units
+  // found on the others for the X-ray view.
+  on("uds_scan_started", ({ bus }) =>
+    session.set((s) => {
+      const scanned = bus ?? "hs";
+      const kept = [...s.udsOtherBuses, ...s.udsEcus].filter((e) => (e.bus ?? "hs") !== scanned);
+      return { udsEcus: [], udsOtherBuses: kept };
+    }),
+  );
   on("uds_ecu_result", ({ row }) =>
     session.set((s) => {
       const list = s.udsEcus.filter((e) => !(e.request === row.request && e.response === row.response));

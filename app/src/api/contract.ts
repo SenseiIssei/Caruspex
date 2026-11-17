@@ -293,7 +293,7 @@ export interface Events {
   custom_read: { ok: number; failed: number; firstError: string };
   custom_imported: { rows: CustomRow[]; errors: string[] };
   freeze_frames: { frames: FreezeFrameRow[] };
-  uds_scan_started: { total: number; generic: boolean };
+  uds_scan_started: { total: number; generic: boolean; bus?: string };
   // request and kind of the unit being asked right now.
   uds_scan_progress: { name: string; index: number; total: number; request: number; kind: EcuKind };
   uds_ecu_result: { row: UdsEcuRow };

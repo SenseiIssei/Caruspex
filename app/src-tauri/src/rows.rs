@@ -115,6 +115,10 @@ pub struct UdsEcuRow {
     pub serial: String,
     pub dtcs: Vec<UdsDtcRow>,
     pub note: String,
+    /// The CAN the unit answered on: "hs" (the CAN of the OBD socket), "ms"
+    /// (Ford MS-CAN) or "sw" (GM single wire CAN), for the bus lines of the
+    /// X-ray view.
+    pub bus: String,
 }
 
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]

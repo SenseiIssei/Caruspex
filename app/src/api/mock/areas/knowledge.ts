@@ -74,11 +74,24 @@ export async function catalogGeneration(id: number): Promise<{
   powertrains: number;
   yearFrom: number;
   measured: MeasuredRecord | null;
+  location: number;
+  spot: number;
 } | null> {
   const data = await loadCatalog();
   const g = data.generations[id];
   return g
-    ? { brand: g[0], model: g[1], generation: g[2], body: g[5], powertrains: g[6], yearFrom: g[3], measured: data.measured[String(id)] ?? null }
+    ? {
+        brand: g[0],
+        model: g[1],
+        generation: g[2],
+        body: g[5],
+        powertrains: g[6],
+        yearFrom: g[3],
+        measured: data.measured[String(id)] ?? null,
+        // catalog::location_for: the BMW and Mercedes round plugs are in the engine bay.
+        location: g[12] || (g[7] === Connector.Bmw20 || g[7] === Connector.Mb38 ? Location.EngineBay : Location.Unknown),
+        spot: g[18],
+      }
     : null;
 }
 
