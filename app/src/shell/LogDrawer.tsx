@@ -1,14 +1,15 @@
 // The log panel under the pages (MainWindow::buildLogDrawer): every line the
 // backend reports, time stamped, with a button to record the session into a
 // file for playing it back later.
-import { useEffect, useRef } from "react";
-import { call } from "../api";
+import { useEffect, useRef, useState } from "react";
+import { call, type SharedRecording } from "../api";
 import { Icon } from "../components/Icon";
 import { toast } from "../components/Toast";
 import { Button } from "../components/ui";
 import { t } from "../i18n";
 import { useStore } from "../lib/store";
 import { clearLog, logStore, session, useSession } from "../state/session";
+import { ShareDialog, prepareShare } from "./ShareRecording";
 
 const MW = "caruspex::MainWindow";
 
@@ -22,6 +23,16 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
   const lines = useStore(logStore, (s) => s.lines);
   const recording = useSession((s) => s.recording);
   const box = useRef<HTMLPreElement>(null);
+  const [share, setShare] = useState<{ path: string; shared: SharedRecording; version: string } | null>(null);
+
+  const openShare = async () => {
+    const prepared = await prepareShare();
+    if (!prepared) return;
+    const version = await call("app_info")
+      .then((info) => info.version)
+      .catch(() => "");
+    setShare({ ...prepared, version });
+  };
 
   // Follows the end like QPlainTextEdit, unless the user scrolled up.
   useEffect(() => {
@@ -64,6 +75,19 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
           >
             {recording ? t(MW, "Aufzeichnung beenden") : t(MW, "Aufzeichnen")}
           </Button>
+          <Button
+            variant="ghost"
+            small
+            icon="file"
+            disabled={recording}
+            title={t(
+              "caruspex::Share",
+              "Eine Aufnahme ohne die letzten Stellen der VIN und ohne Anschlussnamen zum Anhängen an ein GitHub-Issue packen",
+            )}
+            onClick={() => void openShare()}
+          >
+            {t("caruspex::Share", "Mitschnitt teilen")}
+          </Button>
           <Button variant="ghost" small onClick={clearLog}>
             {t(MW, "Leeren")}
           </Button>
@@ -73,6 +97,7 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
           {lines.join("\n")}
         </pre>
       </div>
+      {share ? <ShareDialog path={share.path} shared={share.shared} version={share.version} onClose={() => setShare(null)} /> : null}
     </section>
   );
 }

@@ -39,6 +39,7 @@ import type {
   PidInfo,
   PidPackInfo,
   SerialPortInfo,
+  SharedRecording,
   StatusRow,
   UdsEcuRow,
   UpdateInfo,
@@ -129,6 +130,10 @@ export interface Commands {
   close_adapter: Cmd<None, void>;
   start_recording: Cmd<{ path: string }, void>;
   stop_recording: Cmd<None, void>;
+  // "Mitschnitt teilen": the recording without the last VIN digits, the
+  // port or address and the time of day, with a preview. Writes nothing;
+  // vin is the VIN of the connected car, empty if none.
+  share_recording: Cmd<{ path: string; vin: string }, SharedRecording>;
 
   // --- Reading -----------------------------------------------------------------
   read_faults: Cmd<None, void>;

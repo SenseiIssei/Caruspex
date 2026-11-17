@@ -290,6 +290,12 @@
 .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .modal.small { width: min(520px, 100%); }
 
+/* --- Mitschnitt teilen and the crash report ------------------------------------------------ */
+
+.share-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin: 14px 0; }
+.share-list { margin: 6px 0 0; padding-inline-start: 18px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.share-sample { max-height: 220px; overflow: auto; margin: 6px 0 0; padding: 10px 12px; font-size: 11.5px; line-height: 1.5; background: var(--surface-high); border: 1px solid var(--border); border-radius: 8px; white-space: pre; }
+
 /* --- Narrow windows ------------------------------------------------------------------------ */
 
 @media (max-width: 900px) {

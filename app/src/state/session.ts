@@ -77,6 +77,8 @@ export interface SessionState {
   // The findings of the last full health check, for "Was soll ich jetzt tun?".
   healthFindings: HealthFindingRow[];
   recording: boolean;
+  // The file of the last recording of this run, for "Mitschnitt teilen".
+  lastRecording: string;
   // Due and nearly due service items of the connected car (badge).
   servicesDue: number;
   // Control units of the last scan of all units (EcuPage::results()), for
@@ -113,6 +115,7 @@ const initial: SessionState = {
   findings: [],
   healthFindings: [],
   recording: false,
+  lastRecording: "",
   servicesDue: 0,
   udsEcus: [],
 };
@@ -399,6 +402,7 @@ export function startSession(): void {
 
   on("recording_state", ({ active, path, exchanges, error }) => {
     session.set({ recording: active });
+    if (!active && path && !error) session.set({ lastRecording: path });
     if (error) toast(error, "error");
     else if (active) toast(t(MW, "Zeichne auf nach %1", path), "info");
     else if (path) toast(tn(MW, "Aufzeichnung gespeichert: %1 (%n Anfragen)", exchanges, path), "success");

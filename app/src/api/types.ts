@@ -961,3 +961,31 @@ export interface ConnectHelp {
   found: string[];
   items: ConnectCheck[];
 }
+
+// --- Mitschnitt teilen (caruspex_record::share) ----------------------------------
+
+export interface SharePreview {
+  durationSeconds: number;
+  exchanges: number;
+  adapter: string;
+  protocol: string;
+  // Only the date, the time of day is removed.
+  created: string;
+  // Every VIN found, as it now reads, the last hiddenDigits characters 0.
+  vins: string[];
+  vinPlaces: number;
+  hiddenDigits: number;
+  // The port, Bluetooth or network name was removed.
+  transportRemoved: boolean;
+  // Requests by kind, in the active language, most first.
+  requests: { kind: string; count: number }[];
+  // The first lines of the file to share.
+  sample: string[];
+  bytes: number;
+}
+
+export interface SharedRecording {
+  // The file to share, in the recording format.
+  file: string;
+  preview: SharePreview;
+}

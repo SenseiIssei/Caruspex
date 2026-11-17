@@ -696,6 +696,39 @@ pub fn stop_recording(state: State<'_, AppState>) {
     job(&state, Job::StopRecording);
 }
 
+/// "Mitschnitt teilen": the recording without the last VIN digits, the port
+/// or address and the time of day, with a preview of what is in it. `vin`
+/// is the VIN of the connected car, empty if none; the ones in the traffic
+/// are found anyway. Nothing is written or sent: the interface shows the
+/// preview and saves the file only when asked.
+#[tauri::command]
+pub fn share_recording(path: String, vin: String) -> Result<Value> {
+    let recording = caruspex_record::load_recording(&path)?;
+    let shared = caruspex_record::share_recording(&recording, &[vin.as_str()]);
+    Ok(share_json(&shared))
+}
+
+pub fn share_json(shared: &caruspex_record::SharedRecording) -> Value {
+    let p = &shared.preview;
+    json!({
+        "file": String::from_utf8_lossy(&shared.file),
+        "preview": {
+            "durationSeconds": p.duration_seconds,
+            "exchanges": p.exchanges,
+            "adapter": p.adapter,
+            "protocol": p.protocol,
+            "created": p.created,
+            "vins": p.vins,
+            "vinPlaces": p.vin_places,
+            "transportRemoved": p.transport_removed,
+            "requests": p.requests.iter().map(|(kind, count)| json!({ "kind": kind, "count": count })).collect::<Vec<_>>(),
+            "sample": p.sample,
+            "bytes": p.bytes,
+            "hiddenDigits": caruspex_record::VIN_HIDDEN,
+        }
+    })
+}
+
 // --- Reading -----------------------------------------------------------------------------------
 
 #[tauri::command]

@@ -289,6 +289,7 @@ fn main() {
             commands::close_adapter,
             commands::start_recording,
             commands::stop_recording,
+            commands::share_recording,
             commands::read_faults,
             commands::clear_faults,
             commands::read_details,

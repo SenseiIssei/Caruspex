@@ -8,7 +8,7 @@ use caruspex_link::Transport;
 use caruspex_record::{
     CustomPid, RecordedDirection, RecordedEvent, Recording, ReplayPacing, ReplayTransport,
     TorqueEquation, describe_recording, parse_recording, parse_request_hex, parse_torque_csv,
-    recording_summary, write_torque_csv,
+    recording_summary, share_recording, write_recording, write_torque_csv,
 };
 use proptest::prelude::*;
 
@@ -82,6 +82,32 @@ proptest! {
         for c in commands {
             replay.write(format!("{c}\r").as_bytes());
             let _ = replay.read(5);
+        }
+    }
+
+    #[test]
+    fn sharing_any_recording_keeps_it_readable(
+        lines in prop::collection::vec(recording_line(), 0..12),
+        vin in "[A-HJ-NPR-Z0-9]{17}",
+    ) {
+        let text = format!("{}
+{}", header(), lines.join("
+"));
+        let Ok(recording) = parse_recording(&text) else { return Ok(()); };
+        let shared = share_recording(&recording, &[&vin]);
+        let again = parse_recording(&shared.file).unwrap();
+        prop_assert_eq!(again.events.len(), recording.events.len());
+        prop_assert!(again.transport.is_empty());
+        // Written and read again, the original keeps its traffic (times
+        // to the millisecond, never below zero).
+        let round = parse_recording(write_recording(&recording)).unwrap();
+        prop_assert_eq!(round.events.len(), recording.events.len());
+        for (a, b) in round.events.iter().zip(&recording.events) {
+            prop_assert_eq!(a.direction, b.direction);
+            prop_assert_eq!(&a.data, &b.data);
+            if (0.0..1e9).contains(&b.t) {
+                prop_assert!((a.t - b.t).abs() < 0.001);
+            }
         }
     }
 
