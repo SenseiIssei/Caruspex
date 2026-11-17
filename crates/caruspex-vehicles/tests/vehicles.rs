@@ -608,7 +608,7 @@ fn engine_codes_give_target_values() {
     assert!(targets_for(e90, Some(EngineFuel::Petrol)).is_none());
     let (d, _) = targets_for(e90, Some(EngineFuel::Diesel)).unwrap();
     assert_eq!(d.coolant_hot, COOLANT_HOT);
-    assert!(COOLANT_HOT_MAP > COOLANT_HOT);
+    const { assert!(COOLANT_HOT_MAP > COOLANT_HOT) };
     assert_eq!(codes_text(&["A", "B", "C", "D", "E", "F"]), "A B C D +2");
     // A generation without a row has no codes.
     let golf2 = catalog::find_generation("Volkswagen", "Golf", 1985).unwrap();
