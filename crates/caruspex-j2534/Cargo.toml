@@ -1,0 +1,15 @@
+[package]
+name = "caruspex-j2534"
+description = "SAE J2534 PassThru drivers: the driver DLL in the program, or a 32-bit one through the bridge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+# Built for i686-pc-windows-msvc and shipped next to caruspex.exe: loads a
+# 32-bit PassThru driver and serves it to Caruspex over a named pipe.
+name = "caruspex-j2534-bridge"
+path = "src/bin/bridge.rs"
+
+[target.'cfg(windows)'.dependencies]
+libloading.workspace = true

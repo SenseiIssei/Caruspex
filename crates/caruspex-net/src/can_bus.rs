@@ -771,8 +771,20 @@ pub struct J2534Device {
     pub vendor: String,
     /// Path of the driver DLL.
     pub library: String,
-    /// False: a 32-bit driver, which a 64-bit program cannot load.
+    /// False: a 32-bit driver and no helper program to load it with.
     pub usable: bool,
+    /// A 32-bit driver, loaded by the helper program caruspex-j2534-bridge.
+    pub bridged: bool,
+}
+
+/// The helper program for 32-bit J2534 drivers to use instead of the one
+/// next to the program; `None` goes back to that one. For the tests and
+/// development builds.
+pub fn set_j2534_bridge(path: Option<std::path::PathBuf>) {
+    #[cfg(windows)]
+    crate::j2534::set_bridge(path);
+    #[cfg(not(windows))]
+    let _ = path;
 }
 
 /// The registered PassThru drivers (HKLM\SOFTWARE\PassThruSupport.04.04).

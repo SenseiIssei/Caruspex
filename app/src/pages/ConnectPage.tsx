@@ -249,6 +249,7 @@ export default function ConnectPage() {
     for (const d of j2534 ?? []) {
       let label = `J2534 · ${d.name}`;
       if (!d.usable) label += ` · ${tr("nur 32-Bit-Treiber")}`;
+      else if (d.bridged) label += ` · ${tr("32-Bit-Treiber über Hilfsprogramm")}`;
       items.push({ label, spec: d.usable ? `j2534:${d.library}` : "" });
     }
     for (const name of socketCan ?? []) items.push({ label: `SocketCAN · ${name}`, spec: `socketcan:${name}` });

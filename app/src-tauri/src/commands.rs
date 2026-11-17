@@ -536,6 +536,7 @@ pub struct J2534DeviceRow {
     vendor: String,
     library: String,
     usable: bool,
+    bridged: bool,
 }
 
 #[tauri::command]
@@ -547,6 +548,7 @@ pub fn list_j2534_devices() -> Vec<J2534DeviceRow> {
             vendor: d.vendor,
             library: d.library,
             usable: d.usable,
+            bridged: d.bridged,
         })
         .collect()
 }

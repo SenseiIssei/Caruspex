@@ -14,8 +14,9 @@ history and in the v0.8.0 release.
 | caruspex-vehicles | VIN decoding, the WMI table, the vehicle catalog (generated from `data/vehicles/`), the shape of a car for the X-ray view with real dimensions per generation from the makers' technical data and Wikidata (generated from `data/dimensions_manual.csv` and `data/wikidata/`) | i18n |
 | caruspex-data | trouble codes, PIDs, monitor tests, control unit addresses (generated from `data/ecus/`), VAG fault numbers, fault locations | i18n |
 | caruspex-link | the `Transport` and `ByteStream` traits, serial with USB detection, TCP, K-line, Bluetooth LE and classic Bluetooth, the ELM327 driver with the extras of STN chips (batched commands, monitoring with a count, MS-CAN and SW-CAN), the adapter check | i18n |
+| caruspex-j2534 | SAE J2534 PassThru drivers: the driver DLL in the program, or a 32-bit one in the helper program `caruspex-j2534-bridge.exe` (built for i686-pc-windows-msvc, shipped next to caruspex.exe), which Caruspex talks to over a named pipe | |
 | caruspex-protocols | OBD-II with batched requests, UDS with BMW addressing and the control unit scan, KWP1281, KWP2000, the VAG K-line, KWP2000 over VAG TP 2.0 | link, data |
-| caruspex-net | BMW ENET (HSFZ), DoIP, raw CAN interfaces (SLCAN, SocketCAN, J2534) with their own ISO-TP and an ELM327 front end, VAG TP 2.0, the K-line of J2534 devices, CAN signals | link |
+| caruspex-net | BMW ENET (HSFZ), DoIP, raw CAN interfaces (SLCAN, SocketCAN, J2534) with their own ISO-TP and an ELM327 front end shared by all of them, VAG TP 2.0, the K-line of J2534 devices, CAN signals | link, j2534 |
 | caruspex-record | recordings and replay, custom PIDs with Torque equations, the built-in PID packs (generated from `data/pids/`), JSON output | link, protocols, net, data |
 | caruspex-analysis | health check, battery test, readiness, drive cycles, trip computer, performance timer | i18n |
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
@@ -40,8 +41,8 @@ history and in the v0.8.0 release.
 - Tests run against simulated control units, fake gateways, a fake J2534
   driver and the demo car; the CLI is compared with golden files captured
   from the 0.8 version. No test needs hardware.
-- `unsafe` only where the operating system needs it (J2534, SocketCAN,
-  classic Bluetooth), kept inside those modules.
+- `unsafe` only where the operating system needs it (J2534 in
+  caruspex-j2534, SocketCAN, classic Bluetooth), kept inside those modules.
 - No long dashes (U+2014, U+2013) in code, comments or texts.
 
 ## Checks

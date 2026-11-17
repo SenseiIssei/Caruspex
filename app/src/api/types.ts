@@ -837,8 +837,11 @@ export interface J2534DeviceRow {
   name: string;
   vendor: string;
   library: string;
-  // False when only a 32 bit driver is installed.
+  // False when only a 32 bit driver is installed and the helper program for
+  // it is missing.
   usable: boolean;
+  // A 32 bit driver, loaded by the helper program caruspex-j2534-bridge.
+  bridged: boolean;
 }
 
 // --- App ---------------------------------------------------------------------

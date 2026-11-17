@@ -578,6 +578,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "caruspex-j2534"
+version = "0.12.0"
+dependencies = [
+ "libloading 0.9.0",
+]
+
+[[package]]
 name = "caruspex-link"
 version = "0.12.0"
 dependencies = [
@@ -597,6 +604,7 @@ name = "caruspex-net"
 version = "0.12.0"
 dependencies = [
  "caruspex-i18n",
+ "caruspex-j2534",
  "caruspex-link",
  "caruspex-protocols",
  "libc",

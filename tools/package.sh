@@ -39,12 +39,17 @@ cargo build --release -p caruspex-cli
 case "$(uname -s)" in
 MINGW* | MSYS* | CYGWIN*)
     npm --prefix app run tauri -- build --no-bundle
-    cp "$RELEASE/caruspex.exe" "$RELEASE/caruspex_cli.exe" LICENSE "$STAGE/"
+    # The 32-bit helper for old J2534 drivers (crates/caruspex-j2534), next
+    # to caruspex.exe where the program looks for it.
+    if command -v rustup >/dev/null; then rustup target add i686-pc-windows-msvc; fi
+    cargo build --release -p caruspex-j2534 --bin caruspex-j2534-bridge --target i686-pc-windows-msvc
+    BRIDGE="$CARGO_TARGET_DIR/i686-pc-windows-msvc/release/caruspex-j2534-bridge.exe"
+    cp "$RELEASE/caruspex.exe" "$RELEASE/caruspex_cli.exe" "$BRIDGE" LICENSE "$STAGE/"
 
     (cd "$STAGE" && powershell -NoProfile -Command \
-        "Compress-Archive -Path caruspex.exe,caruspex_cli.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
+        "Compress-Archive -Path caruspex.exe,caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
     (cd "$STAGE" && powershell -NoProfile -Command \
-        "Compress-Archive -Path caruspex_cli.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\caruspex_cli-$VERSION-windows-x64.zip'")
+        "Compress-Archive -Path caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\caruspex_cli-$VERSION-windows-x64.zip'")
 
     # Microsoft's small WebView2 bootstrapper: the installer runs it only on
     # the rare Windows without the runtime.

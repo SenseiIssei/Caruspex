@@ -119,10 +119,12 @@ fn command_interfaces() {
             "j2534:{}   {}{}\n",
             d.library,
             d.name,
-            if d.usable {
-                ""
-            } else {
+            if !d.usable {
                 "  (32-bit driver, not usable)"
+            } else if d.bridged {
+                "  (32-bit driver, through caruspex-j2534-bridge)"
+            } else {
+                ""
             }
         ));
     }

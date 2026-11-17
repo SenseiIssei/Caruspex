@@ -33,20 +33,29 @@ const DEMO_PORTS: SerialPortInfo[] = [
   { device: "COM1", description: "Kommunikationsanschluss (COM1)", likelyAdapter: false, chipGuess: "" },
 ];
 
-// One usable PassThru device and one with only a 32 bit driver, so the note
-// for the latter shows as well.
+// One usable PassThru device, one with a 32 bit driver through the helper
+// program and one with a 32 bit driver without it, so both notes show.
 const DEMO_J2534: J2534DeviceRow[] = [
   {
     name: "OpenPort 2.0 J2534 ISO/CAN/VPW/PWM",
     vendor: "Tactrix Inc.",
     library: "C:\\Windows\\System32\\op20pt64.dll",
     usable: true,
+    bridged: false,
+  },
+  {
+    name: "Mongoose Pro VW",
+    vendor: "Drew Technologies",
+    library: "C:\\Program Files (x86)\\Drew Technologies\\MongoosePro\\monpvw32.dll",
+    usable: true,
+    bridged: true,
   },
   {
     name: "Scanmatik 2 PRO",
     vendor: "Scanmatik",
     library: "C:\\Program Files (x86)\\Scanmatik\\sm2j2534.dll",
     usable: false,
+    bridged: true,
   },
 ];
 

@@ -5,6 +5,7 @@ members = [
     "crates/caruspex-vehicles",
     "crates/caruspex-data",
     "crates/caruspex-link",
+    "crates/caruspex-j2534",
     "crates/caruspex-protocols",
     "crates/caruspex-net",
     "crates/caruspex-record",
@@ -28,6 +29,7 @@ caruspex-i18n = { path = "crates/caruspex-i18n" }
 caruspex-vehicles = { path = "crates/caruspex-vehicles" }
 caruspex-data = { path = "crates/caruspex-data" }
 caruspex-link = { path = "crates/caruspex-link" }
+caruspex-j2534 = { path = "crates/caruspex-j2534" }
 caruspex-protocols = { path = "crates/caruspex-protocols" }
 caruspex-net = { path = "crates/caruspex-net" }
 caruspex-record = { path = "crates/caruspex-record" }
