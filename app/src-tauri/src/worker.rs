@@ -34,9 +34,10 @@ use caruspex_link::adapter_probe::version_text;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
 use caruspex_link::timing::sleep_ms;
 use caruspex_link::{
-    AdaptiveTiming, Elm327, KLineStream, SerialTransport, StnBus, TcpTransport, Transport,
-    enumerate_ports, probe_adapter,
+    AdaptiveTiming, Elm327, KLineStream, StnBus, TcpTransport, Transport, probe_adapter,
 };
+#[cfg(not(target_os = "android"))]
+use caruspex_link::{SerialTransport, enumerate_ports};
 use caruspex_net::{
     CanElm, KLineKind, SharedCanLink, SlcanLink, Tp20, open_can_interface, open_j2534_kline,
     open_network_car, probe_slcan,
@@ -56,6 +57,9 @@ use caruspex_vehicles::{catalog, engines};
 use serde::Serialize;
 use serde_json::{Value, json};
 
+// Android: USB adapters and classic Bluetooth through the Java side.
+#[cfg(target_os = "android")]
+use crate::android::{SerialTransport, ble, enumerate_ports};
 use crate::rows::*;
 use crate::settings::AppSettings;
 use crate::texts::{args, w};
@@ -801,9 +805,18 @@ impl Worker {
                 host,
                 port,
                 protocol_order,
-            } => self.open_tcp(&host, port, &protocol_order),
+            } => {
+                // A phone sends sockets out over mobile data otherwise.
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(true);
+                self.open_tcp(&host, port, &protocol_order)
+            }
             Job::OpenDemo => self.open_demo(),
-            Job::OpenEnet { host } => self.open_enet(&host),
+            Job::OpenEnet { host } => {
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(true);
+                self.open_enet(&host)
+            }
             Job::OpenCan { spec } => self.open_can(&spec),
             Job::ScanBle { milliseconds } => self.scan_ble(milliseconds),
             Job::OpenBle {
@@ -835,7 +848,11 @@ impl Worker {
                     self.refresh_status_and_faults();
                 }
             }
-            Job::Close => self.close_adapter(),
+            Job::Close => {
+                self.close_adapter();
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(false);
+            }
             Job::StartRecording(path) => self.start_recording(&path),
             Job::StopRecording => self.stop_recording(),
             Job::ReadFaults => self.refresh_status_and_faults(),
@@ -3137,7 +3154,8 @@ impl Worker {
 }
 
 /// Bluetooth LE and classic Bluetooth through caruspex-link, as the worker
-/// needs it.
+/// needs it (android.rs has the same functions for the phone).
+#[cfg(not(target_os = "android"))]
 mod ble {
     use caruspex_link::Transport;
     use caruspex_link::ble::BleTransport;

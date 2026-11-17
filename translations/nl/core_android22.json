@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android heeft geen toegang tot de USB-adapter gegeven.",
+ "c-android22-2": "Bluetooth LE zit nog niet in de Android-app. Klassieke Bluetooth-adapters werken zodra ze gekoppeld zijn.",
+ "c-android22-3": "Bluetooth staat uit. Zet het aan in de Android-instellingen.",
+ "c-android22-4": "Caruspex mag Bluetooth nog niet gebruiken. Geef toegang tot apparaten in de buurt.",
+ "c-android22-5": "Geen gekoppelde Bluetooth-adapter. Koppel hem eenmaal in de Android-instellingen, de pincode is meestal 1234 of 0000.",
+ "c-android22-6": "De Bluetooth-verbinding met de adapter is mislukt: %1",
+ "c-android22-7": "De USB-adapter kon niet worden geopend: %1",
+ "c-android22-8": "Dit apparaat heeft geen Bluetooth."
+}

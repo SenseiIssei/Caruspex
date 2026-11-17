@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android が USB アダプターへのアクセスを許可しませんでした。",
+ "c-android22-2": "Android アプリはまだ Bluetooth LE に対応していません。クラシック Bluetooth アダプターはペアリング後に使えます。",
+ "c-android22-3": "Bluetooth がオフです。Android の設定でオンにしてください。",
+ "c-android22-4": "Caruspex はまだ Bluetooth を使えません。付近のデバイスへのアクセスを許可してください。",
+ "c-android22-5": "ペアリング済みの Bluetooth アダプターがありません。Android の設定で一度ペアリングしてください。PIN は通常 1234 か 0000 です。",
+ "c-android22-6": "アダプターへの Bluetooth 接続に失敗しました: %1",
+ "c-android22-7": "USB アダプターを開けませんでした: %1",
+ "c-android22-8": "このデバイスには Bluetooth がありません。"
+}

@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android, USB adaptörüne erişime izin vermedi.",
+ "c-android22-2": "Bluetooth LE henüz Android uygulamasında yok. Klasik Bluetooth adaptörleri eşleştirildikten sonra çalışır.",
+ "c-android22-3": "Bluetooth kapalı. Lütfen Android ayarlarından açın.",
+ "c-android22-4": "Caruspex henüz Bluetooth kullanamıyor. Lütfen yakındaki cihazlara erişime izin verin.",
+ "c-android22-5": "Eşleştirilmiş Bluetooth adaptörü yok. Lütfen bir kez Android ayarlarından eşleştirin, PIN genellikle 1234 veya 0000'dır.",
+ "c-android22-6": "Adaptöre Bluetooth bağlantısı kurulamadı: %1",
+ "c-android22-7": "USB adaptörü açılamadı: %1",
+ "c-android22-8": "Bu cihazda Bluetooth yok."
+}

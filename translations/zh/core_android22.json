@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android 未允许访问 USB 适配器。",
+ "c-android22-2": "Android 应用暂不支持低功耗蓝牙。经典蓝牙适配器配对后即可使用。",
+ "c-android22-3": "蓝牙已关闭。请在 Android 设置中打开。",
+ "c-android22-4": "Caruspex 尚无权使用蓝牙。请允许访问附近的设备。",
+ "c-android22-5": "没有已配对的蓝牙适配器。请先在 Android 设置中配对一次，PIN 通常为 1234 或 0000。",
+ "c-android22-6": "与适配器的蓝牙连接失败：%1",
+ "c-android22-7": "无法打开 USB 适配器：%1",
+ "c-android22-8": "此设备没有蓝牙。"
+}
