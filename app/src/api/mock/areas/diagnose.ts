@@ -1688,6 +1688,7 @@ export const diagnoseHandlers: PartialHandlers = {
   list_j2534_devices: () => DEMO_J2534.map((d) => ({ ...d })),
   // SocketCAN only exists on Linux; the demo behaves like a Windows PC.
   list_socketcan_interfaces: () => [],
+  list_can_vendor_channels: () => [{ label: "PCAN · USB1", spec: "pcan:USB1" }],
   scan_ble: async ({ milliseconds }) => {
     emit("busy", { active: true });
     await wait(Math.min(milliseconds, 2500));

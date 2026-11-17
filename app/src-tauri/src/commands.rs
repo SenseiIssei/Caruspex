@@ -558,6 +558,24 @@ pub fn list_socketcan_interfaces() -> Vec<String> {
     caruspex_net::socket_can_interfaces()
 }
 
+#[derive(Serialize)]
+pub struct VendorCanRow {
+    label: String,
+    spec: String,
+}
+
+/// The channels of PEAK PCAN-Basic and Kvaser CANlib, when installed.
+#[tauri::command]
+pub fn list_can_vendor_channels() -> Vec<VendorCanRow> {
+    caruspex_net::can_vendor_channels()
+        .into_iter()
+        .map(|c| VendorCanRow {
+            label: c.label,
+            spec: c.spec,
+        })
+        .collect()
+}
+
 #[tauri::command]
 pub fn open_serial(state: State<'_, AppState>, device: String, baud: i32, protocol_order: String) {
     job(

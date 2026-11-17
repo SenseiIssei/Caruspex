@@ -26,8 +26,8 @@ use caruspex_i18n::{Language, set_language};
 use caruspex_link::elm327::{PROTOCOL_ORDER_CAN_FIRST, PROTOCOL_ORDER_KLINE_FIRST};
 use caruspex_link::{AdaptiveTiming, Elm327, SerialTransport, TcpTransport, Transport};
 use caruspex_net::{
-    discover_doip, discover_enet, j2534_devices, open_can_interface, open_network_car,
-    socket_can_interfaces,
+    can_vendor_channels, discover_doip, discover_enet, j2534_devices, open_can_interface,
+    open_network_car, socket_can_interfaces,
 };
 use caruspex_protocols::Obd2;
 use caruspex_record::{
@@ -128,11 +128,15 @@ fn command_interfaces() {
             }
         ));
     }
+    let vendors = can_vendor_channels();
+    for c in &vendors {
+        say(&format!("{}   {}\n", c.spec, c.label));
+    }
     let sockets = socket_can_interfaces();
     for n in &sockets {
         say(&format!("socketcan:{n}\n"));
     }
-    if devices.is_empty() && sockets.is_empty() {
+    if devices.is_empty() && vendors.is_empty() && sockets.is_empty() {
         say("No J2534 driver and no SocketCAN interface found. SLCAN sticks: slcan:<port>.\n");
     }
 }

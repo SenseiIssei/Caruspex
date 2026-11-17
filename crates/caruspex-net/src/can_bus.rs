@@ -885,6 +885,89 @@ pub fn open_j2534_kline(
 }
 
 // ---------------------------------------------------------------------------
+// PEAK PCAN-Basic and Kvaser CANlib (Windows)
+// ---------------------------------------------------------------------------
+
+/// A channel of a maker's CAN library, as the interface list shows it.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct VendorChannel {
+    /// "PCAN · USB1", "Kvaser · Kvaser Leaf Light v2 channel 1".
+    pub label: String,
+    /// For [`open_can_interface`]: "pcan:USB1", "kvaser:0".
+    pub spec: String,
+}
+
+/// The CAN library DLLs of the makers: PCAN-Basic and Kvaser CANlib.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CanVendor {
+    Pcan,
+    Kvaser,
+}
+
+impl CanVendor {
+    /// The DLL as the maker's installer puts it into the system folder.
+    pub fn library(self) -> &'static str {
+        match self {
+            CanVendor::Pcan => "PCANBasic.dll",
+            CanVendor::Kvaser => "canlib32.dll",
+        }
+    }
+}
+
+/// The channels of PCAN-Basic and Kvaser CANlib that have hardware behind
+/// them; empty when the libraries are not installed or not on Windows.
+pub fn can_vendor_channels() -> Vec<VendorChannel> {
+    let mut out = vendor_channels_in(CanVendor::Pcan, CanVendor::Pcan.library());
+    out.extend(vendor_channels_in(
+        CanVendor::Kvaser,
+        CanVendor::Kvaser.library(),
+    ));
+    out
+}
+
+/// The channels of one library loaded from `library` (a path, for the tests).
+pub fn vendor_channels_in(vendor: CanVendor, library: &str) -> Vec<VendorChannel> {
+    #[cfg(windows)]
+    {
+        match vendor {
+            CanVendor::Pcan => crate::vendor_can::pcan_channels(library),
+            CanVendor::Kvaser => crate::vendor_can::kvaser_channels(library),
+        }
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (vendor, library);
+        Vec::new()
+    }
+}
+
+/// Opens a channel ("USB1" for PCAN, "0" for Kvaser; empty: the first) of
+/// the library loaded from `library` at the bit rate.
+pub fn open_vendor_can(
+    vendor: CanVendor,
+    library: &str,
+    channel: &str,
+    bitrate: u32,
+) -> Result<Box<dyn CanLink>, String> {
+    #[cfg(windows)]
+    {
+        match vendor {
+            CanVendor::Pcan => crate::vendor_can::open_pcan(library, channel, bitrate),
+            CanVendor::Kvaser => crate::vendor_can::open_kvaser(library, channel, bitrate),
+        }
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (vendor, library, channel, bitrate);
+        Err(l(
+            "PCAN-Basic und Kvaser CANlib gibt es hier nur unter Windows; unter Linux gehen beide über SocketCAN.",
+            "PCAN-Basic and Kvaser CANlib are used on Windows only here; on Linux both work through SocketCAN.",
+        )
+        .into())
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Choosing an interface
 // ---------------------------------------------------------------------------
 
@@ -893,7 +976,7 @@ pub fn open_j2534_kline(
 pub type SerialOpener<'a> = &'a dyn Fn(&str, u32) -> Result<Box<dyn Transport>, String>;
 
 /// "slcan:COM5", "slcan:/dev/ttyACM0", "socketcan:can0", "j2534:<dll path or
-/// device name>"; an optional "@250000" sets the bit rate (500000 if left out).
+/// device name>", "pcan:USB1", "kvaser:0"; an optional "@250000" sets the bit rate (500000 if left out).
 /// Returns the ELM front end, or the reason. SLCAN opens its port at
 /// 115200 baud through `open_serial`.
 pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<CanElm, String> {
@@ -920,6 +1003,13 @@ pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<C
         }
         "socketcan" => open_socket_can(if place.is_empty() { "can0" } else { place })?,
         "j2534" => open_j2534(&j2534_library(place), bitrate)?,
+        "pcan" => open_vendor_can(CanVendor::Pcan, CanVendor::Pcan.library(), place, bitrate)?,
+        "kvaser" => open_vendor_can(
+            CanVendor::Kvaser,
+            CanVendor::Kvaser.library(),
+            place,
+            bitrate,
+        )?,
         _ => {
             return Err(format!(
                 "{}{}",

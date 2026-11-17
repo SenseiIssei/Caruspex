@@ -43,6 +43,7 @@ import type {
   UpdateInfo,
   UpdateOutcome,
   UsedCarRow,
+  VendorCanRow,
   VehicleDiagnosisInfo,
   VehicleAnatomy,
   VehicleGenerationInfo,
@@ -110,6 +111,8 @@ export interface Commands {
   list_j2534_devices: Cmd<None, J2534DeviceRow[]>;
   // SocketCAN interfaces of this computer (core/CanBus.h socketCanInterfaces), empty off Linux.
   list_socketcan_interfaces: Cmd<None, string[]>;
+  // Channels of PEAK PCAN-Basic and Kvaser CANlib (Windows), when installed.
+  list_can_vendor_channels: Cmd<None, VendorCanRow[]>;
   // Empty device: search every port.
   open_serial: Cmd<{ device: string; baud: number; protocolOrder: string }, void>;
   open_tcp: Cmd<{ host: string; port: number; protocolOrder: string }, void>;

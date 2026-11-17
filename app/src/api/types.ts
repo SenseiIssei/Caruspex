@@ -844,6 +844,12 @@ export interface J2534DeviceRow {
   bridged: boolean;
 }
 
+// A channel of a maker's CAN library: "PCAN · USB1" with spec "pcan:USB1".
+export interface VendorCanRow {
+  label: string;
+  spec: string;
+}
+
 // --- App ---------------------------------------------------------------------
 
 export interface AppInfo {

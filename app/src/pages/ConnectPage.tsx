@@ -240,8 +240,9 @@ export default function ConnectPage() {
   // Lists the CAN interfaces of this computer again: J2534, SocketCAN, then
   // every serial port as a possible SLCAN stick.
   const refreshCanDevices = useCallback(async () => {
-    const [j2534, socketCan, serial] = await Promise.all([
+    const [j2534, vendors, socketCan, serial] = await Promise.all([
       call("list_j2534_devices").catch(() => []),
+      call("list_can_vendor_channels").catch(() => []),
       call("list_socketcan_interfaces").catch(() => [] as string[]),
       call("list_serial_ports").catch(() => [] as SerialPortInfo[]),
     ]);
@@ -252,6 +253,7 @@ export default function ConnectPage() {
       else if (d.bridged) label += ` · ${tr("32-Bit-Treiber über Hilfsprogramm")}`;
       items.push({ label, spec: d.usable ? `j2534:${d.library}` : "" });
     }
+    for (const v of vendors ?? []) items.push({ label: v.label, spec: v.spec });
     for (const name of socketCan ?? []) items.push({ label: `SocketCAN · ${name}`, spec: `socketcan:${name}` });
     for (const p of serial ?? []) items.push({ label: `SLCAN · ${p.device}`, spec: `slcan:${p.device}` });
     const { canDevices: before, canIndex: index } = latest.current;
@@ -785,9 +787,9 @@ export default function ConnectPage() {
                 <div className="hint">
                   {tr(
                     "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, " +
-                      "Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des " +
-                      "Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. " +
-                      "Autos mit OBD über CAN fahren mit 500 kbit/s.",
+                      "Mongoose, VCX Nano, Scanmatik und viele mehr, auch mit alten 32-Bit-Treibern), " +
+                      "PEAK PCAN und Kvaser mit dem Treiber des Herstellers, SLCAN-Sticks (CANable, " +
+                      "USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.",
                   )}
                 </div>
               </>

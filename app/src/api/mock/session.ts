@@ -239,6 +239,7 @@ function rawReply(command: string): string {
 export const sessionHandlers: PartialHandlers = {
   list_serial_ports: () => [],
   list_j2534_devices: () => [],
+  list_can_vendor_channels: () => [],
   open_demo: () => {
     void connectDemo();
   },

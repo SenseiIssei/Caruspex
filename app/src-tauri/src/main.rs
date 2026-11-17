@@ -278,6 +278,7 @@ fn main() {
             commands::list_serial_ports,
             commands::list_j2534_devices,
             commands::list_socketcan_interfaces,
+            commands::list_can_vendor_channels,
             commands::open_serial,
             commands::open_tcp,
             commands::open_demo,
