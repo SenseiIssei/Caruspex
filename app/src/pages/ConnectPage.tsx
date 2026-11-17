@@ -4,7 +4,7 @@
 // Worker signals MainWindow connected to it, and writes the log lines
 // MainWindow wrote before each attempt.
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { call, type BleDeviceRow, type ConnectHelp, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
+import { call, type BleDeviceRow, type ConnectHelp, type ConnectRoute, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { TermStrip } from "../components/Term";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
@@ -12,6 +12,7 @@ import { t, translator } from "../i18n";
 import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { navigate } from "../shell/nav";
+import { garageStore, rememberedRoute } from "../state/garage";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import type { SetupChoice } from "../shell/SetupAssistant";
@@ -395,13 +396,20 @@ export default function ConnectPage() {
     setError(null);
     const order = protocolOrder(s.generation);
     const values = settingsStore.get().values;
+    // The way that worked last time, when it fits what is chosen now: the
+    // backend tries it first and searches as usual only if it fails.
+    const remembered = (kind: string, fits: (r: ConnectRoute) => boolean): ConnectRoute | undefined => {
+      const route = rememberedRoute(garageStore.get().cars, kind);
+      return route && fits(route) ? route : undefined;
+    };
     switch (override?.mode ?? s.mode) {
       case "cable": {
         const device = override?.port ?? s.port;
         markConnecting(device ? t(MW, "Verbinde über %1 ...", device) : t(MW, "Suche den Adapter an allen Anschlüssen ..."));
         // Remember the port so auto-connect knows where to go next time.
         if (device && values.lastPort !== device) void applySettings({ ...values, lastPort: device });
-        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order });
+        const route = remembered("serial", (r) => !device || r.device === device);
+        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order, remembered: route });
         break;
       }
       case "wifi": {
@@ -412,7 +420,8 @@ export default function ConnectPage() {
         const parsed = colon < 0 ? 35000 : Number.parseInt(text.slice(colon + 1), 10);
         const portNumber = Number.isFinite(parsed) ? parsed : 0;
         markConnecting(t(MW, "Verbinde mit %1:%2 ...", host, portNumber));
-        void call("open_tcp", { host, port: portNumber, protocolOrder: order });
+        const route = remembered("tcp", (r) => r.device === `${host}:${portNumber}`);
+        void call("open_tcp", { host, port: portNumber, protocolOrder: order, remembered: route });
         break;
       }
       case "demo":
@@ -429,13 +438,15 @@ export default function ConnectPage() {
         const fd = s.canFd && canFdPossible(device) ? "+fd" : "";
         const spec = `${device}${fd}@${s.canRate}`;
         markConnecting(t(MW, "Verbinde über das CAN-Interface %1 ...", spec));
-        void call("open_can", { spec, protocolOrder: order });
+        const route = remembered("can", (r) => r.device.split("@")[0] === device);
+        void call("open_can", { spec, protocolOrder: order, remembered: route });
         break;
       }
       case "enet": {
         const host = s.enetHost.trim();
         markConnecting(host ? t(MW, "Verbinde über ENET mit %1 ...", host) : t(MW, "Suche den BMW über ENET ..."));
-        void call("open_enet", { host, protocolOrder: order });
+        const route = remembered("enet", (r) => !host || r.device === host);
+        void call("open_enet", { host, protocolOrder: order, remembered: route });
         break;
       }
       case "ble": {
@@ -443,7 +454,8 @@ export default function ConnectPage() {
         markConnecting(
           item.id ? t(MW, "Verbinde über Bluetooth mit %1 ...", item.name || item.id) : t(MW, "Suche einen Bluetooth-Adapter ..."),
         );
-        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order });
+        const route = remembered("ble", (r) => !item.id || r.device === item.id);
+        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order, remembered: route });
         break;
       }
       case "replay": {

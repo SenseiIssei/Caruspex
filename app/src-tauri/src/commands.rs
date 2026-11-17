@@ -19,6 +19,7 @@ use crate::AppState;
 use crate::advice::{self, AdviceInputArg};
 use crate::garage::{self, GarageCar};
 use crate::measure::{BatteryInputArg, SpeedSampleArg, TripConfigArg};
+use crate::rows::ConnectRoute;
 use crate::settings::{self, AppSettings};
 use crate::texts::{args, mw};
 use crate::worker::Job;
@@ -28,6 +29,21 @@ type Result<T> = std::result::Result<T, String>;
 
 fn job(state: &State<'_, AppState>, job: Job) {
     state.worker.send(job);
+}
+
+/// A connect job, after the way that worked last time for this car when
+/// the interface knows one.
+fn connect_job(state: &State<'_, AppState>, remembered: Option<ConnectRoute>, then: Job) {
+    match remembered {
+        Some(route) => job(
+            state,
+            Job::OpenRemembered {
+                route,
+                then: Box::new(then),
+            },
+        ),
+        None => job(state, then),
+    }
 }
 
 // --- Language -----------------------------------------------------------------------
@@ -577,9 +593,16 @@ pub fn list_can_vendor_channels() -> Vec<VendorCanRow> {
 }
 
 #[tauri::command]
-pub fn open_serial(state: State<'_, AppState>, device: String, baud: i32, protocol_order: String) {
-    job(
+pub fn open_serial(
+    state: State<'_, AppState>,
+    device: String,
+    baud: i32,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
+    connect_job(
         &state,
+        remembered,
         Job::OpenSerial {
             device,
             baud,
@@ -589,9 +612,16 @@ pub fn open_serial(state: State<'_, AppState>, device: String, baud: i32, protoc
 }
 
 #[tauri::command]
-pub fn open_tcp(state: State<'_, AppState>, host: String, port: i32, protocol_order: String) {
-    job(
+pub fn open_tcp(
+    state: State<'_, AppState>,
+    host: String,
+    port: i32,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
+    connect_job(
         &state,
+        remembered,
         Job::OpenTcp {
             host,
             port,
@@ -607,15 +637,25 @@ pub fn open_demo(state: State<'_, AppState>, protocol_order: String) {
 }
 
 #[tauri::command]
-pub fn open_enet(state: State<'_, AppState>, host: String, protocol_order: String) {
+pub fn open_enet(
+    state: State<'_, AppState>,
+    host: String,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
     let _ = protocol_order;
-    job(&state, Job::OpenEnet { host });
+    connect_job(&state, remembered, Job::OpenEnet { host });
 }
 
 #[tauri::command]
-pub fn open_can(state: State<'_, AppState>, spec: String, protocol_order: String) {
+pub fn open_can(
+    state: State<'_, AppState>,
+    spec: String,
+    protocol_order: String,
+    remembered: Option<ConnectRoute>,
+) {
     let _ = protocol_order;
-    job(&state, Job::OpenCan { spec });
+    connect_job(&state, remembered, Job::OpenCan { spec });
 }
 
 #[tauri::command]
@@ -630,9 +670,11 @@ pub fn open_ble(
     name: String,
     kinds: i32,
     protocol_order: String,
+    remembered: Option<ConnectRoute>,
 ) {
-    job(
+    connect_job(
         &state,
+        remembered,
         Job::OpenBle {
             id,
             name,
@@ -672,6 +714,59 @@ pub fn start_recording(state: State<'_, AppState>, path: String) {
 #[tauri::command]
 pub fn stop_recording(state: State<'_, AppState>) {
     job(&state, Job::StopRecording);
+}
+
+/// "Mitschnitt teilen": the recording without the last VIN digits, the port
+/// or address and the time of day, with a preview of what is in it. `vin`
+/// is the VIN of the connected car, empty if none; the ones in the traffic
+/// are found anyway. Nothing is written or sent: the interface shows the
+/// preview and saves the file only when asked.
+#[tauri::command]
+pub fn share_recording(path: String, vin: String) -> Result<Value> {
+    let recording = caruspex_record::load_recording(&path)?;
+    let shared = caruspex_record::share_recording(&recording, &[vin.as_str()]);
+    Ok(share_json(&shared))
+}
+
+/// The newest crash report the user has not decided about, if any. Runs
+/// for a screenshot or a report show none, unless they bring their own
+/// folder (CARUSPEX_CRASH_DIR).
+#[tauri::command]
+pub fn crash_report_pending(state: State<'_, AppState>) -> Option<crate::crash::CrashReport> {
+    let automated = state.cli.shot.is_some() || state.cli.report.is_some();
+    if automated && std::env::var_os("CARUSPEX_CRASH_DIR").is_none() {
+        return None;
+    }
+    crate::crash::dir().and_then(|dir| crate::crash::pending(dir))
+}
+
+/// The user decided about a report: it stays on the computer but is not
+/// offered again.
+#[tauri::command]
+pub fn crash_report_done(path: String) -> Result<()> {
+    let dir = crate::crash::dir().ok_or("no report folder")?;
+    crate::crash::mark_seen(dir, &path)
+}
+
+pub fn share_json(shared: &caruspex_record::SharedRecording) -> Value {
+    let p = &shared.preview;
+    json!({
+        "file": String::from_utf8_lossy(&shared.file),
+        "preview": {
+            "durationSeconds": p.duration_seconds,
+            "exchanges": p.exchanges,
+            "adapter": p.adapter,
+            "protocol": p.protocol,
+            "created": p.created,
+            "vins": p.vins,
+            "vinPlaces": p.vin_places,
+            "transportRemoved": p.transport_removed,
+            "requests": p.requests.iter().map(|(kind, count)| json!({ "kind": kind, "count": count })).collect::<Vec<_>>(),
+            "sample": p.sample,
+            "bytes": p.bytes,
+            "hiddenDigits": caruspex_record::VIN_HIDDEN,
+        }
+    })
 }
 
 // --- Reading -----------------------------------------------------------------------------------

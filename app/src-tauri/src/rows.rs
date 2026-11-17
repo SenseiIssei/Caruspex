@@ -1,6 +1,54 @@
 // What the backend hands to the interface, the structs of Session.h with
 // camelCase names (app/src/api/types.ts mirrors them).
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+
+/// The way a connection went: what the "connected" event reports, the
+/// garage keeps per VIN and the next connect tries first.
+#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ConnectRoute {
+    /// "serial", "tcp", "ble", "can", "enet"; "demo" and "replay" are only
+    /// reported, never remembered.
+    #[serde(default)]
+    pub kind: String,
+    /// Port, "host:port", Bluetooth id, CAN spec with "@bitrate", ENET host.
+    #[serde(default)]
+    pub device: String,
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub baud: u32,
+    /// The protocol number the adapter answered on ("6"), empty if unknown.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub protocol: String,
+    /// Bluetooth: the shown name and 1 LE, 2 classic, 3 both.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub name: String,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub kinds: i32,
+    /// Only in the garage: the adapter and when it last worked.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub adapter: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub when: String,
+}
+
+fn is_zero_u32(v: &u32) -> bool {
+    *v == 0
+}
+fn is_zero_i32(v: &i32) -> bool {
+    *v == 0
+}
+
+/// The protocol order with the remembered protocol first; an order that
+/// does not contain it stays as it is, so a choice of the user wins.
+pub fn prefer_protocol(order: &str, protocol: &str) -> String {
+    let mut chars = protocol.chars();
+    match (chars.next(), chars.next()) {
+        (Some(first), None) if order.contains(first) => std::iter::once(first)
+            .chain(order.chars().filter(|&c| c != first))
+            .collect(),
+        _ => order.to_string(),
+    }
+}
 
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]

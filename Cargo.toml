@@ -48,6 +48,8 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"
 clap = { version = "4", features = ["derive"] }
 miniz_oxide = "0.9"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
+# Property tests of the parsers (fuzz-style, on the stable toolchain).
+proptest = { version = "1.12", default-features = false, features = ["std"] }
 
 [profile.release]
 lto = "thin"

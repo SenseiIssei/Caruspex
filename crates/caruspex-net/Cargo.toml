@@ -19,4 +19,5 @@ libc = "0.2.191"
 
 [dev-dependencies]
 caruspex-data.workspace = true
+proptest.workspace = true
 caruspex-protocols.workspace = true

@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Adaptör ayarları (AT, ST)",
+ "c-opt17-2": "Arıza silme",
+ "c-opt17-3": "Teşhis oturumu",
+ "c-opt17-4": "Arıza hafızası (OBD)",
+ "c-opt17-5": "Arıza hafızası (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Diğer servisler",
+ "c-opt17-8": "Canlı değerler",
+ "c-opt17-9": "Üretici değerleri ve kimlikler",
+ "c-opt17-10": "Test sonuçları",
+ "c-opt17-11": "Hatırlanan yol bu sefer çalışmıyor, her zamanki gibi aranıyor.",
+ "c-opt17-12": "Önce geçen sefer çalışan yol deneniyor: %1",
+ "c-opt17-13": "Araç verileri (VIN, yazılım)",
+ "c-opt17-14": "protokol %1"
+}

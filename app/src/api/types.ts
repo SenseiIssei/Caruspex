@@ -372,6 +372,25 @@ export interface GarageCar {
   // whether it had to be turned around; absent without one.
   xrayModel?: string;
   xrayModelTurned?: boolean;
+  // The last way the connection to this car worked; the next connect
+  // tries it first.
+  connection?: ConnectRoute;
+}
+
+// How a connection went (rows.rs ConnectRoute). kind: "serial", "tcp",
+// "ble", "can", "enet"; "demo", "replay" and "transport" are only reported.
+// device: port, "host:port", Bluetooth id, CAN spec with "@bitrate" or ENET
+// host. protocol: the protocol number the adapter answered on ("6").
+export interface ConnectRoute {
+  kind: string;
+  device: string;
+  baud?: number;
+  protocol?: string;
+  name?: string;
+  kinds?: number;
+  // Only in the garage: the adapter and when it last worked.
+  adapter?: string;
+  when?: string;
 }
 
 // --- Report.h -------------------------------------------------------------------
@@ -950,4 +969,39 @@ export interface ConnectHelp {
   // What the attempt found out, one line each.
   found: string[];
   items: ConnectCheck[];
+}
+
+// --- Mitschnitt teilen (caruspex_record::share) ----------------------------------
+
+export interface SharePreview {
+  durationSeconds: number;
+  exchanges: number;
+  adapter: string;
+  protocol: string;
+  // Only the date, the time of day is removed.
+  created: string;
+  // Every VIN found, as it now reads, the last hiddenDigits characters 0.
+  vins: string[];
+  vinPlaces: number;
+  hiddenDigits: number;
+  // The port, Bluetooth or network name was removed.
+  transportRemoved: boolean;
+  // Requests by kind, in the active language, most first.
+  requests: { kind: string; count: number }[];
+  // The first lines of the file to share.
+  sample: string[];
+  bytes: number;
+}
+
+export interface SharedRecording {
+  // The file to share, in the recording format.
+  file: string;
+  preview: SharePreview;
+}
+
+// A crash report on this computer (crash.rs): version, system, place and
+// call chain, without vehicle data. Never sent by itself.
+export interface CrashReport {
+  path: string;
+  text: string;
 }

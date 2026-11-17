@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Adapterinstellingen (AT, ST)",
+ "c-opt17-2": "Storingen wissen",
+ "c-opt17-3": "Diagnosesessie",
+ "c-opt17-4": "Storingsgeheugen (OBD)",
+ "c-opt17-5": "Storingsgeheugen (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Overige diensten",
+ "c-opt17-8": "Live-waarden",
+ "c-opt17-9": "Fabriekswaarden en kenmerken",
+ "c-opt17-10": "Testresultaten",
+ "c-opt17-11": "De onthouden weg werkt deze keer niet, zoeken zoals gewoonlijk.",
+ "c-opt17-12": "Eerst de weg proberen die de vorige keer werkte: %1",
+ "c-opt17-13": "Voertuiggegevens (VIN, software)",
+ "c-opt17-14": "protocol %1"
+}

@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Réglages de l'adaptateur (AT, ST)",
+ "c-opt17-2": "Effacement des défauts",
+ "c-opt17-3": "Session de diagnostic",
+ "c-opt17-4": "Mémoire de défauts (OBD)",
+ "c-opt17-5": "Mémoire de défauts (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Autres services",
+ "c-opt17-8": "Valeurs en direct",
+ "c-opt17-9": "Valeurs constructeur et identifiants",
+ "c-opt17-10": "Résultats de tests",
+ "c-opt17-11": "Le chemin mémorisé ne fonctionne pas cette fois, recherche habituelle.",
+ "c-opt17-12": "Essai d'abord du chemin qui a fonctionné la dernière fois : %1",
+ "c-opt17-13": "Données du véhicule (VIN, logiciel)",
+ "c-opt17-14": "protocole %1"
+}

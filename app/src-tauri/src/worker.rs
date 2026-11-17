@@ -74,6 +74,35 @@ pub const J2534_DEVICE_PREFIX: &str = "j2534:";
 /// Keep-alive of an open KKL or TP 2.0 session.
 const KKL_KEEP_ALIVE_MS: u64 = 1000;
 
+/// The protocol order a connect job carries; ENET, CAN and the demo choose
+/// their own.
+fn protocol_order_of(job: &Job) -> String {
+    match job {
+        Job::OpenSerial { protocol_order, .. }
+        | Job::OpenTcp { protocol_order, .. }
+        | Job::OpenBle { protocol_order, .. }
+        | Job::OpenReplay { protocol_order, .. } => protocol_order.clone(),
+        _ => "54312678".to_string(),
+    }
+}
+
+/// "COM7, 38400 baud, protocol 6" for the log.
+fn route_text(route: &ConnectRoute) -> String {
+    let mut parts = vec![if route.name.is_empty() {
+        route.device.clone()
+    } else {
+        route.name.clone()
+    }];
+    if route.baud > 0 {
+        parts.push(format!("{} Baud", route.baud));
+    }
+    if !route.protocol.is_empty() {
+        parts.push(args(l("Protokoll %1", "protocol %1"), &[&route.protocol]));
+    }
+    parts.retain(|p| !p.is_empty());
+    parts.join(", ")
+}
+
 /// Where the worker's events go: the Tauri window, or a list in the tests.
 pub trait Sink: Send + Sync + 'static {
     fn emit(&self, event: &str, payload: Value);
@@ -113,6 +142,12 @@ pub enum Job {
         path: String,
         real_time: bool,
         protocol_order: String,
+    },
+    /// First the way that worked last time for this car, quietly; only if
+    /// no adapter answers there, `then` (the search the user asked for).
+    OpenRemembered {
+        route: ConnectRoute,
+        then: Box<Job>,
     },
     /// Any ready transport; the tests hand in a DemoTransport without delays.
     OpenTransport {
@@ -548,6 +583,15 @@ pub struct Worker {
     facts: ConnectFacts,
     /// Seconds of live values in the used car check (shorter in tests).
     used_car_live_seconds: i32,
+    /// The way the running connection attempt takes, reported with
+    /// "connected" so the garage can remember it.
+    route: ConnectRoute,
+    /// The remembered protocol, tried first while `Job::OpenRemembered`
+    /// runs (also in the search after it).
+    prefer_protocol: String,
+    /// While the remembered way is tried quietly: a failure is only noted
+    /// here instead of reported.
+    quiet: Option<Option<String>>,
 }
 
 impl Worker {
@@ -575,6 +619,9 @@ impl Worker {
             settings: AppSettings::default(),
             facts: ConnectFacts::default(),
             used_car_live_seconds: USED_CAR_LIVE_SECONDS,
+            route: ConnectRoute::default(),
+            prefer_protocol: String::new(),
+            quiet: None,
         }
     }
 
@@ -603,7 +650,11 @@ impl Worker {
     }
     /// Connecting failed: the error line and the checklist of the
     /// connection assistant, built from what the attempt found out.
-    fn connect_failed(&self, error: impl Into<String>) {
+    fn connect_failed(&mut self, error: impl Into<String>) {
+        if let Some(quiet) = self.quiet.as_mut() {
+            *quiet = Some(error.into());
+            return;
+        }
         let help = crate::advice::help_json(&connect_help(&self.facts));
         self.emit("failed", json!({ "error": error.into(), "help": help }));
     }
@@ -743,10 +794,15 @@ impl Worker {
                 real_time,
                 protocol_order,
             } => self.open_replay(&path, real_time, &protocol_order),
+            Job::OpenRemembered { route, then } => self.open_remembered(route, *then),
             Job::OpenTransport {
                 transport,
                 protocol_order,
             } => {
+                self.route = ConnectRoute {
+                    kind: "transport".into(),
+                    ..ConnectRoute::default()
+                };
                 self.busy(true);
                 self.set_elm_log();
                 self.begin_connect(LinkKind::Usb);
@@ -832,7 +888,8 @@ impl Worker {
     ) -> Result<(), String> {
         self.facts.port_opened = Some(true);
         self.facts.port_busy = false;
-        let result = self.elm.connect(transport, protocol_order);
+        let order = prefer_protocol(protocol_order, &self.prefer_protocol);
+        let result = self.elm.connect(transport, &order);
         // When several ports or rates are tried, the attempt where the
         // adapter answered says the most; a silent one does not replace it.
         let trace = self.elm.connect_trace().clone();
@@ -859,6 +916,11 @@ impl Worker {
         // The extra CAN buses an OBDLink can switch to ("ms", "sw"), for the
         // control unit page.
         let stn_buses: Vec<&str> = self.elm.stn_extra_buses().iter().map(|b| b.key()).collect();
+        let mut route = self.route.clone();
+        let protocol = self.elm.protocol_id();
+        if protocol != '0' {
+            route.protocol = protocol.to_string();
+        }
         self.emit(
             "connected",
             json!({
@@ -867,9 +929,73 @@ impl Worker {
                 "protocol": self.elm.protocol_text(),
                 "rawCan": self.can_link.is_some(),
                 "stnBuses": stn_buses,
+                "route": route,
             }),
         );
         Ok(())
+    }
+
+    /// The way that worked last time for this car, then the search the user
+    /// asked for. The second attempt only runs when no adapter answered on
+    /// the first: an adapter that answered has already been through every
+    /// protocol, the car is the problem there, and that is reported.
+    fn open_remembered(&mut self, route: ConnectRoute, then: Job) {
+        self.log(args(
+            l(
+                "Versuche zuerst den Weg, der zuletzt ging: %1",
+                "Trying the way that worked last time first: %1",
+            ),
+            &[&route_text(&route)],
+        ));
+        self.prefer_protocol = route.protocol.clone();
+        self.quiet = Some(None);
+        // The usual rates when the remembered one is unknown.
+        let baud = i32::try_from(route.baud).unwrap_or(0);
+        match route.kind.as_str() {
+            "serial" if !route.device.is_empty() => {
+                self.open_serial(&route.device, baud, &protocol_order_of(&then))
+            }
+            "tcp" => {
+                let (host, port) = route
+                    .device
+                    .rsplit_once(':')
+                    .and_then(|(h, p)| p.parse().ok().map(|p| (h.to_string(), p)))
+                    .unwrap_or((route.device.clone(), 35000));
+                self.open_tcp(&host, port, &protocol_order_of(&then))
+            }
+            "ble" if !route.device.is_empty() => self.open_ble(
+                &route.device,
+                &route.name,
+                route.kinds,
+                &protocol_order_of(&then),
+            ),
+            "can" if !route.device.is_empty() => self.open_can(&route.device),
+            "enet" => self.open_enet(&route.device),
+            _ => {}
+        }
+        let error = self.quiet.take().flatten();
+        if self.elm.connected() {
+            self.prefer_protocol.clear();
+            return;
+        }
+        // A CAN interface always "answers" (its ELM front end is ours); a
+        // bit rate chosen now that differs from the remembered one is
+        // still worth its own try.
+        let other_rate = matches!(&then, Job::OpenCan { spec } if *spec != route.device);
+        if self.facts.adapter_answered == Some(true)
+            && !other_rate
+            && let Some(error) = error
+        {
+            self.prefer_protocol.clear();
+            self.connect_failed(error);
+            return;
+        }
+        self.log(l(
+            "Der gemerkte Weg geht diesmal nicht, suche wie gewohnt.",
+            "The remembered way does not work this time, searching as usual.",
+        ));
+        self.handle(then);
+        self.prefer_protocol.clear();
     }
 
     fn open_serial(&mut self, device: &str, baud: i32, protocol_order: &str) {
@@ -933,6 +1059,12 @@ impl Worker {
                     &w("Anschluss %1 offen bei %2 Baud", "Port %1 open at %2 baud"),
                     &[candidate_device, &b],
                 ));
+                self.route = ConnectRoute {
+                    kind: "serial".into(),
+                    device: candidate_device.clone(),
+                    baud: b,
+                    ..ConnectRoute::default()
+                };
                 match self.try_connect(Box::new(candidate), protocol_order) {
                     Ok(()) => {
                         if searching {
@@ -977,6 +1109,11 @@ impl Worker {
                             500000,
                         );
                         self.can_link = Some(front.shared_link());
+                        self.route = ConnectRoute {
+                            kind: "can".into(),
+                            device: format!("slcan:{candidate_device}@500000"),
+                            ..ConnectRoute::default()
+                        };
                         if self.finish_connect(Box::new(front), "67", false) {
                             self.emit("adapter_found", json!({ "device": candidate_device }));
                             self.busy(false);
@@ -1015,6 +1152,11 @@ impl Worker {
             self.connect_failed(error);
             return;
         }
+        self.route = ConnectRoute {
+            kind: "tcp".into(),
+            device: format!("{host}:{port}"),
+            ..ConnectRoute::default()
+        };
         let ok = self.finish_connect(Box::new(transport), protocol_order, true);
         self.busy(false);
         if ok {
@@ -1119,6 +1261,13 @@ impl Worker {
                 }
                 continue;
             };
+            self.route = ConnectRoute {
+                kind: "ble".into(),
+                device: d.id.clone(),
+                name: d.name.clone(),
+                kinds: ble::kinds(&d),
+                ..ConnectRoute::default()
+            };
             match self.try_connect(transport, protocol_order) {
                 Ok(()) => {
                     self.emit(
@@ -1168,6 +1317,11 @@ impl Worker {
             &w("Verbunden über %1: %2%3", "Connected over %1: %2%3"),
             &[&car.kind, &car.transport.name(), &vin],
         ));
+        self.route = ConnectRoute {
+            kind: "enet".into(),
+            device: host.to_string(),
+            ..ConnectRoute::default()
+        };
         let ok = self.finish_connect(Box::new(car.transport), "6", true);
         self.busy(false);
         if ok {
@@ -1204,6 +1358,11 @@ impl Worker {
         ));
         // TP 2.0 for older VAG cars uses the same interface.
         self.can_link = Some(transport.shared_link());
+        self.route = ConnectRoute {
+            kind: "can".into(),
+            device: spec.to_string(),
+            ..ConnectRoute::default()
+        };
         // 11 bit first, then 29 bit; a car that answers neither is listened to.
         let ok = self.finish_connect(Box::new(transport), "67", true);
         if !ok {
@@ -1220,6 +1379,10 @@ impl Worker {
         self.busy(true);
         self.set_elm_log();
         self.begin_connect(LinkKind::Usb);
+        self.route = ConnectRoute {
+            kind: "demo".into(),
+            ..ConnectRoute::default()
+        };
         let ok = self.finish_connect(Box::new(caruspex_demo::DemoTransport::default()), "6", true);
         self.busy(false);
         if ok {
@@ -1252,6 +1415,10 @@ impl Worker {
         }
         self.log(recording_summary(&replay.info()));
         let order = replay.protocol_order(protocol_order);
+        self.route = ConnectRoute {
+            kind: "replay".into(),
+            ..ConnectRoute::default()
+        };
         let ok = self.finish_connect(Box::new(replay), &order, true);
         self.busy(false);
         if ok {
@@ -3078,6 +3245,86 @@ mod tests {
         // busy goes on and off in pairs.
         let busy = Collect::named(&events, "busy");
         assert_eq!(busy.last().unwrap()["active"], false);
+    }
+
+    fn quick_demo() -> Box<dyn Transport> {
+        Box::new(DemoTransport::new(DemoOptions {
+            latency_scale: 0.0,
+            ..DemoOptions::default()
+        }))
+    }
+
+    fn log_lines(events: &[(String, Value)]) -> Vec<String> {
+        Collect::named(events, "log_line")
+            .iter()
+            .filter_map(|v| v["line"].as_str().map(str::to_string))
+            .collect()
+    }
+
+    #[test]
+    fn connected_reports_the_way_it_went() {
+        let (_worker, sink) = demo_worker();
+        let events = sink.take();
+        let route = &Collect::named(&events, "connected")[0]["route"];
+        assert_eq!(route["kind"], "transport");
+        assert_eq!(route["protocol"], "6");
+    }
+
+    #[test]
+    fn a_remembered_port_that_is_gone_falls_back_to_the_search() {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.apply_settings(AppSettings::default());
+        // A port that does not exist on any computer; the fallback is the
+        // demo car, with the remembered protocol in front of the order.
+        worker.handle(Job::OpenRemembered {
+            route: ConnectRoute {
+                kind: "serial".into(),
+                device: "caruspex-no-such-port".into(),
+                baud: 38400,
+                protocol: "6".into(),
+                ..ConnectRoute::default()
+            },
+            then: Box::new(Job::OpenTransport {
+                transport: quick_demo(),
+                protocol_order: "16".into(),
+            }),
+        });
+        let events = sink.take();
+        assert!(
+            Collect::named(&events, "failed").is_empty(),
+            "the quiet attempt reports nothing: {events:?}"
+        );
+        assert_eq!(Collect::named(&events, "connected").len(), 1);
+        let lines = log_lines(&events);
+        assert!(lines.iter().any(|l| l.contains("caruspex-no-such-port")));
+        // Protocol 6 first: the K-line protocol 1 was never tried.
+        assert!(!lines.iter().any(|l| l.contains(" 1 (")), "{lines:?}");
+        assert!(worker.prefer_protocol.is_empty());
+        assert!(worker.quiet.is_none());
+    }
+
+    #[test]
+    fn without_a_remembered_way_failures_are_reported_as_before() {
+        let sink = Arc::new(Collect::default());
+        let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+        worker.handle(Job::OpenRemembered {
+            route: ConnectRoute {
+                kind: "serial".into(),
+                device: "caruspex-no-such-port".into(),
+                ..ConnectRoute::default()
+            },
+            then: Box::new(Job::OpenSerial {
+                device: "caruspex-no-such-port-either".into(),
+                baud: 38400,
+                protocol_order: "6".into(),
+            }),
+        });
+        let events = sink.take();
+        // Only the search the user asked for says it failed.
+        let failed = Collect::named(&events, "failed");
+        assert_eq!(failed.len(), 1, "{events:?}");
+        assert!(failed[0]["help"].is_object() || failed[0]["help"].is_array());
     }
 
     #[test]
