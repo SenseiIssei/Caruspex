@@ -1,0 +1,18 @@
+{
+ "c-iface16-1": ". Untuk itu Caruspex memerlukan program bantunya caruspex-j2534-bridge.exe, yang tidak ada di samping program.",
+ "c-iface16-2": ". Apakah driver dari pabrikan sudah terpasang?",
+ "c-iface16-3": "CAN FD tidak dapat dihubungkan pada perangkat J2534: ",
+ "c-iface16-4": "CAN FD tidak berfungsi pada antarmuka ini: ",
+ "c-iface16-5": "Di sini CAN FD hanya berfungsi lewat SocketCAN dan perangkat J2534.",
+ "c-iface16-6": "PCAN-Basic dan Kvaser CANlib di sini hanya dipakai di Windows; di Linux keduanya berjalan lewat SocketCAN.",
+ "c-iface16-7": "Program bantu 32-bit untuk driver J2534 lama tidak mau berjalan: ",
+ "c-iface16-8": "Kanal Kvaser tidak dapat dibuka: ",
+ "c-iface16-9": "Kanal PCAN tidak dapat dibuka: ",
+ "c-iface16-10": "Antarmuka tidak mengenal laju bit ini.",
+ "c-iface16-11": "Pustaka CAN dari pabrikan tidak lengkap: ",
+ "c-iface16-12": "Pustaka CAN dari pabrikan tidak ada: ",
+ "c-iface16-13": "Ini driver J2534 32-bit: ",
+ "c-iface16-14": "Kanal Kvaser tidak dikenal: ",
+ "c-iface16-15": "Kanal PCAN tidak dikenal: ",
+ "c-iface16-16": "kanal "
+}

@@ -1,0 +1,71 @@
+[
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "32-Bit-Treiber über Hilfsprogramm",
+  "en": "32-bit driver through the helper program",
+  "tr": {
+   "es": "controlador de 32 bits mediante programa auxiliar",
+   "fr": "pilote 32 bits via programme auxiliaire",
+   "pt": "driver de 32 bits via programa auxiliar",
+   "it": "driver a 32 bit tramite programma ausiliario",
+   "nl": "32-bit-stuurprogramma via hulpprogramma",
+   "pl": "sterownik 32-bitowy przez program pomocniczy",
+   "cs": "32bitový ovladač přes pomocný program",
+   "ru": "32-битный драйвер через вспомогательную программу",
+   "uk": "32-бітний драйвер через допоміжну програму",
+   "tr": "yardımcı program üzerinden 32 bit sürücü",
+   "ar": "برنامج تشغيل 32 بت عبر البرنامج المساعد",
+   "zh": "通过辅助程序使用的 32 位驱动程序",
+   "ja": "補助プログラム経由の 32 ビットドライバー",
+   "ko": "보조 프로그램을 통한 32비트 드라이버",
+   "hi": "सहायक प्रोग्राम के ज़रिए 32-बिट ड्राइवर",
+   "id": "driver 32-bit lewat program bantu"
+  }
+ },
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "CAN FD (neueste Autos; nur SocketCAN und J2534-Geräte, die es können)",
+  "en": "CAN FD (newest cars; only SocketCAN and J2534 devices that have it)",
+  "tr": {
+   "es": "CAN FD (coches más nuevos; solo SocketCAN y dispositivos J2534 que lo admitan)",
+   "fr": "CAN FD (voitures les plus récentes ; uniquement SocketCAN et les appareils J2534 qui le gèrent)",
+   "pt": "CAN FD (carros mais recentes; só SocketCAN e dispositivos J2534 que o suportem)",
+   "it": "CAN FD (auto più recenti; solo SocketCAN e dispositivi J2534 che lo supportano)",
+   "nl": "CAN FD (nieuwste auto's; alleen SocketCAN en J2534-apparaten die het kunnen)",
+   "pl": "CAN FD (najnowsze auta; tylko SocketCAN i urządzenia J2534, które to obsługują)",
+   "cs": "CAN FD (nejnovější auta; jen SocketCAN a zařízení J2534, která to umí)",
+   "ru": "CAN FD (новейшие автомобили; только SocketCAN и устройства J2534, которые это умеют)",
+   "uk": "CAN FD (найновіші авто; лише SocketCAN і пристрої J2534, які це вміють)",
+   "tr": "CAN FD (en yeni araçlar; yalnızca bunu destekleyen SocketCAN ve J2534 cihazları)",
+   "ar": "CAN FD (أحدث السيارات؛ فقط SocketCAN وأجهزة J2534 التي تدعمه)",
+   "zh": "CAN FD（最新车型；仅限支持它的 SocketCAN 和 J2534 设备）",
+   "ja": "CAN FD(最新の車。対応する SocketCAN と J2534 デバイスのみ)",
+   "ko": "CAN FD (최신 차량, 이를 지원하는 SocketCAN 및 J2534 장치만)",
+   "hi": "CAN FD (सबसे नई कारें; सिर्फ़ SocketCAN और वे J2534 डिवाइस जो इसे सपोर्ट करते हैं)",
+   "id": "CAN FD (mobil terbaru; hanya SocketCAN dan perangkat J2534 yang mendukungnya)"
+  }
+ },
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik und viele mehr, auch mit alten 32-Bit-Treibern), PEAK PCAN und Kvaser mit dem Treiber des Herstellers, SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.",
+  "en": "For devices that deliver raw CAN messages: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik and many more, old 32-bit drivers too), PEAK PCAN and Kvaser with the maker's driver, SLCAN sticks (CANable, USBtin, CANUSB) and SocketCAN on Linux. Cars with OBD over CAN run at 500 kbit/s.",
+  "tr": {
+   "es": "Para dispositivos que entregan mensajes CAN en bruto: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik y muchos más, también con controladores antiguos de 32 bits), PEAK PCAN y Kvaser con el controlador del fabricante, sticks SLCAN (CANable, USBtin, CANUSB) y SocketCAN en Linux. Los coches con OBD por CAN funcionan a 500 kbit/s.",
+   "fr": "Pour les appareils qui fournissent des messages CAN bruts : J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik et bien d'autres, y compris avec d'anciens pilotes 32 bits), PEAK PCAN et Kvaser avec le pilote du fabricant, clés SLCAN (CANable, USBtin, CANUSB) et SocketCAN sous Linux. Les voitures avec OBD sur CAN fonctionnent à 500 kbit/s.",
+   "pt": "Para dispositivos que entregam mensagens CAN brutas: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik e muitos mais, também com drivers antigos de 32 bits), PEAK PCAN e Kvaser com o driver do fabricante, adaptadores SLCAN (CANable, USBtin, CANUSB) e SocketCAN no Linux. Carros com OBD via CAN funcionam a 500 kbit/s.",
+   "it": "Per dispositivi che forniscono messaggi CAN grezzi: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik e molti altri, anche con vecchi driver a 32 bit), PEAK PCAN e Kvaser con il driver del produttore, chiavette SLCAN (CANable, USBtin, CANUSB) e SocketCAN su Linux. Le auto con OBD su CAN funzionano a 500 kbit/s.",
+   "nl": "Voor apparaten die ruwe CAN-berichten leveren: J2534-PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik en nog veel meer, ook met oude 32-bit-stuurprogramma's), PEAK PCAN en Kvaser met het stuurprogramma van de fabrikant, SLCAN-sticks (CANable, USBtin, CANUSB) en SocketCAN onder Linux. Auto's met OBD via CAN werken op 500 kbit/s.",
+   "pl": "Dla urządzeń, które dostarczają surowe wiadomości CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik i wiele innych, także ze starymi sterownikami 32-bitowymi), PEAK PCAN i Kvaser ze sterownikiem producenta, przejściówki SLCAN (CANable, USBtin, CANUSB) oraz SocketCAN w Linuksie. Auta z OBD przez CAN działają z prędkością 500 kbit/s.",
+   "cs": "Pro zařízení, která dodávají surové zprávy CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik a mnoho dalších, i se starými 32bitovými ovladači), PEAK PCAN a Kvaser s ovladačem výrobce, SLCAN adaptéry (CANable, USBtin, CANUSB) a v Linuxu SocketCAN. Auta s OBD přes CAN jedou na 500 kbit/s.",
+   "ru": "Для устройств, которые выдают сырые сообщения CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik и многие другие, в том числе со старыми 32-битными драйверами), PEAK PCAN и Kvaser с драйвером производителя, адаптеры SLCAN (CANable, USBtin, CANUSB) и SocketCAN в Linux. Автомобили с OBD по CAN работают на 500 кбит/с.",
+   "uk": "Для пристроїв, що видають сирі повідомлення CAN: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik і багато інших, зокрема зі старими 32-бітними драйверами), PEAK PCAN і Kvaser із драйвером виробника, адаптери SLCAN (CANable, USBtin, CANUSB) і SocketCAN у Linux. Авто з OBD через CAN працюють на 500 кбіт/с.",
+   "tr": "Ham CAN mesajları veren cihazlar için: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik ve daha birçoğu, eski 32 bit sürücülerle de), üreticinin sürücüsüyle PEAK PCAN ve Kvaser, SLCAN çubukları (CANable, USBtin, CANUSB) ve Linux'ta SocketCAN. CAN üzerinden OBD'li araçlar 500 kbit/s ile çalışır.",
+   "ar": "للأجهزة التي تقدّم رسائل CAN خامًا: J2534 PassThru (Tactrix OpenPort وMongoose وVCX Nano وScanmatik وغيرها الكثير، وكذلك مع برامج تشغيل 32 بت القديمة)، وPEAK PCAN وKvaser مع برنامج تشغيل الشركة المصنعة، ووصلات SLCAN (CANable وUSBtin وCANUSB) وSocketCAN على Linux. تعمل السيارات التي تدعم OBD عبر CAN بسرعة 500 kbit/s.",
+   "zh": "适用于提供原始 CAN 报文的设备：J2534 PassThru（Tactrix OpenPort、Mongoose、VCX Nano、Scanmatik 等等，也支持旧的 32 位驱动程序）、使用制造商驱动程序的 PEAK PCAN 和 Kvaser、SLCAN 适配器（CANable、USBtin、CANUSB）以及 Linux 上的 SocketCAN。通过 CAN 进行 OBD 的汽车以 500 kbit/s 运行。",
+   "ja": "生の CAN メッセージを出すデバイス向け: J2534 PassThru(Tactrix OpenPort、Mongoose、VCX Nano、Scanmatik など多数、古い 32 ビットドライバーも可)、メーカーのドライバーを使う PEAK PCAN と Kvaser、SLCAN スティック(CANable、USBtin、CANUSB)、Linux の SocketCAN。CAN 経由の OBD を持つ車は 500 kbit/s で動きます。",
+   "ko": "원시 CAN 메시지를 제공하는 장치용: J2534 PassThru(Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik 등 다수, 오래된 32비트 드라이버도 가능), 제조사 드라이버를 쓰는 PEAK PCAN과 Kvaser, SLCAN 스틱(CANable, USBtin, CANUSB), Linux의 SocketCAN. CAN을 통한 OBD를 가진 차량은 500 kbit/s로 동작합니다.",
+   "hi": "उन डिवाइसों के लिए जो कच्चे CAN संदेश देते हैं: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik और कई अन्य, पुराने 32-बिट ड्राइवरों के साथ भी), निर्माता के ड्राइवर के साथ PEAK PCAN और Kvaser, SLCAN स्टिक (CANable, USBtin, CANUSB) और Linux पर SocketCAN। CAN पर OBD वाली कारें 500 kbit/s पर चलती हैं।",
+   "id": "Untuk perangkat yang mengirim pesan CAN mentah: J2534 PassThru (Tactrix OpenPort, Mongoose, VCX Nano, Scanmatik, dan banyak lagi, juga dengan driver 32-bit lama), PEAK PCAN dan Kvaser dengan driver dari pabrikan, stik SLCAN (CANable, USBtin, CANUSB), dan SocketCAN di Linux. Mobil dengan OBD lewat CAN berjalan pada 500 kbit/s."
+  }
+ }
+]
