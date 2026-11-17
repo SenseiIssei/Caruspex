@@ -1,0 +1,117 @@
+name: Test report from a real car
+description: Tell us how Caruspex worked on your car and adapter. Every report goes into the "Tested with" list.
+title: "Test report: "
+labels: ["test report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying Caruspex on a real car. Reports in German are welcome too.
+
+        Please do not post the full VIN, your number plate or your name. A recording made with
+        **Share recording** in the app has the last digits of the VIN, the port and adapter
+        addresses and the time of day removed already; the app shows what stays before you save it.
+  - type: input
+    id: car
+    attributes:
+      label: Car
+      description: Make, model and generation, as the app shows it if possible.
+      placeholder: VW Golf IV, BMW 3 Series F30, Toyota Yaris XP13
+    validations:
+      required: true
+  - type: input
+    id: year
+    attributes:
+      label: Year
+      description: Model year or year of first registration.
+      placeholder: "2004"
+    validations:
+      required: true
+  - type: input
+    id: engine
+    attributes:
+      label: Engine
+      description: Engine code if you know it, otherwise fuel and size.
+      placeholder: "AXR, 1.9 TDI / petrol 1.4 / electric"
+  - type: input
+    id: vin
+    attributes:
+      label: VIN, shortened
+      description: Only the first 11 characters (maker, model and model year). Never the full VIN.
+      placeholder: WVWZZZ1JZ4W
+    validations:
+      required: false
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Adapter or interface
+      options:
+        - ELM327 over USB
+        - ELM327 over Bluetooth (classic)
+        - ELM327 over Bluetooth LE
+        - ELM327 over Wi-Fi
+        - OBDLink / STN chip
+        - KKL cable (VAG 409.1)
+        - K+DCAN cable
+        - BMW ENET cable
+        - DoIP cable
+        - J2534 PassThru
+        - SLCAN (CANable, USBtin, CANUSB)
+        - SocketCAN (Linux)
+        - PEAK PCAN (Windows)
+        - Kvaser (Windows)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: adapter
+    attributes:
+      label: Adapter model
+      description: Name and, if the Adapter test shows it, chip and version.
+      placeholder: "OBDLink EX, STN2232 / Vgate iCar Pro BLE, ELM327 v2.2"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Caruspex version and system
+      placeholder: "0.14.0 on Windows 11"
+    validations:
+      required: true
+  - type: checkboxes
+    id: worked
+    attributes:
+      label: What worked
+      description: Tick what you tried and what worked.
+      options:
+        - label: Connecting (the car was recognised)
+        - label: Reading the VIN
+        - label: Reading fault codes of the engine
+        - label: Clearing fault codes
+        - label: Live values
+        - label: Health check
+        - label: All control units (UDS scan)
+        - label: Control units via KKL
+        - label: Readiness monitors
+        - label: Used car check
+        - label: X-ray view showed the right car
+        - label: The OBD socket location in the connect assistant was right
+  - type: textarea
+    id: details
+    attributes:
+      label: What did not work, or anything else
+      description: Error messages, values that look wrong, how long connecting took.
+  - type: textarea
+    id: recording
+    attributes:
+      label: Shared recording
+      description: |
+        In the app, record a session, then use "Share recording" (in German "Mitschnitt teilen"),
+        save the file and drag it into this field. Optional, but it helps a lot.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: This report contains no full VIN, no number plate and no other personal data.
+          required: true

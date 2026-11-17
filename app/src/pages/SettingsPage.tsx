@@ -18,6 +18,9 @@ const tr = translator("caruspex::SettingsPage");
 // Texts that are new with the assistant and the accessibility settings.
 const tu = translator("caruspex::Usability");
 
+// "Übersetzung verbessern": the guide for translators in the repository.
+const TRANSLATING_URL = "https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md";
+
 function Group({ title, children, glow }: { title: string; children: ReactNode; glow?: boolean }) {
   return (
     <Card className={glow ? "settings-group glow" : "settings-group"} title={title}>
@@ -417,6 +420,16 @@ export default function SettingsPage() {
           />
         </Row>
         <Hint>{tr("Sprache und Erscheinungsbild wechseln beim nächsten Start.")}</Hint>
+        <Full>
+          <Button icon="book" onClick={() => void call("open_url", { url: TRANSLATING_URL })}>
+            {tr("Übersetzung verbessern")}
+          </Button>
+        </Full>
+        <Hint>
+          {tr(
+            "Öffnet im Browser die Anleitung für Übersetzer auf GitHub: wie man einen Text verbessert oder eine Sprache ergänzt.",
+          )}
+        </Hint>
       </Group>
 
       <Group title={tr("Lizenzen und Datenquellen")}>

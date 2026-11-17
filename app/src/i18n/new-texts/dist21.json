@@ -1,0 +1,48 @@
+[
+ {
+  "context": "caruspex::SettingsPage",
+  "de": "Übersetzung verbessern",
+  "en": "Improve translation",
+  "tr": {
+   "es": "Mejorar la traducción",
+   "fr": "Améliorer la traduction",
+   "pt": "Melhorar tradução",
+   "it": "Migliora la traduzione",
+   "nl": "Vertaling verbeteren",
+   "pl": "Popraw tłumaczenie",
+   "cs": "Vylepšit překlad",
+   "ru": "Улучшить перевод",
+   "uk": "Покращити переклад",
+   "tr": "Çeviriyi iyileştir",
+   "ar": "تحسين الترجمة",
+   "zh": "改进翻译",
+   "ja": "翻訳を改善",
+   "ko": "번역 개선",
+   "hi": "अनुवाद सुधारें",
+   "id": "Perbaiki terjemahan"
+  }
+ },
+ {
+  "context": "caruspex::SettingsPage",
+  "de": "Öffnet im Browser die Anleitung für Übersetzer auf GitHub: wie man einen Text verbessert oder eine Sprache ergänzt.",
+  "en": "Opens the guide for translators on GitHub in the browser: how to improve a text or add a language.",
+  "tr": {
+   "es": "Abre en el navegador la guía para traductores en GitHub: cómo mejorar un texto o añadir un idioma.",
+   "fr": "Ouvre dans le navigateur le guide des traducteurs sur GitHub : comment améliorer un texte ou ajouter une langue.",
+   "pt": "Abre no navegador o guia para tradutores no GitHub: como melhorar um texto ou adicionar um idioma.",
+   "it": "Apre nel browser la guida per i traduttori su GitHub: come migliorare un testo o aggiungere una lingua.",
+   "nl": "Opent in de browser de handleiding voor vertalers op GitHub: hoe je een tekst verbetert of een taal toevoegt.",
+   "pl": "Otwiera w przeglądarce przewodnik dla tłumaczy na GitHubie: jak poprawić tekst lub dodać język.",
+   "cs": "Otevře v prohlížeči návod pro překladatele na GitHubu: jak vylepšit text nebo doplnit jazyk.",
+   "ru": "Открывает в браузере руководство для переводчиков на GitHub: как улучшить текст или добавить язык.",
+   "uk": "Відкриває в браузері посібник для перекладачів на GitHub: як покращити текст або додати мову.",
+   "tr": "Çevirmen kılavuzunu GitHub'da tarayıcıda açar: bir metin nasıl iyileştirilir veya bir dil nasıl eklenir.",
+   "ar": "يفتح دليل المترجمين على GitHub في المتصفح: كيف تحسّن نصًا أو تضيف لغة.",
+   "zh": "在浏览器中打开 GitHub 上的译者指南：如何改进文本或添加一种语言。",
+   "ja": "GitHub の翻訳者向けガイドをブラウザーで開きます。テキストの改善方法や言語の追加方法が書かれています。",
+   "ko": "GitHub에 있는 번역자 안내서를 브라우저에서 엽니다. 텍스트를 개선하거나 언어를 추가하는 방법이 있습니다.",
+   "hi": "ब्राउज़र में GitHub पर अनुवादकों की गाइड खोलता है: किसी टेक्स्ट को कैसे सुधारें या कोई भाषा कैसे जोड़ें।",
+   "id": "Membuka panduan untuk penerjemah di GitHub di browser: cara memperbaiki teks atau menambah bahasa."
+  }
+ }
+]
