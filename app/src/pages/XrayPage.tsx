@@ -40,6 +40,8 @@ import { externalFiles } from "../xray/shell";
 import "./XrayPage.css";
 
 const tr = translator("caruspex::XrayPage");
+// A phone or tablet: the help names fingers instead of the mouse.
+const touchScreen = typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
 const VD = "caruspex::VehicleDiagram";
 
 // The live values that get a label, and where.
@@ -814,7 +816,11 @@ export default function XrayPage() {
                   ))}
                 </div>
               ) : null}
-              <div className="xray-help hint">{tr("Ziehen dreht, Mausrad zoomt, rechte Maustaste verschiebt.")}</div>
+              <div className="xray-help hint">
+                {touchScreen
+                  ? tr("Ziehen dreht, zwei Finger zoomen und verschieben, Tippen zeigt ein Teil.")
+                  : tr("Ziehen dreht, Mausrad zoomt, rechte Maustaste verschiebt.")}
+              </div>
             </>
           ) : null}
 

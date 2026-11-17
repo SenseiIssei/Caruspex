@@ -80,3 +80,8 @@
 
 .garage-empty { min-height: 360px; justify-content: center; }
 .garage-empty-text { max-width: 460px; }
+
+/* Phones: a smaller picture leaves room for name and VIN. */
+@media (max-width: 640px) {
+  .garage-car .garage-car-picture { width: 92px; height: 42px; }
+}
