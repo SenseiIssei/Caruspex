@@ -1,0 +1,18 @@
+{
+  "language_name": "한국어",
+  "site_title": "Caruspex 문서",
+  "tagline": "Windows, Linux, macOS용 무료 차량 진단 프로그램: 고장 코드, 실시간 값, 모든 제어 장치, 18개 언어 지원.",
+  "group_start": "시작하기",
+  "group_interfaces": "어댑터와 인터페이스",
+  "group_using": "Caruspex 사용하기",
+  "group_more": "더 보기",
+  "menu": "메뉴",
+  "language": "언어",
+  "skip": "본문으로 건너뛰기",
+  "download": "다운로드",
+  "source": "소스 코드",
+  "previous": "이전",
+  "next": "다음",
+  "improve": "GitHub에서 이 페이지 개선하기",
+  "footer": "Caruspex는 MIT 라이선스의 자유 소프트웨어입니다. 이 문서는 소스 코드의 일부이며, 수정 제안은 언제나 환영합니다."
+}

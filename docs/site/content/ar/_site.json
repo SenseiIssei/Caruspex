@@ -1,0 +1,18 @@
+{
+  "language_name": "العربية",
+  "site_title": "توثيق Caruspex",
+  "tagline": "تشخيص مجاني للسيارات على Windows وLinux وmacOS: أكواد الأعطال، القيم المباشرة، كل وحدات التحكم، بـ 18 لغة.",
+  "group_start": "البداية",
+  "group_interfaces": "المحوّلات والواجهات",
+  "group_using": "استخدام Caruspex",
+  "group_more": "المزيد",
+  "menu": "القائمة",
+  "language": "اللغة",
+  "skip": "الانتقال إلى المحتوى",
+  "download": "تنزيل",
+  "source": "الشيفرة المصدرية",
+  "previous": "السابق",
+  "next": "التالي",
+  "improve": "حسّن هذه الصفحة على GitHub",
+  "footer": "Caruspex برنامج حر بترخيص MIT. هذا التوثيق جزء من شيفرته المصدرية، والتصحيحات مرحّب بها."
+}

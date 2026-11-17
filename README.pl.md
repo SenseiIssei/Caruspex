@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · **Polski** · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Dokumentacja:** [instalacja, pierwsze kroki, każdy adapter i interfejs, prywatność, najczęstsze pytania](https://senseiissei.github.io/Caruspex/pl/index.html), we wszystkich 18 językach.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Jeszcze niezaimplementowane: diagnostyka producenta przez CAN z VW TP 2.0 (pojaz
 | Testy | `cargo test` na symulowanych sterownikach, fałszywych bramach i fałszywym sterowniku J2534 |
 | Narzędzia | Python 3 (generatory kodu i tabel, kontrola tłumaczeń, symulator ELM327) |
 | Platformy | Windows 10 i 11, Linux, macOS |
+
+<!-- tested -->
+## Sprawdzone z
+
+To, co naprawdę wypróbowano dotąd z Caruspex, uczciwie wypisane. Wszystko inne jest zbudowane według norm i przetestowane z symulowanymi sterownikami, fałszywymi bramkami i fałszywymi sterownikami urządzeń, ale jeszcze nie w prawdziwym samochodzie.
+
+| Interfejs | Samochód | Wynik |
+|---|---|---|
+| OBDLink z układem STN2232 | brak, test adaptera bez samochodu | układ, firmware i polecenia rozpoznane |
+| wszystkie inne adaptery i interfejsy | | jeszcze nie testowane w prawdziwym samochodzie |
+
+Wypróbowałeś Caruspex w swoim samochodzie? Wyślij [raport z testu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): każdy raport trafia na tę listę, według marki i interfejsu.
+<!-- /tested -->
 
 ## Pobieranie
 

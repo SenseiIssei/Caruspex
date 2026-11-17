@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · **Português** · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Documentação:** [instalação, primeiros passos, cada adaptador e interface, privacidade, perguntas frequentes](https://senseiissei.github.io/Caruspex/pt/index.html), nos 18 idiomas.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Ainda não implementado: diagnóstico do fabricante por CAN com VW TP 2.0 (veíc
 | Testes | `cargo test` contra centrais simuladas, gateways falsos e um driver J2534 falso |
 | Ferramentas | Python 3 (geradores de código e tabelas, verificações de tradução, simulador de ELM327) |
 | Plataformas | Windows 10 e 11, Linux, macOS |
+
+<!-- tested -->
+## Testado com
+
+O que realmente foi experimentado com o Caruspex até agora, listado com honestidade. Todo o resto foi feito segundo as normas e testado com centrais simuladas, gateways falsos e drivers falsos, mas ainda não num carro real.
+
+| Interface | Carro | Resultado |
+|---|---|---|
+| OBDLink com o chip STN2232 | nenhum, teste do adaptador sem carro | chip, firmware e comandos reconhecidos |
+| todos os outros adaptadores e interfaces | | ainda não testados num carro real |
+
+Experimentou o Caruspex no seu carro? Envie um [relatório de teste](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): cada relatório entra nesta lista, por marca e interface.
+<!-- /tested -->
 
 ## Download
 

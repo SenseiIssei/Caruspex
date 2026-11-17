@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · **Türkçe** · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Belgeler:** [kurulum, ilk adımlar, her adaptör ve arayüz, gizlilik, sık sorulan sorular](https://senseiissei.github.io/Caruspex/tr/index.html), 18 dilin hepsinde.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Henüz uygulanmadı: VW TP 2.0 ile CAN üzerinden üretici teşhisi (yaklaşık 
 | Testler | Simüle edilmiş ünitelere, sahte ağ geçitlerine ve sahte bir J2534 sürücüsüne karşı `cargo test` |
 | Araçlar | Python 3 (kod ve tablo üreticileri, çeviri denetimleri, ELM327 simülatörü) |
 | Platformlar | Windows 10 ve 11, Linux, macOS |
+
+<!-- tested -->
+## Test edildiği donanım
+
+Caruspex ile şimdiye kadar gerçekten denenenler, dürüstçe listelendi. Geri kalan her şey standartlara göre yapıldı ve taklit kontrol üniteleri, sahte ağ geçitleri ve sahte sürücülerle test edildi, ama henüz gerçek bir araçta denenmedi.
+
+| Arayüz | Araç | Sonuç |
+|---|---|---|
+| STN2232 çipli OBDLink | yok, araçsız adaptör testi | çip, yazılım ve komutlar tanındı |
+| diğer tüm adaptörler ve arayüzler | | henüz gerçek bir araçta test edilmedi |
+
+Caruspex'i kendi aracınızda denediniz mi? Lütfen bir [test raporu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) gönderin: her rapor marka ve arayüze göre bu listeye girer.
+<!-- /tested -->
 
 ## İndirme
 

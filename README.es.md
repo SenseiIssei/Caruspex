@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · **Español** · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Documentación:** [instalación, primeros pasos, cada adaptador e interfaz, privacidad, preguntas frecuentes](https://senseiissei.github.io/Caruspex/es/index.html), en los 18 idiomas.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Todavía no implementado: diagnóstico del fabricante por CAN con VW TP 2.0 (veh
 | Pruebas | `cargo test` contra unidades de control simuladas, pasarelas falsas y un controlador J2534 falso |
 | Herramientas | Python 3 (generadores de código y tablas, revisión de traducciones, simulador ELM327) |
 | Plataformas | Windows 10 y 11, Linux, macOS |
+
+<!-- tested -->
+## Probado con
+
+Lo que de verdad se ha probado con Caruspex hasta ahora, contado con honestidad. Todo lo demás está hecho según las normas y probado con unidades de control simuladas, pasarelas falsas y controladores falsos, pero todavía no en un coche real.
+
+| Interfaz | Coche | Resultado |
+|---|---|---|
+| OBDLink con el chip STN2232 | ninguno, prueba del adaptador sin coche | chip, firmware y comandos reconocidos |
+| todos los demás adaptadores e interfaces | | todavía no probados en un coche real |
+
+¿Has probado Caruspex en tu coche? Envía un [informe de prueba](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): cada informe entra en esta lista, por marca e interfaz.
+<!-- /tested -->
 
 ## Descarga
 

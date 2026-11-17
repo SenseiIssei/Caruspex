@@ -4,6 +4,10 @@
 [English](README.md) · **Deutsch** · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Dokumentation:** [Installieren, erste Schritte, jeder Adapter und jede Schnittstelle, Datenschutz, häufige Fragen](https://senseiissei.github.io/Caruspex/de/index.html), in allen 18 Sprachen.
+<!-- /docs -->
+
 Freie Fahrzeugdiagnose für Windows, Linux und macOS, geschrieben in Rust mit einer Tauri-2-Oberfläche. Ein Kabel oder Dongle, eine Software, in 18 Sprachen.
 
 Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
@@ -181,6 +185,19 @@ Welches gefahren wird, verrät das Steuergerät nach der Weckadresse über seine
 Getestet ist das gegen nachgebaute Steuergeräte in `crates/caruspex-protocols/tests/common/`, die den byteweisen Takt echt nachspielen.
 
 Noch nicht gebaut: herstellerspezifische Diagnose über CAN mit TP 2.0 für Fahrzeuge ab etwa 2004.
+
+<!-- tested -->
+## Geprüft mit
+
+Was mit Caruspex bisher wirklich ausprobiert wurde, ehrlich aufgelistet. Alles andere ist nach den Normen gebaut und gegen nachgebildete Steuergeräte, falsche Gateways und falsche Treiber getestet, aber noch nicht am echten Auto.
+
+| Schnittstelle | Auto | Ergebnis |
+|---|---|---|
+| OBDLink mit dem Chip STN2232 | keins, Adaptertest ohne Auto | Chip, Firmware und Befehle erkannt |
+| alle anderen Adapter und Schnittstellen | | noch nicht am echten Auto getestet |
+
+Caruspex am eigenen Auto ausprobiert? Bitte einen [Testbericht](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) schicken: Jeder Bericht kommt in diese Liste, nach Marke und Schnittstelle.
+<!-- /tested -->
 
 ## Herunterladen
 

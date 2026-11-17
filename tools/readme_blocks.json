@@ -1,0 +1,92 @@
+{
+ "en": {
+  "before": "## Download",
+  "docs": "**Documentation:** [install, first steps, every adapter and interface, privacy, FAQ]({docs}), in all 18 languages.",
+  "tested": "## Tested with\n\nWhat has really been tried with Caruspex so far, listed honestly. Everything else is built after the specifications and tested against simulated control units, fake gateways and fake drivers, but not yet on a real car.\n\n| Interface | Car | Result |\n|---|---|---|\n| OBDLink with the STN2232 chip | none, adapter test without a car | chip, firmware and commands recognised |\n| every other adapter and interface | | not yet tested on a real car |\n\nTried Caruspex on your car? Please send a [test report]({form}): every report goes into this list, per brand and interface."
+ },
+ "de": {
+  "before": "## Herunterladen",
+  "docs": "**Dokumentation:** [Installieren, erste Schritte, jeder Adapter und jede Schnittstelle, Datenschutz, häufige Fragen]({docs}), in allen 18 Sprachen.",
+  "tested": "## Geprüft mit\n\nWas mit Caruspex bisher wirklich ausprobiert wurde, ehrlich aufgelistet. Alles andere ist nach den Normen gebaut und gegen nachgebildete Steuergeräte, falsche Gateways und falsche Treiber getestet, aber noch nicht am echten Auto.\n\n| Schnittstelle | Auto | Ergebnis |\n|---|---|---|\n| OBDLink mit dem Chip STN2232 | keins, Adaptertest ohne Auto | Chip, Firmware und Befehle erkannt |\n| alle anderen Adapter und Schnittstellen | | noch nicht am echten Auto getestet |\n\nCaruspex am eigenen Auto ausprobiert? Bitte einen [Testbericht]({form}) schicken: Jeder Bericht kommt in diese Liste, nach Marke und Schnittstelle."
+ },
+ "es": {
+  "before": "## Descarga",
+  "docs": "**Documentación:** [instalación, primeros pasos, cada adaptador e interfaz, privacidad, preguntas frecuentes]({docs}), en los 18 idiomas.",
+  "tested": "## Probado con\n\nLo que de verdad se ha probado con Caruspex hasta ahora, contado con honestidad. Todo lo demás está hecho según las normas y probado con unidades de control simuladas, pasarelas falsas y controladores falsos, pero todavía no en un coche real.\n\n| Interfaz | Coche | Resultado |\n|---|---|---|\n| OBDLink con el chip STN2232 | ninguno, prueba del adaptador sin coche | chip, firmware y comandos reconocidos |\n| todos los demás adaptadores e interfaces | | todavía no probados en un coche real |\n\n¿Has probado Caruspex en tu coche? Envía un [informe de prueba]({form}): cada informe entra en esta lista, por marca e interfaz."
+ },
+ "fr": {
+  "before": "## Téléchargement",
+  "docs": "**Documentation :** [installation, premiers pas, chaque adaptateur et interface, confidentialité, questions fréquentes]({docs}), dans les 18 langues.",
+  "tested": "## Testé avec\n\nCe qui a vraiment été essayé avec Caruspex jusqu'ici, en toute honnêteté. Tout le reste est construit d'après les normes et testé avec des calculateurs simulés, de fausses passerelles et de faux pilotes, mais pas encore sur une vraie voiture.\n\n| Interface | Voiture | Résultat |\n|---|---|---|\n| OBDLink avec la puce STN2232 | aucune, test de l'adaptateur sans voiture | puce, firmware et commandes reconnus |\n| tous les autres adaptateurs et interfaces | | pas encore testés sur une vraie voiture |\n\nVous avez essayé Caruspex sur votre voiture ? Envoyez un [rapport de test]({form}) : chaque rapport entre dans cette liste, par marque et par interface."
+ },
+ "pt": {
+  "before": "## Download",
+  "docs": "**Documentação:** [instalação, primeiros passos, cada adaptador e interface, privacidade, perguntas frequentes]({docs}), nos 18 idiomas.",
+  "tested": "## Testado com\n\nO que realmente foi experimentado com o Caruspex até agora, listado com honestidade. Todo o resto foi feito segundo as normas e testado com centrais simuladas, gateways falsos e drivers falsos, mas ainda não num carro real.\n\n| Interface | Carro | Resultado |\n|---|---|---|\n| OBDLink com o chip STN2232 | nenhum, teste do adaptador sem carro | chip, firmware e comandos reconhecidos |\n| todos os outros adaptadores e interfaces | | ainda não testados num carro real |\n\nExperimentou o Caruspex no seu carro? Envie um [relatório de teste]({form}): cada relatório entra nesta lista, por marca e interface."
+ },
+ "it": {
+  "before": "## Download",
+  "docs": "**Documentazione:** [installazione, primi passi, ogni adattatore e interfaccia, privacy, domande frequenti]({docs}), in tutte le 18 lingue.",
+  "tested": "## Provato con\n\nCiò che finora è stato davvero provato con Caruspex, elencato onestamente. Tutto il resto è costruito secondo le norme e testato con centraline simulate, gateway finti e driver finti, ma non ancora su un'auto vera.\n\n| Interfaccia | Auto | Risultato |\n|---|---|---|\n| OBDLink con il chip STN2232 | nessuna, test dell'adattatore senza auto | chip, firmware e comandi riconosciuti |\n| tutti gli altri adattatori e interfacce | | non ancora provati su un'auto vera |\n\nHai provato Caruspex sulla tua auto? Invia un [rapporto di prova]({form}): ogni rapporto entra in questo elenco, per marca e interfaccia."
+ },
+ "nl": {
+  "before": "## Downloaden",
+  "docs": "**Documentatie:** [installeren, eerste stappen, elke adapter en interface, privacy, veelgestelde vragen]({docs}), in alle 18 talen.",
+  "tested": "## Getest met\n\nWat tot nu toe echt met Caruspex is uitgeprobeerd, eerlijk opgesomd. Al het andere is volgens de normen gebouwd en getest tegen nagebootste regeleenheden, nep-gateways en nep-drivers, maar nog niet in een echte auto.\n\n| Interface | Auto | Resultaat |\n|---|---|---|\n| OBDLink met de STN2232-chip | geen, adaptertest zonder auto | chip, firmware en commando's herkend |\n| alle andere adapters en interfaces | | nog niet in een echte auto getest |\n\nCaruspex in je eigen auto geprobeerd? Stuur dan een [testrapport]({form}): elk rapport komt in deze lijst, per merk en interface."
+ },
+ "pl": {
+  "before": "## Pobieranie",
+  "docs": "**Dokumentacja:** [instalacja, pierwsze kroki, każdy adapter i interfejs, prywatność, najczęstsze pytania]({docs}), we wszystkich 18 językach.",
+  "tested": "## Sprawdzone z\n\nTo, co naprawdę wypróbowano dotąd z Caruspex, uczciwie wypisane. Wszystko inne jest zbudowane według norm i przetestowane z symulowanymi sterownikami, fałszywymi bramkami i fałszywymi sterownikami urządzeń, ale jeszcze nie w prawdziwym samochodzie.\n\n| Interfejs | Samochód | Wynik |\n|---|---|---|\n| OBDLink z układem STN2232 | brak, test adaptera bez samochodu | układ, firmware i polecenia rozpoznane |\n| wszystkie inne adaptery i interfejsy | | jeszcze nie testowane w prawdziwym samochodzie |\n\nWypróbowałeś Caruspex w swoim samochodzie? Wyślij [raport z testu]({form}): każdy raport trafia na tę listę, według marki i interfejsu."
+ },
+ "cs": {
+  "before": "## Stažení",
+  "docs": "**Dokumentace:** [instalace, první kroky, každý adaptér a rozhraní, soukromí, časté otázky]({docs}), ve všech 18 jazycích.",
+  "tested": "## Vyzkoušeno s\n\nCo se s Caruspexem zatím opravdu vyzkoušelo, poctivě vypsáno. Vše ostatní je postavené podle norem a testované proti simulovaným řídicím jednotkám, falešným bránám a falešným ovladačům, ale zatím ne na skutečném autě.\n\n| Rozhraní | Auto | Výsledek |\n|---|---|---|\n| OBDLink s čipem STN2232 | žádné, test adaptéru bez auta | čip, firmware a příkazy rozpoznány |\n| všechny ostatní adaptéry a rozhraní | | zatím nevyzkoušeno na skutečném autě |\n\nVyzkoušeli jste Caruspex na svém autě? Pošlete prosím [zprávu o testu]({form}): každá zpráva přijde do tohoto seznamu, podle značky a rozhraní."
+ },
+ "ru": {
+  "before": "## Скачать",
+  "docs": "**Документация:** [установка, первые шаги, каждый адаптер и интерфейс, конфиденциальность, частые вопросы]({docs}), на всех 18 языках.",
+  "tested": "## Проверено с\n\nЧто на самом деле уже опробовано с Caruspex, честно перечислено. Всё остальное сделано по стандартам и проверено на имитированных блоках управления, поддельных шлюзах и поддельных драйверах, но ещё не на настоящем автомобиле.\n\n| Интерфейс | Автомобиль | Результат |\n|---|---|---|\n| OBDLink с чипом STN2232 | нет, тест адаптера без автомобиля | чип, прошивка и команды распознаны |\n| все остальные адаптеры и интерфейсы | | ещё не проверены на настоящем автомобиле |\n\nПопробовали Caruspex на своём автомобиле? Пожалуйста, отправьте [отчёт о проверке]({form}): каждый отчёт попадает в этот список, по марке и интерфейсу."
+ },
+ "uk": {
+  "before": "## Завантажити",
+  "docs": "**Документація:** [встановлення, перші кроки, кожен адаптер та інтерфейс, приватність, часті запитання]({docs}), усіма 18 мовами.",
+  "tested": "## Перевірено з\n\nЩо насправді вже випробувано з Caruspex, чесно перелічено. Усе інше зроблено за стандартами й перевірено на імітованих блоках керування, підроблених шлюзах і підроблених драйверах, але ще не на справжньому автомобілі.\n\n| Інтерфейс | Автомобіль | Результат |\n|---|---|---|\n| OBDLink з чипом STN2232 | немає, тест адаптера без автомобіля | чип, прошивку й команди розпізнано |\n| усі інші адаптери та інтерфейси | | ще не перевірено на справжньому автомобілі |\n\nСпробували Caruspex на своєму автомобілі? Надішліть, будь ласка, [звіт про перевірку]({form}): кожен звіт потрапляє до цього списку, за маркою та інтерфейсом."
+ },
+ "tr": {
+  "before": "## İndirme",
+  "docs": "**Belgeler:** [kurulum, ilk adımlar, her adaptör ve arayüz, gizlilik, sık sorulan sorular]({docs}), 18 dilin hepsinde.",
+  "tested": "## Test edildiği donanım\n\nCaruspex ile şimdiye kadar gerçekten denenenler, dürüstçe listelendi. Geri kalan her şey standartlara göre yapıldı ve taklit kontrol üniteleri, sahte ağ geçitleri ve sahte sürücülerle test edildi, ama henüz gerçek bir araçta denenmedi.\n\n| Arayüz | Araç | Sonuç |\n|---|---|---|\n| STN2232 çipli OBDLink | yok, araçsız adaptör testi | çip, yazılım ve komutlar tanındı |\n| diğer tüm adaptörler ve arayüzler | | henüz gerçek bir araçta test edilmedi |\n\nCaruspex'i kendi aracınızda denediniz mi? Lütfen bir [test raporu]({form}) gönderin: her rapor marka ve arayüze göre bu listeye girer."
+ },
+ "ar": {
+  "before": "## التنزيل",
+  "docs": "**التوثيق:** [التثبيت، الخطوات الأولى، كل محوّل وكل واجهة، الخصوصية، الأسئلة الشائعة]({docs})، بجميع اللغات الـ18.",
+  "tested": "## جُرِّب مع\n\nما جُرِّب فعلًا مع Caruspex حتى الآن، مذكور بصدق. كل ما عدا ذلك مبني وفق المعايير ومختبر على وحدات تحكم محاكاة وبوابات وهمية وبرامج تشغيل وهمية، لكن ليس بعد على سيارة حقيقية.\n\n| الواجهة | السيارة | النتيجة |\n|---|---|---|\n| OBDLink بشريحة STN2232 | لا توجد، اختبار المحوّل بلا سيارة | تم التعرف على الشريحة والبرنامج الثابت والأوامر |\n| كل المحوّلات والواجهات الأخرى | | لم تُختبر بعد على سيارة حقيقية |\n\nهل جرّبت Caruspex على سيارتك؟ أرسل من فضلك [تقرير اختبار]({form}): كل تقرير يدخل هذه القائمة حسب العلامة والواجهة."
+ },
+ "zh": {
+  "before": "## 下载",
+  "docs": "**文档：** [安装、入门、每种适配器和接口、隐私、常见问题]({docs})，提供全部 18 种语言。",
+  "tested": "## 实测情况\n\n如实列出到目前为止真正用 Caruspex 试过的东西。其余一切都按标准编写，并用模拟控制单元、假网关和假驱动测试过，但还没有在真车上测试。\n\n| 接口 | 车辆 | 结果 |\n|---|---|---|\n| 带 STN2232 芯片的 OBDLink | 无，未接车的适配器测试 | 芯片、固件和命令识别正确 |\n| 其他所有适配器和接口 | | 尚未在真车上测试 |\n\n在自己的车上试过 Caruspex？请发送一份[测试报告]({form})：每份报告都会按品牌和接口加入这个列表。"
+ },
+ "ja": {
+  "before": "## ダウンロード",
+  "docs": "**ドキュメント：** [インストール、はじめに、各アダプターとインターフェース、プライバシー、よくある質問]({docs})、18 言語すべてで。",
+  "tested": "## 動作確認済み\n\nこれまでに Caruspex で実際に試したものを、正直に挙げます。それ以外はすべて規格に沿って作られ、模擬コントロールユニット、偽のゲートウェイ、偽のドライバーでテストされていますが、まだ実車では試していません。\n\n| インターフェース | 車両 | 結果 |\n|---|---|---|\n| STN2232 チップ搭載の OBDLink | なし、車なしでのアダプターのテスト | チップ、ファームウェア、コマンドを正しく認識 |\n| その他すべてのアダプターとインターフェース | | まだ実車では未テスト |\n\nご自分の車で Caruspex を試しましたか？ぜひ[テストレポート]({form})を送ってください。どのレポートもメーカーとインターフェースごとにこの一覧に載ります。"
+ },
+ "ko": {
+  "before": "## 다운로드",
+  "docs": "**문서:** [설치, 첫걸음, 모든 어댑터와 인터페이스, 개인정보, 자주 묻는 질문]({docs}), 18개 언어 모두로.",
+  "tested": "## 실제 시험 결과\n\n지금까지 Caruspex로 실제로 시험해 본 것을 솔직하게 적었습니다. 나머지는 모두 규격에 따라 만들어졌고 모의 제어 장치, 가짜 게이트웨이, 가짜 드라이버로 시험했지만 아직 실제 차에서는 시험하지 않았습니다.\n\n| 인터페이스 | 차량 | 결과 |\n|---|---|---|\n| STN2232 칩이 든 OBDLink | 없음, 차 없이 한 어댑터 시험 | 칩, 펌웨어, 명령을 제대로 인식 |\n| 그 밖의 모든 어댑터와 인터페이스 | | 아직 실제 차에서 시험하지 않음 |\n\n내 차에서 Caruspex를 써 보셨나요? [시험 보고서]({form})를 보내 주세요. 모든 보고서는 브랜드와 인터페이스별로 이 목록에 들어갑니다."
+ },
+ "hi": {
+  "before": "## डाउनलोड",
+  "docs": "**दस्तावेज़:** [इंस्टॉल, पहले कदम, हर एडैप्टर और इंटरफ़ेस, निजता, अक्सर पूछे जाने वाले सवाल]({docs}), सभी 18 भाषाओं में।",
+  "tested": "## किसके साथ परखा गया\n\nअब तक Caruspex के साथ असल में क्या आज़माया गया है, ईमानदारी से लिखा है। बाकी सब कुछ मानकों के हिसाब से बना है और नकली कंट्रोल यूनिट, नकली गेटवे और नकली ड्राइवर पर परखा गया है, पर अभी असली कार पर नहीं।\n\n| इंटरफ़ेस | कार | नतीजा |\n|---|---|---|\n| STN2232 चिप वाला OBDLink | कोई नहीं, बिना कार के एडैप्टर टेस्ट | चिप, फ़र्मवेयर और कमांड पहचाने गए |\n| बाकी सभी एडैप्टर और इंटरफ़ेस | | अभी असली कार पर नहीं परखे गए |\n\nक्या आपने अपनी कार पर Caruspex आज़माया? कृपया एक [टेस्ट रिपोर्ट]({form}) भेजें: हर रिपोर्ट ब्रांड और इंटरफ़ेस के हिसाब से इस सूची में जुड़ती है।"
+ },
+ "id": {
+  "before": "## Unduh",
+  "docs": "**Dokumentasi:** [pemasangan, langkah pertama, setiap adaptor dan antarmuka, privasi, pertanyaan umum]({docs}), dalam ke-18 bahasa.",
+  "tested": "## Sudah dicoba dengan\n\nApa yang sungguh sudah dicoba dengan Caruspex sejauh ini, dicatat dengan jujur. Selebihnya dibuat menurut standar dan diuji dengan unit kontrol tiruan, gateway palsu, dan driver palsu, tetapi belum di mobil sungguhan.\n\n| Antarmuka | Mobil | Hasil |\n|---|---|---|\n| OBDLink dengan chip STN2232 | tidak ada, tes adaptor tanpa mobil | chip, firmware, dan perintah dikenali |\n| semua adaptor dan antarmuka lain | | belum diuji di mobil sungguhan |\n\nSudah mencoba Caruspex di mobil Anda? Kirimkan [laporan uji]({form}): setiap laporan masuk ke daftar ini, per merek dan antarmuka."
+ }
+}
