@@ -505,3 +505,57 @@ fn no_em_dashes_in_health_check_texts() {
     }
     assert!(!r.summary.de.contains(em_dash));
 }
+
+// Engine targets from the engine codes of the catalog: the warm idle speed
+// standing still, and a later "very hot" for a map-controlled thermostat.
+#[test]
+fn engine_targets_judge_idle_and_coolant() {
+    use caruspex_analysis::health_check::EngineLimits;
+    let limits = |coolant_hot: f64| EngineLimits {
+        codes: "N52B30".to_string(),
+        idle_min: 600.0,
+        idle_max: 950.0,
+        coolant_hot,
+    };
+    let standing = |rpm: f64, coolant: f64| {
+        let mut input = HealthInput::default();
+        for t in times(0.0, 30.0, 1.0) {
+            input.add_value(0x05, coolant, t);
+            input.add_value(0x0C, rpm, t);
+            input.add_value(0x0D, 0.0, t);
+        }
+        input
+    };
+    // Without engine targets the idle is not judged.
+    assert!(
+        run_health_check(&standing(1300.0, 90.0))
+            .find("idle_speed")
+            .is_none()
+    );
+    let mut high = standing(1300.0, 90.0);
+    high.engine = Some(limits(108.0));
+    let report = run_health_check(&high);
+    let f = report.find("idle_speed").unwrap();
+    assert_eq!(f.level, Level::Info);
+    assert!(f.explanation.en.contains("1300") && f.explanation.en.contains("N52B30"));
+    let mut low = standing(450.0, 90.0);
+    low.engine = Some(limits(108.0));
+    assert_eq!(
+        run_health_check(&low).find("idle_speed").unwrap().level,
+        Level::Warning
+    );
+    let mut fine = standing(750.0, 90.0);
+    fine.engine = Some(limits(108.0));
+    assert!(run_health_check(&fine).find("idle_speed").is_none());
+    // Cold engine: no judgement.
+    let mut cold = standing(1300.0, 40.0);
+    cold.engine = Some(limits(108.0));
+    assert!(run_health_check(&cold).find("idle_speed").is_none());
+
+    // 110 °C is very hot in general, normal with a map-controlled thermostat.
+    let general = standing(750.0, 110.0);
+    assert!(run_health_check(&general).find("overheating").is_some());
+    let mut map = standing(750.0, 110.0);
+    map.engine = Some(limits(113.0));
+    assert!(run_health_check(&map).find("overheating").is_none());
+}

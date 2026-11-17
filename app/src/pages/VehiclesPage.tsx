@@ -440,6 +440,19 @@ export default function VehiclesPage() {
             <p className="vehicles-diagnosis">{detail.diagnosis.diagnosisText}</p>
             <p className="subtle vehicles-line">{tr("Stecker: %1", detail.diagnosis.connectorName)}</p>
             <p className="subtle vehicles-line">{tr("Wo er sitzt: %1", detail.diagnosis.locationText)}</p>
+            {detail.diagnosis.engineCodes ? (
+              <p className="subtle vehicles-line selectable" title={detail.diagnosis.engineCodes.source}>
+                {detail.diagnosis.engineCodes.petrol.length > 0
+                  ? tr("Motorcodes Benzin: %1", detail.diagnosis.engineCodes.petrol.join(" "))
+                  : null}
+                {detail.diagnosis.engineCodes.petrol.length > 0 && detail.diagnosis.engineCodes.diesel.length > 0 ? <br /> : null}
+                {detail.diagnosis.engineCodes.diesel.length > 0
+                  ? tr("Motorcodes Diesel: %1", detail.diagnosis.engineCodes.diesel.join(" "))
+                  : null}
+                <br />
+                <span className="hint">{tr("Quelle: Wikipedia (CC BY-SA 4.0)")}</span>
+              </p>
+            ) : null}
             {detail.generation.note ? <p className="hint vehicles-line">{detail.generation.note}</p> : null}
             <div>
               <Button

@@ -239,6 +239,7 @@ function rawReply(command: string): string {
 export const sessionHandlers: PartialHandlers = {
   list_serial_ports: () => [],
   list_j2534_devices: () => [],
+  list_can_vendor_channels: () => [],
   open_demo: () => {
     void connectDemo();
   },
@@ -292,6 +293,37 @@ export const sessionHandlers: PartialHandlers = {
     const path = link.recording;
     link.recording = "";
     emit("recording_state", { active: false, path, exchanges: link.exchanges, error: "" });
+  },
+  // The demo answer of "Mitschnitt teilen": what the backend makes of a
+  // short demo session.
+  share_recording: () => {
+    const lines = [
+      '{"format":"caruspex-recording","version":1,"created":"2026-11-17","adapter":"ELM327 v1.5"}',
+      '{"t":0.512,"dir":"tx","data":"0902\\r"}',
+      '{"t":0.538,"dir":"rx","data":"014\\r0:490201575657\\r1:5A5A5A314B5A36\\r2:57303030303030\\r\\r>"}',
+      '{"t":0.610,"dir":"tx","data":"03\\r"}',
+      '{"t":0.655,"dir":"rx","data":"43020171030000\\r\\r>"}',
+    ];
+    return {
+      file: `${lines.join("\n")}\n`,
+      preview: {
+        durationSeconds: 0.7,
+        exchanges: 2,
+        adapter: "ELM327 v1.5",
+        protocol: PROTOCOL_TEXT,
+        created: "2026-11-17",
+        vins: ["WVWZZZ1KZ6W000000"],
+        vinPlaces: 1,
+        hiddenDigits: 6,
+        transportRemoved: true,
+        requests: [
+          { kind: L("Fahrzeugdaten (VIN, Software) (09)", "Vehicle data (VIN, software) (09)"), count: 1 },
+          { kind: L("Fehlerspeicher (OBD) (03)", "Fault memory (OBD) (03)"), count: 1 },
+        ],
+        sample: lines,
+        bytes: lines.join("\n").length + 1,
+      },
+    };
   },
   read_faults: () => {
     if (link.connected) refreshStatusAndFaults();

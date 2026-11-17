@@ -10,6 +10,7 @@ pub mod json_writer;
 pub mod obdb;
 pub mod pid_packs;
 pub mod recording;
+pub mod share;
 
 pub use custom_pids::{
     CustomPid, CustomPidReader, CustomReading, PACK_KEY_BASE, TorqueEquation, USER_KEY_BASE,
@@ -21,12 +22,13 @@ pub use obdb::{
     obdb_packs_for, obdb_pid, obdb_search, obdb_stats,
 };
 pub use pid_packs::{
-    NamedValue, built_in_packs, odometer_values, pack_category, pack_names, pack_pids, pack_title,
-    pack_values_en, packs_for_model,
+    NamedValue, built_in_packs, listen_pack_cars, listen_packs_for, odometer_values, pack_category,
+    pack_listens, pack_names, pack_pids, pack_title, pack_values_en, packs_for_model,
 };
 pub use recording::{
     RECORDING_FORMAT, RECORDING_VERSION, RecordedDirection, RecordedEvent, Recording,
     RecordingHandle, RecordingInfo, RecordingMeta, RecordingTransport, ReplayPacing,
     ReplayTransport, active_recording, describe_recording, load_recording, normalize_command,
-    parse_recording, recording_summary, start_recording, stop_recording,
+    parse_recording, recording_summary, start_recording, stop_recording, write_recording,
 };
+pub use share::{SharePreview, SharedRecording, VIN_HIDDEN, find_vins, share_recording};

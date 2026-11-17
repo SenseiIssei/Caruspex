@@ -6,7 +6,8 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-serde_json.workspace = true
+miniz_oxide.workspace = true
 
 [build-dependencies]
+miniz_oxide.workspace = true
 serde_json.workspace = true

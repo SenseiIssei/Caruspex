@@ -1,7 +1,10 @@
 //! A J2534-1 (04.04) driver DLL for the tests: no hardware.
 //!
 //! On CAN (protocol 5, channel 2) an engine unit answers 0100 and the VIN
-//! (multi frame, after flow control). On the K-line (protocols 3 and 4,
+//! (multi frame, after flow control). On CAN FD (protocol 0x8011, FD_CAN of
+//! J2534-2) it sends the VIN as one FD single frame with the escape length
+//! and the part number (22 F187, 70 bytes) as an FD first frame of 64 bytes
+//! and one consecutive frame. On the K-line (protocols 3 and 4,
 //! channel 4) a KWP2000 engine unit at address 0x01 wakes up through the
 //! FIVE_BAUD_INIT and FAST_INIT ioctls and answers whole messages with
 //! their checksum, as a device connected with ISO9141_NO_CHECKSUM hands
@@ -60,6 +63,8 @@ struct State {
     held: Vec<Vec<u8>>,
     opened: bool,
     connected: bool,
+    /// Connected with FD_CAN.
+    fd: bool,
     filtered: bool,
     // K-line
     k_protocol: u32,
@@ -77,6 +82,7 @@ static STATE: Mutex<State> = Mutex::new(State {
     held: Vec::new(),
     opened: false,
     connected: false,
+    fd: false,
     filtered: false,
     k_protocol: 0,
     k_filtered: false,
@@ -106,10 +112,22 @@ fn message(protocol_id: u32, rx_status: u32, bytes: &[u8]) -> PassThruMsg {
 }
 
 fn push(state: &mut State, id: u32, mut data: Vec<u8>) {
-    data.resize(8, 0xAA);
+    // Classic frames have 8 bytes, FD frames one of the FD lengths.
+    let length = match data.len() {
+        0..=8 => 8,
+        9..=12 => 12,
+        13..=16 => 16,
+        17..=20 => 20,
+        21..=24 => 24,
+        25..=32 => 32,
+        33..=48 => 48,
+        _ => 64,
+    };
+    data.resize(length, 0xAA);
     let mut bytes = id.to_be_bytes().to_vec();
     bytes.extend_from_slice(&data);
-    state.inbox.push_back(message(5, 0, &bytes));
+    let protocol = if state.fd { 0x8011 } else { 5 };
+    state.inbox.push_back(message(protocol, 0, &bytes));
 }
 
 fn handle(state: &mut State, m: &PassThruMsg) {
@@ -130,6 +148,25 @@ fn handle(state: &mut State, m: &PassThruMsg) {
     }
     if d[0] == 2 && d[1] == 0x01 && d[2] == 0x00 {
         push(state, 0x7E8, vec![0x06, 0x41, 0x00, 0xBE, 0x3F, 0xA8, 0x13]);
+    }
+    if state.fd && d[0] == 2 && d[1] == 0x09 && d[2] == 0x02 {
+        // One FD single frame: length 0 in the PCI byte, 20 in the next.
+        let mut sf = vec![0x00, 0x14, 0x49, 0x02, 0x01];
+        sf.extend_from_slice(b"WAUZZZ8V5LA012345");
+        push(state, 0x7E8, sf);
+        return;
+    }
+    if state.fd && d[0] == 3 && d[1] == 0x22 && d[2] == 0xF1 && d[3] == 0x87 {
+        // 62 F1 87 and 67 characters: a first frame of 64 bytes, then 8 more.
+        let mut payload = vec![0x62, 0xF1, 0x87];
+        payload.extend((0..67u8).map(|i| b'A' + i % 26));
+        let mut ff = vec![0x10, payload.len() as u8];
+        ff.extend_from_slice(&payload[..62]);
+        push(state, 0x7E8, ff);
+        let mut cf = vec![0x21];
+        cf.extend_from_slice(&payload[62..]);
+        state.held = vec![cf];
+        return;
     }
     if d[0] == 2 && d[1] == 0x09 && d[2] == 0x02 {
         // 49 02 01 + "WAUZZZ8V5LA012345": 20 bytes.
@@ -256,10 +293,11 @@ pub unsafe extern "system" fn PassThruConnect(
         unsafe { *channel = KLINE_CHANNEL };
         return 0;
     }
-    if protocol != 5 || baud != 500000 {
+    if (protocol != 5 && protocol != 0x8011) || baud != 500000 {
         return 0x07; // ERR_INVALID_PROTOCOL_ID / baud
     }
     s.connected = true;
+    s.fd = protocol == 0x8011;
     unsafe { *channel = CAN_CHANNEL };
     0
 }

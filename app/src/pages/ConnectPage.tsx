@@ -4,7 +4,7 @@
 // Worker signals MainWindow connected to it, and writes the log lines
 // MainWindow wrote before each attempt.
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { call, type BleDeviceRow, type ConnectHelp, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
+import { call, type BleDeviceRow, type ConnectHelp, type ConnectRoute, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { TermStrip } from "../components/Term";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
@@ -12,12 +12,16 @@ import { t, translator } from "../i18n";
 import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { navigate } from "../shell/nav";
+import { garageStore, rememberedRoute } from "../state/garage";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
 
 const tr = translator("caruspex::ConnectPage");
+
+// CAN FD goes through SocketCAN and J2534 devices only.
+const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.startsWith("j2534:");
 // Texts that are new in the connection assistant.
 const tc = translator("caruspex::ConnectHelp");
 const MW = "caruspex::MainWindow";
@@ -195,6 +199,8 @@ export default function ConnectPage() {
   const [canDevices, setCanDevices] = useState<CanChoice[]>([]);
   const [canIndex, setCanIndex] = useState(0);
   const [canRate, setCanRate] = useState(500000);
+  // CAN FD, off by default; only SocketCAN and J2534 devices offer it.
+  const [canFd, setCanFd] = useState(false);
 
   // Vehicle
   const [vehicleText, setVehicleText] = useState("");
@@ -215,11 +221,13 @@ export default function ConnectPage() {
   const [error, setError] = useState<string | null>(null);
   // The checklist of the connection assistant for the last failed attempt.
   const [help, setHelp] = useState<ConnectHelp | null>(null);
+  // Motorcycles: cable, kill switch and Euro 5, from the core.
+  const [motoSteps, setMotoSteps] = useState<string[]>([]);
 
   // The latest values for the handlers that run outside a render (app events
   // that connect right after changing the mode or the port).
-  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, generation, connected, connecting });
-  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, generation, connected, connecting };
+  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting });
+  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting };
   const searchSeq = useRef(0);
 
   // --- Lists -----------------------------------------------------------------------------
@@ -240,8 +248,9 @@ export default function ConnectPage() {
   // Lists the CAN interfaces of this computer again: J2534, SocketCAN, then
   // every serial port as a possible SLCAN stick.
   const refreshCanDevices = useCallback(async () => {
-    const [j2534, socketCan, serial] = await Promise.all([
+    const [j2534, vendors, socketCan, serial] = await Promise.all([
       call("list_j2534_devices").catch(() => []),
+      call("list_can_vendor_channels").catch(() => []),
       call("list_socketcan_interfaces").catch(() => [] as string[]),
       call("list_serial_ports").catch(() => [] as SerialPortInfo[]),
     ]);
@@ -249,8 +258,10 @@ export default function ConnectPage() {
     for (const d of j2534 ?? []) {
       let label = `J2534 · ${d.name}`;
       if (!d.usable) label += ` · ${tr("nur 32-Bit-Treiber")}`;
+      else if (d.bridged) label += ` · ${tr("32-Bit-Treiber über Hilfsprogramm")}`;
       items.push({ label, spec: d.usable ? `j2534:${d.library}` : "" });
     }
+    for (const v of vendors ?? []) items.push({ label: v.label, spec: v.spec });
     for (const name of socketCan ?? []) items.push({ label: `SocketCAN · ${name}`, spec: `socketcan:${name}` });
     for (const p of serial ?? []) items.push({ label: `SLCAN · ${p.device}`, spec: `slcan:${p.device}` });
     const { canDevices: before, canIndex: index } = latest.current;
@@ -294,6 +305,7 @@ export default function ConnectPage() {
         ),
       );
       setSocketHint(defaultSocketHint());
+      setMotoSteps([]);
       return;
     }
     let cancelled = false;
@@ -302,6 +314,7 @@ export default function ConnectPage() {
         if (cancelled || !info) return;
         setProfileNote(info.diagnosisText);
         setSocketHint(tr("Bei diesem Auto: %1", info.locationText));
+        setMotoSteps(info.connectSteps ?? []);
       })
       .catch(() => undefined);
     return () => {
@@ -387,13 +400,20 @@ export default function ConnectPage() {
     setError(null);
     const order = protocolOrder(s.generation);
     const values = settingsStore.get().values;
+    // The way that worked last time, when it fits what is chosen now: the
+    // backend tries it first and searches as usual only if it fails.
+    const remembered = (kind: string, fits: (r: ConnectRoute) => boolean): ConnectRoute | undefined => {
+      const route = rememberedRoute(garageStore.get().cars, kind);
+      return route && fits(route) ? route : undefined;
+    };
     switch (override?.mode ?? s.mode) {
       case "cable": {
         const device = override?.port ?? s.port;
         markConnecting(device ? t(MW, "Verbinde über %1 ...", device) : t(MW, "Suche den Adapter an allen Anschlüssen ..."));
         // Remember the port so auto-connect knows where to go next time.
         if (device && values.lastPort !== device) void applySettings({ ...values, lastPort: device });
-        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order });
+        const route = remembered("serial", (r) => !device || r.device === device);
+        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order, remembered: route });
         break;
       }
       case "wifi": {
@@ -404,7 +424,8 @@ export default function ConnectPage() {
         const parsed = colon < 0 ? 35000 : Number.parseInt(text.slice(colon + 1), 10);
         const portNumber = Number.isFinite(parsed) ? parsed : 0;
         markConnecting(t(MW, "Verbinde mit %1:%2 ...", host, portNumber));
-        void call("open_tcp", { host, port: portNumber, protocolOrder: order });
+        const route = remembered("tcp", (r) => r.device === `${host}:${portNumber}`);
+        void call("open_tcp", { host, port: portNumber, protocolOrder: order, remembered: route });
         break;
       }
       case "demo":
@@ -417,15 +438,19 @@ export default function ConnectPage() {
           showError(tr("Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?"));
           return;
         }
-        const spec = `${device}@${s.canRate}`;
+        // "+fd" right before the bit rate switches CAN FD on.
+        const fd = s.canFd && canFdPossible(device) ? "+fd" : "";
+        const spec = `${device}${fd}@${s.canRate}`;
         markConnecting(t(MW, "Verbinde über das CAN-Interface %1 ...", spec));
-        void call("open_can", { spec, protocolOrder: order });
+        const route = remembered("can", (r) => r.device.split("@")[0] === device);
+        void call("open_can", { spec, protocolOrder: order, remembered: route });
         break;
       }
       case "enet": {
         const host = s.enetHost.trim();
         markConnecting(host ? t(MW, "Verbinde über ENET mit %1 ...", host) : t(MW, "Suche den BMW über ENET ..."));
-        void call("open_enet", { host, protocolOrder: order });
+        const route = remembered("enet", (r) => !host || r.device === host);
+        void call("open_enet", { host, protocolOrder: order, remembered: route });
         break;
       }
       case "ble": {
@@ -433,7 +458,8 @@ export default function ConnectPage() {
         markConnecting(
           item.id ? t(MW, "Verbinde über Bluetooth mit %1 ...", item.name || item.id) : t(MW, "Suche einen Bluetooth-Adapter ..."),
         );
-        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order });
+        const route = remembered("ble", (r) => !item.id || r.device === item.id);
+        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order, remembered: route });
         break;
       }
       case "replay": {
@@ -609,6 +635,7 @@ export default function ConnectPage() {
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
   const canOptions = canDevices.map((d, i) => ({ value: i, label: d.label }));
+  const fdPossible = canFdPossible(canDevices[canIndex]?.spec ?? "");
   const rateOptions = CAN_RATES.map((r) => ({ value: r, label: `${r / 1000} kbit/s` }));
   const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
@@ -633,6 +660,16 @@ export default function ConnectPage() {
       <div className="connect-columns">
         <Card className="connect-steps" title={tr("So geht's")}>
           <Step n={1} icon="map-pin" title={tr("Buchse finden")} text={socketHint} />
+          {motoSteps.length > 0 ? (
+            <div className="connect-moto">
+              <div className="connect-step-head">{tr("Beim Motorrad")}</div>
+              <ul className="subtle">
+                {motoSteps.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <Step
             n={2}
             icon="cable"
@@ -781,12 +818,15 @@ export default function ConnectPage() {
                   <Select className="connect-rate" value={canRate} options={rateOptions} onChange={setCanRate} />
                   <RefreshButton title={tr("Anschlüsse neu suchen")} onClick={() => void refreshCanDevices()} />
                 </div>
+                <Check checked={canFd && fdPossible} disabled={!fdPossible} onChange={setCanFd}>
+                  {tr("CAN FD (neueste Autos; nur SocketCAN und J2534-Geräte, die es können)")}
+                </Check>
                 <div className="hint">
                   {tr(
                     "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, " +
-                      "Mongoose, VCX Nano, Scanmatik und viele mehr, mit dem 64-Bit-Treiber des " +
-                      "Herstellers), SLCAN-Sticks (CANable, USBtin, CANUSB) und unter Linux SocketCAN. " +
-                      "Autos mit OBD über CAN fahren mit 500 kbit/s.",
+                      "Mongoose, VCX Nano, Scanmatik und viele mehr, auch mit alten 32-Bit-Treibern), " +
+                      "PEAK PCAN und Kvaser mit dem Treiber des Herstellers, SLCAN-Sticks (CANable, " +
+                      "USBtin, CANUSB) und unter Linux SocketCAN. Autos mit OBD über CAN fahren mit 500 kbit/s.",
                   )}
                 </div>
               </>

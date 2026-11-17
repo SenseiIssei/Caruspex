@@ -127,6 +127,10 @@ pub struct GarageCar {
     pub xray_model: String,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub xray_model_turned: bool,
+    /// The last way the connection to this car worked (adapter, port, baud,
+    /// protocol, bit rate); the next connect tries it first.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub connection: Option<crate::rows::ConnectRoute>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -278,6 +282,32 @@ mod tests {
         let text = serialise(&with_model);
         assert!(text.contains("\"xrayModel\": \"C:/models/golf.glb\""));
         assert_eq!(parse(&text), with_model);
+        // So is the way the connection went.
+        assert!(!text.contains("connection"));
+        with_model[0].connection = Some(crate::rows::ConnectRoute {
+            kind: "serial".into(),
+            device: "COM7".into(),
+            baud: 38400,
+            protocol: "6".into(),
+            adapter: "ELM327 v1.5".into(),
+            when: "2026-11-17T08:00:00".into(),
+            ..Default::default()
+        });
+        let text = serialise(&with_model);
+        assert!(text.contains("\"device\": \"COM7\""));
+        assert!(!text.contains("kinds"), "{text}");
+        assert_eq!(parse(&text), with_model);
+    }
+
+    #[test]
+    fn the_remembered_protocol_goes_first() {
+        use crate::rows::prefer_protocol;
+        assert_eq!(prefer_protocol("54312678", "6"), "65431278");
+        assert_eq!(prefer_protocol("67", "7"), "76");
+        // Not in the order, empty or not one protocol: unchanged.
+        assert_eq!(prefer_protocol("67", "3"), "67");
+        assert_eq!(prefer_protocol("67", ""), "67");
+        assert_eq!(prefer_protocol("67", "67"), "67");
     }
 
     #[test]

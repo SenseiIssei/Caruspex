@@ -372,6 +372,25 @@ export interface GarageCar {
   // whether it had to be turned around; absent without one.
   xrayModel?: string;
   xrayModelTurned?: boolean;
+  // The last way the connection to this car worked; the next connect
+  // tries it first.
+  connection?: ConnectRoute;
+}
+
+// How a connection went (rows.rs ConnectRoute). kind: "serial", "tcp",
+// "ble", "can", "enet"; "demo", "replay" and "transport" are only reported.
+// device: port, "host:port", Bluetooth id, CAN spec with "@bitrate" or ENET
+// host. protocol: the protocol number the adapter answered on ("6").
+export interface ConnectRoute {
+  kind: string;
+  device: string;
+  baud?: number;
+  protocol?: string;
+  name?: string;
+  kinds?: number;
+  // Only in the garage: the adapter and when it last worked.
+  adapter?: string;
+  when?: string;
 }
 
 // --- Report.h -------------------------------------------------------------------
@@ -506,6 +525,9 @@ export interface PidPackInfo {
   // True for a pack imported from OBDb (obdb_packs); its value names are
   // OBDb's own and stay English.
   obdb?: boolean;
+  // True for a pack of opendbc that only listens to broadcast values; the
+  // description then says that the bus may sit behind the gateway.
+  listen?: boolean;
 }
 
 // --- core/analysis (the measure pages) -------------------------------------------
@@ -649,6 +671,7 @@ export enum BodyType {
   Mpv,
   Microcar,
   Roadster,
+  Motorcycle,
 }
 
 export interface VehicleGenerationInfo {
@@ -757,8 +780,21 @@ export interface VehicleDiagnosisInfo {
   // SocketLocation for the sketch: 0 unknown, 1 under the dash on the
   // driver side, 2 under the steering column, 3 footwell cover, 4 fuse box,
   // 5 centre console, 6 behind the ashtray, 7 passenger side, 8 engine bay,
-  // 9 rear console.
+  // 9 rear console, 10 under the seat (motorcycles).
   location: number;
+  // SocketSpot of data/obd_sockets.csv, finer than location: 0 not known,
+  // 1 left of the steering column, 2 right of it, 3 above the pedals, 4 below
+  // the column, 5 footwell side panel, 6 behind the fuse box lid, 7 console
+  // in front of the gear lever, 8 side of the console, 9 passenger side,
+  // 10 rear console, 11 engine bay, 12 under the seat.
+  spot: number;
+  // A flap or cover hides the socket.
+  spotCover: boolean;
+  motorcycle: boolean;
+  // Motorcycles: the steps of the connect help (cable, kill switch, Euro 5).
+  connectSteps: string[];
+  // Engine codes from Wikipedia (data/engines), null without them.
+  engineCodes: { petrol: string[]; diesel: string[]; source: string } | null;
   diagnosisText: string;
   kklPossible: boolean;
   protocolOrder: string;
@@ -837,8 +873,17 @@ export interface J2534DeviceRow {
   name: string;
   vendor: string;
   library: string;
-  // False when only a 32 bit driver is installed.
+  // False when only a 32 bit driver is installed and the helper program for
+  // it is missing.
   usable: boolean;
+  // A 32 bit driver, loaded by the helper program caruspex-j2534-bridge.
+  bridged: boolean;
+}
+
+// A channel of a maker's CAN library: "PCAN · USB1" with spec "pcan:USB1".
+export interface VendorCanRow {
+  label: string;
+  spec: string;
 }
 
 // --- App ---------------------------------------------------------------------
@@ -941,4 +986,39 @@ export interface ConnectHelp {
   // What the attempt found out, one line each.
   found: string[];
   items: ConnectCheck[];
+}
+
+// --- Mitschnitt teilen (caruspex_record::share) ----------------------------------
+
+export interface SharePreview {
+  durationSeconds: number;
+  exchanges: number;
+  adapter: string;
+  protocol: string;
+  // Only the date, the time of day is removed.
+  created: string;
+  // Every VIN found, as it now reads, the last hiddenDigits characters 0.
+  vins: string[];
+  vinPlaces: number;
+  hiddenDigits: number;
+  // The port, Bluetooth or network name was removed.
+  transportRemoved: boolean;
+  // Requests by kind, in the active language, most first.
+  requests: { kind: string; count: number }[];
+  // The first lines of the file to share.
+  sample: string[];
+  bytes: number;
+}
+
+export interface SharedRecording {
+  // The file to share, in the recording format.
+  file: string;
+  preview: SharePreview;
+}
+
+// A crash report on this computer (crash.rs): version, system, place and
+// call chain, without vehicle data. Never sent by itself.
+export interface CrashReport {
+  path: string;
+  text: string;
 }

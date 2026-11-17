@@ -101,11 +101,108 @@ const SPOTS: Record<number, [number, number]> = {
   9: [160, 236],
 };
 
-// The car seen from above with the socket marked. 0 (unknown) marks the
-// usual spots: under the dashboard on the driver side first.
-export function SocketSketch({ location, label }: { location: number; label: string }) {
+// Exact spots in the plan view, index = SocketSpot (data/obd_sockets.csv).
+const EXACT: Record<number, [number, number]> = {
+  1: [88, 126],
+  2: [136, 126],
+  3: [104, 136],
+  4: [112, 142],
+  5: [46, 140],
+  6: [42, 112],
+  7: [160, 132],
+  8: [146, 152],
+  9: [228, 128],
+  10: [160, 236],
+  11: [160, 40],
+};
+
+// The same spots in the close-up of the driver's side (viewBox 240 x 150),
+// only those under the dashboard and at the console.
+const CLOSE: Record<number, [number, number]> = {
+  1: [78, 86],
+  2: [150, 86],
+  3: [112, 100],
+  4: [114, 78],
+  5: [18, 112],
+  6: [26, 64],
+  7: [200, 100],
+  8: [180, 126],
+};
+
+function Marks({ marks }: { marks: [number, number][] }) {
+  return (
+    <>
+      {marks.map(([x, y], i) => (
+        <g key={i} className={i === 0 ? "setup-spot main" : "setup-spot"}>
+          <circle cx={x} cy={y} r={16} fill="var(--accent)" opacity={0.18} className="setup-spot-pulse" />
+          <circle cx={x} cy={y} r={7} fill="var(--accent)" stroke="var(--surface)" strokeWidth={2} />
+        </g>
+      ))}
+    </>
+  );
+}
+
+// The driver's side seen from the seat: lower edge of the dashboard, the
+// steering wheel and column, the pedals, the fuse box lid on the left and the
+// centre console on the right, with the exact spot. A dashed outline marks a
+// cover that comes off by hand.
+export function SocketCloseup({ spot, cover, label }: { spot: number; cover: boolean; label: string }) {
+  const at = CLOSE[spot];
+  if (!at) return null;
+  return (
+    <svg className="setup-sketch setup-closeup" viewBox="0 0 240 150" role="img" aria-label={label}>
+      {/* Dashboard with its lower edge, the side panel on the left */}
+      <path d="M4 8 H236 V50 Q120 66 4 50 Z" {...LINE} fill="var(--surface-high)" />
+      <path d="M4 50 V146" {...LINE} strokeOpacity={0.6} />
+      {/* Fuse box lid at the lower left of the dashboard */}
+      <rect x={12} y={50} width={30} height={26} rx={3} {...LINE} strokeOpacity={0.7} />
+      {/* Steering wheel and column */}
+      <circle cx={114} cy={36} r={30} {...LINE} />
+      <circle cx={114} cy={36} r={8} {...LINE} strokeWidth={1.6} />
+      <path d="M106 60 L104 74 H124 L122 60" {...LINE} fill="var(--surface)" />
+      {/* Pedals */}
+      <rect x={84} y={118} width={14} height={22} rx={3} {...LINE} />
+      <rect x={106} y={116} width={18} height={20} rx={3} {...LINE} />
+      <rect x={132} y={120} width={10} height={22} rx={3} {...LINE} />
+      {/* Centre console with gear lever */}
+      <path d="M170 56 H232 V146 H178 Z" {...LINE} fill="var(--surface-high)" />
+      <circle cx={204} cy={130} r={6} {...LINE} />
+      {cover ? (
+        <rect x={at[0] - 16} y={at[1] - 11} width={32} height={22} rx={4} fill="none" stroke="var(--accent)" strokeWidth={1.6} strokeDasharray="4 3" />
+      ) : null}
+      <Marks marks={[at]} />
+    </svg>
+  );
+}
+
+// A motorcycle from the side with the plug under the seat marked.
+export function MotoSketch({ label }: { label: string }) {
+  return (
+    <svg className="setup-sketch" viewBox="0 0 320 200" role="img" aria-label={label}>
+      <circle cx={70} cy={140} r={42} {...LINE} />
+      <circle cx={250} cy={140} r={42} {...LINE} />
+      <circle cx={70} cy={140} r={6} {...LINE} />
+      <circle cx={250} cy={140} r={6} {...LINE} />
+      {/* Fork, frame, swingarm */}
+      <path d="M250 140 L226 54 M218 46 H240" {...LINE} />
+      <path d="M70 140 L140 128 L196 74" {...LINE} />
+      {/* Tank and seat */}
+      <path d="M150 74 Q176 46 222 58 L210 86 H158 Z" {...LINE} fill="var(--surface-high)" />
+      <path d="M86 86 Q112 70 152 78 L156 90 H96 Z" {...LINE} fill="var(--surface-high)" />
+      {/* Engine */}
+      <rect x={140} y={96} width={56} height={42} rx={8} {...LINE} />
+      <Marks marks={[[124, 98]]} />
+    </svg>
+  );
+}
+
+// The car seen from above with the socket marked: the exact spot when
+// data/obd_sockets.csv knows it, else the coarse location; 0 (unknown) marks
+// the usual spots, under the dashboard on the driver side first.
+export function SocketSketch({ location, label, spot = 0 }: { location: number; label: string; spot?: number }) {
   const known = location in SPOTS;
-  const marks: [number, number][] = known ? [SPOTS[location]!] : [SPOTS[1]!, SPOTS[2]!, SPOTS[5]!];
+  const marks: [number, number][] =
+    spot in EXACT ? [EXACT[spot]!] : known ? [SPOTS[location]!] : [SPOTS[1]!, SPOTS[2]!, SPOTS[5]!];
   return (
     <svg className="setup-sketch" viewBox="0 0 320 280" role="img" aria-label={label}>
       {/* Body, bonnet line, windscreen */}
@@ -126,12 +223,7 @@ export function SocketSketch({ location, label }: { location: number; label: str
       <rect x={52} y={226} width={216} height={34} rx={14} {...LINE} />
       {/* Engine bay hint */}
       <path d="M120 30 H200 M130 44 H190" {...LINE} strokeOpacity={0.45} />
-      {marks.map(([x, y], i) => (
-        <g key={i} className={i === 0 ? "setup-spot main" : "setup-spot"}>
-          <circle cx={x} cy={y} r={16} fill="var(--accent)" opacity={0.18} className="setup-spot-pulse" />
-          <circle cx={x} cy={y} r={7} fill="var(--accent)" stroke="var(--surface)" strokeWidth={2} />
-        </g>
-      ))}
+      <Marks marks={marks} />
     </svg>
   );
 }

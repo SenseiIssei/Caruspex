@@ -3,7 +3,7 @@
 // stay mounted, the way the Qt stack kept its widgets, so every page keeps
 // listening to the backend while another one is on screen.
 import { useEffect, useRef, useState } from "react";
-import { call, type UpdateInfo } from "../api";
+import { call, on, type CrashReport, type UpdateInfo } from "../api";
 import { Toaster } from "../components/Toast";
 import { t, tn } from "../i18n";
 import { PageActiveContext } from "../lib/hooks";
@@ -19,6 +19,7 @@ import { PAGES, isPageId, type PageId } from "./pages";
 import { Sidebar } from "./Sidebar";
 import { TitleBar } from "./TitleBar";
 import { UpdateDialog } from "./UpdateDialog";
+import { CrashDialog } from "./CrashDialog";
 
 const MW = "caruspex::MainWindow";
 
@@ -46,6 +47,17 @@ export function App({ startPage }: { startPage: string | null }) {
   // The dialog, and whether it installs without asking (only the one
   // opened at start with "Updates automatisch installieren").
   const [updateDialog, setUpdateDialog] = useState<{ autoStart: boolean } | null>(null);
+  // A crash report to offer: from the last run, or live from the worker.
+  const [crash, setCrash] = useState<{ report: CrashReport; live: boolean } | null>(null);
+
+  useEffect(() => {
+    void call("crash_report_pending")
+      .then((report) => {
+        if (report) setCrash((current) => current ?? { report, live: false });
+      })
+      .catch(() => undefined);
+    return on("crash_report", (report) => setCrash({ report, live: true }));
+  }, []);
   const reportOpen = useStore(navStore, (s) => s.reportOpen);
 
   useEffect(() => onApp<PageId>("navigate", (page) => navigate(page)), []);
@@ -156,6 +168,7 @@ export function App({ startPage }: { startPage: string | null }) {
         <UpdateDialog update={update} autoStart={updateDialog.autoStart} onClose={() => setUpdateDialog(null)} />
       ) : null}
       {reportOpen ? <ReportPreview /> : null}
+      {crash ? <CrashDialog report={crash.report} live={crash.live} onClose={() => setCrash(null)} /> : null}
       <SetupAssistant />
     </div>
   );

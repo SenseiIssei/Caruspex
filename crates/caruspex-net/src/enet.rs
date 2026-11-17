@@ -31,7 +31,8 @@ use caruspex_i18n::l;
 use caruspex_link::Transport;
 use caruspex_link::timing::now_ms;
 
-use crate::text::{hex, is_hex, normalize, parse_hex};
+use crate::elm_front::{self, ElmBackend, ElmFront};
+use crate::text::is_hex;
 
 pub mod hsfz {
     //! HSFZ frames and the identification answer.
@@ -737,14 +738,8 @@ pub struct EnetElm {
     flavor: Flavor,
     /// DoIP: logical address per 7E8 + n.
     learned: Vec<u16>,
-    pending: Vec<u8>,
-    echo: bool,
-    linefeeds: bool,
-    spaces: bool,
-    headers: bool,
-    auto_format: bool,
-    header: u32,
-    receive_filter: Option<u32>,
+    /// Display settings, ATSH and ATCRA.
+    front: ElmFront,
     /// Unit whose long answer waits for flow control.
     raw_target: Option<u8>,
     /// Its consecutive frames.
@@ -758,62 +753,28 @@ impl EnetElm {
             name: name.into(),
             flavor,
             learned: Vec::new(),
-            pending: Vec::new(),
-            echo: true,
-            linefeeds: false,
-            spaces: true,
-            headers: false,
-            auto_format: true,
-            header: 0x7DF,
-            receive_filter: None,
+            front: ElmFront::new(),
             raw_target: None,
             raw_pending: Vec::new(),
         }
     }
 
     fn reset(&mut self) {
-        self.echo = true;
-        self.linefeeds = false;
-        self.spaces = true;
-        self.headers = false;
-        self.auto_format = true;
-        self.header = 0x7DF;
-        self.receive_filter = None;
+        self.front.reset();
         self.raw_target = None;
         self.raw_pending.clear();
     }
 
     fn hex(&self, bytes: &[u8]) -> String {
-        hex(bytes, self.spaces)
+        self.front.hex(bytes)
     }
 
     fn id_text(&self, id: u32) -> String {
-        format!("{:03X}{}", id & 0x7FF, if self.spaces { " " } else { "" })
-    }
-
-    fn handle(&mut self, command: &str) -> Vec<String> {
-        if command.is_empty() {
-            return Vec::new();
-        }
-        if let Some(rest) = command.strip_prefix("AT") {
-            return self.at(rest);
-        }
-        if command.starts_with("ST") {
-            return vec!["?".into()]; // no STN commands here
-        }
-        let mut digits = command.to_string();
-        // A trailing single digit is the ELM327's "expected answers" hint.
-        if digits.len() % 2 == 1 {
-            digits.pop();
-        }
-        if !is_hex(&digits) {
-            return vec!["?".into()];
-        }
-        if self.auto_format {
-            self.obd(&parse_hex(&digits))
-        } else {
-            self.raw(&parse_hex(&digits))
-        }
+        format!(
+            "{:03X}{}",
+            id & 0x7FF,
+            if self.front.spaces { " " } else { "" }
+        )
     }
 
     fn at(&mut self, c: &str) -> Vec<String> {
@@ -828,26 +789,6 @@ impl EnetElm {
         if c == "@1" {
             return vec!["Caruspex ENET (BMW HSFZ)".into()];
         }
-        if c == "E0" || c == "E1" {
-            self.echo = c == "E1";
-            return ok();
-        }
-        if c == "L0" || c == "L1" {
-            self.linefeeds = c == "L1";
-            return ok();
-        }
-        if c == "S0" || c == "S1" {
-            self.spaces = c == "S1";
-            return ok();
-        }
-        if c == "H0" || c == "H1" {
-            self.headers = c == "H1";
-            return ok();
-        }
-        if c == "CAF0" || c == "CAF1" {
-            self.auto_format = c == "CAF1";
-            return ok();
-        }
         if c == "DP" {
             return vec!["ISO 15765-4 (CAN 11/500)".into()];
         }
@@ -858,18 +799,18 @@ impl EnetElm {
             if id.len() != 3 || !is_hex(id) {
                 return vec!["?".into()]; // only 11-bit ids
             }
-            self.header = u32::from_str_radix(id, 16).unwrap_or(0);
+            self.front.header = u32::from_str_radix(id, 16).unwrap_or(0);
             return ok();
         }
         if c == "CRA" || c == "AR" {
-            self.receive_filter = None;
+            self.front.filter = None;
             return ok();
         }
         if let Some(id) = c.strip_prefix("CRA") {
             if id.len() != 3 || !is_hex(id) {
                 return vec!["?".into()];
             }
-            self.receive_filter = u32::from_str_radix(id, 16).ok();
+            self.front.filter = u32::from_str_radix(id, 16).ok();
             return ok();
         }
         if c == "RV" {
@@ -908,22 +849,22 @@ impl EnetElm {
         if bytes.is_empty() || bytes.len() > 7 {
             return vec!["?".into()];
         }
-        let functional = self.header == 0x7DF;
+        let functional = self.front.header == 0x7DF;
         let target = if self.flavor == Flavor::Doip {
             // Functional to all OBD units; 7E0 + n to the unit that answered as
             // 7E8 + n before.
             if functional {
                 Some(doip::OBD_FUNCTIONAL)
-            } else if (0x7E0..=0x7E7).contains(&self.header)
-                && ((self.header - 0x7E0) as usize) < self.learned.len()
+            } else if (0x7E0..=0x7E7).contains(&self.front.header)
+                && ((self.front.header - 0x7E0) as usize) < self.learned.len()
             {
-                Some(self.learned[(self.header - 0x7E0) as usize])
+                Some(self.learned[(self.front.header - 0x7E0) as usize])
             } else {
                 None
             }
-        } else if functional || self.header == 0x7E0 {
+        } else if functional || self.front.header == 0x7E0 {
             Some(u16::from(hsfz::ENGINE))
-        } else if self.header == 0x7E1 {
+        } else if self.front.header == 0x7E1 {
             Some(u16::from(hsfz::GEARBOX))
         } else {
             None
@@ -960,12 +901,12 @@ impl EnetElm {
                 };
                 id = 0x7E8 + index as u32;
             }
-            if self.receive_filter.is_some_and(|f| f != id) {
+            if self.front.filter.is_some_and(|f| f != id) {
                 continue;
             }
             let d = &a.data;
             if d.len() <= 7 {
-                if self.headers {
+                if self.front.headers {
                     let mut frame = vec![d.len() as u8];
                     frame.extend_from_slice(d);
                     frame.resize(8, 0xAA);
@@ -976,7 +917,7 @@ impl EnetElm {
                 continue;
             }
             // Multi frame: first frame with six bytes, then seven each.
-            if self.headers {
+            if self.front.headers {
                 let mut first = vec![0x10 | ((d.len() >> 8) & 0x0F) as u8, (d.len() & 0xFF) as u8];
                 first.extend_from_slice(&d[..6]);
                 lines.push(self.id_text(id) + &self.hex(&first));
@@ -1000,7 +941,7 @@ impl EnetElm {
                     lines.push(format!(
                         "{}{}{}",
                         index % 10,
-                        if self.spaces { ": " } else { ":" },
+                        if self.front.spaces { ": " } else { ":" },
                         self.hex(part)
                     ));
                     at += take;
@@ -1018,19 +959,19 @@ impl EnetElm {
     /// the ISO-TP frames come from the tester as they would go on the bus.
     fn raw(&mut self, bytes: &[u8]) -> Vec<String> {
         let no_data = || vec!["NO DATA".to_string()];
-        if self.flavor != Flavor::Bmw || self.header != 0x6F1 || bytes.len() < 2 {
+        if self.flavor != Flavor::Bmw || self.front.header != 0x6F1 || bytes.len() < 2 {
             return no_data();
         }
         let target = bytes[0];
         let pci = bytes[1];
         let response_id = 0x600 | u32::from(target);
-        if self.receive_filter.is_some_and(|f| f != response_id) {
+        if self.front.filter.is_some_and(|f| f != response_id) {
             return no_data();
         }
         let line = |me: &Self, frame: &[u8]| {
             let mut padded = frame.to_vec();
             padded.resize(8, 0x00);
-            (if me.headers {
+            (if me.front.headers {
                 me.id_text(response_id)
             } else {
                 String::new()
@@ -1094,33 +1035,34 @@ impl EnetElm {
     }
 }
 
+impl ElmBackend for EnetElm {
+    fn front(&mut self) -> &mut ElmFront {
+        &mut self.front
+    }
+    fn at(&mut self, command: &str) -> Vec<String> {
+        EnetElm::at(self, command)
+    }
+    fn formatted(&mut self, bytes: &[u8]) -> Vec<String> {
+        self.obd(bytes)
+    }
+    fn raw(&mut self, bytes: &[u8]) -> Vec<String> {
+        EnetElm::raw(self, bytes)
+    }
+}
+
 impl Transport for EnetElm {
     fn write(&mut self, data: &[u8]) -> bool {
-        let command = normalize(data);
-        let mut out = Vec::new();
-        if self.echo {
-            let cut = data.iter().position(|&c| c == b'\r').unwrap_or(data.len());
-            out.extend_from_slice(&data[..cut]);
-            out.push(b'\r');
-        }
-        let end: &[u8] = if self.linefeeds { b"\r\n" } else { b"\r" };
-        for line in self.handle(&command) {
-            out.extend_from_slice(line.as_bytes());
-            out.extend_from_slice(end);
-        }
-        out.extend_from_slice(end);
-        out.push(b'>');
-        self.pending.extend_from_slice(&out);
+        elm_front::respond(self, data);
         true
     }
 
     fn read(&mut self, _timeout_ms: u64) -> Vec<u8> {
         // The answer is complete when write returns.
-        std::mem::take(&mut self.pending)
+        std::mem::take(&mut self.front.pending)
     }
 
     fn flush_input(&mut self) {
-        self.pending.clear();
+        self.front.pending.clear();
     }
 
     fn name(&self) -> String {

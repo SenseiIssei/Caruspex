@@ -1,0 +1,72 @@
+[
+ {
+  "id": "c-opt17-1",
+  "de": "Adapter-Einstellungen (AT, ST)",
+  "en": "Adapter settings (AT, ST)"
+ },
+ {
+  "id": "c-opt17-2",
+  "de": "Fehler löschen",
+  "en": "Clearing faults"
+ },
+ {
+  "id": "c-opt17-3",
+  "de": "Diagnosesitzung",
+  "en": "Diagnostic session"
+ },
+ {
+  "id": "c-opt17-4",
+  "de": "Fehlerspeicher (OBD)",
+  "en": "Fault memory (OBD)"
+ },
+ {
+  "id": "c-opt17-5",
+  "de": "Fehlerspeicher (UDS, KWP)",
+  "en": "Fault memory (UDS, KWP)"
+ },
+ {
+  "id": "c-opt17-6",
+  "de": "Freeze Frame",
+  "en": "Freeze frame"
+ },
+ {
+  "id": "c-opt17-7",
+  "de": "Weitere Dienste",
+  "en": "Further services"
+ },
+ {
+  "id": "c-opt17-8",
+  "de": "Live-Werte",
+  "en": "Live values"
+ },
+ {
+  "id": "c-opt17-9",
+  "de": "Herstellerwerte und Kennungen",
+  "en": "Manufacturer values and IDs"
+ },
+ {
+  "id": "c-opt17-10",
+  "de": "Testergebnisse",
+  "en": "Test results"
+ },
+ {
+  "id": "c-opt17-11",
+  "de": "Der gemerkte Weg geht diesmal nicht, suche wie gewohnt.",
+  "en": "The remembered way does not work this time, searching as usual."
+ },
+ {
+  "id": "c-opt17-12",
+  "de": "Versuche zuerst den Weg, der zuletzt ging: %1",
+  "en": "Trying the way that worked last time first: %1"
+ },
+ {
+  "id": "c-opt17-13",
+  "de": "Fahrzeugdaten (VIN, Software)",
+  "en": "Vehicle data (VIN, software)"
+ },
+ {
+  "id": "c-opt17-14",
+  "de": "Protokoll %1",
+  "en": "protocol %1"
+ }
+]

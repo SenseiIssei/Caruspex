@@ -1,0 +1,18 @@
+{
+ "c-iface16-1": ". 이를 위해 Caruspex에는 보조 프로그램 caruspex-j2534-bridge.exe가 필요하지만 프로그램 옆에 없습니다.",
+ "c-iface16-2": ". 제조사 드라이버가 설치되어 있습니까?",
+ "c-iface16-3": "J2534 장치에서 CAN FD를 연결할 수 없습니다: ",
+ "c-iface16-4": "이 인터페이스에서는 CAN FD가 작동하지 않습니다: ",
+ "c-iface16-5": "여기서는 CAN FD가 SocketCAN과 J2534 장치에서만 작동합니다.",
+ "c-iface16-6": "여기서는 PCAN-Basic과 Kvaser CANlib를 Windows에서만 사용합니다. Linux에서는 둘 다 SocketCAN으로 작동합니다.",
+ "c-iface16-7": "오래된 J2534 드라이버용 32비트 보조 프로그램이 시작되지 않습니다: ",
+ "c-iface16-8": "Kvaser 채널을 열 수 없습니다: ",
+ "c-iface16-9": "PCAN 채널을 열 수 없습니다: ",
+ "c-iface16-10": "인터페이스가 이 비트레이트를 지원하지 않습니다.",
+ "c-iface16-11": "제조사의 CAN 라이브러리가 불완전합니다: ",
+ "c-iface16-12": "제조사의 CAN 라이브러리가 없습니다: ",
+ "c-iface16-13": "32비트 J2534 드라이버입니다: ",
+ "c-iface16-14": "알 수 없는 Kvaser 채널: ",
+ "c-iface16-15": "알 수 없는 PCAN 채널: ",
+ "c-iface16-16": "채널 "
+}

@@ -1,6 +1,11 @@
 //! SocketCAN, the CAN layer of Linux: PEAK, Kvaser, CANable (candleLight),
 //! Raspberry Pi CAN hats and every other adapter with a kernel driver.
 //!
+//! With CAN FD switched on (CAN_RAW_FD_FRAMES) every frame goes out as an
+//! FD frame with bit rate switch, and classic and FD frames come in; the
+//! interface must be set up for it (ip link set can0 up type can bitrate
+//! 500000 dbitrate 2000000 fd on).
+//!
 //! The raw socket calls are unsafe; they stay in this module.
 #![allow(unsafe_code)]
 
@@ -13,6 +18,22 @@ use crate::can_bus::{CanFrame, CanLink};
 struct SocketCanLink {
     socket: libc::c_int,
     interface: String,
+    fd: bool,
+}
+
+/// The smallest CAN FD data length that holds `n` bytes (DLC 9 to 15 are
+/// 12, 16, 20, 24, 32, 48 and 64 bytes).
+pub(crate) fn fd_length(n: usize) -> usize {
+    match n {
+        0..=8 => n,
+        9..=12 => 12,
+        13..=16 => 16,
+        17..=20 => 20,
+        21..=24 => 24,
+        25..=32 => 32,
+        33..=48 => 48,
+        _ => 64,
+    }
 }
 
 impl Drop for SocketCanLink {
@@ -22,8 +43,41 @@ impl Drop for SocketCanLink {
     }
 }
 
+impl SocketCanLink {
+    fn send_fd(&mut self, frame: &CanFrame) -> bool {
+        // SAFETY: canfd_frame is plain data, all zero is a valid value.
+        let mut f: libc::canfd_frame = unsafe { std::mem::zeroed() };
+        f.can_id = if frame.extended {
+            frame.id | libc::CAN_EFF_FLAG
+        } else {
+            frame.id & libc::CAN_SFF_MASK
+        };
+        let size = frame.data.len().min(64);
+        let length = fd_length(size);
+        f.len = length as u8;
+        f.flags = libc::CANFD_BRS as u8;
+        f.data[..size].copy_from_slice(&frame.data[..size]);
+        // SAFETY: writes exactly one canfd_frame from a valid buffer.
+        let written = unsafe {
+            libc::write(
+                self.socket,
+                (&f as *const libc::canfd_frame).cast::<libc::c_void>(),
+                size_of::<libc::canfd_frame>(),
+            )
+        };
+        written == size_of::<libc::canfd_frame>() as isize
+    }
+}
+
 impl CanLink for SocketCanLink {
+    fn fd(&self) -> bool {
+        self.fd
+    }
+
     fn send(&mut self, frame: &CanFrame) -> bool {
+        if self.fd {
+            return self.send_fd(frame);
+        }
         // SAFETY: can_frame is plain data, all zero is a valid value.
         let mut f: libc::can_frame = unsafe { std::mem::zeroed() };
         f.can_id = if frame.extended {
@@ -56,24 +110,30 @@ impl CanLink for SocketCanLink {
         if unsafe { libc::poll(&mut p, 1, timeout) } <= 0 {
             return None;
         }
-        // SAFETY: can_frame is plain data, all zero is a valid value.
-        let mut f: libc::can_frame = unsafe { std::mem::zeroed() };
-        // SAFETY: reads at most one can_frame into a valid buffer.
+        // A classic frame and an FD frame begin alike (id, length); room for
+        // the larger one, the size read tells which came.
+        // SAFETY: canfd_frame is plain data, all zero is a valid value.
+        let mut f: libc::canfd_frame = unsafe { std::mem::zeroed() };
+        // SAFETY: reads at most one canfd_frame into a valid buffer.
         let got = unsafe {
             libc::read(
                 self.socket,
-                (&mut f as *mut libc::can_frame).cast::<libc::c_void>(),
-                size_of::<libc::can_frame>(),
+                (&mut f as *mut libc::canfd_frame).cast::<libc::c_void>(),
+                size_of::<libc::canfd_frame>(),
             )
         };
-        if got != size_of::<libc::can_frame>() as isize {
+        let room = if got == size_of::<libc::canfd_frame>() as isize {
+            64
+        } else if got == size_of::<libc::can_frame>() as isize {
+            8
+        } else {
             return None;
-        }
+        };
         if f.can_id & (libc::CAN_ERR_FLAG | libc::CAN_RTR_FLAG) != 0 {
             return None;
         }
         let extended = f.can_id & libc::CAN_EFF_FLAG != 0;
-        let length = usize::from(f.can_dlc).min(8);
+        let length = usize::from(f.len).min(room);
         Some(CanFrame {
             extended,
             id: if extended {
@@ -86,7 +146,11 @@ impl CanLink for SocketCanLink {
     }
 
     fn name(&self) -> String {
-        format!("SocketCAN {}", self.interface)
+        if self.fd {
+            format!("SocketCAN {} CAN FD", self.interface)
+        } else {
+            format!("SocketCAN {}", self.interface)
+        }
     }
 }
 
@@ -107,7 +171,7 @@ pub(crate) fn interfaces() -> Vec<String> {
     out
 }
 
-pub(crate) fn open(interface: &str) -> Result<Box<dyn CanLink>, String> {
+pub(crate) fn open(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String> {
     // SAFETY: plain socket call.
     let s = unsafe { libc::socket(libc::PF_CAN, libc::SOCK_RAW, libc::CAN_RAW) };
     if s < 0 {
@@ -168,8 +232,34 @@ pub(crate) fn open(interface: &str) -> Result<Box<dyn CanLink>, String> {
             interface
         ));
     }
+    if fd {
+        let on: libc::c_int = 1;
+        // SAFETY: CAN_RAW_FD_FRAMES takes one int.
+        let set = unsafe {
+            libc::setsockopt(
+                s,
+                libc::SOL_CAN_RAW,
+                libc::CAN_RAW_FD_FRAMES,
+                (&on as *const libc::c_int).cast::<libc::c_void>(),
+                size_of::<libc::c_int>() as libc::socklen_t,
+            )
+        };
+        if set < 0 {
+            // SAFETY: the socket is ours.
+            unsafe { libc::close(s) };
+            return Err(format!(
+                "{}{}",
+                l(
+                    "CAN FD geht an dieser Schnittstelle nicht: ",
+                    "CAN FD does not work on this interface: "
+                ),
+                interface
+            ));
+        }
+    }
     Ok(Box::new(SocketCanLink {
         socket: s,
         interface: interface.to_string(),
+        fd,
     }))
 }

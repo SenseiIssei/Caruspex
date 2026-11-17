@@ -1,0 +1,43 @@
+# Motorcycles: common models that are sold under Euro 4 and Euro 5, with the
+# maker's diagnostic plug (connector moto) under the seat (location seat).
+# The plug of each maker and the adapter cable are described in
+# crates/caruspex-vehicles/src/moto.rs. From is the first model year of the
+# generation as sold in Europe, 0 = still built.
+# bus mixed: CAN (ISO 15765) and K-line (ISO 14230) both occur, so the
+# protocols are tried CAN first, then KWP2000 fast init.
+brand,model,generation,from,to,body,power,vin,connector,location,aliases,note_de,note_en,bus,protocols
+Honda,CB500F,I,2013,2021,moto,P,,moto,seat,CB 500 F,,,mixed,
+Honda,CB500F,II,2022,0,moto,P,,moto,seat,CB 500 F|CB500 Hornet,,,mixed,
+Honda,CB650R,I,2019,0,moto,P,,moto,seat,CB 650 R,,,mixed,
+Honda,CRF1100L Africa Twin,I,2020,0,moto,P,,moto,seat,Africa Twin|CRF 1100 L,,,mixed,
+Honda,NC750X,I,2016,2020,moto,P,,moto,seat,NC 750 X,,,mixed,
+Honda,NC750X,II,2021,0,moto,P,,moto,seat,NC 750 X,,,mixed,
+Yamaha,MT-07,I,2014,2020,moto,P,,moto,seat,MT07|MT 07,,,mixed,
+Yamaha,MT-07,II,2021,0,moto,P,,moto,seat,MT07|MT 07,,,mixed,
+Yamaha,MT-09,I,2017,2020,moto,P,,moto,seat,MT09|MT 09,,,mixed,
+Yamaha,MT-09,II,2021,0,moto,P,,moto,seat,MT09|MT 09,,,mixed,
+Yamaha,Tracer 9,I,2021,0,moto,P,,moto,seat,Tracer 900,,,mixed,
+Yamaha,Ténéré 700,I,2019,0,moto,P,,moto,seat,Tenere 700|T7,,,mixed,
+Kawasaki,Z650,I,2017,0,moto,P,,moto,seat,Z 650,,,mixed,
+Kawasaki,Z900,I,2017,0,moto,P,,moto,seat,Z 900,,,mixed,
+Kawasaki,Ninja 650,I,2017,0,moto,P,,moto,seat,Ninja650|ER-6f,,,mixed,
+Kawasaki,Versys 650,I,2015,0,moto,P,,moto,seat,Versys,,,mixed,
+Suzuki,SV650,I,2016,0,moto,P,,moto,seat,SV 650,,,mixed,
+Suzuki,V-Strom 650,I,2017,2023,moto,P,,moto,seat,DL650|VStrom 650,,,mixed,
+Suzuki,GSX-S1000,I,2015,0,moto,P,,moto,seat,GSX-S 1000,,,mixed,
+KTM,390 Duke,I,2017,2023,moto,P,,moto,seat,Duke 390,,,mixed,
+KTM,790 Duke,I,2018,2023,moto,P,,moto,seat,Duke 790,,,mixed,
+KTM,890 Duke,I,2020,0,moto,P,,moto,seat,Duke 890,,,mixed,
+KTM,1290 Super Adventure,I,2017,0,moto,P,,moto,seat,Super Adventure,,,mixed,
+BMW,R 1250 GS,I,2019,2023,moto,P,,moto,seat,R1250GS|R 1250GS,,,mixed,
+BMW,R 1300 GS,I,2023,0,moto,P,,moto,seat,R1300GS|R 1300GS,,,mixed,
+BMW,F 900 R,I,2020,0,moto,P,,moto,seat,F900R,,,mixed,
+BMW,S 1000 RR,I,2019,0,moto,P,,moto,seat,S1000RR,,,mixed,
+Triumph,Street Triple 765,I,2017,0,moto,P,,moto,seat,Street Triple,,,mixed,
+Triumph,Tiger 900,I,2020,0,moto,P,,moto,seat,Tiger,,,mixed,
+Triumph,Trident 660,I,2021,0,moto,P,,moto,seat,Trident,,,mixed,
+Ducati,Monster,I,2021,0,moto,P,,moto,seat,Monster 937,,,mixed,
+Ducati,Multistrada V4,I,2021,0,moto,P,,moto,seat,Multistrada,,,mixed,
+Ducati,Scrambler,I,2015,0,moto,P,,moto,seat,Scrambler Icon,,,mixed,
+Harley-Davidson,Sportster S,I,2021,0,moto,P,,moto,seat,Sportster,,,mixed,
+Harley-Davidson,Pan America,I,2021,0,moto,P,,moto,seat,Pan America 1250,,,mixed,

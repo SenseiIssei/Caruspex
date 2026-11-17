@@ -30,7 +30,7 @@ function trimTerm(pid: number): TermId | null {
 }
 
 interface ListItem {
-  kind: "head" | "pid" | "custom";
+  kind: "head" | "note" | "pid" | "custom";
   key: number;
   label: string;
   tooltip?: string;
@@ -54,6 +54,8 @@ export default function LivePage() {
   // The OBDb packs that fit the detected car, offered below the built-in ones.
   const [carPacks, setCarPacks] = useState<PidPackInfo[]>([]);
   const identity = useSession((s) => s.identity);
+  // Only the K-line is slow enough to mention: ISO 9141-2, ISO 14230 (KWP2000) and KWP1281.
+  const onKLine = useSession((s) => s.connected && /9141|14230|KWP|K-Line/i.test(s.protocol));
   const [imports, setImports] = useState<CustomRow[][]>([]);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [supported, setSupported] = useState<Set<number>>(new Set());
@@ -151,6 +153,8 @@ export default function LivePage() {
     }
     for (const pack of [...packs, ...carPacks]) {
       out.push({ kind: "head", key: -1, label: pack.title.toUpperCase() });
+      // The opendbc packs only listen: say that the bus may not reach the socket.
+      if (pack.listen && pack.description) out.push({ kind: "note", key: -1, label: pack.description });
       for (const v of pack.values) {
         out.push({ kind: "custom", key: v.key, label: v.name, tooltip: v.source ? tr("Quelle: %1", v.source) : undefined });
       }
@@ -312,7 +316,9 @@ export default function LivePage() {
           {tr("mitschreiben")}
         </Check>
         <span className="spacer" />
-        <span className="hint live-hint">{tr("Die Werte laufen einzeln über den Bus, daher aktualisiert es auf der K-Line gemächlich.")}</span>
+        {onKLine && (
+          <span className="hint live-hint">{tr("Die Werte laufen einzeln über den Bus, daher aktualisiert es auf der K-Line gemächlich.")}</span>
+        )}
       </div>
 
       <Card className="live-chart-card">
@@ -334,6 +340,14 @@ export default function LivePage() {
                 if (needle) return null;
                 return (
                   <div className="live-list-head" key={`h${i}`}>
+                    {item.label}
+                  </div>
+                );
+              }
+              if (item.kind === "note") {
+                if (needle) return null;
+                return (
+                  <div className="live-list-note" key={`n${i}`}>
                     {item.label}
                   </div>
                 );

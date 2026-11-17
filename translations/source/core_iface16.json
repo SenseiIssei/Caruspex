@@ -1,0 +1,82 @@
+[
+ {
+  "id": "c-iface16-1",
+  "de": ". Dafür braucht Caruspex sein Hilfsprogramm caruspex-j2534-bridge.exe, das neben dem Programm fehlt.",
+  "en": ". For it Caruspex needs its helper program caruspex-j2534-bridge.exe, which is missing next to the program."
+ },
+ {
+  "id": "c-iface16-2",
+  "de": ". Ist der Treiber des Herstellers installiert?",
+  "en": ". Is the maker's driver installed?"
+ },
+ {
+  "id": "c-iface16-3",
+  "de": "CAN FD lässt sich am J2534-Gerät nicht verbinden: ",
+  "en": "CAN FD cannot be connected on the J2534 device: "
+ },
+ {
+  "id": "c-iface16-4",
+  "de": "CAN FD geht an dieser Schnittstelle nicht: ",
+  "en": "CAN FD does not work on this interface: "
+ },
+ {
+  "id": "c-iface16-5",
+  "de": "CAN FD geht hier nur über SocketCAN und J2534-Geräte.",
+  "en": "CAN FD works only through SocketCAN and J2534 devices here."
+ },
+ {
+  "id": "c-iface16-6",
+  "de": "PCAN-Basic und Kvaser CANlib gibt es hier nur unter Windows; unter Linux gehen beide über SocketCAN.",
+  "en": "PCAN-Basic and Kvaser CANlib are used on Windows only here; on Linux both work through SocketCAN."
+ },
+ {
+  "id": "c-iface16-7",
+  "de": "Das 32-Bit-Hilfsprogramm für alte J2534-Treiber startet nicht: ",
+  "en": "The 32-bit helper program for old J2534 drivers does not start: "
+ },
+ {
+  "id": "c-iface16-8",
+  "de": "Der Kvaser-Kanal lässt sich nicht öffnen: ",
+  "en": "The Kvaser channel cannot be opened: "
+ },
+ {
+  "id": "c-iface16-9",
+  "de": "Der PCAN-Kanal lässt sich nicht öffnen: ",
+  "en": "The PCAN channel cannot be opened: "
+ },
+ {
+  "id": "c-iface16-10",
+  "de": "Diese Bitrate kennt die Schnittstelle nicht.",
+  "en": "The interface does not know this bit rate."
+ },
+ {
+  "id": "c-iface16-11",
+  "de": "Die CAN-Bibliothek des Herstellers ist unvollständig: ",
+  "en": "The maker's CAN library is incomplete: "
+ },
+ {
+  "id": "c-iface16-12",
+  "de": "Die CAN-Bibliothek des Herstellers fehlt: ",
+  "en": "The maker's CAN library is missing: "
+ },
+ {
+  "id": "c-iface16-13",
+  "de": "Das ist ein 32-Bit-J2534-Treiber: ",
+  "en": "This is a 32-bit J2534 driver: "
+ },
+ {
+  "id": "c-iface16-14",
+  "de": "Unbekannter Kvaser-Kanal: ",
+  "en": "Unknown Kvaser channel: "
+ },
+ {
+  "id": "c-iface16-15",
+  "de": "Unbekannter PCAN-Kanal: ",
+  "en": "Unknown PCAN channel: "
+ },
+ {
+  "id": "c-iface16-16",
+  "de": "Kanal ",
+  "en": "channel "
+ }
+]

@@ -577,6 +577,46 @@ pub fn parse_recording(text: impl AsRef<[u8]>) -> Result<Recording, String> {
     Ok(out)
 }
 
+/// A recording as the file the recording transport writes, header first.
+/// `parse_recording` reads it back to the same events.
+pub fn write_recording(recording: &Recording) -> Vec<u8> {
+    let mut out = Vec::new();
+    out.extend_from_slice(b"{\"format\":");
+    out.extend(json_string(RECORDING_FORMAT.as_bytes(), false));
+    out.extend_from_slice(format!(",\"version\":{}", recording.version.max(1)).as_bytes());
+    for (key, value) in [
+        ("created", &recording.created),
+        ("transport", &recording.transport),
+        ("adapter", &recording.adapter),
+        ("protocol", &recording.protocol),
+        ("protocolId", &recording.protocol_id),
+    ] {
+        if !value.is_empty() {
+            out.extend_from_slice(format!(",\"{key}\":").as_bytes());
+            out.extend(json_string(value.as_bytes(), false));
+        }
+    }
+    out.extend_from_slice(b"}\n");
+    for e in &recording.events {
+        let direction = match e.direction {
+            RecordedDirection::Tx => "tx",
+            RecordedDirection::Rx => "rx",
+            RecordedDirection::Note => "note",
+        };
+        let ms = (e.t.max(0.0) * 1000.0).round() as u64;
+        out.extend_from_slice(
+            format!(
+                "{{\"t\":{},\"dir\":\"{direction}\",\"data\":",
+                format_seconds(ms)
+            )
+            .as_bytes(),
+        );
+        out.extend(json_string(&e.data, e.direction != RecordedDirection::Note));
+        out.extend_from_slice(b"}\n");
+    }
+    out
+}
+
 /// Reads a recording from a file.
 pub fn load_recording(path: &str) -> Result<Recording, String> {
     match std::fs::read(path) {

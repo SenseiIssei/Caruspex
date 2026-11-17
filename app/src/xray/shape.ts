@@ -220,6 +220,13 @@ const BASE: Record<BodyType, BodySpec> = {
     deck: 0.85, belt: 0.74, beltRise: 0.02, rideHeight: 0.12, nose: 0.5, tail: 0.76, tumblehome: 0.2, noseRound: 4.5, tailRound: 7,
     lastPillar: 0.2, frameless: true, quarterWindow: false, kink: false,
   },
+  // Motorcycles have no body to draw; the X-ray view falls back to the
+  // open two-seater outline so the parts still have a place.
+  [BodyType.Motorcycle]: {
+    style: "roadster", doors: 2, frontShare: 0.47, cowl: 0.6, windscreen: 27, rearWindow: 30, roofCrown: 0, roofPeak: 0.5, roofDrop: 0,
+    deck: 0.85, belt: 0.74, beltRise: 0.02, rideHeight: 0.12, nose: 0.5, tail: 0.76, tumblehome: 0.2, noseRound: 4.5, tailRound: 7,
+    lastPillar: 0.2, frameless: true, quarterWindow: false, kink: false,
+  },
 };
 
 // Lamps and grille by era: tall upright lamps (round ones before 1980) and

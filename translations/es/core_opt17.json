@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Ajustes del adaptador (AT, ST)",
+ "c-opt17-2": "Borrar averías",
+ "c-opt17-3": "Sesión de diagnóstico",
+ "c-opt17-4": "Memoria de averías (OBD)",
+ "c-opt17-5": "Memoria de averías (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Otros servicios",
+ "c-opt17-8": "Valores en vivo",
+ "c-opt17-9": "Valores del fabricante e identificadores",
+ "c-opt17-10": "Resultados de pruebas",
+ "c-opt17-11": "La vía recordada no funciona esta vez, se busca como siempre.",
+ "c-opt17-12": "Probando primero la vía que funcionó la última vez: %1",
+ "c-opt17-13": "Datos del vehículo (VIN, software)",
+ "c-opt17-14": "protocolo %1"
+}

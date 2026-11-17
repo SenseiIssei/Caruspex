@@ -3,7 +3,7 @@
 use caruspex_i18n::l;
 
 use crate::timing::{now_ms, sleep_ms};
-use crate::transport::{LogFn, Transport};
+use crate::transport::{IsoTpBatch, LogFn, Transport};
 
 mod stn;
 pub use stn::{StnBus, split_batch_answer, stn_buses};
@@ -675,6 +675,15 @@ impl Elm327 {
     }
     pub fn transport_mut(&mut self) -> Option<&mut (dyn Transport + 'static)> {
         self.transport.as_deref_mut()
+    }
+    /// Several ISO-TP sessions at once, when connected through a raw CAN
+    /// interface; `None` for a real ELM327 (and while recording, so the
+    /// recording holds every request).
+    pub fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
+        if !self.connected {
+            return None;
+        }
+        self.transport.as_deref_mut()?.iso_tp_batch()
     }
 
     /// Replaces the transport by whatever `wrap` builds around it, without

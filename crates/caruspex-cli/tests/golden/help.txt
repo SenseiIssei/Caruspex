@@ -24,7 +24,8 @@ Connection (one of them):
   --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out
   --enet HOST|auto    network cable: BMW ENET (HSFZ) or DoIP, auto finds the car
   --can SPEC          raw CAN interface: j2534:<driver.dll>, slcan:COM5, socketcan:can0,
-                      optionally @250000 for the bit rate (500000 if left out)
+                      pcan:USB1, kvaser:0, optionally @250000 for the bit rate (500000
+                      if left out), +fd before it for CAN FD (SocketCAN and J2534)
   --port NAME         serial port, COM3 if left out (/dev/ttyUSB0 and so on)
   --baud N            baud rate of the serial port, 38400 if left out
   --replay FILE       play back a recording instead of talking to an adapter

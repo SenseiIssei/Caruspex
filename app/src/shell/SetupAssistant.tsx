@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { call, type VehicleGenerationInfo } from "../api";
 import { Icon } from "../components/Icon";
 import { Modal } from "../components/Modal";
-import { AdapterArt, IgnitionArt, SocketSketch, type AdapterKind } from "../components/SetupArt";
+import { AdapterArt, IgnitionArt, MotoSketch, SocketCloseup, SocketSketch, type AdapterKind } from "../components/SetupArt";
 import { Button, Note, cx } from "../components/ui";
 import { t, translator } from "../i18n";
 import { ACCESS } from "../lib/access";
@@ -82,6 +82,9 @@ function SetupDialog() {
   const [year, setYear] = useState(0);
   const [location, setLocation] = useState(0);
   const [locationText, setLocationText] = useState("");
+  // The exact spot (data/obd_sockets.csv), whether a cover hides it, and
+  // whether the vehicle is a motorcycle (plug under the seat).
+  const [spot, setSpot] = useState({ spot: 0, cover: false, motorcycle: false });
   const seq = useRef(0);
   const steps = [tu("Adapter"), tu("Buchse"), tu("Zündung"), tu("Verbinden")];
 
@@ -123,6 +126,7 @@ function SetupDialog() {
   useEffect(() => {
     if (!generation) {
       setLocation(0);
+      setSpot({ spot: 0, cover: false, motorcycle: false });
       setLocationText(
         tu("Meist unter dem Armaturenbrett auf der Fahrerseite, manchmal hinter einer Abdeckung oder in der Mittelkonsole."),
       );
@@ -134,6 +138,7 @@ function SetupDialog() {
         if (cancelled || !info) return;
         setLocation(info.location ?? 0);
         setLocationText(info.locationText);
+        setSpot({ spot: info.spot ?? 0, cover: info.spotCover ?? false, motorcycle: info.motorcycle ?? false });
       })
       .catch(() => undefined);
     return () => {
@@ -278,7 +283,14 @@ function SetupDialog() {
               </Note>
               <div className="hint">{tu("Bei Autos mit dem Lenkrad rechts sitzt die Buchse meist spiegelbildlich.")}</div>
             </div>
-            <SocketSketch location={location} label={locationText} />
+            {spot.motorcycle ? (
+              <MotoSketch label={locationText} />
+            ) : (
+              <div className="setup-sketches">
+                <SocketSketch location={location} spot={spot.spot} label={locationText} />
+                <SocketCloseup spot={spot.spot} cover={spot.cover} label={locationText} />
+              </div>
+            )}
           </div>
         ) : null}
 

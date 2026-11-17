@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Configurações do adaptador (AT, ST)",
+ "c-opt17-2": "Apagar falhas",
+ "c-opt17-3": "Sessão de diagnóstico",
+ "c-opt17-4": "Memória de falhas (OBD)",
+ "c-opt17-5": "Memória de falhas (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Outros serviços",
+ "c-opt17-8": "Valores ao vivo",
+ "c-opt17-9": "Valores do fabricante e identificadores",
+ "c-opt17-10": "Resultados de testes",
+ "c-opt17-11": "O caminho memorizado não funciona desta vez, procurando como de costume.",
+ "c-opt17-12": "Tentando primeiro o caminho que funcionou da última vez: %1",
+ "c-opt17-13": "Dados do veículo (VIN, software)",
+ "c-opt17-14": "protocolo %1"
+}

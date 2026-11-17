@@ -18,18 +18,26 @@ the brand group, the market and the years, the same rules a person would
 apply. Fill them in by hand only where a model differs from the rule.
 
     from, to     production years, to = 0 or empty while still built
-    body         hatch sedan estate suv van coupe cabrio pickup mpv micro roadster
+    body         hatch sedan estate suv van coupe cabrio pickup mpv micro roadster moto
     power        letters: P petrol, D diesel, H hybrid, X plug-in, E electric, G gas
     vin          model codes from the VIN, space separated (VAG "1J", Mercedes "203")
-    connector    none obd2 vag2x2 bmw20 mb38 other, optionally with a later
+    connector    none obd2 vag2x2 bmw20 mb38 other moto, optionally with a later
                  connector: "vag2x2>obd2@1996" means round plugs, from about
                  1996 the 16-pin socket
     location     dashleft (driver side under the dashboard, near the steering
                  column), column, footwell, fusebox, console, ashtray,
-                 passenger, engine, rear; empty if not known
+                 passenger, engine, rear, seat (motorcycles); empty if not known
     aliases      extra search words separated by '|'
     bus          kline can pwm vpw mixed
     protocols    ELM327 protocol digits in the order to try
+
+Motorcycles (moto.csv) have body moto and connector moto: the maker's
+diagnostic plug with an adapter cable to OBD-II (crates/caruspex-vehicles/src/moto.rs).
+
+data/obd_sockets.csv names the exact spot of the socket for the most common
+generations (brand,model,generation,spot,cover) and overrides the location
+column for them; spot is one of the codes in SPOT, cover is yes when a flap
+or cover hides the socket.
 
 A comment line "#@ market=na" switches the market for the following rows of
 that file, "#@ market=" goes back to the brand default.
@@ -54,18 +62,28 @@ COLUMNS = ["brand", "model", "generation", "from", "to", "body", "power", "vin",
 BODY = {
     "hatch": "Hatchback", "sedan": "Sedan", "estate": "Estate", "suv": "Suv",
     "van": "Van", "coupe": "Coupe", "cabrio": "Convertible", "pickup": "Pickup",
-    "mpv": "Mpv", "micro": "Microcar", "roadster": "Roadster",
+    "mpv": "Mpv", "micro": "Microcar", "roadster": "Roadster", "moto": "Motorcycle",
 }
 POWER = {"P": "PtPetrol", "D": "PtDiesel", "H": "PtHybrid", "X": "PtPlugIn",
          "E": "PtElectric", "G": "PtGas"}
 CONNECTOR = {"none": "None", "obd2": "Obd2", "vag2x2": "Vag2x2", "bmw20": "Bmw20",
-             "mb38": "Mb38", "other": "Other"}
+             "mb38": "Mb38", "other": "Other", "moto": "Moto"}
 LOCATION = {
     "": "Unknown", "dashleft": "UnderDashLeft", "column": "UnderSteeringColumn",
     "footwell": "FootwellCover", "fusebox": "FuseBox", "console": "CentreConsole",
     "ashtray": "BehindAshtray", "passenger": "PassengerSide", "engine": "EngineBay",
-    "rear": "RearConsole",
+    "rear": "RearConsole", "seat": "UnderSeat",
 }
+# Exact spots of data/obd_sockets.csv: spot code -> (SocketSpot, location code).
+SPOT = {
+    "dash_left": ("DashLeftOfColumn", "dashleft"), "dash_right": ("DashRightOfColumn", "dashleft"),
+    "above_pedals": ("AbovePedals", "dashleft"), "below_column": ("BelowColumn", "column"),
+    "footwell_left": ("FootwellLeft", "footwell"), "fusebox_lower": ("FuseBoxLower", "fusebox"),
+    "console_front": ("ConsoleFront", "console"), "console_side": ("ConsoleSide", "console"),
+    "passenger": ("Passenger", "passenger"), "rear_console": ("RearConsole", "rear"),
+    "engine": ("EngineBay", "engine"), "seat": ("UnderSeat", "seat"),
+}
+SOCKETS = os.path.join(HERE, "data", "obd_sockets.csv")
 BUS = {"kline": "KLine", "can": "Can", "pwm": "Pwm", "vpw": "Vpw", "mixed": "Mixed"}
 
 # ELM327 protocol numbers: 1 J1850 PWM, 2 J1850 VPW, 3 ISO 9141-2,
@@ -183,7 +201,7 @@ def write_rust(brands: dict, rows: list[dict]) -> None:
         "",
         "use crate::catalog::{",
         "    BodyType as B, BrandInfo, Connector as C, PT_DIESEL, PT_ELECTRIC, PT_GAS, PT_HYBRID,",
-        "    PT_PETROL, PT_PLUG_IN, SocketLocation as L, VehicleGeneration,",
+        "    PT_PETROL, PT_PLUG_IN, SocketLocation as L, SocketSpot as S, VehicleGeneration,",
         "};",
         "use crate::vehicles::BusKind as K;",
         "use caruspex_i18n::Text;",
@@ -204,6 +222,7 @@ def write_rust(brands: dict, rows: list[dict]) -> None:
             f"body: B::{r['body']}, powertrains: {rust_power(r['power'])}, "
             f"connector: C::{r['early']}, late_connector: C::{r['late']}, connector_change: {r['switch']}, "
             f"bus: K::{r['bus']}, protocol_order: {rust(r['order'])}, location: L::{r['location']}, "
+            f"spot: S::{r['spot']}, spot_cover: {r['cover']}, "
             f"note: Text::new({rust(r['note_de'])}, {rust(r['note_en'])}), "
             f"vin_model_codes: {rust(r['vin'])}, aliases: {rust(r['aliases'])}, us_market: {r['us']} }},")
     lines += ["];", ""]
@@ -303,7 +322,13 @@ def build_row(r: dict, brands: dict, market_override: str, where: str) -> dict:
     if switch and not (y0 < switch <= y1eff):
         raise DataError(f"connector change {switch} outside {y0}-{y1eff}")
 
-    if "obd2" in (early, late):
+    if "moto" in (early, late):
+        bus = r["bus"] or "mixed"
+        if bus not in BUS:
+            raise DataError(f"unknown bus '{bus}'")
+        # CAN 500 kbit first (ISO 15765), then KWP2000 fast init (ISO 14230).
+        order = r["protocols"] or "65"
+    elif "obd2" in (early, late):
         obd_from = y0 if early == "obd2" else switch
         bus = r["bus"] or default_bus(group, market, power, obd_from, y1eff)
         if bus not in BUS:
@@ -337,7 +362,40 @@ def build_row(r: dict, brands: dict, market_override: str, where: str) -> dict:
         "note_de": r["note_de"], "note_en": r["note_en"],
         "vin": " ".join(r["vin"].split()), "aliases": r["aliases"],
         "us": "true" if market == "na" else "false",
+        "spot": "Unknown", "cover": "false",
     }
+
+
+def apply_sockets(rows: list[dict]) -> int:
+    """Exact spots from data/obd_sockets.csv; returns how many rows got one."""
+    by_key = {(r["brand"], r["model"], r["generation"]): r for r in rows}
+    done = set()
+    with io.open(SOCKETS, encoding="utf-8", newline="") as f:
+        lines = [line for line in f if line.strip() and not line.startswith("#")]
+    reader = csv.reader(lines)
+    if next(reader) != ["brand", "model", "generation", "spot", "cover"]:
+        raise DataError("obd_sockets.csv: header must be brand,model,generation,spot,cover")
+    for number, cells in enumerate(reader, start=2):
+        if len(cells) != 5:
+            raise DataError(f"obd_sockets.csv row {number}: expected 5 columns")
+        brand, model, generation, spot, cover = (c.strip() for c in cells)
+        key = (brand, model, generation)
+        if key not in by_key:
+            raise DataError(f"obd_sockets.csv row {number}: {brand} {model} {generation} is not in the catalog")
+        if key in done:
+            raise DataError(f"obd_sockets.csv row {number}: {brand} {model} {generation} twice")
+        if spot not in SPOT:
+            raise DataError(f"obd_sockets.csv row {number}: unknown spot '{spot}'")
+        if cover not in ("yes", "no"):
+            raise DataError(f"obd_sockets.csv row {number}: cover must be yes or no")
+        r = by_key[key]
+        if "Obd2" not in (r["early"], r["late"]) and "Moto" not in (r["early"], r["late"]):
+            raise DataError(f"obd_sockets.csv row {number}: {brand} {model} {generation} has no OBD socket")
+        r["spot"], location = SPOT[spot]
+        r["location"] = LOCATION[location]
+        r["cover"] = "true" if cover == "yes" else "false"
+        done.add(key)
+    return len(done)
 
 
 def main() -> int:
@@ -346,6 +404,7 @@ def main() -> int:
     try:
         brands = load_brands()
         rows = load_rows(brands)
+        spots = apply_sockets(rows)
     except DataError as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
@@ -356,7 +415,7 @@ def main() -> int:
         print(f"note: brands without rows: {', '.join(unused)}")
 
     write_rust(brands, rows)
-    print(f"{TARGET_RS}\n{len(brands)} brands, {len(rows)} generations")
+    print(f"{TARGET_RS}\n{len(brands)} brands, {len(rows)} generations, {spots} with the exact socket spot")
     return 0
 
 

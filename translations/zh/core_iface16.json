@@ -1,0 +1,18 @@
+{
+ "c-iface16-1": "。为此 Caruspex 需要其辅助程序 caruspex-j2534-bridge.exe，但程序旁边没有找到它。",
+ "c-iface16-2": "。是否已安装制造商的驱动程序？",
+ "c-iface16-3": "无法在 J2534 设备上连接 CAN FD：",
+ "c-iface16-4": "CAN FD 在此接口上无法使用：",
+ "c-iface16-5": "此处 CAN FD 只能通过 SocketCAN 和 J2534 设备使用。",
+ "c-iface16-6": "此处 PCAN-Basic 和 Kvaser CANlib 仅在 Windows 上使用；在 Linux 上两者都通过 SocketCAN 工作。",
+ "c-iface16-7": "用于旧版 J2534 驱动程序的 32 位辅助程序无法启动：",
+ "c-iface16-8": "无法打开 Kvaser 通道：",
+ "c-iface16-9": "无法打开 PCAN 通道：",
+ "c-iface16-10": "该接口不支持此比特率。",
+ "c-iface16-11": "制造商的 CAN 库不完整：",
+ "c-iface16-12": "缺少制造商的 CAN 库：",
+ "c-iface16-13": "这是一个 32 位 J2534 驱动程序：",
+ "c-iface16-14": "未知的 Kvaser 通道：",
+ "c-iface16-15": "未知的 PCAN 通道：",
+ "c-iface16-16": "通道 "
+}

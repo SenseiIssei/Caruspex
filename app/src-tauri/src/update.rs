@@ -905,4 +905,59 @@ mod tests {
         );
         let _ = std::fs::remove_dir_all(&dir);
     }
+
+    // latest.json comes from the network: whatever arrives must be read or
+    // refused without a panic, and a version is only ever newer by the
+    // QVersionNumber rules.
+    mod fuzz {
+        use super::super::*;
+        use proptest::prelude::*;
+
+        fn manifest_text() -> impl Strategy<Value = String> {
+            let version = prop_oneof![r"v?[0-9]{1,3}(\.[0-9]{1,12}){0,4}(-[a-z]{1,5})?", ".{0,12}"];
+            let notes = prop_oneof!["(## (Deutsch|English)\n)?[a-zA-Z .\n]{0,40}", ".{0,20}"];
+            (version, notes, "[a-z0-9_-]{0,16}", "[ -~]{0,30}").prop_map(|(v, n, key, url)| {
+                serde_json::json!({
+                    "version": v,
+                    "notes": n,
+                    "pub_date": "2026-11-17T00:00:00Z",
+                    "platforms": { key: { "url": url, "signature": "dW50cnVzdGVk" } }
+                })
+                .to_string()
+            })
+        }
+
+        proptest! {
+            #[test]
+            fn any_manifest_reads_or_fails_cleanly(text in prop_oneof![manifest_text(), ".{0,80}"]) {
+                if let Ok(manifest) = parse_manifest(&text) {
+                    prop_assert!(!version_segments(&manifest.version).is_empty());
+                    let found = found_in(&manifest, "0.12.0", Some("windows-x86_64"));
+                    if let Some(found) = found {
+                        prop_assert!(is_newer(&version_segments(&found.version), &[0, 12, 0]));
+                        let _ = notes_in(&found.notes, true);
+                        let _ = notes_in(&found.notes, false);
+                        let _ = fallback_url(&found);
+                    }
+                }
+            }
+
+            #[test]
+            fn versions_order_like_qt(a in prop::collection::vec(0u64..50, 0..5), b in prop::collection::vec(0u64..50, 0..5)) {
+                prop_assert!(!(is_newer(&a, &b) && is_newer(&b, &a)));
+                let text = segments_text(&a);
+                if !a.is_empty() {
+                    prop_assert_eq!(version_segments(&text), a);
+                }
+            }
+
+            #[test]
+            fn signatures_from_the_network_never_panic(text in prop_oneof!["[A-Za-z0-9+/=]{0,200}", ".{0,60}"]) {
+                if let Ok(decoded) = decode_base64_text(&text) {
+                    let _ = Signature::decode(&decoded);
+                    let _ = PublicKey::decode(&decoded);
+                }
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@
 mod advice;
 mod cli;
 mod commands;
+mod crash;
 mod garage;
 mod knowledge;
 mod measure;
@@ -179,6 +180,9 @@ fn main() {
             let handle = app.handle().clone();
             let config_dir = app.path().app_config_dir()?;
             let data_dir = app.path().data_dir()?;
+            // From here on a panic leaves a report on this computer (and
+            // nothing else); the interface offers it.
+            crash::install(crash::reports_dir(&data_dir), handle.clone());
             let values = settings::load_settings(&config_dir);
 
             // The language of the command line and of the settings, for the
@@ -278,6 +282,7 @@ fn main() {
             commands::list_serial_ports,
             commands::list_j2534_devices,
             commands::list_socketcan_interfaces,
+            commands::list_can_vendor_channels,
             commands::open_serial,
             commands::open_tcp,
             commands::open_demo,
@@ -289,6 +294,9 @@ fn main() {
             commands::close_adapter,
             commands::start_recording,
             commands::stop_recording,
+            commands::share_recording,
+            commands::crash_report_pending,
+            commands::crash_report_done,
             commands::read_faults,
             commands::clear_faults,
             commands::read_details,

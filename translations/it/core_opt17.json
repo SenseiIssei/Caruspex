@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Impostazioni dell'adattatore (AT, ST)",
+ "c-opt17-2": "Cancellazione errori",
+ "c-opt17-3": "Sessione diagnostica",
+ "c-opt17-4": "Memoria errori (OBD)",
+ "c-opt17-5": "Memoria errori (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Altri servizi",
+ "c-opt17-8": "Valori in tempo reale",
+ "c-opt17-9": "Valori del costruttore e identificativi",
+ "c-opt17-10": "Risultati dei test",
+ "c-opt17-11": "La via memorizzata stavolta non funziona, ricerca come al solito.",
+ "c-opt17-12": "Provo prima la via che ha funzionato l'ultima volta: %1",
+ "c-opt17-13": "Dati del veicolo (VIN, software)",
+ "c-opt17-14": "protocollo %1"
+}

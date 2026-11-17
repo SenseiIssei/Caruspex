@@ -159,3 +159,5 @@
 .connect-check-icon { color: var(--tone); flex: none; margin-top: 1px; }
 .connect-check-texts { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .connect-check-title { font-weight: 600; }
+.connect-moto { padding: 0 0 4px 38px; }
+.connect-moto ul { margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }

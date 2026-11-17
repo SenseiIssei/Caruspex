@@ -1,0 +1,18 @@
+{
+ "c-iface16-1": ". Para ello Caruspex necesita su programa auxiliar caruspex-j2534-bridge.exe, que falta junto al programa.",
+ "c-iface16-2": ". ¿Está instalado el controlador del fabricante?",
+ "c-iface16-3": "No se puede conectar CAN FD en el dispositivo J2534: ",
+ "c-iface16-4": "CAN FD no funciona en esta interfaz: ",
+ "c-iface16-5": "Aquí CAN FD solo funciona con SocketCAN y dispositivos J2534.",
+ "c-iface16-6": "PCAN-Basic y Kvaser CANlib solo se usan aquí en Windows; en Linux ambos funcionan con SocketCAN.",
+ "c-iface16-7": "El programa auxiliar de 32 bits para controladores J2534 antiguos no arranca: ",
+ "c-iface16-8": "No se puede abrir el canal Kvaser: ",
+ "c-iface16-9": "No se puede abrir el canal PCAN: ",
+ "c-iface16-10": "La interfaz no conoce esta velocidad de bits.",
+ "c-iface16-11": "La biblioteca CAN del fabricante está incompleta: ",
+ "c-iface16-12": "Falta la biblioteca CAN del fabricante: ",
+ "c-iface16-13": "Este es un controlador J2534 de 32 bits: ",
+ "c-iface16-14": "Canal Kvaser desconocido: ",
+ "c-iface16-15": "Canal PCAN desconocido: ",
+ "c-iface16-16": "canal "
+}
