@@ -5,7 +5,9 @@ use caruspex_i18n::l;
 use crate::timing::{now_ms, sleep_ms};
 use crate::transport::{IsoTpBatch, LogFn, Transport};
 
+mod j1939;
 mod stn;
+pub use j1939::parse_j1939_line;
 pub use stn::{StnBus, split_batch_answer, stn_buses};
 
 /// Default wait of [`Elm327::send`] in milliseconds.
@@ -206,6 +208,10 @@ pub fn protocol_name(id: char) -> &'static str {
         '9' => l(
             "ISO 15765-4 CAN (29 Bit, 250 kBaud)",
             "ISO 15765-4 CAN (29 bit, 250 kbaud)",
+        ),
+        'A' => l(
+            "SAE J1939 (29 Bit, 250 kBaud)",
+            "SAE J1939 (29 bit, 250 kbaud)",
         ),
         _ => l("unbekannt", "unknown"),
     }
@@ -574,6 +580,10 @@ pub struct Elm327 {
     protocol_id: char,
     headers: bool,
     connected: bool,
+    /// SAE J1939 bit rate in kbit/s while in protocol A or B, else 0.
+    j1939_kbit: u32,
+    /// The 29-bit id the adapter sends with right now (ATCP and ATSH).
+    j1939_header: Option<u32>,
 }
 
 impl Default for Elm327 {
@@ -605,6 +615,8 @@ impl Elm327 {
             protocol_id: '0',
             headers: false,
             connected: false,
+            j1939_kbit: 0,
+            j1939_header: None,
         }
     }
 
@@ -1243,6 +1255,8 @@ impl Elm327 {
     ) -> Result<(), String> {
         self.transport = Some(transport);
         self.connected = false;
+        self.j1939_kbit = 0;
+        self.j1939_header = None;
         self.stn = false;
         self.stn_id.clear();
         self.stn_batch = false;
@@ -1418,6 +1432,8 @@ impl Elm327 {
         self.transport = None;
         self.connected = false;
         self.headers = false;
+        self.j1939_kbit = 0;
+        self.j1939_header = None;
         self.stn = false;
         self.stn_batch = false;
         self.stn_bus = StnBus::HighSpeed;
