@@ -16,6 +16,7 @@ import type { TermId } from "../lib/glossary";
 import { useAppEvent, useBackendEvent, usePageActive } from "../lib/hooks";
 import { navigate } from "../shell/nav";
 import { useSession, useSettings } from "../state/session";
+import { J1939LivePage } from "../components/J1939";
 import { qtFilters, stamp } from "./measure";
 import "./LivePage.css";
 
@@ -44,7 +45,13 @@ interface Sample {
   unit: string;
 }
 
+// A truck sends its values by itself: its own page that listens.
 export default function LivePage() {
+  const truck = useSession((s) => s.j1939);
+  return truck ? <J1939LivePage /> : <CarLivePage />;
+}
+
+function CarLivePage() {
   const connected = useSession((s) => s.connected);
   const settings = useSettings();
   const active = usePageActive();

@@ -227,6 +227,12 @@ const BASE: Record<BodyType, BodySpec> = {
     deck: 0.85, belt: 0.74, beltRise: 0.02, rideHeight: 0.12, nose: 0.5, tail: 0.76, tumblehome: 0.2, noseRound: 4.5, tailRound: 7,
     lastPillar: 0.2, frameless: true, quarterWindow: false, kink: false,
   },
+  // Trucks are drawn with the van's shape.
+  [BodyType.Truck]: {
+    style: "van", doors: 4, frontShare: 0.47, cowl: -0.05, windscreen: 33, rearWindow: 84, roofCrown: 0.02, roofPeak: 0.5, roofDrop: 0,
+    deck: 0, belt: 0.56, beltRise: 0, rideHeight: 0.17, nose: 0.5, tail: 0.6, tumblehome: 0.08, noseRound: 5, tailRound: 10,
+    lastPillar: 0.1, frameless: false, quarterWindow: true, kink: false,
+  },
 };
 
 // Lamps and grille by era: tall upright lamps (round ones before 1980) and

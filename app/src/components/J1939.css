@@ -1,0 +1,40 @@
+/* Trucks over SAE J1939: units with their lamps, the live values. */
+
+.j1939-unit-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.j1939-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-flat);
+  border: 1px solid var(--border);
+}
+.j1939-unit-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.j1939-unit-head .spacer { flex: 1; }
+.j1939-lamps { display: flex; flex-wrap: wrap; gap: 6px; }
+.j1939-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+.j1939-lamp-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+.j1939-lamp.on { color: var(--text); border-color: var(--tone); }
+.j1939-lamp.on .j1939-lamp-dot { background: var(--tone); box-shadow: 0 0 6px var(--tone); }
+.j1939-id { font-size: 12px; }
+.j1939-units .hint { margin-top: 10px; }
+
+.j1939-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.j1939-table { width: 100%; border-collapse: collapse; }
+.j1939-table td { padding: 4px 6px; border-bottom: 1px solid var(--border); vertical-align: baseline; }
+.j1939-table tr:last-child td { border-bottom: none; }
+.j1939-name { width: 55%; }
+.j1939-value { text-align: end; white-space: nowrap; font-weight: 600; }
+.j1939-value.bad { color: var(--bad); font-weight: 500; }
+
+.connect-truck { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.connect-truck .connect-line { align-items: center; }

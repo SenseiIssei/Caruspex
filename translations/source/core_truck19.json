@@ -1,0 +1,787 @@
+[
+ {
+  "id": "c-truck19-1",
+  "de": "  J1939: Diagnosegerät meldet sich mit Adresse ",
+  "en": "  J1939: diagnostic tool claims address "
+ },
+ {
+  "id": "c-truck19-2",
+  "de": "  Der Adapter kann diese Bitrate nicht einstellen.",
+  "en": "  The adapter cannot set this bit rate."
+ },
+ {
+  "id": "c-truck19-3",
+  "de": "  Verkehr auf dem Bus: ",
+  "en": "  Traffic on the bus: "
+ },
+ {
+  "id": "c-truck19-4",
+  "de": "  Versuche SAE J1939 mit ",
+  "en": "  Trying SAE J1939 at "
+ },
+ {
+  "id": "c-truck19-5",
+  "de": "24 Volt",
+  "en": "24 volts"
+ },
+ {
+  "id": "c-truck19-6",
+  "de": "9-polige Lkw-Diagnosebuchse (SAE J1939), Adapterkabel auf OBD-II",
+  "en": "9-pin truck diagnostic socket (SAE J1939), adapter cable to OBD-II"
+ },
+ {
+  "id": "c-truck19-7",
+  "de": "Warm ist der Motor meist zwischen 80 und 95 °C.",
+  "en": "A warm engine usually sits between 80 and 95 °C."
+ },
+ {
+  "id": "c-truck19-8",
+  "de": "Fahrpedalstellung",
+  "en": "Accelerator pedal position"
+ },
+ {
+  "id": "c-truck19-9",
+  "de": "Luftdruck am Einlass",
+  "en": "Air inlet pressure"
+ },
+ {
+  "id": "c-truck19-10",
+  "de": "Umgebungsluftdruck, sinkt in den Bergen.",
+  "en": "Air pressure around the vehicle, lower in the mountains."
+ },
+ {
+  "id": "c-truck19-11",
+  "de": "Vorratsdruck Druckluft",
+  "en": "Air supply pressure"
+ },
+ {
+  "id": "c-truck19-12",
+  "de": "Lufttemperatur draußen.",
+  "en": "Air temperature outside."
+ },
+ {
+  "id": "c-truck19-13",
+  "de": "Aller Kraftstoff, den der Motor seit dem Bau verbraucht hat.",
+  "en": "All the fuel the engine has burned since it was built."
+ },
+ {
+  "id": "c-truck19-14",
+  "de": "Lichtmaschinenstrom",
+  "en": "Alternator current"
+ },
+ {
+  "id": "c-truck19-15",
+  "de": "Außentemperatur",
+  "en": "Ambient temperature"
+ },
+ {
+  "id": "c-truck19-16",
+  "de": "Bitrate der Buchse",
+  "en": "Bit rate of the socket"
+ },
+ {
+  "id": "c-truck19-17",
+  "de": "Karosserie-Steuergerät",
+  "en": "Body controller"
+ },
+ {
+  "id": "c-truck19-18",
+  "de": "Bremspedalstellung",
+  "en": "Brake pedal position"
+ },
+ {
+  "id": "c-truck19-19",
+  "de": "Bremsen (ABS/EBS)",
+  "en": "Brakes (ABS/EBS)"
+ },
+ {
+  "id": "c-truck19-20",
+  "de": "Fahrerhaus-Steuergerät",
+  "en": "Cab controller"
+ },
+ {
+  "id": "c-truck19-21",
+  "de": "Ursache unbekannt, der Fehler ist aber da",
+  "en": "Cause unknown, but the fault is there"
+ },
+ {
+  "id": "c-truck19-22",
+  "de": "Ladespannung",
+  "en": "Charging voltage"
+ },
+ {
+  "id": "c-truck19-23",
+  "de": "Löschen fehlgeschlagen: %1",
+  "en": "Clearing failed: %1"
+ },
+ {
+  "id": "c-truck19-24",
+  "de": "Bauteil oder Steuergerät defekt",
+  "en": "Component or control unit faulty"
+ },
+ {
+  "id": "c-truck19-25",
+  "de": "Zustand liegt vor (siehe Bedeutung des SPN)",
+  "en": "Condition present (see what the SPN stands for)"
+ },
+ {
+  "id": "c-truck19-26",
+  "de": "Kühlmittelstand",
+  "en": "Coolant level"
+ },
+ {
+  "id": "c-truck19-27",
+  "de": "Kühlmitteldruck",
+  "en": "Coolant pressure"
+ },
+ {
+  "id": "c-truck19-28",
+  "de": "Kurbelgehäusedruck",
+  "en": "Crankcase pressure"
+ },
+ {
+  "id": "c-truck19-29",
+  "de": "Tempomat",
+  "en": "Cruise control"
+ },
+ {
+  "id": "c-truck19-30",
+  "de": "Eingelegter Gang",
+  "en": "Current gear"
+ },
+ {
+  "id": "c-truck19-31",
+  "de": "Strom, den die Lichtmaschine abgibt.",
+  "en": "Current the alternator puts out."
+ },
+ {
+  "id": "c-truck19-32",
+  "de": "Strom zu hoch oder Leitung an Masse",
+  "en": "Current too high or wire touching ground"
+ },
+ {
+  "id": "c-truck19-33",
+  "de": "Strom zu niedrig oder Leitung unterbrochen",
+  "en": "Current too low or wire broken"
+ },
+ {
+  "id": "c-truck19-34",
+  "de": "AdBlue-Füllstand",
+  "en": "DEF (AdBlue) level"
+ },
+ {
+  "id": "c-truck19-35",
+  "de": "Demo-Lkw (eingebaut)",
+  "en": "Demo truck (built-in)"
+ },
+ {
+  "id": "c-truck19-36",
+  "de": "Die Diagnose läuft über die 16-polige Buchse, J1939 liegt dort auf den CAN-Pins.",
+  "en": "Diagnosis runs through the 16-pin socket, with J1939 on its CAN pins."
+ },
+ {
+  "id": "c-truck19-37",
+  "de": "Diagnosebuchse und Kabel",
+  "en": "Diagnostic socket and cable"
+ },
+ {
+  "id": "c-truck19-38",
+  "de": "Diagnosegerät",
+  "en": "Diagnostic tool"
+ },
+ {
+  "id": "c-truck19-39",
+  "de": "Strecke seit dem letzten Zurücksetzen.",
+  "en": "Distance since the last reset."
+ },
+ {
+  "id": "c-truck19-40",
+  "de": "Retarder",
+  "en": "Driveline retarder"
+ },
+ {
+  "id": "c-truck19-41",
+  "de": "Drehmomentwunsch des Fahrers",
+  "en": "Driver's torque demand"
+ },
+ {
+  "id": "c-truck19-42",
+  "de": "Motor 2",
+  "en": "Engine 2"
+ },
+ {
+  "id": "c-truck19-43",
+  "de": "Motorlast",
+  "en": "Engine load"
+ },
+ {
+  "id": "c-truck19-44",
+  "de": "Motorbremse",
+  "en": "Engine retarder"
+ },
+ {
+  "id": "c-truck19-45",
+  "de": "Motordrehmoment (Ist)",
+  "en": "Engine torque (actual)"
+ },
+ {
+  "id": "c-truck19-46",
+  "de": "Alle Kurbelwellenumdrehungen seit dem Bau.",
+  "en": "Every crankshaft revolution since the engine was built."
+ },
+ {
+  "id": "c-truck19-47",
+  "de": "Abgastemperatur",
+  "en": "Exhaust gas temperature"
+ },
+ {
+  "id": "c-truck19-48",
+  "de": "Fehler eines Lkw-Steuergeräts nach SAE J1939. Wie eilig er ist, zeigen die Lampen des Steuergeräts: Rote Stopplampe heißt anhalten, sobald es sicher geht, gelbe Warnlampe heißt bald in die Werkstatt.",
+  "en": "Fault of a truck control unit under SAE J1939. How urgent it is, the unit's lamps show: the red stop lamp means stop as soon as it is safe, the amber warning lamp means see a workshop soon."
+ },
+ {
+  "id": "c-truck19-49",
+  "de": "Füllstand im Ausgleichsbehälter.",
+  "en": "Fill level in the expansion tank."
+ },
+ {
+  "id": "c-truck19-50",
+  "de": "Füllstand des Kraftstofftanks.",
+  "en": "Fill level of the fuel tank."
+ },
+ {
+  "id": "c-truck19-51",
+  "de": "Füllstand der Ölwanne, wenn der Motor ihn misst.",
+  "en": "Fill level of the oil sump, where the engine measures it."
+ },
+ {
+  "id": "c-truck19-52",
+  "de": "Füllstand des Harnstofftanks für die Abgasreinigung.",
+  "en": "Fill level of the urea tank for the exhaust cleaning."
+ },
+ {
+  "id": "c-truck19-53",
+  "de": "Frequenz, Pulsbreite oder Periode stimmt nicht",
+  "en": "Frequency, pulse width or period is wrong"
+ },
+ {
+  "id": "c-truck19-54",
+  "de": "Geschwindigkeit Vorderachse",
+  "en": "Front axle speed"
+ },
+ {
+  "id": "c-truck19-55",
+  "de": "Kraftstoffvordruck",
+  "en": "Fuel delivery pressure"
+ },
+ {
+  "id": "c-truck19-56",
+  "de": "Tankinhalt",
+  "en": "Fuel level"
+ },
+ {
+  "id": "c-truck19-57",
+  "de": "Kraftstoffverbrauch",
+  "en": "Fuel rate"
+ },
+ {
+  "id": "c-truck19-58",
+  "de": "Kraftstofftemperatur",
+  "en": "Fuel temperature"
+ },
+ {
+  "id": "c-truck19-59",
+  "de": "Verbrauch seit dem letzten Zurücksetzen.",
+  "en": "Fuel used since the last reset."
+ },
+ {
+  "id": "c-truck19-60",
+  "de": "Wie weit das Gaspedal getreten ist.",
+  "en": "How far the accelerator pedal is pressed."
+ },
+ {
+  "id": "c-truck19-61",
+  "de": "Wie weit das Bremspedal getreten ist.",
+  "en": "How far the brake pedal is pressed."
+ },
+ {
+  "id": "c-truck19-62",
+  "de": "Fällt er bei laufendem Motor stark ab, sofort anhalten.",
+  "en": "If it drops sharply with the engine running, stop at once."
+ },
+ {
+  "id": "c-truck19-63",
+  "de": "Steigt er, kann Abgas an den Kolbenringen vorbeiströmen.",
+  "en": "If it rises, exhaust may be blowing past the piston rings."
+ },
+ {
+  "id": "c-truck19-64",
+  "de": "Im Fahrerhaus, meist unter dem Armaturenbrett auf der Fahrerseite oder hinter einer Abdeckung am Knie des Fahrers.",
+  "en": "In the cab, usually under the dashboard on the driver side or behind a cover at the driver's knee."
+ },
+ {
+  "id": "c-truck19-65",
+  "de": "Momentane Reichweite je Liter",
+  "en": "Instant distance per litre"
+ },
+ {
+  "id": "c-truck19-66",
+  "de": "Ladelufttemperatur",
+  "en": "Intake manifold temperature"
+ },
+ {
+  "id": "c-truck19-67",
+  "de": "J1939 auf %1: %2 Rahmen gehört.",
+  "en": "J1939 on %1: %2 frames heard."
+ },
+ {
+  "id": "c-truck19-68",
+  "de": "J1939: %1 Steuergeräte, %2 aktive und %3 frühere Fehler.",
+  "en": "J1939: %1 control units, %2 active and %3 previous faults."
+ },
+ {
+  "id": "c-truck19-69",
+  "de": "J1939: Fehlerspeicher gelöscht.",
+  "en": "J1939: fault memory cleared."
+ },
+ {
+  "id": "c-truck19-70",
+  "de": "J1939: Fehler gelöscht, %1 Antworten lehnten ab.",
+  "en": "J1939: faults cleared, %1 answers refused."
+ },
+ {
+  "id": "c-truck19-71",
+  "de": "J1939: Kein Steuergerät hat das Löschen bestätigt.",
+  "en": "J1939: no control unit confirmed the clearing."
+ },
+ {
+  "id": "c-truck19-72",
+  "de": "Kilometer je Liter beim aktuellen Verbrauch.",
+  "en": "Kilometres per litre at the current fuel rate."
+ },
+ {
+  "id": "c-truck19-73",
+  "de": "Last bei der aktuellen Drehzahl, gemessen am Höchstmöglichen.",
+  "en": "Load at the current speed, measured against what is possible."
+ },
+ {
+  "id": "c-truck19-74",
+  "de": "Mittlere Geschwindigkeit der Vorderräder, vom Bremssteuergerät.",
+  "en": "Mean speed of the front wheels, from the brake control unit."
+ },
+ {
+  "id": "c-truck19-75",
+  "de": "Messung gestartet, die J1939-Werte werden mitgehört.",
+  "en": "Measurement started, listening to the J1939 values."
+ },
+ {
+  "id": "c-truck19-76",
+  "de": "Mechanik reagiert nicht richtig oder ist verstellt",
+  "en": "Mechanical part does not respond properly or is out of adjustment"
+ },
+ {
+  "id": "c-truck19-77",
+  "de": "Negativ ist rückwärts, 0 ist Leerlauf.",
+  "en": "Negative is reverse, 0 is neutral."
+ },
+ {
+  "id": "c-truck19-78",
+  "de": "Auf dem Bus ist keine Adresse für das Diagnosegerät mehr frei.",
+  "en": "No address is left free for the diagnostic tool on the bus."
+ },
+ {
+  "id": "c-truck19-79",
+  "de": "Nordamerikanische Lkw haben eine runde 9-polige Buchse (Deutsch): Ein Adapterkabel von 9 Polen auf eine 16-polige OBD-Kupplung verbindet den Adapter. Europäische Lkw seit Euro 6 haben meist die 16-polige Buchse wie ein Auto. Transporter wie Sprinter, Transit oder Crafter sprechen normales OBD-II, dafür das Häkchen Lkw ausschalten.",
+  "en": "North American trucks have a round 9-pin socket (Deutsch): an adapter cable from 9 pins to a 16-pin OBD female connects the adapter. European trucks since Euro 6 mostly have the 16-pin socket like a car. Vans such as Sprinter, Transit or Crafter speak normal OBD-II, so switch the truck tick off for them."
+ },
+ {
+  "id": "c-truck19-80",
+  "de": "Auf dem J1939-Bus ist nichts zu hören.\n  - Zündung an? Lkw-Steuergeräte schweigen bei Zündung aus.\n  - Steckt der Adapter über das Adapterkabel in der 9-poligen Diagnosebuchse?\n  - Schwarze Buchse (Typ 1): 250 kbit/s, grüne Buchse (Typ 2): 500 kbit/s.",
+  "en": "Nothing can be heard on the J1939 bus.\n  - Ignition on? Truck control units stay silent with the ignition off.\n  - Is the adapter in the 9-pin diagnostic socket through the adapter cable?\n  - Black socket (type 1): 250 kbit/s, green socket (type 2): 500 kbit/s."
+ },
+ {
+  "id": "c-truck19-81",
+  "de": "Kilometerstand in Schritten von 5 m.",
+  "en": "Odometer reading in steps of 5 m."
+ },
+ {
+  "id": "c-truck19-82",
+  "de": "Kilometerstand.",
+  "en": "Odometer reading."
+ },
+ {
+  "id": "c-truck19-83",
+  "de": "Öldruck",
+  "en": "Oil pressure"
+ },
+ {
+  "id": "c-truck19-84",
+  "de": "Öffnung der Drosselklappe, bei Dieseln oft fast immer offen.",
+  "en": "Opening of the throttle valve, nearly always open on many diesels."
+ },
+ {
+  "id": "c-truck19-85",
+  "de": "Kalibrierung stimmt nicht, Anlernen nötig",
+  "en": "Out of calibration, needs to be taught in again"
+ },
+ {
+  "id": "c-truck19-86",
+  "de": "Positiv lädt die Batterie, negativ wird sie entladen.",
+  "en": "Positive charges the battery, negative drains it."
+ },
+ {
+  "id": "c-truck19-87",
+  "de": "Überdruck im Ansaugkrümmer durch den Turbolader.",
+  "en": "Pressure above ambient in the intake manifold from the turbocharger."
+ },
+ {
+  "id": "c-truck19-88",
+  "de": "Druck am Lufteinlass des Motors.",
+  "en": "Pressure at the air inlet of the engine."
+ },
+ {
+  "id": "c-truck19-89",
+  "de": "Druck, mit dem die Förderpumpe den Kraftstoff liefert.",
+  "en": "Pressure at which the lift pump delivers the fuel."
+ },
+ {
+  "id": "c-truck19-90",
+  "de": "Druck im Kühlkreislauf.",
+  "en": "Pressure in the cooling circuit."
+ },
+ {
+  "id": "c-truck19-91",
+  "de": "Druck im Vorratsbehälter der Druckluftanlage.",
+  "en": "Pressure in the reservoir of the air system."
+ },
+ {
+  "id": "c-truck19-92",
+  "de": "Reserviert, vom Standard noch nicht belegt",
+  "en": "Reserved, not yet assigned by the standard"
+ },
+ {
+  "id": "c-truck19-93",
+  "de": "Runde 9-polige Diagnosebuchse (Deutsch, SAE J1939-13) im Fahrerhaus, meist unter dem Armaturenbrett auf der Fahrerseite. Schwarze Buchse (Typ 1): 250 kbit/s. Grüne Buchse (Typ 2, ab etwa 2016): 500 kbit/s, sie nimmt auch den schwarzen Stecker. Ein Adapterkabel von 9 Polen auf eine 16-polige OBD-Kupplung verbindet den Adapter.",
+  "en": "Round 9-pin diagnostic socket (Deutsch, SAE J1939-13) in the cab, usually under the dashboard on the driver side. Black socket (type 1): 250 kbit/s. Green socket (type 2, from about 2016): 500 kbit/s, it also takes the black plug. An adapter cable from 9 pins to a 16-pin OBD female connects the adapter."
+ },
+ {
+  "id": "c-truck19-94",
+  "de": "SAE J1939 (29 Bit, 250 kBaud)",
+  "en": "SAE J1939 (29 bit, 250 kbaud)"
+ },
+ {
+  "id": "c-truck19-95",
+  "de": "Gewählter Gang",
+  "en": "Selected gear"
+ },
+ {
+  "id": "c-truck19-96",
+  "de": "Sonderfall, siehe Unterlagen des Herstellers",
+  "en": "Special case, see the maker's documentation"
+ },
+ {
+  "id": "c-truck19-97",
+  "de": "Geschwindigkeit laut Tachograph",
+  "en": "Speed according to the tachograph"
+ },
+ {
+  "id": "c-truck19-98",
+  "de": "Tachograph",
+  "en": "Tachograph"
+ },
+ {
+  "id": "c-truck19-99",
+  "de": "Temperatur der Luft am Ansaugstutzen.",
+  "en": "Temperature of the air at the air inlet."
+ },
+ {
+  "id": "c-truck19-100",
+  "de": "Temperatur der Luft im Ansaugkrümmer, hinter dem Ladeluftkühler.",
+  "en": "Temperature of the air in the intake manifold, after the charge air cooler."
+ },
+ {
+  "id": "c-truck19-101",
+  "de": "Temperatur des Diesels im Kraftstoffsystem.",
+  "en": "Temperature of the diesel in the fuel system."
+ },
+ {
+  "id": "c-truck19-102",
+  "de": "Temperatur des Motoröls.",
+  "en": "Temperature of the engine oil."
+ },
+ {
+  "id": "c-truck19-103",
+  "de": "Temperatur des Abgases.",
+  "en": "Temperature of the exhaust gas."
+ },
+ {
+  "id": "c-truck19-104",
+  "de": "Temperatur des Getriebeöls.",
+  "en": "Temperature of the gearbox oil."
+ },
+ {
+  "id": "c-truck19-105",
+  "de": "Die CAN-Schnittstelle nimmt den Rahmen nicht an.",
+  "en": "The CAN interface does not take the frame."
+ },
+ {
+  "id": "c-truck19-106",
+  "de": "Der Adapter nimmt den J1939-Kopf nicht an (ATCP/ATSH).",
+  "en": "The adapter does not take the J1939 header (ATCP/ATSH)."
+ },
+ {
+  "id": "c-truck19-107",
+  "de": "Der Adapter ist nicht im J1939-Betrieb.",
+  "en": "The adapter is not in J1939 mode."
+ },
+ {
+  "id": "c-truck19-108",
+  "de": "Der Adapter nimmt nichts mehr an.",
+  "en": "The adapter no longer takes anything."
+ },
+ {
+  "id": "c-truck19-109",
+  "de": "Das Diagnosegerät bekommt auf dem Bus keine Adresse.",
+  "en": "The diagnostic tool gets no address on the bus."
+ },
+ {
+  "id": "c-truck19-110",
+  "de": "Der Gang, den Fahrer oder Getriebe als Nächstes wollen.",
+  "en": "The gear the driver or the gearbox wants next."
+ },
+ {
+  "id": "c-truck19-111",
+  "de": "Die Geschwindigkeit, die der Fahrtenschreiber aufzeichnet.",
+  "en": "The speed the tachograph records."
+ },
+ {
+  "id": "c-truck19-112",
+  "de": "Das Drehmoment, das Fahrpedal und Tempomat gerade verlangen.",
+  "en": "The torque the accelerator pedal and cruise control ask for right now."
+ },
+ {
+  "id": "c-truck19-113",
+  "de": "Drosselklappe",
+  "en": "Throttle valve"
+ },
+ {
+  "id": "c-truck19-114",
+  "de": "Gesamtstrecke",
+  "en": "Total distance"
+ },
+ {
+  "id": "c-truck19-115",
+  "de": "Gesamtstrecke (fein)",
+  "en": "Total distance (fine)"
+ },
+ {
+  "id": "c-truck19-116",
+  "de": "Motorumdrehungen gesamt",
+  "en": "Total engine revolutions"
+ },
+ {
+  "id": "c-truck19-117",
+  "de": "Kraftstoff gesamt",
+  "en": "Total fuel used"
+ },
+ {
+  "id": "c-truck19-118",
+  "de": "Gesamte Laufzeit des Motors, wichtig für Wartung und Gebrauchtkauf.",
+  "en": "Total running time of the engine, useful for service and when buying used."
+ },
+ {
+  "id": "c-truck19-119",
+  "de": "Getriebe 2",
+  "en": "Transmission 2"
+ },
+ {
+  "id": "c-truck19-120",
+  "de": "Getriebeöltemperatur",
+  "en": "Transmission oil temperature"
+ },
+ {
+  "id": "c-truck19-121",
+  "de": "Probiert: %1 kbit/s. Schwarze 9-polige Buchse (Typ 1): 250 kbit/s, grüne (Typ 2, ab etwa 2016): 500 kbit/s. Mit Automatisch probiert Caruspex beide.",
+  "en": "Tried: %1 kbit/s. Black 9-pin socket (type 1): 250 kbit/s, green (type 2, from about 2016): 500 kbit/s. With Automatic Caruspex tries both."
+ },
+ {
+  "id": "c-truck19-122",
+  "de": "Tagesstrecke",
+  "en": "Trip distance"
+ },
+ {
+  "id": "c-truck19-123",
+  "de": "Tagesstrecke (fein)",
+  "en": "Trip distance (fine)"
+ },
+ {
+  "id": "c-truck19-124",
+  "de": "Tagesstrecke in Schritten von 5 m.",
+  "en": "Trip distance in steps of 5 m."
+ },
+ {
+  "id": "c-truck19-125",
+  "de": "Kraftstoff Fahrt",
+  "en": "Trip fuel"
+ },
+ {
+  "id": "c-truck19-126",
+  "de": "Lkw",
+  "en": "Truck"
+ },
+ {
+  "id": "c-truck19-127",
+  "de": "Lkw mit SAE J1939: Caruspex hört die Werte mit, die die Steuergeräte ständig senden, liest aktive und frühere Fehler (DM1, DM2) mit SPN, FMI und Warnlampen, die Fahrgestellnummer und die Kennungen der Steuergeräte.",
+  "en": "Truck with SAE J1939: Caruspex listens to the values the control units send all the time, reads active and previous faults (DM1, DM2) with SPN, FMI and warning lamps, the VIN and the identification of the control units."
+ },
+ {
+  "id": "c-truck19-128",
+  "de": "Lkw haben meist 24 V: bei laufendem Motor um 28 V, im Stand um 25 V.",
+  "en": "Trucks mostly have 24 V: about 28 V with the engine running, about 25 V standing."
+ },
+ {
+  "id": "c-truck19-129",
+  "de": "Lkw haben meist 24 V. Viele billige ELM327-Adapter sind nur für 12 V gebaut und gehen daran kaputt: nur einen Adapter nehmen, der 24 V ausdrücklich verträgt.",
+  "en": "Trucks mostly run on 24 V. Many cheap ELM327 adapters are built for 12 V only and break on it: use only an adapter that is rated for 24 V."
+ },
+ {
+  "id": "c-truck19-130",
+  "de": "Umdrehungen der Kurbelwelle pro Minute.",
+  "en": "Turns of the crankshaft per minute."
+ },
+ {
+  "id": "c-truck19-131",
+  "de": "Wert kommt zu selten oder gar nicht mehr über den Bus",
+  "en": "Value arrives too seldom or no longer over the bus"
+ },
+ {
+  "id": "c-truck19-132",
+  "de": "Wert ändert sich ungewöhnlich schnell",
+  "en": "Value changes unusually fast"
+ },
+ {
+  "id": "c-truck19-133",
+  "de": "Wert driftet nach unten",
+  "en": "Value drifts downwards"
+ },
+ {
+  "id": "c-truck19-134",
+  "de": "Wert driftet nach oben",
+  "en": "Value drifts upwards"
+ },
+ {
+  "id": "c-truck19-135",
+  "de": "Wert viel zu hoch, über dem normalen Bereich (schwerste Stufe)",
+  "en": "Value far too high, above the normal range (most severe level)"
+ },
+ {
+  "id": "c-truck19-136",
+  "de": "Wert viel zu niedrig, unter dem normalen Bereich (schwerste Stufe)",
+  "en": "Value far too low, below the normal range (most severe level)"
+ },
+ {
+  "id": "c-truck19-137",
+  "de": "Über den Bus empfangener Wert ist fehlerhaft",
+  "en": "Value received over the bus is faulty"
+ },
+ {
+  "id": "c-truck19-138",
+  "de": "Wert etwas zu hoch (leichteste Stufe)",
+  "en": "Value slightly too high (least severe level)"
+ },
+ {
+  "id": "c-truck19-139",
+  "de": "Wert etwas zu niedrig (leichteste Stufe)",
+  "en": "Value slightly too low (least severe level)"
+ },
+ {
+  "id": "c-truck19-140",
+  "de": "Wert zu hoch (mittlere Stufe)",
+  "en": "Value too high (moderate level)"
+ },
+ {
+  "id": "c-truck19-141",
+  "de": "Wert zu niedrig (mittlere Stufe)",
+  "en": "Value too low (moderate level)"
+ },
+ {
+  "id": "c-truck19-142",
+  "de": "Wert unstet, springt oder passt nicht zu den anderen Werten",
+  "en": "Value unsteady, jumping or not matching the other values"
+ },
+ {
+  "id": "c-truck19-143",
+  "de": "Spannung am Zündschloss",
+  "en": "Voltage at the ignition switch"
+ },
+ {
+  "id": "c-truck19-144",
+  "de": "Spannung hinter dem Zündschalter.",
+  "en": "Voltage behind the ignition switch."
+ },
+ {
+  "id": "c-truck19-145",
+  "de": "Spannung, die die Lichtmaschine liefert.",
+  "en": "Voltage the alternator delivers."
+ },
+ {
+  "id": "c-truck19-146",
+  "de": "Spannung zu hoch oder Kurzschluss nach Plus",
+  "en": "Voltage too high or short circuit to positive"
+ },
+ {
+  "id": "c-truck19-147",
+  "de": "Spannung zu niedrig oder Kurzschluss nach Masse",
+  "en": "Voltage too low or short circuit to ground"
+ },
+ {
+  "id": "c-truck19-148",
+  "de": "Was der Motor in diesem Moment verbraucht.",
+  "en": "What the engine burns at this moment."
+ },
+ {
+  "id": "c-truck19-149",
+  "de": "Was der Motor gerade abgibt, als Anteil seines Bezugsmoments.",
+  "en": "What the engine delivers now, as a share of its reference torque."
+ },
+ {
+  "id": "c-truck19-150",
+  "de": "Aus den Raddrehzahlen berechnet.",
+  "en": "Worked out from the wheel speeds."
+ },
+ {
+  "id": "c-truck19-151",
+  "de": "kein Zugriff",
+  "en": "access denied"
+ },
+ {
+  "id": "c-truck19-152",
+  "de": "Bit",
+  "en": "bit"
+ },
+ {
+  "id": "c-truck19-153",
+  "de": "erledigt",
+  "en": "done"
+ },
+ {
+  "id": "c-truck19-154",
+  "de": "gerade nicht möglich",
+  "en": "not possible right now"
+ },
+ {
+  "id": "c-truck19-155",
+  "de": "%1-mal aufgetreten",
+  "en": "occurred %1 times"
+ },
+ {
+  "id": "c-truck19-156",
+  "de": "früher aktiv",
+  "en": "previously active"
+ },
+ {
+  "id": "c-truck19-157",
+  "de": "abgelehnt",
+  "en": "refused"
+ }
+]

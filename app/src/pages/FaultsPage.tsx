@@ -13,6 +13,7 @@ import { toast } from "../components/Toast";
 import { Term, TermStrip } from "../components/Term";
 import { Button, Card, Page, PageHeader, Pill } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
+import { J1939UnitsCard } from "../components/J1939";
 import { localeNumber, t, translator } from "../i18n";
 import type { TermId } from "../lib/glossary";
 import { emitApp } from "../lib/store";
@@ -24,6 +25,7 @@ import "./FaultsPage.css";
 
 const tr = translator("caruspex::FaultsPage");
 const tw = translator("caruspex::WhatToDoPage");
+const tt = translator("caruspex::Truck");
 
 // Colour for a Severity value (severityColour in FaultsPage.cpp): Info, Low,
 // Medium, High, Critical.
@@ -97,6 +99,8 @@ export default function FaultsPage() {
   const frames = useSession((s) => s.freezeFrames);
   const brand = useSession((s) => s.identity?.brand ?? "");
   const body = useSession((s) => s.identity?.body ?? 0);
+  // A truck over SAE J1939: faults from DM1 and DM2, cleared with DM11 and DM3.
+  const truck = useSession((s) => s.j1939);
   const settings = useSettings();
 
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -164,9 +168,13 @@ export default function FaultsPage() {
           <>
             <div className="strong">{tr("Fehlerspeicher wirklich löschen?")}</div>
             <div className="subtle" style={{ marginTop: 8 }}>
-              {tr(
-                "Die Fehlerlampe geht aus und die Bereitschaftstests werden zurückgesetzt. Eine Abgasuntersuchung fällt direkt danach durch, bis das Auto wieder ein paar Fahrzyklen gelaufen ist.\n\nLöschen ersetzt keine Reparatur.",
-              )}
+              {truck
+                ? tt(
+                    "Gelöscht werden die aktiven Fehler (DM11) und die früheren Fehler (DM3) aller Steuergeräte am J1939-Bus. Manche Steuergeräte setzen dabei auch Zähler und gelernte Werte zurück, die die Werkstatt noch braucht.\n\nLöschen ersetzt keine Reparatur.",
+                  )
+                : tr(
+                    "Die Fehlerlampe geht aus und die Bereitschaftstests werden zurückgesetzt. Eine Abgasuntersuchung fällt direkt danach durch, bis das Auto wieder ein paar Fahrzyklen gelaufen ist.\n\nLöschen ersetzt keine Reparatur.",
+                  )}
             </div>
           </>
         ),
@@ -269,9 +277,11 @@ export default function FaultsPage() {
         <Button variant="danger" icon="trash" disabled={!connected} onClick={() => void askAndClear()}>
           {tr("Fehler löschen")}
         </Button>
-        <Button variant="danger" disabled={!connected} onClick={() => void askAndBruteForce()}>
-          {tr("Hartnäckig löschen")}
-        </Button>
+        {truck ? null : (
+          <Button variant="danger" disabled={!connected} onClick={() => void askAndBruteForce()}>
+            {tr("Hartnäckig löschen")}
+          </Button>
+        )}
         <Button icon="download" disabled={!connected || faults.length === 0} onClick={() => void exportCsv()}>
           {tr("Als CSV speichern")}
         </Button>
@@ -282,6 +292,8 @@ export default function FaultsPage() {
           </span>
         ) : null}
       </div>
+
+      {connected && truck ? <J1939UnitsCard /> : null}
 
       {connected && throttle ? (
         <div className="faults-throttle fade-in">
@@ -319,7 +331,7 @@ export default function FaultsPage() {
                   <span className="fault-main">
                     <span className="fault-top">
                       <span className="fault-code mono ltr">{e.fault.code}</span>
-                      <span className="fault-text">{e.info.known ? e.info.text : e.fault.text}</span>
+                      <span className="fault-text">{e.info.known && !truck ? e.info.text : e.fault.text}</span>
                       <span className="fault-pill">{e.info.severityLabel}</span>
                     </span>
                     <span className="fault-meta">{meta.join("  ·  ")}</span>
