@@ -35,6 +35,7 @@
 .j1939-name { width: 55%; }
 .j1939-value { text-align: end; white-space: nowrap; font-weight: 600; }
 .j1939-value.bad { color: var(--bad); font-weight: 500; }
+.j1939-spn { white-space: nowrap; font-size: 12px; }
 
 .connect-truck { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
 .connect-truck .connect-line { align-items: center; }
