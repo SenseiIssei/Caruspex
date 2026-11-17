@@ -26,8 +26,9 @@ mod vendor_can;
 pub use can_bus::{
     CanElm, CanFrame, CanLink, CanVendor, J2534Device, KLineKind, SerialOpener, SharedCanLink,
     SlcanLink, VendorChannel, can_vendor_channels, j2534_devices, j2534_library,
-    open_can_interface, open_j2534, open_j2534_kline, open_socket_can, open_vendor_can,
-    probe_slcan, set_j2534_bridge, socket_can_interfaces, vendor_channels_in,
+    open_can_interface, open_j2534, open_j2534_fd, open_j2534_kline, open_socket_can,
+    open_socket_can_fd, open_vendor_can, probe_slcan, set_j2534_bridge, socket_can_interfaces,
+    vendor_channels_in,
 };
 pub use can_signals::{
     CanSignal, can_bits, decode_can_signal, parse_can_signal, parse_monitor_request,

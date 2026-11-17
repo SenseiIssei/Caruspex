@@ -18,6 +18,9 @@ import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
 
 const tr = translator("caruspex::ConnectPage");
+
+// CAN FD goes through SocketCAN and J2534 devices only.
+const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.startsWith("j2534:");
 // Texts that are new in the connection assistant.
 const tc = translator("caruspex::ConnectHelp");
 const MW = "caruspex::MainWindow";
@@ -195,6 +198,8 @@ export default function ConnectPage() {
   const [canDevices, setCanDevices] = useState<CanChoice[]>([]);
   const [canIndex, setCanIndex] = useState(0);
   const [canRate, setCanRate] = useState(500000);
+  // CAN FD, off by default; only SocketCAN and J2534 devices offer it.
+  const [canFd, setCanFd] = useState(false);
 
   // Vehicle
   const [vehicleText, setVehicleText] = useState("");
@@ -218,8 +223,8 @@ export default function ConnectPage() {
 
   // The latest values for the handlers that run outside a render (app events
   // that connect right after changing the mode or the port).
-  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, generation, connected, connecting });
-  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, generation, connected, connecting };
+  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting });
+  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting };
   const searchSeq = useRef(0);
 
   // --- Lists -----------------------------------------------------------------------------
@@ -420,7 +425,9 @@ export default function ConnectPage() {
           showError(tr("Kein CAN-Interface gefunden. Treiber installiert und Gerät eingesteckt?"));
           return;
         }
-        const spec = `${device}@${s.canRate}`;
+        // "+fd" right before the bit rate switches CAN FD on.
+        const fd = s.canFd && canFdPossible(device) ? "+fd" : "";
+        const spec = `${device}${fd}@${s.canRate}`;
         markConnecting(t(MW, "Verbinde über das CAN-Interface %1 ...", spec));
         void call("open_can", { spec, protocolOrder: order });
         break;
@@ -612,6 +619,7 @@ export default function ConnectPage() {
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
   const canOptions = canDevices.map((d, i) => ({ value: i, label: d.label }));
+  const fdPossible = canFdPossible(canDevices[canIndex]?.spec ?? "");
   const rateOptions = CAN_RATES.map((r) => ({ value: r, label: `${r / 1000} kbit/s` }));
   const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
@@ -784,6 +792,9 @@ export default function ConnectPage() {
                   <Select className="connect-rate" value={canRate} options={rateOptions} onChange={setCanRate} />
                   <RefreshButton title={tr("Anschlüsse neu suchen")} onClick={() => void refreshCanDevices()} />
                 </div>
+                <Check checked={canFd && fdPossible} disabled={!fdPossible} onChange={setCanFd}>
+                  {tr("CAN FD (neueste Autos; nur SocketCAN und J2534-Geräte, die es können)")}
+                </Check>
                 <div className="hint">
                   {tr(
                     "Für Geräte, die rohe CAN-Nachrichten liefern: J2534-PassThru (Tactrix OpenPort, " +

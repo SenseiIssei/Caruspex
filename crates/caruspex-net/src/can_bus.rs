@@ -20,7 +20,7 @@ pub struct CanFrame {
     pub id: u32,
     /// 29-bit id.
     pub extended: bool,
-    /// 0 to 8 bytes.
+    /// 0 to 8 bytes; up to 64 on a CAN FD link.
     pub data: Vec<u8>,
 }
 
@@ -33,6 +33,11 @@ pub trait CanLink: Send {
     /// Battery voltage at the socket if the interface can measure it.
     fn battery_voltage(&mut self) -> Option<f64> {
         None
+    }
+    /// A CAN FD link: every frame goes out as an FD frame and frames of up
+    /// to 64 bytes come in. Off unless asked for when opening.
+    fn fd(&self) -> bool {
+        false
     }
 }
 
@@ -64,6 +69,9 @@ impl CanLink for SharedCanLink {
     }
     fn battery_voltage(&mut self) -> Option<f64> {
         self.lock().battery_voltage()
+    }
+    fn fd(&self) -> bool {
+        self.lock().fd()
     }
 }
 
@@ -103,6 +111,86 @@ struct Answer {
     have: usize,
     multi: bool,
     done: bool,
+    /// Came in CAN FD frames (longer than 8 bytes, or with the escape
+    /// lengths of ISO 15765-2:2016).
+    fd: bool,
+}
+
+/// Where the data of a single or first frame begins and how long the
+/// message is, with the escapes of CAN FD: a single frame longer than 8
+/// bytes has length 0 in its PCI byte and the length in the next byte, a
+/// first frame of more than 4095 bytes has length 0 and four length bytes.
+fn pci_length(data: &[u8]) -> (usize, usize, bool) {
+    match data[0] >> 4 {
+        0 if data[0] & 0x0F == 0 && data.len() > 8 => (2, usize::from(data[1]), true),
+        0 => (1, usize::from(data[0] & 0x0F), false),
+        _ => {
+            let short = (usize::from(data[0] & 0x0F) << 8) | usize::from(data[1]);
+            if short == 0 && data.len() >= 6 {
+                let long = u32::from_be_bytes([data[2], data[3], data[4], data[5]]);
+                (6, long as usize, true)
+            } else {
+                (2, short, data.len() > 8)
+            }
+        }
+    }
+}
+
+/// An answer that came in CAN FD frames as classic frames of 8 bytes, as an
+/// ELM327 would have shown it: whoever reads the lines needs to know only
+/// classic ISO-TP. Longer than 4095 bytes does not fit in classic frames
+/// and stays as it came.
+fn as_classic(a: &mut Answer) {
+    let Some(first) = a.frames.first() else {
+        return;
+    };
+    let (id, extended) = (first.id, first.extended);
+    let mut payload = Vec::new();
+    let mut total = 0;
+    for f in &a.frames {
+        match f.data[0] >> 4 {
+            0 => {
+                let (start, length, _) = pci_length(&f.data);
+                let end = (start + length).min(f.data.len());
+                payload = f.data[start.min(end)..end].to_vec();
+                total = payload.len();
+            }
+            1 => {
+                let (start, length, _) = pci_length(&f.data);
+                total = length;
+                payload = f.data[start.min(f.data.len())..].to_vec();
+            }
+            _ => payload.extend_from_slice(&f.data[1..]),
+        }
+    }
+    if total > 0xFFF {
+        return;
+    }
+    payload.truncate(total);
+    let frame = |data: Vec<u8>| CanFrame { id, extended, data };
+    let mut frames = Vec::new();
+    if payload.len() <= 7 {
+        let mut d = vec![payload.len() as u8];
+        d.extend_from_slice(&payload);
+        d.resize(8, 0x00);
+        frames.push(frame(d));
+    } else {
+        let mut d = vec![
+            0x10 | (payload.len() >> 8) as u8,
+            (payload.len() & 0xFF) as u8,
+        ];
+        d.extend_from_slice(&payload[..6]);
+        frames.push(frame(d));
+        for (n, chunk) in payload[6..].chunks(7).enumerate() {
+            let mut d = vec![0x20 | ((n + 1) & 0x0F) as u8];
+            d.extend_from_slice(chunk);
+            d.resize(8, 0x00);
+            frames.push(frame(d));
+        }
+    }
+    a.multi = payload.len() > 7;
+    a.total = payload.len();
+    a.frames = frames;
 }
 
 impl CanElm {
@@ -355,10 +443,16 @@ impl CanElm {
                 continue;
             }
             let kind = f.data[0] >> 4;
+            if f.data.len() > 8 {
+                a.fd = true;
+            }
             if kind == 0 {
-                let len = usize::from(f.data[0] & 0x0F);
-                let pending =
-                    len >= 3 && f.data.len() > 3 && f.data[1] == 0x7F && f.data[3] == 0x78;
+                let (start, len, escaped) = pci_length(&f.data);
+                a.fd |= escaped;
+                let pending = len >= 3
+                    && f.data.len() > start + 2
+                    && f.data[start] == 0x7F
+                    && f.data[start + 2] == 0x78;
                 a.frames.push(f);
                 if pending {
                     deadline = deadline.max(now_ms() + PENDING_MS);
@@ -367,8 +461,10 @@ impl CanElm {
                 a.done = true;
             } else if kind == 1 && f.data.len() >= 2 {
                 a.multi = true;
-                a.total = (usize::from(f.data[0] & 0x0F) << 8) | usize::from(f.data[1]);
-                a.have = f.data.len() - 2;
+                let (start, total, escaped) = pci_length(&f.data);
+                a.fd |= escaped;
+                a.total = total;
+                a.have = f.data.len().saturating_sub(start);
                 // Flow control: send everything, no pause between frames.
                 let fc = CanFrame {
                     id: self.flow_control_id(&f),
@@ -398,6 +494,9 @@ impl CanElm {
             deadline = deadline.min(now_ms() + MORE_ANSWERS_MS);
         }
 
+        for a in answers.values_mut().filter(|a| a.fd) {
+            as_classic(a);
+        }
         let mut lines = Vec::new();
         for id in &order {
             let a = &answers[id];
@@ -745,13 +844,23 @@ pub fn socket_can_interfaces() -> Vec<String> {
 /// The interface must already be up at the right bit rate
 /// (ip link set can0 up type can bitrate 500000).
 pub fn open_socket_can(interface: &str) -> Result<Box<dyn CanLink>, String> {
+    open_socket_can_with(interface, false)
+}
+
+/// SocketCAN with CAN FD: the interface must be up with FD on (ip link set
+/// can0 up type can bitrate 500000 dbitrate 2000000 fd on).
+pub fn open_socket_can_fd(interface: &str) -> Result<Box<dyn CanLink>, String> {
+    open_socket_can_with(interface, true)
+}
+
+fn open_socket_can_with(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String> {
     #[cfg(target_os = "linux")]
     {
-        crate::socketcan::open(interface)
+        crate::socketcan::open(interface, fd)
     }
     #[cfg(not(target_os = "linux"))]
     {
-        let _ = interface;
+        let _ = (interface, fd);
         Err(l(
             "SocketCAN gibt es nur unter Linux.",
             "SocketCAN exists on Linux only.",
@@ -801,6 +910,17 @@ pub fn j2534_devices() -> Vec<J2534Device> {
 
 /// Opens the device through its driver DLL and connects CAN at the bit rate.
 pub fn open_j2534(library: &str, bitrate: u32) -> Result<Box<dyn CanLink>, String> {
+    open_j2534_with(library, bitrate, false)
+}
+
+/// Like [`open_j2534`] with CAN FD: the channel is connected with the
+/// FD_CAN protocol of J2534-2 (newer devices), the data phase runs at the
+/// device's own rate.
+pub fn open_j2534_fd(library: &str, bitrate: u32) -> Result<Box<dyn CanLink>, String> {
+    open_j2534_with(library, bitrate, true)
+}
+
+fn open_j2534_with(library: &str, bitrate: u32, fd: bool) -> Result<Box<dyn CanLink>, String> {
     #[cfg(windows)]
     {
         if library.is_empty() {
@@ -810,11 +930,11 @@ pub fn open_j2534(library: &str, bitrate: u32) -> Result<Box<dyn CanLink>, Strin
             )
             .into());
         }
-        crate::j2534::open(library, bitrate)
+        crate::j2534::open(library, bitrate, fd)
     }
     #[cfg(not(windows))]
     {
-        let _ = (library, bitrate);
+        let _ = (library, bitrate, fd);
         Err(l(
             "J2534-Geräte gibt es nur unter Windows.",
             "J2534 devices exist on Windows only.",
@@ -977,6 +1097,8 @@ pub type SerialOpener<'a> = &'a dyn Fn(&str, u32) -> Result<Box<dyn Transport>, 
 
 /// "slcan:COM5", "slcan:/dev/ttyACM0", "socketcan:can0", "j2534:<dll path or
 /// device name>", "pcan:USB1", "kvaser:0"; an optional "@250000" sets the bit rate (500000 if left out).
+/// "+fd" right before the bit rate ("socketcan:can0+fd@500000") switches CAN
+/// FD on, for SocketCAN and J2534 devices that have it.
 /// Returns the ELM front end, or the reason. SLCAN opens its port at
 /// 115200 baud through `open_serial`.
 pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<CanElm, String> {
@@ -986,11 +1108,23 @@ pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<C
         bitrate = i64::from(atoi(&spec.as_bytes()[at + 1..]) as i32);
         target = &spec[..at];
     }
+    let (target, fd) = match target.strip_suffix("+fd") {
+        Some(rest) => (rest, true),
+        None => (target, false),
+    };
     let (kind, place) = match target.find(':') {
         Some(colon) => (&target[..colon], &target[colon + 1..]),
         None => (target, ""),
     };
+    // The link says "CAN FD" in its name itself.
     let rate = format!(" ({} kbit/s)", bitrate / 1000);
+    if fd && !matches!(kind, "socketcan" | "j2534") {
+        return Err(l(
+            "CAN FD geht hier nur über SocketCAN und J2534-Geräte.",
+            "CAN FD works only through SocketCAN and J2534 devices here.",
+        )
+        .into());
+    }
     // As the C++ version passes it on: a negative rate wraps around.
     let bitrate = bitrate as u32;
 
@@ -1001,8 +1135,8 @@ pub fn open_can_interface(spec: &str, open_serial: SerialOpener<'_>) -> Result<C
             slcan.open(bitrate)?;
             Box::new(slcan)
         }
-        "socketcan" => open_socket_can(if place.is_empty() { "can0" } else { place })?,
-        "j2534" => open_j2534(&j2534_library(place), bitrate)?,
+        "socketcan" => open_socket_can_with(if place.is_empty() { "can0" } else { place }, fd)?,
+        "j2534" => open_j2534_with(&j2534_library(place), bitrate, fd)?,
         "pcan" => open_vendor_can(CanVendor::Pcan, CanVendor::Pcan.library(), place, bitrate)?,
         "kvaser" => open_vendor_can(
             CanVendor::Kvaser,

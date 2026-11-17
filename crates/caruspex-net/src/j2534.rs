@@ -16,8 +16,8 @@ use std::sync::Mutex;
 use caruspex_i18n::l;
 use caruspex_j2534::constants::{
     CAN_29BIT_ID, CAN_ID_BOTH, FIVE_BAUD_INVERTED_KEY_BYTE, FIVE_BAUD_MOD, ISO9141_K_LINE_ONLY,
-    ISO9141_NO_CHECKSUM, LOOPBACK, P3_MIN, PASS_FILTER, PROTOCOL_CAN, PROTOCOL_ISO9141,
-    PROTOCOL_ISO14230, START_OF_MESSAGE, TX_MSG_TYPE,
+    ISO9141_NO_CHECKSUM, LOOPBACK, P3_MIN, PASS_FILTER, PROTOCOL_CAN, PROTOCOL_FD_CAN,
+    PROTOCOL_ISO9141, PROTOCOL_ISO14230, START_OF_MESSAGE, TX_MSG_TYPE,
 };
 use caruspex_j2534::{Bridge, Dll, Ioctl, IoctlOut, LoadError, Message, PassThru};
 use caruspex_link::ByteStream;
@@ -243,29 +243,36 @@ impl Drop for Driver {
 
 struct J2534Link {
     driver: Driver,
+    /// PROTOCOL_CAN, or PROTOCOL_FD_CAN with CAN FD.
+    protocol: u32,
 }
 
-pub(crate) fn open(library: &str, bitrate: u32) -> Result<Box<dyn CanLink>, String> {
+pub(crate) fn open(library: &str, bitrate: u32, fd: bool) -> Result<Box<dyn CanLink>, String> {
     let mut driver = Driver::open(library)?;
-    if let Err(reason) = driver.connect(PROTOCOL_CAN, CAN_ID_BOTH, bitrate) {
-        return Err(format!(
-            "{}{}",
+    let protocol = if fd { PROTOCOL_FD_CAN } else { PROTOCOL_CAN };
+    if let Err(reason) = driver.connect(protocol, CAN_ID_BOTH, bitrate) {
+        let what = if fd {
+            l(
+                "CAN FD lässt sich am J2534-Gerät nicht verbinden: ",
+                "CAN FD cannot be connected on the J2534 device: ",
+            )
+        } else {
             l(
                 "CAN lässt sich am J2534-Gerät nicht verbinden: ",
-                "CAN cannot be connected on the J2534 device: "
-            ),
-            reason
-        ));
+                "CAN cannot be connected on the J2534 device: ",
+            )
+        };
+        return Err(format!("{what}{reason}"));
     }
-    driver.pass_all(PROTOCOL_CAN, 4)?;
-    Ok(Box::new(J2534Link { driver }))
+    driver.pass_all(protocol, 4)?;
+    Ok(Box::new(J2534Link { driver, protocol }))
 }
 
 impl CanLink for J2534Link {
     fn send(&mut self, frame: &CanFrame) -> bool {
         let mut bytes = frame.id.to_be_bytes().to_vec();
         bytes.extend_from_slice(&frame.data);
-        let mut m = Message::new(PROTOCOL_CAN, &bytes);
+        let mut m = Message::new(self.protocol, &bytes);
         m.tx_flags = if frame.extended { CAN_29BIT_ID } else { 0 };
         self.driver.write(&m)
     }
@@ -279,7 +286,7 @@ impl CanLink for J2534Link {
             if m.data.len() < 4 {
                 continue;
             }
-            let end = m.data.len().min(12);
+            let end = m.data.len().min(if self.fd() { 4 + 64 } else { 12 });
             return Some(CanFrame {
                 extended: m.rx_status & CAN_29BIT_ID != 0,
                 id: u32::from_be_bytes([m.data[0], m.data[1], m.data[2], m.data[3]]),
@@ -289,11 +296,19 @@ impl CanLink for J2534Link {
     }
 
     fn name(&self) -> String {
-        format!("J2534 {}", self.driver.library())
+        if self.fd() {
+            format!("J2534 {} CAN FD", self.driver.library())
+        } else {
+            format!("J2534 {}", self.driver.library())
+        }
     }
 
     fn battery_voltage(&mut self) -> Option<f64> {
         self.driver.battery_voltage()
+    }
+
+    fn fd(&self) -> bool {
+        self.protocol == PROTOCOL_FD_CAN
     }
 }
 
