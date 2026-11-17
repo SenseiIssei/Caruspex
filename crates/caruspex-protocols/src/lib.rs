@@ -9,6 +9,7 @@
 #![forbid(unsafe_code)]
 
 pub mod ecu_address;
+pub mod j1939;
 pub mod kwp1281;
 pub mod kwp2000;
 pub mod obd2;
@@ -17,6 +18,7 @@ pub mod vag_kline;
 pub mod vag_tp20;
 
 pub use ecu_address::{EcuRole, ecu_display_name, ecu_role, ecu_role_name};
+pub use j1939::{J1939Session, J1939Unit, UnitFaults};
 pub use kwp1281::{Ecu, KLineLog, Kwp1281, Kwp1281Fault, MeasuringValue, decode_measurement};
 pub use kwp2000::{
     KLineProtocol, Kwp2000, decode_kwp2000_fault, negative_response_text, protocol_from_key_bytes,

@@ -6,7 +6,10 @@ use std::time::{Duration, Instant};
 
 use crate::codec::*;
 use crate::sim::*;
-use crate::{Chunk, DemoAdapter, DemoOptions, Output};
+use crate::truck::TruckSim;
+use crate::{Chunk, DemoAdapter, DemoOptions, DemoVehicle, Output};
+
+mod j1939;
 
 // ---------------------------------------------------------------------------
 // Adapter profiles
@@ -406,11 +409,21 @@ pub(crate) struct Impl {
     cleared: bool,
     clear_run: f64, // engine run time at the moment of clearing
     clear_km: f64,
+
+    // SAE J1939 (protocols A and B) and the truck behind it.
+    truck: Option<TruckSim>,
+    cp: i32,        // ATCP, the top five bits of a 29 bit id
+    header24: i32,  // ATSH with six digits, the lower 24 bits
+    pb: (i32, i32), // ATPB: options and bit rate divisor of protocol B
+    stn_rate: u32,  // STN: STPBR, 0 for the rate of the protocol
+    jhf: bool,      // ATJHF: J1939 header formatting
+    js: bool,       // ATJS: J1939 bytes as typed (ATJE reverses requests)
 }
 
 impl Impl {
     pub fn new(options: DemoOptions) -> Self {
         let profile = profile_for(options.adapter);
+        let options_vehicle = options.vehicle;
         Impl {
             options,
             profile,
@@ -443,6 +456,13 @@ impl Impl {
             cleared: false,
             clear_run: 0.0,
             clear_km: 0.0,
+            truck: (options_vehicle == DemoVehicle::Truck).then(TruckSim::new),
+            cp: 0x18,
+            header24: 0xEA_FF_F9,
+            pb: (0xE0, 0x04),
+            stn_rate: 0,
+            jhf: true,
+            js: false,
         }
     }
 
@@ -508,6 +528,12 @@ impl Impl {
         self.bus = Bus::High;
         self.stp = 0;
         self.batch = false; // volatile, a reset ends it
+        self.cp = 0x18;
+        self.header24 = 0xEA_FF_F9;
+        self.pb = (0xE0, 0x04);
+        self.stn_rate = 0;
+        self.jhf = true;
+        self.js = false;
     }
 
     // ---- fault state over time ------------------------------------------
@@ -1378,6 +1404,10 @@ impl Impl {
     // ---- OBD requests ----------------------------------------------------
 
     fn obd_request(&mut self, hex: &str) -> Response {
+        if self.is_truck() {
+            // The truck speaks J1939 only.
+            return Response::new(&["NO DATA"], 120.0);
+        }
         let mut hex: String = hex.to_string();
         let mut response = Response::empty();
         let mut count_hint = 0;
@@ -1595,6 +1625,9 @@ impl Impl {
     }
 
     fn at_command(&mut self, c: &str) -> Response {
+        if let Some(r) = self.j1939_at(c) {
+            return r;
+        }
         if c == "Z" || c == "WS" {
             self.reset_settings();
             let version = self.profile.version;
@@ -1884,6 +1917,9 @@ impl Impl {
     // Manual describes them: identification, protocol presets, monitoring,
     // filters and the batched commands. Unsupported ones say "?".
     fn stn_command(&mut self, c: &str) -> Response {
+        if let Some(r) = self.stn_rate_command(c) {
+            return r;
+        }
         let unknown = || Response::new(&["?"], 2.0);
         let ok = || Response::new(&["OK"], 2.0);
         match c {
@@ -2058,6 +2094,9 @@ impl Impl {
             return self.stn_command(command);
         }
         if all_hex(command) {
+            if let Some(r) = self.j1939_line(command) {
+                return r;
+            }
             return self.obd_request(command);
         }
         Response::new(&["?"], 2.0)

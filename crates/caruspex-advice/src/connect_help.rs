@@ -52,6 +52,8 @@ pub struct ConnectFacts {
     pub bauds_tried: Vec<u32>,
     /// CAN bit rate in bit/s, 0 if none.
     pub can_bit_rate: u32,
+    /// The attempt was for a truck over SAE J1939.
+    pub j1939: bool,
 }
 
 /// How one point of the checklist stands.
@@ -510,7 +512,11 @@ pub fn connect_help(f: &ConnectFacts) -> ConnectHelp {
                 }
                 items.push(check(
                     "bitrate",
-                    CheckState::Check,
+                    if f.j1939 {
+                        CheckState::Fine
+                    } else {
+                        CheckState::Check
+                    },
                     l("Bitrate", "Bit rate"),
                     args(
                         l(
@@ -532,6 +538,9 @@ pub fn connect_help(f: &ConnectFacts) -> ConnectHelp {
             }
         }
     }
+    if f.j1939 && f.kind != LinkKind::Replay {
+        truck_items(f, &mut items);
+    }
     let rank = |s: CheckState| match s {
         CheckState::Problem => 0,
         CheckState::Check => 1,
@@ -542,6 +551,56 @@ pub fn connect_help(f: &ConnectFacts) -> ConnectHelp {
         found: found_lines(f),
         items,
     }
+}
+
+/// The points that only trucks have: the 9-pin plug with its cable, the
+/// bit rate of the socket and the 24 V.
+fn truck_items(f: &ConnectFacts, out: &mut Vec<CheckItem>) {
+    // The bit rate check of the CAN interface speaks of cars.
+    out.retain(|i| i.id != "bitrate");
+    let tried = if f.can_bit_rate > 0 {
+        (f.can_bit_rate / 1000).to_string()
+    } else {
+        f.protocols_tried
+            .chars()
+            .filter_map(|c| match c {
+                'A' => Some("250"),
+                'B' => Some("500"),
+                _ => None,
+            })
+            .collect::<Vec<_>>()
+            .join(", ")
+    };
+    out.push(check(
+        "j1939_plug",
+        CheckState::Check,
+        l("Diagnosebuchse und Kabel", "Diagnostic socket and cable"),
+        l(
+            "Nordamerikanische Lkw haben eine runde 9-polige Buchse (Deutsch): Ein Adapterkabel von 9 Polen auf eine 16-polige OBD-Kupplung verbindet den Adapter. Europäische Lkw seit Euro 6 haben meist die 16-polige Buchse wie ein Auto. Transporter wie Sprinter, Transit oder Crafter sprechen normales OBD-II, dafür das Häkchen Lkw ausschalten.",
+            "North American trucks have a round 9-pin socket (Deutsch): an adapter cable from 9 pins to a 16-pin OBD female connects the adapter. European trucks since Euro 6 mostly have the 16-pin socket like a car. Vans such as Sprinter, Transit or Crafter speak normal OBD-II, so switch the truck tick off for them.",
+        ),
+    ));
+    out.push(check(
+        "j1939_rate",
+        CheckState::Check,
+        l("Bitrate der Buchse", "Bit rate of the socket"),
+        args(
+            l(
+                "Probiert: %1 kbit/s. Schwarze 9-polige Buchse (Typ 1): 250 kbit/s, grüne (Typ 2, ab etwa 2016): 500 kbit/s. Mit Automatisch probiert Caruspex beide.",
+                "Tried: %1 kbit/s. Black 9-pin socket (type 1): 250 kbit/s, green (type 2, from about 2016): 500 kbit/s. With Automatic Caruspex tries both.",
+            ),
+            &[&tried],
+        ),
+    ));
+    out.push(check(
+        "j1939_voltage",
+        CheckState::Check,
+        l("24 Volt", "24 volts"),
+        l(
+            "Lkw haben meist 24 V. Viele billige ELM327-Adapter sind nur für 12 V gebaut und gehen daran kaputt: nur einen Adapter nehmen, der 24 V ausdrücklich verträgt.",
+            "Trucks mostly run on 24 V. Many cheap ELM327 adapters are built for 12 V only and break on it: use only an adapter that is rated for 24 V.",
+        ),
+    ));
 }
 
 #[cfg(test)]
@@ -670,6 +729,34 @@ mod tests {
             .items
             .is_empty()
         );
+    }
+
+    #[test]
+    fn a_truck_gets_plug_rate_and_voltage() {
+        let _g = german();
+        let truck = connect_help(&ConnectFacts {
+            kind: LinkKind::Can,
+            port_opened: Some(true),
+            can_bit_rate: 500000,
+            j1939: true,
+            ..ConnectFacts::default()
+        });
+        let ids: Vec<&str> = truck.items.iter().map(|i| i.id).collect();
+        assert!(ids.contains(&"j1939_plug"));
+        assert!(ids.contains(&"j1939_voltage"));
+        assert!(!ids.contains(&"bitrate"));
+        let rate = truck.items.iter().find(|i| i.id == "j1939_rate").unwrap();
+        assert!(rate.text.contains("500 kbit/s"));
+        let elm = connect_help(&ConnectFacts {
+            kind: LinkKind::Usb,
+            port_opened: Some(true),
+            adapter_answered: Some(true),
+            protocols_tried: "AB".into(),
+            j1939: true,
+            ..ConnectFacts::default()
+        });
+        let rate = elm.items.iter().find(|i| i.id == "j1939_rate").unwrap();
+        assert!(rate.text.contains("250, 500 kbit/s"), "{}", rate.text);
     }
 
     #[test]

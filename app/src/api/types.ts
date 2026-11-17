@@ -20,6 +20,47 @@ export interface FaultRow {
   ecu: string;
 }
 
+// SAE J1939 (trucks): one control unit with the lamps of its DM1 and the
+// number of active (DM1) and previously active (DM2) faults.
+export interface J1939UnitRow {
+  address: number;
+  label: string;
+  mil: boolean;
+  redStop: boolean;
+  amberWarning: boolean;
+  protect: boolean;
+  active: number;
+  previous: number;
+}
+
+// Identification of one J1939 control unit (PGN 65259 and 65242).
+export interface J1939IdRow {
+  address: number;
+  label: string;
+  make: string;
+  model: string;
+  serial: string;
+  unit: string;
+  software: string[];
+}
+
+// One broadcast value of a truck. state "error": the unit reports its own
+// measurement as faulty (value is then 0).
+export interface J1939ValueRow {
+  key: number;
+  spn: number;
+  name: string;
+  about: string;
+  unit: string;
+  value: number;
+  state: "value" | "error";
+  source: number;
+  sourceName: string;
+  min: number;
+  max: number;
+  time: number;
+}
+
 export interface LiveRow {
   // The live key: pid | (sub << 8). Equals the PID for single values.
   pid: number;
@@ -672,6 +713,8 @@ export enum BodyType {
   Microcar,
   Roadster,
   Motorcycle,
+  // Trucks and buses: diagnosis over SAE J1939.
+  Truck,
 }
 
 export interface VehicleGenerationInfo {

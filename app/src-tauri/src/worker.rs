@@ -62,7 +62,10 @@ use serde_json::{Value, json};
 use crate::android::{SerialTransport, ble, enumerate_ports};
 use crate::rows::*;
 use crate::settings::AppSettings;
+
+mod truck;
 use crate::texts::{args, w};
+use truck::TruckLink;
 
 /// Seconds since the program started, monotonic (appSeconds()).
 pub fn app_seconds() -> f64 {
@@ -200,6 +203,9 @@ pub enum Job {
     ReadAdaptation(i32),
     ActuatorTest,
     ApplySettings(AppSettings),
+    /// Trucks over SAE J1939 for the connect jobs that follow: the bit rate
+    /// in kbit/s (250, 500, or 0 for both in turn); `None` for cars.
+    SetTruck(Option<u32>),
     Shutdown,
 }
 
@@ -619,6 +625,12 @@ pub struct Worker {
     /// While the remembered way is tried quietly: a failure is only noted
     /// here instead of reported.
     quiet: Option<Option<String>>,
+    /// Connected to a truck: how its J1939 bus is reached.
+    truck: Option<TruckLink>,
+    /// What was heard on the J1939 bus, and the tester's address.
+    truck_session: caruspex_protocols::J1939Session,
+    /// The connect jobs go to a truck at this rate (see `Job::SetTruck`).
+    truck_request: Option<u32>,
 }
 
 impl Worker {
@@ -649,6 +661,9 @@ impl Worker {
             route: ConnectRoute::default(),
             prefer_protocol: String::new(),
             quiet: None,
+            truck: None,
+            truck_session: caruspex_protocols::J1939Session::new(),
+            truck_request: None,
         }
     }
 
@@ -893,6 +908,7 @@ impl Worker {
             Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
             Job::ActuatorTest => self.run_actuator_test(),
             Job::ApplySettings(values) => self.apply_settings(values),
+            Job::SetTruck(rate) => self.truck_request = rate,
             Job::Shutdown => self.shutdown(),
         }
     }
@@ -926,6 +942,9 @@ impl Worker {
         transport: Box<dyn Transport>,
         protocol_order: &str,
     ) -> Result<(), String> {
+        if let Some(kbit) = self.truck_request {
+            return self.try_connect_truck(transport, kbit);
+        }
         self.facts.port_opened = Some(true);
         self.facts.port_busy = false;
         let order = prefer_protocol(protocol_order, &self.prefer_protocol);
@@ -1014,7 +1033,7 @@ impl Worker {
             _ => {}
         }
         let error = self.quiet.take().flatten();
-        if self.elm.connected() {
+        if self.elm.connected() || self.truck_connected() {
             self.prefer_protocol.clear();
             return;
         }
@@ -1370,6 +1389,10 @@ impl Worker {
     }
 
     fn open_can(&mut self, spec: &str) {
+        if let Some(kbit) = self.truck_request {
+            self.open_can_truck(spec, kbit);
+            return;
+        }
         self.busy(true);
         self.set_elm_log();
         self.begin_connect(LinkKind::Can);
@@ -1415,6 +1438,10 @@ impl Worker {
     }
 
     fn open_demo(&mut self) {
+        if let Some(kbit) = self.truck_request {
+            self.open_demo_truck(kbit);
+            return;
+        }
         // The demo car speaks CAN; the K-line protocols would only cost seconds.
         self.busy(true);
         self.set_elm_log();
@@ -1509,6 +1536,10 @@ impl Worker {
     // --- Reading --------------------------------------------------------------
 
     fn refresh_status_and_faults(&mut self) {
+        if self.truck_connected() {
+            self.refresh_truck_faults();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1545,6 +1576,10 @@ impl Worker {
     }
 
     fn clear_faults(&mut self) {
+        if self.truck_connected() {
+            self.clear_truck_faults();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1562,6 +1597,10 @@ impl Worker {
     }
 
     fn read_details(&mut self) {
+        if self.truck_connected() {
+            self.read_truck_details();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1604,6 +1643,17 @@ impl Worker {
     }
 
     fn start_live(&mut self, pids: Vec<i32>) {
+        if self.truck_connected() {
+            // A truck sends its values by itself: each tick listens.
+            self.poll_timer
+                .set_interval(self.settings.poll_interval_ms.max(0) as u64);
+            self.poll_timer.start();
+            self.log(l(
+                "Messung gestartet, die J1939-Werte werden mitgehört.",
+                "Measurement started, listening to the J1939 values.",
+            ));
+            return;
+        }
         self.poll_pids = pids;
         if !self.obd_ready || self.poll_pids.is_empty() {
             return;
@@ -1635,6 +1685,10 @@ impl Worker {
     // One slice per tick. That keeps the loop free and stop requests from
     // the interface get through immediately.
     fn poll_tick(&mut self) {
+        if self.truck_connected() {
+            self.truck_tick();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -2802,6 +2856,7 @@ impl Worker {
             self.close_kkl();
         }
         self.can_link = None;
+        self.forget_truck();
     }
 
     fn kkl_keep_alive_tick(&mut self) {

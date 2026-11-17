@@ -138,7 +138,8 @@ fn base_dimensions(body: BodyType) -> [u32; 5] {
         BodyType::Sedan => [4620, 1770, 1440, 2710, 1530],
         BodyType::Estate => [4600, 1770, 1490, 2690, 1530],
         BodyType::Suv => [4520, 1850, 1690, 2670, 1580],
-        BodyType::Van => [4900, 1910, 1950, 3000, 1630],
+        // Trucks take the van's shape in the X-ray view.
+        BodyType::Van | BodyType::Truck => [4900, 1910, 1950, 3000, 1630],
         BodyType::Coupe => [4450, 1790, 1360, 2620, 1530],
         BodyType::Convertible => [4380, 1770, 1390, 2580, 1510],
         BodyType::Pickup => [5250, 1860, 1790, 3090, 1570],
@@ -166,7 +167,7 @@ pub fn typical_dimensions(body: BodyType, year: i32) -> Dimensions {
     };
     let wheel = match body {
         BodyType::Suv | BodyType::Pickup => wheel + 80,
-        BodyType::Van => wheel + 30,
+        BodyType::Van | BodyType::Truck => wheel + 30,
         BodyType::Microcar => wheel - 60,
         _ => wheel,
     };

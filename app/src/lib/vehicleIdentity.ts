@@ -41,6 +41,7 @@ export function bodyStyleFor(type: BodyType): BodyStyle {
     case BodyType.Estate: return BodyStyles.Estate;
     case BodyType.Suv: return BodyStyles.Suv;
     case BodyType.Van:
+    case BodyType.Truck:
     case BodyType.Mpv: return BodyStyles.Van;
     case BodyType.Coupe:
     case BodyType.Convertible:

@@ -1,5 +1,5 @@
-//! Network and raw CAN: BMW ENET (HSFZ), DoIP, SLCAN, SocketCAN, J2534, and
-//! VAG TP 2.0 on the raw CAN interfaces.
+//! Network and raw CAN: BMW ENET (HSFZ), DoIP, SLCAN, SocketCAN, J2534,
+//! VAG TP 2.0 and SAE J1939 on the raw CAN interfaces.
 //!
 //! Every way to the car in this crate ends in something that answers like an
 //! ELM327 ([`enet::EnetElm`], [`can_bus::CanElm`]), so the rest of Caruspex
@@ -14,6 +14,7 @@ pub mod can_bus;
 pub mod can_signals;
 mod elm_front;
 pub mod enet;
+pub mod j1939_can;
 #[cfg(windows)]
 mod j2534;
 #[cfg(target_os = "linux")]
@@ -37,4 +38,5 @@ pub use enet::{
     DiagAnswer, DiagLink, DoipSession, EnetElm, Flavor, HsfzSession, NetStream, NetworkCar,
     discover_doip, discover_enet, open_doip, open_enet, open_network_car,
 };
+pub use j1939_can::J1939Can;
 pub use tp20::Tp20;

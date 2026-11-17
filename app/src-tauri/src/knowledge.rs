@@ -106,8 +106,35 @@ fn localized(map: impl Fn(&EnglishNames) -> Option<&String>, fallback: &str) -> 
 
 // --- Fault codes -------------------------------------------------------------------
 
+/// A J1939 fault ("SPN 110 FMI 0") in the shape of the OBD lookup: what
+/// the SPN and the FMI say; the lamps of the unit tell how urgent it is.
+fn j1939_dtc(code: &str) -> Option<caruspex_data::dtc::DtcInfo> {
+    use caruspex_data::severity::Severity;
+    use caruspex_protocols::j1939::{describe, find_param, fmi_weight, parse_code};
+    let (spn, fmi) = parse_code(code)?;
+    Some(caruspex_data::dtc::DtcInfo {
+        code: format!("SPN {spn} FMI {fmi}"),
+        text: describe(spn, fmi),
+        severity: match fmi_weight(fmi) {
+            1 => Severity::Low,
+            2 => Severity::Medium,
+            _ => Severity::High,
+        },
+        system_name: "SAE J1939".into(),
+        advice: l(
+            "Fehler eines Lkw-Steuergeräts nach SAE J1939. Wie eilig er ist, zeigen die Lampen des Steuergeräts: Rote Stopplampe heißt anhalten, sobald es sicher geht, gelbe Warnlampe heißt bald in die Werkstatt.",
+            "Fault of a truck control unit under SAE J1939. How urgent it is, the unit's lamps show: the red stop lamp means stop as soon as it is safe, the amber warning lamp means see a workshop soon.",
+        )
+        .into(),
+        // SPN 520192 and up belong to the makers.
+        manufacturer_specific: spn >= 520_192,
+        known: find_param(spn).is_some(),
+        ..Default::default()
+    })
+}
+
 pub fn lookup_dtc(code: &str, brand: &str) -> Value {
-    let d = lookup(code, brand);
+    let d = j1939_dtc(code).unwrap_or_else(|| lookup(code, brand));
     json!({
         "code": d.code,
         "text": d.text,

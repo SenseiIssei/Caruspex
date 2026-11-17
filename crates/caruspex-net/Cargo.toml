@@ -21,3 +21,4 @@ libc = "0.2.191"
 caruspex-data.workspace = true
 proptest.workspace = true
 caruspex-protocols.workspace = true
+caruspex-demo.workspace = true

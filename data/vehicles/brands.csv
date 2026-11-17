@@ -23,6 +23,7 @@ Chevrolet,USA,USA,gm,na
 Chrysler,USA,USA,chrysler,na
 Citroën,Frankreich,France,,eu
 Cupra,Spanien,Spain,vag,eu
+DAF,Niederlande,Netherlands,,eu
 Dacia,Rumänien,Romania,,eu
 Daewoo,Südkorea,South Korea,,eu
 Daihatsu,Japan,Japan,,eu
@@ -34,6 +35,7 @@ Ferrari,Italien,Italy,,eu
 Fiat,Italien,Italy,,eu
 Fisker,USA,USA,,na
 Ford,USA,USA,ford,na
+Freightliner,USA,USA,,na
 Geely,China,China,,eu
 Genesis,Südkorea,South Korea,,eu
 GMC,USA,USA,gm,na
@@ -46,11 +48,14 @@ Hummer,USA,USA,gm,na
 Hyundai,Südkorea,South Korea,,eu
 INEOS,Vereinigtes Königreich,United Kingdom,,eu
 Infiniti,Japan,Japan,,na
+International,USA,USA,,na
 Isuzu,Japan,Japan,,eu
+Iveco,Italien,Italy,,eu
 Jaecoo,China,China,,eu
 Jaguar,Vereinigtes Königreich,United Kingdom,,eu
 Jeep,USA,USA,chrysler,na
 Kawasaki,Japan,Japan,,eu
+Kenworth,USA,USA,,na
 Kia,Südkorea,South Korea,,eu
 KTM,Österreich,Austria,,eu
 Lada,Russland,Russia,,eu
@@ -64,6 +69,8 @@ Lincoln,USA,USA,ford,na
 Lotus,Vereinigtes Königreich,United Kingdom,,eu
 Lucid,USA,USA,,na
 Lynk & Co,China,China,,eu
+MAN,Deutschland,Germany,,eu
+Mack,USA,USA,,na
 Mahindra,Indien,India,,eu
 Maserati,Italien,Italy,,eu
 Matra,Frankreich,France,,eu
@@ -82,6 +89,7 @@ Oldsmobile,USA,USA,gm,na
 Omoda,China,China,,eu
 Opel,Deutschland,Germany,,eu
 ORA,China,China,,eu
+Peterbilt,USA,USA,,na
 Peugeot,Frankreich,France,,eu
 Plymouth,USA,USA,chrysler,na
 Polestar,Schweden und China,Sweden and China,,eu
@@ -90,11 +98,13 @@ Porsche,Deutschland,Germany,,eu
 Proton,Malaysia,Malaysia,,eu
 Ram,USA,USA,chrysler,na
 Renault,Frankreich,France,,eu
+Renault Trucks,Frankreich,France,,eu
 Rivian,USA,USA,,na
 Rolls-Royce,Vereinigtes Königreich,United Kingdom,,eu
 Rover,Vereinigtes Königreich,United Kingdom,,eu
 Saab,Schweden,Sweden,,eu
 Saturn,USA,USA,gm,na
+Scania,Schweden,Sweden,,eu
 Scion,Japan,Japan,,na
 SEAT,Spanien,Spain,vag,eu
 Smart,Deutschland,Germany,mb,eu
@@ -110,6 +120,7 @@ Triumph,Vereinigtes Königreich,United Kingdom,,eu
 VinFast,Vietnam,Vietnam,,eu
 Volkswagen,Deutschland,Germany,vag,eu
 Volvo,Schweden,Sweden,,eu
+Volvo Trucks,Schweden,Sweden,,eu
 Voyah,China,China,,eu
 Wartburg,Deutschland (DDR),Germany (GDR),,eu
 Wuling,China,China,,eu

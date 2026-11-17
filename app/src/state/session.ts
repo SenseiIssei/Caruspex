@@ -9,6 +9,8 @@ import type {
   FaultRow,
   FreezeFrameRow,
   HealthFindingRow,
+  J1939IdRow,
+  J1939UnitRow,
   LiveRow,
   MonitorRow,
   ReportFinding,
@@ -51,6 +53,11 @@ export interface SessionState {
   protocol: string;
   // Connected through a raw CAN interface: TP 2.0 for older VAG cars works.
   rawCan: boolean;
+  // Connected to a truck over SAE J1939.
+  j1939: boolean;
+  // J1939: the control units with their lamps, and their identification.
+  j1939Units: J1939UnitRow[];
+  j1939Ids: J1939IdRow[];
   // The extra CAN buses the OBDLink of this connection can switch to:
   // "ms" (Ford MS-CAN), "sw" (GM single wire CAN). Empty for an ELM327.
   stnBuses: string[];
@@ -95,6 +102,9 @@ const initial: SessionState = {
   transport: "",
   protocol: "",
   rawCan: false,
+  j1939: false,
+  j1939Units: [],
+  j1939Ids: [],
   stnBuses: [],
   route: null,
   connectedAt: "",
@@ -268,6 +278,9 @@ function resetVehicle(): Partial<SessionState> {
     transport: "",
     protocol: "",
     rawCan: false,
+    j1939: false,
+    j1939Units: [],
+    j1939Ids: [],
     stnBuses: [],
     route: null,
     connectedAt: "",
@@ -317,7 +330,7 @@ export function startSession(): void {
   on("log_line", ({ line }) => showLog(line));
   on("busy", ({ active }) => session.set({ busy: active }));
 
-  on("connected", ({ adapter, transport, protocol, rawCan, stnBuses, route }) => {
+  on("connected", ({ adapter, transport, protocol, rawCan, stnBuses, route, j1939 }) => {
     session.set({
       ...resetVehicle(),
       connected: true,
@@ -325,6 +338,7 @@ export function startSession(): void {
       transport,
       protocol,
       rawCan: rawCan === true,
+      j1939: j1939 === true,
       stnBuses: stnBuses ?? [],
       route: route ?? null,
       connectedAt: isoNow(),
@@ -348,6 +362,9 @@ export function startSession(): void {
     session.set({ ...resetVehicle(), recording: false, link: "offline", linkText: t(MW, "Nicht verbunden"), servicesDue: 0 });
     appendLog(t(MW, "Verbindung getrennt."));
   });
+
+  on("j1939_units", ({ units }) => session.set({ j1939Units: units }));
+  on("j1939_ids", ({ units }) => session.set({ j1939Ids: units }));
 
   on("faults", ({ rows }) => {
     session.set({ faults: rows, haveFaults: true });

@@ -198,6 +198,7 @@ static WMI: &[WmiEntry] = &[
     w("W1N", "Mercedes-Benz (SUV)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("W1V", "Mercedes-Benz (Transporter)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("W1W", "Mercedes-Benz (Transporter, Nordamerika)", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
+    w("W1T", "Mercedes-Benz (Lkw)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("4JG", "Mercedes-Benz U.S. International (SUV)", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
     w("55S", "Mercedes-Benz U.S. International", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
     w("LE4", "Beijing Benz", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
@@ -219,7 +220,7 @@ static WMI: &[WmiEntry] = &[
     // --- France ----------------------------------------------------------
     w("VF1", "Renault", "Renault|Dacia|Alpine", UNK, NO_CODE, NO_COUNTRY),
     w("VF2", "Renault", "Renault", UNK, NO_CODE, NO_COUNTRY),
-    w("VF6", "Renault Trucks", "Renault", UNK, NO_CODE, NO_COUNTRY),
+    w("VF6", "Renault Trucks", "Renault Trucks|Renault", UNK, NO_CODE, NO_COUNTRY),
     w("VS5", "Renault España", "Renault", UNK, NO_CODE, NO_COUNTRY),
     w("VFA", "Alpine", "Alpine", UNK, NO_CODE, NO_COUNTRY),
     w("VF3", "Peugeot", "Peugeot", UNK, NO_CODE, NO_COUNTRY),
@@ -287,6 +288,8 @@ static WMI: &[WmiEntry] = &[
     w("YH4", "Fisker Automotive (Karma), gebaut von Valmet", "Fisker", STD, NO_CODE, NO_COUNTRY),
     w("XMC", "NedCar (Mitsubishi)", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
     w("XLR", "DAF Trucks", "DAF", UNK, NO_CODE, NO_COUNTRY),
+    w("YV2", "Volvo Trucks", "Volvo Trucks", UNK, NO_CODE, NO_COUNTRY),
+    w("YS2", "Scania (Lkw)", "Scania", UNK, NO_CODE, NO_COUNTRY),
     w("YAR", "Toyota Motor Europe", "Toyota", UNK, NO_CODE, NO_COUNTRY),
 
     // --- Central and Eastern Europe, Russia, Turkey ---------------------
@@ -572,6 +575,22 @@ static WMI: &[WmiEntry] = &[
     w("7PD", "Rivian Automotive", "Rivian", STD, NO_CODE, NO_COUNTRY),
     w("50E", "Lucid Motors", "Lucid", STD, NO_CODE, NO_COUNTRY),
     w("1M8", "Motor Coach Industries", "MCI", STD, NO_CODE, NO_COUNTRY),
+    // Heavy trucks (Wikibooks WMI list): complete and incomplete vehicles.
+    w("3AK", "Freightliner Trucks (México)", "Freightliner", STD, NO_CODE, NO_COUNTRY),
+    w("4V4", "Volvo Trucks North America", "Volvo Trucks", STD, NO_CODE, NO_COUNTRY),
+    w("4V5", "Volvo Trucks North America", "Volvo Trucks", STD, NO_CODE, NO_COUNTRY),
+    w("1XK", "Kenworth", "Kenworth", STD, NO_CODE, NO_COUNTRY),
+    w("1NK", "Kenworth", "Kenworth", STD, NO_CODE, NO_COUNTRY),
+    w("2XK", "Kenworth (Kanada)", "Kenworth", STD, NO_CODE, NO_COUNTRY),
+    w("2NK", "Kenworth (Kanada)", "Kenworth", STD, NO_CODE, NO_COUNTRY),
+    w("1XP", "Peterbilt", "Peterbilt", STD, NO_CODE, NO_COUNTRY),
+    w("1NP", "Peterbilt", "Peterbilt", STD, NO_CODE, NO_COUNTRY),
+    w("2NP", "Peterbilt (Kanada)", "Peterbilt", STD, NO_CODE, NO_COUNTRY),
+    w("1HT", "Navistar (International)", "International", STD, NO_CODE, NO_COUNTRY),
+    w("1HS", "Navistar (International)", "International", STD, NO_CODE, NO_COUNTRY),
+    w("3HS", "Navistar (International, México)", "International", STD, NO_CODE, NO_COUNTRY),
+    w("1M1", "Mack Trucks", "Mack", STD, NO_CODE, NO_COUNTRY),
+    w("1M2", "Mack Trucks", "Mack", STD, NO_CODE, NO_COUNTRY),
 
     // --- South America, Africa, Australia: other makers -----------------
     w("9BR", "Toyota do Brasil", "Toyota", STD, NO_CODE, NO_COUNTRY),

@@ -452,3 +452,31 @@ fn interfaces_prints_something() {
     assert_eq!(r.code, 0);
     assert!(!r.out.is_empty());
 }
+
+#[test]
+fn j1939_reads_the_demo_truck() {
+    let r = run(&["j1939", "--demo", "--json"]);
+    assert_eq!(r.code, 0, "{}", r.err);
+    let v: serde_json::Value = serde_json::from_str(&r.out).unwrap();
+    assert_eq!(v["vin"], "YCXTR42H4NC051739");
+    assert_eq!(v["units"].as_array().unwrap().len(), 4);
+    let engine = &v["active"].as_array().unwrap()[0];
+    assert_eq!(engine["mil"], true);
+    assert_eq!(engine["faults"][0]["spn"], 105);
+    assert_eq!(engine["faults"][0]["fmi"], 3);
+    assert!(v["previous"].as_array().unwrap().len() >= 2);
+    assert!(
+        v["values"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|x| x["spn"] == 190)
+    );
+    // At 500 kbit/s nothing is heard.
+    let r = run(&["j1939", "--demo", "--rate", "500"]);
+    assert_eq!(r.code, 2);
+    assert!(
+        r.out
+            .starts_with("Connection failed: Nothing can be heard on the J1939 bus.")
+    );
+}

@@ -31,6 +31,10 @@
 //! know the batched commands (STBC), the monitor commands with a count (STMA
 //! n, STM n) and the filter commands of the OBDLink manual.
 //!
+//! With [`DemoVehicle::Truck`] a truck sits behind the adapter instead: four
+//! control units on an SAE J1939 bus (see [`truck`]), heard in protocol A
+//! (`ATSPA`) with headers on and CAN auto formatting off.
+//!
 //! For tests the clock can be injected (see [`DemoClock`]) and the answer
 //! delay switched off, so every response is deterministic.
 
@@ -39,6 +43,7 @@
 mod adapter;
 mod codec;
 mod sim;
+pub mod truck;
 
 use std::collections::VecDeque;
 use std::sync::Arc;
@@ -73,6 +78,16 @@ pub enum DemoAdapter {
     ObdLinkEx,
     /// OBDLink MX+ (STN2256): like the EX, plus the single wire CAN
     ObdLinkMxPlus,
+}
+
+/// What sits behind the demo adapter.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
+pub enum DemoVehicle {
+    /// The petrol car on CAN 11/500 with OBD and UDS.
+    #[default]
+    Car,
+    /// The truck on SAE J1939 at 250 kbit/s.
+    Truck,
 }
 
 /// A source of "seconds since ignition on".
@@ -128,6 +143,9 @@ pub struct DemoOptions {
     /// in milliseconds: next to nothing over USB, tens of milliseconds over
     /// Bluetooth. Only counted in [`DemoTransport::adapter_ms`], never waited.
     pub round_trip_ms: f64,
+
+    /// The car (default) or the truck.
+    pub vehicle: DemoVehicle,
 }
 
 impl Default for DemoOptions {
@@ -139,6 +157,7 @@ impl Default for DemoOptions {
             engine_start_seconds: 4.0,
             transmission_ecu: true,
             round_trip_ms: 0.0,
+            vehicle: DemoVehicle::Car,
         }
     }
 }
@@ -189,6 +208,11 @@ impl DemoTransport {
         adapter::VIN
     }
 
+    /// The VIN of the demo truck ([`DemoVehicle::Truck`]).
+    pub fn truck_vin() -> &'static str {
+        truck::TRUCK_VIN
+    }
+
     /// The simulated time the adapter has spent so far, in milliseconds:
     /// for every command line the round trip ([`DemoOptions::round_trip_ms`])
     /// plus the unscaled answer delay. Independent of the real clock and of
@@ -217,8 +241,10 @@ impl Transport for DemoTransport {
             if d.monitoring {
                 // Any character ends monitoring; the rest of that line is
                 // lost, which is why programs send a lone carriage return
-                // first.
+                // first. Frames not printed yet are dropped.
                 d.monitoring = false;
+                let now = Instant::now();
+                d.output.retain(|c| c.ready_at <= now);
                 let end = d.line_end();
                 let text = format!("STOPPED{end}{end}>");
                 d.emit(text.into_bytes(), 1.0);
@@ -279,6 +305,9 @@ impl Transport for DemoTransport {
     }
 
     fn name(&self) -> String {
+        if self.d.is_truck() {
+            return l("Demo-Lkw (eingebaut)", "Demo truck (built-in)").to_string();
+        }
         l("Demo-Fahrzeug (eingebaut)", "Demo vehicle (built-in)").to_string()
     }
 }

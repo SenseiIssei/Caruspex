@@ -607,6 +607,7 @@ name = "caruspex-net"
 version = "0.13.0"
 dependencies = [
  "caruspex-data",
+ "caruspex-demo",
  "caruspex-i18n",
  "caruspex-j2534",
  "caruspex-link",

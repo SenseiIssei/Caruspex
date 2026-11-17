@@ -10,6 +10,7 @@
 //!   caruspex_cli read --port COM5 --record car.jsonl   (record the session)
 //!   caruspex_cli read --replay car.jsonl               (play it back without a car)
 //!   caruspex_cli custom --port COM5 --pack hyundai-kona-niro-ev   (maker values)
+//!   caruspex_cli j1939 --can pcan:USB1@250000   (trucks: SAE J1939)
 //!
 //! `caruspex_cli help` lists every command and option.
 
@@ -17,6 +18,7 @@
 
 mod args;
 mod commands;
+mod j1939;
 mod out;
 
 use std::sync::Arc;
@@ -57,7 +59,11 @@ fn print_ports() {
     }
 }
 
-fn make_transport(tcp: &str, port: &str, baud: i32) -> Result<Box<dyn Transport>, String> {
+pub(crate) fn make_transport(
+    tcp: &str,
+    port: &str,
+    baud: i32,
+) -> Result<Box<dyn Transport>, String> {
     if !tcp.is_empty() {
         let colon = tcp.find(':');
         let host = &tcp[..colon.unwrap_or(tcp.len())];
@@ -79,7 +85,7 @@ fn make_transport(tcp: &str, port: &str, baud: i32) -> Result<Box<dyn Transport>
 /// order the app tries them, each asked for its identification (ATI). None
 /// when no rate gives a readable answer; the caller then keeps the default,
 /// so the error text stays the one users know.
-fn find_baud(device: &str) -> Option<i32> {
+pub(crate) fn find_baud(device: &str) -> Option<i32> {
     for baud in [38400u32, 115200, 9600, 500000] {
         let mut t = SerialTransport::new();
         if t.open(device, baud).is_err() {
@@ -106,7 +112,7 @@ fn find_baud(device: &str) -> Option<i32> {
     None
 }
 
-fn open_serial(device: &str, baud: u32) -> Result<Box<dyn Transport>, String> {
+pub(crate) fn open_serial(device: &str, baud: u32) -> Result<Box<dyn Transport>, String> {
     let mut t = SerialTransport::new();
     t.open(device, baud)?;
     Ok(Box::new(t))
@@ -217,6 +223,7 @@ fn run(argv: &[String]) -> i32 {
         }
         "enet" => return command_enet(),
         "kklcheck" => return commands::kkl_check(&opt.port),
+        "j1939" => return j1939::command(&opt),
         _ => {}
     }
     const KNOWN: [&str; 11] = [
