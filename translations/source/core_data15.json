@@ -1,0 +1,407 @@
+[
+ {
+  "id": "c-data15-1",
+  "de": "Ladezustand der 12-V-Batterie",
+  "en": "12 V battery charge"
+ },
+ {
+  "id": "c-data15-2",
+  "de": "12V SOC",
+  "en": "12V SOC"
+ },
+ {
+  "id": "c-data15-3",
+  "de": "Gaspedal",
+  "en": "Accelerator pedal"
+ },
+ {
+  "id": "c-data15-4",
+  "de": "Unten links am Armaturenbrett hinter dem Deckel des Sicherungskastens.",
+  "en": "At the lower left of the dashboard behind the fuse box lid."
+ },
+ {
+  "id": "c-data15-5",
+  "de": "Seitlich an der Mittelkonsole im Fahrerfußraum.",
+  "en": "At the side of the centre console in the driver's footwell."
+ },
+ {
+  "id": "c-data15-6",
+  "de": "BMW Motorrad: runder 10-poliger Diagnosestecker, meist unter dem Sitz. Adapterkabel BMW 10-polig rund auf OBD-II; einige neuere Modelle haben einen anderen Stecker.",
+  "en": "BMW Motorrad: round 10-pin diagnostic plug, usually under the seat. Adapter cable BMW 10-pin round to OBD-II; some newer models have a different plug."
+ },
+ {
+  "id": "c-data15-7",
+  "de": "Gurt",
+  "en": "Belt"
+ },
+ {
+  "id": "c-data15-8",
+  "de": "Bremse",
+  "en": "Brake"
+ },
+ {
+  "id": "c-data15-9",
+  "de": "Bremsdruck",
+  "en": "Brake bar"
+ },
+ {
+  "id": "c-data15-10",
+  "de": "Bremspedal getreten",
+  "en": "Brake pedal pressed"
+ },
+ {
+  "id": "c-data15-11",
+  "de": "Bremsdruck",
+  "en": "Brake pressure"
+ },
+ {
+  "id": "c-data15-12",
+  "de": "Kühlmittel",
+  "en": "Coolant"
+ },
+ {
+  "id": "c-data15-13",
+  "de": "Tür",
+  "en": "Door"
+ },
+ {
+  "id": "c-data15-14",
+  "de": "Drehzahl des Antriebsmotors",
+  "en": "Drive motor speed"
+ },
+ {
+  "id": "c-data15-15",
+  "de": "Drehmoment des Antriebsmotors",
+  "en": "Drive motor torque"
+ },
+ {
+  "id": "c-data15-16",
+  "de": "Fahrertür offen",
+  "en": "Driver door open"
+ },
+ {
+  "id": "c-data15-17",
+  "de": "Fahrergurt offen",
+  "en": "Driver seat belt open"
+ },
+ {
+  "id": "c-data15-18",
+  "de": "Ducati: 4-poliger Diagnosestecker unter dem Sitz, neuere Modelle teils mit eigenem Stecker. Das Adapterkabel nach dem Stecker am Motorrad wählen.",
+  "en": "Ducati: 4-pin diagnostic plug under the seat, newer models partly with a plug of their own. Choose the adapter cable by the plug on the motorcycle."
+ },
+ {
+  "id": "c-data15-19",
+  "de": "Ford und Lincoln ab etwa 2018 (opendbc, Mithören)",
+  "en": "Ford and Lincoln from about 2018 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-20",
+  "de": "Kraftstoff im Tank",
+  "en": "Fuel in the tank"
+ },
+ {
+  "id": "c-data15-21",
+  "de": "Tank l",
+  "en": "Fuel l"
+ },
+ {
+  "id": "c-data15-22",
+  "de": "GM (Chevrolet, GMC, Buick, Cadillac), Global A (opendbc, Mithören)",
+  "en": "GM (Chevrolet, GMC, Buick, Cadillac), Global A (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-23",
+  "de": "Handbremse",
+  "en": "Handbrake"
+ },
+ {
+  "id": "c-data15-24",
+  "de": "Harley-Davidson: 4-poliger Deutsch-Stecker bis etwa 2013, 6-poliger ab 2014, meist hinter der Seitenverkleidung. Adapterkabel Deutsch 4- oder 6-polig auf OBD-II.",
+  "en": "Harley-Davidson: 4-pin Deutsch plug up to about 2013, 6-pin from 2014, usually behind the side cover. Adapter cable Deutsch 4-pin or 6-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-25",
+  "de": "Honda und Acura ab etwa 2016 (opendbc, Mithören)",
+  "en": "Honda and Acura from about 2016 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-26",
+  "de": "Honda: 4-poliger Diagnosestecker, meist rot, unter dem Sitz. Adapterkabel Honda 4-polig auf OBD-II.",
+  "en": "Honda: 4-pin diagnostic plug, usually red, under the seat. Adapter cable Honda 4-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-27",
+  "de": "Hyundai, Kia und Genesis mit klassischem CAN (opendbc, Mithören)",
+  "en": "Hyundai, Kia and Genesis with classic CAN (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-28",
+  "de": "Antwortet nichts: Vor Euro 5 sprechen viele Motorräder nur das Protokoll des Herstellers, das ein ELM327 nicht versteht.",
+  "en": "If nothing answers: before Euro 5 many motorcycles speak only the maker's protocol, which an ELM327 does not understand."
+ },
+ {
+  "id": "c-data15-29",
+  "de": "Zündung an und den Not-Aus-Schalter auf Betrieb. Manche Modelle wollen dazu den Leerlauf oder den eingeklappten Seitenständer.",
+  "en": "Ignition on and the kill switch on run. Some models also want neutral or the side stand up."
+ },
+ {
+  "id": "c-data15-30",
+  "de": "In der Mittelkonsole vor dem Schalthebel, unter einer Ablage oder Abdeckung.",
+  "en": "In the centre console in front of the gear lever, under a tray or cover."
+ },
+ {
+  "id": "c-data15-31",
+  "de": "Ansaugluft",
+  "en": "Intake"
+ },
+ {
+  "id": "c-data15-32",
+  "de": "Sie sitzt hinter einer Klappe oder Abdeckung, die sich von Hand abnehmen lässt.",
+  "en": "It sits behind a flap or cover that comes off by hand."
+ },
+ {
+  "id": "c-data15-33",
+  "de": "KTM und Husqvarna: 6-poliger Diagnosestecker unter dem Sitz. Adapterkabel KTM 6-polig auf OBD-II.",
+  "en": "KTM and Husqvarna: 6-pin diagnostic plug under the seat. Adapter cable KTM 6-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-34",
+  "de": "Kawasaki: 6-poliger Diagnosestecker (ältere Modelle 4-polig) unter dem Sitz. Adapterkabel Kawasaki 6-polig auf OBD-II.",
+  "en": "Kawasaki: 6-pin diagnostic plug (older models 4-pin) under the seat. Adapter cable Kawasaki 6-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-35",
+  "de": "Quer",
+  "en": "Lat acc"
+ },
+ {
+  "id": "c-data15-36",
+  "de": "Querbeschleunigung",
+  "en": "Lateral acceleration"
+ },
+ {
+  "id": "c-data15-37",
+  "de": "Längs",
+  "en": "Long acc"
+ },
+ {
+  "id": "c-data15-38",
+  "de": "Längsbeschleunigung",
+  "en": "Longitudinal acceleration"
+ },
+ {
+  "id": "c-data15-39",
+  "de": "E-Motor Nm",
+  "en": "Motor Nm"
+ },
+ {
+  "id": "c-data15-40",
+  "de": "E-Motor",
+  "en": "Motor rpm"
+ },
+ {
+  "id": "c-data15-41",
+  "de": "Motorrad",
+  "en": "Motorcycle"
+ },
+ {
+  "id": "c-data15-42",
+  "de": "Motorrad vor Euro 5: Viele sprechen nur das Protokoll des Herstellers. Mit dem Adapterkabel antworten manche trotzdem über ISO 14230 oder ISO 15765, andere nur dem Werkstattgerät des Herstellers.",
+  "en": "Motorcycle before Euro 5: many speak only the maker's protocol. With the adapter cable some answer over ISO 14230 or ISO 15765 anyway, others only the maker's workshop tool."
+ },
+ {
+  "id": "c-data15-43",
+  "de": "Motorrad nach Euro 5: Es spricht die genormte OBD-Diagnose über ISO 15765 (CAN) oder ISO 14230 (K-Line). Mit dem Adapterkabel am Diagnosestecker liest ein ELM327 Fehlercodes und Messwerte.",
+  "en": "Motorcycle under Euro 5: it speaks the standard OBD diagnosis over ISO 15765 (CAN) or ISO 14230 (K-line). With the adapter cable on the diagnostic plug an ELM327 reads trouble codes and live values."
+ },
+ {
+  "id": "c-data15-44",
+  "de": "Nissan Leaf ab 2018 (opendbc, Mithören)",
+  "en": "Nissan Leaf from 2018 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-45",
+  "de": "Nissan X-Trail, Rogue und Altima (opendbc, Mithören)",
+  "en": "Nissan X-Trail, Rogue and Altima (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-46",
+  "de": "Öl",
+  "en": "Oil"
+ },
+ {
+  "id": "c-data15-47",
+  "de": "Links im Fahrerfußraum an der Seitenverkleidung, nahe dem Hebel für die Motorhaube.",
+  "en": "On the left of the driver's footwell at the side panel, near the bonnet release."
+ },
+ {
+  "id": "c-data15-48",
+  "de": "Außen",
+  "en": "Outside"
+ },
+ {
+  "id": "c-data15-49",
+  "de": "Feststellbremse an",
+  "en": "Parking brake on"
+ },
+ {
+  "id": "c-data15-50",
+  "de": "Pedal",
+  "en": "Pedal"
+ },
+ {
+  "id": "c-data15-51",
+  "de": "Das Adapterkabel auf den Diagnosestecker des Motorrads stecken und den OBD-Adapter in dessen 16-polige Buchse.",
+  "en": "Plug the adapter cable onto the motorcycle's diagnostic plug and the OBD adapter into the cable's 16-pin socket."
+ },
+ {
+  "id": "c-data15-52",
+  "de": "Den Motor für Live-Werte nur im Freien laufen lassen und das Motorrad sicher abstellen.",
+  "en": "Run the engine for live values only outdoors, with the motorcycle parked safely."
+ },
+ {
+  "id": "c-data15-53",
+  "de": "Lenkrate",
+  "en": "Steer rate"
+ },
+ {
+  "id": "c-data15-54",
+  "de": "Lenkradwinkel",
+  "en": "Steering wheel angle"
+ },
+ {
+  "id": "c-data15-55",
+  "de": "Lenkgeschwindigkeit",
+  "en": "Steering wheel speed"
+ },
+ {
+  "id": "c-data15-56",
+  "de": "Subaru vor der Global-Plattform, 2015 bis 2019 (opendbc, Mithören)",
+  "en": "Subaru before the global platform, 2015 to 2019 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-57",
+  "de": "Subaru mit Global-Plattform ab 2017 (opendbc, Mithören)",
+  "en": "Subaru global platform from 2017 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-58",
+  "de": "Suzuki: 6-poliger Diagnosestecker (SDS) unter dem Sitz. Adapterkabel Suzuki 6-polig auf OBD-II.",
+  "en": "Suzuki: 6-pin diagnostic plug (SDS) under the seat. Adapter cable Suzuki 6-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-59",
+  "de": "Tesla Model S und Model X, frühe Baujahre (opendbc, Mithören)",
+  "en": "Tesla Model S and Model X, early years (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-60",
+  "de": "Diese Werte sendet das Auto von selbst, Caruspex hört nur mit. Viele dieser Busse liegen hinter dem Gateway und sind an der OBD-Buchse nicht zu hören; bleiben die Werte leer, liegt das am Auto, nicht am Adapter. Quelle: opendbc (MIT).",
+  "en": "The car sends these values by itself, Caruspex only listens. Many of these buses sit behind the gateway and cannot be heard at the OBD socket; if the values stay empty, that is the car, not the adapter. Source: opendbc (MIT)."
+ },
+ {
+  "id": "c-data15-61",
+  "de": "Diagnosestecker des Herstellers, meist unter dem Sitz. Manche Motorräder haben die 16-polige Buchse, sonst braucht es das passende Adapterkabel.",
+  "en": "The maker's diagnostic plug, usually under the seat. Some motorcycles have the 16-pin socket, otherwise it takes the matching adapter cable."
+ },
+ {
+  "id": "c-data15-62",
+  "de": "Toyota und Lexus ab etwa 2016 (opendbc, Mithören)",
+  "en": "Toyota and Lexus from about 2016 (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-63",
+  "de": "Triumph: 6-poliger Diagnosestecker unter dem Sitz. Adapterkabel Triumph 6-polig auf OBD-II.",
+  "en": "Triumph: 6-pin diagnostic plug under the seat. Adapter cable Triumph 6-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-64",
+  "de": "Unter dem Armaturenbrett links neben der Lenksäule, etwa auf Kniehöhe.",
+  "en": "Under the dashboard left of the steering column, at about knee height."
+ },
+ {
+  "id": "c-data15-65",
+  "de": "Unter dem Armaturenbrett direkt über den Pedalen.",
+  "en": "Under the dashboard right above the pedals."
+ },
+ {
+  "id": "c-data15-66",
+  "de": "Unter dem Armaturenbrett rechts neben der Lenksäule, zur Mittelkonsole hin.",
+  "en": "Under the dashboard right of the steering column, towards the centre console."
+ },
+ {
+  "id": "c-data15-67",
+  "de": "Unter dem Sitz, oft neben der Batterie.",
+  "en": "Under the seat, often next to the battery."
+ },
+ {
+  "id": "c-data15-68",
+  "de": "Volkswagen-Konzern, Plattform MQB (opendbc, Mithören)",
+  "en": "Volkswagen group, MQB platform (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-69",
+  "de": "Volkswagen-Konzern, Plattform PQ (opendbc, Mithören)",
+  "en": "Volkswagen group, PQ platform (opendbc, listening)"
+ },
+ {
+  "id": "c-data15-70",
+  "de": "Rad VL",
+  "en": "Wheel FL"
+ },
+ {
+  "id": "c-data15-71",
+  "de": "Rad VR",
+  "en": "Wheel FR"
+ },
+ {
+  "id": "c-data15-72",
+  "de": "Rad HL",
+  "en": "Wheel RL"
+ },
+ {
+  "id": "c-data15-73",
+  "de": "Rad HR",
+  "en": "Wheel RR"
+ },
+ {
+  "id": "c-data15-74",
+  "de": "Raddrehzahl vorne links",
+  "en": "Wheel speed front left"
+ },
+ {
+  "id": "c-data15-75",
+  "de": "Raddrehzahl vorne rechts",
+  "en": "Wheel speed front right"
+ },
+ {
+  "id": "c-data15-76",
+  "de": "Raddrehzahl hinten links",
+  "en": "Wheel speed rear left"
+ },
+ {
+  "id": "c-data15-77",
+  "de": "Raddrehzahl hinten rechts",
+  "en": "Wheel speed rear right"
+ },
+ {
+  "id": "c-data15-78",
+  "de": "Yamaha: 3-poliger (ältere Modelle) oder 4-poliger Diagnosestecker unter dem Sitz. Adapterkabel Yamaha 3- oder 4-polig auf OBD-II.",
+  "en": "Yamaha: 3-pin (older models) or 4-pin diagnostic plug under the seat. Adapter cable Yamaha 3-pin or 4-pin to OBD-II."
+ },
+ {
+  "id": "c-data15-79",
+  "de": "Gieren",
+  "en": "Yaw"
+ },
+ {
+  "id": "c-data15-80",
+  "de": "Gierrate",
+  "en": "Yaw rate"
+ },
+ {
+  "id": "c-data15-81",
+  "de": "Diagnosestecker des Motorrads, Adapterkabel auf OBD-II",
+  "en": "motorcycle diagnostic plug, adapter cable to OBD-II"
+ }
+]

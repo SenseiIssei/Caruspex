@@ -14,13 +14,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use caruspex_data::pids::{PidCategory, live_key, pid_categories, pid_category_name};
 use caruspex_i18n::{Language, set_language};
 use caruspex_link::Elm327;
-use caruspex_net::can_signals::{parse_can_signal, parse_monitor_request};
+use caruspex_net::can_signals::{decode_can_signal, parse_can_signal, parse_monitor_request};
 use caruspex_protocols::Obd2;
 use caruspex_record::{
     CustomPid, CustomPidReader, PACK_KEY_BASE, TorqueEquation, USER_KEY_BASE, built_in_packs,
-    is_custom_key, odometer_values, pack_category, pack_names, pack_pids, pack_title,
-    pack_values_en, packs_for_model, parse_request_hex, parse_torque_csv, read_custom,
-    write_torque_csv,
+    is_custom_key, listen_pack_cars, listen_packs_for, odometer_values, pack_category,
+    pack_listens, pack_names, pack_pids, pack_title, pack_values_en, packs_for_model,
+    parse_request_hex, parse_torque_csv, read_custom, write_torque_csv,
 };
 
 use common::{DemoRig, ScriptCar, approx, german, language};
@@ -878,4 +878,82 @@ fn the_custom_category_has_a_name_and_a_place() {
         pid_category_name(PidCategory::Custom),
         "Hersteller und eigene Werte"
     );
+}
+
+// The listening packs from opendbc (data/opendbc, tools/gen_opendbc.py):
+// only broadcast values, offered for the cars they name, and the signals
+// decode the way opendbc's DBC files describe them.
+#[test]
+fn opendbc_packs_listen_for_their_cars() {
+    let _lang = german();
+    let listening: Vec<&str> = pack_names()
+        .into_iter()
+        .filter(|n| pack_listens(n))
+        .collect();
+    assert!(listening.len() >= 12, "{listening:?}");
+    for id in &listening {
+        assert!(id.starts_with("opendbc-"));
+        assert!(!listen_pack_cars(id).is_empty(), "{id} names no car");
+        for p in pack_pids(id) {
+            assert!(
+                parse_monitor_request(&p.request).is_some(),
+                "{id}: {}",
+                p.request
+            );
+            assert!(p.header.is_empty());
+            parse_can_signal(&p.equation).unwrap();
+            assert!(p.source.contains("opendbc") && p.source.contains("MIT"));
+        }
+    }
+    // The packs of data/pids do not listen and name no cars.
+    assert!(!pack_listens("tesla-model3-y"));
+    assert!(listen_pack_cars("tesla-model3-y").is_empty());
+
+    assert_eq!(listen_packs_for("Toyota", "RAV4", 2019), ["opendbc-toyota"]);
+    assert_eq!(
+        listen_packs_for("Volkswagen", "Golf", 2017),
+        ["opendbc-vw-mqb"]
+    );
+    assert_eq!(
+        listen_packs_for("Tesla", "Model S", 2015),
+        ["opendbc-tesla-s-x"]
+    );
+    assert_eq!(listen_packs_for("Kia", "K5", 0), ["opendbc-hyundai-kia"]);
+    assert!(listen_packs_for("Volkswagen", "Golf", 2005).is_empty());
+    assert!(listen_packs_for("Toyota", "Corolla", 2010).is_empty());
+    // The general list for a car stays without them.
+    assert!(packs_for_model("Toyota", "RAV4").is_empty());
+
+    let value = |pack: &str, short_en: &str| {
+        pack_values_en(pack)
+            .into_iter()
+            .find(|v| v.short_en == short_en)
+            .unwrap_or_else(|| panic!("{pack}: no {short_en}"))
+            .pid
+    };
+    let decode = |pid: &CustomPid, frame: &[u8]| {
+        decode_can_signal(&parse_can_signal(&pid.equation).unwrap(), frame).unwrap()
+    };
+    // Toyota SPEED (0xB4): Motorola, 16 bits from bit 47, 0.01 km/h.
+    let speed = value("opendbc-toyota", "Speed");
+    assert_eq!(speed.request, "CAN0B4");
+    assert!(approx(
+        decode(&speed, &[0, 0, 0, 0, 0, 0x27, 0x10, 0]),
+        100.0
+    ));
+    // Hyundai WHL_SPD11 (0x386): Intel, 14 bits from bit 0, 1/32 km/h.
+    let wheel = value("opendbc-hyundai-kia", "Wheel FL");
+    assert_eq!(wheel.request, "CAN386");
+    assert!(approx(
+        decode(&wheel, &[0x80, 0x0C, 0, 0, 0, 0, 0, 0]),
+        100.0
+    ));
+    // GM ECMVehicleSpeed is in mph; the pack turns it into km/h.
+    let gm = value("opendbc-gm", "Speed");
+    assert_eq!(gm.unit, "km/h");
+    assert!((decode(&gm, &[0x18, 0x46, 0, 0, 0, 0, 0, 0]) - 100.0).abs() < 0.01);
+    // VW MQB coolant (Motor_07, 0x640): 0.75 per step from -48 °C.
+    let coolant = value("opendbc-vw-mqb", "Coolant");
+    assert_eq!(coolant.request, "CAN640");
+    assert!(approx(decode(&coolant, &[0, 0, 0, 0xB4, 0, 0, 0, 0]), 87.0));
 }

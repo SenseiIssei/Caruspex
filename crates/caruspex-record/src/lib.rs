@@ -22,8 +22,8 @@ pub use obdb::{
     obdb_packs_for, obdb_pid, obdb_search, obdb_stats,
 };
 pub use pid_packs::{
-    NamedValue, built_in_packs, odometer_values, pack_category, pack_names, pack_pids, pack_title,
-    pack_values_en, packs_for_model,
+    NamedValue, built_in_packs, listen_pack_cars, listen_packs_for, odometer_values, pack_category,
+    pack_listens, pack_names, pack_pids, pack_title, pack_values_en, packs_for_model,
 };
 pub use recording::{
     RECORDING_FORMAT, RECORDING_VERSION, RecordedDirection, RecordedEvent, Recording,

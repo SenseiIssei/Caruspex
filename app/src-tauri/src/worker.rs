@@ -51,8 +51,8 @@ use caruspex_record::{
     built_in_packs, obdb_pid, odometer_values, pack_category, pack_title, pack_values_en,
     packs_for_model, parse_torque_csv, recording_summary, start_recording, stop_recording,
 };
-use caruspex_vehicles::catalog;
 use caruspex_vehicles::vin::{decode_vin, system_year};
+use caruspex_vehicles::{catalog, engines};
 use serde::Serialize;
 use serde_json::{Value, json};
 
@@ -445,6 +445,29 @@ fn used_car_identity(vin: &str) -> (Option<VinFacts>, Vec<&'static str>, Drive) 
         }
     }
     (Some(facts), packs, drive)
+}
+
+/// Target values for the health check from the engine codes of the car's
+/// generation (caruspex_vehicles::engines). The fuel from PID 51 picks petrol
+/// or diesel; without it the engines of the generation must agree.
+fn engine_limits(vin: &str, fuel: FuelType) -> Option<health_check::EngineLimits> {
+    let info = decode_vin(vin, system_year());
+    if !info.valid {
+        return None;
+    }
+    let g = catalog::match_vin(&info).generation?;
+    let fuel = match fuel {
+        FuelType::Petrol => Some(engines::EngineFuel::Petrol),
+        FuelType::Diesel => Some(engines::EngineFuel::Diesel),
+        _ => None,
+    };
+    let (t, codes) = engines::targets_for(g, fuel)?;
+    Some(health_check::EngineLimits {
+        codes: engines::codes_text(&codes),
+        idle_min: t.idle_min,
+        idle_max: t.idle_max,
+        coolant_hot: t.coolant_hot,
+    })
 }
 
 /// Seconds of live values for the health check inside the used car check.
@@ -1768,6 +1791,9 @@ impl Worker {
         if let Some(fuel) = self.with_obd(|o| o.read_live(0x51)) {
             input.fuel = health_check::fuel_type_from_obd(fuel.value as i32);
         }
+        // Target values of the engine, when the catalog knows its codes.
+        let vin = self.with_obd(|o| o.read_vin());
+        input.engine = engine_limits(&vin, input.fuel);
 
         // Live series: only what the car offers.
         let supported = self.with_obd(|o| o.supported_pids());
@@ -2044,6 +2070,7 @@ impl Worker {
         if let Some(code) = fuel_code {
             health.fuel = health_check::fuel_type_from_obd(code);
         }
+        health.engine = engine_limits(&vin, health.fuel);
         let pids: Vec<i32> = health_check::health_live_pids()
             .iter()
             .copied()

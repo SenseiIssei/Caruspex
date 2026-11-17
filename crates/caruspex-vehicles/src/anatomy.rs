@@ -145,6 +145,9 @@ fn base_dimensions(body: BodyType) -> [u32; 5] {
         BodyType::Mpv => [4560, 1800, 1640, 2760, 1540],
         BodyType::Microcar => [2700, 1560, 1550, 1870, 1360],
         BodyType::Roadster => [4020, 1740, 1270, 2420, 1480],
+        // A mid-size motorcycle: width over the handlebar, the track is the
+        // width of the rear tyre.
+        BodyType::Motorcycle => [2150, 850, 1250, 1450, 180],
     }
 }
 
@@ -675,7 +678,13 @@ mod tests {
                     d.wheel * 2 < d.height + d.wheel,
                     "wheels fit under the roof"
                 );
-                assert!(d.length > d.width && d.width > 1000 && d.height > 1000);
+                // Motorcycles are narrower than a metre.
+                let min_width = if g.body == catalog::BodyType::Motorcycle {
+                    500
+                } else {
+                    1000
+                };
+                assert!(d.length > d.width && d.width > min_width && d.height > 1000);
                 for variant in powertrain_variants(g.powertrains) {
                     let t = generation_drivetrain(g, year, variant);
                     // Something has to drive the car.

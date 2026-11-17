@@ -63,6 +63,10 @@ jobs:
           python tools/gen_vehicles.py
           python tools/gen_ecus.py
           python tools/gen_pids.py
+          python tools/gen_engines.py
+          # The opendbc packs in data/opendbc are written from a download
+          # cache by tools/gen_opendbc.py and refreshed by hand; gen_pids.py
+          # above turns them into Rust like data/pids.
           # The OBDb packs need the download cache and are refreshed by hand
           # (see tools/gen_obdb.py); the conversion is checked offline on
           # real OBDb commands with their recorded answers.

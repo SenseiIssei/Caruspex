@@ -4,10 +4,13 @@
 
 pub mod anatomy;
 pub mod catalog;
+pub mod engines;
+pub mod moto;
 #[rustfmt::skip]
 mod generated {
     pub mod catalog;
     pub mod dimensions;
+    pub mod engines;
 }
 pub mod vehicles;
 pub mod vin;

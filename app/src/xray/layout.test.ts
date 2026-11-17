@@ -185,6 +185,8 @@ describe("x-ray layout", () => {
     let measured = 0;
     data.generations.forEach((g, i) => {
       const [brand, model, generation, from, to, body, powertrains] = g;
+      // The X-ray view draws cars; motorcycles have no body of their own there.
+      if (body === BodyType.Motorcycle) return;
       for (const year of [from, to || 2026]) {
         const anatomy = anatomyOf(body as BodyType, brand, model, year, powertrains, 0, generation, data.measured[String(i)] ?? null);
         if (anatomy.dimensionSource !== "typical") measured++;

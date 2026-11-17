@@ -1,0 +1,94 @@
+[
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "Beim Motorrad",
+  "en": "With a motorcycle",
+  "tr": {
+   "es": "Con una moto",
+   "fr": "Avec une moto",
+   "pt": "Com uma moto",
+   "it": "Con una moto",
+   "nl": "Bij een motorfiets",
+   "pl": "Przy motocyklu",
+   "cs": "U motocyklu",
+   "ru": "Для мотоцикла",
+   "uk": "Для мотоцикла",
+   "tr": "Motosiklette",
+   "ar": "مع دراجة نارية",
+   "hi": "मोटरसाइकिल के साथ",
+   "zh": "如果是摩托车",
+   "ja": "バイクの場合",
+   "ko": "오토바이의 경우",
+   "id": "Pada sepeda motor"
+  }
+ },
+ {
+  "context": "caruspex::VehiclesPage",
+  "de": "Motorcodes Benzin: %1",
+  "en": "Engine codes petrol: %1",
+  "tr": {
+   "es": "Códigos de motor gasolina: %1",
+   "fr": "Codes moteur essence : %1",
+   "pt": "Códigos de motor gasolina: %1",
+   "it": "Codici motore benzina: %1",
+   "nl": "Motorcodes benzine: %1",
+   "pl": "Kody silników benzynowych: %1",
+   "cs": "Kódy benzinových motorů: %1",
+   "ru": "Коды двигателей, бензин: %1",
+   "uk": "Коди двигунів, бензин: %1",
+   "tr": "Benzinli motor kodları: %1",
+   "ar": "رموز محركات البنزين: %1",
+   "hi": "पेट्रोल इंजन कोड: %1",
+   "zh": "汽油发动机代码：%1",
+   "ja": "ガソリンエンジン型式: %1",
+   "ko": "가솔린 엔진 코드: %1",
+   "id": "Kode mesin bensin: %1"
+  }
+ },
+ {
+  "context": "caruspex::VehiclesPage",
+  "de": "Motorcodes Diesel: %1",
+  "en": "Engine codes diesel: %1",
+  "tr": {
+   "es": "Códigos de motor diésel: %1",
+   "fr": "Codes moteur diesel : %1",
+   "pt": "Códigos de motor diesel: %1",
+   "it": "Codici motore diesel: %1",
+   "nl": "Motorcodes diesel: %1",
+   "pl": "Kody silników Diesla: %1",
+   "cs": "Kódy naftových motorů: %1",
+   "ru": "Коды двигателей, дизель: %1",
+   "uk": "Коди двигунів, дизель: %1",
+   "tr": "Dizel motor kodları: %1",
+   "ar": "رموز محركات الديزل: %1",
+   "hi": "डीज़ल इंजन कोड: %1",
+   "zh": "柴油发动机代码：%1",
+   "ja": "ディーゼルエンジン型式: %1",
+   "ko": "디젤 엔진 코드: %1",
+   "id": "Kode mesin diesel: %1"
+  }
+ },
+ {
+  "context": "caruspex::VehiclesPage",
+  "de": "Quelle: Wikipedia (CC BY-SA 4.0)",
+  "en": "Source: Wikipedia (CC BY-SA 4.0)",
+  "tr": {
+   "es": "Fuente: Wikipedia (CC BY-SA 4.0)",
+   "fr": "Source : Wikipedia (CC BY-SA 4.0)",
+   "pt": "Fonte: Wikipedia (CC BY-SA 4.0)",
+   "it": "Fonte: Wikipedia (CC BY-SA 4.0)",
+   "nl": "Bron: Wikipedia (CC BY-SA 4.0)",
+   "pl": "Źródło: Wikipedia (CC BY-SA 4.0)",
+   "cs": "Zdroj: Wikipedia (CC BY-SA 4.0)",
+   "ru": "Источник: Wikipedia (CC BY-SA 4.0)",
+   "uk": "Джерело: Wikipedia (CC BY-SA 4.0)",
+   "tr": "Kaynak: Wikipedia (CC BY-SA 4.0)",
+   "ar": "المصدر: Wikipedia (CC BY-SA 4.0)",
+   "hi": "स्रोत: Wikipedia (CC BY-SA 4.0)",
+   "zh": "来源：Wikipedia (CC BY-SA 4.0)",
+   "ja": "出典: Wikipedia (CC BY-SA 4.0)",
+   "ko": "출처: Wikipedia(CC BY-SA 4.0)",
+   "id": "Sumber: Wikipedia (CC BY-SA 4.0)"
+  }
+ }
+]

@@ -30,7 +30,7 @@ function trimTerm(pid: number): TermId | null {
 }
 
 interface ListItem {
-  kind: "head" | "pid" | "custom";
+  kind: "head" | "note" | "pid" | "custom";
   key: number;
   label: string;
   tooltip?: string;
@@ -151,6 +151,8 @@ export default function LivePage() {
     }
     for (const pack of [...packs, ...carPacks]) {
       out.push({ kind: "head", key: -1, label: pack.title.toUpperCase() });
+      // The opendbc packs only listen: say that the bus may not reach the socket.
+      if (pack.listen && pack.description) out.push({ kind: "note", key: -1, label: pack.description });
       for (const v of pack.values) {
         out.push({ kind: "custom", key: v.key, label: v.name, tooltip: v.source ? tr("Quelle: %1", v.source) : undefined });
       }
@@ -334,6 +336,14 @@ export default function LivePage() {
                 if (needle) return null;
                 return (
                   <div className="live-list-head" key={`h${i}`}>
+                    {item.label}
+                  </div>
+                );
+              }
+              if (item.kind === "note") {
+                if (needle) return null;
+                return (
+                  <div className="live-list-note" key={`n${i}`}>
                     {item.label}
                   </div>
                 );
