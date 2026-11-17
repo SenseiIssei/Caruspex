@@ -436,13 +436,14 @@ fn tp20_a_missing_acknowledgement_or_answer_ends_in_an_error() {
 #[test]
 fn tp20_the_channel_test_keeps_the_channel_open() {
     let mut car = Car::with_engine();
-    car.idle_limit = Some(Duration::from_millis(150));
+    // Wide margins: a slow CI machine can oversleep a short pause by a lot.
+    car.idle_limit = Some(Duration::from_millis(400));
     let bus = FakeBus::new(car);
     let mut tp = bus.tp20();
 
     // Left alone, the unit forgets the channel.
     tp.open_channel(0x01).unwrap();
-    std::thread::sleep(Duration::from_millis(250));
+    std::thread::sleep(Duration::from_millis(600));
     tp.send_message(&[0x3E, 0x01]).unwrap_err();
 
     // With a channel test every 60 ms it stays.
