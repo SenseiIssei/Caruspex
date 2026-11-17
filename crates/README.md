@@ -16,7 +16,7 @@ history and in the v0.8.0 release.
 | caruspex-link | the `Transport` and `ByteStream` traits, serial with USB detection, TCP, K-line, Bluetooth LE and classic Bluetooth, the ELM327 driver with the extras of STN chips (batched commands, monitoring with a count, MS-CAN and SW-CAN), the adapter check | i18n |
 | caruspex-protocols | OBD-II with batched requests, UDS with BMW addressing and the control unit scan, KWP1281, KWP2000, the VAG K-line, KWP2000 over VAG TP 2.0 | link, data |
 | caruspex-net | BMW ENET (HSFZ), DoIP, raw CAN interfaces (SLCAN, SocketCAN, J2534) with their own ISO-TP and an ELM327 front end, VAG TP 2.0, the K-line of J2534 devices, CAN signals | link |
-| caruspex-record | recordings and replay, custom PIDs with Torque equations, the built-in PID packs (generated from `data/pids/`), JSON output | link, protocols, net, data |
+| caruspex-record | recordings and replay, custom PIDs with Torque equations, the built-in PID packs (generated from `data/pids/` and, for listening to broadcast values, from opendbc in `data/opendbc/`), JSON output | link, protocols, net, data |
 | caruspex-analysis | health check, battery test, readiness, drive cycles, trip computer, performance timer | i18n |
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
 | caruspex-demo | the built-in demo car: an ELM327 or an OBDLink (STN commands, MS-CAN and SW-CAN) with simulated control units, an injectable clock and a count of the simulated adapter time | link |

@@ -506,6 +506,9 @@ export interface PidPackInfo {
   // True for a pack imported from OBDb (obdb_packs); its value names are
   // OBDb's own and stay English.
   obdb?: boolean;
+  // True for a pack of opendbc that only listens to broadcast values; the
+  // description then says that the bus may sit behind the gateway.
+  listen?: boolean;
 }
 
 // --- core/analysis (the measure pages) -------------------------------------------

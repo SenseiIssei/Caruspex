@@ -22,7 +22,7 @@ use caruspex_data::pids::PidCategory;
 use caruspex_i18n::{Language, Text, language};
 
 use crate::custom_pids::{CustomPid, PACK_KEY_BASE};
-use crate::generated::pid_packs::{PACKS, VALUES};
+use crate::generated::pid_packs::{CARS, PACKS, VALUES};
 use crate::obdb::{OBDB_PREFIX, obdb_pack, obdb_pack_pids};
 
 /// One pack of the generated table.
@@ -30,6 +30,19 @@ pub struct PackRow {
     pub id: &'static str,
     pub title: Text,
     pub category: PidCategory,
+    /// Only broadcast values of certain cars (the opendbc packs): offered
+    /// for the cars in [`CarRow`], not to everyone.
+    pub listen: bool,
+}
+
+/// A car of the vehicle catalog a listening pack stands for.
+pub struct CarRow {
+    /// Index into the pack table.
+    pub pack: usize,
+    pub brand: &'static str,
+    pub model: &'static str,
+    pub year_from: i32,
+    pub year_to: i32,
 }
 
 /// One value of the generated table.
@@ -163,9 +176,41 @@ pub fn odometer_values(name: &str) -> Vec<CustomPid> {
         .collect()
 }
 
+/// Whether a pack only listens to broadcast values of certain cars (the
+/// opendbc packs). Those are offered by [`listen_packs_for`], not in the
+/// general list.
+pub fn pack_listens(name: &str) -> bool {
+    find_pack(name).is_some_and(|p| p.listen)
+}
+
+/// The listening packs (opendbc) for a car of the catalog: same brand and
+/// model, the model year inside the pack's years (any when `year` <= 0).
+pub fn listen_packs_for(brand: &str, model: &str, year: i32) -> Vec<&'static str> {
+    let mut out: Vec<&'static str> = Vec::new();
+    for car in CARS {
+        let fits = car.brand.eq_ignore_ascii_case(brand)
+            && car.model.eq_ignore_ascii_case(model)
+            && (year <= 0 || (car.year_from..=car.year_to).contains(&year));
+        let id = PACKS[car.pack].id;
+        if fits && !out.contains(&id) {
+            out.push(id);
+        }
+    }
+    out
+}
+
+/// The cars a listening pack stands for: brand, model, first and last year.
+pub fn listen_pack_cars(name: &str) -> Vec<(&'static str, &'static str, i32, i32)> {
+    CARS.iter()
+        .filter(|c| PACKS[c.pack].id == name)
+        .map(|c| (c.brand, c.model, c.year_from, c.year_to))
+        .collect()
+}
+
 /// The packs that fit a car, from the brand and model name of the catalog
 /// ("Hyundai", "Kona"). The demo pack is never in it; the caller knows the
-/// demo car by its VIN.
+/// demo car by its VIN. The listening packs are not in it either, see
+/// [`listen_packs_for`].
 pub fn packs_for_model(brand: &str, model: &str) -> Vec<&'static str> {
     let brand = brand.to_lowercase();
     let model = model.to_lowercase();

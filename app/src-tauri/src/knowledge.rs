@@ -14,10 +14,11 @@ use caruspex_data::pids::{
     PidCategory, default_live_pids as default_pids, pid_category_name, pid_table as table,
 };
 use caruspex_data::severity::severity_label;
-use caruspex_i18n::{Language, language, translate_core_owned, with_language};
+use caruspex_i18n::{Language, l, language, translate_core_owned, with_language};
 use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
 use caruspex_record::{
-    built_in_packs, obdb_pack_pids, obdb_packs_for, pack_category, pack_names, pack_title,
+    built_in_packs, listen_packs_for, obdb_pack_pids, obdb_packs_for, pack_category, pack_listens,
+    pack_names, pack_title,
 };
 use caruspex_vehicles::anatomy;
 use caruspex_vehicles::catalog::{self, BodyType, VehicleGeneration};
@@ -207,10 +208,34 @@ pub fn default_live_pids() -> Vec<i32> {
     default_pids().to_vec()
 }
 
+/// The built-in packs for every car. The listening packs of opendbc are left
+/// out: they come with the car they were made for, see [`obdb_packs`].
 pub fn pid_packs() -> Value {
+    Value::Array(
+        pack_names()
+            .into_iter()
+            .filter(|id| !pack_listens(id))
+            .map(built_in_pack_json)
+            .collect(),
+    )
+}
+
+/// Said with every listening pack: the values only come if the bus they are
+/// sent on reaches the OBD socket.
+pub fn listen_note() -> &'static str {
+    l(
+        "Diese Werte sendet das Auto von selbst, Caruspex hört nur mit. Viele dieser Busse \
+         liegen hinter dem Gateway und sind an der OBD-Buchse nicht zu hören; bleiben die \
+         Werte leer, liegt das am Auto, nicht am Adapter. Quelle: opendbc (MIT).",
+        "The car sends these values by itself, Caruspex only listens. Many of these buses sit \
+         behind the gateway and cannot be heard at the OBD socket; if the values stay empty, \
+         that is the car, not the adapter. Source: opendbc (MIT).",
+    )
+}
+
+fn built_in_pack_json(id: &'static str) -> Value {
     let all = built_in_packs();
-    let mut out = Vec::new();
-    for id in pack_names() {
+    {
         let category = pack_category(id);
         let values: Vec<CustomRow> = all
             .iter()
@@ -239,26 +264,44 @@ pub fn pid_packs() -> Value {
         } else {
             String::new()
         };
-        out.push(json!({
+        let listen = pack_listens(id);
+        json!({
             "id": id,
             "title": localized(|e| e.pack_titles.get(id), &pack_title(id)),
             "brand": brand,
-            "description": "",
+            "description": if listen { listen_note() } else { "" },
             "values": values,
             "category": category as i32,
-        }));
+            "listen": listen,
+        })
     }
-    Value::Array(out)
 }
 
 /// The OBDb packs for a car of the catalog (generation id and model year,
-/// 0 = any), in the shape of [`pid_packs`]. Empty without a generation. The
-/// value names stay as OBDb writes them; the titles are translated.
+/// 0 = any), in the shape of [`pid_packs`], followed by the opendbc packs
+/// for listening that fit it ("listen": true). Empty without a generation.
+/// The OBDb value names stay as OBDb writes them; the titles are translated.
 pub fn obdb_packs(generation_id: Option<usize>, year: i32) -> Value {
     let Some(g) = generation_id.and_then(|id| catalog::all().get(id)) else {
         return Value::Array(Vec::new());
     };
     let packs = obdb_packs_for(g.brand, g.model, year);
+    // The opendbc packs for listening follow the OBDb ones. Without a model
+    // year the generation's years decide.
+    let listen = if year > 0 {
+        listen_packs_for(g.brand, g.model, year)
+    } else {
+        let last = if g.year_to > 0 { g.year_to } else { 2030 };
+        (g.year_from..=last)
+            .flat_map(|y| listen_packs_for(g.brand, g.model, y))
+            .fold(Vec::new(), |mut acc, id| {
+                if !acc.contains(&id) {
+                    acc.push(id);
+                }
+                acc
+            })
+    };
+    let listen = listen.into_iter().map(built_in_pack_json);
     Value::Array(
         packs
             .into_iter()
@@ -287,6 +330,7 @@ pub fn obdb_packs(generation_id: Option<usize>, year: i32) -> Value {
                     "obdb": true,
                 })
             })
+            .chain(listen)
             .collect(),
     )
 }
@@ -612,5 +656,32 @@ mod tests {
         // No car, a car without OBDb data, a year outside the packs.
         assert!(obdb_packs(None, 2023).as_array().unwrap().is_empty());
         assert!(obdb_packs(Some(id), 1990).as_array().unwrap().is_empty());
+    }
+
+    #[test]
+    fn opendbc_packs_come_with_their_car_only() {
+        let general = pid_packs();
+        assert!(
+            general
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|p| !p["id"].as_str().unwrap().starts_with("opendbc-"))
+        );
+        let golf = catalog_search("golf 7", 5);
+        let id = golf[0]["id"].as_u64().unwrap() as usize;
+        for year in [2017, 0] {
+            let packs = obdb_packs(Some(id), year);
+            let pack = packs
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|p| p["id"] == "opendbc-vw-mqb")
+                .expect("MQB pack for the Golf 7")
+                .clone();
+            assert_eq!(pack["listen"], true);
+            assert!(pack["description"].as_str().unwrap().contains("opendbc"));
+            assert!(!pack["values"].as_array().unwrap().is_empty());
+        }
     }
 }
