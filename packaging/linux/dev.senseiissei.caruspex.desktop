@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Caruspex
+GenericName=Car diagnostics
+GenericName[de]=Fahrzeugdiagnose
+Comment=Read fault codes and live values over OBD-II, K-Line, CAN and Ethernet
+Comment[de]=Fehlercodes und Live-Werte über OBD-II, K-Line, CAN und Ethernet lesen
+Exec=caruspex
+Icon=dev.senseiissei.caruspex
+Terminal=false
+Categories=Utility;Development;
+Keywords=OBD;OBD2;ELM327;car;diagnostics;CAN;
+Keywords[de]=OBD;OBD2;ELM327;Auto;Diagnose;Fehlerspeicher;CAN;
+StartupWMClass=caruspex

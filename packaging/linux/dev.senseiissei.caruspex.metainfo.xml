@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata for Flathub and Snap. A template: tools/dist_manifests.py
+     fills in the version, the date and the release notes (see packaging/README.md). -->
+<component type="desktop-application">
+  <id>dev.senseiissei.caruspex</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Caruspex</name>
+  <summary>Read fault codes and live values of your car</summary>
+  <summary xml:lang="de">Fehlercodes und Live-Werte des Autos lesen</summary>
+  <developer id="io.github.senseiissei">
+    <name>SenseiIssei</name>
+  </developer>
+  <description>
+    <p>
+      Caruspex is free diagnostics for cars and motorcycles. It reads and clears fault codes,
+      explains them in plain words, shows live values, asks every control unit of the car and
+      checks used cars before the purchase.
+    </p>
+    <p xml:lang="de">
+      Caruspex ist eine freie Diagnose für Autos und Motorräder. Es liest und löscht
+      Fehlercodes, erklärt sie in einfachen Worten, zeigt Live-Werte, fragt alle Steuergeräte
+      des Autos ab und prüft Gebrauchtwagen vor dem Kauf.
+    </p>
+    <p>It works with the adapters people own:</p>
+    <p xml:lang="de">Es arbeitet mit den Adaptern, die man hat:</p>
+    <ul>
+      <li>ELM327 and OBDLink over USB, Bluetooth and Wi-Fi</li>
+      <li xml:lang="de">ELM327 und OBDLink über USB, Bluetooth und WLAN</li>
+      <li>KKL cables for older VW, Audi, Seat and Skoda (KWP1281 and KWP2000)</li>
+      <li xml:lang="de">KKL-Kabel für ältere VW, Audi, Seat und Skoda (KWP1281 und KWP2000)</li>
+      <li>BMW ENET and DoIP cables over Ethernet</li>
+      <li xml:lang="de">BMW-ENET- und DoIP-Kabel über Ethernet</li>
+      <li>SocketCAN and SLCAN interfaces</li>
+      <li xml:lang="de">SocketCAN- und SLCAN-Schnittstellen</li>
+    </ul>
+    <p>
+      Caruspex only reads: clearing fault codes is the only thing it writes to the car. It
+      speaks 18 languages and sends nothing anywhere.
+    </p>
+    <p xml:lang="de">
+      Caruspex liest nur: Fehlercodes löschen ist das Einzige, was es ins Auto schreibt. Es
+      spricht 18 Sprachen und schickt nichts weg.
+    </p>
+  </description>
+  <launchable type="desktop-id">dev.senseiissei.caruspex.desktop</launchable>
+  <url type="homepage">https://github.com/SenseiIssei/Caruspex</url>
+  <url type="bugtracker">https://github.com/SenseiIssei/Caruspex/issues</url>
+  <url type="vcs-browser">https://github.com/SenseiIssei/Caruspex</url>
+  <url type="translate">https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md</url>
+  <categories>
+    <category>Utility</category>
+    <category>Development</category>
+  </categories>
+  <keywords>
+    <keyword>OBD</keyword>
+    <keyword>OBD2</keyword>
+    <keyword>ELM327</keyword>
+    <keyword>car</keyword>
+    <keyword>diagnostics</keyword>
+    <keyword>CAN</keyword>
+  </keywords>
+  <provides>
+    <binary>caruspex</binary>
+  </provides>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+  <branding>
+    <color type="primary" scheme_preference="light">#d8eef3</color>
+    <color type="primary" scheme_preference="dark">#0a0c11</color>
+  </branding>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Overview with live gauges</caption>
+      <image>https://raw.githubusercontent.com/SenseiIssei/Caruspex/v@VERSION@/docs/screenshot-overview.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Fault memory with plain explanations</caption>
+      <image>https://raw.githubusercontent.com/SenseiIssei/Caruspex/v@VERSION@/docs/screenshot-faults.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Live values</caption>
+      <image>https://raw.githubusercontent.com/SenseiIssei/Caruspex/v@VERSION@/docs/screenshot-live.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>X-ray view of the connected car</caption>
+      <image>https://raw.githubusercontent.com/SenseiIssei/Caruspex/v@VERSION@/docs/screenshot-xray.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Connecting</caption>
+      <image>https://raw.githubusercontent.com/SenseiIssei/Caruspex/v@VERSION@/docs/screenshot-connect.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="@VERSION@" date="@RELEASE_DATE@">
+      <url type="details">https://github.com/SenseiIssei/Caruspex/releases/tag/v@VERSION@</url>
+      <description>
+@RELEASE_NOTES@
+      </description>
+    </release>
+  </releases>
+</component>

@@ -1,0 +1,33 @@
+# Template for winget-pkgs, filled in by tools/dist_manifests.py (see packaging/README.md).
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
+
+PackageIdentifier: SenseiIssei.Caruspex
+PackageVersion: @VERSION@
+PackageLocale: en-US
+Publisher: SenseiIssei
+PublisherUrl: https://github.com/SenseiIssei
+PublisherSupportUrl: https://github.com/SenseiIssei/Caruspex/issues
+PackageName: Caruspex
+PackageUrl: https://github.com/SenseiIssei/Caruspex
+License: MIT
+LicenseUrl: https://github.com/SenseiIssei/Caruspex/blob/main/LICENSE
+Copyright: SenseiIssei, MIT licence
+ShortDescription: Free car diagnostics over OBD-II, K-Line, CAN and Ethernet.
+Description: |-
+  Caruspex reads and clears fault codes, shows live values, asks every control unit of the car
+  and checks used cars before the purchase. It works with ELM327 and OBDLink adapters over USB,
+  Bluetooth and Wi-Fi, KKL cables for older VW group cars, BMW ENET and DoIP cables and
+  J2534, PEAK and Kvaser CAN interfaces. 18 languages, only reads, nothing is sent anywhere.
+Moniker: caruspex
+Tags:
+  - obd
+  - obd2
+  - elm327
+  - car
+  - diagnostics
+  - can-bus
+  - kwp1281
+  - uds
+ReleaseNotesUrl: https://github.com/SenseiIssei/Caruspex/releases/tag/v@VERSION@
+ManifestType: defaultLocale
+ManifestVersion: 1.10.0
