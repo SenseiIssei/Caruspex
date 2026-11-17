@@ -15,6 +15,7 @@ import type {
   AdviceReport,
   ConnectHelp,
   ConnectRoute,
+  CrashReport,
   AppInfo,
   AppSettings,
   BleDeviceRow,
@@ -72,6 +73,10 @@ export interface Commands {
   // installs it; progress comes as update_progress. Rejects with a message.
   install_update: Cmd<None, UpdateOutcome>;
   open_url: Cmd<{ url: string }, void>;
+  // The newest crash report the user has not decided about; null if none.
+  crash_report_pending: Cmd<None, CrashReport | null>;
+  // The user decided: the report stays on the computer, is not offered again.
+  crash_report_done: Cmd<{ path: string }, void>;
 
   // --- Settings (Settings.h) -------------------------------------------------
   load_settings: Cmd<None, AppSettings>;
@@ -295,6 +300,9 @@ export interface Events {
   // settled, and --report asking the interface for the document.
   cli_page: { page: string };
   cli_report: { path: string };
+  // A panic in the backend while the window is still there (the worker
+  // thread); the report is already on the computer, nothing was sent.
+  crash_report: CrashReport;
 }
 
 export type CommandName = keyof Commands;

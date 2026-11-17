@@ -106,6 +106,25 @@ export const appHandlers: PartialHandlers = {
   open_url: ({ url }) => {
     window.open(url, "_blank", "noopener");
   },
+  // ?crash in the address shows the crash dialog with a sample report.
+  crash_report_pending: () =>
+    new URLSearchParams(window.location.search).has("crash")
+      ? {
+          path: "crash-reports/crash-20261117-081500.txt",
+          text: [
+            "Caruspex 0.12.0",
+            "System: windows x86_64",
+            "Thread: caruspex-worker",
+            "Where: app/src-tauri/src/worker.rs:1432:9",
+            "Message: index out of bounds: the len is 3 but the index is 7, reply <hex>",
+            "",
+            "Call chain:",
+            "   0: std::backtrace::Backtrace::force_capture",
+            "   1: caruspex::worker::Worker::poll_tick",
+          ].join("\n"),
+        }
+      : null,
+  crash_report_done: () => undefined,
   load_settings: () => ({ ...DEFAULT_SETTINGS, ...readJson<Partial<AppSettings>>(SETTINGS_KEY, {}) }),
   save_settings: ({ values }) => {
     writeJson(SETTINGS_KEY, values);

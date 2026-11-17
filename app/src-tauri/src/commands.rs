@@ -708,6 +708,20 @@ pub fn share_recording(path: String, vin: String) -> Result<Value> {
     Ok(share_json(&shared))
 }
 
+/// The newest crash report the user has not decided about, if any.
+#[tauri::command]
+pub fn crash_report_pending() -> Option<crate::crash::CrashReport> {
+    crate::crash::dir().and_then(|dir| crate::crash::pending(dir))
+}
+
+/// The user decided about a report: it stays on the computer but is not
+/// offered again.
+#[tauri::command]
+pub fn crash_report_done(path: String) -> Result<()> {
+    let dir = crate::crash::dir().ok_or("no report folder")?;
+    crate::crash::mark_seen(dir, &path)
+}
+
 pub fn share_json(shared: &caruspex_record::SharedRecording) -> Value {
     let p = &shared.preview;
     json!({

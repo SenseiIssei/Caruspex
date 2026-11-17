@@ -989,3 +989,10 @@ export interface SharedRecording {
   file: string;
   preview: SharePreview;
 }
+
+// A crash report on this computer (crash.rs): version, system, place and
+// call chain, without vehicle data. Never sent by itself.
+export interface CrashReport {
+  path: string;
+  text: string;
+}
