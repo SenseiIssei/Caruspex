@@ -263,3 +263,103 @@ pub(crate) fn open(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String
         fd,
     }))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The interface for the tests over a real socket: the one named in
+    /// CARUSPEX_TEST_VCAN (the Sanitizers job of the CI sets up vcan0 with
+    /// room for CAN FD). Without it only the error paths are tested.
+    fn test_interface() -> Option<String> {
+        let name = std::env::var("CARUSPEX_TEST_VCAN")
+            .ok()
+            .filter(|n| !n.is_empty())?;
+        interfaces().contains(&name).then_some(name)
+    }
+
+    #[test]
+    fn socketcan_unknown_interfaces_are_refused() {
+        assert!(open("nosuchcan9", false).is_err());
+        assert!(open("nosuchcan9", true).is_err());
+        // Longer than IFNAMSIZ: cut, never written past the name field.
+        assert!(open(&"x".repeat(64), false).is_err());
+        assert_eq!(fd_length(9), 12);
+        assert_eq!(fd_length(64), 64);
+    }
+
+    // All traffic in one test, so no two tests read each other's frames.
+    #[test]
+    fn socketcan_frames_over_a_virtual_interface() {
+        let Some(name) = test_interface() else {
+            eprintln!("CARUSPEX_TEST_VCAN is not set up, skipping the traffic test");
+            return;
+        };
+        let mut a = open(&name, false).unwrap();
+        let mut b = open(&name, false).unwrap();
+        assert_eq!(a.name(), format!("SocketCAN {name}"));
+        for frame in [
+            CanFrame {
+                id: 0x7DF,
+                extended: false,
+                data: vec![0x02, 0x01, 0x0C],
+            },
+            CanFrame {
+                id: 0x18DB_33F1,
+                extended: true,
+                data: vec![0x10, 0x14, 0x49, 0x02, 0x01, 0x57, 0x41, 0x55],
+            },
+            CanFrame {
+                id: 0x7E8,
+                extended: false,
+                data: Vec::new(),
+            },
+        ] {
+            assert!(a.send(&frame));
+            assert_eq!(b.receive(1000), Some(frame));
+        }
+        // More than 8 bytes on a classic link: only the first 8 go out.
+        let long = CanFrame {
+            id: 0x7E0,
+            extended: false,
+            data: (0..12).collect(),
+        };
+        assert!(a.send(&long));
+        assert_eq!(b.receive(1000).map(|f| f.data), Some((0..8).collect()));
+        // The sender does not hear itself, and nothing else is waiting.
+        assert_eq!(a.receive(50), None);
+        assert_eq!(b.receive(50), None);
+
+        // CAN FD: up to 64 bytes, padded to the next FD length.
+        let mut fd_a = open(&name, true).unwrap();
+        let mut fd_b = open(&name, true).unwrap();
+        assert!(fd_a.fd());
+        let frame = CanFrame {
+            id: 0x7E0,
+            extended: false,
+            data: (1..=20).collect(),
+        };
+        assert!(fd_a.send(&frame), "vcan needs mtu 72 for CAN FD");
+        assert_eq!(fd_b.receive(1000), Some(frame));
+        let thirteen = CanFrame {
+            id: 0x7E0,
+            extended: false,
+            data: vec![0xAA; 13],
+        };
+        assert!(fd_a.send(&thirteen));
+        let got = fd_b.receive(1000).unwrap();
+        assert_eq!(got.data.len(), 16);
+        assert_eq!(got.data[..13], [0xAA; 13]);
+        // Classic frames reach the FD sockets too; the classic socket saw
+        // none of the FD frames, so the classic one is the next it reads.
+        let classic = CanFrame {
+            id: 0x7E8,
+            extended: false,
+            data: vec![1, 2, 3],
+        };
+        assert!(a.send(&classic));
+        assert_eq!(fd_b.receive(1000), Some(classic.clone()));
+        assert_eq!(b.receive(1000), Some(classic));
+        assert_eq!(b.receive(50), None);
+    }
+}

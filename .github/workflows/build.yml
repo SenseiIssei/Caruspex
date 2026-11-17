@@ -86,6 +86,13 @@ jobs:
       - name: README language bar is current
         run: python tools/readme_languages.py --check
 
+      # The documentation website in all languages (published by pages.yml).
+      - name: Documentation website builds
+        run: python docs/site/build.py --check --out target/docs-site
+
+      - name: Package manager templates
+        run: python tools/dist_manifests.py --check-templates
+
       - name: Interface
         env:
           I18N_STRICT: "1"
@@ -96,6 +103,65 @@ jobs:
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
+
+  # AddressSanitizer (with LeakSanitizer) on the tests of the modules with
+  # unsafe code: the J2534 crate, SocketCAN in caruspex-net (over a virtual
+  # vcan0 when the runner can load the module) and classic Bluetooth in
+  # caruspex-link. rustc has no UndefinedBehaviorSanitizer; the second run
+  # switches on Rust's own checks for undefined behaviour in the standard
+  # library instead (-Zub-checks with a rebuilt std). Nightly only, so the
+  # job may fail without blocking anything: it is not a required check.
+  # The J2534 driver calls themselves are Windows only and not covered here.
+  sanitizers:
+    name: Sanitizers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    continue-on-error: true
+    env:
+      TARGET: x86_64-unknown-linux-gnu
+      CARUSPEX_TEST_VCAN: vcan0
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rust-src
+
+      - name: System packages
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y libdbus-1-dev libudev-dev pkg-config
+
+      - name: Virtual CAN interface
+        run: |
+          # vcan is in the extra modules of the runner's kernel. Without it
+          # the SocketCAN test only checks the error paths.
+          if sudo apt-get install -y "linux-modules-extra-$(uname -r)" && sudo modprobe vcan; then
+            sudo ip link add dev vcan0 type vcan
+            sudo ip link set vcan0 mtu 72
+            sudo ip link set up vcan0
+            ip -details link show vcan0
+          else
+            echo "::warning::vcan is not available, the SocketCAN test runs without an interface"
+          fi
+
+      - name: AddressSanitizer
+        env:
+          RUSTFLAGS: -Zsanitizer=address -Cforce-frame-pointers=yes
+          RUSTDOCFLAGS: -Zsanitizer=address
+          ASAN_OPTIONS: detect_leaks=1:detect_stack_use_after_return=1:strict_string_checks=1
+        run: |
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-j2534 --lib
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-net --lib socketcan
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-link --lib bt_classic
+
+      - name: Undefined behaviour checks
+        env:
+          RUSTFLAGS: -Zub-checks=yes -Cdebug-assertions=yes -Coverflow-checks=yes
+        run: |
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-j2534 --lib
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-net --lib socketcan
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-link --lib bt_classic
 
   build:
     name: ${{ matrix.name }}
