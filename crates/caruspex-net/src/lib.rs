@@ -11,6 +11,7 @@
 
 pub mod can_bus;
 pub mod can_signals;
+mod elm_front;
 pub mod enet;
 #[cfg(windows)]
 mod j2534;

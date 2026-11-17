@@ -12,7 +12,8 @@ use caruspex_i18n::l;
 use caruspex_link::timing::now_ms;
 use caruspex_link::{ByteStream, Transport};
 
-use crate::text::{atoi, hex, is_hex, normalize, parse_hex, strtol_hex};
+use crate::elm_front::{self, ElmBackend, ElmFront};
+use crate::text::{atoi, is_hex, strtol_hex};
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct CanFrame {
@@ -85,19 +86,11 @@ pub struct CanElm {
     link: SharedCanLink,
     name: String,
     bitrate: u32,
-    pending: Vec<u8>,
-    echo: bool,
-    linefeeds: bool,
-    spaces: bool,
-    headers: bool,
-    auto_format: bool,
+    /// Display settings, ATSH (with ATCP on top for 29 bit) and ATCRA.
+    front: ElmFront,
     /// ATSP7/9: 29-bit ids.
     extended: bool,
-    /// ATSH (with ATCP on top for 29 bit).
-    header: u32,
     priority: u32,
-    /// ATCRA.
-    filter: Option<u32>,
     /// ATFCSH.
     flow_header: Option<u32>,
     monitoring: bool,
@@ -118,16 +111,9 @@ impl CanElm {
             link: SharedCanLink::new(link),
             name: name.into(),
             bitrate,
-            pending: Vec::new(),
-            echo: true,
-            linefeeds: false,
-            spaces: true,
-            headers: false,
-            auto_format: true,
+            front: ElmFront::new(),
             extended: false,
-            header: 0x7DF,
             priority: 0x18,
-            filter: None,
             flow_header: None,
             monitoring: false,
         }
@@ -139,25 +125,19 @@ impl CanElm {
     }
 
     fn reset(&mut self) {
-        self.echo = true;
-        self.linefeeds = false;
-        self.spaces = true;
-        self.headers = false;
-        self.auto_format = true;
+        self.front.reset();
         self.extended = false;
-        self.header = 0x7DF;
         self.priority = 0x18;
-        self.filter = None;
         self.flow_header = None;
         self.monitoring = false;
     }
 
     fn end(&self) -> &'static str {
-        if self.linefeeds { "\r\n" } else { "\r" }
+        if self.front.linefeeds { "\r\n" } else { "\r" }
     }
 
     fn hex(&self, bytes: &[u8]) -> String {
-        hex(bytes, self.spaces)
+        self.front.hex(bytes)
     }
 
     fn line(&self, frame: &CanFrame, with_id: bool) -> String {
@@ -168,7 +148,7 @@ impl CanElm {
             } else {
                 format!("{:03X}", frame.id)
             };
-            if self.spaces {
+            if self.front.spaces {
                 out.push(' ');
             }
         }
@@ -177,32 +157,8 @@ impl CanElm {
 
     /// Frames that arrived between two requests belong to nobody.
     fn drain(&mut self) {
-        self.pending.clear();
+        self.front.pending.clear();
         while !self.monitoring && self.link.receive(0).is_some() {}
-    }
-
-    fn handle(&mut self, command: &str) -> Vec<String> {
-        if command.is_empty() {
-            return Vec::new();
-        }
-        if let Some(rest) = command.strip_prefix("AT") {
-            return self.at(rest);
-        }
-        if command.starts_with("ST") {
-            return vec!["?".into()];
-        }
-        let mut digits = command.to_string();
-        if digits.len() % 2 == 1 {
-            digits.pop(); // "expected answers" digit
-        }
-        if !is_hex(&digits) {
-            return vec!["?".into()];
-        }
-        if self.auto_format {
-            self.request(&parse_hex(&digits))
-        } else {
-            self.raw(&parse_hex(&digits))
-        }
     }
 
     fn at(&mut self, c: &str) -> Vec<String> {
@@ -222,26 +178,6 @@ impl CanElm {
         if c == "@1" {
             return vec![self.name.clone()];
         }
-        if c == "E0" || c == "E1" {
-            self.echo = c == "E1";
-            return ok();
-        }
-        if c == "L0" || c == "L1" {
-            self.linefeeds = c == "L1";
-            return ok();
-        }
-        if c == "S0" || c == "S1" {
-            self.spaces = c == "S1";
-            return ok();
-        }
-        if c == "H0" || c == "H1" {
-            self.headers = c == "H1";
-            return ok();
-        }
-        if c == "CAF0" || c == "CAF1" {
-            self.auto_format = c == "CAF1";
-            return ok();
-        }
         if c.starts_with("SP") || c.starts_with("TP") {
             // 6/8 are 11 bit, 7/9 are 29 bit; the bit rate is the interface's.
             let digit = c.as_bytes()[c.len() - 1];
@@ -254,7 +190,7 @@ impl CanElm {
             if (b'1'..=b'5').contains(&digit) {
                 return question(); // no K-line or J1850 on a CAN interface
             }
-            self.header = if self.extended { 0xDB33F1 } else { 0x7DF };
+            self.front.header = if self.extended { 0xDB33F1 } else { 0x7DF };
             return ok();
         }
         if c == "DP" || c == "DPN" {
@@ -282,9 +218,9 @@ impl CanElm {
             let value = u32::from_str_radix(id, 16).unwrap_or(0);
             if id.len() == 8 {
                 self.priority = value >> 24;
-                self.header = value & 0xFFFFFF;
+                self.front.header = value & 0xFFFFFF;
             } else {
-                self.header = value;
+                self.front.header = value;
             }
             return ok();
         }
@@ -293,14 +229,14 @@ impl CanElm {
             return ok();
         }
         if c == "CRA" || c == "AR" {
-            self.filter = None;
+            self.front.filter = None;
             return ok();
         }
         if let Some(id) = c.strip_prefix("CRA") {
             if !is_hex(id) || (id.len() != 3 && id.len() != 8) {
                 return question();
             }
-            self.filter = u32::from_str_radix(id, 16).ok();
+            self.front.filter = u32::from_str_radix(id, 16).ok();
             return ok();
         }
         if let Some(id) = c.strip_prefix("FCSH") {
@@ -340,20 +276,20 @@ impl CanElm {
         if f.extended != self.extended || f.data.is_empty() {
             return false;
         }
-        if let Some(filter) = self.filter {
+        if let Some(filter) = self.front.filter {
             return f.id == filter;
         }
         if !self.extended {
             return if functional {
                 (0x7E8..=0x7EF).contains(&f.id)
             } else {
-                f.id == self.header.wrapping_add(8)
+                f.id == self.front.header.wrapping_add(8)
             };
         }
         if functional {
             return (f.id & 0x1FFF_0000) == 0x18DA_0000 && ((f.id >> 8) & 0xFF) == 0xF1;
         }
-        let request = (self.priority << 24) | self.header;
+        let request = (self.priority << 24) | self.front.header;
         let swapped = (request & 0x1FFF_0000) | ((request & 0xFF) << 8) | ((request >> 8) & 0xFF);
         f.id == swapped
     }
@@ -373,9 +309,9 @@ impl CanElm {
 
     fn request_id(&self) -> u32 {
         if self.extended {
-            (self.priority << 24) | self.header
+            (self.priority << 24) | self.front.header
         } else {
-            self.header
+            self.front.header
         }
     }
 
@@ -384,9 +320,9 @@ impl CanElm {
             return vec!["?".into()];
         }
         let functional = if self.extended {
-            (self.header & 0xFFFF00) == 0xDB3300
+            (self.front.header & 0xFFFF00) == 0xDB3300
         } else {
-            self.header == 0x7DF
+            self.front.header == 0x7DF
         };
         let mut data = vec![bytes.len() as u8];
         data.extend_from_slice(bytes);
@@ -465,7 +401,7 @@ impl CanElm {
         let mut lines = Vec::new();
         for id in &order {
             let a = &answers[id];
-            if self.headers {
+            if self.front.headers {
                 lines.extend(a.frames.iter().map(|fr| self.line(fr, true)));
                 continue;
             }
@@ -483,7 +419,7 @@ impl CanElm {
                 lines.push(format!(
                     "{:X}:{}{}",
                     index % 16,
-                    if self.spaces { " " } else { "" },
+                    if self.front.spaces { " " } else { "" },
                     self.hex(&fr.data[skip..])
                 ));
             }
@@ -517,10 +453,10 @@ impl CanElm {
             if f.extended != self.extended {
                 continue;
             }
-            if self.filter.is_some_and(|filter| f.id != filter) {
+            if self.front.filter.is_some_and(|filter| f.id != filter) {
                 continue;
             }
-            lines.push(self.line(&f, self.headers));
+            lines.push(self.line(&f, self.front.headers));
             deadline = deadline.min(now_ms() + MORE_ANSWERS_MS);
         }
         if lines.is_empty() {
@@ -530,55 +466,57 @@ impl CanElm {
     }
 }
 
+impl ElmBackend for CanElm {
+    fn front(&mut self) -> &mut ElmFront {
+        &mut self.front
+    }
+    fn at(&mut self, command: &str) -> Vec<String> {
+        CanElm::at(self, command)
+    }
+    fn formatted(&mut self, bytes: &[u8]) -> Vec<String> {
+        self.request(bytes)
+    }
+    fn raw(&mut self, bytes: &[u8]) -> Vec<String> {
+        CanElm::raw(self, bytes)
+    }
+    fn prompt(&self) -> bool {
+        !self.monitoring
+    }
+}
+
 impl Transport for CanElm {
     fn write(&mut self, data: &[u8]) -> bool {
         if self.monitoring {
             // Any character ends the monitor; the prompt follows.
             self.monitoring = false;
             let end = self.end();
-            self.pending.extend_from_slice(end.as_bytes());
-            self.pending.push(b'>');
+            self.front.pending.extend_from_slice(end.as_bytes());
+            self.front.pending.push(b'>');
             return true;
         }
-        let command = normalize(data);
-        let mut out = Vec::new();
-        if self.echo {
-            let cut = data.iter().position(|&c| c == b'\r').unwrap_or(data.len());
-            out.extend_from_slice(&data[..cut]);
-            out.push(b'\r');
-        }
-        let end = self.end();
-        for line in self.handle(&command) {
-            out.extend_from_slice(line.as_bytes());
-            out.extend_from_slice(end.as_bytes());
-        }
-        if !self.monitoring {
-            out.extend_from_slice(end.as_bytes());
-            out.push(b'>');
-        }
-        self.pending.extend_from_slice(&out);
+        elm_front::respond(self, data);
         true
     }
 
     fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
-        if self.monitoring && self.pending.is_empty() {
+        if self.monitoring && self.front.pending.is_empty() {
             // Frames as they come, through the receive filter.
             let deadline = now_ms() + timeout_ms.max(1);
             while now_ms() < deadline {
                 let Some(f) = self.link.receive(deadline.saturating_sub(now_ms())) else {
                     break;
                 };
-                if self.filter.is_some_and(|filter| f.id != filter) {
+                if self.front.filter.is_some_and(|filter| f.id != filter) {
                     continue;
                 }
-                let line = self.line(&f, self.headers) + self.end();
-                self.pending.extend_from_slice(line.as_bytes());
-                if self.pending.len() > 200 {
+                let line = self.line(&f, self.front.headers) + self.end();
+                self.front.pending.extend_from_slice(line.as_bytes());
+                if self.front.pending.len() > 200 {
                     break;
                 }
             }
         }
-        std::mem::take(&mut self.pending)
+        std::mem::take(&mut self.front.pending)
     }
 
     fn flush_input(&mut self) {
