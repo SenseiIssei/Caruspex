@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Pengaturan adaptor (AT, ST)",
+ "c-opt17-2": "Menghapus kerusakan",
+ "c-opt17-3": "Sesi diagnosis",
+ "c-opt17-4": "Memori kerusakan (OBD)",
+ "c-opt17-5": "Memori kerusakan (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Layanan lain",
+ "c-opt17-8": "Nilai langsung",
+ "c-opt17-9": "Nilai pabrikan dan identitas",
+ "c-opt17-10": "Hasil tes",
+ "c-opt17-11": "Jalur yang diingat tidak berhasil kali ini, mencari seperti biasa.",
+ "c-opt17-12": "Mencoba dulu jalur yang berhasil terakhir kali: %1",
+ "c-opt17-13": "Data kendaraan (VIN, perangkat lunak)",
+ "c-opt17-14": "protokol %1"
+}

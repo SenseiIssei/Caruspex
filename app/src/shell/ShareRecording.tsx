@@ -40,21 +40,22 @@ function fileName(path: string): string {
   return base.replace(/\.jsonl$/i, "") + "-shared.jsonl";
 }
 
-// The text of the new issue; the user reads and changes it on GitHub
-// before anything is posted, and attaches the file there.
+// The text of the new issue, in English for the maintainers; the user reads
+// and changes it on GitHub before anything is posted, and attaches the file
+// there.
 export function issueUrl(shared: SharedRecording, carTitle: string, file: string, version: string): string {
   const p = shared.preview;
-  const title = tr("Mitschnitt: %1", carTitle || p.vins[0] || tr("unbekanntes Auto"));
+  const title = `Recording: ${carTitle || p.vins[0] || "unknown car"}`;
   const lines = [
-    tr("Mitschnitt aus Caruspex %1 für die Steuergerätelisten.", version),
+    `A recording from Caruspex ${version} for the control unit lists.`,
     "",
-    `- ${tr("Auto: %1", carTitle || "?")}`,
+    `- Car: ${carTitle || "?"}`,
     `- VIN: ${p.vins.join(", ") || "?"}`,
-    `- ${tr("Adapter: %1", p.adapter || "?")}`,
-    `- ${tr("Protokoll: %1", p.protocol || "?")}`,
-    `- ${tr("%1 Anfragen in %2 s", p.exchanges, p.durationSeconds.toFixed(1))}`,
+    `- Adapter: ${p.adapter || "?"}`,
+    `- Protocol: ${p.protocol || "?"}`,
+    `- ${p.exchanges} requests in ${p.durationSeconds.toFixed(1)} s`,
     "",
-    tr("Bitte die Datei %1 hier hineinziehen, damit sie an diesem Issue hängt.", file),
+    `Please drag the file ${file} into this field so it is attached to the issue.`,
   ];
   return `${ISSUE_PAGE}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(lines.join("\n"))}`;
 }

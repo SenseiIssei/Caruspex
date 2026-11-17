@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Nastavení adaptéru (AT, ST)",
+ "c-opt17-2": "Mazání závad",
+ "c-opt17-3": "Diagnostická relace",
+ "c-opt17-4": "Paměť závad (OBD)",
+ "c-opt17-5": "Paměť závad (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Další služby",
+ "c-opt17-8": "Živé hodnoty",
+ "c-opt17-9": "Hodnoty výrobce a identifikátory",
+ "c-opt17-10": "Výsledky testů",
+ "c-opt17-11": "Zapamatovaná cesta tentokrát nefunguje, hledám jako obvykle.",
+ "c-opt17-12": "Nejdřív zkouším cestu, která fungovala minule: %1",
+ "c-opt17-13": "Údaje o vozidle (VIN, software)",
+ "c-opt17-14": "protokol %1"
+}

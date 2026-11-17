@@ -1,0 +1,16 @@
+{
+ "c-opt17-1": "Ustawienia adaptera (AT, ST)",
+ "c-opt17-2": "Kasowanie błędów",
+ "c-opt17-3": "Sesja diagnostyczna",
+ "c-opt17-4": "Pamięć błędów (OBD)",
+ "c-opt17-5": "Pamięć błędów (UDS, KWP)",
+ "c-opt17-6": "Freeze frame",
+ "c-opt17-7": "Inne usługi",
+ "c-opt17-8": "Wartości na żywo",
+ "c-opt17-9": "Wartości producenta i identyfikatory",
+ "c-opt17-10": "Wyniki testów",
+ "c-opt17-11": "Zapamiętana droga tym razem nie działa, szukam jak zwykle.",
+ "c-opt17-12": "Najpierw próbuję drogi, która zadziałała ostatnio: %1",
+ "c-opt17-13": "Dane pojazdu (VIN, oprogramowanie)",
+ "c-opt17-14": "protokół %1"
+}

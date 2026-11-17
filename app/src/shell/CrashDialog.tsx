@@ -13,11 +13,12 @@ const tr = translator("caruspex::Crash");
 // GitHub takes about 8000 characters in the address of a new issue.
 const MAX_REPORT = 5000;
 
+// In English for the maintainers; the user reads and changes it on GitHub.
 export function crashIssueUrl(report: CrashReport): string {
   const firstLine = report.text.split("\n").find((l) => l.startsWith("Message: ")) ?? "";
-  const title = tr("Absturz: %1", firstLine.replace("Message: ", "").slice(0, 80) || "panic");
+  const title = `Crash: ${firstLine.replace("Message: ", "").slice(0, 80) || "panic"}`;
   const text = report.text.length > MAX_REPORT ? `${report.text.slice(0, MAX_REPORT)}\n...` : report.text;
-  const body = [tr("Was habe ich gerade gemacht:"), "", "", tr("Bericht (ohne Fahrzeugdaten):"), "", "```", text, "```"].join("\n");
+  const body = ["What I was doing:", "", "", "Report (without vehicle data):", "", "```", text, "```"].join("\n");
   return `${ISSUE_PAGE}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
 }
 
