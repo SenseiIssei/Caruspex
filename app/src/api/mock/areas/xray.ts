@@ -18,6 +18,7 @@ const BASE: Record<BodyType, [number, number, number, number, number]> = {
   [BodyType.Mpv]: [4560, 1800, 1640, 2760, 1540],
   [BodyType.Microcar]: [2700, 1560, 1550, 1870, 1360],
   [BodyType.Roadster]: [4020, 1740, 1270, 2420, 1480],
+  [BodyType.Motorcycle]: [2150, 850, 1250, 1450, 180],
 };
 
 function typicalDimensions(body: BodyType, year: number) {

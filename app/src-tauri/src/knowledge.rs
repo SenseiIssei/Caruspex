@@ -23,6 +23,7 @@ use caruspex_record::{
 use caruspex_vehicles::anatomy;
 use caruspex_vehicles::catalog::{self, BodyType, VehicleGeneration};
 use caruspex_vehicles::vin::VinInfo;
+use caruspex_vehicles::{engines, moto};
 use serde_json::{Value, json};
 
 use crate::rows::CustomRow;
@@ -432,13 +433,34 @@ pub fn catalog_diagnosis(generation_id: usize, year: i32) -> Result<Value, Strin
         "supportName": catalog::support_name(support),
         "connector": connector as i32,
         "connectorName": catalog::connector_name(connector),
-        "locationText": catalog::location_text_for(g, y),
+        "locationText": catalog::socket_text_for(g, y),
         // SocketLocation in declaration order, for the sketch.
         "location": catalog::location_for(g, y) as i32,
+        // SocketSpot in declaration order (0 = not known exactly) and
+        // whether a cover hides the socket.
+        "spot": g.spot as i32,
+        "spotCover": g.spot_cover,
+        "motorcycle": moto::is_motorcycle(g),
+        // The connect help of a motorcycle (cable, kill switch, Euro 5).
+        "connectSteps": if moto::is_motorcycle(g) { moto::connect_steps() } else { Vec::new() },
+        "engineCodes": engine_codes_json(g),
         "diagnosisText": catalog::diagnosis_text(g, y),
         "kklPossible": catalog::kkl_possible(g, y),
         "protocolOrder": catalog::protocol_order_for(g),
     }))
+}
+
+/// The engine codes of a generation from Wikipedia, petrol and diesel, with
+/// the article they come from; null without codes.
+fn engine_codes_json(g: &VehicleGeneration) -> Value {
+    match engines::engines_for(g) {
+        Some(e) => json!({
+            "petrol": e.petrol,
+            "diesel": e.diesel,
+            "source": e.source,
+        }),
+        None => Value::Null,
+    }
 }
 
 /// Dimensions and drivetrain for the X-ray view. A generation of the

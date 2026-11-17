@@ -13,7 +13,8 @@ type BrandRecord = [string, string, string, string];
 // [brand, model, generation, yearFrom, yearTo, body, powertrains, connector,
 //  lateConnector, connectorChange, bus, protocolOrder, location, note de,
 //  note en, vinModelCodes, aliases, usMarket]
-type GenRecord = [string, string, string, number, number, number, number, number, number, number, number, string, number, string, string, string, string, boolean];
+// The last two: SocketSpot of data/obd_sockets.csv and whether a cover hides it.
+type GenRecord = [string, string, string, number, number, number, number, number, number, number, number, string, number, string, string, string, string, boolean, number, boolean];
 // [wmi, manufacturer, brands, yearRule, codeRule, country override]
 type WmiRecord = [string, string, string, number, number, [string, string] | null];
 // [first, from, to, de, en]
@@ -230,6 +231,7 @@ export function bodyName(body: number): string {
     case 8: return L("Van (MPV)", "MPV");
     case 9: return L("Kleinstwagen", "Microcar");
     case 10: return L("Roadster", "Roadster");
+    case 11: return L("Motorrad", "Motorcycle");
   }
   return "";
 }
@@ -331,6 +333,8 @@ function supportFor(g: GenRecord, year: number, powertrain = 0): number {
     case Connector.Bmw20:
     case Connector.Mb38:
     case Connector.Other: return Support.Manufacturer;
+    // A motorcycle plug: standard OBD from Euro 5 (crates/caruspex-vehicles/src/moto.rs).
+    case 6: return y >= 2021 || (y >= 2020 && g[3] >= 2020) ? Support.Full : Support.Partial;
   }
   if (onlyElectric(pt)) return Support.Partial;
   if (g[17]) return y >= 1996 ? Support.Full : Support.Partial;
@@ -905,6 +909,11 @@ export const knowledgeHandlers: PartialHandlers = {
       connectorName: connectorName(connector),
       locationText: locationText(g, y),
       location: locationFor(g, y),
+      spot: g[18] ?? 0,
+      spotCover: g[19] ?? false,
+      motorcycle: g[7] === 6,
+      connectSteps: [],
+      engineCodes: null,
       diagnosisText: diagnosisText(data, g, y),
       kklPossible: kklPossible(data, g, y),
       protocolOrder: g[11],

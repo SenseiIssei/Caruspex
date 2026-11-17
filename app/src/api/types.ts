@@ -652,6 +652,7 @@ export enum BodyType {
   Mpv,
   Microcar,
   Roadster,
+  Motorcycle,
 }
 
 export interface VehicleGenerationInfo {
@@ -760,8 +761,21 @@ export interface VehicleDiagnosisInfo {
   // SocketLocation for the sketch: 0 unknown, 1 under the dash on the
   // driver side, 2 under the steering column, 3 footwell cover, 4 fuse box,
   // 5 centre console, 6 behind the ashtray, 7 passenger side, 8 engine bay,
-  // 9 rear console.
+  // 9 rear console, 10 under the seat (motorcycles).
   location: number;
+  // SocketSpot of data/obd_sockets.csv, finer than location: 0 not known,
+  // 1 left of the steering column, 2 right of it, 3 above the pedals, 4 below
+  // the column, 5 footwell side panel, 6 behind the fuse box lid, 7 console
+  // in front of the gear lever, 8 side of the console, 9 passenger side,
+  // 10 rear console, 11 engine bay, 12 under the seat.
+  spot: number;
+  // A flap or cover hides the socket.
+  spotCover: boolean;
+  motorcycle: boolean;
+  // Motorcycles: the steps of the connect help (cable, kill switch, Euro 5).
+  connectSteps: string[];
+  // Engine codes from Wikipedia (data/engines), null without them.
+  engineCodes: { petrol: string[]; diesel: string[]; source: string } | null;
   diagnosisText: string;
   kklPossible: boolean;
   protocolOrder: string;

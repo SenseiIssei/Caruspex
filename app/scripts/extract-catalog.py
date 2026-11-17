@@ -19,10 +19,12 @@ DTC_BRANDS = ROOT / "crates" / "caruspex-data" / "src" / "generated" / "dtc_bran
 OUT = HERE.parent / "src" / "api" / "mock" / "data"
 
 # Enum orders of catalog.rs, vin.rs, severity.rs and dtc/mod.rs.
-BODY = ["Hatchback", "Sedan", "Estate", "Suv", "Van", "Coupe", "Convertible", "Pickup", "Mpv", "Microcar", "Roadster"]
-CONNECTOR = ["None", "Obd2", "Vag2x2", "Bmw20", "Mb38", "Other"]
+BODY = ["Hatchback", "Sedan", "Estate", "Suv", "Van", "Coupe", "Convertible", "Pickup", "Mpv", "Microcar", "Roadster", "Motorcycle"]
+CONNECTOR = ["None", "Obd2", "Vag2x2", "Bmw20", "Mb38", "Other", "Moto"]
 LOCATION = ["Unknown", "UnderDashLeft", "UnderSteeringColumn", "FootwellCover", "FuseBox", "CentreConsole",
-            "BehindAshtray", "PassengerSide", "EngineBay", "RearConsole"]
+            "BehindAshtray", "PassengerSide", "EngineBay", "RearConsole", "UnderSeat"]
+SPOT = ["Unknown", "DashLeftOfColumn", "DashRightOfColumn", "AbovePedals", "BelowColumn", "FootwellLeft",
+        "FuseBoxLower", "ConsoleFront", "ConsoleSide", "Passenger", "RearConsole", "EngineBay", "UnderSeat"]
 BUS = ["KLine", "Can", "Pwm", "Vpw", "Mixed"]
 POWERTRAIN = {"PT_PETROL": 1, "PT_DIESEL": 2, "PT_HYBRID": 4, "PT_PLUG_IN": 8, "PT_ELECTRIC": 16, "PT_GAS": 32}
 YEAR_RULE = {"STD": 0, "UNK": 1, "NO_YEAR": 2}
@@ -48,7 +50,7 @@ def catalog():
         r"^\s*VehicleGeneration \{ brand: " + STR + r", model: " + STR + r", generation: " + STR
         + r", year_from: (\d+), year_to: (\d+), body: B::(\w+), powertrains: ([\w |]+), connector: C::(\w+), "
         r"late_connector: C::(\w+), connector_change: (\d+), bus: K::(\w+), protocol_order: " + STR
-        + r", location: L::(\w+), note: Text::new\(" + STR + r", " + STR + r"\), vin_model_codes: " + STR
+        + r", location: L::(\w+), spot: S::(\w+), spot_cover: (true|false), note: Text::new\(" + STR + r", " + STR + r"\), vin_model_codes: " + STR
         + r", aliases: " + STR + r", us_market: (true|false) \},\s*$")
     brands, gens = [], []
     for line in text.splitlines():
@@ -58,10 +60,13 @@ def catalog():
             pt = 0
             for flag in g[6].split("|"):
                 pt |= POWERTRAIN[flag.strip()]
+            # The exact spot and its cover go last, so the older indices stay.
+            spot, cover = SPOT.index(g[13]), g[14] == "true"
+            g = g[:13] + g[15:]
             gens.append([unescape(g[0]), unescape(g[1]), unescape(g[2]), int(g[3]), int(g[4]), BODY.index(g[5]), pt,
                          CONNECTOR.index(g[7]), CONNECTOR.index(g[8]), int(g[9]), BUS.index(g[10]), g[11],
                          LOCATION.index(g[12]), unescape(g[13]), unescape(g[14]), unescape(g[15]), unescape(g[16]),
-                         g[17] == "true"])
+                         g[17] == "true", spot, cover])
             continue
         m = brand_re.match(line)
         if m:

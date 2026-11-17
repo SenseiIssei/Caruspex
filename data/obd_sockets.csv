@@ -1,0 +1,260 @@
+# Where exactly the OBD socket sits, for the most common generations of the
+# catalog: the spot the setup assistant marks in its sketch and names in words.
+# Own compilation of where these models usually have their socket (as the
+# owner's manuals and workshop literature show it), facts only, under the
+# licence of Caruspex (MIT). Not checked at every car of each generation:
+# trim and market can move the socket, so the app also names the other usual
+# spots. Corrections from real cars are welcome.
+#
+# spot: dash_left (under the dashboard left of the steering column),
+# dash_right (right of it, towards the console), above_pedals, below_column,
+# footwell_left (side panel near the bonnet release), fusebox_lower (behind
+# the fuse box lid lower left), console_front (centre console in front of the
+# gear lever), console_side, passenger, rear_console, engine, seat
+# (motorcycles). cover: yes when a flap or cover hides the socket.
+# Read by tools/gen_vehicles.py.
+brand,model,generation,spot,cover
+Volkswagen,Golf,IV,console_front,yes
+Volkswagen,Golf,V,dash_left,no
+Volkswagen,Golf,VI,dash_left,no
+Volkswagen,Golf,VII,dash_left,no
+Volkswagen,Golf,VIII,dash_left,no
+Volkswagen,Polo,V,dash_left,no
+Volkswagen,Polo,VI,dash_left,no
+Volkswagen,Passat,B6,dash_left,no
+Volkswagen,Passat,B7,dash_left,no
+Volkswagen,Passat,B8,dash_left,no
+Volkswagen,Passat,B9,dash_left,no
+Volkswagen,Tiguan,I,dash_left,no
+Volkswagen,Tiguan,II,dash_left,no
+Volkswagen,Tiguan,III,dash_left,no
+Volkswagen,Touran,I,dash_left,no
+Volkswagen,Touran,II,dash_left,no
+Volkswagen,T-Roc,I,dash_left,no
+Volkswagen,Caddy,III,dash_left,no
+Volkswagen,Caddy,V,dash_left,no
+Volkswagen,Transporter,T5,dash_left,no
+Volkswagen,Transporter,T6,dash_left,no
+Volkswagen,Transporter,T6.1,dash_left,no
+Volkswagen,up!,I,dash_left,no
+Audi,A3,8P,dash_left,no
+Audi,A3,8V,dash_left,no
+Audi,A3,8Y,dash_left,no
+Audi,A4,B8,dash_left,no
+Audi,A4,B9,dash_left,no
+Audi,A6,C6,dash_left,no
+Audi,A6,C7,dash_left,no
+Audi,A6,C8,dash_left,no
+Audi,Q5,8R,dash_left,no
+Audi,Q5,FY,dash_left,no
+Škoda,Octavia,II,dash_left,no
+Škoda,Octavia,III,dash_left,no
+Škoda,Octavia,IV,dash_left,no
+Škoda,Fabia,II,dash_left,no
+Škoda,Fabia,III,dash_left,no
+Škoda,Fabia,IV,dash_left,no
+Škoda,Superb,II,dash_left,no
+Škoda,Superb,III,dash_left,no
+Škoda,Superb,IV,dash_left,no
+SEAT,Leon,II,dash_left,no
+SEAT,Leon,III,dash_left,no
+SEAT,Leon,IV,dash_left,no
+BMW,3er,E46,footwell_left,yes
+BMW,3er,E90,footwell_left,yes
+BMW,3er,F30,footwell_left,yes
+BMW,3er,G20,footwell_left,yes
+BMW,1er,E87,footwell_left,yes
+BMW,1er,F20,footwell_left,yes
+BMW,1er,F40,footwell_left,yes
+BMW,5er,E60,footwell_left,yes
+BMW,5er,F10,footwell_left,yes
+BMW,5er,G30,footwell_left,yes
+BMW,X1,E84,footwell_left,yes
+BMW,X1,F48,footwell_left,yes
+BMW,X1,U11,footwell_left,yes
+BMW,X3,E83,footwell_left,yes
+BMW,X3,F25,footwell_left,yes
+BMW,X3,G01,footwell_left,yes
+Mini,Mini,R56,footwell_left,yes
+Mini,Mini,F56,footwell_left,yes
+Mercedes-Benz,C-Klasse,W203,above_pedals,no
+Mercedes-Benz,C-Klasse,W204,above_pedals,no
+Mercedes-Benz,C-Klasse,W205,above_pedals,no
+Mercedes-Benz,C-Klasse,W206,above_pedals,no
+Mercedes-Benz,E-Klasse,W211,above_pedals,no
+Mercedes-Benz,E-Klasse,W212,above_pedals,no
+Mercedes-Benz,E-Klasse,W213,above_pedals,no
+Mercedes-Benz,A-Klasse,W169,above_pedals,no
+Mercedes-Benz,A-Klasse,W176,above_pedals,no
+Mercedes-Benz,A-Klasse,W177,above_pedals,no
+Mercedes-Benz,B-Klasse,W245,above_pedals,no
+Mercedes-Benz,B-Klasse,W246,above_pedals,no
+Mercedes-Benz,B-Klasse,W247,above_pedals,no
+Mercedes-Benz,Vito,W639,above_pedals,no
+Mercedes-Benz,Sprinter,W906,above_pedals,no
+Mercedes-Benz,Sprinter,W907,above_pedals,no
+Opel,Astra,G,console_front,yes
+Opel,Astra,H,console_front,yes
+Opel,Zafira,B,console_front,yes
+Opel,Corsa,C,console_front,yes
+Opel,Corsa,D,console_front,yes
+Opel,Astra,J,dash_left,no
+Opel,Astra,K,dash_left,no
+Opel,Corsa,E,dash_left,no
+Opel,Insignia,A,dash_left,no
+Opel,Insignia,B,dash_left,no
+Ford,Fiesta,Mk5,dash_left,no
+Ford,Fiesta,Mk6,dash_left,no
+Ford,Fiesta,Mk7,dash_left,no
+Ford,Focus,Mk1,dash_left,no
+Ford,Focus,Mk2,dash_left,no
+Ford,Focus,Mk3,dash_left,no
+Ford,Focus,Mk4,dash_left,no
+Ford,Mondeo,Mk3,dash_left,no
+Ford,Mondeo,Mk4,dash_left,no
+Ford,Mondeo,Mk5,dash_left,no
+Ford,Kuga,I,dash_left,no
+Ford,Kuga,II,dash_left,no
+Ford,Kuga,III,dash_left,no
+Ford,Transit,Mk7,dash_left,no
+Ford,Transit,Mk8,dash_left,no
+Peugeot,206,I,fusebox_lower,yes
+Peugeot,207,I,fusebox_lower,yes
+Peugeot,308,I,fusebox_lower,yes
+Peugeot,308,II,fusebox_lower,yes
+Peugeot,208,I,fusebox_lower,yes
+Peugeot,3008,I,fusebox_lower,yes
+Peugeot,3008,II,fusebox_lower,yes
+Citroën,C3,I,fusebox_lower,yes
+Citroën,C3,II,fusebox_lower,yes
+Citroën,C3,III,fusebox_lower,yes
+Citroën,C4,I,fusebox_lower,yes
+Citroën,C4,II,fusebox_lower,yes
+Citroën,Berlingo,II,fusebox_lower,yes
+Citroën,Berlingo,III,fusebox_lower,yes
+Renault,Clio,II,console_front,yes
+Renault,Clio,III,console_front,yes
+Fiat,Panda,II,dash_left,no
+Fiat,Panda,III,dash_left,no
+Fiat,500,I,dash_left,no
+Toyota,Corolla,E120,dash_left,no
+Toyota,Corolla,E140,dash_left,no
+Toyota,Corolla,E170,dash_left,no
+Toyota,Corolla,E210,dash_left,no
+Toyota,Auris,E150,dash_left,no
+Toyota,Auris,E180,dash_left,no
+Toyota,Yaris,XP10,dash_left,no
+Toyota,Yaris,XP90,dash_left,no
+Toyota,Yaris,XP130,dash_left,no
+Toyota,Yaris,XP210,dash_left,no
+Toyota,Aygo,AB10,dash_left,no
+Toyota,Aygo,AB40,dash_left,no
+Toyota,RAV4,XA20,dash_left,no
+Toyota,RAV4,XA30,dash_left,no
+Toyota,RAV4,XA40,dash_left,no
+Toyota,RAV4,XA50,dash_left,no
+Toyota,Prius,XW30,dash_left,no
+Toyota,Prius,XW50,dash_left,no
+Toyota,C-HR,AX10,dash_left,no
+Honda,Civic,VII,dash_left,no
+Honda,Civic,VIII,dash_left,no
+Honda,Civic,IX,dash_left,no
+Honda,Civic,X,dash_left,no
+Honda,Civic,XI,dash_left,no
+Honda,Jazz,GD,dash_left,no
+Honda,Jazz,GE,dash_left,no
+Honda,Jazz,GK,dash_left,no
+Honda,Jazz,GR,dash_left,no
+Honda,CR-V,III,dash_left,no
+Honda,CR-V,IV,dash_left,no
+Honda,CR-V,V,dash_left,no
+Hyundai,i20,PB,dash_left,no
+Hyundai,i20,GB,dash_left,no
+Hyundai,i30,FD,dash_left,no
+Hyundai,i30,GD,dash_left,no
+Hyundai,i30,PD,dash_left,no
+Hyundai,Tucson,JM,dash_left,no
+Hyundai,Tucson,TL,dash_left,no
+Hyundai,Tucson,NX4,dash_left,no
+Hyundai,ix35,LM,dash_left,no
+Kia,Picanto,TA,dash_left,no
+Kia,Picanto,JA,dash_left,no
+Kia,Cee'd,ED,dash_left,no
+Kia,Cee'd,JD,dash_left,no
+Kia,Ceed,CD,dash_left,no
+Kia,Sportage,SL,dash_left,no
+Kia,Sportage,QL,dash_left,no
+Kia,Sportage,NQ5,dash_left,no
+Nissan,Micra,K12,dash_left,no
+Nissan,Micra,K13,dash_left,no
+Nissan,Micra,K14,dash_left,no
+Nissan,Qashqai,J10,dash_left,no
+Nissan,Qashqai,J11,dash_left,no
+Nissan,Qashqai,J12,dash_left,no
+Nissan,Juke,F15,dash_left,no
+Nissan,Juke,F16,dash_left,no
+Mazda,CX-5,KE,dash_left,no
+Mazda,CX-5,KF,dash_left,no
+Volvo,XC60,I,dash_left,no
+Volvo,XC60,II,dash_left,no
+Volvo,V40,II,dash_left,no
+Volvo,V70,III,dash_left,no
+Volvo,S60,II,dash_left,no
+Volkswagen,Golf Plus,I,dash_left,no
+Volkswagen,Arteon,I,dash_left,no
+Volkswagen,Sharan,II,dash_left,no
+Volkswagen,T-Cross,I,dash_left,no
+Audi,A1,8X,dash_left,no
+Audi,A1,GB,dash_left,no
+Audi,Q2,GA,dash_left,no
+Audi,Q3,8U,dash_left,no
+Audi,Q3,F3,dash_left,no
+Škoda,Kodiaq,I,dash_left,no
+Škoda,Karoq,I,dash_left,no
+Škoda,Kamiq,I,dash_left,no
+Škoda,Scala,I,dash_left,no
+SEAT,Ibiza,IV,dash_left,no
+SEAT,Ibiza,V,dash_left,no
+SEAT,Ateca,I,dash_left,no
+SEAT,Arona,I,dash_left,no
+Mazda,3,BK,dash_left,no
+Mazda,3,BL,dash_left,no
+Mazda,3,BM,dash_left,no
+Mazda,3,BP,dash_left,no
+Hyundai,Kona,OS,dash_left,no
+Kia,Niro,DE,dash_left,no
+Honda,CB500F,I,seat,no
+Honda,CB500F,II,seat,no
+Honda,CB650R,I,seat,no
+Honda,CRF1100L Africa Twin,I,seat,no
+Honda,NC750X,I,seat,no
+Honda,NC750X,II,seat,no
+Yamaha,MT-07,I,seat,no
+Yamaha,MT-07,II,seat,no
+Yamaha,MT-09,I,seat,no
+Yamaha,MT-09,II,seat,no
+Yamaha,Tracer 9,I,seat,no
+Yamaha,Ténéré 700,I,seat,no
+Kawasaki,Z650,I,seat,no
+Kawasaki,Z900,I,seat,no
+Kawasaki,Ninja 650,I,seat,no
+Kawasaki,Versys 650,I,seat,no
+Suzuki,SV650,I,seat,no
+Suzuki,V-Strom 650,I,seat,no
+Suzuki,GSX-S1000,I,seat,no
+KTM,390 Duke,I,seat,no
+KTM,790 Duke,I,seat,no
+KTM,890 Duke,I,seat,no
+KTM,1290 Super Adventure,I,seat,no
+BMW,R 1250 GS,I,seat,no
+BMW,R 1300 GS,I,seat,no
+BMW,F 900 R,I,seat,no
+BMW,S 1000 RR,I,seat,no
+Triumph,Street Triple 765,I,seat,no
+Triumph,Tiger 900,I,seat,no
+Triumph,Trident 660,I,seat,no
+Ducati,Monster,I,seat,no
+Ducati,Multistrada V4,I,seat,no
+Ducati,Scrambler,I,seat,no
+Harley-Davidson,Sportster S,I,seat,no
+Harley-Davidson,Pan America,I,seat,no

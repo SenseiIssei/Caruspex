@@ -35,11 +35,14 @@ pub enum BodyType {
     Mpv,
     Microcar,
     Roadster,
+    /// Motorcycles: OBD through the maker's diagnostic plug and an adapter
+    /// cable, see [`crate::moto`].
+    Motorcycle,
 }
 
 impl BodyType {
     /// Every variant, in declaration order.
-    pub const ALL: [BodyType; 11] = [
+    pub const ALL: [BodyType; 12] = [
         BodyType::Hatchback,
         BodyType::Sedan,
         BodyType::Estate,
@@ -51,6 +54,7 @@ impl BodyType {
         BodyType::Mpv,
         BodyType::Microcar,
         BodyType::Roadster,
+        BodyType::Motorcycle,
     ];
 }
 
@@ -80,17 +84,21 @@ pub enum Connector {
     Mb38,
     /// Other manufacturer plug (GM ALDL, Ford EEC-IV, Toyota DLC1 and so on).
     Other,
+    /// The diagnostic plug of a motorcycle: an adapter cable leads to a
+    /// 16-pin socket for the OBD adapter (see [`crate::moto`]).
+    Moto,
 }
 
 impl Connector {
     /// Every variant, in declaration order.
-    pub const ALL: [Connector; 6] = [
+    pub const ALL: [Connector; 7] = [
         Connector::None,
         Connector::Obd2,
         Connector::Vag2x2,
         Connector::Bmw20,
         Connector::Mb38,
         Connector::Other,
+        Connector::Moto,
     ];
 }
 
@@ -116,11 +124,13 @@ pub enum SocketLocation {
     EngineBay,
     /// Rear end of the centre console or under the rear seat.
     RearConsole,
+    /// Motorcycles: under the seat, often next to the battery.
+    UnderSeat,
 }
 
 impl SocketLocation {
     /// Every variant, in declaration order.
-    pub const ALL: [SocketLocation; 10] = [
+    pub const ALL: [SocketLocation; 11] = [
         SocketLocation::Unknown,
         SocketLocation::UnderDashLeft,
         SocketLocation::UnderSteeringColumn,
@@ -131,7 +141,78 @@ impl SocketLocation {
         SocketLocation::PassengerSide,
         SocketLocation::EngineBay,
         SocketLocation::RearConsole,
+        SocketLocation::UnderSeat,
     ];
+}
+
+/// Where exactly the socket sits, for the most common generations
+/// (data/obd_sockets.csv). Finer than [`SocketLocation`]: the sketch of the
+/// setup assistant puts its mark there.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum SocketSpot {
+    /// Not in the table: the generation's [`SocketLocation`] counts.
+    Unknown,
+    /// Under the dashboard left of the steering column, at knee height.
+    DashLeftOfColumn,
+    /// Under the dashboard right of the steering column, towards the console.
+    DashRightOfColumn,
+    /// Under the dashboard above the pedals.
+    AbovePedals,
+    /// Directly below the steering column.
+    BelowColumn,
+    /// Left in the driver's footwell, at the side panel near the bonnet release.
+    FootwellLeft,
+    /// Behind the lid of the fuse box at the lower left of the dashboard.
+    FuseBoxLower,
+    /// In the centre console in front of the gear lever, under a tray or cover.
+    ConsoleFront,
+    /// At the side of the centre console in the driver's footwell.
+    ConsoleSide,
+    /// Under the dashboard on the passenger side.
+    Passenger,
+    /// At the rear end of the centre console.
+    RearConsole,
+    /// In the engine bay.
+    EngineBay,
+    /// Motorcycles: under the seat.
+    UnderSeat,
+}
+
+impl SocketSpot {
+    /// Every variant, in declaration order.
+    pub const ALL: [SocketSpot; 13] = [
+        SocketSpot::Unknown,
+        SocketSpot::DashLeftOfColumn,
+        SocketSpot::DashRightOfColumn,
+        SocketSpot::AbovePedals,
+        SocketSpot::BelowColumn,
+        SocketSpot::FootwellLeft,
+        SocketSpot::FuseBoxLower,
+        SocketSpot::ConsoleFront,
+        SocketSpot::ConsoleSide,
+        SocketSpot::Passenger,
+        SocketSpot::RearConsole,
+        SocketSpot::EngineBay,
+        SocketSpot::UnderSeat,
+    ];
+
+    /// The coarse location this spot belongs to.
+    pub fn location(self) -> SocketLocation {
+        match self {
+            SocketSpot::Unknown => SocketLocation::Unknown,
+            SocketSpot::DashLeftOfColumn
+            | SocketSpot::DashRightOfColumn
+            | SocketSpot::AbovePedals => SocketLocation::UnderDashLeft,
+            SocketSpot::BelowColumn => SocketLocation::UnderSteeringColumn,
+            SocketSpot::FootwellLeft => SocketLocation::FootwellCover,
+            SocketSpot::FuseBoxLower => SocketLocation::FuseBox,
+            SocketSpot::ConsoleFront | SocketSpot::ConsoleSide => SocketLocation::CentreConsole,
+            SocketSpot::Passenger => SocketLocation::PassengerSide,
+            SocketSpot::RearConsole => SocketLocation::RearConsole,
+            SocketSpot::EngineBay => SocketLocation::EngineBay,
+            SocketSpot::UnderSeat => SocketLocation::UnderSeat,
+        }
+    }
 }
 
 /// What Caruspex can do with a car of this generation and year.
@@ -182,6 +263,10 @@ pub struct VehicleGeneration {
     /// ELM327 protocol numbers, empty = no OBD-II protocol.
     pub protocol_order: &'static str,
     pub location: SocketLocation,
+    /// The exact spot where data/obd_sockets.csv knows it, else `Unknown`.
+    pub spot: SocketSpot,
+    /// The socket hides behind a flap or cover that comes off by hand.
+    pub spot_cover: bool,
     /// May be empty.
     pub note: Text,
     /// VIN model codes, space separated ("1J", "203").
@@ -840,6 +925,13 @@ pub fn support_for(g: &VehicleGeneration, year: i32, powertrain: u32) -> ObdSupp
         Connector::None => return ObdSupport::None,
         Connector::Vag2x2 => return ObdSupport::Kkl,
         Connector::Bmw20 | Connector::Mb38 | Connector::Other => return ObdSupport::Manufacturer,
+        Connector::Moto => {
+            return if crate::moto::euro5(g, year) && !only_electric(pt) {
+                ObdSupport::Full
+            } else {
+                ObdSupport::Partial
+            };
+        }
         Connector::Obd2 => {}
     }
     if only_electric(pt) {
@@ -887,6 +979,15 @@ pub fn display_name(g: &VehicleGeneration) -> String {
 pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
     let year = if year <= 0 { g.year_from } else { year };
     let c = connector_for(g, year);
+    if c == Connector::Moto {
+        let mut out = crate::moto::diagnosis_text(g, year);
+        let note = g.note.get();
+        if !note.is_empty() {
+            out.push(' ');
+            out.push_str(note);
+        }
+        return out;
+    }
     let kkl = kkl_possible(g, year);
     let mut out: String;
     match support_for(g, year, 0) {
@@ -1020,6 +1121,7 @@ pub fn body_name(body: BodyType) -> &'static str {
         BodyType::Mpv => l("Van (MPV)", "MPV"),
         BodyType::Microcar => l("Kleinstwagen", "Microcar"),
         BodyType::Roadster => l("Roadster", "Roadster"),
+        BodyType::Motorcycle => l("Motorrad", "Motorcycle"),
     }
 }
 
@@ -1037,6 +1139,10 @@ pub fn connector_name(connector: Connector) -> &'static str {
             "Mercedes round plug, 38 pins",
         ),
         Connector::Other => l("herstellereigener Stecker", "manufacturer plug"),
+        Connector::Moto => l(
+            "Diagnosestecker des Motorrads, Adapterkabel auf OBD-II",
+            "motorcycle diagnostic plug, adapter cable to OBD-II",
+        ),
     }
 }
 
@@ -1084,7 +1190,75 @@ pub fn location_text(location: SocketLocation) -> &'static str {
             "Hinten an der Mittelkonsole beziehungsweise unter den Rücksitzen.",
             "At the rear of the centre console or under the rear seats.",
         ),
+        SocketLocation::UnderSeat => l(
+            "Unter dem Sitz, oft neben der Batterie.",
+            "Under the seat, often next to the battery.",
+        ),
     }
+}
+
+/// The exact spot in words, empty for `Unknown`.
+pub fn spot_text(spot: SocketSpot) -> &'static str {
+    match spot {
+        SocketSpot::Unknown => "",
+        SocketSpot::DashLeftOfColumn => l(
+            "Unter dem Armaturenbrett links neben der Lenksäule, etwa auf Kniehöhe.",
+            "Under the dashboard left of the steering column, at about knee height.",
+        ),
+        SocketSpot::DashRightOfColumn => l(
+            "Unter dem Armaturenbrett rechts neben der Lenksäule, zur Mittelkonsole hin.",
+            "Under the dashboard right of the steering column, towards the centre console.",
+        ),
+        SocketSpot::AbovePedals => l(
+            "Unter dem Armaturenbrett direkt über den Pedalen.",
+            "Under the dashboard right above the pedals.",
+        ),
+        SocketSpot::BelowColumn => l(
+            "Direkt unter der Lenksäule.",
+            "Directly below the steering column.",
+        ),
+        SocketSpot::FootwellLeft => l(
+            "Links im Fahrerfußraum an der Seitenverkleidung, nahe dem Hebel für die Motorhaube.",
+            "On the left of the driver's footwell at the side panel, near the bonnet release.",
+        ),
+        SocketSpot::FuseBoxLower => l(
+            "Unten links am Armaturenbrett hinter dem Deckel des Sicherungskastens.",
+            "At the lower left of the dashboard behind the fuse box lid.",
+        ),
+        SocketSpot::ConsoleFront => l(
+            "In der Mittelkonsole vor dem Schalthebel, unter einer Ablage oder Abdeckung.",
+            "In the centre console in front of the gear lever, under a tray or cover.",
+        ),
+        SocketSpot::ConsoleSide => l(
+            "Seitlich an der Mittelkonsole im Fahrerfußraum.",
+            "At the side of the centre console in the driver's footwell.",
+        ),
+        SocketSpot::Passenger => location_text(SocketLocation::PassengerSide),
+        SocketSpot::RearConsole => location_text(SocketLocation::RearConsole),
+        SocketSpot::EngineBay => location_text(SocketLocation::EngineBay),
+        SocketSpot::UnderSeat => location_text(SocketLocation::UnderSeat),
+    }
+}
+
+/// Where the socket of this car is, as precise as Caruspex knows it: the
+/// exact spot of data/obd_sockets.csv with a word on the cover, else the
+/// text of [`location_text_for`].
+pub fn socket_text_for(g: &VehicleGeneration, year: i32) -> String {
+    if connector_for(g, year) == Connector::Moto {
+        return crate::moto::plug_text(g.brand).to_string();
+    }
+    if g.spot == SocketSpot::Unknown {
+        return location_text_for(g, year).to_string();
+    }
+    let mut out = spot_text(g.spot).to_string();
+    if g.spot_cover {
+        out.push(' ');
+        out.push_str(l(
+            "Sie sitzt hinter einer Klappe oder Abdeckung, die sich von Hand abnehmen lässt.",
+            "It sits behind a flap or cover that comes off by hand.",
+        ));
+    }
+    out
 }
 
 /// The spot for the sketch of the first-start assistant: the recorded one,
@@ -1123,6 +1297,7 @@ pub fn location_text_for(g: &VehicleGeneration, year: i32) -> &'static str {
                 "Manufacturer plug, usually in the engine bay or under the dashboard.",
             );
         }
+        Connector::Moto => return location_text(SocketLocation::UnderSeat),
         Connector::Obd2 => {}
     }
     location_text(SocketLocation::Unknown)

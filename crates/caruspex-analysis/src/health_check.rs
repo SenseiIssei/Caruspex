@@ -96,6 +96,25 @@ pub struct HealthInput {
     /// "not read".
     pub monitor_results: Vec<MonitorResult>,
     pub monitor_results_read: bool,
+
+    /// Target values of the engine, when the vehicle catalog knows its
+    /// engine codes (caruspex_vehicles::engines). Without them the general
+    /// limits apply and the idle speed is not judged.
+    pub engine: Option<EngineLimits>,
+}
+
+/// Target values of one engine (or of several engine codes of a generation
+/// that share them).
+#[derive(Clone, Debug, PartialEq)]
+pub struct EngineLimits {
+    /// The engine codes these values are for, space separated ("CAYC CBZB").
+    pub codes: String,
+    /// Warm idle speed in 1/min, without load.
+    pub idle_min: f64,
+    pub idle_max: f64,
+    /// Coolant temperature from which it counts as very hot, °C. Engines
+    /// with a map-controlled thermostat run hotter at part load.
+    pub coolant_hot: f64,
 }
 
 impl HealthInput {
@@ -227,6 +246,7 @@ type Series = [TimedValue];
 const PID_FUEL_STATUS: i32 = 0x03;
 const PID_COOLANT: i32 = 0x05;
 const PID_RPM: i32 = 0x0C;
+const PID_SPEED: i32 = 0x0D;
 const PID_INTAKE_TEMP: i32 = 0x0F;
 const PID_RUN_TIME: i32 = 0x1F;
 const PID_MIL_DISTANCE: i32 = 0x21;
@@ -1351,6 +1371,102 @@ fn engine_run_time(input: &HealthInput) -> Option<f64> {
     None
 }
 
+/// Warm idle speed against the target of the engine: only samples standing
+/// still (speed 0) with the engine warm and below 1500 1/min count.
+fn check_idle(c: &mut Ctx) {
+    let input = c.input;
+    let Some(engine) = input.engine.as_ref() else {
+        return;
+    };
+    let Some(rpm) = get(input, PID_RPM) else {
+        return;
+    };
+    let speed = get(input, PID_SPEED);
+    let coolant = get(input, PID_COOLANT);
+    let idle: Vec<f64> = rpm
+        .iter()
+        .filter(|s| (RUNNING_RPM..=1500.0).contains(&s.value))
+        .filter(|s| nearest(speed, s.t).is_some_and(|v| v < 0.5))
+        .filter(|s| nearest(coolant, s.t).is_some_and(|v| v >= limits::WARM_COOLANT))
+        .map(|s| s.value)
+        .collect();
+    if idle.len() < 5 {
+        return;
+    }
+    c.ran();
+    let at_idle = median(idle);
+    // A little room above and below the band: the control unit lifts idle
+    // briefly for the air conditioning, the alternator or a cold battery.
+    let (low, high) = (engine.idle_min - 50.0, engine.idle_max + 100.0);
+    if at_idle >= low && at_idle <= high {
+        return;
+    }
+    let args = [
+        number(at_idle, 0),
+        number(engine.idle_min, 0),
+        number(engine.idle_max, 0),
+        same(&engine.codes),
+    ];
+    if at_idle > high {
+        c.add(
+            "idle_speed",
+            Level::Info,
+            Area::Mixture,
+            format("Leerlauf erhöht", "Idle speed raised", &[]),
+            format(
+                "Warm und im Stand dreht der Motor im Mittel {} 1/min. Üblich sind für diesen \
+                 Motor ({}) etwa {} bis {} 1/min. Eingeschaltete Verbraucher heben den Leerlauf \
+                 an; bleibt er ohne sie hoch, sind Falschluft, die Drosselklappe oder ein \
+                 Fühler häufige Gründe.",
+                "Warm and standing still the engine turns {} rpm on average. Usual for this \
+                 engine ({}) are about {} to {} rpm. Switched-on consumers raise the idle; if \
+                 it stays high without them, an air leak, the throttle body or a sensor are \
+                 common reasons.",
+                &[
+                    args[0].clone(),
+                    args[3].clone(),
+                    args[1].clone(),
+                    args[2].clone(),
+                ],
+            ),
+            format(
+                "Mit ausgeschalteter Klimaanlage und Licht noch einmal messen; bleibt es so, \
+                 Schläuche und Drosselklappe prüfen lassen.",
+                "Measure again with the air conditioning and lights off; if it stays, have the \
+                 hoses and the throttle body checked.",
+                &[],
+            ),
+        );
+    } else {
+        c.add(
+            "idle_speed",
+            Level::Warning,
+            Area::Mixture,
+            format("Leerlauf zu niedrig", "Idle speed too low", &[]),
+            format(
+                "Warm und im Stand dreht der Motor im Mittel nur {} 1/min. Üblich sind für \
+                 diesen Motor ({}) etwa {} bis {} 1/min. Zu niedriger Leerlauf lässt den Motor \
+                 schütteln oder ausgehen; oft sind die Drosselklappe verschmutzt oder ein \
+                 Zylinder arbeitet schwach.",
+                "Warm and standing still the engine turns only {} rpm on average. Usual for \
+                 this engine ({}) are about {} to {} rpm. Too low an idle makes the engine \
+                 shake or stall; often the throttle body is dirty or a cylinder works weakly.",
+                &[
+                    args[0].clone(),
+                    args[3].clone(),
+                    args[1].clone(),
+                    args[2].clone(),
+                ],
+            ),
+            format(
+                "Drosselklappe reinigen lassen und auf Aussetzer achten.",
+                "Have the throttle body cleaned and watch for misfires.",
+                &[],
+            ),
+        );
+    }
+}
+
 fn check_cooling(c: &mut Ctx) {
     let input = c.input;
     let thermo_title = format(
@@ -1424,7 +1540,12 @@ fn check_cooling(c: &mut Ctx) {
                 &[],
             ),
         );
-    } else if hottest >= limits::COOLANT_HOT {
+    } else if hottest
+        >= input
+            .engine
+            .as_ref()
+            .map_or(limits::COOLANT_HOT, |e| e.coolant_hot)
+    {
         c.add(
             "overheating",
             Level::Warning,
@@ -2345,6 +2466,7 @@ pub fn run_health_check(input: &HealthInput) -> HealthReport {
     check_oxygen_sensors(&mut c);
     check_voltage(&mut c);
     check_cooling(&mut c);
+    check_idle(&mut c);
     check_other_temperatures(&mut c);
     check_mode06(&mut c);
     check_misfire(&mut c);

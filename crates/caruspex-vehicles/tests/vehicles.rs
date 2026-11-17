@@ -285,8 +285,11 @@ fn the_catalog_is_large_and_consistent() {
         assert!(catalog::brand_info(g.brand).is_some(), "{name}");
         assert!(!has_long_dash(g.note.de), "{name}");
         assert!(!has_long_dash(g.note.en), "{name}");
-        // An OBD-II socket at some point means there is a protocol order.
-        let obd = g.connector == Connector::Obd2 || g.late_connector == Connector::Obd2;
+        // An OBD-II socket (or a motorcycle plug with its adapter cable) at
+        // some point means there is a protocol order.
+        let obd = [Connector::Obd2, Connector::Moto]
+            .iter()
+            .any(|c| g.connector == *c || g.late_connector == *c);
         assert_eq!(obd, !g.protocol_order.is_empty(), "{name}");
     }
 
@@ -515,4 +518,99 @@ fn every_catalog_brand_can_be_recognised_from_the_vin() {
             }
         }
     }
+}
+
+// data/obd_sockets.csv: the exact spot for the common generations.
+#[test]
+fn common_generations_know_the_exact_socket_spot() {
+    use caruspex_vehicles::catalog::{SocketSpot, socket_text_for, spot_text};
+    let _g = lock();
+    let spotted = catalog::all()
+        .iter()
+        .filter(|g| g.spot != SocketSpot::Unknown && g.body != BodyType::Motorcycle)
+        .count();
+    assert!(spotted >= 200, "{spotted}");
+    for spot in SocketSpot::ALL {
+        if spot != SocketSpot::Unknown {
+            assert!(!spot_text(spot).is_empty());
+        }
+    }
+    let golf7 = catalog::find_generation("Volkswagen", "Golf", 2015).unwrap();
+    assert_eq!(golf7.spot, SocketSpot::DashLeftOfColumn);
+    assert_eq!(golf7.location, SocketLocation::UnderDashLeft);
+    assert!(!golf7.spot_cover);
+    let e90 = catalog::find_generation("BMW", "3er", 2008).unwrap();
+    assert_eq!(e90.spot, SocketSpot::FootwellLeft);
+    assert!(e90.spot_cover);
+    let text = socket_text_for(e90, 2008);
+    assert!(
+        text.contains("Fahrerfußraum") && text.contains("Abdeckung"),
+        "{text}"
+    );
+    let c3 = catalog::find_generation("Citroën", "C3", 2012).unwrap();
+    assert_eq!(c3.spot.location(), SocketLocation::FuseBox);
+}
+
+// Motorcycles: Euro 5 decides whether standard OBD is to be expected.
+#[test]
+fn motorcycles_come_with_their_plug_and_cable() {
+    use caruspex_vehicles::moto;
+    let _g = lock();
+    let found = search_catalog("mt-07", 5);
+    let mt07 = found.iter().find(|g| g.brand == "Yamaha").expect("MT-07");
+    assert_eq!(mt07.body, BodyType::Motorcycle);
+    assert!(moto::is_motorcycle(mt07));
+    let new = catalog::find_generation("Yamaha", "MT-07", 2022).unwrap();
+    assert_eq!(catalog::support_for(new, 2022, 0), ObdSupport::Full);
+    let old = catalog::find_generation("Yamaha", "MT-07", 2018).unwrap();
+    assert_eq!(catalog::support_for(old, 2018, 0), ObdSupport::Partial);
+    let text = catalog::diagnosis_text(new, 2022);
+    assert!(text.contains("Euro 5") && text.contains("Yamaha"), "{text}");
+    assert_eq!(catalog::connector_for(new, 2022), Connector::Moto);
+    assert_eq!(new.location, SocketLocation::UnderSeat);
+    assert!(!new.protocol_order.is_empty());
+    assert!(moto::plug_text("Harley-Davidson").contains("Deutsch"));
+    assert!(!moto::plug_text("Unbekannt").is_empty());
+    assert_eq!(body_name(BodyType::Motorcycle), "Motorrad");
+    let vin = decode_vin("JYARM331000000000", 2026);
+    assert_eq!(vin.brand, "Yamaha");
+}
+
+// data/engines: codes from Wikipedia and the targets that follow.
+#[test]
+fn engine_codes_give_target_values() {
+    use caruspex_vehicles::engines::{
+        COOLANT_HOT, COOLANT_HOT_MAP, EngineFuel, codes_text, engine_codes, engine_rows,
+        engines_for, targets_for,
+    };
+    let _g = lock();
+    assert!(engine_rows().len() >= 40);
+    for row in engine_rows() {
+        assert!(row.source.starts_with("https://"), "{}", row.source);
+    }
+    let golf7 = catalog::find_generation("Volkswagen", "Golf", 2015).unwrap();
+    let codes = engine_codes(golf7);
+    assert!(codes.contains(&("CJZA", EngineFuel::Petrol)));
+    assert!(codes.contains(&("CRLB", EngineFuel::Diesel)));
+    let (diesel, list) = targets_for(golf7, Some(EngineFuel::Diesel)).unwrap();
+    assert_eq!(diesel.coolant_hot, COOLANT_HOT);
+    assert!(diesel.idle_min < diesel.idle_max);
+    assert!(
+        list.iter()
+            .all(|c| codes.contains(&(*c, EngineFuel::Diesel)))
+    );
+    // Petrol and diesel idle differently: without the fuel no common target.
+    assert!(targets_for(golf7, None).is_none());
+    // The E90's N52 has a map-controlled thermostat, the other petrol
+    // engines do not; the diesels agree.
+    let e90 = catalog::find_generation("BMW", "3er", 2008).unwrap();
+    assert!(engines_for(e90).unwrap().petrol.contains(&"N52B30"));
+    assert!(targets_for(e90, Some(EngineFuel::Petrol)).is_none());
+    let (d, _) = targets_for(e90, Some(EngineFuel::Diesel)).unwrap();
+    assert_eq!(d.coolant_hot, COOLANT_HOT);
+    assert!(COOLANT_HOT_MAP > COOLANT_HOT);
+    assert_eq!(codes_text(&["A", "B", "C", "D", "E", "F"]), "A B C D +2");
+    // A generation without a row has no codes.
+    let golf2 = catalog::find_generation("Volkswagen", "Golf", 1985).unwrap();
+    assert!(engine_codes(golf2).is_empty());
 }

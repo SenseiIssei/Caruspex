@@ -215,6 +215,8 @@ export default function ConnectPage() {
   const [error, setError] = useState<string | null>(null);
   // The checklist of the connection assistant for the last failed attempt.
   const [help, setHelp] = useState<ConnectHelp | null>(null);
+  // Motorcycles: cable, kill switch and Euro 5, from the core.
+  const [motoSteps, setMotoSteps] = useState<string[]>([]);
 
   // The latest values for the handlers that run outside a render (app events
   // that connect right after changing the mode or the port).
@@ -294,6 +296,7 @@ export default function ConnectPage() {
         ),
       );
       setSocketHint(defaultSocketHint());
+      setMotoSteps([]);
       return;
     }
     let cancelled = false;
@@ -302,6 +305,7 @@ export default function ConnectPage() {
         if (cancelled || !info) return;
         setProfileNote(info.diagnosisText);
         setSocketHint(tr("Bei diesem Auto: %1", info.locationText));
+        setMotoSteps(info.connectSteps ?? []);
       })
       .catch(() => undefined);
     return () => {
@@ -633,6 +637,16 @@ export default function ConnectPage() {
       <div className="connect-columns">
         <Card className="connect-steps" title={tr("So geht's")}>
           <Step n={1} icon="map-pin" title={tr("Buchse finden")} text={socketHint} />
+          {motoSteps.length > 0 ? (
+            <div className="connect-moto">
+              <div className="connect-step-head">{tr("Beim Motorrad")}</div>
+              <ul className="subtle">
+                {motoSteps.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <Step
             n={2}
             icon="cable"

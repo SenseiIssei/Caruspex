@@ -29,6 +29,7 @@ Daihatsu,Japan,Japan,,eu
 DeLorean,Vereinigtes Königreich,United Kingdom,,na
 Dodge,USA,USA,chrysler,na
 DS,Frankreich,France,,eu
+Ducati,Italien,Italy,,eu
 Ferrari,Italien,Italy,,eu
 Fiat,Italien,Italy,,eu
 Fisker,USA,USA,,na
@@ -37,6 +38,7 @@ Geely,China,China,,eu
 Genesis,Südkorea,South Korea,,eu
 GMC,USA,USA,gm,na
 Great Wall,China,China,,eu
+Harley-Davidson,USA,USA,,eu
 Holden,Australien,Australia,,eu
 Honda,Japan,Japan,,eu
 Hongqi,China,China,,eu
@@ -48,7 +50,9 @@ Isuzu,Japan,Japan,,eu
 Jaecoo,China,China,,eu
 Jaguar,Vereinigtes Königreich,United Kingdom,,eu
 Jeep,USA,USA,chrysler,na
+Kawasaki,Japan,Japan,,eu
 Kia,Südkorea,South Korea,,eu
+KTM,Österreich,Austria,,eu
 Lada,Russland,Russia,,eu
 Lamborghini,Italien,Italy,,eu
 Lancia,Italien,Italy,,eu
@@ -102,6 +106,7 @@ Tata,Indien,India,,eu
 Tesla,USA,USA,,na
 Toyota,Japan,Japan,,eu
 Trabant,Deutschland (DDR),Germany (GDR),,eu
+Triumph,Vereinigtes Königreich,United Kingdom,,eu
 VinFast,Vietnam,Vietnam,,eu
 Volkswagen,Deutschland,Germany,vag,eu
 Volvo,Schweden,Sweden,,eu
@@ -110,5 +115,6 @@ Wartburg,Deutschland (DDR),Germany (GDR),,eu
 Wuling,China,China,,eu
 Xiaomi,China,China,,eu
 Xpeng,China,China,,eu
+Yamaha,Japan,Japan,,eu
 Zeekr,China,China,,eu
 Škoda,Tschechien,Czech Republic,vag,eu

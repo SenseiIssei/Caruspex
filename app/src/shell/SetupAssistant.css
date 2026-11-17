@@ -72,6 +72,8 @@
 .setup-socket { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 20px; align-items: start; }
 .setup-socket-text { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .setup-sketch { width: 100%; height: auto; color: var(--text-faint); }
+.setup-sketches { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.setup-closeup { max-height: 160px; }
 .setup-spot-pulse { transform-box: fill-box; transform-origin: center; animation: setup-pulse 1.6s ease-out infinite; }
 .setup-spot:not(.main) { opacity: 0.6; }
 @keyframes setup-pulse {
