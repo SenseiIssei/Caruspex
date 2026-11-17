@@ -10,7 +10,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 
 use caruspex_i18n::l;
 use caruspex_link::timing::now_ms;
-use caruspex_link::{ByteStream, Transport};
+use caruspex_link::{ByteStream, IsoTpBatch, IsoTpRequest, Transport};
 
 use crate::elm_front::{self, ElmBackend, ElmFront};
 use crate::text::{atoi, is_hex, strtol_hex};
@@ -624,6 +624,188 @@ impl Transport for CanElm {
 
     fn name(&self) -> String {
         self.name.clone()
+    }
+
+    fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
+        if self.monitoring { None } else { Some(self) }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Several ISO-TP sessions at once
+// ---------------------------------------------------------------------------
+
+/// One control unit of a batch: its request and the answer coming in.
+struct Session {
+    index: usize,
+    deadline: u64,
+    done: bool,
+    /// The message being put together, and its length.
+    payload: Vec<u8>,
+    total: usize,
+    collecting: bool,
+}
+
+impl Session {
+    /// Takes one answer frame (PCI first); a complete message when there is one.
+    fn take(&mut self, d: &[u8]) -> Option<Vec<u8>> {
+        if d.is_empty() {
+            return None;
+        }
+        match d[0] >> 4 {
+            0 => {
+                let (start, length, _) = pci_length(d);
+                if length == 0 || d.len() < start + length {
+                    return None;
+                }
+                self.collecting = false;
+                Some(d[start..start + length].to_vec())
+            }
+            1 if d.len() >= 2 => {
+                let (start, total, _) = pci_length(d);
+                self.total = total;
+                self.payload = d[start.min(d.len())..].to_vec();
+                self.collecting = true;
+                None
+            }
+            2 if self.collecting => {
+                self.payload.extend_from_slice(&d[1..]);
+                if self.payload.len() < self.total {
+                    return None;
+                }
+                self.collecting = false;
+                let mut done = std::mem::take(&mut self.payload);
+                done.truncate(self.total);
+                Some(done)
+            }
+            _ => None,
+        }
+    }
+}
+
+fn session_key(r: &IsoTpRequest) -> (u32, bool, bool) {
+    (r.response, r.extended, r.target.is_some())
+}
+
+/// The tester's address in the answers of BMW style extended addressing.
+const TESTER: u8 = 0xF1;
+
+impl CanElm {
+    /// One round: every unit of `round` asked at once, the answers collected
+    /// as they come. No two units of a round answer on the same id.
+    fn batch_round(
+        &mut self,
+        requests: &[IsoTpRequest],
+        round: &[usize],
+        timeout_ms: u64,
+        out: &mut [Vec<Vec<u8>>],
+    ) {
+        self.drain();
+        let start = now_ms();
+        let mut sessions: Vec<Session> = Vec::new();
+        for &i in round {
+            let r = &requests[i];
+            let room = if r.target.is_some() { 6 } else { 7 };
+            if r.data.is_empty() || r.data.len() > room {
+                continue; // only single frames
+            }
+            let mut data: Vec<u8> = r.target.into_iter().collect();
+            data.push(r.data.len() as u8);
+            data.extend_from_slice(&r.data);
+            data.resize(8, 0x00);
+            let frame = CanFrame {
+                id: r.request,
+                extended: r.extended,
+                data,
+            };
+            if !self.link.send(&frame) {
+                continue;
+            }
+            sessions.push(Session {
+                index: i,
+                deadline: start + timeout_ms,
+                done: false,
+                payload: Vec::new(),
+                total: 0,
+                collecting: false,
+            });
+        }
+        loop {
+            let open: Vec<&Session> = sessions.iter().filter(|s| !s.done).collect();
+            let Some(until) = open.iter().map(|s| s.deadline).max() else {
+                return;
+            };
+            let now = now_ms();
+            if now >= until {
+                return;
+            }
+            let Some(f) = self.link.receive(until - now) else {
+                return;
+            };
+            let Some(s) = sessions.iter_mut().find(|s| {
+                let r = &requests[s.index];
+                !s.done
+                    && f.id == r.response
+                    && f.extended == r.extended
+                    && (r.target.is_none() || f.data.first() == Some(&TESTER))
+            }) else {
+                continue;
+            };
+            let r = &requests[s.index];
+            let d = if r.target.is_some() {
+                &f.data[1..]
+            } else {
+                &f.data[..]
+            };
+            if d.first().is_some_and(|pci| pci >> 4 == 1) {
+                // Flow control: everything, no pause between frames.
+                let mut fc: Vec<u8> = r.target.into_iter().collect();
+                fc.extend_from_slice(&[0x30, 0x00, 0x00]);
+                fc.resize(8, 0x00);
+                let flow = CanFrame {
+                    id: r.request,
+                    extended: r.extended,
+                    data: fc,
+                };
+                s.deadline = s.deadline.max(now_ms() + FIRST_ANSWER_MS);
+                s.take(d);
+                self.link.send(&flow);
+                continue;
+            }
+            let Some(message) = s.take(d) else {
+                continue;
+            };
+            let pending = message.len() >= 3 && message[0] == 0x7F && message[2] == 0x78;
+            out[s.index].push(message);
+            if pending {
+                s.deadline = s.deadline.max(now_ms() + PENDING_MS);
+            } else {
+                s.done = true;
+            }
+        }
+    }
+}
+
+impl IsoTpBatch for CanElm {
+    fn exchange_all(&mut self, requests: &[IsoTpRequest], timeout_ms: u64) -> Vec<Vec<Vec<u8>>> {
+        let mut out = vec![Vec::new(); requests.len()];
+        let mut left: Vec<usize> = (0..requests.len()).collect();
+        while !left.is_empty() {
+            // Units that answer on the same id go into the next round.
+            let mut round: Vec<usize> = Vec::new();
+            let mut later = Vec::new();
+            for i in left {
+                let key = session_key(&requests[i]);
+                if round.iter().any(|&j| session_key(&requests[j]) == key) {
+                    later.push(i);
+                } else {
+                    round.push(i);
+                }
+            }
+            self.batch_round(requests, &round, timeout_ms, &mut out);
+            left = later;
+        }
+        out
     }
 }
 

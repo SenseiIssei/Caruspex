@@ -33,4 +33,4 @@ pub use elm327::{
 pub use kline_stream::KLineStream;
 pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
 pub use tcp::TcpTransport;
-pub use transport::{ByteStream, LogFn, MessageLink, Transport};
+pub use transport::{ByteStream, IsoTpBatch, IsoTpRequest, LogFn, MessageLink, Transport};

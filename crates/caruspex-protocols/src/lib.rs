@@ -29,7 +29,7 @@ pub use obd2::{
 };
 pub use uds::{
     ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, decode_bmw_dtc, decode_uds_dtc,
-    extended_request, scan_ecus,
+    extended_request, find_present_ecus, scan_ecus,
 };
 pub use vag_kline::{VagDiagnosis, VagKLine};
 pub use vag_tp20::{VagTp20, tp20_label};

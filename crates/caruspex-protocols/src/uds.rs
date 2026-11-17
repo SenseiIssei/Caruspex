@@ -21,7 +21,9 @@ use caruspex_data::ecu_addresses::EcuDefinition;
 use caruspex_data::failure_types::failure_type_text;
 use caruspex_i18n::l;
 use caruspex_link::timing::{now_ms, sleep_ms};
-use caruspex_link::{Elm327, ElmStatus, HeaderFormat, decode_messages, split_messages};
+use caruspex_link::{
+    Elm327, ElmStatus, HeaderFormat, IsoTpRequest, decode_messages, split_messages,
+};
 
 /// How long an ECU may keep answering 7F xx 78 ("still working") before we
 /// give up. ISO 14229 allows 5 s per pending answer (P2* server); clearing a
@@ -793,6 +795,89 @@ impl Drop for Uds<'_> {
 /// Progress callback of [`scan_ecus`]: index, total, name of the ECU.
 pub type ScanProgress<'a> = dyn FnMut(usize, usize, &str) + 'a;
 
+/// How many control units are asked at once over a raw CAN interface.
+/// Gateways pass a burst of this size on without losing frames.
+const PARALLEL_SESSIONS: usize = 16;
+
+/// How long a unit gets for its first answer in the parallel check: what
+/// the scan gives a unit on an ELM327 (ATST32).
+const PARALLEL_WAIT_MS: u64 = 200;
+
+/// The request of the parallel check for one ECU, or `None` when the ECU
+/// cannot be reached on this bus at all (the scan then tells why).
+fn batch_request(def: &EcuDefinition, bus29: bool, data: &[u8]) -> Option<IsoTpRequest> {
+    if def.extended29 != bus29 {
+        return None;
+    }
+    if def.extended_address >= 0 {
+        if def.extended29 {
+            return None;
+        }
+        return Some(IsoTpRequest {
+            request: def.request & 0x7FF,
+            response: def.response & 0x7FF,
+            extended: false,
+            target: Some((def.extended_address & 0xFF) as u8),
+            data: data.to_vec(),
+        });
+    }
+    let mask = if def.extended29 { 0x1FFF_FFFF } else { 0x7FF };
+    Some(IsoTpRequest {
+        request: def.request & mask,
+        response: def.response & mask,
+        extended: def.extended29,
+        target: None,
+        data: data.to_vec(),
+    })
+}
+
+/// Which ECUs of the list answer at all, asked many at a time: "3E 00",
+/// and "22 F1 87" for those that stay silent (some ignore 3E outside an
+/// extended session), the same questions and the same verdict as the scan
+/// one by one. Only over raw CAN interfaces, which can listen to many units
+/// at once (several ISO-TP sessions side by side); `None` through an
+/// ELM327. A missing unit then costs one wait per sixteen, not two per unit.
+pub fn find_present_ecus(
+    elm: &mut Elm327,
+    ecus: &[EcuDefinition],
+    cancelled: Option<&dyn Fn() -> bool>,
+) -> Option<Vec<bool>> {
+    if !elm.connected() || !elm.is_can() {
+        return None;
+    }
+    let bus29 = bus29(elm);
+    let batch = elm.iso_tp_batch()?;
+    let mut present = vec![false; ecus.len()];
+    let questions: [&[u8]; 2] = [&[0x3E, 0x00], &[0x22, 0xF1, 0x87]];
+    for question in questions {
+        let sid = question[0];
+        let ask: Vec<(usize, IsoTpRequest)> = ecus
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| !present[*i])
+            .filter_map(|(i, def)| batch_request(def, bus29, question).map(|r| (i, r)))
+            .collect();
+        for chunk in ask.chunks(PARALLEL_SESSIONS) {
+            if cancelled.is_some_and(|c| c()) {
+                return Some(present);
+            }
+            let requests: Vec<IsoTpRequest> = chunk.iter().map(|(_, r)| r.clone()).collect();
+            let replies = batch.exchange_all(&requests, PARALLEL_WAIT_MS);
+            for ((i, r), messages) in chunk.iter().zip(replies) {
+                // As one by one: with extended addressing any answer counts,
+                // otherwise the positive one or a refusal of this service.
+                present[*i] = messages.iter().any(|m| {
+                    !m.is_empty()
+                        && (r.target.is_some()
+                            || m[0] == sid.wrapping_add(0x40)
+                            || (m[0] == 0x7F && m.len() >= 3 && m[1] == sid))
+                });
+            }
+        }
+    }
+    Some(present)
+}
+
 /// Asks every ECU of the list once: is it there, what is it, what does it
 /// have stored. `progress(index, total, name)` is called before each ECU;
 /// `cancelled()` is checked between ECUs. The adapter ends up on the default
@@ -805,6 +890,14 @@ pub fn scan_ecus(
 ) -> Vec<UdsEcu> {
     let mut out = Vec::with_capacity(ecus.len());
     let can = elm.connected() && elm.is_can();
+
+    // Over a raw CAN interface the missing units are found first, all at
+    // once; then only the present ones are read one by one.
+    let presence = if ecus.len() > 1 {
+        find_present_ecus(elm, ecus, cancelled)
+    } else {
+        None
+    };
 
     // A missing ECU costs the adapter's full answer timeout ("NO DATA"),
     // twice per address. 200 ms instead of the 400 ms set at connect is
@@ -832,18 +925,21 @@ pub fn scan_ecus(
                 out.push(ecu);
                 continue;
             }
-            ecu.present = uds.tester_present();
-            if !ecu.present {
-                // Some ECUs ignore 3E outside an extended session but do
-                // answer the identification.
-                ecu.present = exchange(
-                    uds.elm(),
-                    &[0x22, 0xF1, 0x87],
-                    SHORT_REQUEST_MS,
-                    def.extended_address,
-                )
-                .answered;
-            }
+            ecu.present = match &presence {
+                Some(found) => found[i],
+                None => {
+                    // Some ECUs ignore 3E outside an extended session but
+                    // do answer the identification.
+                    uds.tester_present()
+                        || exchange(
+                            uds.elm(),
+                            &[0x22, 0xF1, 0x87],
+                            SHORT_REQUEST_MS,
+                            def.extended_address,
+                        )
+                        .answered
+                }
+            };
             if !ecu.present {
                 ecu.note = l(
                     "Keine Antwort: nicht verbaut, oder das Gateway lässt die Anfrage nicht durch.",

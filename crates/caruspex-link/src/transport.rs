@@ -16,6 +16,38 @@ pub trait Transport: Send {
     fn flush_input(&mut self);
     /// Shown in the log and the status line ("COM5 @ 38400", "192.168.0.10:35000").
     fn name(&self) -> String;
+    /// Several ISO-TP sessions at once, if the way to the car can do that:
+    /// the raw CAN interfaces, which see every frame on the bus. An ELM327
+    /// can only wait for one control unit at a time.
+    fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
+        None
+    }
+}
+
+/// One physical ISO-TP request of a batch: to one control unit, as a
+/// single frame.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct IsoTpRequest {
+    /// CAN id of the request (29 bit with the priority on top).
+    pub request: u32,
+    /// CAN id of the answer.
+    pub response: u32,
+    /// 29-bit ids.
+    pub extended: bool,
+    /// BMW style extended addressing: the target byte in front of every
+    /// request frame; the answer frames begin with the tester, F1.
+    pub target: Option<u8>,
+    /// Service and parameters, at most 7 bytes (6 with a target byte).
+    pub data: Vec<u8>,
+}
+
+/// ISO-TP to many control units at the same time.
+pub trait IsoTpBatch {
+    /// Sends every request at once and collects the answers as they come,
+    /// with flow control per unit. Per request the complete messages in
+    /// order: "still busy" (7F xx 78) ones first, then the answer; empty if
+    /// the unit said nothing within `timeout_ms` (a busy unit gets more).
+    fn exchange_all(&mut self, requests: &[IsoTpRequest], timeout_ms: u64) -> Vec<Vec<Vec<u8>>>;
 }
 
 /// One byte out, one byte in, for KWP1281 and KWP2000 on a K-line.
@@ -113,5 +145,8 @@ impl<T: Transport + ?Sized> Transport for Box<T> {
     }
     fn name(&self) -> String {
         (**self).name()
+    }
+    fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
+        (**self).iso_tp_batch()
     }
 }

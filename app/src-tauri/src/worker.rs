@@ -44,7 +44,7 @@ use caruspex_net::{
 use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
 use caruspex_protocols::{
     Ecu, Fault, KLineProtocol, LiveValue, MeasuringValue, Obd2, Uds, UdsEcu, VagDiagnosis,
-    VagKLine, VagTp20, VehicleStatus, scan_ecus,
+    VagKLine, VagTp20, VehicleStatus, find_present_ecus, scan_ecus,
 };
 use caruspex_record::{
     CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, USER_KEY_BASE, active_recording,
@@ -2325,6 +2325,14 @@ impl Worker {
             json!({ "total": total, "generic": generic }),
         );
 
+        // Over a raw CAN interface the missing units are found first, many
+        // at once; the scan below then only reads the ones that answered.
+        let presence = {
+            let cancel = self.cancel.clone();
+            let is_cancelled = move || cancel.load(Ordering::SeqCst);
+            find_present_ecus(&mut self.elm, &list, Some(&is_cancelled))
+        };
+
         // One unit at a time, so every answer reaches the page right away.
         let mut present = 0;
         let mut with_faults = 0;
@@ -2342,6 +2350,9 @@ impl Worker {
                     "kind": def.kind as i32,
                 }),
             );
+            if presence.as_ref().is_some_and(|found| !found[index]) {
+                continue;
+            }
             let cancel = self.cancel.clone();
             let is_cancelled = move || cancel.load(Ordering::SeqCst);
             let result = scan_ecus(
