@@ -1,0 +1,1122 @@
+[
+ {
+  "id": "c-truck24-1",
+  "de": "%1 Prüfungen waren mangels Daten nicht möglich.",
+  "en": "%1 checks were not possible for lack of data."
+ },
+ {
+  "id": "c-truck24-2",
+  "de": "%1 Steuergeräte am Bus",
+  "en": "%1 control units on the bus"
+ },
+ {
+  "id": "c-truck24-3",
+  "de": "%1 Motorbetriebsstunden",
+  "en": "%1 engine hours"
+ },
+ {
+  "id": "c-truck24-4",
+  "de": "%1 Liter seit dem Bau des Motors auf %2 km. Schwere Lkw und Busse brauchen meist 25 bis 40 l/100 km. Der Zähler steckt im Motorsteuergerät; weicht der Schnitt stark ab, passen Motor und Kilometerstand nicht zusammen.",
+  "en": "%1 litres since the engine was built over %2 km. Heavy trucks and buses mostly use 25 to 40 l/100 km. The counter sits in the engine control unit; if the average is far off, engine and mileage do not belong together."
+ },
+ {
+  "id": "c-truck24-5",
+  "de": "%1 meldet \"%2\". Das ist keine gültige Fahrgestellnummer (17 Zeichen, ohne I, O und Q). So etwas kommt vor, wenn ein Steuergerät getauscht und die Nummer nicht eingetragen wurde.",
+  "en": "%1 reports \"%2\". That is not a valid VIN (17 characters, without I, O and Q). This happens when a control unit was replaced and the number was not written in."
+ },
+ {
+  "id": "c-truck24-6",
+  "de": "%1 bei stehendem Motor. Volle Batterien liegen bei etwa %2.",
+  "en": "%1 with the engine off. Full batteries sit at about %2."
+ },
+ {
+  "id": "c-truck24-7",
+  "de": "%1, %2-mal",
+  "en": "%1, %2 times"
+ },
+ {
+  "id": "c-truck24-8",
+  "de": "%1, Gesamtstrecke fein",
+  "en": "%1, fine total distance"
+ },
+ {
+  "id": "c-truck24-9",
+  "de": "%1, gemessen bei laufendem Motor. Üblich sind %2.",
+  "en": "%1, measured with the engine running. Usual is %2."
+ },
+ {
+  "id": "c-truck24-10",
+  "de": "%1, Gesamtstrecke",
+  "en": "%1, total distance"
+ },
+ {
+  "id": "c-truck24-11",
+  "de": "%1. Aktive Fehler liegen jetzt an; sie gehen erst weg, wenn die Ursache behoben ist.",
+  "en": "%1. Active faults are present now; they only go away once the cause is fixed."
+ },
+ {
+  "id": "c-truck24-12",
+  "de": "%1. Mit Rechnungen über getauschte Teile vergleichen: Seriennummer und Software ändern sich, wenn ein Steuergerät ersetzt oder neu programmiert wurde. Eine Werkstatt kann beides auch so einstellen, dass es nach Originalzustand aussieht.",
+  "en": "%1. Compare with invoices for replaced parts: serial number and software change when a control unit was replaced or reprogrammed. A workshop can also set both to look like the original."
+ },
+ {
+  "id": "c-truck24-13",
+  "de": "%1. Mindestens ein Steuergerät stammt also aus einem anderen Fahrzeug oder wurde nicht richtig angelernt. Beim Kombiinstrument kann das einen anderen Kilometerstand bedeuten, beim Tachographen ist es ein Fall für die Prüfstelle.",
+  "en": "%1. So at least one control unit comes from another vehicle or was not set up properly. For the instrument cluster that can mean a different mileage, for the tachograph it is a matter for the inspection body."
+ },
+ {
+  "id": "c-truck24-14",
+  "de": "%1. Der Filter sammelt Ruß und verbrennt ihn regelmäßig bei hoher Abgastemperatur. Viel Kurzstrecke und Leerlauf lassen ihn schneller voll werden.",
+  "en": "%1. The filter collects soot and burns it off regularly at high exhaust temperature. Lots of short trips and idling fill it faster."
+ },
+ {
+  "id": "c-truck24-15",
+  "de": "%1. Diese Fehler waren aktiv und sind es nicht mehr. Kommt einer immer wieder, steckt oft ein Kabel- oder Steckerproblem dahinter.",
+  "en": "%1. These faults were active and are no longer. If one keeps coming back, a wiring or plug problem is often behind it."
+ },
+ {
+  "id": "c-truck24-16",
+  "de": "%1: %2",
+  "en": "%1: %2"
+ },
+ {
+  "id": "c-truck24-17",
+  "de": "%1: %2 aktive Fehler",
+  "en": "%1: %2 active faults"
+ },
+ {
+  "id": "c-truck24-18",
+  "de": "%1: keine Kennung",
+  "en": "%1: no identification"
+ },
+ {
+  "id": "c-truck24-19",
+  "de": "0: Freibrennen nicht nötig, 1 bis 3: nötig, von niedriger bis höchster Stufe.",
+  "en": "0: no regeneration needed, 1 to 3: needed, from the lowest to the highest level."
+ },
+ {
+  "id": "c-truck24-20",
+  "de": "0: läuft nicht, 1: läuft gerade, 2: nötig, beginnt gleich von selbst.",
+  "en": "0: not running, 1: running now, 2: needed, about to start by itself."
+ },
+ {
+  "id": "c-truck24-21",
+  "de": "12-V-Anlage",
+  "en": "12 V system"
+ },
+ {
+  "id": "c-truck24-22",
+  "de": "12,6 V",
+  "en": "12.6 V"
+ },
+ {
+  "id": "c-truck24-23",
+  "de": "13,8 bis 14,6 V",
+  "en": "13.8 to 14.6 V"
+ },
+ {
+  "id": "c-truck24-24",
+  "de": "24-V-Anlage",
+  "en": "24 V system"
+ },
+ {
+  "id": "c-truck24-25",
+  "de": "25,2 V",
+  "en": "25.2 V"
+ },
+ {
+  "id": "c-truck24-26",
+  "de": "27,6 bis 28,8 V",
+  "en": "27.6 to 28.8 V"
+ },
+ {
+  "id": "c-truck24-27",
+  "de": "Eine längere Fahrt mit gleichmäßiger Last, etwa eine halbe Stunde Autobahn, lässt den Filter meist von selbst freibrennen. Klappt das nicht, das Freibrennen im Stand nach Herstelleranleitung starten.",
+  "en": "A longer drive at steady load, about half an hour on the motorway, usually lets the filter regenerate by itself. If that does not work, start a parked regeneration as the maker describes."
+ },
+ {
+  "id": "c-truck24-28",
+  "de": "Aktive AdBlue-Fehler",
+  "en": "Active DEF faults"
+ },
+ {
+  "id": "c-truck24-29",
+  "de": "Aktive Fehler: %1",
+  "en": "Active faults: %1"
+ },
+ {
+  "id": "c-truck24-30",
+  "de": "Gerade aktiv: %1. SPN nennt den Messwert oder das Bauteil, FMI die Art des Fehlers.",
+  "en": "Active right now: %1. SPN names the value or the part, FMI the kind of fault."
+ },
+ {
+  "id": "c-truck24-31",
+  "de": "Alle %1 Steuergeräte, die eine Fahrgestellnummer speichern, melden dieselbe: %2.",
+  "en": "All %1 control units that store a VIN report the same one: %2."
+ },
+ {
+  "id": "c-truck24-32",
+  "de": "Alles im grünen Bereich. %1 Prüfungen gemacht, nichts, was Sorgen machen müsste.",
+  "en": "All good. %1 checks done, nothing to worry about."
+ },
+ {
+  "id": "c-truck24-33",
+  "de": "Alle Quellen stimmen überein: %1. Ein gutes Zeichen, aber kein Beweis: wer alle Steuergeräte gleich verstellt, fällt hier nicht auf.",
+  "en": "All sources agree: %1. A good sign, but no proof: someone who alters every control unit alike does not show up here."
+ },
+ {
+  "id": "c-truck24-34",
+  "de": "Aller Kraftstoff, den der Motor im Leerlauf verbraucht hat.",
+  "en": "All the fuel the engine has burned while idling."
+ },
+ {
+  "id": "c-truck24-35",
+  "de": "Alle Warnlampen aus",
+  "en": "All warning lamps off"
+ },
+ {
+  "id": "c-truck24-36",
+  "de": "Gelbe Warnlampe an",
+  "en": "Amber warning lamp on"
+ },
+ {
+  "id": "c-truck24-37",
+  "de": "Gibt es Wartungsheft, Werkstattrechnungen und Prüfberichte (HU, SP), die Kilometer und Betriebsstunden belegen?",
+  "en": "Are there service records, workshop invoices and inspection reports that back up the kilometres and engine hours?"
+ },
+ {
+  "id": "c-truck24-38",
+  "de": "Asche brennt nicht ab; ist der Filter voll davon, muss er gereinigt oder getauscht werden.",
+  "en": "Ash does not burn off; once the filter is full of it, it has to be cleaned or replaced."
+ },
+ {
+  "id": "c-truck24-39",
+  "de": "Asche aus dem Motoröl brennt nicht ab und setzt den Filter mit der Zeit zu. Ab etwa 80 % steht eine Reinigung oder ein Tausch an.",
+  "en": "Ash from the engine oil does not burn off and clogs the filter over time. From about 80 % a cleaning or a replacement is due."
+ },
+ {
+  "id": "c-truck24-40",
+  "de": "Durchschnittsverbrauch %1 l/100 km",
+  "en": "Average fuel use %1 l/100 km"
+ },
+ {
+  "id": "c-truck24-41",
+  "de": "Batterien %1 V",
+  "en": "Batteries %1 V"
+ },
+ {
+  "id": "c-truck24-42",
+  "de": "Batterien fast leer: %1 V",
+  "en": "Batteries nearly flat: %1 V"
+ },
+ {
+  "id": "c-truck24-43",
+  "de": "Batterien schwach: %1 V",
+  "en": "Batteries weak: %1 V"
+ },
+ {
+  "id": "c-truck24-44",
+  "de": "Batterie bei stehendem Motor",
+  "en": "Battery with the engine off"
+ },
+ {
+  "id": "c-truck24-45",
+  "de": "Unter etwa -11 °C friert AdBlue; der Tank wird dann beheizt.",
+  "en": "Below about -11 °C DEF freezes; the tank is heated then."
+ },
+ {
+  "id": "c-truck24-46",
+  "de": "In den nächsten Tagen einen Werkstatttermin machen.",
+  "en": "Book a workshop visit in the next few days."
+ },
+ {
+  "id": "c-truck24-47",
+  "de": "Ladedruck unter Last %1 kPa",
+  "en": "Boost under load %1 kPa"
+ },
+ {
+  "id": "c-truck24-48",
+  "de": "Ladedruck unter Last niedrig: %1 kPa",
+  "en": "Boost under load low: %1 kPa"
+ },
+ {
+  "id": "c-truck24-49",
+  "de": "Caruspex Demo-Lkw",
+  "en": "Caruspex demo truck"
+ },
+ {
+  "id": "c-truck24-50",
+  "de": "Ladespannung %1 V",
+  "en": "Charging voltage %1 V"
+ },
+ {
+  "id": "c-truck24-51",
+  "de": "Ladespannung niedrig: %1 V",
+  "en": "Charging voltage low: %1 V"
+ },
+ {
+  "id": "c-truck24-52",
+  "de": "Ölstand und Ölsorte prüfen und den Druck mit einem Manometer in der Werkstatt nachmessen lassen.",
+  "en": "Check the oil level and grade and have the pressure measured with a gauge at the workshop."
+ },
+ {
+  "id": "c-truck24-53",
+  "de": "Steuergeräte melden verschiedene Fahrgestellnummern",
+  "en": "Control units report different VINs"
+ },
+ {
+  "id": "c-truck24-54",
+  "de": "Kühlmittel %1 °C",
+  "en": "Coolant %1 °C"
+ },
+ {
+  "id": "c-truck24-55",
+  "de": "Kühlmittelstand %1 %",
+  "en": "Coolant level %1 %"
+ },
+ {
+  "id": "c-truck24-56",
+  "de": "Kühlmittelstand niedrig: %1 %",
+  "en": "Coolant level low: %1 %"
+ },
+ {
+  "id": "c-truck24-57",
+  "de": "Kühlmittel fast leer: %1 %",
+  "en": "Coolant nearly empty: %1 %"
+ },
+ {
+  "id": "c-truck24-58",
+  "de": "Kühlmittel warm: %1 °C",
+  "en": "Coolant warm: %1 °C"
+ },
+ {
+  "id": "c-truck24-59",
+  "de": "Zähler: %1",
+  "en": "Counters: %1"
+ },
+ {
+  "id": "c-truck24-60",
+  "de": "AdBlue %1 %",
+  "en": "DEF %1 %"
+ },
+ {
+  "id": "c-truck24-61",
+  "de": "AdBlue-Temperatur",
+  "en": "DEF (AdBlue) temperature"
+ },
+ {
+  "id": "c-truck24-62",
+  "de": "AdBlue-Fehler: %1. Häufige Ursachen sind verunreinigtes oder verdünntes AdBlue, Kristalle an Dosierventil und Leitungen oder ein defekter Qualitätssensor. Bleibt so ein Fehler bestehen, drosselt der Motor nach einer Warnphase die Leistung.",
+  "en": "DEF faults: %1. Common causes are contaminated or diluted DEF, crystals at the dosing valve and lines, or a faulty quality sensor. If such a fault stays, the engine cuts its power after a warning phase."
+ },
+ {
+  "id": "c-truck24-63",
+  "de": "AdBlue niedrig: %1 %",
+  "en": "DEF low: %1 %"
+ },
+ {
+  "id": "c-truck24-64",
+  "de": "AdBlue fast leer: %1 %",
+  "en": "DEF nearly empty: %1 %"
+ },
+ {
+  "id": "c-truck24-65",
+  "de": "Strecke seit dem Löschen",
+  "en": "Distance since faults were cleared"
+ },
+ {
+  "id": "c-truck24-66",
+  "de": "Strecke mit Abgaslampe",
+  "en": "Distance with the emission lamp on"
+ },
+ {
+  "id": "c-truck24-67",
+  "de": "Nicht weiterfahren, bevor Kühlmittel nachgefüllt und die Undichtigkeit gefunden ist.",
+  "en": "Do not drive on before coolant is topped up and the leak is found."
+ },
+ {
+  "id": "c-truck24-68",
+  "de": "Den Motor jetzt nicht abstellen, bis das Freibrennen fertig ist.",
+  "en": "Do not switch off the engine now until the regeneration is done."
+ },
+ {
+  "id": "c-truck24-69",
+  "de": "Stimmt die Fahrgestellnummer am Rahmen und am Typschild mit den Papieren überein?",
+  "en": "Does the VIN on the frame and on the type plate match the papers?"
+ },
+ {
+  "id": "c-truck24-70",
+  "de": "Mit Abgaslampe gefahren: %1 km",
+  "en": "Driven with the emission lamp on: %1 km"
+ },
+ {
+  "id": "c-truck24-71",
+  "de": "Betriebsstunden: %1",
+  "en": "Engine hours: %1"
+ },
+ {
+  "id": "c-truck24-72",
+  "de": "Motor aus",
+  "en": "Engine off"
+ },
+ {
+  "id": "c-truck24-73",
+  "de": "Motor noch kalt: %1 °C",
+  "en": "Engine still cold: %1 °C"
+ },
+ {
+  "id": "c-truck24-74",
+  "de": "Laufzeit mit Abgaslampe",
+  "en": "Engine time with the emission lamp on"
+ },
+ {
+  "id": "c-truck24-75",
+  "de": "Motor zu heiß: %1 °C",
+  "en": "Engine too hot: %1 °C"
+ },
+ {
+  "id": "c-truck24-76",
+  "de": "Fehlerspeicher: %1",
+  "en": "Fault memory: %1"
+ },
+ {
+  "id": "c-truck24-77",
+  "de": "Wenige Kilometer für die Betriebsstunden",
+  "en": "Few kilometres for the engine hours"
+ },
+ {
+  "id": "c-truck24-78",
+  "de": "Füllstand im Ausgleichsbehälter laut Sensor. Manche Lkw messen ihn nur als voll oder leer.",
+  "en": "Fill level in the expansion tank according to the sensor. Some trucks only measure it as full or empty."
+ },
+ {
+  "id": "c-truck24-79",
+  "de": "Füllstand des AdBlue-Tanks. Ohne AdBlue verliert der Motor nach einer Warnphase Leistung, das schreibt die Abgasnorm vor.",
+  "en": "Fill level of the DEF tank. Without DEF the engine loses power after a warning phase; the emission rules demand it."
+ },
+ {
+  "id": "c-truck24-80",
+  "de": "Nur frisches AdBlue nach ISO 22241 tanken und die Anlage in der Werkstatt prüfen lassen.",
+  "en": "Fill only fresh DEF to ISO 22241 and have the system checked at the workshop."
+ },
+ {
+  "id": "c-truck24-81",
+  "de": "Verbrauch passt nicht zum Kilometerstand: %1 l/100 km",
+  "en": "Fuel does not fit the mileage: %1 l/100 km"
+ },
+ {
+  "id": "c-truck24-82",
+  "de": "Bald in einer Lkw-Werkstatt prüfen lassen; der Fehler bleibt im Speicher, bis die Ursache behoben ist.",
+  "en": "Have it checked at a truck workshop soon; the fault stays in memory until the cause is fixed."
+ },
+ {
+  "id": "c-truck24-83",
+  "de": "Bald prüfen lassen: Lichtmaschine, Riemen, Kabel und Masse. Bis dahin kann der Lkw liegen bleiben.",
+  "en": "Have it checked soon: alternator, belt, cables and ground. Until then the truck may break down."
+ },
+ {
+  "id": "c-truck24-84",
+  "de": "Lichtmaschine und Batterien bei Gelegenheit testen lassen.",
+  "en": "Have the alternator and the batteries tested when convenient."
+ },
+ {
+  "id": "c-truck24-85",
+  "de": "Batterien laden und testen lassen; so tief entladen leiden sie dauerhaft.",
+  "en": "Have the batteries charged and tested; discharged this deep they suffer lasting damage."
+ },
+ {
+  "id": "c-truck24-86",
+  "de": "Batterien voll laden und testen lassen, besonders vor dem Winter.",
+  "en": "Have the batteries fully charged and tested, especially before winter."
+ },
+ {
+  "id": "c-truck24-87",
+  "de": "Ladeluftkühler außen reinigen und auf Undichtigkeit prüfen lassen.",
+  "en": "Have the charge air cooler cleaned outside and checked for leaks."
+ },
+ {
+  "id": "c-truck24-88",
+  "de": "Ladeluftschläuche auf Risse und den Turbolader prüfen lassen.",
+  "en": "Have the charge air hoses checked for cracks and the turbocharger inspected."
+ },
+ {
+  "id": "c-truck24-89",
+  "de": "Ölkühler und Ölstand bei der nächsten Gelegenheit prüfen lassen.",
+  "en": "Have the oil cooler and the oil level checked at the next opportunity."
+ },
+ {
+  "id": "c-truck24-90",
+  "de": "Stecker und Kabel des Sensors prüfen lassen, dann den Sensor.",
+  "en": "Have the plug and the wiring of the sensor checked, then the sensor."
+ },
+ {
+  "id": "c-truck24-91",
+  "de": "Kühler auf Schmutz, Lüfter und Thermostat prüfen lassen.",
+  "en": "Have the radiator checked for dirt, and the fan and the thermostat."
+ },
+ {
+  "id": "c-truck24-92",
+  "de": "Den Laderegler prüfen lassen; zu hohe Spannung kocht die Batterien aus.",
+  "en": "Have the voltage regulator checked; too high a voltage boils the batteries dry."
+ },
+ {
+  "id": "c-truck24-93",
+  "de": "Höchster Wert hinter dem Ladeluftkühler. Heiße Ladeluft kostet Leistung und erhöht die Abgastemperatur.",
+  "en": "Highest value after the charge air cooler. Hot intake air costs power and raises the exhaust temperature."
+ },
+ {
+  "id": "c-truck24-94",
+  "de": "Höchster Wert während der Messung. Warmes Motoröl liegt meist zwischen 85 und 110 °C.",
+  "en": "Highest value during the measurement. Warm engine oil usually sits between 85 and 110 °C."
+ },
+ {
+  "id": "c-truck24-95",
+  "de": "Wie voll der Dieselpartikelfilter mit Ruß ist; 100 % ist die Schwelle zum Freibrennen.",
+  "en": "How full of soot the diesel particulate filter is; 100 % is the threshold for burning it off."
+ },
+ {
+  "id": "c-truck24-96",
+  "de": "Wie lange die letzte aktive Regeneration des Partikelfilters her ist.",
+  "en": "How long ago the last active regeneration of the particulate filter was."
+ },
+ {
+  "id": "c-truck24-97",
+  "de": "Wie lange der Motor insgesamt im Leerlauf lief.",
+  "en": "How long the engine ran at idle in total."
+ },
+ {
+  "id": "c-truck24-98",
+  "de": "Kennung der Steuergeräte",
+  "en": "Identification of the control units"
+ },
+ {
+  "id": "c-truck24-99",
+  "de": "Leerlaufstunden",
+  "en": "Idle hours"
+ },
+ {
+  "id": "c-truck24-100",
+  "de": "Leerlaufanteil %1 %",
+  "en": "Idle share %1 %"
+ },
+ {
+  "id": "c-truck24-101",
+  "de": "Ladeluft %1 °C",
+  "en": "Intake air %1 °C"
+ },
+ {
+  "id": "c-truck24-102",
+  "de": "Ladeluft heiß: %1 °C",
+  "en": "Intake air hot: %1 °C"
+ },
+ {
+  "id": "c-truck24-103",
+  "de": "Sensor der Ladelufttemperatur meldet Fehler",
+  "en": "Intake manifold temperature sensor reports a fault"
+ },
+ {
+  "id": "c-truck24-104",
+  "de": "J1939: Mithören gestört: %1",
+  "en": "J1939: listening failed: %1"
+ },
+ {
+  "id": "c-truck24-105",
+  "de": "Gefahrene Kilometer seit dem letzten Löschen des Fehlerspeichers.",
+  "en": "Kilometres driven since the fault memory was last cleared."
+ },
+ {
+  "id": "c-truck24-106",
+  "de": "Gefahrene Kilometer, während die Abgaslampe (MIL) leuchtete.",
+  "en": "Kilometres driven while the emission lamp (MIL) was lit."
+ },
+ {
+  "id": "c-truck24-107",
+  "de": "Kilometer passen zu den Betriebsstunden",
+  "en": "Kilometres fit the engine hours"
+ },
+ {
+  "id": "c-truck24-108",
+  "de": "Kilometer, Betriebsstunden, Leerlauf und Kraftstoff",
+  "en": "Kilometres, engine hours, idling and fuel"
+ },
+ {
+  "id": "c-truck24-109",
+  "de": "Niedrigster Wert im Leerlauf. Viele Hersteller verlangen warm mindestens etwa 70 kPa; kaltes Öl zeigt mehr Druck als warmes, der Wert ist also eher zu gut.",
+  "en": "Lowest value at idle. Many makers ask for at least about 70 kPa warm; cold oil shows more pressure than warm oil, so the value is on the optimistic side."
+ },
+ {
+  "id": "c-truck24-110",
+  "de": "Niedrigster Wert im warmen Leerlauf. Viele Hersteller verlangen hier mindestens etwa 70 kPa.",
+  "en": "Lowest value at warm idle. Many makers ask for at least about 70 kPa here."
+ },
+ {
+  "id": "c-truck24-111",
+  "de": "Herstellereigene Zähler (Bremsbeläge, Kupplung, Getriebe, Retarder) und Fehlerspeicher außerhalb von J1939 liest diese Prüfung nicht.",
+  "en": "Maker specific counters (brake pads, clutch, gearbox, retarder) and fault memories outside J1939 are not read by this check."
+ },
+ {
+  "id": "c-truck24-112",
+  "de": "Herstellerspeicher",
+  "en": "Maker specific memory"
+ },
+ {
+  "id": "c-truck24-113",
+  "de": "Viele Wartungen von Lkw und Bussen richten sich nach Stunden statt nach Kilometern, etwa bei viel Leerlauf oder Nebenantrieb. Mit dem Wartungsheft vergleichen.",
+  "en": "Many services of trucks and buses go by hours instead of kilometres, for instance with a lot of idling or power take-off. Compare with the service records."
+ },
+ {
+  "id": "c-truck24-114",
+  "de": "Mechanischer Zustand",
+  "en": "Mechanical condition"
+ },
+ {
+  "id": "c-truck24-115",
+  "de": "Beim nächsten Werkstattbesuch ansprechen; keine Warnlampe verlangt sofortiges Handeln.",
+  "en": "Mention it at the next workshop visit; no warning lamp calls for immediate action."
+ },
+ {
+  "id": "c-truck24-116",
+  "de": "Minuten Motorlauf seit dem letzten Löschen des Fehlerspeichers.",
+  "en": "Minutes of engine running since the fault memory was last cleared."
+ },
+ {
+  "id": "c-truck24-117",
+  "de": "Minuten Motorlauf, während die Abgaslampe leuchtete.",
+  "en": "Minutes of engine running while the emission lamp was lit."
+ },
+ {
+  "id": "c-truck24-118",
+  "de": "Keine aktiven Fehler",
+  "en": "No active faults"
+ },
+ {
+  "id": "c-truck24-119",
+  "de": "Kein Steuergerät hat seine früheren Fehler (DM2) genannt.",
+  "en": "No control unit gave its previous faults (DM2)."
+ },
+ {
+  "id": "c-truck24-120",
+  "de": "Kein Steuergerät hat frühere Fehler gespeichert. Das ist gut, kann aber auch ein frisch gelöschter Speicher sein.",
+  "en": "No control unit has previous faults stored. That is good, but it can also be a freshly cleared memory."
+ },
+ {
+  "id": "c-truck24-121",
+  "de": "Kein Steuergerät nennt eine Fahrgestellnummer. Bei vielen älteren Lkw ist das normal; dann bleibt nur der Vergleich von Hand mit dem Rahmen.",
+  "en": "No control unit reports a VIN. That is normal on many older trucks; then only a comparison by hand with the frame is left."
+ },
+ {
+  "id": "c-truck24-122",
+  "de": "Kein Steuergerät meldet gerade einen aktiven Fehler.",
+  "en": "No control unit reports an active fault right now."
+ },
+ {
+  "id": "c-truck24-123",
+  "de": "Rahmen, Achsen, Bremsen, Reifen, Aufbau und Unfallschäden sieht kein Steuergerät.",
+  "en": "No control unit sees the frame, axles, brakes, tyres, body or accident damage."
+ },
+ {
+  "id": "c-truck24-124",
+  "de": "Kein Steuergerät sendet eine Gesamtstrecke (SPN 245 oder 917). Den Tachostand mit Wartungsheft, Prüfberichten und Rechnungen vergleichen.",
+  "en": "No control unit sends a total distance (SPN 245 or 917). Compare the odometer with the service records, inspection reports and invoices."
+ },
+ {
+  "id": "c-truck24-125",
+  "de": "Kein Steuergerät schaltet die rote Stopplampe, die gelbe Warnlampe, die Abgaslampe oder die Schutzlampe ein.",
+  "en": "No control unit switches on the red stop lamp, the amber warning lamp, the emission lamp or the protect lamp."
+ },
+ {
+  "id": "c-truck24-126",
+  "de": "Keine früheren Fehler",
+  "en": "No previous faults"
+ },
+ {
+  "id": "c-truck24-127",
+  "de": "Keines der %1 Steuergeräte meldet gerade einen aktiven Fehler.",
+  "en": "None of the %1 control units reports an active fault right now."
+ },
+ {
+  "id": "c-truck24-128",
+  "de": "Unter Last nicht gemessen. Im Stand ohne Last baut der Turbolader kaum Druck auf, der Wert sagt dann nichts.",
+  "en": "Not measured under load. Standing without load the turbocharger builds hardly any pressure, so the value says nothing."
+ },
+ {
+  "id": "c-truck24-129",
+  "de": "Öl heiß: %1 °C",
+  "en": "Oil hot: %1 °C"
+ },
+ {
+  "id": "c-truck24-130",
+  "de": "Öldruck im Leerlauf",
+  "en": "Oil pressure at idle"
+ },
+ {
+  "id": "c-truck24-131",
+  "de": "Öldruck im Leerlauf %1 kPa",
+  "en": "Oil pressure at idle %1 kPa"
+ },
+ {
+  "id": "c-truck24-132",
+  "de": "Öldruck im Leerlauf knapp: %1 kPa",
+  "en": "Oil pressure at idle marginal: %1 kPa"
+ },
+ {
+  "id": "c-truck24-133",
+  "de": "Öldruck im Leerlauf zu niedrig: %1 kPa",
+  "en": "Oil pressure at idle too low: %1 kPa"
+ },
+ {
+  "id": "c-truck24-134",
+  "de": "Öltemperatur %1 °C",
+  "en": "Oil temperature %1 °C"
+ },
+ {
+  "id": "c-truck24-135",
+  "de": "Öl zu heiß: %1 °C",
+  "en": "Oil too hot: %1 °C"
+ },
+ {
+  "id": "c-truck24-136",
+  "de": "Im Schnitt %1 km je Betriebsstunde, Stopps und Leerlauf eingerechnet. Fernverkehr liegt meist bei 45 bis 60, Verteilerverkehr bei 25 bis 40, Stadtbusse bei 15 bis 20.",
+  "en": "On average %1 km per engine hour, stops and idling included. Long haul is mostly 45 to 60, distribution 25 to 40, city buses 15 to 20."
+ },
+ {
+  "id": "c-truck24-137",
+  "de": "Im Schnitt %1 km je Betriebsstunde. Das schafft kein Lkw, Stopps und Leerlauf eingerechnet; üblich sind 20 bis 60 km/h. Vermutlich wurde das Motorsteuergerät oder der Motor getauscht.",
+  "en": "On average %1 km per engine hour. No truck manages that with stops and idling counted; 20 to 60 km/h is usual. Probably the engine control unit or the engine was replaced."
+ },
+ {
+  "id": "c-truck24-138",
+  "de": "Im Schnitt nur %1 km je Betriebsstunde. Das passt zu Arbeit im Stand, etwa mit Kran, Pumpe oder Müllaufbau, aber auch zu einem zurückgestellten Kilometerstand.",
+  "en": "On average only %1 km per engine hour. That fits work while standing, such as with a crane, a pump or a refuse body, but also a turned back odometer."
+ },
+ {
+  "id": "c-truck24-139",
+  "de": "Nur %1 speichert eine Fahrgestellnummer; ein Vergleich zwischen Steuergeräten ist nicht möglich.",
+  "en": "Only %1 stores a VIN; a comparison between control units is not possible."
+ },
+ {
+  "id": "c-truck24-140",
+  "de": "Nur eine Quelle: %1. Ein Vergleich zwischen Steuergeräten ist nicht möglich; der Wert muss zum Tacho und zu den Belegen passen.",
+  "en": "Only one source: %1. A comparison between control units is not possible; the value must match the dashboard and the records."
+ },
+ {
+  "id": "c-truck24-141",
+  "de": "Aschebeladung Partikelfilter",
+  "en": "Particulate filter ash load"
+ },
+ {
+  "id": "c-truck24-142",
+  "de": "Partikelfilter in Ordnung",
+  "en": "Particulate filter fine"
+ },
+ {
+  "id": "c-truck24-143",
+  "de": "Partikelfilter voll",
+  "en": "Particulate filter full"
+ },
+ {
+  "id": "c-truck24-144",
+  "de": "Partikelfilter voller Asche: %1 %",
+  "en": "Particulate filter full of ash: %1 %"
+ },
+ {
+  "id": "c-truck24-145",
+  "de": "Partikelfilter brennt gerade frei",
+  "en": "Particulate filter is regenerating"
+ },
+ {
+  "id": "c-truck24-146",
+  "de": "Partikelfilter muss freibrennen",
+  "en": "Particulate filter needs a regeneration"
+ },
+ {
+  "id": "c-truck24-147",
+  "de": "Rußbeladung Partikelfilter",
+  "en": "Particulate filter soot load"
+ },
+ {
+  "id": "c-truck24-148",
+  "de": "Zustand des Partikelfilters",
+  "en": "Particulate filter state"
+ },
+ {
+  "id": "c-truck24-149",
+  "de": "Filterreinigung bei der Werkstatt einplanen.",
+  "en": "Plan a filter cleaning at the workshop."
+ },
+ {
+  "id": "c-truck24-150",
+  "de": "Punkte, die bald Aufmerksamkeit brauchen: %1. Bitte zuerst ansehen.",
+  "en": "Points that need attention soon: %1. Please look at them first."
+ },
+ {
+  "id": "c-truck24-151",
+  "de": "Punkte, die bald angeschaut werden sollten: %1. Nichts davon ist akut gefährlich.",
+  "en": "Points that should be looked at soon: %1. None of them is an immediate danger."
+ },
+ {
+  "id": "c-truck24-152",
+  "de": "Punkte, die gegen einen Kauf ohne weitere Prüfung sprechen: %1. Die Fragen zuerst mit dem Verkäufer klären und das Fahrzeug in einer Lkw-Werkstatt ansehen lassen.",
+  "en": "Points that speak against buying without a closer look: %1. Clear up the questions with the seller first and have the vehicle looked at by a truck workshop."
+ },
+ {
+  "id": "c-truck24-153",
+  "de": "Frühere AdBlue-Fehler",
+  "en": "Previous DEF faults"
+ },
+ {
+  "id": "c-truck24-154",
+  "de": "Frühere Fehler",
+  "en": "Previous faults"
+ },
+ {
+  "id": "c-truck24-155",
+  "de": "Frühere Fehler: %1",
+  "en": "Previous faults: %1"
+ },
+ {
+  "id": "c-truck24-156",
+  "de": "Schutzlampe an",
+  "en": "Protect lamp on"
+ },
+ {
+  "id": "c-truck24-157",
+  "de": "Rote Stopplampe an",
+  "en": "Red stop lamp on"
+ },
+ {
+  "id": "c-truck24-158",
+  "de": "Seit dem letzten Löschen ist der Lkw %1 km mit leuchtender Abgaslampe gefahren. J1939 führt keinen Verlauf der roten und gelben Lampe; nur diese Strecke und die Zeit mit Abgaslampe bleiben gespeichert.",
+  "en": "Since the last clearing the truck has been driven %1 km with the emission lamp on. J1939 keeps no history of the red and amber lamps; only this distance and the time with the emission lamp are stored."
+ },
+ {
+  "id": "c-truck24-159",
+  "de": "Seit dem letzten Löschen: %1. Wer löscht, schaltet auch die Warnlampen aus; Fehler, die erst nach einigen Fahrten wiederkommen, sind bei der Besichtigung dann nicht zu sehen. Es gibt harmlose Gründe, etwa eine Reparatur oder eine Inspektion.",
+  "en": "Since the last clearing: %1. Clearing also switches off the warning lamps; faults that only come back after a few drives are then not visible at the viewing. There are harmless reasons too, such as a repair or a service."
+ },
+ {
+  "id": "c-truck24-160",
+  "de": "Anhalten, sobald es sicher geht, und den Fehler klären, bevor der Lkw weiterfährt.",
+  "en": "Stop as soon as it is safe and clear up the fault before the truck drives on."
+ },
+ {
+  "id": "c-truck24-161",
+  "de": "Motor abstellen und Ölstand prüfen. Bleibt der Druck niedrig, nicht weiterfahren: Lager und Turbolader leiden zuerst.",
+  "en": "Switch off the engine and check the oil level. If the pressure stays low, do not drive on: bearings and turbocharger suffer first."
+ },
+ {
+  "id": "c-truck24-162",
+  "de": "Speicher des Tachographen",
+  "en": "Tachograph memory"
+ },
+ {
+  "id": "c-truck24-163",
+  "de": "Last wegnehmen und Ölkühler und Ölstand prüfen lassen; so heiß verliert das Öl seine Schmierfähigkeit.",
+  "en": "Take the load off and have the oil cooler and the oil level checked; this hot the oil loses its lubricating power."
+ },
+ {
+  "id": "c-truck24-164",
+  "de": "Last wegnehmen, im Leerlauf abkühlen lassen und Kühlmittelstand, Lüfterkupplung und Kühler prüfen lassen.",
+  "en": "Take the load off, let it cool down at idle and have the coolant level, the fan clutch and the radiator checked."
+ },
+ {
+  "id": "c-truck24-165",
+  "de": "Die aktiven Fehler (DM1) ließen sich nicht lesen.",
+  "en": "The active faults (DM1) could not be read."
+ },
+ {
+  "id": "c-truck24-166",
+  "de": "Die gelbe Warnlampe oder die Abgaslampe leuchtet bei: %1. Der Lkw darf weiterfahren, der Fehler gehört aber bald in die Werkstatt.",
+  "en": "The amber warning lamp or the emission lamp is lit for: %1. The truck may drive on, but the fault belongs in the workshop soon."
+ },
+ {
+  "id": "c-truck24-167",
+  "de": "Das Steuergerät meldet den Messwert als fehlerhaft (SPN %1).",
+  "en": "The control unit reports the reading as faulty (SPN %1)."
+ },
+ {
+  "id": "c-truck24-168",
+  "de": "Die Steuergeräte und die Papiere nennen dieselbe Nummer: %1.",
+  "en": "The control units and the papers carry the same number: %1."
+ },
+ {
+  "id": "c-truck24-169",
+  "de": "Die Steuergeräte zählen verschieden: %1. Der Unterschied beträgt %2 km. Ein wenig ist normal, so viel nicht. Das Kombiinstrument lässt sich tauschen oder umprogrammieren, Motorsteuergerät und Tachograph zählen getrennt davon; meist stimmt der höhere Wert.",
+  "en": "The control units count differently: %1. The difference is %2 km. A little is normal, this much is not. The instrument cluster can be replaced or reprogrammed, the engine control unit and the tachograph count separately from it; usually the higher value is the true one."
+ },
+ {
+  "id": "c-truck24-170",
+  "de": "Die Steuergeräte zeigen nichts, was gegen das Fahrzeug spricht. Probefahrt, Wartungsnachweise und ein Blick unter das Fahrzeug ersetzt das nicht.",
+  "en": "The control units show nothing that speaks against the vehicle. That does not replace a test drive, the service records and a look underneath."
+ },
+ {
+  "id": "c-truck24-171",
+  "de": "Das Kühlmittel hat %1 °C. Öldruck und Ladedruck sind bei kaltem Motor höher als warm; für ein sicheres Urteil den Check mit warmem Motor wiederholen.",
+  "en": "The coolant is at %1 °C. Oil pressure and boost are higher with a cold engine than warm; for a sound verdict repeat the check with a warm engine."
+ },
+ {
+  "id": "c-truck24-172",
+  "de": "Das Kühlmittel erreicht %1 °C, mehr als die üblichen 80 bis 95 °C. Unter schwerer Last am Berg kann das vorkommen, im Stand nicht.",
+  "en": "The coolant reaches %1 °C, more than the usual 80 to 95 °C. That can happen under heavy load uphill, not standing still."
+ },
+ {
+  "id": "c-truck24-173",
+  "de": "Das Kühlmittel erreicht %1 °C. Warm liegt ein Lkw-Motor meist zwischen 80 und 95 °C; über 105 °C drohen Schäden an Zylinderkopf und Dichtungen.",
+  "en": "The coolant reaches %1 °C. A warm truck engine usually sits between 80 and 95 °C; above 105 °C the cylinder head and the gaskets are at risk."
+ },
+ {
+  "id": "c-truck24-174",
+  "de": "Der Zähler steckt im Motorsteuergerät. Wird es getauscht, beginnt er neu oder bekommt einen Wert eingetragen; mit dem Wartungsheft vergleichen.",
+  "en": "The counter sits in the engine control unit. If it is replaced, it starts again or gets a value written in; compare with the service records."
+ },
+ {
+  "id": "c-truck24-175",
+  "de": "Das Motorsteuergerät kann die Temperatur im Ansaugkrümmer nicht messen und rechnet mit einem Ersatzwert. Der Motor läuft, aber oft mit weniger Leistung und mehr Verbrauch.",
+  "en": "The engine control unit cannot measure the temperature in the intake manifold and works with a substitute value. The engine runs, but often with less power and more fuel."
+ },
+ {
+  "id": "c-truck24-176",
+  "de": "Der Motor hat auf die Anfrage nach den Betriebsstunden (SPN 247) nicht geantwortet.",
+  "en": "The engine did not answer the request for its hours (SPN 247)."
+ },
+ {
+  "id": "c-truck24-177",
+  "de": "Der Motor lief während der Messung nicht im Leerlauf; der Öldruck wird nur bei laufendem Motor im Leerlauf beurteilt.",
+  "en": "The engine did not idle during the measurement; the oil pressure is only judged with the engine idling."
+ },
+ {
+  "id": "c-truck24-178",
+  "de": "Der Motor lief während der Messung nicht. Für Öldruck und Ladespannung den Motor starten und den Check wiederholen.",
+  "en": "The engine did not run during the measurement. For oil pressure and charging voltage start the engine and repeat the check."
+ },
+ {
+  "id": "c-truck24-179",
+  "de": "%1 von %2 Betriebsstunden lief der Motor im Leerlauf. Leerlauf verschleißt den Motor ohne Kilometer, lässt den Partikelfilter schneller verrußen und verdünnt das Öl mit Diesel. Bis etwa ein Viertel ist üblich, Standheizung über den Motor treibt den Wert hoch.",
+  "en": "The engine idled for %1 of %2 engine hours. Idling wears the engine without kilometres, fills the particulate filter with soot faster and thins the oil with diesel. Up to about a quarter is usual; heating the cab with the engine pushes the share up."
+ },
+ {
+  "id": "c-truck24-180",
+  "de": "Der Motor lief die ganze Zeit; die Ruhespannung lässt sich nur bei stehendem Motor messen.",
+  "en": "The engine ran the whole time; the resting voltage can only be measured with the engine off."
+ },
+ {
+  "id": "c-truck24-181",
+  "de": "Der Motor meldet keine Leerlaufstunden (SPN 235).",
+  "en": "The engine reports no idle hours (SPN 235)."
+ },
+ {
+  "id": "c-truck24-182",
+  "de": "Der Motor lief während der Messung nicht.",
+  "en": "The engine was not running during the measurement."
+ },
+ {
+  "id": "c-truck24-183",
+  "de": "Der Kilometerverlauf im Massenspeicher des Tachographen ist nur mit Unternehmens- oder Werkstattkarte lesbar, nicht über J1939.",
+  "en": "The mileage history in the tachograph's mass memory can only be read with a company or workshop card, not over J1939."
+ },
+ {
+  "id": "c-truck24-184",
+  "de": "Die Papiere nennen %1, die Steuergeräte: %2. Entweder stammt ein Steuergerät aus einem anderen Fahrzeug, oder das Fahrzeug ist nicht das aus den Papieren. Das vor dem Kauf klären.",
+  "en": "The papers say %1, the control units: %2. Either a control unit comes from another vehicle, or the vehicle is not the one in the papers. Clear this up before buying."
+ },
+ {
+  "id": "c-truck24-185",
+  "de": "Die Schutzlampe leuchtet bei: %1. Sie meldet ein Problem außerhalb des Motors, etwa an Getriebe oder Aufbau.",
+  "en": "The protect lamp is lit for: %1. It reports a problem outside the engine, for instance at the gearbox or the body."
+ },
+ {
+  "id": "c-truck24-186",
+  "de": "Die rote Stopplampe leuchtet bei: %1. Sie meldet einen Fehler, bei dem Weiterfahren den Motor oder die Sicherheit gefährdet.",
+  "en": "The red stop lamp is lit for: %1. It reports a fault where driving on puts the engine or safety at risk."
+ },
+ {
+  "id": "c-truck24-187",
+  "de": "Die rote Stopplampe leuchtet bei: %1. Mit so einem Fehler sollte der Lkw nicht weiterfahren.",
+  "en": "The red stop lamp is lit for: %1. With such a fault the truck should not drive on."
+ },
+ {
+  "id": "c-truck24-188",
+  "de": "Der Lkw beantwortet DM21 nicht und meldet so nicht, wann der Fehlerspeicher zuletzt gelöscht wurde.",
+  "en": "The truck does not answer DM21, so it does not tell when the fault memory was last cleared."
+ },
+ {
+  "id": "c-truck24-189",
+  "de": "Der Lkw sendet diesen Wert nicht (SPN %1).",
+  "en": "The truck does not send this value (SPN %1)."
+ },
+ {
+  "id": "c-truck24-190",
+  "de": "Der Lkw sendet weder Rußbeladung noch Regenerationszustand (SPN 3719, 3701, 3700). Ältere Lkw ohne Partikelfilter haben beides nicht.",
+  "en": "The truck sends neither the soot load nor the regeneration state (SPN 3719, 3701, 3700). Older trucks without a particulate filter have neither."
+ },
+ {
+  "id": "c-truck24-191",
+  "de": "Zeit seit dem Löschen",
+  "en": "Time since faults were cleared"
+ },
+ {
+  "id": "c-truck24-192",
+  "de": "Zeit seit dem letzten Freibrennen",
+  "en": "Time since the last regeneration"
+ },
+ {
+  "id": "c-truck24-193",
+  "de": "Bald in die Werkstatt: ein so voller Filter braucht oft ein Freibrennen im Stand mit Diagnosegerät, sonst drosselt der Motor.",
+  "en": "To the workshop soon: a filter this full often needs a parked regeneration with a diagnostic tool, otherwise the engine cuts its power."
+ },
+ {
+  "id": "c-truck24-194",
+  "de": "Zu wenige Betriebsstunden für die Kilometer",
+  "en": "Too few engine hours for the kilometres"
+ },
+ {
+  "id": "c-truck24-195",
+  "de": "Sofort AdBlue nachfüllen. Ist der Tank leer, drosselt der Motor seine Leistung und startet nach dem Abstellen nur noch eingeschränkt.",
+  "en": "Top up DEF at once. Once the tank is empty, the engine cuts its power and after switching off only restarts with limits."
+ },
+ {
+  "id": "c-truck24-196",
+  "de": "Bald AdBlue nachfüllen.",
+  "en": "Top up DEF soon."
+ },
+ {
+  "id": "c-truck24-197",
+  "de": "Bei kaltem Motor nachfüllen und beobachten; sinkt der Stand wieder, auf Undichtigkeit prüfen lassen.",
+  "en": "Top up with a cold engine and keep an eye on it; if the level drops again, have it checked for leaks."
+ },
+ {
+  "id": "c-truck24-198",
+  "de": "Kraftstoff im Leerlauf gesamt",
+  "en": "Total idle fuel used"
+ },
+ {
+  "id": "c-truck24-199",
+  "de": "Leerlaufstunden gesamt",
+  "en": "Total idle hours"
+ },
+ {
+  "id": "c-truck24-200",
+  "de": "Mittlerer Überdruck im Ansaugkrümmer bei mindestens 40 % Last. Ein undichter Ladeluftweg oder ein müder Turbolader zeigen sich hier zuerst.",
+  "en": "Typical pressure above ambient in the intake manifold at 40 % load or more. A leaking charge air path or a tired turbocharger show here first."
+ },
+ {
+  "id": "c-truck24-201",
+  "de": "Fahrgestellnummer %1",
+  "en": "VIN %1"
+ },
+ {
+  "id": "c-truck24-202",
+  "de": "Fahrgestellnummer jedes Steuergeräts",
+  "en": "VIN of every control unit"
+ },
+ {
+  "id": "c-truck24-203",
+  "de": "Warnlampen und Fehlerspeicher",
+  "en": "Warning lamps and fault memory"
+ },
+ {
+  "id": "c-truck24-204",
+  "de": "Wurde der Motor oder das Motorsteuergerät getauscht, und bei welchem Kilometerstand?",
+  "en": "Was the engine or the engine control unit replaced, and at what mileage?"
+ },
+ {
+  "id": "c-truck24-205",
+  "de": "Wurde der Motor oder das Motorsteuergerät getauscht, oder der Kilometerstand verändert?",
+  "en": "Was the engine or the engine control unit replaced, or the mileage altered?"
+ },
+ {
+  "id": "c-truck24-206",
+  "de": "Was ist die Ursache der aktiven Fehler, und was würde die Reparatur kosten?",
+  "en": "What is the cause of the active faults, and what would the repair cost?"
+ },
+ {
+  "id": "c-truck24-207",
+  "de": "Was ist die Ursache der roten Stopplampe, und wer zahlt die Reparatur?",
+  "en": "What is the cause of the red stop lamp, and who pays for the repair?"
+ },
+ {
+  "id": "c-truck24-208",
+  "de": "Wofür wurde das Fahrzeug eingesetzt, und lief der Motor viel im Stand?",
+  "en": "What was the vehicle used for, and did the engine run a lot while standing?"
+ },
+ {
+  "id": "c-truck24-209",
+  "de": "Welches Steuergerät wurde getauscht oder neu programmiert, und gibt es dafür eine Rechnung?",
+  "en": "Which control unit was replaced or reprogrammed, and is there an invoice for it?"
+ },
+ {
+  "id": "c-truck24-210",
+  "de": "Welches Steuergerät wurde getauscht, wann und warum? Gibt es dafür Rechnung und, beim Tachographen, eine Einbauprüfung?",
+  "en": "Which control unit was replaced, when and why? Is there an invoice and, for the tachograph, an installation inspection?"
+ },
+ {
+  "id": "c-truck24-211",
+  "de": "Welche Fehler kamen immer wieder, und was wurde dagegen gemacht?",
+  "en": "Which faults kept coming back, and what was done about them?"
+ },
+ {
+  "id": "c-truck24-212",
+  "de": "Warum lief der Motor so viel im Leerlauf, und wurde das Öl nach Stunden gewechselt?",
+  "en": "Why did the engine idle so much, and was the oil changed by hours?"
+ },
+ {
+  "id": "c-truck24-213",
+  "de": "Warum nennen manche Steuergeräte keine Kennung, wurden sie nachgerüstet oder getauscht?",
+  "en": "Why do some control units give no identification, were they added or replaced?"
+ },
+ {
+  "id": "c-truck24-214",
+  "de": "Warum melden die Steuergeräte eine andere Fahrgestellnummer als die Papiere?",
+  "en": "Why do the control units report a different VIN than the papers?"
+ },
+ {
+  "id": "c-truck24-215",
+  "de": "Warum zeigen die Steuergeräte verschiedene Kilometerstände? Wurde das Kombiinstrument, das Motorsteuergerät oder der Tachograph getauscht, und gibt es dafür einen Beleg?",
+  "en": "Why do the control units show different mileages? Was the instrument cluster, the engine control unit or the tachograph replaced, and is there proof of it?"
+ },
+ {
+  "id": "c-truck24-216",
+  "de": "Warum wurde mit leuchtender Abgaslampe weitergefahren?",
+  "en": "Why was the truck driven on with the emission lamp on?"
+ },
+ {
+  "id": "c-truck24-217",
+  "de": "Im üblichen Bereich eines warmen Lkw-Motors (80 bis 95 °C).",
+  "en": "Within the usual range of a warm truck engine (80 to 95 °C)."
+ },
+ {
+  "id": "c-truck24-218",
+  "de": "Ohne Gesamtverbrauch (SPN 250) und Kilometerstand lässt sich der Durchschnitt nicht rechnen.",
+  "en": "Without the total fuel used (SPN 250) and the mileage the average cannot be worked out."
+ },
+ {
+  "id": "c-truck24-219",
+  "de": "Freibrennen nicht nötig",
+  "en": "no regeneration needed"
+ },
+ {
+  "id": "c-truck24-220",
+  "de": "Freibrennen nötig, höchste Stufe",
+  "en": "regeneration needed, highest level"
+ },
+ {
+  "id": "c-truck24-221",
+  "de": "Freibrennen nötig, niedrige Stufe",
+  "en": "regeneration needed, low level"
+ },
+ {
+  "id": "c-truck24-222",
+  "de": "Freibrennen nötig, mittlere Stufe",
+  "en": "regeneration needed, moderate level"
+ },
+ {
+  "id": "c-truck24-223",
+  "de": "Freibrennen läuft",
+  "en": "regeneration running"
+ },
+ {
+  "id": "c-truck24-224",
+  "de": "Rußbeladung %1 %",
+  "en": "soot load %1 %"
+ }
+]
