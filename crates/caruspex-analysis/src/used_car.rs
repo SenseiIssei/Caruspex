@@ -34,6 +34,8 @@ pub enum Arg {
     Name(Text),
     /// Several messages, joined with a comma.
     List(Vec<Message>),
+    /// Several longer messages, one per line (the page keeps line breaks).
+    Lines(Vec<Message>),
 }
 
 /// A text with the placeholders %1 to %9, rendered in the active language.
@@ -83,6 +85,13 @@ impl Message {
         self
     }
 
+    /// Like `list`, but one item per line, for entries too long to read
+    /// run together.
+    pub fn lines(mut self, items: Vec<Message>) -> Self {
+        self.args.push(Arg::Lines(items));
+        self
+    }
+
     pub fn is_empty(&self) -> bool {
         self.en.is_empty() && self.args.is_empty()
     }
@@ -109,6 +118,10 @@ fn render_arg(arg: &Arg) -> String {
             .map(Message::text)
             .collect::<Vec<_>>()
             .join(", "),
+        Arg::Lines(items) => items.iter().map(Message::text).collect::<Vec<_>>().join(
+            ";
+",
+        ),
     }
 }
 

@@ -398,7 +398,7 @@ fn check_units(c: &mut Ctx, input: &TruckUsedInput) {
             "%1. Mit Rechnungen über getauschte Teile vergleichen: Seriennummer und Software ändern sich, wenn ein Steuergerät ersetzt oder neu programmiert wurde. Eine Werkstatt kann beides auch so einstellen, dass es nach Originalzustand aussieht.",
             "%1. Compare with invoices for replaced parts: serial number and software change when a control unit was replaced or reprogrammed. A workshop can also set both to look like the original.",
         )
-        .list(lines),
+        .lines(lines),
         if silent > 0 {
             text(
                 "Warum nennen manche Steuergeräte keine Kennung, wurden sie nachgerüstet oder getauscht?",
