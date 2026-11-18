@@ -12,8 +12,6 @@ use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
 
 use caruspex_advice::connect_help::{ConnectFacts, LinkKind, connect_help};
-use caruspex_analysis::common::{FuelType, Level};
-use caruspex_analysis::drive_cycle_guide::drive_cycle_guide;
 use caruspex_analysis::health_check::{self, HealthInput};
 use caruspex_analysis::inputs as ai;
 use caruspex_analysis::readiness::readiness_from_status;
@@ -21,9 +19,7 @@ use caruspex_analysis::used_car::{
     BatteryFacts, Drive, FaultKind, HealthSummary, MileageReading, UsedCarFault, UsedCarInput,
     UsedCarReport, VinFacts, drive_from_fuel_type, evaluate_used_car, normalise_vin,
 };
-use caruspex_data::dtc::lookup_dtc;
 use caruspex_data::pids::PidCategory;
-use caruspex_data::severity::Severity;
 use caruspex_demo::DemoTransport;
 use caruspex_i18n::l;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
@@ -34,14 +30,14 @@ use caruspex_link::{SerialTransport, enumerate_ports};
 use caruspex_net::{
     CanElm, SharedCanLink, SlcanLink, open_can_interface, open_network_car, probe_slcan,
 };
-use caruspex_protocols::{Fault, Obd2, VagDiagnosis, VehicleStatus};
+use caruspex_protocols::{Obd2, VagDiagnosis};
 use caruspex_record::{
     CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, active_recording, odometer_values,
     pack_category, pack_title, pack_values_en, packs_for_model, recording_summary, start_recording,
     stop_recording,
 };
+use caruspex_vehicles::catalog;
 use caruspex_vehicles::vin::{decode_vin, system_year};
-use caruspex_vehicles::{catalog, engines};
 use serde::Serialize;
 use serde_json::{Value, json};
 
@@ -57,12 +53,14 @@ mod adapter;
 #[cfg(not(target_os = "android"))]
 mod ble;
 mod convert;
+mod health;
 mod kkl;
 mod live;
 mod truck;
 mod uds;
 use crate::texts::{args, w};
 use convert::{fault_row, is_stored_kind, status_row, to_row};
+use health::{analysis_fault, analysis_monitor, analysis_status, dtc_level, engine_limits};
 use truck::TruckLink;
 
 /// Seconds since the program started, monotonic (appSeconds()).
@@ -265,48 +263,6 @@ impl Timer {
     }
 }
 
-fn analysis_fault(f: &Fault) -> ai::Fault {
-    ai::Fault {
-        code: f.code.clone(),
-        kind: f.kind.clone(),
-        text: f.text.clone(),
-        throttle_related: f.throttle_related,
-    }
-}
-
-fn analysis_status(st: &VehicleStatus) -> ai::VehicleStatus {
-    ai::VehicleStatus {
-        mil_on: st.mil_on,
-        fault_count: st.fault_count,
-        readiness: st
-            .readiness
-            .iter()
-            .map(|i| ai::ReadinessItem {
-                name: i.name.clone(),
-                ready: i.ready,
-            })
-            .collect(),
-        valid: st.valid,
-        compression_ignition: st.compression_ignition,
-    }
-}
-
-/// How urgent a fault code is, from the database. Pending codes count one
-/// step lower, they may still disappear on their own.
-fn dtc_level(code: &str, stored: bool) -> Level {
-    let severity = lookup_dtc(code, "").severity;
-    let mut level = Level::Info;
-    if severity == Severity::Critical {
-        level = Level::Critical;
-    } else if severity == Severity::High || severity == Severity::Medium {
-        level = Level::Warning;
-    }
-    if !stored && level == Level::Warning {
-        level = Level::Info;
-    }
-    level
-}
-
 /// What the VIN says about the car, the packs of manufacturer values that
 /// fit it and the drive the catalog knows for sure.
 fn used_car_identity(vin: &str) -> (Option<VinFacts>, Vec<&'static str>, Drive) {
@@ -350,29 +306,6 @@ fn used_car_identity(vin: &str) -> (Option<VinFacts>, Vec<&'static str>, Drive) 
         }
     }
     (Some(facts), packs, drive)
-}
-
-/// Target values for the health check from the engine codes of the car's
-/// generation (caruspex_vehicles::engines). The fuel from PID 51 picks petrol
-/// or diesel; without it the engines of the generation must agree.
-fn engine_limits(vin: &str, fuel: FuelType) -> Option<health_check::EngineLimits> {
-    let info = decode_vin(vin, system_year());
-    if !info.valid {
-        return None;
-    }
-    let g = catalog::match_vin(&info).generation?;
-    let fuel = match fuel {
-        FuelType::Petrol => Some(engines::EngineFuel::Petrol),
-        FuelType::Diesel => Some(engines::EngineFuel::Diesel),
-        _ => None,
-    };
-    let (t, codes) = engines::targets_for(g, fuel)?;
-    Some(health_check::EngineLimits {
-        codes: engines::codes_text(&codes),
-        idle_min: t.idle_min,
-        idle_max: t.idle_max,
-        coolant_hot: t.coolant_hot,
-    })
 }
 
 /// Seconds of live values for the health check inside the used car check.
@@ -457,22 +390,6 @@ fn used_car_row(input: &UsedCarInput, report: &UsedCarReport) -> UsedCarRow {
             .iter()
             .map(|n| format!("{}: {}", n.title.text(), n.reason.text()))
             .collect(),
-    }
-}
-
-fn analysis_monitor(r: &caruspex_protocols::MonitorResult) -> ai::MonitorResult {
-    ai::MonitorResult {
-        test_id: r.test_id,
-        component_id: r.component_id,
-        name: r.name.clone(),
-        component: r.component.clone(),
-        value: r.value,
-        minimum: r.minimum,
-        maximum: r.maximum,
-        unit: r.unit.clone(),
-        has_minimum: r.has_minimum,
-        has_maximum: r.has_maximum,
-        passed: r.passed,
     }
 }
 
@@ -1612,163 +1529,6 @@ impl Worker {
             ),
             &[&count, &oxygen_count],
         ));
-    }
-
-    // Modes 06, 05 and 09 in one go: everything the control unit reveals
-    // about itself and its running self-tests.
-    fn run_health_check(&mut self, seconds: i32) {
-        if !self.obd_ready {
-            self.failed(w(
-                "Für den Gesundheitscheck erst verbinden.",
-                "Connect first to run the health check.",
-            ));
-            return;
-        }
-        self.stop_live();
-        self.cancel.store(false, Ordering::SeqCst);
-        self.busy(true);
-        let mut input = HealthInput::default();
-        let progress = |me: &Self, step: String, percent: i32| {
-            me.emit(
-                "health_progress",
-                json!({ "step": step, "percent": percent }),
-            );
-        };
-
-        progress(
-            self,
-            w(
-                "Bereitschaft und Fehlerlampe",
-                "Readiness and check engine light",
-            ),
-            4,
-        );
-        let st = self.with_obd(|o| o.read_status());
-        input.set_status(&analysis_status(&st));
-        self.emit("status", json!({ "row": status_row(&st) }));
-
-        progress(self, w("Fehlerspeicher", "Fault memory"), 10);
-        let read = self.with_obd(|o| o.read_faults());
-        // "Not read" is a different finding from "no faults" (faultsRead =
-        // error.empty() in Session.cpp).
-        input.faults_read = read.is_ok();
-        let faults = read.unwrap_or_default();
-        input.faults = faults.iter().map(analysis_fault).collect();
-        let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
-        self.emit("faults", json!({ "rows": rows }));
-        input.fault_level = Some(Arc::new(|f: &ai::Fault| {
-            dtc_level(&f.code, is_stored_kind(&f.kind))
-        }));
-
-        progress(
-            self,
-            w(
-                "Bauteilprüfung (Modus 06)",
-                "Component monitoring (mode 06)",
-            ),
-            18,
-        );
-        input.monitor_results = self
-            .with_obd(|o| o.read_monitor_results())
-            .unwrap_or_default()
-            .iter()
-            .map(analysis_monitor)
-            .collect();
-        input.monitor_results_read = true;
-
-        if let Some(fuel) = self.with_obd(|o| o.read_live(0x51)) {
-            input.fuel = health_check::fuel_type_from_obd(fuel.value as i32);
-        }
-        // Target values of the engine, when the catalog knows its codes.
-        let vin = self.with_obd(|o| o.read_vin());
-        input.engine = engine_limits(&vin, input.fuel);
-
-        // Live series: only what the car offers.
-        let supported = self.with_obd(|o| o.supported_pids());
-        let pids: Vec<i32> = health_check::health_live_pids()
-            .iter()
-            .copied()
-            .filter(|p| supported.is_empty() || supported.contains(p))
-            .collect();
-        let start = app_seconds();
-        let total = seconds.max(1);
-        while !pids.is_empty() && app_seconds() - start < f64::from(seconds) && !self.cancelled() {
-            let values = self.with_obd(|o| o.read_live_batch(&pids, false));
-            let t = app_seconds() - start;
-            let snapshot: Vec<ai::LiveValue> = values
-                .iter()
-                .map(|v| ai::LiveValue {
-                    pid: v.pid,
-                    value: v.value,
-                })
-                .collect();
-            input.add_snapshot(&snapshot, t);
-            for value in &values {
-                self.emit_live(to_row(value));
-            }
-            let elapsed = app_seconds() - start;
-            let left = (seconds - elapsed as i32).max(0);
-            let percent = 25 + (70.0 * elapsed / f64::from(total)) as i32;
-            progress(
-                self,
-                args(
-                    &w(
-                        "Messwerte sammeln, noch %1 s",
-                        "Collecting values, %1 s left",
-                    ),
-                    &[&left],
-                ),
-                percent.min(95),
-            );
-            if values.is_empty() {
-                // Nothing answers (adapter gone): do not spin.
-                sleep_ms(100);
-            }
-        }
-
-        let report = health_check::run_health_check(&input);
-        let mut row = HealthRow {
-            score: report.score,
-            grade: report.grade as i32,
-            summary: report.summary.text(),
-            checks_run: report.checks_run,
-            diesel: input.fuel == FuelType::Diesel,
-            ..HealthRow::default()
-        };
-        for f in &report.findings {
-            row.findings.push(HealthFindingRow {
-                id: f.id.clone(),
-                level: f.level as i32,
-                area: String::new(),
-                title: f.title.text(),
-                explanation: f.explanation.text(),
-                advice: f.advice.text(),
-            });
-        }
-        for skipped in &report.not_checked {
-            row.not_checked.push(format!(
-                "{}: {}",
-                skipped.title.text(),
-                skipped.reason.text()
-            ));
-        }
-        for m in &input.readiness {
-            if !m.supported {
-                continue;
-            }
-            let guide = drive_cycle_guide(m.monitor);
-            row.monitors.push(MonitorGuideRow {
-                name: guide.name.get().to_string(),
-                complete: m.complete,
-                explanation: guide.explanation.get().to_string(),
-                drive_pattern: guide.drive_pattern.get().to_string(),
-                typical_time: guide.typical_time.get().to_string(),
-                cold_start: guide.needs_cold_start,
-            });
-        }
-        progress(self, w("Fertig", "Done"), 100);
-        self.emit("health_result", json!({ "row": row }));
-        self.busy(false);
     }
 
     // The used car check: the VIN against the catalog and the papers, the
