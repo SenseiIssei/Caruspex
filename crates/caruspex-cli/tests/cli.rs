@@ -459,7 +459,7 @@ fn j1939_reads_the_demo_truck() {
     assert_eq!(r.code, 0, "{}", r.err);
     let v: serde_json::Value = serde_json::from_str(&r.out).unwrap();
     assert_eq!(v["vin"], "YCXTR42H4NC051739");
-    assert_eq!(v["units"].as_array().unwrap().len(), 4);
+    assert_eq!(v["units"].as_array().unwrap().len(), 5);
     let engine = &v["active"].as_array().unwrap()[0];
     assert_eq!(engine["mil"], true);
     assert_eq!(engine["faults"][0]["spn"], 105);

@@ -15,7 +15,9 @@ use caruspex_i18n::l;
 use caruspex_link::{FrameLink, SerialTransport, Transport};
 use caruspex_net::{J1939Can, open_can_interface};
 use caruspex_protocols::j1939::params::{Reading, find_param};
-use caruspex_protocols::j1939::{J1939Session, UnitFaults, address_label, describe};
+use caruspex_protocols::j1939::{
+    ComponentId, J1939Session, J1939Unit, UnitFaults, address_label, describe,
+};
 use serde::Serialize;
 use serde_json::json;
 
@@ -32,7 +34,7 @@ pub(super) enum TruckLink {
 }
 
 /// How long the live loop listens per tick.
-const LISTEN_MS: u64 = 700;
+pub(super) const LISTEN_MS: u64 = 700;
 /// How long a raw CAN interface is listened to before a bit rate counts.
 const PROBE_MS: u64 = 1500;
 
@@ -74,13 +76,20 @@ const AS_OBD_PID: [(u32, i32); 6] = [
     (917, 0xA6),
 ];
 
+/// DM1 and DM2 of every unit, with every unit heard.
+pub(super) struct TruckFaults {
+    pub active: Vec<UnitFaults>,
+    pub previous: Vec<UnitFaults>,
+    pub units: Vec<J1939Unit>,
+}
+
 impl Worker {
     pub(super) fn truck_connected(&self) -> bool {
         self.truck.is_some()
     }
 
     /// Runs `f` with the session and the bus, if connected to a truck.
-    fn with_truck<R>(
+    pub(super) fn with_truck<R>(
         &mut self,
         f: impl FnOnce(&mut J1939Session, &mut dyn FrameLink) -> R,
     ) -> Option<R> {
@@ -255,22 +264,23 @@ impl Worker {
     /// lamps per unit.
     pub(super) fn refresh_truck_faults(&mut self) {
         self.busy(true);
+        if let Some(Err(error)) = self.load_truck_faults() {
+            self.failed(error);
+        }
+        self.busy(false);
+    }
+
+    /// Reads DM1 and DM2 of every unit and sends the fault list, the status
+    /// row and the lamps to the interface. `None` without a truck.
+    pub(super) fn load_truck_faults(&mut self) -> Option<Result<TruckFaults, String>> {
         let result = self.with_truck(|s, link| -> Result<_, String> {
             let active = s.active_faults(link)?;
             let previous = s.previous_faults(link)?;
             Ok((active, previous, s.units()))
-        });
-        let Some(result) = result else {
-            self.busy(false);
-            return;
-        };
+        })?;
         let (active, previous, units) = match result {
             Ok(found) => found,
-            Err(error) => {
-                self.busy(false);
-                self.failed(error);
-                return;
-            }
+            Err(error) => return Some(Err(error)),
         };
         let mut rows = Vec::new();
         let row = |unit: &UnitFaults, active: bool, rows: &mut Vec<FaultRow>| {
@@ -345,7 +355,11 @@ impl Worker {
                 &previous.iter().map(|u| u.dtcs.len()).sum::<usize>(),
             ],
         ));
-        self.busy(false);
+        Some(Ok(TruckFaults {
+            active,
+            previous,
+            units,
+        }))
     }
 
     /// DM11 (active) and DM3 (previously active) to every unit. Only after
@@ -417,41 +431,50 @@ impl Worker {
                     }),
                 );
                 self.emit("freeze_frames", json!({ "frames": Vec::<LiveRow>::new() }));
-                let mut addresses: Vec<u8> = components.iter().map(|(a, _)| *a).collect();
-                addresses.extend(software.iter().map(|(a, _)| *a));
-                addresses.sort_unstable();
-                addresses.dedup();
-                let ids: Vec<_> = addresses
-                    .iter()
-                    .map(|a| {
-                        let c = components
-                            .iter()
-                            .find(|(x, _)| x == a)
-                            .map(|(_, c)| c.clone())
-                            .unwrap_or_default();
-                        let sw = software
-                            .iter()
-                            .find(|(x, _)| x == a)
-                            .map(|(_, s)| s.clone())
-                            .unwrap_or_default();
-                        json!({
-                            "address": a,
-                            "label": address_label(*a),
-                            "make": c.make,
-                            "model": c.model,
-                            "serial": c.serial,
-                            "unit": c.unit,
-                            "software": sw,
-                        })
-                    })
-                    .collect();
-                self.emit("j1939_ids", json!({ "units": ids }));
+                self.emit_truck_ids(&components, &software);
                 self.emit_truck_values();
             }
             Some(Err(error)) => self.failed(error),
             None => {}
         }
         self.busy(false);
+    }
+
+    /// The identification of every unit that answered, for the unit cards.
+    pub(super) fn emit_truck_ids(
+        &self,
+        components: &[(u8, ComponentId)],
+        software: &[(u8, Vec<String>)],
+    ) {
+        let mut addresses: Vec<u8> = components.iter().map(|(a, _)| *a).collect();
+        addresses.extend(software.iter().map(|(a, _)| *a));
+        addresses.sort_unstable();
+        addresses.dedup();
+        let ids: Vec<_> = addresses
+            .iter()
+            .map(|a| {
+                let c = components
+                    .iter()
+                    .find(|(x, _)| x == a)
+                    .map(|(_, c)| c.clone())
+                    .unwrap_or_default();
+                let sw = software
+                    .iter()
+                    .find(|(x, _)| x == a)
+                    .map(|(_, s)| s.clone())
+                    .unwrap_or_default();
+                json!({
+                    "address": a,
+                    "label": address_label(*a),
+                    "make": c.make,
+                    "model": c.model,
+                    "serial": c.serial,
+                    "unit": c.unit,
+                    "software": sw,
+                })
+            })
+            .collect();
+        self.emit("j1939_ids", json!({ "units": ids }));
     }
 
     /// One tick of the live loop: listen, then everything decoded so far.
@@ -464,7 +487,7 @@ impl Worker {
         self.emit_truck_values();
     }
 
-    fn emit_truck_values(&mut self) {
+    pub(super) fn emit_truck_values(&mut self) {
         let Some(values) = self.with_truck(|s, _| s.values()) else {
             return;
         };
@@ -590,7 +613,7 @@ mod tests {
             .as_array()
             .unwrap()
             .clone();
-        assert_eq!(units.len(), 4);
+        assert_eq!(units.len(), 5);
         assert_eq!(units[0]["amberWarning"], true);
         assert_eq!(units[2]["previous"], 1);
 

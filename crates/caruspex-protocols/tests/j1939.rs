@@ -81,7 +81,7 @@ fn units_values_and_active_faults_by_listening() {
     let frames = t.session.listen(&mut t.elm, 400).unwrap();
     assert!(frames > 20, "{frames}");
     let units: Vec<u8> = t.session.units().iter().map(|u| u.address).collect();
-    assert_eq!(units, vec![0x00, 0x03, 0x0B, 0x17]);
+    assert_eq!(units, vec![0x00, 0x03, 0x0B, 0x17, 0xEE]);
 
     let values = t.session.values();
     let get = |spn: u32| {
@@ -119,7 +119,7 @@ fn units_values_and_active_faults_by_listening() {
             .all(|d| d.conversion == SpnConversion::V4)
     );
     // The other units send a DM1 without faults.
-    assert_eq!(active.len(), 4);
+    assert_eq!(active.len(), 5);
     assert!(
         active
             .iter()
@@ -146,7 +146,7 @@ fn requests_previous_faults_identification_and_counters() {
     assert_eq!(vin.as_deref(), Some(DemoTransport::truck_vin()));
 
     let components = t.session.component_ids(&mut t.elm).unwrap();
-    assert_eq!(components.len(), 4);
+    assert_eq!(components.len(), 5);
     let engine = &components.iter().find(|(a, _)| *a == 0).unwrap().1;
     assert_eq!(engine.make, "CARUSPEX");
     assert_eq!(engine.model, "CX-D13");
@@ -169,13 +169,37 @@ fn requests_previous_faults_identification_and_counters() {
         caruspex_protocols::j1939::find_param(247).unwrap().key(),
         J1939_KEY_BASE + 247
     );
+
+    // Engine, cluster and tachograph each keep the VIN.
+    let vins = t.session.read_vins(&mut t.elm).unwrap();
+    assert_eq!(
+        vins.iter().map(|(a, _)| *a).collect::<Vec<_>>(),
+        vec![0x00, 0x17, 0xEE]
+    );
+    assert!(vins.iter().all(|(_, v)| v == DemoTransport::truck_vin()));
+
+    // Idle hours, both odometers and DM21 on request.
+    t.session.read_usage(&mut t.elm).unwrap();
+    let values = t.session.values();
+    let from = |spn: u32, source: u8| {
+        values
+            .iter()
+            .find(|v| v.spn == spn && v.source == source)
+            .map(|v| v.reading)
+            .unwrap_or_else(|| panic!("SPN {spn} from {source:02X}"))
+    };
+    assert!(matches!(from(235, 0x00), Reading::Value(h) if (h - 3_950.25).abs() < 0.01));
+    assert!(matches!(from(245, 0x17), Reading::Value(km) if km > 512_000.0));
+    assert!(matches!(from(917, 0xEE), Reading::Value(km) if km > 512_000.0));
+    assert_eq!(from(3294, 0x00), Reading::Value(8_412.0));
+    assert_eq!(from(3296, 0x00), Reading::Value(9_870.0));
 }
 
 #[test]
 fn clearing_active_then_previous_faults() {
     let mut t = truck();
     let cleared = t.session.clear_active(&mut t.elm).unwrap();
-    assert_eq!(cleared.acks.len(), 4);
+    assert_eq!(cleared.acks.len(), 5);
     assert!(cleared.acks.iter().all(|(_, k)| *k == AckKind::Positive));
     assert!(cleared.confirmed());
     t.clock.advance(2.0);

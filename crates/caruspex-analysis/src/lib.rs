@@ -1,5 +1,5 @@
 //! Health check, battery test, readiness, trip computer, performance timer,
-//! used car check.
+//! used car check, and the health and used vehicle checks of trucks.
 //!
 //! Everything in this crate is pure computation: the caller collects the data
 //! and hands it in, the modules only judge it. Texts are built as
@@ -15,4 +15,6 @@ pub mod inputs;
 pub mod performance_timer;
 pub mod readiness;
 pub mod trip_computer;
+pub mod truck_health;
+pub mod truck_used;
 pub mod used_car;

@@ -105,6 +105,8 @@ forzar en cada ejecución con `--language fr` y similares. Cómo se hacen y se r
 
 ![Vista de rayos X](docs/screenshot-xray.png)
 
+![Coches y motos del catálogo en la vista de rayos X](docs/xray-cars.png)
+
 ### Valores en vivo
 - Todos los valores del modo 01 de SAE J1979 hasta el PID C4: 145 PID con más de 300 lecturas, agrupadas y con búsqueda.
 - Cuentakilómetros, marcha, temperatura del aceite, consumo de combustible, par, presión del turbo, temperaturas de escape, filtro de partículas, AdBlue, NOx y batería híbrida, en la medida en que el coche los comunique.

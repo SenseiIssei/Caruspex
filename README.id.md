@@ -105,6 +105,8 @@ dipaksa untuk satu kali jalan dengan `--language fr` dan seterusnya. Cara terjem
 
 ![Tampilan tembus](docs/screenshot-xray.png)
 
+![Mobil dan sepeda motor dari katalog dalam tampilan tembus](docs/xray-cars.png)
+
 ### Data langsung
 - Setiap nilai mode 01 dari SAE J1979 sampai PID C4: 145 PID dengan lebih dari 300 pembacaan, dikelompokkan dan bisa dicari.
 - Odometer, gigi, suhu oli, laju bahan bakar, torsi, boost, suhu gas buang, filter partikel, AdBlue, NOx, dan baterai hybrid, sejauh dilaporkan oleh mobil.

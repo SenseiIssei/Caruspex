@@ -105,6 +105,8 @@ wymusić dla jednego uruchomienia przez `--language fr` i tak dalej. Jak powstaj
 
 ![Widok rentgenowski](docs/screenshot-xray.png)
 
+![Samochody i motocykle z katalogu w widoku rentgenowskim](docs/xray-cars.png)
+
 ### Wartości na żywo
 - Każda wartość trybu 01 z SAE J1979 aż do PID C4: 145 PID-ów z ponad 300 odczytami, pogrupowanych i z wyszukiwarką.
 - Przebieg, bieg, temperatura oleju, zużycie paliwa, moment obrotowy, doładowanie, temperatury spalin, filtr cząstek stałych, AdBlue, NOx i akumulator hybrydy, o ile samochód je zgłasza.

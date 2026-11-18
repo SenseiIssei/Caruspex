@@ -1,10 +1,12 @@
 // The procedural car of the X-ray view: every catalog generation (with its
 // Wikidata dimensions and every body variant the shape table knows) gives a
-// car whose wheels stand on the road under positive overhangs, whose cabin
-// sits above the floor, whose parts and control units sit inside the body,
-// and every kind of control unit has a place.
+// car whose wheels stand on the road under positive overhangs at the
+// wheelbase and track of the data, whose cabin sits above the floor, whose
+// parts and control units sit inside the body and clear of the tyres, and
+// every kind of control unit has a place.
 import { describe, expect, it } from "vitest";
 import catalog from "../api/mock/data/catalog.json";
+import catalogRs from "../../../crates/caruspex-vehicles/src/generated/catalog.rs?raw";
 import { anatomyOf } from "../api/mock/areas/xray";
 import type { MeasuredRecord } from "../api/mock/areas/knowledge";
 import { BodyType, CarZone, DrivenAxles, EngineLayout, Powertrain, type VehicleAnatomy } from "../api/types";
@@ -23,7 +25,9 @@ import {
   zoneAnchor,
   type CarLayout,
   type EcuInput,
+  type Part,
   type Vec3,
+  type Wheel,
 } from "./layout";
 
 // [brand, model, generation, from, to, body, powertrains, ..., location (12),
@@ -38,9 +42,67 @@ const ALL_KINDS: EcuInput[] = Array.from({ length: ECU_KIND_COUNT }, (_, kind) =
   source: "uds" as const,
 }));
 
-function checkCar(layout: CarLayout, label: string): void {
+// The share of a part (sampled on a grid over its box, tilt ignored) that
+// lies inside the tyre of a wheel.
+function shareInWheel(p: Part, w: Wheel): number {
+  let [sx, sy, sz] = p.size;
+  if (p.shape === "cylinder" && p.axis === "y") [sx, sy] = [p.size[1], p.size[0]];
+  if (p.shape === "cylinder" && p.axis === "z") [sx, sz] = [p.size[1], p.size[0]];
+  const [x, y, z] = p.center;
+  // Boxes that do not even touch the box round the wheel need no grid.
+  if (Math.abs(x - w.center[0]) > sx / 2 + w.radius || Math.abs(z - w.center[2]) > sz / 2 + w.width / 2 || y - sy / 2 > 2 * w.radius) return 0;
+  const n = 4;
+  let inside = 0;
+  for (let i = 0; i <= n; i++) {
+    for (let j = 0; j <= n; j++) {
+      for (let k = 0; k <= n; k++) {
+        const qx = x + sx * (i / n - 0.5);
+        const qy = y + sy * (j / n - 0.5);
+        const qz = z + sz * (k / n - 0.5);
+        if (Math.hypot(qx - w.center[0], qy - w.center[1]) < w.radius && Math.abs(qz - w.center[2]) < w.width / 2) inside++;
+      }
+    }
+  }
+  return inside / (n + 1) ** 3;
+}
+
+// Wheelbase and track as the data give them (the wheelbase capped at four
+// fifths of the length, the track at most a fifth narrower where the body
+// is rounder than the data's box), the pairs mirrored, and no part more
+// than grazing a tyre.
+function checkWheels(layout: CarLayout, label: string, anatomy?: VehicleAnatomy): void {
+  const wheelbase = layout.frontAxle - layout.rearAxle;
+  const moto = layout.vehicle === "moto";
+  expect(wheelbase, `${label}: wheelbase`).toBeGreaterThan(moto ? 1.1 : 1.4);
+  expect(wheelbase, `${label}: wheelbase`).toBeLessThan(moto ? 1.9 : 4.2);
+  if (anatomy && !moto) expect(wheelbase, `${label}: wheelbase of the data`).toBeCloseTo(Math.min(anatomy.wheelbaseMm, anatomy.lengthMm * 0.8) / 1000, 3);
+  if (!moto) {
+    expect(layout.wheels.length, label).toBe(4);
+    for (const [left, right] of [[0, 1], [2, 3]] as const) {
+      const l = layout.wheels[left]!;
+      const r = layout.wheels[right]!;
+      expect(r.center[0], label).toBe(l.center[0]);
+      expect(r.center[2], label).toBeCloseTo(-l.center[2], 9);
+      const track = l.center[2] - r.center[2];
+      expect(track, `${label}: track`).toBeGreaterThan(0.9);
+      expect(track + l.width, `${label}: track`).toBeLessThan(layout.hull.width + 0.06);
+      if (anatomy) expect(track, `${label}: track of the data`).toBeGreaterThan((anatomy.trackMm / 1000) * 0.8);
+    }
+  }
+  const wrong: string[] = [];
+  for (const w of layout.wheels) {
+    for (const p of layout.parts) {
+      const share = shareInWheel(p, w);
+      if (share > 0.1) wrong.push(`${p.id} ${Math.round(share * 100)} % in the ${w.front ? "front" : "rear"} wheel`);
+    }
+  }
+  expect(wrong.slice(0, 3), label).toEqual([]);
+}
+
+function checkCar(layout: CarLayout, label: string, anatomy?: VehicleAnatomy): void {
   const { hull } = layout;
   const p = hull.profile;
+  checkWheels(layout, label, anatomy);
   // Overhangs: the wheels stay inside the length with room to spare.
   expect(layout.frontAxle, label).toBeLessThan(hull.front);
   expect(layout.rearAxle, label).toBeGreaterThan(hull.rear);
@@ -153,6 +215,7 @@ function checkSocket(layout: CarLayout, label: string): void {
 function checkMoto(layout: CarLayout, label: string): void {
   const { hull } = layout;
   expect(layout.vehicle, label).toBe("moto");
+  checkWheels(layout, label);
   expect(layout.wheels.length, label).toBe(2);
   for (const w of layout.wheels) {
     expect(w.center[1] - w.radius, label).toBeCloseTo(0, 6);
@@ -262,7 +325,7 @@ describe("x-ray layout", () => {
           for (const v of variants) {
             const anatomy = anatomyOf(body, brand, model, year, v, v);
             const layout = buildLayout({ anatomy, body, ecus: ALL_KINDS, kline: year < 2000, turbo: v === Powertrain.Diesel });
-            checkCar(layout, `${BodyType[body]} ${brand} ${model} ${year} ${v}`);
+            checkCar(layout, `${BodyType[body]} ${brand} ${model} ${year} ${v}`, anatomy);
           }
         }
       }
@@ -275,7 +338,10 @@ describe("x-ray layout", () => {
       generations: GenRow[];
       measured: Record<string, MeasuredRecord>;
     };
-    expect(data.generations.length).toBeGreaterThan(500);
+    // The copy (app/scripts/extract-catalog.py) holds every generation of
+    // the Rust table: its ids are the indices. It missed the 23 trucks once,
+    // and every id after the first truck pointed at the wrong car.
+    expect(data.generations.length).toBe(Number(/(\d+) model generations/.exec(catalogRs)![1]));
     let measured = 0;
     let motorcycles = 0;
     data.generations.forEach((g, i) => {
@@ -296,7 +362,7 @@ describe("x-ray layout", () => {
         }
         for (const variant of bodyVariants(anatomy, body as BodyType)) {
           const layout = buildLayout({ anatomy, body: body as BodyType, variant, ecus: ALL_KINDS.slice(0, 8), kline: false, turbo: false });
-          checkCar(layout, `${brand} ${model} ${generation} ${year} ${BodyType[variant]}`);
+          checkCar(layout, `${brand} ${model} ${generation} ${year} ${BodyType[variant]}`, anatomy);
         }
       }
     });

@@ -424,6 +424,7 @@ impl Impl {
     pub fn new(options: DemoOptions) -> Self {
         let profile = profile_for(options.adapter);
         let options_vehicle = options.vehicle;
+        let odometer_mismatch = options.truck_odometer_mismatch;
         Impl {
             options,
             profile,
@@ -456,7 +457,14 @@ impl Impl {
             cleared: false,
             clear_run: 0.0,
             clear_km: 0.0,
-            truck: (options_vehicle == DemoVehicle::Truck).then(TruckSim::new),
+            truck: (options_vehicle == DemoVehicle::Truck).then(|| {
+                let truck = TruckSim::new();
+                if odometer_mismatch {
+                    truck.with_odometer_mismatch()
+                } else {
+                    truck
+                }
+            }),
             cp: 0x18,
             header24: 0xEA_FF_F9,
             pb: (0xE0, 0x04),

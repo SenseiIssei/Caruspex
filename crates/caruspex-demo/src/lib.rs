@@ -31,7 +31,7 @@
 //! know the batched commands (STBC), the monitor commands with a count (STMA
 //! n, STM n) and the filter commands of the OBDLink manual.
 //!
-//! With [`DemoVehicle::Truck`] a truck sits behind the adapter instead: four
+//! With [`DemoVehicle::Truck`] a truck sits behind the adapter instead: five
 //! control units on an SAE J1939 bus (see [`truck`]), heard in protocol A
 //! (`ATSPA`) with headers on and CAN auto formatting off.
 //!
@@ -146,6 +146,10 @@ pub struct DemoOptions {
 
     /// The car (default) or the truck.
     pub vehicle: DemoVehicle,
+
+    /// The truck's dashboard shows 200 000 km less than engine and
+    /// tachograph (see [`truck::TruckSim::with_odometer_mismatch`]).
+    pub truck_odometer_mismatch: bool,
 }
 
 impl Default for DemoOptions {
@@ -158,6 +162,7 @@ impl Default for DemoOptions {
             transmission_ecu: true,
             round_trip_ms: 0.0,
             vehicle: DemoVehicle::Car,
+            truck_odometer_mismatch: false,
         }
     }
 }

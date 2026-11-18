@@ -105,6 +105,8 @@ forced per run with `--language fr` and so on. How translations are made and che
 
 ![X-ray view](docs/screenshot-xray.png)
 
+![Cars and motorcycles of the catalog in the X-ray view](docs/xray-cars.png)
+
 ### Live data
 - Every mode 01 value of SAE J1979 up to PID C4: 145 PIDs with more than 300 readings, grouped and searchable.
 - Odometer, gear, oil temperature, fuel rate, torque, boost, exhaust temperatures, particulate filter, AdBlue, NOx and hybrid battery, as far as the car reports them.
