@@ -53,6 +53,9 @@ pub struct AppState {
     pub cli: Cli,
     /// Set by the first app_info: the interface is up and listening.
     pub ready: AtomicBool,
+    /// How far --report got (REPORT_* in commands.rs), named in the
+    /// message when it gives up, so a failed run says where it stopped.
+    pub report_stage: std::sync::atomic::AtomicU8,
     /// The newer release check_for_update found, for install_update.
     pub update: Mutex<Option<update::Found>>,
     pub installing: AtomicBool,
@@ -223,6 +226,7 @@ pub fn run() {
                 log_file,
                 cli: cli.clone(),
                 ready: AtomicBool::new(false),
+                report_stage: std::sync::atomic::AtomicU8::new(0),
                 update: Mutex::new(None),
                 installing: AtomicBool::new(false),
             });
@@ -292,6 +296,7 @@ pub fn run() {
             commands::save_text_file,
             commands::save_pdf,
             commands::write_report,
+            commands::cli_report_failed,
             commands::open_text_file,
             commands::pick_save_path,
             commands::pick_open_path,

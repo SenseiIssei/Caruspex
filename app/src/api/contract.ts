@@ -102,6 +102,7 @@ export interface Commands {
   // Writes the report without asking (--report): PDF, or HTML for .html.
   // During a --report run the program ends afterwards.
   write_report: Cmd<{ path: string; html: string }, boolean>;
+  cli_report_failed: Cmd<{ message: string }, void>;
   // Shows an open dialog and reads the file. null if cancelled.
   open_text_file: Cmd<{ title: string; filters: FileFilter[] }, OpenedTextFile | null>;
   // Only asks for a path (recording target, Torque CSV, replay file, log file).

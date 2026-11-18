@@ -26,12 +26,17 @@ export function listenToCommandLine(): void {
       import("../state/usedCar"),
     ]);
     // On the used car page with a finished check (--page used-car-run), the
-    // document for the purchase; otherwise the inspection report.
-    const check = usedCarStore.get();
-    const html =
-      navStore.get().page === "used-car" && check.result
-        ? usedCarHtml(check.result, new Date(check.when))
-        : reportHtml(await collectReportState(), collectReportExtras());
-    await invoke("write_report", { path: payload.path, html });
+    // document for the purchase; otherwise the inspection report. A failure
+    // ends the run with its reason instead of the two minute limit.
+    try {
+      const check = usedCarStore.get();
+      const html =
+        navStore.get().page === "used-car" && check.result
+          ? usedCarHtml(check.result, new Date(check.when))
+          : reportHtml(await collectReportState(), collectReportExtras());
+      await invoke("write_report", { path: payload.path, html });
+    } catch (error) {
+      await invoke("cli_report_failed", { message: String(error) });
+    }
   });
 }
