@@ -279,7 +279,11 @@ pub struct UsedCarInput {
 pub enum Section {
     #[default]
     Identity,
+    /// The control units of a truck and how they identify themselves.
+    Units,
     Mileage,
+    /// Engine hours, idle share and fuel of a truck.
+    Usage,
     Clearing,
     Readiness,
     Faults,
@@ -288,9 +292,11 @@ pub enum Section {
 }
 
 impl Section {
-    pub const ALL: [Section; 7] = [
+    pub const ALL: [Section; 9] = [
         Section::Identity,
+        Section::Units,
         Section::Mileage,
+        Section::Usage,
         Section::Clearing,
         Section::Readiness,
         Section::Faults,
@@ -302,7 +308,9 @@ impl Section {
     pub fn key(self) -> &'static str {
         match self {
             Section::Identity => "identity",
+            Section::Units => "units",
             Section::Mileage => "mileage",
+            Section::Usage => "usage",
             Section::Clearing => "clearing",
             Section::Readiness => "readiness",
             Section::Faults => "faults",
