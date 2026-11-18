@@ -44,8 +44,8 @@ use caruspex_net::{
 };
 use caruspex_protocols::kwp1281::{ecu_name, known_ecus};
 use caruspex_protocols::{
-    Ecu, Fault, KLineProtocol, LiveValue, MeasuringValue, Obd2, Uds, UdsEcu, VagDiagnosis,
-    VagKLine, VagTp20, VehicleStatus, find_present_ecus, scan_ecus,
+    Ecu, Fault, KLineProtocol, MeasuringValue, Obd2, Uds, UdsEcu, VagDiagnosis, VagKLine, VagTp20,
+    VehicleStatus, find_present_ecus, scan_ecus,
 };
 use caruspex_record::{
     CustomPid, CustomPidReader, ReplayPacing, ReplayTransport, USER_KEY_BASE, active_recording,
@@ -67,8 +67,10 @@ use crate::settings::AppSettings;
 /// needs it (android.rs has the same functions for the phone).
 #[cfg(not(target_os = "android"))]
 mod ble;
+mod convert;
 mod truck;
 use crate::texts::{args, w};
+use convert::{fault_row, is_stored_kind, status_row, to_row};
 use truck::TruckLink;
 
 /// Seconds since the program started, monotonic (appSeconds()).
@@ -270,56 +272,6 @@ impl Timer {
         if self.active {
             self.next = Some(Instant::now() + Duration::from_millis(self.interval_ms));
         }
-    }
-}
-
-fn to_row(v: &LiveValue) -> LiveRow {
-    // The key tells the values of one PID apart; it equals the PID for the
-    // primary value, so everything keyed by PID keeps working.
-    let pid = if v.key != 0 { v.key } else { v.pid };
-    LiveRow {
-        pid,
-        name: crate::knowledge::live_name(pid, &v.name),
-        unit: v.unit.clone(),
-        text: v.text.clone(),
-        value: v.value,
-        warn: v.warn,
-        time: app_seconds(),
-        display_min: v.display_min,
-        display_max: v.display_max,
-    }
-}
-
-// The core reports the kind of a fault as display text in the active
-// language. "stored" is the English wording the core uses for "gespeichert".
-fn is_stored_kind(kind: &str) -> bool {
-    kind == "gespeichert" || kind == "stored" || kind == l("gespeichert", "stored")
-}
-
-// Same for "dauerhaft", the permanent codes of service 0A.
-fn is_permanent_kind(kind: &str) -> bool {
-    kind == "dauerhaft" || kind == "permanent" || kind == l("dauerhaft", "permanent")
-}
-
-fn fault_row(f: &Fault) -> FaultRow {
-    FaultRow {
-        code: f.code.clone(),
-        kind: f.kind.clone(),
-        text: f.text.clone(),
-        throttle_related: f.throttle_related,
-        stored: is_stored_kind(&f.kind),
-        permanent: is_permanent_kind(&f.kind),
-        ecu: f.ecu.clone(),
-    }
-}
-
-fn status_row(st: &VehicleStatus) -> StatusRow {
-    StatusRow {
-        valid: st.valid,
-        mil: st.mil_on,
-        fault_count: st.fault_count,
-        monitor_names: st.readiness.iter().map(|i| i.name.clone()).collect(),
-        monitor_ready: st.readiness.iter().map(|i| i.ready).collect(),
     }
 }
 
