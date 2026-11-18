@@ -520,11 +520,15 @@ pub async fn write_report(
     path: String,
     html: String,
 ) -> Result<bool> {
+    if state.cli.report.as_deref() == Some(path.as_str()) {
+        state.report_stage.store(REPORT_WRITING, Ordering::Relaxed);
+    }
     let ok = matches!(
         pdf::write_report(&app, html, PathBuf::from(&path), false).await,
         Ok(pdf::Written::File)
     );
     if state.cli.report.as_deref() == Some(path.as_str()) {
+        state.report_stage.store(REPORT_WRITTEN, Ordering::Relaxed);
         let text = if ok {
             args(
                 &mw("Prüfbericht gespeichert: %1", "Diagnostic report saved: %1"),
@@ -1280,6 +1284,39 @@ pub fn match_vin(vin: String) -> Value {
 // --- Command line -------------------------------------------------------------------------------
 
 /// Prints the outcome of an unattended run and ends the program.
+// The stages of --report, for the message when it gives up.
+const REPORT_WAITING: u8 = 0;
+const REPORT_CONNECTED: u8 = 1;
+const REPORT_ASKED: u8 = 2;
+const REPORT_WRITING: u8 = 3;
+const REPORT_WRITTEN: u8 = 4;
+
+fn report_stage_name(stage: u8) -> &'static str {
+    match stage {
+        REPORT_WAITING => "no connection event",
+        REPORT_CONNECTED => "connected, waiting for the readout",
+        REPORT_ASKED => "interface asked for the report, no answer",
+        REPORT_WRITING => "writing the PDF",
+        _ => "written",
+    }
+}
+
+/// The interface could not build the report for --report: end the run with
+/// the reason instead of waiting for the two minute limit.
+#[tauri::command]
+pub fn cli_report_failed(app: AppHandle, state: State<'_, AppState>, message: String) {
+    if let Some(path) = state.cli.report.clone() {
+        let text = args(
+            &mw(
+                "Prüfbericht ließ sich nicht schreiben: %1",
+                "The diagnostic report could not be written: %1",
+            ),
+            &[&format!("{path} ({message})")],
+        );
+        finish(&app, 1, &text);
+    }
+}
+
 fn finish(app: &AppHandle, code: i32, message: &str) {
     if code == 0 {
         println!("{message}");
@@ -1402,14 +1439,14 @@ fn start_cli_tasks(app: &AppHandle, state: &State<'_, AppState>) {
     if cli.report.is_some() {
         let app = app.clone();
         later(120_000, move || {
-            finish(
-                &app,
-                3,
-                &mw(
-                    "Keine Verbindung nach zwei Minuten, abgebrochen.",
-                    "No connection after two minutes, cancelled.",
-                ),
+            let stage = app
+                .try_state::<AppState>()
+                .map_or(REPORT_WAITING, |s| s.report_stage.load(Ordering::Relaxed));
+            let text = mw(
+                "Keine Verbindung nach zwei Minuten, abgebrochen.",
+                "No connection after two minutes, cancelled.",
             );
+            finish(&app, 3, &format!("{text} [{}]", report_stage_name(stage)));
         });
     }
 }
@@ -1426,8 +1463,14 @@ pub fn on_worker_event(app: &AppHandle, event: &str, payload: &Value) {
         "connected" => {
             // The readout (status, faults, vehicle data) follows the
             // connection; give it time before the report is written.
+            state
+                .report_stage
+                .store(REPORT_CONNECTED, Ordering::Relaxed);
             let app = app.clone();
             later(state.cli.report_wait_ms, move || {
+                if let Some(state) = app.try_state::<AppState>() {
+                    state.report_stage.store(REPORT_ASKED, Ordering::Relaxed);
+                }
                 let _ = app.emit("cli_report", json!({ "path": path }));
             });
         }
