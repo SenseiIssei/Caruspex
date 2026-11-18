@@ -422,11 +422,12 @@ static PARAMS: &[J1939Param] = &[
     p(3721, DPF_SERVICE, 2, 32, 1.0 / 3600.0, 0.0, "h", 0.0, 1000.0,
       Text::new("Zeit seit dem letzten Freibrennen", "Time since the last regeneration"),
       Text::new("Wie lange die letzte aktive Regeneration des Partikelfilters her ist.", "How long ago the last active regeneration of the particulate filter was.")),
-    // DPFC1 byte 2 bits 1-2 and 3-5.
-    state(3700, DPF_CONTROL, 1, 0, 2, 2.0,
+    // DPFC1 byte 2: bits 1-2 are the passive regeneration (SPN 3699), bits 3-4
+    // the active regeneration, bits 5-7 the filter state.
+    state(3700, DPF_CONTROL, 1, 2, 2, 2.0,
       Text::new("Freibrennen des Partikelfilters", "Particulate filter regeneration"),
       Text::new("0: läuft nicht, 1: läuft gerade, 2: nötig, beginnt gleich von selbst.", "0: not running, 1: running now, 2: needed, about to start by itself.")),
-    state(3701, DPF_CONTROL, 1, 2, 3, 3.0,
+    state(3701, DPF_CONTROL, 1, 4, 3, 3.0,
       Text::new("Zustand des Partikelfilters", "Particulate filter state"),
       Text::new("0: Freibrennen nicht nötig, 1 bis 3: nötig, von niedriger bis höchster Stufe.", "0: no regeneration needed, 1 to 3: needed, from the lowest to the highest level.")),
     // Idle operation (IO), on request: bytes 1-4 0.5 l per bit, bytes 5-8 0.05 h per bit.

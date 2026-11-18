@@ -423,11 +423,11 @@ impl TruckSim {
                 put(&mut d, 2, 4, 31.5 * 3600.0, 1.0, 0.0);
             }
             (ENGINE, DPF_CONTROL) => {
-                // Lamps off, no passive regeneration; byte 2: active
-                // regeneration not running (00), filter state "needed,
-                // moderate level" (010), not inhibited (00).
+                // Lamps off; byte 2: no passive regeneration (bits 1-2),
+                // active regeneration not running (bits 3-4), filter state
+                // "needed, moderate level" (bits 5-7 = 010), bit 8 unused.
                 d[0] = 0x00;
-                d[1] = 0b1000_1000;
+                d[1] = 0b1010_0000;
             }
             (ENGINE, DISTANCE_HR) => {
                 // The engine counts its own distance, a few km apart.
