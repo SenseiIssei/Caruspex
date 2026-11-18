@@ -342,14 +342,19 @@ export function garageHtml(car: GarageCar): string {
 const UC = "caruspex::UsedCarPage";
 const uc = (de: string, ...args: unknown[]) => t(UC, de, ...args);
 const HP = "caruspex::HealthPage";
+const TC = "caruspex::TruckCheck";
+const tc = (de: string, ...args: unknown[]) => t(TC, de, ...args);
 
-export const USED_CAR_SECTIONS: UsedCarSection[] = ["identity", "mileage", "clearing", "readiness", "faults", "health", "battery"];
+// The truck sections (units, usage) never come with a car.
+export const USED_CAR_SECTIONS: UsedCarSection[] = ["identity", "units", "mileage", "usage", "clearing", "readiness", "faults", "health", "battery"];
 
 // Section headings of the check, shared with the page.
 export function usedCarSectionTitle(section: UsedCarSection): string {
   switch (section) {
     case "identity": return uc("Fahrzeug und Fahrgestellnummer");
+    case "units": return tc("Steuergeräte");
     case "mileage": return tr("Kilometerstand");
+    case "usage": return tc("Betriebsstunden und Verbrauch");
     case "clearing": return uc("Zuletzt gelöscht");
     case "readiness": return tr("Bereitschaftstests");
     case "faults": return tr("Fehlerspeicher");
@@ -389,7 +394,7 @@ export function usedCarHtml(row: UsedCarRow, when: Date): string {
   const colour = LIGHT_COLOURS[row.light] ?? "#141821";
   h += "<table><tr><td style='border:none'>";
   h += "<div style='color:#5a54f0; font-weight:bold; letter-spacing:2px; font-size:9pt'>CARUSPEX</div>";
-  h += `<h1>${esc(uc("Gebrauchtwagen-Check"))}</h1>`;
+  h += `<h1>${esc(row.truck ? tc("Gebraucht-Lkw-Check") : uc("Gebrauchtwagen-Check"))}</h1>`;
   h += `<div class='muted'>${esc(`${pad(when.getDate())}.${pad(when.getMonth() + 1)}.${when.getFullYear()}, ${pad(when.getHours())}:${pad(when.getMinutes())}`)}</div>`;
   h += "</td><td style='border:none; text-align:right; width:42%'>";
   h += `<div style='display:inline-block; padding:8px 14px; border-radius:8px; border:2px solid ${colour}; color:${colour}; font-weight:bold; font-size:12pt'>${esc(row.headline)}</div>`;
@@ -417,7 +422,16 @@ export function usedCarHtml(row: UsedCarRow, when: Date): string {
   if (row.minutesSinceClear >= 0) since.push(uc("%1 h Betrieb", localeNumber(row.minutesSinceClear / 60, 0)));
   fact(uc("Seit dem letzten Löschen"), since.join(", "));
   if (row.readinessTotal >= 0) fact(tr("Bereitschaftstests"), uc("%1 von %2 abgeschlossen", row.readinessComplete, row.readinessTotal));
-  if (row.storedFaults >= 0) {
+  const truck = row.truck;
+  if (truck) {
+    if (truck.engineHours >= 0) fact(tc("Motorbetriebsstunden"), `${localeNumber(truck.engineHours, 0)} h`);
+    if (truck.idleShare >= 0) fact(tc("Leerlaufanteil"), `${localeNumber(truck.idleShare, 0)} %`);
+    if (truck.averageSpeed >= 0) fact(tc("Kilometer je Betriebsstunde"), localeNumber(truck.averageSpeed, 1));
+    if (truck.fuelPer100km >= 0) fact(tc("Durchschnittsverbrauch"), `${localeNumber(truck.fuelPer100km, 1)} l/100 km`);
+    if (truck.activeFaults >= 0) {
+      fact(tr("Fehlerspeicher"), tc("%1 aktiv, %2 früher aktiv", truck.activeFaults, Math.max(truck.previousFaults, 0)));
+    }
+  } else if (row.storedFaults >= 0) {
     fact(tr("Fehlerspeicher"), uc("%1 gespeichert, %2 vorläufig, %3 dauerhaft", row.storedFaults, row.pendingFaults, row.permanentFaults));
   }
   if (row.healthScore >= 0) fact(t("caruspex::MainWindow", "Gesundheitscheck"), uc("%1 von 100 Punkten", row.healthScore));

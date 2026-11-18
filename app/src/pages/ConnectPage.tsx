@@ -22,6 +22,7 @@ import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { isAndroid } from "../lib/platform";
 import { navigate } from "../shell/nav";
+import type { PageId } from "../shell/pages";
 import { garageStore, rememberedRoute } from "../state/garage";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
@@ -667,10 +668,18 @@ export default function ConnectPage() {
     startConnect({ mode: "wifi" });
   });
 
-  // --page truck-faults / truck-live: the demo truck over SAE J1939, then
-  // its faults or its live values.
+  // --page truck-faults / truck-live / truck-health / truck-used: the demo
+  // truck over SAE J1939, then its faults, its live values, its health
+  // check or its used vehicle check (with the VIN of its papers).
   useAppEvent<string>("dev:page", (name) => {
-    if (name !== "truck-faults" && name !== "truck-live") return;
+    const pages: Record<string, PageId> = {
+      "truck-faults": "faults",
+      "truck-live": "live",
+      "truck-health": "health",
+      "truck-used": "used-car",
+    };
+    const page = pages[name];
+    if (!page) return;
     navigate("connect");
     setMode("demo");
     setTruck(true);
@@ -678,8 +687,11 @@ export default function ConnectPage() {
     latest.current.truckRate = 0;
     startConnect({ mode: "demo" });
     setTimeout(() => {
-      navigate(name === "truck-faults" ? "faults" : "live");
+      navigate(page);
       if (name === "truck-live") void call("start_live", { pids: [] });
+      if (name === "truck-health") void call("run_health_check", { seconds: 8 });
+      // The VIN of the demo truck (caruspex_demo::truck::TRUCK_VIN).
+      if (name === "truck-used") void call("run_used_car_check", { papersVin: "YCXTR42H4NC051739" });
     }, 7000);
   });
 
@@ -875,7 +887,7 @@ export default function ConnectPage() {
               <div className="subtle connect-demo-text">
                 {truck
                   ? tk(
-                      "Ein nachgebauter Lkw im Programm: Motor, Getriebe, Bremsen und Kombiinstrument am J1939-Bus, mit zwei aktiven und zwei früheren Fehlern.",
+                      "Ein nachgebauter Lkw im Programm: Motor, Getriebe, Bremsen, Kombiinstrument und Tachograph am J1939-Bus, mit zwei aktiven und zwei früheren Fehlern.",
                     )
                   : tr(
                       "Ein nachgebautes Auto im Programm: es fährt, wärmt sich auf, " +

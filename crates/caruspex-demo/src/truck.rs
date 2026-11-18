@@ -1,15 +1,24 @@
-//! The demo truck: four control units on an SAE J1939 bus at 250 kbit/s.
+//! The demo truck: five control units on an SAE J1939 bus at 250 kbit/s.
 //!
 //! - engine (address 00): speed, torque, temperatures, pressures, fuel,
-//!   battery, boost, AdBlue; two active faults (intake manifold temperature
-//!   sensor shorted to plus, coolant level slightly low), so its DM1 is ten
-//!   bytes long and goes out as a broadcast announcement (BAM) with two
-//!   data packets; one previously active fault (AdBlue level);
+//!   battery, boost, AdBlue, particulate filter, its own fine odometer;
+//!   two active faults (intake manifold temperature sensor shorted to plus,
+//!   coolant level slightly low), so its DM1 is ten bytes long and goes out
+//!   as a broadcast announcement (BAM) with two data packets; one
+//!   previously active fault (AdBlue level). On request: engine hours,
+//!   fuel used, idle hours and DM21 (distance with the lamp on and since
+//!   the last clearing);
 //! - transmission (03): gears and oil temperature;
 //! - brakes (0B): brake pedal, front axle speed, air supply; one
 //!   previously active fault (front axle speed erratic);
-//! - instrument cluster (17): vehicle speed, fuel level, distances,
-//!   ambient air.
+//! - instrument cluster (17): vehicle speed, fuel level, the odometer of
+//!   the dashboard, ambient air;
+//! - tachograph (EE): speed and its own fine odometer.
+//!
+//! The particulate filter is 82 % full and asks for a regeneration, which
+//! a health check reports as "look at it soon". With
+//! [`TruckSim::with_odometer_mismatch`] the dashboard shows 200 000 km less
+//! than engine and tachograph, as after a turned back or swapped cluster.
 //!
 //! Everything is a function of the seconds since ignition on, like the
 //! demo car: the engine starts after two seconds and the truck then drives
@@ -41,7 +50,8 @@ pub const ENGINE: u8 = 0x00;
 pub const TRANSMISSION: u8 = 0x03;
 pub const BRAKES: u8 = 0x0B;
 pub const CLUSTER: u8 = 0x17;
-const UNITS: [u8; 4] = [ENGINE, TRANSMISSION, BRAKES, CLUSTER];
+pub const TACHOGRAPH: u8 = 0xEE;
+const UNITS: [u8; 5] = [ENGINE, TRANSMISSION, BRAKES, CLUSTER, TACHOGRAPH];
 
 const REQUEST: u32 = 0xEA00;
 const ACK: u32 = 0xE800;
@@ -57,6 +67,8 @@ const COMPONENT: u32 = 0xFEEB;
 const SOFTWARE: u32 = 0xFEDA;
 const HOURS: u32 = 0xFEE5;
 const FUEL_USED: u32 = 0xFEE9;
+const IDLE: u32 = 0xFEDC;
+const DM21: u32 = 0xC100;
 
 const EEC1: u32 = 61444;
 const EEC2: u32 = 61443;
@@ -76,6 +88,14 @@ const TRANS_FLUIDS: u32 = 65272;
 const AIR: u32 = 65198;
 const DEF_TANK: u32 = 65110;
 const WHEELS: u32 = 65215;
+const TCO1: u32 = 65132;
+const DPF_SERVICE: u32 = 64891;
+const DPF_CONTROL: u32 = 64892;
+
+/// The odometer of the demo truck at ignition on, km.
+const ODOMETER_KM: f64 = 512_345.5;
+/// km per second of the simulation, so the distances move a little.
+const KM_PER_SECOND: f64 = 0.012;
 
 /// The NAME of the other diagnostic tool [`TruckSim::with_tool_on_f9`]
 /// puts on the bus: lower than any tool that can take any address.
@@ -96,6 +116,7 @@ fn unit_name(address: u8) -> u64 {
         ENGINE => 0,
         TRANSMISSION => 3,
         BRAKES => 9,
+        TACHOGRAPH => 35,
         _ => 23,
     };
     (function << 40) | (0x1F0 << 21) | (0x4_2000 + u64::from(address))
@@ -156,6 +177,10 @@ pub struct TruckSim {
     previous_brakes: Vec<Fault>,
     transfers: Vec<Transfer>,
     tool_on_f9: bool,
+    /// km the dashboard odometer is off against engine and tachograph.
+    dashboard_offset_km: f64,
+    /// DM11 or DM3 ran: the DM21 counters since clearing start at zero.
+    dm21_cleared: bool,
 }
 
 impl Default for TruckSim {
@@ -173,7 +198,16 @@ impl TruckSim {
             previous_brakes: vec![(904, 2, 4)],
             transfers: Vec::new(),
             tool_on_f9: false,
+            dashboard_offset_km: 0.0,
+            dm21_cleared: false,
         }
+    }
+
+    /// The dashboard shows 200 000 km less than engine and tachograph, as
+    /// after a turned back or swapped instrument cluster.
+    pub fn with_odometer_mismatch(mut self) -> Self {
+        self.dashboard_offset_km = -200_000.0;
+        self
     }
 
     /// Another diagnostic tool already holds address F9 and defends it.
@@ -367,6 +401,46 @@ impl TruckSim {
                 put(&mut d, 0, 4, 412.5, 0.5, 0.0);
                 put(&mut d, 4, 4, 187_654.5, 0.5, 0.0);
             }
+            (ENGINE, IDLE) => {
+                // A third of the hours at idle: long haul with night heating.
+                put(&mut d, 0, 4, 9_875.5, 0.5, 0.0);
+                put(&mut d, 4, 4, 3_950.25, 0.05, 0.0);
+            }
+            (ENGINE, DM21) => {
+                let (mil_km, clear_km, mil_min, clear_min) = if self.dm21_cleared {
+                    (0.0, 0.0, 0.0, 0.0)
+                } else {
+                    (37.0, 8_412.0, 55.0, 9_870.0)
+                };
+                put(&mut d, 0, 2, mil_km, 1.0, 0.0);
+                put(&mut d, 2, 2, clear_km, 1.0, 0.0);
+                put(&mut d, 4, 2, mil_min, 1.0, 0.0);
+                put(&mut d, 6, 2, clear_min, 1.0, 0.0);
+            }
+            (ENGINE, DPF_SERVICE) => {
+                put(&mut d, 0, 1, 82.0, 1.0, 0.0);
+                put(&mut d, 1, 1, 38.0, 1.0, 0.0);
+                put(&mut d, 2, 4, 31.5 * 3600.0, 1.0, 0.0);
+            }
+            (ENGINE, DPF_CONTROL) => {
+                // Lamps off, no passive regeneration; byte 2: active
+                // regeneration not running (00), filter state "needed,
+                // moderate level" (010), not inhibited (00).
+                d[0] = 0x00;
+                d[1] = 0b1000_1000;
+            }
+            (ENGINE, DISTANCE_HR) => {
+                // The engine counts its own distance, a few km apart.
+                put(
+                    &mut d,
+                    0,
+                    4,
+                    ODOMETER_KM + 5.7 + t * KM_PER_SECOND,
+                    0.005,
+                    0.0,
+                );
+                put(&mut d, 4, 4, 214.25 + t * KM_PER_SECOND, 0.005, 0.0);
+            }
             (TRANSMISSION, ETC2) => {
                 put(&mut d, 0, 1, s.gear, 1.0, -125.0);
                 put(&mut d, 1, 2, 1.0, 0.001, 0.0);
@@ -386,12 +460,27 @@ impl TruckSim {
             }
             (CLUSTER, DASH) => put(&mut d, 1, 1, 62.0, 0.4, 0.0),
             (CLUSTER, DISTANCE) => {
-                put(&mut d, 0, 4, 214.25 + t * 0.012, 0.125, 0.0);
-                put(&mut d, 4, 4, 512_345.5 + t * 0.012, 0.125, 0.0);
+                put(&mut d, 0, 4, 214.25 + t * KM_PER_SECOND, 0.125, 0.0);
+                put(
+                    &mut d,
+                    4,
+                    4,
+                    ODOMETER_KM + self.dashboard_offset_km + t * KM_PER_SECOND,
+                    0.125,
+                    0.0,
+                );
             }
-            (CLUSTER, DISTANCE_HR) => {
-                put(&mut d, 0, 4, 512_345.5 + t * 0.012, 0.005, 0.0);
-                put(&mut d, 4, 4, 214.25 + t * 0.012, 0.005, 0.0);
+            (TACHOGRAPH, TCO1) => put(&mut d, 6, 2, s.speed, 1.0 / 256.0, 0.0),
+            (TACHOGRAPH, DISTANCE_HR) => {
+                put(
+                    &mut d,
+                    0,
+                    4,
+                    ODOMETER_KM - 0.6 + t * KM_PER_SECOND,
+                    0.005,
+                    0.0,
+                );
+                put(&mut d, 4, 4, 214.25 + t * KM_PER_SECOND, 0.005, 0.0);
             }
             (CLUSTER, AMBIENT) => {
                 put(&mut d, 0, 1, 100.5, 0.5, 0.0);
@@ -425,7 +514,7 @@ impl TruckSim {
         match pgn {
             DM1 => Some(self.dm1(unit)),
             DM2 => Some(self.dm2(unit)),
-            VIN_PGN if unit == ENGINE || unit == CLUSTER => {
+            VIN_PGN if unit == ENGINE || unit == CLUSTER || unit == TACHOGRAPH => {
                 Some(format!("{TRUCK_VIN}*").into_bytes())
             }
             COMPONENT => {
@@ -433,6 +522,7 @@ impl TruckSim {
                     ENGINE => ("CX-D13", "E7712093", "ENGINE"),
                     TRANSMISSION => ("CX-AMT12", "T5520418", "GEARBOX"),
                     BRAKES => ("CX-EBS5", "B3301977", "BRAKES"),
+                    TACHOGRAPH => ("CX-DTCO4", "D8812345", "TACHO"),
                     _ => ("CX-IC2", "C0091534", "CLUSTER"),
                 };
                 Some(format!("CARUSPEX*{model}*{serial}*{name}*").into_bytes())
@@ -442,6 +532,7 @@ impl TruckSim {
                     ENGINE => "ECM 4.2.1*BOOT 1.07*",
                     TRANSMISSION => "TCU 2.9.0*",
                     BRAKES => "EBS 5.3.2*",
+                    TACHOGRAPH => "DTCO 4.1*",
                     _ => "IC 1.4.8*",
                 };
                 let fields = text.matches('*').count() as u8;
@@ -476,9 +567,14 @@ impl TruckSim {
             (CLUSTER, CCVS1, 100, 6),
             (CLUSTER, DASH, 1000, 6),
             (CLUSTER, DISTANCE, 1000, 6),
-            (CLUSTER, DISTANCE_HR, 1000, 6),
+            (ENGINE, DISTANCE_HR, 1000, 6),
             (CLUSTER, AMBIENT, 1000, 6),
             (CLUSTER, DM1, 1000, 6),
+            (ENGINE, DPF_SERVICE, 1000, 6),
+            (ENGINE, DPF_CONTROL, 1000, 6),
+            (TACHOGRAPH, TCO1, 200, 3),
+            (TACHOGRAPH, DISTANCE_HR, 1000, 6),
+            (TACHOGRAPH, DM1, 1000, 6),
         ]
     }
 
@@ -611,6 +707,8 @@ impl TruckSim {
                 self.previous_engine.clear();
                 self.previous_brakes.clear();
             }
+            // Clearing starts the counters since clearing again.
+            self.dm21_cleared = true;
             for (i, unit) in responders.iter().enumerate() {
                 out.push(TimedFrame {
                     at_ms: at_ms + 8 + 3 * i as u64,
@@ -845,11 +943,56 @@ mod tests {
         let mut truck = TruckSim::new();
         assert!(truck.has_active_faults());
         let acks = truck.on_frame(0x18EA_FFF9, &[0xD3, 0xFE, 0x00], 5000);
-        assert_eq!(acks.len(), 4);
+        assert_eq!(acks.len(), 5);
         assert!(acks.iter().all(|f| f.data[0] == 0 && f.data[4] == 0xF9));
         assert!(!truck.has_active_faults());
         assert_eq!(truck.dm2(ENGINE).len(), 14);
         truck.on_frame(0x18EA_FFF9, &[0xCC, 0xFE, 0x00], 6000);
         assert_eq!(truck.dm2(ENGINE)[2..6], [0, 0, 0, 0]);
+        // DM21 counts from the clearing again.
+        let dm21 = truck.on_frame(0x18EA_FFF9, &[0x00, 0xC1, 0x00], 7000);
+        assert_eq!(dm21.len(), 1);
+        assert_eq!(dm21[0].id, 0x18C1_F900);
+        assert_eq!(dm21[0].data[2..4], [0, 0]);
+    }
+
+    /// The total distance (SPN 245 or 917) in a frame, km.
+    fn total_km(frame: &TimedFrame) -> f64 {
+        let pgn = (frame.id >> 8) & 0xFFFF;
+        let at = if pgn == DISTANCE { 4 } else { 0 };
+        let raw = u32::from_le_bytes(frame.data[at..at + 4].try_into().unwrap());
+        f64::from(raw) * if pgn == DISTANCE { 0.125 } else { 0.005 }
+    }
+
+    #[test]
+    fn three_odometers_agree_unless_the_dashboard_was_changed() {
+        let odometers = |truck: &TruckSim| -> Vec<(u8, f64)> {
+            let mut out: Vec<(u8, f64)> = truck
+                .broadcasts(600_000, 602_000)
+                .iter()
+                .filter(|f| {
+                    let pgn = (f.id >> 8) & 0xFFFF;
+                    pgn == DISTANCE || pgn == DISTANCE_HR
+                })
+                .map(|f| ((f.id & 0xFF) as u8, total_km(f)))
+                .collect();
+            out.sort_by_key(|o| o.0);
+            out.dedup_by_key(|o| o.0);
+            out
+        };
+        let normal = odometers(&TruckSim::new());
+        assert_eq!(
+            normal.iter().map(|o| o.0).collect::<Vec<_>>(),
+            vec![ENGINE, CLUSTER, TACHOGRAPH]
+        );
+        assert!(normal.iter().all(|o| (o.1 - normal[0].1).abs() < 10.0));
+        let changed = odometers(&TruckSim::new().with_odometer_mismatch());
+        assert!((changed[0].1 - changed[1].1 - 200_000.0).abs() < 10.0);
+        // Hours, idle hours and DM21 come on request from the engine.
+        let mut truck = TruckSim::new();
+        let idle = truck.on_frame(0x18EA_00F9, &[0xDC, 0xFE, 0x00], 1000);
+        assert_eq!(idle.len(), 1);
+        let raw = u32::from_le_bytes(idle[0].data[4..8].try_into().unwrap());
+        assert!((f64::from(raw) * 0.05 - 3_950.25).abs() < 0.01);
     }
 }

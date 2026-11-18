@@ -64,6 +64,15 @@ pub const PGN_SOFTWARE_ID: u32 = 0xFEDA;
 pub const PGN_ENGINE_HOURS: u32 = 0xFEE5;
 /// PGN 65257: fuel consumption (trip and total), usually only on request.
 pub const PGN_FUEL_CONSUMPTION: u32 = 0xFEE9;
+/// PGN 65244: idle operation (total idle hours and idle fuel), on request.
+pub const PGN_IDLE_OPERATION: u32 = 0xFEDC;
+/// PGN 65248: vehicle distance (trip and total, 125 m steps).
+pub const PGN_VEHICLE_DISTANCE: u32 = 0xFEE0;
+/// PGN 65217: high resolution vehicle distance (5 m steps).
+pub const PGN_VEHICLE_DISTANCE_HR: u32 = 0xFEC1;
+/// PGN 49408: DM21, distance and time with the emission lamp on and since
+/// the faults were last cleared. PDU1, so it is asked of every unit.
+pub const PGN_DM21: u32 = 0xC100;
 
 /// The global address: to everybody.
 pub const GLOBAL: u8 = 0xFF;
