@@ -3,6 +3,7 @@
 //! from the catalog built from `translations/<code>/core_*.json`, looked up by
 //! the English text. A text missing in a catalog shows in English.
 
+use std::cell::Cell;
 use std::collections::HashMap;
 use std::sync::OnceLock;
 use std::sync::atomic::{AtomicU8, Ordering};
@@ -182,7 +183,16 @@ pub fn set_language(language: Language) {
     CURRENT.store(language as u8, Ordering::Relaxed);
 }
 
+thread_local! {
+    /// The language `with_language` set for this thread only, so a test or
+    /// a report in another language never changes what other threads see.
+    static OVERRIDE: Cell<Option<Language>> = const { Cell::new(None) };
+}
+
 pub fn language() -> Language {
+    if let Some(language) = OVERRIDE.with(Cell::get) {
+        return language;
+    }
     TABLE[CURRENT.load(Ordering::Relaxed) as usize].id
 }
 
@@ -273,13 +283,19 @@ impl Text {
 }
 
 /// Runs `f` with another active language and switches back afterwards.
-/// For tests and for rendering a report in a chosen language.
+/// For tests and for rendering a report in a chosen language. Only the
+/// calling thread sees the other language; tests run in parallel and the
+/// interface keeps its language meanwhile.
 pub fn with_language<R>(language: Language, f: impl FnOnce() -> R) -> R {
-    let before = self::language();
-    set_language(language);
-    let result = f();
-    set_language(before);
-    result
+    // Restores the previous state even if `f` panics.
+    struct Restore(Option<Language>);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            OVERRIDE.with(|o| o.set(self.0));
+        }
+    }
+    let _restore = Restore(OVERRIDE.with(|o| o.replace(Some(language))));
+    f()
 }
 
 #[cfg(test)]
