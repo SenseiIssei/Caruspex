@@ -105,6 +105,8 @@ forçado a cada execução com `--language fr` e assim por diante. Como as tradu
 
 ![Vista de raio X](docs/screenshot-xray.png)
 
+![Carros e motos do catálogo na vista de raio X](docs/xray-cars.png)
+
 ### Valores ao vivo
 - Todos os valores do modo 01 da SAE J1979 até o PID C4: 145 PIDs com mais de 300 leituras, agrupadas e pesquisáveis.
 - Odômetro, marcha, temperatura do óleo, consumo de combustível, torque, pressão do turbo, temperaturas de escape, filtro de partículas, AdBlue, NOx e bateria híbrida, conforme o carro informar.

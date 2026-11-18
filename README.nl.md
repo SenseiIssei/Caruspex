@@ -105,6 +105,8 @@ per sessie worden afgedwongen met `--language fr` enzovoort. Hoe vertalingen wor
 
 ![Röntgenweergave](docs/screenshot-xray.png)
 
+![Auto's en motoren uit de catalogus in de röntgenweergave](docs/xray-cars.png)
+
 ### Live-waarden
 - Elke mode 01-waarde van SAE J1979 tot en met PID C4: 145 PID's met meer dan 300 uitlezingen, gegroepeerd en doorzoekbaar.
 - Kilometerstand, versnelling, olietemperatuur, brandstofverbruik, koppel, turbodruk, uitlaattemperaturen, roetfilter, AdBlue, NOx en hybride accu, voor zover de auto ze doorgeeft.

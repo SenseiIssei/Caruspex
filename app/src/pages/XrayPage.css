@@ -43,6 +43,11 @@
     radial-gradient(120% 90% at 50% 30%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%),
     linear-gradient(180deg, var(--card-top), var(--surface));
 }
+/* The screenshot switch "bare": the stage covers the whole window. The
+   transform animation of the page slot would make the slot, not the window,
+   the box the stage is fixed to, so it is switched off there. */
+.page-slot.active:has(.xray-bare) { animation: none; }
+.xray-stage.xray-bare { position: fixed; inset: 0; z-index: 1000; height: auto; min-height: 0; border: 0; border-radius: 0; box-shadow: none; }
 .xray-stage:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent); }
 
 .xray-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }

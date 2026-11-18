@@ -105,6 +105,8 @@ forzare a ogni avvio con `--language fr` e simili. Come vengono fatte e controll
 
 ![Vista a raggi X](docs/screenshot-xray.png)
 
+![Auto e moto del catalogo nella vista a raggi X](docs/xray-cars.png)
+
 ### Valori live
 - Tutti i valori del modo 01 della SAE J1979 fino al PID C4: 145 PID con oltre 300 letture, raggruppate e ricercabili.
 - Contachilometri, marcia, temperatura dell'olio, consumo di carburante, coppia, pressione del turbo, temperature di scarico, filtro antiparticolato, AdBlue, NOx e batteria ibrida, nella misura in cui l'auto li comunica.

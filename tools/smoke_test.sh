@@ -2,7 +2,8 @@
 # Installs or opens the packages from tools/package.sh the way a user would
 # and checks that both programs start: the command line tool reads the demo
 # car, the app reports its version, opens the demo car and writes a
-# screenshot (on macOS and Linux also a PDF report).
+# screenshot (on macOS and Linux also a PDF report), and a picture of the
+# 3D X-ray view of a catalog car.
 #
 # Usage: bash tools/smoke_test.sh [shot-dir]
 # SMOKE_WINDOW_POS=-1880,40 places the window (for example on a second
@@ -59,6 +60,11 @@ check_demo() {
     CARUSPEX_GARAGE="$WORK/garage.json" "$@" --demo \
         ${place[@]+"${place[@]}"} --size 1440x920 --report "$SHOTS/$name.pdf"
     check_pdf "$SHOTS/$name.pdf"
+    # The 3D X-ray view of a catalog car alone in the window (WebGL, or the
+    # flat drawing where the machine has none).
+    CARUSPEX_GARAGE="$WORK/garage.json" "$@" --page "xray-generation:Volkswagen Golf VII||front|bare" \
+        ${place[@]+"${place[@]}"} --size 1200x800 --shot-delay 9000 --shot "$SHOTS/$name-xray.png"
+    check_shot "$SHOTS/$name-xray.png"
 }
 
 case "$(uname -s)" in
@@ -74,6 +80,9 @@ MINGW* | MSYS* | CYGWIN*)
     CARUSPEX_GARAGE="$WORK/garage.json" "$TARGET/caruspex.exe" --demo --page faults \
         "${place[@]}" --size 1440x920 --shot-delay 5000 --shot "$(cygpath -w "$SHOTS")\\windows.png"
     check_shot "$SHOTS/windows.png"
+    CARUSPEX_GARAGE="$WORK/garage.json" "$TARGET/caruspex.exe" --page "xray-generation:Volkswagen Golf VII||front|bare" \
+        "${place[@]}" --size 1200x800 --shot-delay 9000 --shot "$(cygpath -w "$SHOTS")\\windows-xray.png"
+    check_shot "$SHOTS/windows-xray.png"
     "$TARGET/unins000.exe" //VERYSILENT //SUPPRESSMSGBOXES
     sleep 3
     [ ! -f "$TARGET/caruspex.exe" ] || { echo "uninstall left caruspex.exe" >&2; exit 1; }

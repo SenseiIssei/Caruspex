@@ -59,6 +59,8 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 - Typische Maße für Karosserie und Baujahr, kein Abbild des genauen Modells: Konstruktionsdaten und Schaltpläne der Hersteller sind nicht frei verfügbar
 ![Röntgenansicht](docs/de/screenshot-xray.png)
 
+![Autos und Motorräder des Katalogs in der Röntgenansicht](docs/xray-cars.png)
+
 **Live-Werte**
 - Alle Messwerte nach SAE J1979 bis PID C4, 145 PIDs mit über 300 Einzelwerten, nach Bereichen sortiert und durchsuchbar
 - Darunter Kilometerstand, Gang, Öltemperatur, Kraftstoffdurchfluss, Drehmoment, Ladedruck, Abgastemperatur, Partikelfilter, AdBlue, NOx und Hybridakku, soweit das Auto sie liefert
