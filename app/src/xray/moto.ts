@@ -417,7 +417,8 @@ export function buildMotoLayout(input: XrayInput): CarLayout {
   // coils and throttle bodies, the air box under the tank.
   const crank: Vec3 = [ex, ey, 0];
   parts.push({ ...box("engine", "drivetrain", "engine", crank, boxer ? [0.38, 0.24, 0.28] : [0.34, 0.26, engineWidth], [CarZone.Cylinders]), explode: [0, 0, -0.5] });
-  const gearbox: Vec3 = scooter ? [(px + rearAxle) / 2, rr + 0.04, 0.1] : [ex - 0.25, ey - 0.01, 0];
+  // A scooter's belt case runs beside the rear tyre, not through it.
+  const gearbox: Vec3 = scooter ? [(px + rearAxle) / 2, rr + 0.04, Math.max(0.1, rt / 2 + 0.065)] : [ex - 0.25, ey - 0.01, 0];
   parts.push({
     ...box("gearbox", "drivetrain", "gearbox", gearbox, scooter ? [px - rearAxle + 0.05, 0.15, 0.11] : [0.18, 0.21, engineWidth * 0.86], [CarZone.Gearbox]),
     explode: scooter ? [0, 0, 0.4] : [-0.25, 0, -0.5],
@@ -555,7 +556,11 @@ export function buildMotoLayout(input: XrayInput): CarLayout {
   if (spec.style === "cruiser") parts.push({ ...box("pillion", "body", "seat", [px - 0.42, seat + 0.03, 0], [0.26, 0.06, 0.22], [CarZone.Cabin]), round: 0.45 });
   anchors.cabin = [(seatFront + seatRear) / 2, seat + 0.03, 0];
   if (!scooter) {
-    parts.push(shell("side-covers", [px - 0.14, seat - 0.15, 0], [0.42, 0.17, 0.3], 0, "box", 0.35));
+    // From ahead of the pivot back to the rear tyre, no further: under the
+    // low seat of a cruiser they reached into the wheel.
+    const coverFront = px + 0.07;
+    const coverRear = Math.min(coverFront - 0.2, Math.max(px - 0.35, rearAxle + rr * 0.8));
+    parts.push(shell("side-covers", [(coverFront + coverRear) / 2, seat - 0.15, 0], [coverFront - coverRear, 0.17, 0.3], 0, "box", 0.35));
     parts.push(shell("tail", [tail + 0.2, seat - 0.01, 0], [0.38, 0.12, 0.2], 0.08));
   }
   parts.push({ ...box("number-plate", "body", "cabin", [tail + 0.04, seat - 0.24, 0], [0.015, 0.14, 0.2]), tilt: 0.3 });
@@ -645,7 +650,9 @@ export function buildMotoLayout(input: XrayInput): CarLayout {
   anchors.battery = [battery[0], battery[1] + 0.09, 0];
   const mainFuse: Vec3 = [battery[0] + 0.1, battery[1] + 0.03, 0.05];
   parts.push(box("main-fuses", "electrics", "electric", mainFuse, [0.05, 0.04, 0.04], [CarZone.Electrics]));
-  const fuseBox: Vec3 = scooter ? [px - 0.05, seat - 0.12, 0.08] : [px - 0.32, seat - 0.13, 0.04];
+  // Ahead of the rear tyre: under the low seat of a cruiser the spot behind
+  // the pivot was inside the wheel.
+  const fuseBox: Vec3 = scooter ? [px - 0.05, seat - 0.12, 0.08] : [Math.max(px - 0.32, rearAxle + rr + 0.09), seat - 0.13, 0.04];
   parts.push(box("fuse-box", "electrics", "electric", fuseBox, [0.11, 0.03, 0.07], [CarZone.Electrics]));
   const alternator: Vec3 = boxer ? [ex + 0.22, ey + 0.06, 0] : [ex + 0.02, ey - 0.01, engineWidth / 2 + 0.03];
   parts.push(cylinder("alternator", "electrics", "electric", boxer ? "x" : "z", alternator, 0.06, 0.18, [CarZone.Electrics]));

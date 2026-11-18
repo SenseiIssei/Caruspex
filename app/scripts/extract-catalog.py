@@ -19,8 +19,9 @@ DTC_BRANDS = ROOT / "crates" / "caruspex-data" / "src" / "generated" / "dtc_bran
 OUT = HERE.parent / "src" / "api" / "mock" / "data"
 
 # Enum orders of catalog.rs, vin.rs, severity.rs and dtc/mod.rs.
-BODY = ["Hatchback", "Sedan", "Estate", "Suv", "Van", "Coupe", "Convertible", "Pickup", "Mpv", "Microcar", "Roadster", "Motorcycle"]
-CONNECTOR = ["None", "Obd2", "Vag2x2", "Bmw20", "Mb38", "Other", "Moto"]
+BODY = ["Hatchback", "Sedan", "Estate", "Suv", "Van", "Coupe", "Convertible", "Pickup", "Mpv", "Microcar", "Roadster", "Motorcycle",
+        "Truck"]
+CONNECTOR = ["None", "Obd2", "Vag2x2", "Bmw20", "Mb38", "Other", "Moto", "J1939"]
 LOCATION = ["Unknown", "UnderDashLeft", "UnderSteeringColumn", "FootwellCover", "FuseBox", "CentreConsole",
             "BehindAshtray", "PassengerSide", "EngineBay", "RearConsole", "UnderSeat"]
 SPOT = ["Unknown", "DashLeftOfColumn", "DashRightOfColumn", "AbovePedals", "BelowColumn", "FootwellLeft",
