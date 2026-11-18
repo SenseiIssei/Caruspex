@@ -105,6 +105,8 @@ forcée à chaque lancement avec `--language fr` et ainsi de suite. La façon do
 
 ![Vue radiographique](docs/screenshot-xray.png)
 
+![Voitures et motos du catalogue dans la vue radiographique](docs/xray-cars.png)
+
 ### Valeurs en direct
 - Toutes les valeurs du mode 01 de la SAE J1979 jusqu'au PID C4 : 145 PID avec plus de 300 mesures, regroupées et consultables.
 - Compteur kilométrique, rapport engagé, température d'huile, débit de carburant, couple, pression de suralimentation, températures d'échappement, filtre à particules, AdBlue, NOx et batterie hybride, dans la mesure où la voiture les communique.

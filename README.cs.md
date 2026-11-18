@@ -105,6 +105,8 @@ vynutit pro jedno spuštění přes `--language fr` a podobně. Jak se překlady
 
 ![Rentgenový pohled](docs/screenshot-xray.png)
 
+![Auta a motocykly z katalogu v rentgenovém pohledu](docs/xray-cars.png)
+
 ### Živé hodnoty
 - Každá hodnota režimu 01 podle SAE J1979 až po PID C4: 145 PID s více než 300 údaji, seskupených a prohledávatelných.
 - Stav tachometru, převodový stupeň, teplota oleje, spotřeba paliva, točivý moment, plnicí tlak, teploty výfukových plynů, filtr pevných částic, AdBlue, NOx a hybridní baterie, pokud je auto hlásí.

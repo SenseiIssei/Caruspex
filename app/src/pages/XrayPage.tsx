@@ -296,7 +296,7 @@ export default function XrayPage() {
   }, [generation?.id]);
   const [devView, setDevView] = useState<"side" | "rear" | "front" | null>(null);
   // Further switches of the screenshot option after the view: "stats",
-  // "explode", "section=x:0.4", "hide=body,cooling".
+  // "explode", "section=x:0.4", "hide=body,cooling", "bare".
   const [devFlags, setDevFlags] = useState<string[]>([]);
   const showGeneration = useCallback((arg: string) => {
     const [query, variantName, view, ...flags] = arg.split("|");
@@ -623,6 +623,9 @@ export default function XrayPage() {
   // The frame counter of the screenshot option ("stats").
   const [stats, setStats] = useState<FrameStats | null>(null);
   const statsOn = devFlags.includes("stats");
+  // "bare": the car alone over the whole window, without the page and the
+  // controls, for the pictures of tools/xray_shots.py.
+  const bare = devFlags.includes("bare");
   useEffect(() => sceneRef.current?.setStats(statsOn), [statsOn, mode]);
   useEffect(() => {
     for (const flag of devFlags) {
@@ -916,7 +919,7 @@ export default function XrayPage() {
       />
 
       <div className="xray-grid">
-        <div className="xray-stage card" ref={host} tabIndex={0} aria-label={tr("3D-Modell des Autos. Pfeiltasten drehen, Umschalt mit Pfeiltasten verschiebt, Plus und Minus zoomen.")}>
+        <div className={bare ? "xray-stage card xray-bare" : "xray-stage card"} ref={host} tabIndex={0} aria-label={tr("3D-Modell des Autos. Pfeiltasten drehen, Umschalt mit Pfeiltasten verschiebt, Plus und Minus zoomen.")}>
           {mode === "2d" ? (
             <div className="xray-fallback">
               <VehicleDiagram body={bodyStyleFor(body)} anatomy affected={zones} />
@@ -925,7 +928,7 @@ export default function XrayPage() {
           ) : null}
           {mode === "loading" || mode === "idle" ? <div className="xray-loading hint">{tr("Das 3D-Modell wird geladen ...")}</div> : null}
 
-          {mode === "3d" ? (
+          {mode === "3d" && !bare ? (
             <>
               <div className="xray-layers" role="group" aria-label={tr("Ebenen")}>
                 {LAYERS.map((layer) => (

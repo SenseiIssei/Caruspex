@@ -105,6 +105,8 @@ Japonca, Korece, Hintçe ve Endonezce. Sistem dilini izler, ayarlardan değişti
 
 ![Röntgen görünümü](docs/screenshot-xray.png)
 
+![Katalogdaki otomobiller ve motosikletler röntgen görünümünde](docs/xray-cars.png)
+
 ### Canlı değerler
 - SAE J1979'un PID C4'e kadar her mod 01 değeri: 300'den fazla okumalı 145 PID, gruplanmış ve aranabilir.
 - Kilometre sayacı, vites, yağ sıcaklığı, yakıt tüketimi, tork, turbo basıncı, egzoz sıcaklıkları, partikül filtresi, AdBlue, NOx ve hibrit akü, araba bildirdiği ölçüde.

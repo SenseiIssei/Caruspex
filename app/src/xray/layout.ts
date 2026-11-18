@@ -425,7 +425,15 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, profi
     const p = u > 0.5 ? profile.noseRound : profile.tailRound;
     return (widthM / 2) * Math.pow(Math.max(0, 1 - Math.pow(s, p)), 1 / p);
   };
-  const tumble = (y: number, u: number) => 1 - profile.tumblehome * smoothstep(beltAt(u) - 0.05, top(u), y);
+  // The glasshouse leans in above the window line. Over a bonnet or boot
+  // lower than that line there is no glass: smoothstep with its edges the
+  // wrong way round gave 1 there and pulled the whole nose in by the
+  // tumblehome, so the front wheels were drawn up to a quarter too close.
+  const tumble = (y: number, u: number) => {
+    const from = beltAt(u) - 0.05;
+    const to = top(u);
+    return to <= from ? 1 : 1 - profile.tumblehome * smoothstep(from, to, y);
+  };
   const n = SECTION_EXPONENT;
   const hull: Hull = {
     length: lengthM,
@@ -826,6 +834,22 @@ export function buildLayout(input: XrayInput): CarLayout {
   const tubes: Tube[] = [];
   const anchors: Record<string, Vec3> = {};
 
+  // Moves a box (center, half extents) that sits beside a wheel and below
+  // its top in towards the middle until it clears the tyre. The fixed
+  // offsets of the engine bay suit a car of average width; a narrow kei car
+  // or an old Jimny had its battery and alternator inside the front wheel.
+  const inboard = (c: Vec3, half: Vec3): Vec3 => {
+    for (const w of wheels) {
+      if (Math.abs(c[0] - w.center[0]) >= w.radius + half[0] || c[1] - half[1] >= 2 * w.radius) continue;
+      if (c[2] * w.center[2] <= 0) continue;
+      const limit = Math.max(0, Math.abs(w.center[2]) - w.width / 2 - 0.02 - half[2]);
+      if (Math.abs(c[2]) > limit) c = [c[0], c[1], Math.sign(c[2]) * limit];
+    }
+    return c;
+  };
+  // Inner face of the rear tyres: the rear bench sits between the arches.
+  const rearArch = Math.abs(wheels[2]!.center[2]) - tyre / 2 - 0.02;
+
   // --- Cabin (body layer): dashboard, seats, steering wheel.
   const dashX = cowlX - 0.22;
   parts.push(box("dashboard", "body", "cabin", [dashX, clear + 0.62, 0], [0.32, 0.2, W * 0.78], [CarZone.Cabin]));
@@ -838,8 +862,9 @@ export function buildLayout(input: XrayInput): CarLayout {
   const rearSeatX = frontSeatX - 0.86;
   const rearRoom = p.rearSeats && rearSeatX - 0.3 > rearAxle - 0.15;
   if (rearRoom) {
-    parts.push(box("seat-rear", "body", "cabin", [rearSeatX, seatY + 0.02, 0], [0.48, 0.12, W * 0.72], [CarZone.Cabin]));
-    parts.push(box("back-rear", "body", "cabin", [rearSeatX - 0.28, seatY + 0.33, 0], [0.11, 0.56, W * 0.72], [CarZone.Cabin]));
+    const bench = Math.min(W * 0.72, 2 * rearArch);
+    parts.push(box("seat-rear", "body", "cabin", [rearSeatX, seatY + 0.02, 0], [0.48, 0.12, bench], [CarZone.Cabin]));
+    parts.push(box("back-rear", "body", "cabin", [rearSeatX - 0.28, seatY + 0.33, 0], [0.11, 0.56, bench], [CarZone.Cabin]));
   }
   parts.push(cylinder("steering-wheel", "body", "cabin", "x", [dashX - 0.32, clear + 0.78, lhd * 0.37], 0.04, 0.38, [CarZone.Cabin]));
   anchors.cabin = [dashX, clear + 0.75, 0];
@@ -859,7 +884,7 @@ export function buildLayout(input: XrayInput): CarLayout {
     if (a.engine === EngineLayout.FrontTransverse) {
       engineCenter = [frontAxle + 0.12, clear + 0.38, -0.1];
       blockSize = [0.36, blockH, 0.52];
-      gearboxCenter = [frontAxle - 0.02, clear + 0.3, 0.3];
+      gearboxCenter = inboard([frontAxle - 0.02, clear + 0.3, 0.3], [0.17, 0.17, 0.18]);
     } else if (a.engine === EngineLayout.FrontLongitudinal) {
       engineCenter = [frontAxle - 0.18, clear + 0.38, 0];
       blockSize = [0.62, blockH, 0.4];
@@ -903,7 +928,7 @@ export function buildLayout(input: XrayInput): CarLayout {
     const throttle: Vec3 = wide ? [manifold[0], manifold[1] + 0.02, manifold[2] + blockSize[2] * 0.45] : [manifold[0] + blockSize[0] * 0.45, manifold[1] + 0.02, manifold[2]];
     parts.push(cylinder("throttle", "drivetrain", "metal", wide ? "z" : "x", throttle, 0.09, 0.09, [CarZone.Throttle]));
     let airbox: Vec3 = a.engine === EngineLayout.FrontTransverse ? [engineCenter[0] + 0.05, headY + 0.08, 0.38] : [engineCenter[0] + 0.1, headY + 0.08, -0.38];
-    airbox = clampInside(hull, airbox, 0.12);
+    airbox = inboard(clampInside(hull, airbox, 0.12), [0.15, 0.07, 0.1]);
     parts.push(box("airbox", "drivetrain", "metal", airbox, [0.3, 0.14, 0.2], [CarZone.Intake]));
     tubes.push({ id: "intake-pipe", layer: "drivetrain", points: [airbox, [throttle[0], airbox[1], airbox[2] * 0.6], throttle], radius: 0.035, material: "metal", zones: [CarZone.Intake] });
     anchors.intake = airbox;
@@ -1045,10 +1070,13 @@ export function buildLayout(input: XrayInput): CarLayout {
   // rear lamps, the lamps in front. Where the strands run and where to look,
   // not a wiring diagram.
   const batteryAtBack = a.engine === EngineLayout.FrontLongitudinal && body !== BodyType.Pickup && body !== BodyType.Suv;
-  const battery12 = clampInside(
-    hull,
-    batteryAtBack ? [rearAxle - 0.45, clear + 0.32, -0.45] : combustion && a.engine !== EngineLayout.FrontTransverse ? [frontAxle + 0.15, clear + 0.5, 0.42] : [frontAxle + 0.05, clear + 0.5, 0.44],
-    0.12,
+  const battery12 = inboard(
+    clampInside(
+      hull,
+      batteryAtBack ? [rearAxle - 0.45, clear + 0.32, -0.45] : combustion && a.engine !== EngineLayout.FrontTransverse ? [frontAxle + 0.15, clear + 0.5, 0.42] : [frontAxle + 0.05, clear + 0.5, 0.44],
+      0.12,
+    ),
+    [0.13, 0.095, 0.085],
   );
   parts.push(box("battery12", "electrics", "electric", battery12, [0.26, 0.19, 0.17], [CarZone.Electrics]));
   anchors.battery = [battery12[0], battery12[1] + 0.12, battery12[2]];
@@ -1069,14 +1097,17 @@ export function buildLayout(input: XrayInput): CarLayout {
   const minusPole: Vec3 = [battery12[0] - 0.08, battery12[1] + 0.1, battery12[2] - 0.04];
   const mainFuses = clampInside(hull, [battery12[0] + 0.06, battery12[1] + 0.13, battery12[2] - 0.05], 0.05);
   parts.push(box("main-fuses", "electrics", "electric", mainFuses, [0.1, 0.05, 0.09], [CarZone.Electrics]));
-  const bodyGround = clampInside(hull, [battery12[0] - 0.2, battery12[1] + 0.05, battery12[2] + Math.sign(battery12[2] || 1) * 0.12], 0.05);
+  const bodyGround = inboard(clampInside(hull, [battery12[0] - 0.2, battery12[1] + 0.05, battery12[2] + Math.sign(battery12[2] || 1) * 0.12], 0.05), [0.02, 0.02, 0.02]);
   parts.push(box("ground-point", "electrics", "metal", bodyGround, [0.04, 0.04, 0.04], [CarZone.Electrics]));
   const ground: Tube = { id: "ground", layer: "electrics", points: [minusPole, [minusPole[0] - 0.06, minusPole[1] + 0.03, minusPole[2]], bodyGround], radius: 0.01, material: "metal", zones: [CarZone.Electrics] };
   tubes.push(ground);
   const fuseBox = clampInside(hull, [cowlX - 0.3, clear + 0.5, lhd * 0.52], 0.08);
   parts.push(box("fuse-box", "electrics", "electric", fuseBox, [0.16, 0.14, 0.06], [CarZone.Electrics]));
   if (combustion) {
-    const alternator = clampInside(hull, [engineCenter[0] + (a.engine === EngineLayout.FrontLongitudinal ? 0.36 : 0), engineCenter[1] + 0.02, engineCenter[2] + (a.engine === EngineLayout.FrontLongitudinal ? -0.22 : -0.32)], 0.08);
+    const alternator = inboard(
+      clampInside(hull, [engineCenter[0] + (a.engine === EngineLayout.FrontLongitudinal ? 0.36 : 0), engineCenter[1] + 0.02, engineCenter[2] + (a.engine === EngineLayout.FrontLongitudinal ? -0.22 : -0.32)], 0.08),
+      [0.08, 0.065, 0.08],
+    );
     parts.push(cylinder("alternator", "electrics", "electric", across3(a.engine), alternator, 0.16, 0.13, [CarZone.Electrics]));
     // The starter at the flange between engine and gearbox, low down.
     const starter = clampInside(
