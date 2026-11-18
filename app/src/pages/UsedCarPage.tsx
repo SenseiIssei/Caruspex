@@ -3,7 +3,9 @@
 // documented identifier, when the fault memory was last cleared, readiness,
 // faults, a short health check and the battery of electric cars; the result
 // is a traffic light, every finding in plain words, the questions for the
-// seller and a PDF for the purchase.
+// seller and a PDF for the purchase. On a truck over SAE J1939 the same page
+// compares the VIN and identification of every unit, the odometers of
+// dashboard, engine and tachograph, engine hours, idling and fuel.
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { call, type UsedCarRow } from "../api";
 import type { IconName } from "../components/Icon";
@@ -25,6 +27,7 @@ const tr = translator("caruspex::UsedCarPage");
 const MW = "caruspex::MainWindow";
 const HP = "caruspex::HealthPage";
 const R = "caruspex::Report";
+const tc = translator("caruspex::TruckCheck");
 
 // The three lamps, the lit one glowing; none lit before the first result.
 function TrafficLight({ light, busy }: { light: number | null; busy: boolean }) {
@@ -75,10 +78,45 @@ const STEPS: { icon: IconName; title: () => string; text: () => string }[] = [
   },
 ];
 
+// What the truck variant reads, in the same shape.
+const TRUCK_STEPS: { icon: IconName; title: () => string; text: () => string }[] = [
+  {
+    icon: "key",
+    title: () => t(R, "Fahrgestellnummer"),
+    text: () => tc("Aus jedem Steuergerät, das eine speichert: Motor, Kombiinstrument, Tachograph. Weichen sie ab, stammt ein Teil aus einem anderen Fahrzeug."),
+  },
+  {
+    icon: "cpu",
+    title: () => tc("Steuergeräte"),
+    text: () => tc("Hersteller, Modell, Seriennummer und Software jedes Steuergeräts, zum Abgleich mit Rechnungen."),
+  },
+  {
+    icon: "gauge",
+    title: () => t(R, "Kilometerstand"),
+    text: () => tc("Kombiinstrument, Motorsteuergerät und Tachograph zählen getrennt. Weichen sie ab, wurde vielleicht etwas verstellt oder getauscht."),
+  },
+  {
+    icon: "clock",
+    title: () => tc("Betriebsstunden und Verbrauch"),
+    text: () => tc("Stunden gegen Kilometer, Leerlaufanteil und der Verbrauch über das ganze Motorleben."),
+  },
+  {
+    icon: "alert",
+    title: () => tc("Fehler und Lampen"),
+    text: () => tc("Aktive und frühere Fehler jedes Steuergeräts, die vier Lampen und wann zuletzt gelöscht wurde."),
+  },
+  {
+    icon: "heart",
+    title: () => t(MW, "Gesundheitscheck"),
+    text: () => tc("Zehn Sekunden Mithören: Kühlmittel, Öldruck, Bordspannung, AdBlue und Partikelfilter."),
+  },
+];
+
 const num = (v: number) => localeNumber(v, 0);
 
 export default function UsedCarPage() {
   const connected = useSession((s) => s.connected);
+  const truck = useSession((s) => s.j1939);
   const result = useStore(usedCarStore, (s) => s.result);
   const [papers, setPapers] = useState("");
   const [running, setRunning] = useState(false);
@@ -139,18 +177,26 @@ export default function UsedCarPage() {
   const headline = running ? t(HP, "Prüfe ...") : result ? result.headline : tr("Bereit für die Besichtigung");
   const summary = result
     ? result.summary
-    : tr(
-        "Zündung an, am besten bei laufendem Motor im Stand. Die Prüfung dauert etwa eine halbe Minute und verändert nichts am Auto.",
-      );
+    : truck
+      ? tc("Zündung an, am besten bei laufendem Motor im Stand. Die Prüfung dauert etwa eine halbe Minute und verändert nichts am Fahrzeug.")
+      : tr(
+          "Zündung an, am besten bei laufendem Motor im Stand. Die Prüfung dauert etwa eine halbe Minute und verändert nichts am Auto.",
+        );
 
   return (
     <Page className="used-car-page">
       <PageHeader
-        eyebrow={t(MW, "Diagnose")}
-        title={tr("Gebrauchtwagen prüfen")}
-        subtitle={tr(
-          "Für die Besichtigung vor dem Kauf: Passt die Fahrgestellnummer, stimmt der Kilometerstand, wurde kurz vorher gelöscht? Heraus kommt eine Ampel, die Fragen an den Verkäufer und ein PDF für den Kauf.",
-        )}
+        eyebrow={truck ? tc("Lkw") : t(MW, "Diagnose")}
+        title={truck ? tc("Gebrauchten Lkw prüfen") : tr("Gebrauchtwagen prüfen")}
+        subtitle={
+          truck
+            ? tc(
+                "Für die Besichtigung vor dem Kauf eines Lkw oder Busses: Passen Fahrgestellnummern und Kilometerstände aller Steuergeräte zusammen, passen Betriebsstunden, Leerlauf und Verbrauch dazu? Heraus kommt eine Ampel, die Fragen an den Verkäufer und ein PDF für den Kauf.",
+              )
+            : tr(
+                "Für die Besichtigung vor dem Kauf: Passt die Fahrgestellnummer, stimmt der Kilometerstand, wurde kurz vorher gelöscht? Heraus kommt eine Ampel, die Fragen an den Verkäufer und ein PDF für den Kauf.",
+              )
+        }
       />
 
       <Card className="uc-hero">
@@ -200,7 +246,13 @@ export default function UsedCarPage() {
         </div>
       </Card>
 
-      {result ? <Facts row={result} key={`facts${generation}`} /> : null}
+      {result ? (
+        result.truck ? (
+          <TruckFacts row={result} key={`facts${generation}`} />
+        ) : (
+          <Facts row={result} key={`facts${generation}`} />
+        )
+      ) : null}
 
       {result ? (
         <div className="uc-columns" key={generation}>
@@ -269,7 +321,7 @@ export default function UsedCarPage() {
         <div className="uc-columns">
           <Card className="uc-findings" title={tr("Was geprüft wird")}>
             <div className="uc-steps">
-              {STEPS.map((s, i) => (
+              {(truck ? TRUCK_STEPS : STEPS).map((s, i) => (
                 <div key={i} className="uc-step">
                   <div className="uc-step-icon">
                     <Icon name={s.icon} size={18} />
@@ -289,10 +341,21 @@ export default function UsedCarPage() {
               )}
             </Note>
             <Note icon="info" title={tr("Nur lesend")}>
-              {tr(
-                "Die Prüfung liest nur. Sie löscht keine Fehler und ändert nichts am Auto, der Verkäufer kann also beruhigt zustimmen.",
-              )}
+              {truck
+                ? tc(
+                    "Die Prüfung liest nur. Sie löscht keine Fehler, setzt keine Zähler zurück und ändert nichts am Fahrzeug, der Verkäufer kann also beruhigt zustimmen.",
+                  )
+                : tr(
+                    "Die Prüfung liest nur. Sie löscht keine Fehler und ändert nichts am Auto, der Verkäufer kann also beruhigt zustimmen.",
+                  )}
             </Note>
+            {truck ? (
+              <Note icon="alert" title={tc("Was die Prüfung nicht sieht")}>
+                {tc(
+                  "Ein Kombiinstrument lässt sich tauschen oder umprogrammieren und ein Fehlerspeicher löschen. Den Speicher des Tachographen, herstellereigene Zähler und den Zustand von Rahmen, Bremsen und Reifen sieht kein Steuergerät.",
+                )}
+              </Note>
+            ) : null}
           </div>
         </div>
       )}
@@ -356,6 +419,58 @@ function Facts({ row }: { row: UsedCarRow }) {
           state={row.healthScore >= 0 ? (row.healthScore >= 85 ? "var(--good)" : row.healthScore >= 60 ? "var(--warn)" : "var(--bad)") : ""}
         />
       )}
+    </div>
+  );
+}
+
+// The key numbers of a truck: odometer, hours with the idle share, fuel,
+// faults and the short health check.
+function TruckFacts({ row }: { row: UsedCarRow }) {
+  const truck = row.truck;
+  if (!truck) return null;
+  const km = row.mileage.length > 0 ? Math.max(...row.mileage.map((m) => m.km)) : -1;
+  const has = (id: string) => row.items.some((i) => i.id === id);
+  const tone = (good: boolean) => (good ? "var(--good)" : "var(--warn)");
+  return (
+    <div className="uc-facts fade-in">
+      <StatTile
+        icon="gauge"
+        caption={t(R, "Kilometerstand")}
+        value={km >= 0 ? num(km) : undefined}
+        unit="km"
+        state={has("mileage_mismatch") ? "var(--bad)" : km >= 0 ? "var(--good)" : ""}
+        note={row.mileage.length > 1 ? tr("aus %1 Steuergeräten", row.mileage.length) : undefined}
+      />
+      <StatTile
+        icon="clock"
+        caption={tc("Motorbetriebsstunden")}
+        value={truck.engineHours >= 0 ? num(truck.engineHours) : undefined}
+        unit="h"
+        state={truck.engineHours >= 0 ? tone(!has("hours_too_few") && !has("km_too_few")) : ""}
+        note={truck.idleShare >= 0 ? tc("%1 % im Leerlauf", num(truck.idleShare)) : undefined}
+      />
+      <StatTile
+        icon="fuel"
+        caption={tc("Verbrauch")}
+        value={truck.fuelPer100km >= 0 ? localeNumber(truck.fuelPer100km, 1) : undefined}
+        unit="l/100 km"
+        state={truck.fuelPer100km >= 0 ? tone(!row.items.some((i) => i.id === "fuel_average" && i.level >= 2)) : ""}
+        note={truck.averageSpeed >= 0 ? tc("%1 km je Betriebsstunde", localeNumber(truck.averageSpeed, 1)) : undefined}
+      />
+      <StatTile
+        icon="alert"
+        caption={tr("Fehler")}
+        value={truck.activeFaults >= 0 ? String(truck.activeFaults) : undefined}
+        state={truck.activeFaults >= 0 ? tone(truck.activeFaults === 0) : ""}
+        note={truck.previousFaults > 0 ? tc("dazu %1 früher aktiv", truck.previousFaults) : undefined}
+      />
+      <StatTile
+        icon="heart"
+        caption={t(MW, "Gesundheitscheck")}
+        value={row.healthScore >= 0 ? String(row.healthScore) : undefined}
+        unit={row.healthScore >= 0 ? tr("von 100") : undefined}
+        state={row.healthScore >= 0 ? (row.healthScore >= 85 ? "var(--good)" : row.healthScore >= 60 ? "var(--warn)" : "var(--bad)") : ""}
+      />
     </div>
   );
 }

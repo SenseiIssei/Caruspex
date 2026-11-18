@@ -1,9 +1,13 @@
 // The health check (HealthPage.cpp): one button, about half a minute of
 // reading, then a score with every finding explained in plain words, plus
 // what is still missing for the emissions test and how to drive to finish it.
+// Connected to a truck over SAE J1939 the same page runs the truck check:
+// lamps and faults of every unit, then the broadcast values, and the units
+// with their lamps take the place of the emissions test card.
 import { useEffect, useState } from "react";
 import { call, type HealthRow } from "../api";
 import type { IconName } from "../components/Icon";
+import { J1939UnitsCard } from "../components/J1939";
 import { ScoreRing } from "../components/ScoreRing";
 import { Term, TermStrip } from "../components/Term";
 import { FindingRow } from "../components/Tiles";
@@ -15,6 +19,7 @@ import { useSession } from "../state/session";
 import "./HealthPage.css";
 
 const tr = translator("caruspex::HealthPage");
+const tc = translator("caruspex::TruckCheck");
 const MW = "caruspex::MainWindow";
 
 // Icon and colour for an analysis level (0 good .. 3 critical). The start
@@ -50,6 +55,7 @@ const caption = (grade: number) => (grade === 0 ? tr("Gut in Schuss") : grade ==
 
 export default function HealthPage() {
   const connected = useSession((s) => s.connected);
+  const truck = useSession((s) => s.j1939);
   const [running, setRunningState] = useState(false);
   const [duration, setDuration] = useState(30);
   const [percent, setPercent] = useState(0);
@@ -133,16 +139,22 @@ export default function HealthPage() {
   return (
     <Page className="health-page">
       <PageHeader
-        eyebrow={tr("Diagnose")}
+        eyebrow={truck ? tc("Lkw") : tr("Diagnose")}
         title={tr("Gesundheitscheck")}
-        subtitle={tr(
-          "Liest Fehlerspeicher, Bereitschaftstests und die " +
-            "Bauteilprüfung, beobachtet dann eine halbe Minute lang " +
-            "Gemisch, Temperatur, Lambdasonden und Ladespannung. " +
-            "Heraus kommt eine Punktzahl, und jeder Abzug wird erklärt.",
-        )}
+        subtitle={
+          truck
+            ? tc(
+                "Liest Warnlampen und Fehler jedes Steuergeräts und hört dann mit: Kühlmittel, Öl, Bordspannung, AdBlue, Partikelfilter und Ladeluft. Jeder Wert bekommt eine Ampel mit einem kurzen Grund.",
+              )
+            : tr(
+                "Liest Fehlerspeicher, Bereitschaftstests und die " +
+                  "Bauteilprüfung, beobachtet dann eine halbe Minute lang " +
+                  "Gemisch, Temperatur, Lambdasonden und Ladespannung. " +
+                  "Heraus kommt eine Punktzahl, und jeder Abzug wird erklärt.",
+              )
+        }
       />
-      <TermStrip ids={["dtc", "readiness", "mil", "ltft"]} />
+      {truck ? null : <TermStrip ids={["dtc", "readiness", "mil", "ltft"]} />}
 
       <Card className="health-hero">
         <div className="health-hero-row">
@@ -158,12 +170,19 @@ export default function HealthPage() {
             <p className="subtle health-summary">
               {result
                 ? result.summary
-                : tr(
-                    "Am besten mit warmem Motor im Stand. Während der Messung einmal " +
-                      "für ein paar Sekunden 2500 1/min halten, dann sieht Caruspex auch, " +
-                      "wie das Gemisch unter Last geregelt wird.",
-                  )}
+                : truck
+                  ? tc(
+                      "Am besten mit warmem Motor im Leerlauf. Die Steuergeräte senden ihre Werte von selbst, Caruspex hört nur zu und ändert nichts am Fahrzeug.",
+                    )
+                  : tr(
+                      "Am besten mit warmem Motor im Stand. Während der Messung einmal " +
+                        "für ein paar Sekunden 2500 1/min halten, dann sieht Caruspex auch, " +
+                        "wie das Gemisch unter Last geregelt wird.",
+                    )}
             </p>
+            {result?.truck && result.systemVolts ? (
+              <div className="hint">{tc("Bordnetz: %1-V-Anlage, an der Batteriespannung erkannt.", result.systemVolts)}</div>
+            ) : null}
             <div className="health-controls">
               <Button
                 variant="primary"
@@ -218,6 +237,8 @@ export default function HealthPage() {
         </Card>
 
         <div className="health-side">
+          {truck ? <J1939UnitsCard /> : null}
+          {truck ? null : (
           <Card title={<Term id="readiness">{tr("Bereit für die AU?")}</Term>}>
             <div className="subtle">{monitorSummary}</div>
             {orderedMonitors.length > 0 ? (
@@ -236,6 +257,7 @@ export default function HealthPage() {
               </div>
             ) : null}
           </Card>
+          )}
 
           {result && result.notChecked.length > 0 ? (
             <Card className="fade-in" title={tr("Nicht geprüft")}>

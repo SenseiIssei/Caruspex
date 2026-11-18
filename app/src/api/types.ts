@@ -191,10 +191,32 @@ export interface HealthRow {
   monitors: MonitorGuideRow[];
   checksRun: number;
   diesel: boolean;
+  // The check ran on a truck over SAE J1939 (analysis::truck_health).
+  truck?: boolean;
+  // 12 or 24 on a truck, from its battery voltage; 0 if unknown.
+  systemVolts?: number;
 }
 
 // The used car check (analysis::used_car through Worker::runUsedCarCheck).
-export type UsedCarSection = "identity" | "mileage" | "clearing" | "readiness" | "faults" | "health" | "battery";
+export type UsedCarSection = "identity" | "units" | "mileage" | "usage" | "clearing" | "readiness" | "faults" | "health" | "battery";
+
+// The key numbers of a used truck check (analysis::truck_used). -1 where the
+// truck said nothing.
+export interface TruckUsedFacts {
+  engineHours: number;
+  // Share of the engine hours at idle, %.
+  idleShare: number;
+  // km per engine hour.
+  averageSpeed: number;
+  // l/100 km over the whole life.
+  fuelPer100km: number;
+  activeFaults: number;
+  previousFaults: number;
+  // How many units keep a VIN, and whether they all agree.
+  vinSources: number;
+  vinsAgree: boolean;
+  units: number;
+}
 
 export interface UsedCarItemRow {
   // Stable rule id, e.g. "mileage_mismatch".
@@ -243,6 +265,8 @@ export interface UsedCarRow {
   questions: string[];
   // "title: reason"
   notChecked: string[];
+  // Set when the check ran on a truck.
+  truck?: TruckUsedFacts | null;
 }
 
 export interface EcuScanRow {
