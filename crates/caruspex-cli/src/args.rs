@@ -69,6 +69,10 @@ pub struct Options {
     pub can_spec: String,
     pub pack: String,
     pub csv_path: String,
+    /// j1939: bit rate in kbit/s, 0 tries 250 and 500.
+    pub rate: i32,
+    /// j1939: clear the faults after reading them.
+    pub clear: bool,
 }
 
 impl Options {
@@ -92,6 +96,8 @@ impl Options {
             can_spec: String::new(),
             pack: String::new(),
             csv_path: String::new(),
+            rate: 0,
+            clear: false,
         };
         let mut i = 2;
         while i < argv.len() {
@@ -147,6 +153,11 @@ impl Options {
                     i += 1;
                     o.csv_path = argv[i].clone();
                 }
+                "--rate" if has_value => {
+                    i += 1;
+                    o.rate = number(&argv[i])?;
+                }
+                "--clear" => o.clear = true,
                 "--demo" => o.demo = true,
                 "--json" => o.json = true,
                 "-v" => o.verbose = true,

@@ -1,0 +1,6 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- The interface is dark: no white flash before the page is there. -->
+    <style name="Theme.caruspex_app" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/caruspex_background</item>
+    </style>
+</resources>

@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · **العربية** · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**التوثيق:** [التثبيت، الخطوات الأولى، كل محوّل وكل واجهة، الخصوصية، الأسئلة الشائعة](https://senseiissei.github.io/Caruspex/ar/index.html)، بجميع اللغات الـ18.
+<!-- /docs -->
+
 <div dir="rtl">
 
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
@@ -250,6 +254,19 @@
 | الاختبارات | `cargo test` على وحدات تحكم محاكاة وبوابات مزيفة وبرنامج تشغيل J2534 مزيف |
 | الأدوات | Python 3 (مولّدات الشيفرة والجداول، فحوص الترجمة، محاكي ELM327) |
 | المنصات | Windows 10 و11، وLinux، وmacOS |
+
+<!-- tested -->
+## جُرِّب مع
+
+ما جُرِّب فعلًا مع Caruspex حتى الآن، مذكور بصدق. كل ما عدا ذلك مبني وفق المعايير ومختبر على وحدات تحكم محاكاة وبوابات وهمية وبرامج تشغيل وهمية، لكن ليس بعد على سيارة حقيقية.
+
+| الواجهة | السيارة | النتيجة |
+|---|---|---|
+| OBDLink بشريحة STN2232 | لا توجد، اختبار المحوّل بلا سيارة | تم التعرف على الشريحة والبرنامج الثابت والأوامر |
+| كل المحوّلات والواجهات الأخرى | | لم تُختبر بعد على سيارة حقيقية |
+
+هل جرّبت Caruspex على سيارتك؟ أرسل من فضلك [تقرير اختبار](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): كل تقرير يدخل هذه القائمة حسب العلامة والواجهة.
+<!-- /tested -->
 
 ## التنزيل
 

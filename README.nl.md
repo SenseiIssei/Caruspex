@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · **Nederlands** · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Documentatie:** [installeren, eerste stappen, elke adapter en interface, privacy, veelgestelde vragen](https://senseiissei.github.io/Caruspex/nl/index.html), in alle 18 talen.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Nog niet geïmplementeerd: fabrikantdiagnose via CAN met VW TP 2.0 (voertuigen v
 | Tests | `cargo test` tegen gesimuleerde ECU's, nepgateways en een nep-J2534-driver |
 | Tooling | Python 3 (code- en tabelgeneratoren, vertaalcontroles, ELM327-simulator) |
 | Platforms | Windows 10 en 11, Linux, macOS |
+
+<!-- tested -->
+## Getest met
+
+Wat tot nu toe echt met Caruspex is uitgeprobeerd, eerlijk opgesomd. Al het andere is volgens de normen gebouwd en getest tegen nagebootste regeleenheden, nep-gateways en nep-drivers, maar nog niet in een echte auto.
+
+| Interface | Auto | Resultaat |
+|---|---|---|
+| OBDLink met de STN2232-chip | geen, adaptertest zonder auto | chip, firmware en commando's herkend |
+| alle andere adapters en interfaces | | nog niet in een echte auto getest |
+
+Caruspex in je eigen auto geprobeerd? Stuur dan een [testrapport](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): elk rapport komt in deze lijst, per merk en interface.
+<!-- /tested -->
 
 ## Downloaden
 

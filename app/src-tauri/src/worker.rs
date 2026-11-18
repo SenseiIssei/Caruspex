@@ -34,9 +34,10 @@ use caruspex_link::adapter_probe::version_text;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
 use caruspex_link::timing::sleep_ms;
 use caruspex_link::{
-    AdaptiveTiming, Elm327, KLineStream, SerialTransport, StnBus, TcpTransport, Transport,
-    enumerate_ports, probe_adapter,
+    AdaptiveTiming, Elm327, KLineStream, StnBus, TcpTransport, Transport, probe_adapter,
 };
+#[cfg(not(target_os = "android"))]
+use caruspex_link::{SerialTransport, enumerate_ports};
 use caruspex_net::{
     CanElm, KLineKind, SharedCanLink, SlcanLink, Tp20, open_can_interface, open_j2534_kline,
     open_network_car, probe_slcan,
@@ -56,9 +57,15 @@ use caruspex_vehicles::{catalog, engines};
 use serde::Serialize;
 use serde_json::{Value, json};
 
+// Android: USB adapters and classic Bluetooth through the Java side.
+#[cfg(target_os = "android")]
+use crate::android::{SerialTransport, ble, enumerate_ports};
 use crate::rows::*;
 use crate::settings::AppSettings;
+
+mod truck;
 use crate::texts::{args, w};
+use truck::TruckLink;
 
 /// Seconds since the program started, monotonic (appSeconds()).
 pub fn app_seconds() -> f64 {
@@ -196,6 +203,9 @@ pub enum Job {
     ReadAdaptation(i32),
     ActuatorTest,
     ApplySettings(AppSettings),
+    /// Trucks over SAE J1939 for the connect jobs that follow: the bit rate
+    /// in kbit/s (250, 500, or 0 for both in turn); `None` for cars.
+    SetTruck(Option<u32>),
     Shutdown,
 }
 
@@ -309,7 +319,7 @@ fn status_row(st: &VehicleStatus) -> StatusRow {
     }
 }
 
-fn uds_row(ecu: &UdsEcu) -> UdsEcuRow {
+fn uds_row(ecu: &UdsEcu, bus: StnBus) -> UdsEcuRow {
     UdsEcuRow {
         request: ecu.definition.request,
         response: ecu.definition.response,
@@ -337,6 +347,7 @@ fn uds_row(ecu: &UdsEcu) -> UdsEcuRow {
             })
             .collect(),
         note: ecu.note.clone(),
+        bus: bus.key().to_string(),
     }
 }
 
@@ -615,6 +626,12 @@ pub struct Worker {
     /// While the remembered way is tried quietly: a failure is only noted
     /// here instead of reported.
     quiet: Option<Option<String>>,
+    /// Connected to a truck: how its J1939 bus is reached.
+    truck: Option<TruckLink>,
+    /// What was heard on the J1939 bus, and the tester's address.
+    truck_session: caruspex_protocols::J1939Session,
+    /// The connect jobs go to a truck at this rate (see `Job::SetTruck`).
+    truck_request: Option<u32>,
 }
 
 impl Worker {
@@ -645,6 +662,9 @@ impl Worker {
             route: ConnectRoute::default(),
             prefer_protocol: String::new(),
             quiet: None,
+            truck: None,
+            truck_session: caruspex_protocols::J1939Session::new(),
+            truck_request: None,
         }
     }
 
@@ -801,9 +821,18 @@ impl Worker {
                 host,
                 port,
                 protocol_order,
-            } => self.open_tcp(&host, port, &protocol_order),
+            } => {
+                // A phone sends sockets out over mobile data otherwise.
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(true);
+                self.open_tcp(&host, port, &protocol_order)
+            }
             Job::OpenDemo => self.open_demo(),
-            Job::OpenEnet { host } => self.open_enet(&host),
+            Job::OpenEnet { host } => {
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(true);
+                self.open_enet(&host)
+            }
             Job::OpenCan { spec } => self.open_can(&spec),
             Job::ScanBle { milliseconds } => self.scan_ble(milliseconds),
             Job::OpenBle {
@@ -835,7 +864,11 @@ impl Worker {
                     self.refresh_status_and_faults();
                 }
             }
-            Job::Close => self.close_adapter(),
+            Job::Close => {
+                self.close_adapter();
+                #[cfg(target_os = "android")]
+                crate::android::bind_wifi(false);
+            }
             Job::StartRecording(path) => self.start_recording(&path),
             Job::StopRecording => self.stop_recording(),
             Job::ReadFaults => self.refresh_status_and_faults(),
@@ -876,6 +909,7 @@ impl Worker {
             Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
             Job::ActuatorTest => self.run_actuator_test(),
             Job::ApplySettings(values) => self.apply_settings(values),
+            Job::SetTruck(rate) => self.truck_request = rate,
             Job::Shutdown => self.shutdown(),
         }
     }
@@ -909,6 +943,9 @@ impl Worker {
         transport: Box<dyn Transport>,
         protocol_order: &str,
     ) -> Result<(), String> {
+        if let Some(kbit) = self.truck_request {
+            return self.try_connect_truck(transport, kbit);
+        }
         self.facts.port_opened = Some(true);
         self.facts.port_busy = false;
         let order = prefer_protocol(protocol_order, &self.prefer_protocol);
@@ -997,7 +1034,7 @@ impl Worker {
             _ => {}
         }
         let error = self.quiet.take().flatten();
-        if self.elm.connected() {
+        if self.elm.connected() || self.truck_connected() {
             self.prefer_protocol.clear();
             return;
         }
@@ -1353,6 +1390,10 @@ impl Worker {
     }
 
     fn open_can(&mut self, spec: &str) {
+        if let Some(kbit) = self.truck_request {
+            self.open_can_truck(spec, kbit);
+            return;
+        }
         self.busy(true);
         self.set_elm_log();
         self.begin_connect(LinkKind::Can);
@@ -1398,6 +1439,10 @@ impl Worker {
     }
 
     fn open_demo(&mut self) {
+        if let Some(kbit) = self.truck_request {
+            self.open_demo_truck(kbit);
+            return;
+        }
         // The demo car speaks CAN; the K-line protocols would only cost seconds.
         self.busy(true);
         self.set_elm_log();
@@ -1406,7 +1451,18 @@ impl Worker {
             kind: "demo".into(),
             ..ConnectRoute::default()
         };
-        let ok = self.finish_connect(Box::new(caruspex_demo::DemoTransport::default()), "6", true);
+        // CARUSPEX_DEMO_ADAPTER=obdlink-mx lets the demo car answer like an
+        // OBDLink MX+ (MS-CAN and SW-CAN), for pictures of those buses.
+        let adapter = match std::env::var("CARUSPEX_DEMO_ADAPTER").as_deref() {
+            Ok("obdlink-mx") => caruspex_demo::DemoAdapter::ObdLinkMxPlus,
+            Ok("obdlink-ex") => caruspex_demo::DemoAdapter::ObdLinkEx,
+            _ => caruspex_demo::DemoAdapter::default(),
+        };
+        let demo = caruspex_demo::DemoTransport::new(caruspex_demo::DemoOptions {
+            adapter,
+            ..caruspex_demo::DemoOptions::default()
+        });
+        let ok = self.finish_connect(Box::new(demo), "6", true);
         self.busy(false);
         if ok {
             self.refresh_status_and_faults();
@@ -1492,6 +1548,10 @@ impl Worker {
     // --- Reading --------------------------------------------------------------
 
     fn refresh_status_and_faults(&mut self) {
+        if self.truck_connected() {
+            self.refresh_truck_faults();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1528,6 +1588,10 @@ impl Worker {
     }
 
     fn clear_faults(&mut self) {
+        if self.truck_connected() {
+            self.clear_truck_faults();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1545,6 +1609,10 @@ impl Worker {
     }
 
     fn read_details(&mut self) {
+        if self.truck_connected() {
+            self.read_truck_details();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -1587,6 +1655,17 @@ impl Worker {
     }
 
     fn start_live(&mut self, pids: Vec<i32>) {
+        if self.truck_connected() {
+            // A truck sends its values by itself: each tick listens.
+            self.poll_timer
+                .set_interval(self.settings.poll_interval_ms.max(0) as u64);
+            self.poll_timer.start();
+            self.log(l(
+                "Messung gestartet, die J1939-Werte werden mitgehört.",
+                "Measurement started, listening to the J1939 values.",
+            ));
+            return;
+        }
         self.poll_pids = pids;
         if !self.obd_ready || self.poll_pids.is_empty() {
             return;
@@ -1618,6 +1697,10 @@ impl Worker {
     // One slice per tick. That keeps the loop free and stop requests from
     // the interface get through immediately.
     fn poll_tick(&mut self) {
+        if self.truck_connected() {
+            self.truck_tick();
+            return;
+        }
         if !self.obd_ready {
             return;
         }
@@ -2516,7 +2599,7 @@ impl Worker {
         let total = list.len();
         self.emit(
             "uds_scan_started",
-            json!({ "total": total, "generic": generic }),
+            json!({ "total": total, "generic": generic, "bus": bus.key() }),
         );
 
         // Over a raw CAN interface the missing units are found first, many
@@ -2562,7 +2645,7 @@ impl Worker {
             if !ecu.dtcs.is_empty() {
                 with_faults += 1;
             }
-            self.emit("uds_ecu_result", json!({ "row": uds_row(ecu) }));
+            self.emit("uds_ecu_result", json!({ "row": uds_row(ecu, bus) }));
         }
         self.back_to_high_speed();
         finished(self, present, with_faults, self.cancelled(), String::new());
@@ -2631,7 +2714,7 @@ impl Worker {
             Some(&never),
         );
         if let Some(ecu) = again.first().filter(|e| e.present) {
-            let mut row = uds_row(ecu);
+            let mut row = uds_row(ecu, self.uds_bus);
             row.name = name.to_string();
             self.emit("uds_ecu_result", json!({ "row": row }));
         }
@@ -2785,6 +2868,7 @@ impl Worker {
             self.close_kkl();
         }
         self.can_link = None;
+        self.forget_truck();
     }
 
     fn kkl_keep_alive_tick(&mut self) {
@@ -3137,7 +3221,8 @@ impl Worker {
 }
 
 /// Bluetooth LE and classic Bluetooth through caruspex-link, as the worker
-/// needs it.
+/// needs it (android.rs has the same functions for the phone).
+#[cfg(not(target_os = "android"))]
 mod ble {
     use caruspex_link::Transport;
     use caruspex_link::ble::BleTransport;
@@ -3549,6 +3634,9 @@ mod tests {
         let found = Collect::named(&events, "uds_ecu_result");
         assert_eq!(found.len(), 1, "{events:?}");
         assert_eq!(found[0]["row"]["request"], 0x726);
+        // The row and the start of the scan name the bus, for the X-ray view.
+        assert_eq!(found[0]["row"]["bus"], "ms");
+        assert_eq!(Collect::named(&events, "uds_scan_started")[0]["bus"], "ms");
         assert_eq!(worker.elm.stn_bus(), StnBus::HighSpeed);
         assert!(worker.elm.request("0100", 0x01, 2000).ok());
 

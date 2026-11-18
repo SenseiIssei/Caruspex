@@ -1,0 +1,18 @@
+{
+  "language_name": "Italiano",
+  "site_title": "Documentazione di Caruspex",
+  "tagline": "Diagnosi auto gratuita per Windows, Linux e macOS: codici errore, valori live, tutte le centraline, in 18 lingue.",
+  "group_start": "Per iniziare",
+  "group_interfaces": "Adattatori e interfacce",
+  "group_using": "Usare Caruspex",
+  "group_more": "Altro",
+  "menu": "Menu",
+  "language": "Lingua",
+  "skip": "Vai al contenuto",
+  "download": "Scarica",
+  "source": "Codice sorgente",
+  "previous": "Precedente",
+  "next": "Successiva",
+  "improve": "Migliora questa pagina su GitHub",
+  "footer": "Caruspex è software libero con licenza MIT. Questa documentazione fa parte del suo codice sorgente, le correzioni sono benvenute."
+}

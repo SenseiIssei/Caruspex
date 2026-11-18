@@ -4,26 +4,70 @@
 // Worker signals MainWindow connected to it, and writes the log lines
 // MainWindow wrote before each attempt.
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { call, type BleDeviceRow, type ConnectHelp, type ConnectRoute, type SerialPortInfo, type VehicleGenerationInfo } from "../api";
+import {
+  BodyType,
+  call,
+  type BleDeviceRow,
+  type BluetoothAccess,
+  type ConnectHelp,
+  type ConnectRoute,
+  type SerialPortInfo,
+  type VehicleGenerationInfo,
+} from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { TermStrip } from "../components/Term";
 import { Button, Card, Check, Chip, Page, PageHeader, Select, Spinner, TextInput, cx } from "../components/ui";
 import { t, translator } from "../i18n";
 import { ACCESS } from "../lib/access";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
+import { isAndroid } from "../lib/platform";
 import { navigate } from "../shell/nav";
 import { garageStore, rememberedRoute } from "../state/garage";
 import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
+import "../components/J1939.css";
 
 const tr = translator("caruspex::ConnectPage");
+
+// Texts of the Android app.
+const ta = translator("caruspex::Android");
+
+// Android 12 and newer: before the system asks for "nearby devices", the
+// page says why, and where to allow it later when it was refused.
+function BluetoothPermission({ refused, onAllow }: { refused: boolean; onAllow: () => void }) {
+  return (
+    <div className="connect-permission">
+      <div className="connect-permission-head">
+        <Icon name="bluetooth" size={18} />
+        <span>{ta("Zugriff auf Geräte in der Nähe")}</span>
+      </div>
+      <div className="subtle">
+        {ta(
+          "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
+            "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
+            "liest keinen Standort und schickt nichts weg.",
+        )}
+      </div>
+      {refused ? (
+        <div className="hint">
+          {ta("Der Zugriff ist abgelehnt. Erlauben lässt er sich in den Android-Einstellungen unter Apps, Caruspex, Berechtigungen.")}
+        </div>
+      ) : null}
+      <Button variant="primary" icon="shield" onClick={onAllow}>
+        {ta("Zugriff erlauben")}
+      </Button>
+    </div>
+  );
+}
 
 // CAN FD goes through SocketCAN and J2534 devices only.
 const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.startsWith("j2534:");
 // Texts that are new in the connection assistant.
 const tc = translator("caruspex::ConnectHelp");
+// Texts of the truck option (SAE J1939).
+const tk = translator("caruspex::Truck");
 const MW = "caruspex::MainWindow";
 
 // The values of core/Elm327.cpp: kProtocolOrderKLineFirst, kProtocolOrderCanFirst.
@@ -186,13 +230,22 @@ export default function ConnectPage() {
   const [ble, setBle] = useState(initialBle);
   const [bleScanning, setBleScanning] = useState(false);
   const [bleNote, setBleNote] = useState(() =>
-    tr(
-      "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
-        "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
-        "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
-        "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
-    ),
+    isAndroid
+      ? ta(
+          "Klassische Bluetooth-Adapter einmal in den Android-Einstellungen koppeln, die PIN ist " +
+            "meist 1234 oder 0000, danach stehen sie hier in der Liste. Adapter mit Bluetooth LE " +
+            "folgen in einer späteren Version.",
+        )
+      : tr(
+          "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
+            "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
+            "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
+            "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
+        ),
   );
+  // Android: may the app use Bluetooth, and whether the user was asked.
+  const [btAccess, setBtAccess] = useState<BluetoothAccess | null>(null);
+  const [btAsked, setBtAsked] = useState(false);
   // ENET
   const [enetHost, setEnetHost] = useState("");
   // CAN
@@ -201,6 +254,9 @@ export default function ConnectPage() {
   const [canRate, setCanRate] = useState(500000);
   // CAN FD, off by default; only SocketCAN and J2534 devices offer it.
   const [canFd, setCanFd] = useState(false);
+  // A truck or bus over SAE J1939, with the bit rate (0: 250, then 500).
+  const [truck, setTruck] = useState(false);
+  const [truckRate, setTruckRate] = useState(0);
 
   // Vehicle
   const [vehicleText, setVehicleText] = useState("");
@@ -226,8 +282,8 @@ export default function ConnectPage() {
 
   // The latest values for the handlers that run outside a render (app events
   // that connect right after changing the mode or the port).
-  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting });
-  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, generation, connected, connecting };
+  const latest = useRef({ mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, truck, truckRate, generation, connected, connecting });
+  latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, truck, truckRate, generation, connected, connecting };
   const searchSeq = useRef(0);
 
   // --- Lists -----------------------------------------------------------------------------
@@ -284,6 +340,8 @@ export default function ConnectPage() {
   // Preselects a car from the catalog (or none for automatic).
   const setGeneration = useCallback((g: VehicleGenerationInfo | null, wanted: number) => {
     setGenerationState(g);
+    // Trucks speak SAE J1939: the option follows the choice of a truck.
+    if (g?.body === BodyType.Truck) setTruck(true);
     if (g) {
       const last = g.yearTo > 0 ? g.yearTo : currentYear();
       setYearRange([g.yearFrom, last]);
@@ -400,6 +458,8 @@ export default function ConnectPage() {
     setError(null);
     const order = protocolOrder(s.generation);
     const values = settingsStore.get().values;
+    // The J1939 bit rate when connecting to a truck, else left out.
+    const truckRateArg = s.truck ? s.truckRate : undefined;
     // The way that worked last time, when it fits what is chosen now: the
     // backend tries it first and searches as usual only if it fails.
     const remembered = (kind: string, fits: (r: ConnectRoute) => boolean): ConnectRoute | undefined => {
@@ -413,7 +473,7 @@ export default function ConnectPage() {
         // Remember the port so auto-connect knows where to go next time.
         if (device && values.lastPort !== device) void applySettings({ ...values, lastPort: device });
         const route = remembered("serial", (r) => !device || r.device === device);
-        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order, remembered: route });
+        void call("open_serial", { device, baud: values.baudOverride, protocolOrder: order, remembered: route, truck: truckRateArg });
         break;
       }
       case "wifi": {
@@ -425,12 +485,12 @@ export default function ConnectPage() {
         const portNumber = Number.isFinite(parsed) ? parsed : 0;
         markConnecting(t(MW, "Verbinde mit %1:%2 ...", host, portNumber));
         const route = remembered("tcp", (r) => r.device === `${host}:${portNumber}`);
-        void call("open_tcp", { host, port: portNumber, protocolOrder: order, remembered: route });
+        void call("open_tcp", { host, port: portNumber, protocolOrder: order, remembered: route, truck: truckRateArg });
         break;
       }
       case "demo":
-        markConnecting(t(MW, "Starte das Demo-Auto ..."));
-        void call("open_demo", { protocolOrder: order });
+        markConnecting(s.truck ? tk("Starte den Demo-Lkw ...") : t(MW, "Starte das Demo-Auto ..."));
+        void call("open_demo", { protocolOrder: order, truck: truckRateArg });
         break;
       case "can": {
         const device = s.canDevices[s.canIndex]?.spec ?? "";
@@ -439,11 +499,14 @@ export default function ConnectPage() {
           return;
         }
         // "+fd" right before the bit rate switches CAN FD on.
-        const fd = s.canFd && canFdPossible(device) ? "+fd" : "";
-        const spec = `${device}${fd}@${s.canRate}`;
+        const fd = s.canFd && canFdPossible(device) && !s.truck ? "+fd" : "";
+        // A truck: the bit rate of the J1939 choice (the backend tries both
+        // with automatic).
+        const rate = s.truck ? (s.truckRate || 250) * 1000 : s.canRate;
+        const spec = `${device}${fd}@${rate}`;
         markConnecting(t(MW, "Verbinde über das CAN-Interface %1 ...", spec));
         const route = remembered("can", (r) => r.device.split("@")[0] === device);
-        void call("open_can", { spec, protocolOrder: order, remembered: route });
+        void call("open_can", { spec, protocolOrder: order, remembered: route, truck: truckRateArg });
         break;
       }
       case "enet": {
@@ -459,7 +522,7 @@ export default function ConnectPage() {
           item.id ? t(MW, "Verbinde über Bluetooth mit %1 ...", item.name || item.id) : t(MW, "Suche einen Bluetooth-Adapter ..."),
         );
         const route = remembered("ble", (r) => !item.id || r.device === item.id);
-        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order, remembered: route });
+        void call("open_ble", { id: item.id, name: item.name, kinds: item.kinds, protocolOrder: order, remembered: route, truck: truckRateArg });
         break;
       }
       case "replay": {
@@ -604,6 +667,22 @@ export default function ConnectPage() {
     startConnect({ mode: "wifi" });
   });
 
+  // --page truck-faults / truck-live: the demo truck over SAE J1939, then
+  // its faults or its live values.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "truck-faults" && name !== "truck-live") return;
+    navigate("connect");
+    setMode("demo");
+    setTruck(true);
+    latest.current.truck = true;
+    latest.current.truckRate = 0;
+    startConnect({ mode: "demo" });
+    setTimeout(() => {
+      navigate(name === "truck-faults" ? "faults" : "live");
+      if (name === "truck-live") void call("start_live", { pids: [] });
+    }, 7000);
+  });
+
   // Opens the Bluetooth choice and scans, without connecting.
   useAppEvent<string>("dev:page", (name) => {
     if (name !== "connect-ble") return;
@@ -632,11 +711,33 @@ export default function ConnectPage() {
     void call("scan_ble", { milliseconds: 8000 });
   };
 
+  // Android: the permission state each time the Bluetooth choice opens.
+  useEffect(() => {
+    if (!isAndroid || mode !== "ble") return;
+    void call("bluetooth_access")
+      .then(setBtAccess)
+      .catch(() => undefined);
+  }, [mode]);
+  const askBluetooth = async () => {
+    setBtAsked(true);
+    const access = await call("request_bluetooth_access").catch(() => null);
+    if (!access) return;
+    setBtAccess(access);
+    if (access.granted) scanBle();
+  };
+  const btBlocked = isAndroid && !!btAccess && btAccess.needsPermission && !btAccess.granted;
+
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
   const canOptions = canDevices.map((d, i) => ({ value: i, label: d.label }));
   const fdPossible = canFdPossible(canDevices[canIndex]?.spec ?? "");
   const rateOptions = CAN_RATES.map((r) => ({ value: r, label: `${r / 1000} kbit/s` }));
+  const truckRateOptions = [
+    { value: 0, label: tk("Automatisch (250, dann 500 kbit/s)") },
+    { value: 250, label: tk("250 kbit/s (schwarze Buchse, Typ 1)") },
+    { value: 500, label: tk("500 kbit/s (grüne Buchse, Typ 2)") },
+  ];
+  const truckPossible = mode !== "enet" && mode !== "replay";
   const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
   return (
@@ -660,6 +761,25 @@ export default function ConnectPage() {
       <div className="connect-columns">
         <Card className="connect-steps" title={tr("So geht's")}>
           <Step n={1} icon="map-pin" title={tr("Buchse finden")} text={socketHint} />
+          {truck ? (
+            <div className="connect-moto">
+              <div className="connect-step-head">{tk("Beim Lkw")}</div>
+              <ul className="subtle">
+                <li>
+                  {tk(
+                    "Nordamerikanische Lkw: runde 9-polige Diagnosebuchse (Deutsch) im Fahrerhaus, meist unter dem Armaturenbrett auf der Fahrerseite. Schwarz (Typ 1) heißt 250 kbit/s, grün (Typ 2, ab etwa 2016) 500 kbit/s.",
+                  )}
+                </li>
+                <li>{tk("Ein Adapterkabel von 9 Polen auf eine 16-polige OBD-Kupplung verbindet den Adapter.")}</li>
+                <li>{tk("Europäische Lkw seit Euro 6 haben meist die 16-polige Buchse wie ein Auto.")}</li>
+                <li>
+                  {tk(
+                    "Lkw haben meist 24 V. Viele billige ELM327-Adapter sind nur für 12 V gebaut und gehen daran kaputt: nur einen Adapter nehmen, der 24 V ausdrücklich verträgt.",
+                  )}
+                </li>
+              </ul>
+            </div>
+          ) : null}
           {motoSteps.length > 0 ? (
             <div className="connect-moto">
               <div className="connect-step-head">{tr("Beim Motorrad")}</div>
@@ -702,13 +822,20 @@ export default function ConnectPage() {
           {/* Two rows, so the card keeps its width in every language: the
               cables first, then the ways without one. */}
           <div className="connect-chips">
-            <ModeChip mode="cable" current={mode} icon="usb" label={tr("USB oder COM-Port")} onPick={setMode} />
+            <ModeChip
+              mode="cable"
+              current={mode}
+              icon="usb"
+              label={isAndroid ? ta("USB-Kabel (OTG)") : tr("USB oder COM-Port")}
+              onPick={setMode}
+            />
             {hasBle ? <ModeChip mode="ble" current={mode} icon="bluetooth" label={tr("Bluetooth")} onPick={setMode} /> : null}
             <ModeChip mode="wifi" current={mode} icon="wifi" label={tr("WLAN")} onPick={setMode} />
-            <ModeChip mode="enet" current={mode} icon="ethernet" label={tr("Netzwerkkabel")} onPick={setMode} />
+            {/* A phone has neither a network cable nor CAN interfaces. */}
+            {isAndroid ? null : <ModeChip mode="enet" current={mode} icon="ethernet" label={tr("Netzwerkkabel")} onPick={setMode} />}
           </div>
           <div className="connect-chips">
-            <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />
+            {isAndroid ? null : <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />}
             <ModeChip mode="demo" current={mode} icon="sparkles" label={tr("Demo-Auto")} onPick={setMode} />
             <ModeChip mode="replay" current={mode} icon="play" label={tr("Aufnahme")} onPick={setMode} />
           </div>
@@ -721,11 +848,16 @@ export default function ConnectPage() {
                   <RefreshButton title={tr("Anschlüsse neu suchen")} onClick={() => void refreshPorts()} />
                 </div>
                 <div className="hint">
-                  {tr(
-                    "Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als " +
-                      "eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle " +
-                      "Anschlüsse der Reihe nach.",
-                  )}
+                  {isAndroid
+                    ? ta(
+                        "Ein USB-Adapter braucht ein OTG-Kabel am Handy. Android fragt beim ersten " +
+                          "Verbinden, ob Caruspex ihn benutzen darf.",
+                      )
+                    : tr(
+                        "Bluetooth-Adapter erscheinen nach dem Koppeln in Windows als " +
+                          "eigener COM-Anschluss. Bei Automatisch probiert Caruspex alle " +
+                          "Anschlüsse der Reihe nach.",
+                      )}
                 </div>
               </>
             ) : null}
@@ -741,11 +873,15 @@ export default function ConnectPage() {
 
             {mode === "demo" ? (
               <div className="subtle connect-demo-text">
-                {tr(
-                  "Ein nachgebautes Auto im Programm: es fährt, wärmt sich auf, " +
-                    "hat ein paar Fehler gespeichert. Ideal zum Ausprobieren, ganz " +
-                    "ohne Adapter.",
-                )}
+                {truck
+                  ? tk(
+                      "Ein nachgebauter Lkw im Programm: Motor, Getriebe, Bremsen und Kombiinstrument am J1939-Bus, mit zwei aktiven und zwei früheren Fehlern.",
+                    )
+                  : tr(
+                      "Ein nachgebautes Auto im Programm: es fährt, wärmt sich auf, " +
+                        "hat ein paar Fehler gespeichert. Ideal zum Ausprobieren, ganz " +
+                        "ohne Adapter.",
+                    )}
               </div>
             ) : null}
 
@@ -774,7 +910,9 @@ export default function ConnectPage() {
               </>
             ) : null}
 
-            {mode === "ble" ? (
+            {mode === "ble" && btBlocked ? <BluetoothPermission refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
+
+            {mode === "ble" && !btBlocked ? (
               <>
                 <div className="connect-line">
                   <Select
@@ -832,6 +970,27 @@ export default function ConnectPage() {
               </>
             ) : null}
           </div>
+
+          {truckPossible ? (
+            <div className="connect-truck">
+              <Check checked={truck} onChange={setTruck}>
+                {tk("Lkw oder Bus (SAE J1939)")}
+              </Check>
+              {truck ? (
+                <>
+                  <div className="connect-line">
+                    <span className="subtle">{tk("Bitrate")}</span>
+                    <Select className="grow" value={truckRate} options={truckRateOptions} onChange={setTruckRate} />
+                  </div>
+                  <div className="hint">
+                    {tk(
+                      "Caruspex hört zuerst nur zu, J1939 sendet fast alles von selbst. Transporter wie Sprinter, Transit oder Crafter sprechen normales OBD-II, für sie das Häkchen auslassen.",
+                    )}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          ) : null}
 
           <hr className="divider" />
 

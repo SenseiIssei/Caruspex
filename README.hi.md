@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **हिन्दी** · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**दस्तावेज़:** [इंस्टॉल, पहले कदम, हर एडैप्टर और इंटरफ़ेस, निजता, अक्सर पूछे जाने वाले सवाल](https://senseiissei.github.io/Caruspex/hi/index.html), सभी 18 भाषाओं में।
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ KKL केबल K-Line को कच्चा ही आगे पहुँच�
 | टेस्ट | सिम्युलेटेड ECU, नकली गेटवे और नकली J2534 ड्राइवर के विरुद्ध `cargo test` |
 | टूलिंग | Python 3 (कोड और टेबल जनरेटर, अनुवाद जाँच, ELM327 सिम्युलेटर) |
 | प्लेटफ़ॉर्म | Windows 10 और 11, Linux, macOS |
+
+<!-- tested -->
+## किसके साथ परखा गया
+
+अब तक Caruspex के साथ असल में क्या आज़माया गया है, ईमानदारी से लिखा है। बाकी सब कुछ मानकों के हिसाब से बना है और नकली कंट्रोल यूनिट, नकली गेटवे और नकली ड्राइवर पर परखा गया है, पर अभी असली कार पर नहीं।
+
+| इंटरफ़ेस | कार | नतीजा |
+|---|---|---|
+| STN2232 चिप वाला OBDLink | कोई नहीं, बिना कार के एडैप्टर टेस्ट | चिप, फ़र्मवेयर और कमांड पहचाने गए |
+| बाकी सभी एडैप्टर और इंटरफ़ेस | | अभी असली कार पर नहीं परखे गए |
+
+क्या आपने अपनी कार पर Caruspex आज़माया? कृपया एक [टेस्ट रिपोर्ट](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) भेजें: हर रिपोर्ट ब्रांड और इंटरफ़ेस के हिसाब से इस सूची में जुड़ती है।
+<!-- /tested -->
 
 ## डाउनलोड
 

@@ -1,0 +1,72 @@
+# Snap of Caruspex, a template filled in by tools/dist_manifests.py (see
+# packaging/README.md). It repackages the .deb of the release, which the CI
+# builds on Ubuntu 22.04, so the base is core22 with the GNOME extension.
+name: caruspex
+base: core22
+version: "@VERSION@"
+title: Caruspex
+summary: Free car diagnostics over OBD-II, K-Line, CAN and Ethernet
+description: |
+  Caruspex reads and clears fault codes, explains them in plain words, shows
+  live values, asks every control unit of the car and checks used cars before
+  the purchase. It works with ELM327 and OBDLink adapters over USB, Bluetooth
+  and Wi-Fi, KKL cables for older VW group cars, BMW ENET and DoIP cables,
+  SocketCAN and SLCAN interfaces. 18 languages, only reads, sends nothing.
+
+  Serial adapters, Bluetooth and CAN need their interfaces connected once:
+  sudo snap connect caruspex:raw-usb
+  sudo snap connect caruspex:bluez
+  sudo snap connect caruspex:can-bus
+license: MIT
+grade: stable
+confinement: strict
+website: https://github.com/SenseiIssei/Caruspex
+source-code: https://github.com/SenseiIssei/Caruspex
+issues: https://github.com/SenseiIssei/Caruspex/issues
+architectures:
+  - build-on: amd64
+
+layout:
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1
+
+apps:
+  caruspex:
+    command: usr/bin/caruspex
+    desktop: usr/share/applications/dev.senseiissei.caruspex.desktop
+    common-id: dev.senseiissei.caruspex
+    extensions: [gnome]
+    plugs:
+      - network
+      - home
+      - removable-media
+      # Serial adapters: ELM327 cables, KKL, SLCAN (/dev/ttyUSB*, /dev/ttyACM*).
+      - raw-usb
+      # Bluetooth LE and classic Bluetooth through BlueZ.
+      - bluez
+      # SocketCAN interfaces.
+      - can-bus
+
+parts:
+  caruspex:
+    plugin: dump
+    source: https://github.com/SenseiIssei/Caruspex/releases/download/v@VERSION@/Caruspex-@VERSION@-linux-amd64.deb
+    source-type: deb
+    source-checksum: sha256/@SHA256_LINUX_DEB@
+    stage-packages:
+      - libwebkit2gtk-4.1-0
+    prime:
+      - -usr/share/applications/Caruspex.desktop
+  metadata:
+    plugin: dump
+    source: .
+    organize:
+      dev.senseiissei.caruspex.desktop: usr/share/applications/dev.senseiissei.caruspex.desktop
+      dev.senseiissei.caruspex.metainfo.xml: usr/share/metainfo/dev.senseiissei.caruspex.metainfo.xml
+    stage:
+      - usr/share/applications/dev.senseiissei.caruspex.desktop
+      - usr/share/metainfo/dev.senseiissei.caruspex.metainfo.xml
+    override-prime: |
+      craftctl default
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/128x128/apps/caruspex.png|' \
+        usr/share/applications/dev.senseiissei.caruspex.desktop

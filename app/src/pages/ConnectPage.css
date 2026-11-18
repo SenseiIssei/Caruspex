@@ -161,3 +161,22 @@
 .connect-check-title { font-weight: 600; }
 .connect-moto { padding: 0 0 4px 38px; }
 .connect-moto ul { margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+/* On a phone the adapter choice and the button come first, the steps below. */
+@media (max-width: 640px) {
+  .connect-adapter { order: -1; }
+}
+
+/* --- Android: the question for nearby devices ------------------------------------------- */
+
+.connect-permission {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.connect-permission-head { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--accent-hover); }

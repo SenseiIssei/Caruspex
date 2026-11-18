@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · **Français** · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Documentation :** [installation, premiers pas, chaque adaptateur et interface, confidentialité, questions fréquentes](https://senseiissei.github.io/Caruspex/fr/index.html), dans les 18 langues.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Pas encore implémenté : le diagnostic constructeur sur CAN avec VW TP 2.0 (vé
 | Tests | `cargo test` contre des calculateurs simulés, de fausses passerelles et un faux pilote J2534 |
 | Outillage | Python 3 (générateurs de code et de tables, vérifications des traductions, simulateur ELM327) |
 | Plateformes | Windows 10 et 11, Linux, macOS |
+
+<!-- tested -->
+## Testé avec
+
+Ce qui a vraiment été essayé avec Caruspex jusqu'ici, en toute honnêteté. Tout le reste est construit d'après les normes et testé avec des calculateurs simulés, de fausses passerelles et de faux pilotes, mais pas encore sur une vraie voiture.
+
+| Interface | Voiture | Résultat |
+|---|---|---|
+| OBDLink avec la puce STN2232 | aucune, test de l'adaptateur sans voiture | puce, firmware et commandes reconnus |
+| tous les autres adaptateurs et interfaces | | pas encore testés sur une vraie voiture |
+
+Vous avez essayé Caruspex sur votre voiture ? Envoyez un [rapport de test](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) : chaque rapport entre dans cette liste, par marque et par interface.
+<!-- /tested -->
 
 ## Téléchargement
 

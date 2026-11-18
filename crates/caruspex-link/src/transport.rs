@@ -50,6 +50,48 @@ pub trait IsoTpBatch {
     fn exchange_all(&mut self, requests: &[IsoTpRequest], timeout_ms: u64) -> Vec<Vec<Vec<u8>>>;
 }
 
+/// One frame with a 29-bit id, as SAE J1939 (trucks, buses, machines) puts
+/// it on the bus.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct BusFrame {
+    /// The 29-bit id: priority, PGN, destination or group, source.
+    pub id: u32,
+    /// 0 to 8 bytes.
+    pub data: Vec<u8>,
+}
+
+/// A CAN bus heard frame by frame, for SAE J1939. Most of the traffic
+/// there is broadcast, so the way in is listening: a raw CAN interface
+/// hands over every frame, an ELM327 in protocol A prints them while it
+/// monitors.
+pub trait FrameLink: Send {
+    /// Sends `send` (if any) and then hands every 29-bit frame heard to
+    /// `seen`, until `listen_ms` have passed or `seen` returns true. An
+    /// error means the way to the bus is gone.
+    fn exchange(
+        &mut self,
+        send: Option<&BusFrame>,
+        listen_ms: u64,
+        seen: &mut dyn FnMut(&BusFrame) -> bool,
+    ) -> Result<(), String>;
+    /// Shown in the log ("ELM327 v1.5, protocol A", "PCAN-USB (250 kbit/s)").
+    fn name(&self) -> String;
+}
+
+impl<T: FrameLink + ?Sized> FrameLink for Box<T> {
+    fn exchange(
+        &mut self,
+        send: Option<&BusFrame>,
+        listen_ms: u64,
+        seen: &mut dyn FnMut(&BusFrame) -> bool,
+    ) -> Result<(), String> {
+        (**self).exchange(send, listen_ms, seen)
+    }
+    fn name(&self) -> String {
+        (**self).name()
+    }
+}
+
 /// One byte out, one byte in, for KWP1281 and KWP2000 on a K-line.
 /// Kept separate from the cable so the state machines can be tested against
 /// a simulated control unit.

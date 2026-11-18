@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · **한국어** · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**문서:** [설치, 첫걸음, 모든 어댑터와 인터페이스, 개인정보, 자주 묻는 질문](https://senseiissei.github.io/Caruspex/ko/index.html), 18개 언어 모두로.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ KKL 케이블은 K-Line을 그대로 통과시키므로 Caruspex가 프로토콜
 | 테스트 | 모의 ECU, 가짜 게이트웨이, 가짜 J2534 드라이버를 대상으로 한 `cargo test` |
 | 도구 | Python 3(코드와 표 생성기, 번역 검사, ELM327 시뮬레이터) |
 | 플랫폼 | Windows 10과 11, Linux, macOS |
+
+<!-- tested -->
+## 실제 시험 결과
+
+지금까지 Caruspex로 실제로 시험해 본 것을 솔직하게 적었습니다. 나머지는 모두 규격에 따라 만들어졌고 모의 제어 장치, 가짜 게이트웨이, 가짜 드라이버로 시험했지만 아직 실제 차에서는 시험하지 않았습니다.
+
+| 인터페이스 | 차량 | 결과 |
+|---|---|---|
+| STN2232 칩이 든 OBDLink | 없음, 차 없이 한 어댑터 시험 | 칩, 펌웨어, 명령을 제대로 인식 |
+| 그 밖의 모든 어댑터와 인터페이스 | | 아직 실제 차에서 시험하지 않음 |
+
+내 차에서 Caruspex를 써 보셨나요? [시험 보고서](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)를 보내 주세요. 모든 보고서는 브랜드와 인터페이스별로 이 목록에 들어갑니다.
+<!-- /tested -->
 
 ## 다운로드
 

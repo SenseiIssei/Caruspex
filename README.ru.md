@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · **Русский** · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Документация:** [установка, первые шаги, каждый адаптер и интерфейс, конфиденциальность, частые вопросы](https://senseiissei.github.io/Caruspex/ru/index.html), на всех 18 языках.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Caruspex сам определяет, что подключено и на как
 | Тесты | `cargo test` на имитированных блоках управления, поддельных шлюзах и поддельном драйвере J2534 |
 | Инструменты | Python 3 (генераторы кода и таблиц, проверки переводов, симулятор ELM327) |
 | Платформы | Windows 10 и 11, Linux, macOS |
+
+<!-- tested -->
+## Проверено с
+
+Что на самом деле уже опробовано с Caruspex, честно перечислено. Всё остальное сделано по стандартам и проверено на имитированных блоках управления, поддельных шлюзах и поддельных драйверах, но ещё не на настоящем автомобиле.
+
+| Интерфейс | Автомобиль | Результат |
+|---|---|---|
+| OBDLink с чипом STN2232 | нет, тест адаптера без автомобиля | чип, прошивка и команды распознаны |
+| все остальные адаптеры и интерфейсы | | ещё не проверены на настоящем автомобиле |
+
+Попробовали Caruspex на своём автомобиле? Пожалуйста, отправьте [отчёт о проверке](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): каждый отчёт попадает в этот список, по марке и интерфейсу.
+<!-- /tested -->
 
 ## Скачать
 

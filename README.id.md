@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · **Bahasa Indonesia**
 <!-- /languages -->
 
+<!-- docs -->
+**Dokumentasi:** [pemasangan, langkah pertama, setiap adaptor dan antarmuka, privasi, pertanyaan umum](https://senseiissei.github.io/Caruspex/id/index.html), dalam ke-18 bahasa.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Belum diimplementasikan: diagnostik pabrikan lewat CAN dengan VW TP 2.0 (kendara
 | Tes | `cargo test` terhadap ECU simulasi, gateway palsu, dan driver J2534 palsu |
 | Perkakas | Python 3 (generator kode dan tabel, pemeriksaan terjemahan, simulator ELM327) |
 | Platform | Windows 10 dan 11, Linux, macOS |
+
+<!-- tested -->
+## Sudah dicoba dengan
+
+Apa yang sungguh sudah dicoba dengan Caruspex sejauh ini, dicatat dengan jujur. Selebihnya dibuat menurut standar dan diuji dengan unit kontrol tiruan, gateway palsu, dan driver palsu, tetapi belum di mobil sungguhan.
+
+| Antarmuka | Mobil | Hasil |
+|---|---|---|
+| OBDLink dengan chip STN2232 | tidak ada, tes adaptor tanpa mobil | chip, firmware, dan perintah dikenali |
+| semua adaptor dan antarmuka lain | | belum diuji di mobil sungguhan |
+
+Sudah mencoba Caruspex di mobil Anda? Kirimkan [laporan uji](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): setiap laporan masuk ke daftar ini, per merek dan antarmuka.
+<!-- /tested -->
 
 ## Unduh
 

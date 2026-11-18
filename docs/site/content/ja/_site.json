@@ -1,0 +1,18 @@
+{
+  "language_name": "日本語",
+  "site_title": "Caruspex ドキュメント",
+  "tagline": "Windows、Linux、macOS 向けの無料の車両診断ソフト：故障コード、ライブ値、すべてのコントロールユニットに対応、18 言語。",
+  "group_start": "はじめに",
+  "group_interfaces": "アダプターとインターフェース",
+  "group_using": "Caruspex の使い方",
+  "group_more": "その他",
+  "menu": "メニュー",
+  "language": "言語",
+  "skip": "本文へスキップ",
+  "download": "ダウンロード",
+  "source": "ソースコード",
+  "previous": "前へ",
+  "next": "次へ",
+  "improve": "GitHub でこのページを改善する",
+  "footer": "Caruspex は MIT ライセンスのフリーソフトウェアです。このドキュメントはソースコードの一部で、修正は大歓迎です。"
+}

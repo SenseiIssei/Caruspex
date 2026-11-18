@@ -1,0 +1,18 @@
+{
+  "language_name": "Español",
+  "site_title": "Documentación de Caruspex",
+  "tagline": "Diagnosis gratuita del coche para Windows, Linux y macOS: códigos de avería, valores en vivo, todas las unidades de control, en 18 idiomas.",
+  "group_start": "Primeros pasos",
+  "group_interfaces": "Adaptadores e interfaces",
+  "group_using": "Usar Caruspex",
+  "group_more": "Más",
+  "menu": "Menú",
+  "language": "Idioma",
+  "skip": "Saltar al contenido",
+  "download": "Descargar",
+  "source": "Código fuente",
+  "previous": "Anterior",
+  "next": "Siguiente",
+  "improve": "Mejorar esta página en GitHub",
+  "footer": "Caruspex es software libre bajo la licencia MIT. Esta documentación forma parte de su código fuente, las correcciones son bienvenidas."
+}

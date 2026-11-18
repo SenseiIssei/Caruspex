@@ -1,0 +1,18 @@
+{
+  "language_name": "Français",
+  "site_title": "Documentation de Caruspex",
+  "tagline": "Diagnostic auto gratuit pour Windows, Linux et macOS : codes défaut, valeurs en direct, tous les calculateurs, en 18 langues.",
+  "group_start": "Premiers pas",
+  "group_interfaces": "Adaptateurs et interfaces",
+  "group_using": "Utiliser Caruspex",
+  "group_more": "Plus",
+  "menu": "Menu",
+  "language": "Langue",
+  "skip": "Aller au contenu",
+  "download": "Télécharger",
+  "source": "Code source",
+  "previous": "Précédent",
+  "next": "Suivant",
+  "improve": "Améliorer cette page sur GitHub",
+  "footer": "Caruspex est un logiciel libre sous licence MIT. Cette documentation fait partie de son code source, les corrections sont les bienvenues."
+}

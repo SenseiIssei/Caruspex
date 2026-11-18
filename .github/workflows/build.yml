@@ -86,6 +86,13 @@ jobs:
       - name: README language bar is current
         run: python tools/readme_languages.py --check
 
+      # The documentation website in all languages (published by pages.yml).
+      - name: Documentation website builds
+        run: python docs/site/build.py --check --out target/docs-site
+
+      - name: Package manager templates
+        run: python tools/dist_manifests.py --check-templates
+
       - name: Interface
         env:
           I18N_STRICT: "1"
@@ -96,6 +103,65 @@ jobs:
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
+
+  # AddressSanitizer (with LeakSanitizer) on the tests of the modules with
+  # unsafe code: the J2534 crate, SocketCAN in caruspex-net (over a virtual
+  # vcan0 when the runner can load the module) and classic Bluetooth in
+  # caruspex-link. rustc has no UndefinedBehaviorSanitizer; the second run
+  # switches on Rust's own checks for undefined behaviour in the standard
+  # library instead (-Zub-checks with a rebuilt std). Nightly only, so the
+  # job may fail without blocking anything: it is not a required check.
+  # The J2534 driver calls themselves are Windows only and not covered here.
+  sanitizers:
+    name: Sanitizers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    continue-on-error: true
+    env:
+      TARGET: x86_64-unknown-linux-gnu
+      CARUSPEX_TEST_VCAN: vcan0
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rust-src
+
+      - name: System packages
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y libdbus-1-dev libudev-dev pkg-config
+
+      - name: Virtual CAN interface
+        run: |
+          # vcan is in the extra modules of the runner's kernel. Without it
+          # the SocketCAN test only checks the error paths.
+          if sudo apt-get install -y "linux-modules-extra-$(uname -r)" && sudo modprobe vcan; then
+            sudo ip link add dev vcan0 type vcan
+            sudo ip link set vcan0 mtu 72
+            sudo ip link set up vcan0
+            ip -details link show vcan0
+          else
+            echo "::warning::vcan is not available, the SocketCAN test runs without an interface"
+          fi
+
+      - name: AddressSanitizer
+        env:
+          RUSTFLAGS: -Zsanitizer=address -Cforce-frame-pointers=yes
+          RUSTDOCFLAGS: -Zsanitizer=address
+          ASAN_OPTIONS: detect_leaks=1:detect_stack_use_after_return=1:strict_string_checks=1
+        run: |
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-j2534 --lib
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-net --lib socketcan
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-link --lib bt_classic
+
+      - name: Undefined behaviour checks
+        env:
+          RUSTFLAGS: -Zub-checks=yes -Cdebug-assertions=yes -Coverflow-checks=yes
+        run: |
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-j2534 --lib
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-net --lib socketcan
+          cargo test -Zbuild-std --target "$TARGET" -p caruspex-link --lib bt_classic
 
   build:
     name: ${{ matrix.name }}
@@ -188,6 +254,106 @@ jobs:
           name: ${{ matrix.artifact }}-smoke
           path: smoke/
           if-no-files-found: ignore
+
+  # The Android app (docs/android.md): an APK for arm64 phones. Not a
+  # required check and not part of the release job above; on version tags
+  # the APK is signed and attached to the release only when the signing
+  # secrets exist, otherwise it stays an unsigned build artifact.
+  android:
+    name: Android
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      signed: ${{ steps.apk.outputs.signed }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Interface packages
+        run: npm --prefix app ci
+
+      # The release key never lives in the repository: the secret holds the
+      # keystore as base64 and is written to a temporary file for this run.
+      - name: Signing key (version tags with secrets only)
+        id: key
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          KEYSTORE: ${{ secrets.CARUSPEX_ANDROID_KEYSTORE }}
+        run: |
+          if [ -z "$KEYSTORE" ]; then
+            echo "::notice::No Android signing secrets: the APK stays unsigned and is not attached to the release."
+            exit 0
+          fi
+          printf '%s' "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/caruspex-release.jks"
+          echo "file=$RUNNER_TEMP/caruspex-release.jks" >> "$GITHUB_OUTPUT"
+
+      - name: APK
+        id: apk
+        env:
+          CARUSPEX_ANDROID_KEYSTORE_FILE: ${{ steps.key.outputs.file }}
+          CARUSPEX_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.CARUSPEX_ANDROID_KEYSTORE_PASSWORD }}
+          CARUSPEX_ANDROID_KEY_ALIAS: ${{ secrets.CARUSPEX_ANDROID_KEY_ALIAS }}
+          CARUSPEX_ANDROID_KEY_PASSWORD: ${{ secrets.CARUSPEX_ANDROID_KEY_PASSWORD }}
+        run: |
+          export NDK_HOME="${ANDROID_NDK_LATEST_HOME:-$ANDROID_NDK_HOME}"
+          version=$(sed -n '/^\[workspace.package\]/,/^\[/s/^version = "\([0-9.]*\)"/\1/p' Cargo.toml)
+          (cd app && npx tauri android build --apk --target aarch64)
+          apk=$(find app/src-tauri/gen/android/app/build/outputs/apk -name '*release*.apk' | head -n 1)
+          test -n "$apk" || { echo "no APK was built" >&2; exit 1; }
+          mkdir -p dist-android
+          if [ -n "$CARUSPEX_ANDROID_KEYSTORE_FILE" ]; then
+            cp "$apk" "dist-android/Caruspex-$version-android-arm64.apk"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            cp "$apk" "dist-android/Caruspex-$version-android-arm64-unsigned.apk"
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+          rm -f "$RUNNER_TEMP/caruspex-release.jks"
+          ls -l dist-android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-apk
+          path: dist-android/
+          if-no-files-found: error
+
+  # Attaches the signed APK to the release the release job made.
+  android-release:
+    name: Android release
+    if: startsWith(github.ref, 'refs/tags/v') && needs.android.outputs.signed == 'true'
+    needs: [android, release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v8
+        with:
+          name: android-apk
+          path: apk
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" apk/*.apk --repo "$GITHUB_REPOSITORY"
 
   # Only for version tags: one release with all packages and the change list
   # from changelog/<version>.md, plus what the updater of the app reads:

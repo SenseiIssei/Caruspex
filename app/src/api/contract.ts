@@ -19,6 +19,7 @@ import type {
   AppInfo,
   AppSettings,
   BleDeviceRow,
+  BluetoothAccess,
   BrandFamily,
   CatalogMatch,
   CustomRow,
@@ -31,6 +32,9 @@ import type {
   FreezeFrameRow,
   GarageCar,
   HealthRow,
+  J1939IdRow,
+  J1939UnitRow,
+  J1939ValueRow,
   J2534DeviceRow,
   KklEcuInfo,
   LiveRow,
@@ -123,17 +127,22 @@ export interface Commands {
   // Empty device: search every port.
   // remembered: the way that worked last time for this car; it is tried
   // first, quietly, and only if no adapter answers there the search runs.
-  open_serial: Cmd<{ device: string; baud: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
-  open_tcp: Cmd<{ host: string; port: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
-  open_demo: Cmd<{ protocolOrder: string }, void>;
+  // truck: a truck or bus over SAE J1939 at this bit rate in kbit/s (250,
+  // 500, or 0 for both in turn); left out for cars.
+  open_serial: Cmd<{ device: string; baud: number; protocolOrder: string; remembered?: ConnectRoute; truck?: number }, void>;
+  open_tcp: Cmd<{ host: string; port: number; protocolOrder: string; remembered?: ConnectRoute; truck?: number }, void>;
+  open_demo: Cmd<{ protocolOrder: string; truck?: number }, void>;
   // Empty host: look for the car (ENET and DoIP).
   open_enet: Cmd<{ host: string; protocolOrder: string; remembered?: ConnectRoute }, void>;
   // "j2534:<dll>", "slcan:COM5", "socketcan:can0", with "@<bitrate>".
-  open_can: Cmd<{ spec: string; protocolOrder: string; remembered?: ConnectRoute }, void>;
+  open_can: Cmd<{ spec: string; protocolOrder: string; remembered?: ConnectRoute; truck?: number }, void>;
   // Answers with the ble_scan_finished event.
   scan_ble: Cmd<{ milliseconds: number }, void>;
+  // Android: may the app use Bluetooth, and the system question for it.
+  bluetooth_access: Cmd<None, BluetoothAccess>;
+  request_bluetooth_access: Cmd<None, BluetoothAccess>;
   // kinds: 1 = Bluetooth LE, 2 = classic, 3 = both. Empty id scans.
-  open_ble: Cmd<{ id: string; name: string; kinds: number; protocolOrder: string; remembered?: ConnectRoute }, void>;
+  open_ble: Cmd<{ id: string; name: string; kinds: number; protocolOrder: string; remembered?: ConnectRoute; truck?: number }, void>;
   open_replay: Cmd<{ path: string; realTime: boolean; protocolOrder: string }, void>;
   close_adapter: Cmd<None, void>;
   start_recording: Cmd<{ path: string }, void>;
@@ -250,7 +259,15 @@ export interface Events {
   // SocketCAN), so the KKL pages can use VAG TP 2.0 on it.
   // stnBuses: the extra CAN buses an OBDLink can switch to ("ms", "sw").
   // route: the way the connection went, for the garage.
-  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[]; route?: ConnectRoute };
+  // j1939: connected to a truck over SAE J1939 (faults come from DM1 and
+  // DM2, values by listening).
+  connected: { adapter: string; transport: string; protocol: string; rawCan?: boolean; stnBuses?: string[]; route?: ConnectRoute; j1939?: boolean };
+  // SAE J1939: the control units with their lamps (after reading faults),
+  // their identification (after read_details) and the broadcast values
+  // (each tick of the live loop).
+  j1939_units: { units: J1939UnitRow[] };
+  j1939_ids: { units: J1939IdRow[] };
+  j1939_values: { rows: J1939ValueRow[] };
   // help: the checklist of the connection assistant when connecting
   // failed (absent for other failures and for recordings).
   failed: { error: string; help?: ConnectHelp };
@@ -293,7 +310,7 @@ export interface Events {
   custom_read: { ok: number; failed: number; firstError: string };
   custom_imported: { rows: CustomRow[]; errors: string[] };
   freeze_frames: { frames: FreezeFrameRow[] };
-  uds_scan_started: { total: number; generic: boolean };
+  uds_scan_started: { total: number; generic: boolean; bus?: string };
   // request and kind of the unit being asked right now.
   uds_scan_progress: { name: string; index: number; total: number; request: number; kind: EcuKind };
   uds_ecu_result: { row: UdsEcuRow };

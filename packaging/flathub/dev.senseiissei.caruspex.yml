@@ -1,0 +1,50 @@
+# Flatpak manifest for Flathub, a template filled in by tools/dist_manifests.py
+# (see packaging/README.md). It repackages the .deb of the release, which the
+# CI builds on Ubuntu 22.04; the GNOME runtime brings WebKitGTK 4.1.
+app-id: dev.senseiissei.caruspex
+runtime: org.gnome.Platform
+runtime-version: "49"
+sdk: org.gnome.Sdk
+command: caruspex
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  # Update check, Wi-Fi adapters, BMW ENET and DoIP.
+  - --share=network
+  # Serial adapters (/dev/ttyUSB*, /dev/ttyACM*): ELM327 cables, KKL, SLCAN.
+  - --device=all
+  # Classic Bluetooth (RFCOMM sockets) and Bluetooth LE through BlueZ.
+  - --allow=bluetooth
+  - --system-talk-name=org.bluez
+  # SocketCAN interfaces (can0 and friends).
+  - --allow=canbus
+modules:
+  - name: caruspex
+    buildsystem: simple
+    sources:
+      - type: file
+        dest-filename: caruspex.deb
+        url: https://github.com/SenseiIssei/Caruspex/releases/download/v@VERSION@/Caruspex-@VERSION@-linux-amd64.deb
+        sha256: @SHA256_LINUX_DEB@
+        only-arches:
+          - x86_64
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/SenseiIssei/Caruspex/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: .assets[] | select(.name == "Caruspex-" + $version + "-linux-amd64.deb") | .browser_download_url
+      - type: file
+        path: dev.senseiissei.caruspex.desktop
+      - type: file
+        path: dev.senseiissei.caruspex.metainfo.xml
+    build-commands:
+      - ar x caruspex.deb
+      - tar -xf data.tar.*
+      - install -Dm755 usr/bin/caruspex /app/bin/caruspex
+      - install -Dm644 dev.senseiissei.caruspex.desktop /app/share/applications/dev.senseiissei.caruspex.desktop
+      - install -Dm644 dev.senseiissei.caruspex.metainfo.xml /app/share/metainfo/dev.senseiissei.caruspex.metainfo.xml
+      - install -Dm644 usr/share/icons/hicolor/32x32/apps/caruspex.png /app/share/icons/hicolor/32x32/apps/dev.senseiissei.caruspex.png
+      - install -Dm644 usr/share/icons/hicolor/128x128/apps/caruspex.png /app/share/icons/hicolor/128x128/apps/dev.senseiissei.caruspex.png
+      - install -Dm644 usr/share/icons/hicolor/256x256@2/apps/caruspex.png /app/share/icons/hicolor/256x256/apps/dev.senseiissei.caruspex.png

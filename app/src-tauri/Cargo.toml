@@ -9,6 +9,13 @@ license.workspace = true
 name = "caruspex"
 path = "src/main.rs"
 
+# Everything is in the library: main.rs calls run() on the desktop, the
+# Android app loads it as libcaruspex_app_lib.so (cdylib).
+[lib]
+name = "caruspex_app_lib"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
 # The interface is built into every binary, also from a plain `cargo build`.
 # Without it the app would load the interface from the dev server
 # (localhost:5287) and show an error page when that is not running. Live
@@ -27,7 +34,6 @@ dirs = "7"
 tauri = { version = "2.12", features = [] }
 tauri-plugin-dialog = "2.8.3"
 tauri-plugin-opener = "2.7.3"
-tauri-plugin-single-instance = "2"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.154"
 ureq = { version = "3.5.1", features = ["json"] }
@@ -45,6 +51,9 @@ caruspex-advice.workspace = true
 caruspex-demo.workspace = true
 minisign-verify = "0.3.0"
 base64 = "0.23.1"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-single-instance = "2"
 
 [target.'cfg(windows)'.dependencies]
 # The same versions wry uses, so the WebView2 handles of with_webview fit.

@@ -9,9 +9,9 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use tauri::{
-    AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Window,
-};
+use tauri::{AppHandle, Emitter, Manager, State, Window};
+#[cfg(desktop)]
+use tauri::{PhysicalPosition, PhysicalSize, WebviewWindow};
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
@@ -32,8 +32,15 @@ fn job(state: &State<'_, AppState>, job: Job) {
 }
 
 /// A connect job, after the way that worked last time for this car when
-/// the interface knows one.
-fn connect_job(state: &State<'_, AppState>, remembered: Option<ConnectRoute>, then: Job) {
+/// the interface knows one. `truck`: the J1939 bit rate in kbit/s (0 for
+/// both in turn) when the interface connects to a truck, `None` for cars.
+fn connect_job(
+    state: &State<'_, AppState>,
+    remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
+    then: Job,
+) {
+    job(state, Job::SetTruck(truck));
     match remembered {
         Some(route) => job(
             state,
@@ -97,6 +104,8 @@ pub fn app_info(app: AppHandle, state: State<'_, AppState>) -> AppInfo {
             "windows"
         } else if cfg!(target_os = "macos") {
             "macos"
+        } else if cfg!(target_os = "android") {
+            "android"
         } else {
             "linux"
         },
@@ -338,6 +347,7 @@ fn file_dialog(
     filters: &[FileFilter],
 ) -> tauri_plugin_dialog::FileDialogBuilder<tauri::Wry> {
     let mut dialog = app.dialog().file().set_title(title);
+    #[cfg(desktop)]
     if let Some(window) = app.get_webview_window("main") {
         dialog = dialog.set_parent(&window);
     }
@@ -348,6 +358,7 @@ fn file_dialog(
     dialog
 }
 
+#[cfg(not(target_os = "android"))]
 fn ask_save_path(
     app: &AppHandle,
     title: &str,
@@ -361,10 +372,91 @@ fn ask_save_path(
     dialog.blocking_save_file().and_then(|p| p.into_path().ok())
 }
 
+#[cfg(not(target_os = "android"))]
 fn ask_open_path(app: &AppHandle, title: &str, filters: &[FileFilter]) -> Option<PathBuf> {
     file_dialog(app, title, filters)
         .blocking_pick_file()
         .and_then(|p| p.into_path().ok())
+}
+
+/// After the file at a path of ask_save_path is written: what to show.
+#[cfg(not(target_os = "android"))]
+fn finish_save(path: &Path) -> Result<String> {
+    Ok(path.display().to_string())
+}
+
+// Android's file dialog hands out content:// addresses instead of paths.
+// A save is written to a file in the cache first and then copied to the
+// address (finish_save); a picked file is copied into the cache, so
+// everything behind it (replays, models, backups) reads a normal path.
+#[cfg(target_os = "android")]
+static PENDING_SAVES: std::sync::Mutex<Vec<(PathBuf, String)>> = std::sync::Mutex::new(Vec::new());
+
+#[cfg(target_os = "android")]
+fn android_cache(app: &AppHandle, name: &str) -> Option<PathBuf> {
+    let dir = app.path().app_cache_dir().ok()?.join("files");
+    std::fs::create_dir_all(&dir).ok()?;
+    let name: String = name
+        .chars()
+        .map(|c| if c == '/' || c == '\\' { '_' } else { c })
+        .collect();
+    Some(dir.join(if name.is_empty() { "file".into() } else { name }))
+}
+
+#[cfg(target_os = "android")]
+fn ask_save_path(
+    app: &AppHandle,
+    title: &str,
+    suggested: &str,
+    filters: &[FileFilter],
+) -> Option<PathBuf> {
+    use tauri_plugin_dialog::FilePath;
+    match file_dialog(app, title, filters)
+        .set_file_name(suggested)
+        .blocking_save_file()?
+    {
+        FilePath::Path(path) => Some(path),
+        FilePath::Url(url) => {
+            let path = android_cache(app, suggested)?;
+            if let Ok(mut pending) = PENDING_SAVES.lock() {
+                pending.retain(|(p, _)| *p != path);
+                pending.push((path.clone(), url.to_string()));
+            }
+            Some(path)
+        }
+    }
+}
+
+#[cfg(target_os = "android")]
+fn ask_open_path(app: &AppHandle, title: &str, filters: &[FileFilter]) -> Option<PathBuf> {
+    use tauri_plugin_dialog::FilePath;
+    match file_dialog(app, title, filters).blocking_pick_file()? {
+        FilePath::Path(path) => Some(path),
+        FilePath::Url(url) => {
+            let (name, data) = crate::android::read_uri(url.as_str()).ok()?;
+            let path = android_cache(app, &name)?;
+            std::fs::write(&path, data).ok()?;
+            Some(path)
+        }
+    }
+}
+
+#[cfg(target_os = "android")]
+fn finish_save(path: &Path) -> Result<String> {
+    let uri = PENDING_SAVES.lock().ok().and_then(|mut pending| {
+        let at = pending.iter().position(|(p, _)| p == path)?;
+        Some(pending.remove(at).1)
+    });
+    let Some(uri) = uri else {
+        return Ok(path.display().to_string());
+    };
+    let data = std::fs::read(path).map_err(|e| e.to_string())?;
+    let _ = std::fs::remove_file(path);
+    crate::android::write_uri(&uri, &data)?;
+    Ok(path
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or(uri))
 }
 
 #[tauri::command]
@@ -379,7 +471,7 @@ pub async fn save_text_file(
         return Ok(None);
     };
     std::fs::write(&path, content.as_bytes()).map_err(|e| e.to_string())?;
-    Ok(Some(path.display().to_string()))
+    finish_save(&path).map(Some)
 }
 
 #[tauri::command]
@@ -389,18 +481,32 @@ pub async fn save_pdf(
     suggested_name: String,
     html: String,
 ) -> Result<Option<String>> {
+    #[cfg(desktop)]
     let pdf_filter = [FileFilter {
         name: "PDF".into(),
         extensions: vec!["pdf".into()],
     }];
+    // A phone has no hidden window to print from: the report is saved as
+    // an HTML page, which every browser there shows and prints.
+    #[cfg(mobile)]
+    let (suggested_name, pdf_filter) = (
+        Path::new(&suggested_name)
+            .with_extension("html")
+            .display()
+            .to_string(),
+        [FileFilter {
+            name: "HTML".into(),
+            extensions: vec!["html".into()],
+        }],
+    );
     let Some(mut path) = ask_save_path(&app, &title, &suggested_name, &pdf_filter) else {
         return Ok(None);
     };
     if path.extension().is_none() {
-        path.set_extension("pdf");
+        path.set_extension(if cfg!(mobile) { "html" } else { "pdf" });
     }
     match pdf::write_report(&app, html, path.clone(), true).await? {
-        pdf::Written::File => Ok(Some(path.display().to_string())),
+        pdf::Written::File => finish_save(&path).map(Some),
         pdf::Written::PrintDialog => Ok(None),
     }
 }
@@ -467,6 +573,17 @@ pub async fn pick_save_path(
     suggested_name: String,
     filters: Vec<FileFilter>,
 ) -> Result<Option<String>> {
+    // On Android these files (log, recording) are written while the app
+    // runs, which a content:// address cannot take: they go into the app's
+    // own documents folder, which a computer sees over USB.
+    #[cfg(target_os = "android")]
+    {
+        let _ = (title, filters);
+        let dir = app.path().document_dir().map_err(|e| e.to_string())?;
+        std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        Ok(Some(dir.join(&suggested_name).display().to_string()))
+    }
+    #[cfg(not(target_os = "android"))]
     Ok(ask_save_path(&app, &title, &suggested_name, &filters).map(|p| p.display().to_string()))
 }
 
@@ -531,8 +648,12 @@ pub struct SerialPortInfo {
 
 #[tauri::command]
 pub async fn list_serial_ports() -> Result<Vec<SerialPortInfo>> {
+    #[cfg(target_os = "android")]
+    use crate::android::enumerate_ports;
+    #[cfg(not(target_os = "android"))]
+    use caruspex_link::enumerate_ports;
     tauri::async_runtime::spawn_blocking(|| {
-        caruspex_link::enumerate_ports()
+        enumerate_ports()
             .into_iter()
             .map(|p| SerialPortInfo {
                 device: p.device,
@@ -599,10 +720,12 @@ pub fn open_serial(
     baud: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenSerial {
             device,
             baud,
@@ -618,10 +741,12 @@ pub fn open_tcp(
     port: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenTcp {
             host,
             port,
@@ -631,9 +756,9 @@ pub fn open_tcp(
 }
 
 #[tauri::command]
-pub fn open_demo(state: State<'_, AppState>, protocol_order: String) {
+pub fn open_demo(state: State<'_, AppState>, protocol_order: String, truck: Option<u32>) {
     let _ = protocol_order;
-    job(&state, Job::OpenDemo);
+    connect_job(&state, None, truck, Job::OpenDemo);
 }
 
 #[tauri::command]
@@ -644,7 +769,7 @@ pub fn open_enet(
     remembered: Option<ConnectRoute>,
 ) {
     let _ = protocol_order;
-    connect_job(&state, remembered, Job::OpenEnet { host });
+    connect_job(&state, remembered, None, Job::OpenEnet { host });
 }
 
 #[tauri::command]
@@ -653,14 +778,59 @@ pub fn open_can(
     spec: String,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     let _ = protocol_order;
-    connect_job(&state, remembered, Job::OpenCan { spec });
+    connect_job(&state, remembered, truck, Job::OpenCan { spec });
 }
 
 #[tauri::command]
 pub fn scan_ble(state: State<'_, AppState>, milliseconds: i32) {
     job(&state, Job::ScanBle { milliseconds });
+}
+
+/// Whether Bluetooth may be used. Android 12 and newer ask the user at run
+/// time, after the interface has explained why; elsewhere there is nothing
+/// to ask.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BluetoothAccess {
+    pub available: bool,
+    pub needs_permission: bool,
+    pub granted: bool,
+    pub enabled: bool,
+}
+
+impl Default for BluetoothAccess {
+    fn default() -> Self {
+        Self {
+            available: true,
+            needs_permission: false,
+            granted: true,
+            enabled: true,
+        }
+    }
+}
+
+#[tauri::command]
+pub async fn bluetooth_access() -> Result<BluetoothAccess> {
+    #[cfg(target_os = "android")]
+    return tauri::async_runtime::spawn_blocking(crate::android::bluetooth_access)
+        .await
+        .map_err(|e| e.to_string())?;
+    #[cfg(not(target_os = "android"))]
+    Ok(BluetoothAccess::default())
+}
+
+/// Shows the system question for Bluetooth (Android 12 and newer).
+#[tauri::command]
+pub async fn request_bluetooth_access() -> Result<BluetoothAccess> {
+    #[cfg(target_os = "android")]
+    return tauri::async_runtime::spawn_blocking(crate::android::request_bluetooth_access)
+        .await
+        .map_err(|e| e.to_string())?;
+    #[cfg(not(target_os = "android"))]
+    Ok(BluetoothAccess::default())
 }
 
 #[tauri::command]
@@ -671,10 +841,12 @@ pub fn open_ble(
     kinds: i32,
     protocol_order: String,
     remembered: Option<ConnectRoute>,
+    truck: Option<u32>,
 ) {
     connect_job(
         &state,
         remembered,
+        truck,
         Job::OpenBle {
             id,
             name,
@@ -691,6 +863,7 @@ pub fn open_replay(
     real_time: bool,
     protocol_order: String,
 ) {
+    job(&state, Job::SetTruck(None));
     job(
         &state,
         Job::OpenReplay {
@@ -1278,6 +1451,8 @@ fn geometry_path(config_dir: &Path) -> PathBuf {
     config_dir.join("window.json")
 }
 
+/// The desktop window only; on a phone the app fills the screen.
+#[cfg(desktop)]
 pub fn restore_geometry(
     window: &WebviewWindow,
     config_dir: &Path,

@@ -38,11 +38,13 @@ pub enum BodyType {
     /// Motorcycles: OBD through the maker's diagnostic plug and an adapter
     /// cable, see [`crate::moto`].
     Motorcycle,
+    /// Trucks and buses: diagnosis over SAE J1939, see [`crate::truck`].
+    Truck,
 }
 
 impl BodyType {
     /// Every variant, in declaration order.
-    pub const ALL: [BodyType; 12] = [
+    pub const ALL: [BodyType; 13] = [
         BodyType::Hatchback,
         BodyType::Sedan,
         BodyType::Estate,
@@ -55,6 +57,7 @@ impl BodyType {
         BodyType::Microcar,
         BodyType::Roadster,
         BodyType::Motorcycle,
+        BodyType::Truck,
     ];
 }
 
@@ -87,11 +90,14 @@ pub enum Connector {
     /// The diagnostic plug of a motorcycle: an adapter cable leads to a
     /// 16-pin socket for the OBD adapter (see [`crate::moto`]).
     Moto,
+    /// The round 9-pin socket of trucks (SAE J1939-13): an adapter cable
+    /// leads to a 16-pin OBD female (see [`crate::truck`]).
+    J1939,
 }
 
 impl Connector {
     /// Every variant, in declaration order.
-    pub const ALL: [Connector; 7] = [
+    pub const ALL: [Connector; 8] = [
         Connector::None,
         Connector::Obd2,
         Connector::Vag2x2,
@@ -99,6 +105,7 @@ impl Connector {
         Connector::Mb38,
         Connector::Other,
         Connector::Moto,
+        Connector::J1939,
     ];
 }
 
@@ -925,6 +932,7 @@ pub fn support_for(g: &VehicleGeneration, year: i32, powertrain: u32) -> ObdSupp
         Connector::None => return ObdSupport::None,
         Connector::Vag2x2 => return ObdSupport::Kkl,
         Connector::Bmw20 | Connector::Mb38 | Connector::Other => return ObdSupport::Manufacturer,
+        Connector::J1939 => return ObdSupport::Full,
         Connector::Moto => {
             return if crate::moto::euro5(g, year) && !only_electric(pt) {
                 ObdSupport::Full
@@ -979,6 +987,15 @@ pub fn display_name(g: &VehicleGeneration) -> String {
 pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
     let year = if year <= 0 { g.year_from } else { year };
     let c = connector_for(g, year);
+    if crate::truck::speaks_j1939(g, year) {
+        let mut out = crate::truck::diagnosis_text(g, year);
+        let note = g.note.get();
+        if !note.is_empty() {
+            out.push(' ');
+            out.push_str(note);
+        }
+        return out;
+    }
     if c == Connector::Moto {
         let mut out = crate::moto::diagnosis_text(g, year);
         let note = g.note.get();
@@ -1122,6 +1139,7 @@ pub fn body_name(body: BodyType) -> &'static str {
         BodyType::Microcar => l("Kleinstwagen", "Microcar"),
         BodyType::Roadster => l("Roadster", "Roadster"),
         BodyType::Motorcycle => l("Motorrad", "Motorcycle"),
+        BodyType::Truck => l("Lkw", "Truck"),
     }
 }
 
@@ -1142,6 +1160,10 @@ pub fn connector_name(connector: Connector) -> &'static str {
         Connector::Moto => l(
             "Diagnosestecker des Motorrads, Adapterkabel auf OBD-II",
             "motorcycle diagnostic plug, adapter cable to OBD-II",
+        ),
+        Connector::J1939 => l(
+            "9-polige Lkw-Diagnosebuchse (SAE J1939), Adapterkabel auf OBD-II",
+            "9-pin truck diagnostic socket (SAE J1939), adapter cable to OBD-II",
         ),
     }
 }
@@ -1298,6 +1320,7 @@ pub fn location_text_for(g: &VehicleGeneration, year: i32) -> &'static str {
             );
         }
         Connector::Moto => return location_text(SocketLocation::UnderSeat),
+        Connector::J1939 => return crate::truck::location_text(),
         Connector::Obd2 => {}
     }
     location_text(SocketLocation::Unknown)

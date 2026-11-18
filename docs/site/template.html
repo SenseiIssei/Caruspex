@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="{{lang}}" dir="{{dir}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+{{alternates}}
+<link rel="icon" href="../img/logo.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#content">{{skip}}</a>
+<header class="top">
+  <a class="brand" href="index.html"><img src="../img/logo.png" alt="" width="32" height="32"><span>{{site_title}}</span></a>
+  <div class="top-links">
+    <a class="button" href="{{download_url}}">{{download}}</a>
+    <a href="{{repo}}">{{source}}</a>
+    <details class="languages">
+      <summary aria-label="{{language}}">{{language_name}}</summary>
+      {{languages}}
+    </details>
+  </div>
+</header>
+<div class="layout">
+  <nav class="side">{{nav}}</nav>
+  <main id="content">
+    <details class="nav-mobile">
+      <summary>{{menu}}</summary>
+      <nav class="side">{{nav}}</nav>
+    </details>
+    {{body}}
+    <nav class="pager">{{prev}}{{next}}</nav>
+    <p class="improve"><a href="{{edit_url}}">{{improve}}</a></p>
+  </main>
+</div>
+<footer>{{footer}}</footer>
+</body>
+</html>

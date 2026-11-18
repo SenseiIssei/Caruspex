@@ -8,6 +8,7 @@ import catalog from "../api/mock/data/catalog.json";
 import { anatomyOf } from "../api/mock/areas/xray";
 import type { MeasuredRecord } from "../api/mock/areas/knowledge";
 import { BodyType, CarZone, DrivenAxles, EngineLayout, Powertrain, type VehicleAnatomy } from "../api/types";
+import { MOTO_ROWS, MOTO_STYLES, motoSpec } from "./moto";
 import { SHAPES, bodyVariants, defaultShape, shapeFor } from "./shape";
 import {
   ECU_KIND_COUNT,
@@ -17,11 +18,17 @@ import {
   buildLayout,
   insideHull,
   lampOutlines,
+  placeFor,
+  SocketSpot,
   zoneAnchor,
   type CarLayout,
   type EcuInput,
   type Vec3,
 } from "./layout";
+
+// [brand, model, generation, from, to, body, powertrains, ..., location (12),
+// ..., spot (18)] of the catalog copy.
+type GenRow = [string, string, string, number, number, number, number, number, number, number, number, string, number, string, string, string, string, boolean, number, boolean];
 
 const ALL_KINDS: EcuInput[] = Array.from({ length: ECU_KIND_COUNT }, (_, kind) => ({
   key: `k${kind}`,
@@ -76,7 +83,7 @@ function checkCar(layout: CarLayout, label: string): void {
     expect(insideHull(hull, p.center, 0.005), `${label}: ${p.id} at ${p.center.map((v) => v.toFixed(2))}`).toBe(true);
   }
   for (const t of layout.tubes) {
-    for (const q of t.points) expect(insideHull(hull, q, -0.02), `${label}: tube ${t.id}`).toBe(true);
+    for (const s of [t.points, ...(t.branches ?? [])]) for (const q of s) expect(insideHull(hull, q, -0.02), `${label}: tube ${t.id}`).toBe(true);
   }
   for (const e of layout.ecus) {
     expect(insideHull(hull, e.position, 0.03), `${label}: ecu ${e.kind} (${e.place})`).toBe(true);
@@ -93,7 +100,93 @@ function checkCar(layout: CarLayout, label: string): void {
     const a: Vec3 = zoneAnchor(layout, zone);
     expect(a.every(Number.isFinite), `${label}: zone ${zone}`).toBe(true);
   }
+  checkNumbers(layout, label);
+  checkSocket(layout, label);
   checkLamps(layout, label);
+}
+
+// No NaN or infinity anywhere in the model.
+function checkNumbers(layout: CarLayout, label: string): void {
+  const bad: string[] = [];
+  const finite = (what: string, ...values: number[]) => {
+    if (!values.every(Number.isFinite)) bad.push(what);
+  };
+  for (const p of layout.parts) finite(p.id, ...p.center, ...p.size, p.tilt ?? 0, ...(p.explode ?? []));
+  for (const t of layout.tubes) for (const s of [t.points, ...(t.branches ?? [])]) for (const q of s) finite(t.id, ...q, t.radius);
+  for (const w of layout.wheels) finite("wheel", ...w.center, w.radius, w.width);
+  for (const e of layout.ecus) finite(e.key, ...e.position);
+  for (const r of layout.routes) for (const q of r.points) finite(`route ${r.ecu}`, ...q);
+  for (const [k, a] of Object.entries(layout.anchors)) finite(k, ...a);
+  for (const b of layout.busLabels) finite(b.bus, ...b.anchor);
+  finite("socket", ...layout.obd, ...layout.adapter.socket, ...layout.adapter.dir);
+  for (const q of layout.adapter.cable ?? []) finite("adapter cable", ...q);
+  expect(bad.slice(0, 3), label).toEqual([]);
+}
+
+// The diagnostic socket where the data says: in the engine bay in front of
+// the bulkhead for the BMW and Mercedes round plugs, otherwise in the cabin
+// behind it, under the seat of a motorcycle; the adapter in it.
+function checkSocket(layout: CarLayout, label: string): void {
+  const { hull } = layout;
+  expect(insideHull(hull, layout.obd, 0.01), `${label}: socket inside`).toBe(true);
+  expect(Math.hypot(...layout.adapter.dir), label).toBeGreaterThan(0.5);
+  if (layout.vehicle === "moto") {
+    const seat = layout.parts.find((p) => p.id === "seat")!;
+    expect(layout.socketSpot, label).toBe(SocketSpot.UnderSeat);
+    expect(layout.obd[1], `${label}: plug under the seat`).toBeLessThan(seat.center[1]);
+    expect(Math.abs(layout.obd[0] - seat.center[0]), `${label}: plug under the seat`).toBeLessThan(seat.size[0] / 2 + 0.1);
+    expect(layout.adapter.cable!.length, label).toBeGreaterThan(1);
+    return;
+  }
+  const cowl = hull.xAt(hull.profile.cowl);
+  if (layout.socketSpot === SocketSpot.EngineBay) expect(layout.obd[0], `${label}: socket in the engine bay`).toBeGreaterThan(cowl);
+  else {
+    expect(layout.obd[0], `${label}: socket in the cabin`).toBeLessThan(cowl);
+    expect(layout.obd[1], `${label}: socket under the window line`).toBeLessThan(hull.beltAt(hull.station(layout.obd[0])));
+  }
+  expect(layout.adapter.socket).toEqual(layout.obd);
+}
+
+// A motorcycle: both wheels on the road in line, the tyres inside the
+// length, the engine between the wheels, the parts inside the envelope,
+// the fork from the front axle up to the steering head.
+function checkMoto(layout: CarLayout, label: string): void {
+  const { hull } = layout;
+  expect(layout.vehicle, label).toBe("moto");
+  expect(layout.wheels.length, label).toBe(2);
+  for (const w of layout.wheels) {
+    expect(w.center[1] - w.radius, label).toBeCloseTo(0, 6);
+    expect(w.center[2], label).toBe(0);
+    expect(w.center[0] + w.radius, label).toBeLessThan(hull.front);
+    expect(w.center[0] - w.radius, label).toBeGreaterThan(hull.rear);
+    expect(w.moto?.discs.length, label).toBeGreaterThan(0);
+  }
+  const [front, rear] = layout.wheels;
+  expect(front!.center[0] - rear!.center[0], label).toBeGreaterThan(1.1);
+  // The tyres do not touch.
+  expect(front!.center[0] - front!.radius, label).toBeGreaterThan(rear!.center[0] + rear!.radius);
+  const engine = layout.parts.find((p) => p.id === "engine")!;
+  expect(engine.center[0], label).toBeGreaterThan(rear!.center[0]);
+  expect(engine.center[0], label).toBeLessThan(front!.center[0]);
+  expect(engine.center[1] - engine.size[1] / 2, `${label}: ground clearance`).toBeGreaterThan(0.1);
+  for (const id of ["frame", "handlebar", "exhaust"]) expect(layout.tubes.some((t) => t.id === id), `${label}: ${id}`).toBe(true);
+  for (const id of ["fuel-tank", "seat", "headlight", "tail-light", "battery12", "fork-1", "fork--1"]) expect(layout.parts.some((p) => p.id === id), `${label}: ${id}`).toBe(true);
+  for (const p of layout.parts) {
+    expect(insideHull(hull, p.center, 0.005), `${label}: ${p.id} at ${p.center.map((v) => v.toFixed(2))}`).toBe(true);
+  }
+  for (const t of layout.tubes) {
+    for (const s of [t.points, ...(t.branches ?? [])]) for (const q of s) expect(insideHull(hull, q, -0.02), `${label}: tube ${t.id}`).toBe(true);
+  }
+  for (const e of layout.ecus) expect(insideHull(hull, e.position, 0.02), `${label}: ecu ${e.kind}`).toBe(true);
+  for (const r of layout.routes) {
+    const ecu = layout.ecus.find((e) => e.key === r.ecu);
+    if (ecu) expect(r.points[r.points.length - 1]).toEqual(ecu.position);
+  }
+  // The exploded view moves the engine out of the frame.
+  expect(Math.hypot(...(engine.explode ?? [0, 0, 0])), label).toBeGreaterThan(0.2);
+  for (let zone = CarZone.Intake; zone <= CarZone.Cabin; zone++) expect(zoneAnchor(layout, zone).every(Number.isFinite), `${label}: zone ${zone}`).toBe(true);
+  checkNumbers(layout, label);
+  checkSocket(layout, label);
 }
 
 // Headlights on the front face ahead of the front wheels, tail lights on the
@@ -174,22 +267,33 @@ describe("x-ray layout", () => {
         }
       }
     }
-  });
+    // Over 800 cars: more than five seconds on a busy machine.
+  }, 30_000);
 
   it("gives every catalog generation a valid car, in every body variant", () => {
     const data = catalog as unknown as {
-      generations: [string, string, string, number, number, number, number][];
+      generations: GenRow[];
       measured: Record<string, MeasuredRecord>;
     };
     expect(data.generations.length).toBeGreaterThan(500);
     let measured = 0;
+    let motorcycles = 0;
     data.generations.forEach((g, i) => {
       const [brand, model, generation, from, to, body, powertrains] = g;
-      // The X-ray view draws cars; motorcycles have no body of their own there.
-      if (body === BodyType.Motorcycle) return;
+      const socket = { location: g[12], spot: g[18] };
       for (const year of [from, to || 2026]) {
-        const anatomy = anatomyOf(body as BodyType, brand, model, year, powertrains, 0, generation, data.measured[String(i)] ?? null);
+        const anatomy = anatomyOf(body as BodyType, brand, model, year, powertrains, 0, generation, data.measured[String(i)] ?? null, socket);
         if (anatomy.dimensionSource !== "typical") measured++;
+        if (body === BodyType.Motorcycle) {
+          // The kind the table gives, and every other kind the view offers.
+          motorcycles++;
+          checkMoto(buildLayout({ anatomy, body, ecus: ALL_KINDS.slice(0, 8), kline: false, turbo: false }), `${brand} ${model} ${generation} ${year}`);
+          for (const motoStyle of MOTO_STYLES) {
+            const layout = buildLayout({ anatomy, body, ecus: ALL_KINDS.slice(0, 6), kline: false, turbo: false, motoStyle });
+            checkMoto(layout, `${brand} ${model} ${generation} ${year} ${motoStyle}`);
+          }
+          continue;
+        }
         for (const variant of bodyVariants(anatomy, body as BodyType)) {
           const layout = buildLayout({ anatomy, body: body as BodyType, variant, ecus: ALL_KINDS.slice(0, 8), kline: false, turbo: false });
           checkCar(layout, `${brand} ${model} ${generation} ${year} ${BodyType[variant]}`);
@@ -198,8 +302,142 @@ describe("x-ray layout", () => {
     });
     // About half of the catalog has its dimensions from Wikidata.
     expect(measured / 2).toBeGreaterThan(900);
+    expect(motorcycles / 2).toBeGreaterThanOrEqual(35);
     // Over 5000 cars: more than the default five seconds on a busy runner.
   }, 60_000);
+
+  it("knows the kind and engine of every motorcycle of the catalog", () => {
+    const data = catalog as unknown as { generations: GenRow[] };
+    const bikes = data.generations.filter((g) => g[5] === BodyType.Motorcycle);
+    expect(bikes.length).toBeGreaterThanOrEqual(35);
+    for (const [brand, model] of bikes) {
+      expect(motoSpec(brand, model).source, `${brand} ${model}`).toBe("table");
+    }
+    for (const row of MOTO_ROWS) expect(bikes.some(([b, m]) => b === row.brand && m === row.model), `${row.brand} ${row.model}`).toBe(true);
+    // The kinds follow the bikes: a GS with its boxer and shaft, a Ninja
+    // with a fairing, a Sportster with its belt.
+    expect(motoSpec("BMW", "R 1250 GS")).toMatchObject({ style: "enduro", engine: "boxer", drive: "shaft" });
+    expect(motoSpec("Kawasaki", "Ninja 650").style).toBe("sport");
+    expect(motoSpec("Harley-Davidson", "Sportster S")).toMatchObject({ style: "cruiser", drive: "belt" });
+    expect(motoSpec("Ducati", "Scrambler").liquid).toBe(false);
+    // Bikes outside the table by their name, a kind picked in the view.
+    expect(motoSpec("Honda", "Forza 350").style).toBe("scooter");
+    expect(motoSpec("Yamaha", "MT-07", "touring")).toMatchObject({ style: "touring", engine: "twin", source: "chosen" });
+  });
+
+  it("draws each kind of motorcycle with its own parts", () => {
+    const anatomy = anatomyOf(BodyType.Motorcycle, "Yamaha", "MT-07", 2021, Powertrain.Petrol, 0, "II", null, { location: 10, spot: 12 });
+    const ids = (motoStyle: (typeof MOTO_STYLES)[number]) => {
+      const layout = buildLayout({ anatomy, body: BodyType.Motorcycle, ecus: ALL_KINDS, kline: false, turbo: false, motoStyle });
+      checkMoto(layout, motoStyle);
+      return new Set([...layout.parts.map((p) => p.id), ...layout.tubes.map((t) => t.id)]);
+    };
+    expect(ids("naked").has("fairing")).toBe(false);
+    expect(ids("sport").has("windscreen")).toBe(true);
+    expect(ids("touring").has("case-1")).toBe(true);
+    expect(ids("enduro").has("bash-plate")).toBe(true);
+    expect(ids("cruiser").has("pillion")).toBe(true);
+    expect(ids("scooter").has("leg-shield")).toBe(true);
+    expect(ids("naked").has("chain")).toBe(true);
+    // A boxer's cylinders stand out to both sides.
+    const gs = anatomyOf(BodyType.Motorcycle, "BMW", "R 1250 GS", 2020, Powertrain.Petrol, 0, "I");
+    const layout = buildLayout({ anatomy: gs, body: BodyType.Motorcycle, ecus: [], kline: false, turbo: false });
+    const heads = layout.parts.filter((p) => p.id.startsWith("cylinder-head"));
+    expect(heads.map((h) => Math.sign(h.center[2])).sort()).toEqual([-1, 1]);
+    expect(layout.parts.some((p) => p.id === "shaft")).toBe(true);
+    // The wire-spoked front wheel of an enduro is larger than the rear one.
+    expect(layout.wheels[0]!.radius).toBeGreaterThan(layout.wheels[1]!.radius);
+  });
+
+  it("puts the socket at the spot of the data", () => {
+    const at = (location: number, spot: number) => {
+      const anatomy = anatomyOf(BodyType.Hatchback, "Volkswagen", "Golf", 2015, Powertrain.Petrol, 0, "", null, { location, spot });
+      const layout = buildLayout({ anatomy, body: BodyType.Hatchback, ecus: [], kline: false, turbo: false });
+      checkSocket(layout, `${location}/${spot}`);
+      return layout;
+    };
+    const left = at(1, SocketSpot.DashLeftOfColumn);
+    const right = at(1, SocketSpot.DashRightOfColumn);
+    const console = at(5, SocketSpot.ConsoleFront);
+    const passenger = at(7, SocketSpot.Passenger);
+    const bay = at(8, 0);
+    // Left of the column further out than right of it; the console in the
+    // middle; the passenger side across; the round plug in the engine bay.
+    expect(left.obd[2]).toBeGreaterThan(right.obd[2]);
+    expect(Math.abs(console.obd[2])).toBeLessThan(0.05);
+    expect(passenger.obd[2]).toBeLessThan(0);
+    expect(bay.socketSpot).toBe(SocketSpot.EngineBay);
+    // Without any data: the most common spot.
+    expect(at(0, 0).socketSpot).toBe(SocketSpot.DashLeftOfColumn);
+    // The feed from the fuse box ends at the socket.
+    const feed = left.tubes.find((t) => t.id === "obd-feed")!;
+    expect(feed.points[feed.points.length - 1]).toEqual(left.obd);
+  });
+
+  it("draws the main harness: battery, fuses, ground, engine harness, strand to the rear", () => {
+    const anatomy = anatomyOf(BodyType.Sedan, "", "", 2015, Powertrain.Diesel, Powertrain.Diesel);
+    const layout = buildLayout({ anatomy, body: BodyType.Sedan, ecus: ALL_KINDS, kline: false, turbo: true });
+    const ids = new Set([...layout.parts.map((p) => p.id), ...layout.tubes.map((t) => t.id)]);
+    for (const id of ["battery12", "main-fuses", "ground", "ground-point", "fuse-box", "starter", "alternator", "engine-harness", "harness", "harness-front", "harness-rear", "obd-feed"]) {
+      expect(ids.has(id), id).toBe(true);
+    }
+    const harness = layout.tubes.find((t) => t.id === "harness")!;
+    // From the engine bay to the rear of the car.
+    expect(harness.points[0]![0]).toBeGreaterThan(layout.hull.xAt(layout.hull.profile.cowl));
+    expect(harness.points[harness.points.length - 1]![0]).toBeLessThan(layout.rearAxle);
+    // An electric car has no engine harness, but its 12 V net all the same.
+    const ev = anatomyOf(BodyType.Hatchback, "Volkswagen", "ID.3", 2021, Powertrain.Electric, Powertrain.Electric);
+    const evLayout = buildLayout({ anatomy: ev, body: BodyType.Hatchback, ecus: [], kline: false, turbo: false });
+    expect(evLayout.tubes.some((t) => t.id === "engine-harness")).toBe(false);
+    expect(evLayout.parts.some((p) => p.id === "battery12")).toBe(true);
+  });
+
+  it("takes the drivetrain apart in the exploded view", () => {
+    const anatomy = anatomyOf(BodyType.Estate, "", "", 2021, Powertrain.Petrol, Powertrain.Petrol);
+    const layout = buildLayout({ anatomy, body: BodyType.Estate, ecus: [], kline: false, turbo: false });
+    const off = (id: string) => layout.parts.find((p) => p.id === id)?.explode ?? layout.tubes.find((t) => t.id === id)?.explode;
+    // The head lifts further than the block, the gearbox moves out, the
+    // exhaust to the side; nothing outside the drivetrain moves.
+    expect(off("cylinder-head")![1]).toBeGreaterThan(off("engine")![1]);
+    expect(Math.hypot(...off("gearbox")!)).toBeGreaterThan(0.3);
+    expect(off("exhaust")![2]).toBeLessThan(-0.3);
+    expect(layout.parts.filter((p) => p.layer !== "drivetrain").every((p) => !p.explode)).toBe(true);
+    expect(layout.parts.filter((p) => p.layer === "drivetrain").every((p) => p.explode)).toBe(true);
+  });
+
+  it("puts every bus the scan reports on its own line", () => {
+    const anatomy = anatomyOf(BodyType.Sedan, "Ford", "Mondeo", 2012, Powertrain.Petrol, Powertrain.Petrol);
+    const ecus: EcuInput[] = [
+      { key: "gw", kind: EcuKind.Gateway, name: "Gateway", faulty: false, source: "uds" },
+      { key: "pcm", kind: EcuKind.Engine, name: "PCM", faulty: false, source: "uds", bus: "hs" },
+      { key: "radio", kind: EcuKind.Infotainment, name: "SYNC (APIM)", faulty: false, source: "uds" },
+      { key: "ipc", kind: EcuKind.Instruments, name: "IPC", faulty: false, source: "uds" },
+      { key: "bcm", kind: EcuKind.Body, name: "BCM", faulty: false, source: "uds", bus: "ms" },
+      { key: "gm", kind: EcuKind.Body, name: "BCM", faulty: false, source: "uds", bus: "sw" },
+    ];
+    const layout = buildLayout({ anatomy, body: BodyType.Sedan, ecus, kline: false, turbo: false });
+    const bus = (key: string) => layout.ecus.find((e) => e.key === key)!.bus;
+    expect([bus("gw"), bus("pcm"), bus("radio"), bus("ipc"), bus("bcm"), bus("gm")]).toEqual(["diagnostic", "powertrain", "infotainment", "comfort", "mscan", "swcan"]);
+    // The MS-CAN and the SW-CAN start at the socket, the others behind the gateway.
+    const from = (key: string) => layout.routes.find((r) => r.ecu === key)!.points[0];
+    expect(from("bcm")).toEqual(layout.obd);
+    expect(from("gm")).toEqual(layout.obd);
+    expect(from("radio")).toEqual(layout.hub);
+    // One name per bus on its line.
+    expect(new Set(layout.busLabels.map((b) => b.bus))).toEqual(new Set(["diagnostic", "powertrain", "infotainment", "comfort", "mscan", "swcan"]));
+  });
+
+  it("places units by their name and by the maker where the data says so", () => {
+    expect(placeFor(EcuKind.Body, "Heckelektronik (REM)").place).toBe("boot");
+    expect(placeFor(EcuKind.Body, "Roof function centre (FZD)").place).toBe("roof");
+    expect(placeFor(EcuKind.Other, "Camera driver assistance (KAFAS)").place).toBe("windscreen");
+    expect(placeFor(EcuKind.Doors, "Passenger door (PDM)").place).toBe("passengerDoor");
+    expect(placeFor(EcuKind.Seats, "Seat module passenger (SM)").place).toBe("passengerSeat");
+    expect(placeFor(EcuKind.Lighting, "Light module 2 (LHM)").mirror).toBe(true);
+    // BMW's gateway is part of the front electronics module.
+    expect(placeFor(EcuKind.Gateway, "Gateway (FEM/ZGM)", "BMW").place).toBe("footwell");
+    expect(placeFor(EcuKind.Gateway, "Gateway", "Volkswagen").place).toBe("glovebox");
+  });
 
   it("names a catalog generation for every hand-tuned shape", () => {
     const data = catalog as unknown as { generations: [string, string, string][] };

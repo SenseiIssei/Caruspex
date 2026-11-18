@@ -4,7 +4,9 @@
 // Windows, WKWebView's createPDF on macOS, a WebKitGTK print job to GTK's
 // file printer on Linux. Should that fail on macOS or Linux, the page opens
 // in a window of its own with the print dialog instead, where "Save as PDF"
-// is one of the printers.
+// is one of the printers. Android has no hidden windows: there the report
+// is saved as an HTML page (commands::save_pdf).
+#![cfg_attr(mobile, allow(dead_code, unused_imports))]
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -133,7 +135,7 @@ async fn print(
     print_native(app, id, path).await.map(|()| Written::File)
 }
 
-#[cfg(not(windows))]
+#[cfg(all(desktop, not(windows)))]
 async fn print(
     app: &AppHandle,
     id: &str,
@@ -153,8 +155,15 @@ async fn print(
     }
 }
 
+/// A phone has no hidden window to print from.
+#[cfg(mobile)]
+async fn print(_: &AppHandle, _: &str, _: PathBuf, _: bool) -> Result<Written, String> {
+    Err(String::from("PDF"))
+}
+
 /// Loads the waiting page into a hidden window and lets the webview write
 /// it to `path` as a PDF.
+#[cfg(desktop)]
 async fn print_native(app: &AppHandle, id: &str, path: PathBuf) -> Result<(), String> {
     use std::sync::Arc;
     use std::sync::atomic::AtomicBool;
@@ -200,7 +209,7 @@ async fn file_written(path: &Path) -> bool {
 
 /// GTK's file printer may still be closing the file when WebKit reports the
 /// job as done, so the file gets a moment to appear.
-#[cfg(not(windows))]
+#[cfg(all(desktop, not(windows)))]
 async fn file_written(path: &Path) -> bool {
     let path = path.to_path_buf();
     tauri::async_runtime::spawn_blocking(move || {
@@ -217,7 +226,7 @@ async fn file_written(path: &Path) -> bool {
 }
 
 /// The fallback: the page in a window of its own with the print dialog.
-#[cfg(not(windows))]
+#[cfg(all(desktop, not(windows)))]
 async fn print_dialog(app: &AppHandle, id: &str) -> Result<Written, String> {
     use tauri::webview::PageLoadEvent;
 
@@ -241,7 +250,7 @@ async fn print_dialog(app: &AppHandle, id: &str) -> Result<Written, String> {
     Ok(Written::PrintDialog)
 }
 
-#[cfg(not(windows))]
+#[cfg(all(desktop, not(windows)))]
 async fn tokio_sleep(d: std::time::Duration) {
     let _ = tauri::async_runtime::spawn_blocking(move || std::thread::sleep(d)).await;
 }

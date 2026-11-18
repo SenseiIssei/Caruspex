@@ -1,0 +1,10 @@
+{
+ "c-android22-1": "Android tidak mengizinkan akses ke adaptor USB.",
+ "c-android22-2": "Bluetooth LE belum ada di aplikasi Android. Adaptor Bluetooth klasik berfungsi setelah dipasangkan.",
+ "c-android22-3": "Bluetooth mati. Nyalakan di pengaturan Android.",
+ "c-android22-4": "Caruspex belum boleh memakai Bluetooth. Izinkan akses ke perangkat di sekitar.",
+ "c-android22-5": "Tidak ada adaptor Bluetooth yang dipasangkan. Pasangkan sekali di pengaturan Android, PIN biasanya 1234 atau 0000.",
+ "c-android22-6": "Koneksi Bluetooth ke adaptor gagal: %1",
+ "c-android22-7": "Adaptor USB tidak bisa dibuka: %1",
+ "c-android22-8": "Perangkat ini tidak punya Bluetooth."
+}

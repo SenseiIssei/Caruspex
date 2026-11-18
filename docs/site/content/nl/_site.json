@@ -1,0 +1,18 @@
+{
+  "language_name": "Nederlands",
+  "site_title": "Caruspex-documentatie",
+  "tagline": "Gratis autodiagnose voor Windows, Linux en macOS: foutcodes, live-waarden, elke regeleenheid, in 18 talen.",
+  "group_start": "Aan de slag",
+  "group_interfaces": "Adapters en interfaces",
+  "group_using": "Caruspex gebruiken",
+  "group_more": "Meer",
+  "menu": "Menu",
+  "language": "Taal",
+  "skip": "Naar de inhoud",
+  "download": "Downloaden",
+  "source": "Broncode",
+  "previous": "Vorige",
+  "next": "Volgende",
+  "improve": "Deze pagina verbeteren op GitHub",
+  "footer": "Caruspex is vrije software onder de MIT-licentie. Deze documentatie hoort bij de broncode, verbeteringen zijn welkom."
+}

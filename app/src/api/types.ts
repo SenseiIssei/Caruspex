@@ -20,6 +20,47 @@ export interface FaultRow {
   ecu: string;
 }
 
+// SAE J1939 (trucks): one control unit with the lamps of its DM1 and the
+// number of active (DM1) and previously active (DM2) faults.
+export interface J1939UnitRow {
+  address: number;
+  label: string;
+  mil: boolean;
+  redStop: boolean;
+  amberWarning: boolean;
+  protect: boolean;
+  active: number;
+  previous: number;
+}
+
+// Identification of one J1939 control unit (PGN 65259 and 65242).
+export interface J1939IdRow {
+  address: number;
+  label: string;
+  make: string;
+  model: string;
+  serial: string;
+  unit: string;
+  software: string[];
+}
+
+// One broadcast value of a truck. state "error": the unit reports its own
+// measurement as faulty (value is then 0).
+export interface J1939ValueRow {
+  key: number;
+  spn: number;
+  name: string;
+  about: string;
+  unit: string;
+  value: number;
+  state: "value" | "error";
+  source: number;
+  sourceName: string;
+  min: number;
+  max: number;
+  time: number;
+}
+
 export interface LiveRow {
   // The live key: pid | (sub << 8). Equals the PID for single values.
   pid: number;
@@ -71,6 +112,9 @@ export interface UdsEcuRow {
   serial: string;
   dtcs: UdsDtcRow[];
   note: string;
+  // The CAN the unit answered on: "hs" (the CAN of the OBD socket), "ms"
+  // (Ford MS-CAN), "sw" (GM single wire CAN); absent from older answers.
+  bus?: string;
 }
 
 export interface CustomRow {
@@ -672,6 +716,8 @@ export enum BodyType {
   Microcar,
   Roadster,
   Motorcycle,
+  // Trucks and buses: diagnosis over SAE J1939.
+  Truck,
 }
 
 export interface VehicleGenerationInfo {
@@ -765,6 +811,10 @@ export interface VehicleAnatomy {
   battery: TractionBattery;
   fuelTank: boolean;
   reason: string;
+  // Where the diagnostic socket sits: SocketLocation and SocketSpot (see
+  // VehicleDiagnosisInfo), 0 when not known.
+  socketLocation: number;
+  socketSpot: number;
 }
 
 // What diagnosis is possible for a generation in a given year.
@@ -892,8 +942,17 @@ export interface AppInfo {
   version: string;
   // True when the BLE support is compiled in.
   hasBle: boolean;
-  platform: "windows" | "macos" | "linux" | "browser";
+  platform: "windows" | "macos" | "linux" | "android" | "browser";
   documentsDir: string;
+}
+
+// Whether Bluetooth may be used. Android 12 and newer ask at run time;
+// elsewhere everything is true and needsPermission false.
+export interface BluetoothAccess {
+  available: boolean;
+  needsPermission: boolean;
+  granted: boolean;
+  enabled: boolean;
 }
 
 export interface UpdateInfo {

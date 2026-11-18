@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · **Čeština** · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Dokumentace:** [instalace, první kroky, každý adaptér a rozhraní, soukromí, časté otázky](https://senseiissei.github.io/Caruspex/cs/index.html), ve všech 18 jazycích.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Zatím neimplementováno: diagnostika výrobce přes CAN s VW TP 2.0 (vozidla od
 | Testy | `cargo test` proti simulovaným jednotkám, falešným bránám a falešnému ovladači J2534 |
 | Nástroje | Python 3 (generátory kódu a tabulek, kontroly překladů, simulátor ELM327) |
 | Platformy | Windows 10 a 11, Linux, macOS |
+
+<!-- tested -->
+## Vyzkoušeno s
+
+Co se s Caruspexem zatím opravdu vyzkoušelo, poctivě vypsáno. Vše ostatní je postavené podle norem a testované proti simulovaným řídicím jednotkám, falešným bránám a falešným ovladačům, ale zatím ne na skutečném autě.
+
+| Rozhraní | Auto | Výsledek |
+|---|---|---|
+| OBDLink s čipem STN2232 | žádné, test adaptéru bez auta | čip, firmware a příkazy rozpoznány |
+| všechny ostatní adaptéry a rozhraní | | zatím nevyzkoušeno na skutečném autě |
+
+Vyzkoušeli jste Caruspex na svém autě? Pošlete prosím [zprávu o testu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): každá zpráva přijde do tohoto seznamu, podle značky a rozhraní.
+<!-- /tested -->
 
 ## Stažení
 

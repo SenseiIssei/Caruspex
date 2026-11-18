@@ -1,0 +1,18 @@
+{
+  "language_name": "Čeština",
+  "site_title": "Dokumentace Caruspex",
+  "tagline": "Bezplatná diagnostika aut pro Windows, Linux a macOS: chybové kódy, živé hodnoty, každá řídicí jednotka, v 18 jazycích.",
+  "group_start": "Začínáme",
+  "group_interfaces": "Adaptéry a rozhraní",
+  "group_using": "Práce s Caruspexem",
+  "group_more": "Další",
+  "menu": "Nabídka",
+  "language": "Jazyk",
+  "skip": "Přejít na obsah",
+  "download": "Stáhnout",
+  "source": "Zdrojový kód",
+  "previous": "Předchozí",
+  "next": "Další",
+  "improve": "Vylepšit tuto stránku na GitHubu",
+  "footer": "Caruspex je svobodný software pod licencí MIT. Tato dokumentace je součástí jeho zdrojového kódu, opravy jsou vítány."
+}

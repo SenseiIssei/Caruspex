@@ -1,0 +1,42 @@
+[
+ {
+  "id": "c-android22-1",
+  "de": "Android hat den Zugriff auf den USB-Adapter nicht erlaubt.",
+  "en": "Android did not allow access to the USB adapter."
+ },
+ {
+  "id": "c-android22-2",
+  "de": "Bluetooth LE gibt es in der Android-App noch nicht. Klassische Bluetooth-Adapter gehen, wenn sie gekoppelt sind.",
+  "en": "Bluetooth LE is not in the Android app yet. Classic Bluetooth adapters work once they are paired."
+ },
+ {
+  "id": "c-android22-3",
+  "de": "Bluetooth ist aus. Bitte in den Android-Einstellungen einschalten.",
+  "en": "Bluetooth is off. Please switch it on in the Android settings."
+ },
+ {
+  "id": "c-android22-4",
+  "de": "Caruspex darf Bluetooth noch nicht nutzen. Bitte den Zugriff auf Geräte in der Nähe erlauben.",
+  "en": "Caruspex may not use Bluetooth yet. Please allow access to nearby devices."
+ },
+ {
+  "id": "c-android22-5",
+  "de": "Kein gekoppelter Bluetooth-Adapter. Bitte einmal in den Android-Einstellungen koppeln, die PIN ist meist 1234 oder 0000.",
+  "en": "No paired Bluetooth adapter. Please pair it once in the Android settings, the PIN is usually 1234 or 0000."
+ },
+ {
+  "id": "c-android22-6",
+  "de": "Die Bluetooth-Verbindung zum Adapter ging nicht: %1",
+  "en": "The Bluetooth connection to the adapter failed: %1"
+ },
+ {
+  "id": "c-android22-7",
+  "de": "Der USB-Adapter ließ sich nicht öffnen: %1",
+  "en": "The USB adapter could not be opened: %1"
+ },
+ {
+  "id": "c-android22-8",
+  "de": "Dieses Gerät hat kein Bluetooth.",
+  "en": "This device has no Bluetooth."
+ }
+]

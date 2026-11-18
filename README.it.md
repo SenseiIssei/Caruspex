@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · **Italiano** · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**Documentazione:** [installazione, primi passi, ogni adattatore e interfaccia, privacy, domande frequenti](https://senseiissei.github.io/Caruspex/it/index.html), in tutte le 18 lingue.
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ Non ancora implementata: diagnostica del costruttore su CAN con VW TP 2.0 (veico
 | Test | `cargo test` contro centraline simulate, gateway finti e un driver J2534 finto |
 | Strumenti | Python 3 (generatori di codice e tabelle, controlli delle traduzioni, simulatore ELM327) |
 | Piattaforme | Windows 10 e 11, Linux, macOS |
+
+<!-- tested -->
+## Provato con
+
+Ciò che finora è stato davvero provato con Caruspex, elencato onestamente. Tutto il resto è costruito secondo le norme e testato con centraline simulate, gateway finti e driver finti, ma non ancora su un'auto vera.
+
+| Interfaccia | Auto | Risultato |
+|---|---|---|
+| OBDLink con il chip STN2232 | nessuna, test dell'adattatore senza auto | chip, firmware e comandi riconosciuti |
+| tutti gli altri adattatori e interfacce | | non ancora provati su un'auto vera |
+
+Hai provato Caruspex sulla tua auto? Invia un [rapporto di prova](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): ogni rapporto entra in questo elenco, per marca e interfaccia.
+<!-- /tested -->
 
 ## Download
 

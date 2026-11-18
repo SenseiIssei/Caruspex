@@ -16,13 +16,15 @@ Commands:
   ecus        everything per control unit (headers on)
   uds         UDS on CAN: identification and fault memory of every control unit
   custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once
+  j1939       trucks and buses (SAE J1939): control units, VIN, active and previous
+              faults with the lamps, the common values
   enet        look for cars on the network (ENET cable for BMW and Mini, DoIP)
   interfaces  the CAN interfaces of this computer (J2534 drivers, SocketCAN)
   version     the version of this program
   help        this text
 
 Connection (one of them):
-  --demo              built-in demo car, warm and on the road
+  --demo              built-in demo car, warm and on the road (a truck with j1939)
   --tcp HOST[:PORT]   Wi-Fi adapter, port 35000 if left out
   --enet HOST|auto    network cable: BMW ENET (HSFZ) or DoIP, auto finds the car
   --can SPEC          raw CAN interface: j2534:<driver.dll>, slcan:COM5, socketcan:can0,
@@ -50,4 +52,7 @@ Options:
                       year ("obdb:toyota prius 2018"); --pack obdb-... reads one
   --csv FILE          Torque CSV for custom (Name,ShortName,ModeAndPID,Equation,
                       Min Value,Max Value,Units,Header), instead of a pack
+  --rate N            bit rate for j1939 in kbit/s: 250 (black 9-pin socket) or 500
+                      (green); both in turn if left out
+  --clear             j1939: clear the active and previous faults after reading them
   -v                  log every command sent to the adapter

@@ -4,6 +4,10 @@
 [English](README.md) · [Deutsch](README.de.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Čeština](README.cs.md) · [Русский](README.ru.md) · [Українська](README.uk.md) · [Türkçe](README.tr.md) · [العربية](README.ar.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [हिन्दी](README.hi.md) · [Bahasa Indonesia](README.id.md)
 <!-- /languages -->
 
+<!-- docs -->
+**文档：** [安装、入门、每种适配器和接口、隐私、常见问题](https://senseiissei.github.io/Caruspex/zh/index.html)，提供全部 18 种语言。
+<!-- /docs -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -248,6 +252,19 @@ KKL 线缆把 K-Line 原样透传，所以 Caruspex 可以自己说这个协议�
 | 测试 | 针对模拟 ECU、假网关和假 J2534 驱动的 `cargo test` |
 | 工具 | Python 3（代码和表格生成器、翻译检查、ELM327 模拟器） |
 | 平台 | Windows 10 和 11、Linux、macOS |
+
+<!-- tested -->
+## 实测情况
+
+如实列出到目前为止真正用 Caruspex 试过的东西。其余一切都按标准编写，并用模拟控制单元、假网关和假驱动测试过，但还没有在真车上测试。
+
+| 接口 | 车辆 | 结果 |
+|---|---|---|
+| 带 STN2232 芯片的 OBDLink | 无，未接车的适配器测试 | 芯片、固件和命令识别正确 |
+| 其他所有适配器和接口 | | 尚未在真车上测试 |
+
+在自己的车上试过 Caruspex？请发送一份[测试报告](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)：每份报告都会按品牌和接口加入这个列表。
+<!-- /tested -->
 
 ## 下载
 
