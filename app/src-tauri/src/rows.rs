@@ -199,6 +199,10 @@ pub struct HealthRow {
     pub monitors: Vec<MonitorGuideRow>,
     pub checks_run: i32,
     pub diesel: bool,
+    /// The check ran on a truck over SAE J1939.
+    pub truck: bool,
+    /// 12 or 24 on a truck, from its battery voltage; 0 if unknown.
+    pub system_volts: i32,
 }
 
 impl Default for HealthRow {
@@ -212,6 +216,8 @@ impl Default for HealthRow {
             monitors: Vec::new(),
             checks_run: 0,
             diesel: false,
+            truck: false,
+            system_volts: 0,
         }
     }
 }
@@ -321,6 +327,27 @@ pub struct UsedCarRow {
     pub items: Vec<UsedCarItemRow>,
     pub questions: Vec<String>,
     pub not_checked: Vec<String>,
+    /// The numbers of a used truck check; `None` for a car.
+    pub truck: Option<TruckUsedFactsRow>,
+}
+
+/// The key numbers of a used truck check. -1 where the truck said nothing.
+#[derive(Clone, Debug, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct TruckUsedFactsRow {
+    pub engine_hours: f64,
+    /// Share of the engine hours at idle, %.
+    pub idle_share: f64,
+    /// km per engine hour.
+    pub average_speed: f64,
+    /// l/100 km over the whole life.
+    pub fuel_per_100km: f64,
+    pub active_faults: i32,
+    pub previous_faults: i32,
+    /// How many units keep a VIN, and whether they all agree.
+    pub vin_sources: i32,
+    pub vins_agree: bool,
+    pub units: i32,
 }
 
 impl Default for UsedCarRow {
@@ -350,6 +377,7 @@ impl Default for UsedCarRow {
             items: Vec::new(),
             questions: Vec::new(),
             not_checked: Vec::new(),
+            truck: None,
         }
     }
 }

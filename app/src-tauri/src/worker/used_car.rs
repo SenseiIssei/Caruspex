@@ -156,6 +156,7 @@ fn used_car_row(input: &UsedCarInput, report: &UsedCarReport) -> UsedCarRow {
             .iter()
             .map(|n| format!("{}: {}", n.title.text(), n.reason.text()))
             .collect(),
+        truck: None,
     }
 }
 
@@ -165,6 +166,10 @@ impl Worker {
     // fault memory was last cleared, readiness, faults, a short health check
     // and the battery of electric cars, judged by analysis::used_car.
     pub(super) fn run_used_car_check(&mut self, papers_vin: &str) {
+        if self.truck_connected() {
+            self.run_truck_used_check(papers_vin);
+            return;
+        }
         if !self.obd_ready {
             self.failed(
                 l(

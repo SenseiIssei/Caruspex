@@ -35,6 +35,7 @@ mod health;
 mod kkl;
 mod live;
 mod truck;
+mod truck_check;
 mod uds;
 mod used_car;
 use truck::TruckLink;

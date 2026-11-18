@@ -105,6 +105,10 @@ impl Worker {
     // Modes 06, 05 and 09 in one go: everything the control unit reveals
     // about itself and its running self-tests.
     pub(super) fn run_health_check(&mut self, seconds: i32) {
+        if self.truck_connected() {
+            self.run_truck_health_check(seconds);
+            return;
+        }
         if !self.obd_ready {
             self.failed(w(
                 "Für den Gesundheitscheck erst verbinden.",
