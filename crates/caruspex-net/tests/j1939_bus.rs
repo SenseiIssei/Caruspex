@@ -141,7 +141,7 @@ fn requests_with_rts_cts_and_clearing() {
             .any(|u| u.address == 0x0B && u.dtcs[0].spn == 904)
     );
     let cleared = session.clear_active(&mut can).unwrap();
-    assert_eq!(cleared.acks.len(), 4);
+    assert_eq!(cleared.acks.len(), 5);
     assert!(cleared.acks.iter().all(|(_, a)| *a == AckKind::Positive));
     let active = session.active_faults(&mut can).unwrap();
     assert!(active.iter().all(|u| u.dtcs.is_empty()));

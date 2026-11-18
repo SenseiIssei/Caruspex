@@ -9,7 +9,7 @@
 
 use caruspex_i18n::Text;
 
-use super::{PGN_ENGINE_HOURS, PGN_FUEL_CONSUMPTION};
+use super::{PGN_DM21, PGN_ENGINE_HOURS, PGN_FUEL_CONSUMPTION, PGN_IDLE_OPERATION};
 
 /// Live keys of J1939 values start here (key = base + SPN), far above the
 /// OBD PIDs and their sub values.
@@ -34,6 +34,10 @@ const AIR_SUPPLY: u32 = 65198;
 const DEF_TANK: u32 = 65110;
 const TACHOGRAPH: u32 = 65132;
 const WHEEL_SPEEDS: u32 = 65215;
+/// AT1S, aftertreatment 1 service: soot and ash load of the particulate filter.
+const DPF_SERVICE: u32 = 64891;
+/// DPFC1, particulate filter control: lamps and regeneration state.
+const DPF_CONTROL: u32 = 64892;
 
 /// One value of the table.
 #[derive(Clone, Copy, Debug)]
@@ -54,6 +58,10 @@ pub struct J1939Param {
     /// Sensible range for gauges and charts.
     pub min: f64,
     pub max: f64,
+    /// A state with numbered values (0, 1, 2, ...) instead of a measurement:
+    /// only "all bits set" means "not available", the next to last step is
+    /// a real state (SPN 3700 uses 2 for "regeneration needed").
+    pub states: bool,
     name: Text,
     about: Text,
 }
@@ -97,6 +105,18 @@ impl J1939Param {
         let Some(raw) = self.raw(data) else {
             return Reading::NotAvailable;
         };
+        if self.states {
+            let top = if self.bits >= 64 {
+                u64::MAX
+            } else {
+                (1u64 << self.bits) - 1
+            };
+            return if raw == top {
+                Reading::NotAvailable
+            } else {
+                Reading::Value(raw as f64)
+            };
+        }
         match raw_kind(raw, self.bits) {
             RawKind::Value => Reading::Value(raw as f64 * self.scale + self.offset),
             RawKind::Error => Reading::Error,
@@ -197,6 +217,36 @@ const fn p(
         unit,
         min,
         max,
+        states: false,
+        name,
+        about,
+    }
+}
+
+/// A state of a few bits at `bit` inside `byte`, values 0 to `max`.
+#[allow(clippy::too_many_arguments)]
+const fn state(
+    spn: u32,
+    pgn: u32,
+    byte: u8,
+    bit: u8,
+    bits: u8,
+    max: f64,
+    name: Text,
+    about: Text,
+) -> J1939Param {
+    J1939Param {
+        spn,
+        pgn,
+        byte,
+        bit,
+        bits,
+        scale: 1.0,
+        offset: 0.0,
+        unit: "",
+        min: 0.0,
+        max,
+        states: true,
         name,
         about,
     }
@@ -358,6 +408,47 @@ static PARAMS: &[J1939Param] = &[
     p(1761, DEF_TANK, 0, 8, 0.4, 0.0, "%", 0.0, 100.0,
       Text::new("AdBlue-Füllstand", "DEF (AdBlue) level"),
       Text::new("Füllstand des Harnstofftanks für die Abgasreinigung.", "Fill level of the urea tank for the exhaust cleaning.")),
+    // AT1T1I byte 2: 1 °C per bit from -40 °C (J1939-71).
+    p(3031, DEF_TANK, 1, 8, 1.0, -40.0, "°C", -40.0, 90.0,
+      Text::new("AdBlue-Temperatur", "DEF (AdBlue) temperature"),
+      Text::new("Unter etwa -11 °C friert AdBlue; der Tank wird dann beheizt.", "Below about -11 °C DEF freezes; the tank is heated then.")),
+    // AT1S bytes 1 and 2: 1 % per bit; bytes 3 to 6: 1 s per bit, shown in hours.
+    p(3719, DPF_SERVICE, 0, 8, 1.0, 0.0, "%", 0.0, 250.0,
+      Text::new("Rußbeladung Partikelfilter", "Particulate filter soot load"),
+      Text::new("Wie voll der Dieselpartikelfilter mit Ruß ist; 100 % ist die Schwelle zum Freibrennen.", "How full of soot the diesel particulate filter is; 100 % is the threshold for burning it off.")),
+    p(3720, DPF_SERVICE, 1, 8, 1.0, 0.0, "%", 0.0, 250.0,
+      Text::new("Aschebeladung Partikelfilter", "Particulate filter ash load"),
+      Text::new("Asche brennt nicht ab; ist der Filter voll davon, muss er gereinigt oder getauscht werden.", "Ash does not burn off; once the filter is full of it, it has to be cleaned or replaced.")),
+    p(3721, DPF_SERVICE, 2, 32, 1.0 / 3600.0, 0.0, "h", 0.0, 1000.0,
+      Text::new("Zeit seit dem letzten Freibrennen", "Time since the last regeneration"),
+      Text::new("Wie lange die letzte aktive Regeneration des Partikelfilters her ist.", "How long ago the last active regeneration of the particulate filter was.")),
+    // DPFC1 byte 2 bits 1-2 and 3-5.
+    state(3700, DPF_CONTROL, 1, 0, 2, 2.0,
+      Text::new("Freibrennen des Partikelfilters", "Particulate filter regeneration"),
+      Text::new("0: läuft nicht, 1: läuft gerade, 2: nötig, beginnt gleich von selbst.", "0: not running, 1: running now, 2: needed, about to start by itself.")),
+    state(3701, DPF_CONTROL, 1, 2, 3, 3.0,
+      Text::new("Zustand des Partikelfilters", "Particulate filter state"),
+      Text::new("0: Freibrennen nicht nötig, 1 bis 3: nötig, von niedriger bis höchster Stufe.", "0: no regeneration needed, 1 to 3: needed, from the lowest to the highest level.")),
+    // Idle operation (IO), on request: bytes 1-4 0.5 l per bit, bytes 5-8 0.05 h per bit.
+    p(236, PGN_IDLE_OPERATION, 0, 32, 0.5, 0.0, "l", 0.0, 2.0e6,
+      Text::new("Kraftstoff im Leerlauf gesamt", "Total idle fuel used"),
+      Text::new("Aller Kraftstoff, den der Motor im Leerlauf verbraucht hat.", "All the fuel the engine has burned while idling.")),
+    p(235, PGN_IDLE_OPERATION, 4, 32, 0.05, 0.0, "h", 0.0, 100_000.0,
+      Text::new("Leerlaufstunden gesamt", "Total idle hours"),
+      Text::new("Wie lange der Motor insgesamt im Leerlauf lief.", "How long the engine ran at idle in total.")),
+    // DM21, on request: 1 km and 1 min per bit, two bytes each.
+    p(3069, PGN_DM21, 0, 16, 1.0, 0.0, "km", 0.0, 64_255.0,
+      Text::new("Strecke mit Abgaslampe", "Distance with the emission lamp on"),
+      Text::new("Gefahrene Kilometer, während die Abgaslampe (MIL) leuchtete.", "Kilometres driven while the emission lamp (MIL) was lit.")),
+    p(3294, PGN_DM21, 2, 16, 1.0, 0.0, "km", 0.0, 64_255.0,
+      Text::new("Strecke seit dem Löschen", "Distance since faults were cleared"),
+      Text::new("Gefahrene Kilometer seit dem letzten Löschen des Fehlerspeichers.", "Kilometres driven since the fault memory was last cleared.")),
+    p(3295, PGN_DM21, 4, 16, 1.0, 0.0, "min", 0.0, 64_255.0,
+      Text::new("Laufzeit mit Abgaslampe", "Engine time with the emission lamp on"),
+      Text::new("Minuten Motorlauf, während die Abgaslampe leuchtete.", "Minutes of engine running while the emission lamp was lit.")),
+    p(3296, PGN_DM21, 6, 16, 1.0, 0.0, "min", 0.0, 64_255.0,
+      Text::new("Zeit seit dem Löschen", "Time since faults were cleared"),
+      Text::new("Minuten Motorlauf seit dem letzten Löschen des Fehlerspeichers.", "Minutes of engine running since the fault memory was last cleared.")),
 ];
 
 /// Every value of the table.

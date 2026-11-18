@@ -20,8 +20,9 @@ use super::params::{J1939Value, decode_params};
 use super::tp::{TpCm, TpCollector, TpEvent};
 use super::{
     GLOBAL, J1939Id, NULL_ADDRESS, PGN_ACK, PGN_ADDRESS_CLAIM, PGN_COMPONENT_ID, PGN_DM1, PGN_DM2,
-    PGN_DM3, PGN_DM11, PGN_ENGINE_HOURS, PGN_FUEL_CONSUMPTION, PGN_REQUEST, PGN_SOFTWARE_ID,
-    PGN_TP_CM, PGN_VIN, TESTER_ADDRESSES, address_label,
+    PGN_DM3, PGN_DM11, PGN_DM21, PGN_ENGINE_HOURS, PGN_FUEL_CONSUMPTION, PGN_IDLE_OPERATION,
+    PGN_REQUEST, PGN_SOFTWARE_ID, PGN_TP_CM, PGN_VEHICLE_DISTANCE, PGN_VEHICLE_DISTANCE_HR,
+    PGN_VIN, TESTER_ADDRESSES, address_label,
 };
 
 /// How long a request waits for answers (the standard gives a unit 200 ms;
@@ -623,6 +624,40 @@ impl J1939Session {
             .iter()
             .filter_map(|(_, data)| text_fields(data).into_iter().next())
             .find(|vin| !vin.is_empty()))
+    }
+
+    /// The VIN of every unit that answers a request to everybody. Engine,
+    /// instrument cluster and tachograph often each keep their own copy, and
+    /// a copy that differs points to a unit from another vehicle.
+    pub fn read_vins(&mut self, link: &mut dyn FrameLink) -> Result<Vec<(u8, String)>, String> {
+        let answers = self.request(link, PGN_VIN, GLOBAL)?;
+        let mut out: Vec<(u8, String)> = answers
+            .messages
+            .iter()
+            .filter_map(|(source, data)| {
+                let vin = text_fields(data).into_iter().next()?;
+                (!vin.is_empty()).then_some((*source, vin))
+            })
+            .collect();
+        out.sort_by_key(|(source, _)| *source);
+        out.dedup_by_key(|(source, _)| *source);
+        Ok(out)
+    }
+
+    /// Asks for what a used vehicle check compares: idle hours and idle
+    /// fuel, both odometers (some units send them only on request) and DM21
+    /// (distance and time with the lamp on and since the last clearing).
+    /// Everything lands in [`J1939Session::values`].
+    pub fn read_usage(&mut self, link: &mut dyn FrameLink) -> Result<(), String> {
+        for pgn in [
+            PGN_IDLE_OPERATION,
+            PGN_VEHICLE_DISTANCE,
+            PGN_VEHICLE_DISTANCE_HR,
+            PGN_DM21,
+        ] {
+            self.request(link, pgn, GLOBAL)?;
+        }
+        Ok(())
     }
 
     /// Make, model, serial and unit number of every unit that answers.
