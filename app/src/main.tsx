@@ -10,7 +10,7 @@ import { effectiveLanguage, setLanguage, t } from "./i18n";
 import { setFontScale, setHighContrast } from "./lib/access";
 import { isAndroid } from "./lib/platform";
 import { setAppearance, type Appearance } from "./lib/theme";
-import { emitApp } from "./lib/store";
+import { emitApp, emitAppWhenHeard } from "./lib/store";
 import { App } from "./shell/App";
 import { isPageId } from "./shell/pages";
 import { loadGarage } from "./state/garage";
@@ -49,7 +49,9 @@ async function boot(): Promise<void> {
     </StrictMode>,
   );
   if (params.has("demo")) {
-    setTimeout(() => emitApp("connect:demo"), 300);
+    // The connect page takes the hand-over once it listens; a fixed pause
+    // lost it on slow machines and the demo car never connected.
+    setTimeout(() => emitAppWhenHeard("connect:demo"), 300);
     // The connection jumps to the start page; ?page follows once it has
     // settled, the way --page does in the app.
     const page = params.get("page");

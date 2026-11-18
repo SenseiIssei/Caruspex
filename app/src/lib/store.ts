@@ -61,6 +61,18 @@ export function emitApp<T = undefined>(name: string, payload?: T): void {
   for (const fn of [...(bus.get(name) ?? [])]) fn(payload);
 }
 
+// Like emitApp, but for a hand-over at start: the page that listens may not
+// have rendered yet (on a slow machine that takes longer than any fixed
+// pause), so it waits for a listener and gives up after `limitMs`.
+export function emitAppWhenHeard<T = undefined>(name: string, payload?: T, limitMs = 30_000): void {
+  const started = Date.now();
+  const tryNow = () => {
+    if ((bus.get(name)?.size ?? 0) > 0) emitApp(name, payload);
+    else if (Date.now() - started < limitMs) setTimeout(tryNow, 100);
+  };
+  tryNow();
+}
+
 export function onApp<T = undefined>(name: string, fn: (payload: T) => void): () => void {
   let set = bus.get(name);
   if (!set) {
