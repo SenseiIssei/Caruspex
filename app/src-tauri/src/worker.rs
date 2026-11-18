@@ -26,10 +26,9 @@ use caruspex_data::pids::PidCategory;
 use caruspex_data::severity::Severity;
 use caruspex_demo::DemoTransport;
 use caruspex_i18n::l;
-use caruspex_link::adapter_probe::version_text;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
 use caruspex_link::timing::sleep_ms;
-use caruspex_link::{AdaptiveTiming, Elm327, StnBus, TcpTransport, Transport, probe_adapter};
+use caruspex_link::{AdaptiveTiming, Elm327, StnBus, TcpTransport, Transport};
 #[cfg(not(target_os = "android"))]
 use caruspex_link::{SerialTransport, enumerate_ports};
 use caruspex_net::{
@@ -52,6 +51,7 @@ use crate::android::{SerialTransport, ble, enumerate_ports};
 use crate::rows::*;
 use crate::settings::AppSettings;
 
+mod adapter;
 /// Bluetooth LE and classic Bluetooth through caruspex-link, as the worker
 /// needs it (android.rs has the same functions for the phone).
 #[cfg(not(target_os = "android"))]
@@ -1548,16 +1548,6 @@ impl Worker {
         self.busy(false);
     }
 
-    fn send_raw(&mut self, command: &str) {
-        let result = self.elm.send(command, 8000);
-        let reply = if result.lines.is_empty() {
-            w("(keine Antwort)", "(no reply)")
-        } else {
-            result.lines.join("\n")
-        };
-        self.emit("raw_reply", json!({ "reply": reply }));
-    }
-
     fn read_monitors(&mut self) {
         if !self.obd_ready {
             self.emit(
@@ -2081,52 +2071,6 @@ impl Worker {
         facts
     }
 
-    fn probe_adapter(&mut self) {
-        if !self.elm.connected() {
-            self.failed(w(
-                "Für den Adaptertest erst verbinden.",
-                "Connect first to run the adapter test.",
-            ));
-            return;
-        }
-        self.stop_live();
-        self.voltage_timer.stop();
-        self.busy(true);
-        let report = probe_adapter(&mut self.elm);
-        let row = AdapterRow {
-            reachable: report.reachable,
-            version: report.version_text.clone(),
-            description: report.description.clone(),
-            is_stn: report.is_stn,
-            stn_id: report.stn_id.clone(),
-            voltage: report.voltage,
-            has_voltage: report.has_voltage,
-            round_trip_ms: report.round_trip_ms,
-            round_trip_with_hint_ms: report.round_trip_with_hint_ms,
-            behaves_like: if report.behaves_like_level > 0 {
-                version_text(report.behaves_like_level)
-            } else {
-                String::new()
-            },
-            accepts_unknown: report.accepts_unknown_commands,
-            verdict: report.verdict.get(),
-            facts: report.facts.iter().map(|f| f.get()).collect(),
-            speed_tips: report.speed_tips.iter().map(|t| t.get()).collect(),
-            checks: report
-                .checks
-                .iter()
-                .map(|c| AdapterCheckRow {
-                    command: c.command.clone(),
-                    version: version_text(c.introduced_in),
-                    supported: c.supported,
-                    purpose: c.purpose.get(),
-                })
-                .collect(),
-        };
-        self.emit("adapter_report", json!({ "row": row }));
-        self.busy(false);
-    }
-
     // Persistent clear over EOBD. Some control units only accept the command
     // right after the connection is established, others need several
     // attempts. That is why the connection is re-established in between.
@@ -2215,32 +2159,6 @@ impl Worker {
             json!({ "everythingGone": false, "remaining": remaining }),
         );
         self.refresh_status_and_faults();
-    }
-
-    fn start_voltage_poll(&mut self, interval_ms: i32) {
-        if !self.elm.connected() {
-            return;
-        }
-        self.stop_live();
-        self.voltage_timer.set_interval(interval_ms.max(20) as u64);
-        self.voltage_timer.start();
-    }
-
-    fn voltage_tick(&mut self) {
-        let result = self.elm.send("ATRV", 1000);
-        for line in &result.lines {
-            let text: String = line.trim().chars().filter(|&c| c != 'V').collect();
-            if let Ok(volts) = text.trim().parse::<f64>()
-                && volts > 3.0
-                && volts < 32.0
-            {
-                self.emit(
-                    "adapter_voltage",
-                    json!({ "volts": volts, "time": app_seconds() }),
-                );
-                break;
-            }
-        }
     }
 
     /// Applies the settings. Called at startup and after every change; also
