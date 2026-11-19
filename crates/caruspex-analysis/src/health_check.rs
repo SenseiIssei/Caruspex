@@ -2442,7 +2442,15 @@ fn score(r: &mut HealthReport) {
             };
         }
     }
-    if !r.not_checked.is_empty() {
+    // One skipped check gets its own sentence, "1 Prüfungen" reads wrong.
+    if r.not_checked.len() == 1 {
+        r.summary = r.summary.clone()
+            + format(
+                "Eine Prüfung war mangels Daten nicht möglich.",
+                "One check was not possible for lack of data.",
+                &[],
+            );
+    } else if !r.not_checked.is_empty() {
         r.summary = r.summary.clone()
             + format(
                 "{} Prüfungen waren mangels Daten nicht möglich.",
