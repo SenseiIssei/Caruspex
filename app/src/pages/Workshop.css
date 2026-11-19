@@ -63,6 +63,7 @@
 
 .bmw-steps { margin: 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 4px; white-space: normal; }
 .bmw-table td.bmw-action { width: 1%; white-space: nowrap; text-align: end; }
+.bmw-table td.bmw-protocol { white-space: nowrap; }
 .bmw-table td.bmw-action .btn { min-height: 30px; }
 .bmw-address, .bmw-detail { font-family: var(--font-mono); font-size: 12px; font-weight: 400; }
 

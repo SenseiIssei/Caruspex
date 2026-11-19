@@ -267,7 +267,7 @@ export default function BmwPage() {
                       {unit.name}
                       <span className="faint ltr bmw-address"> 0x{unit.address.toString(16).toUpperCase().padStart(2, "0")}</span>
                     </td>
-                    <td className="ltr">{unit.protocolLabel}</td>
+                    <td className="ltr bmw-protocol">{unit.protocolLabel}</td>
                     <td className={!unit.faultsRead ? "state" : count === 0 ? "state ok" : "state bad"}>{state}</td>
                     <td className="ident">
                       <span className="ltr">{unit.identification}</span>
@@ -283,9 +283,11 @@ export default function BmwPage() {
                   </tr>
                   {unit.faults.map((fault, i) => (
                     <tr key={`${unitKey(unit)}-${fault.code}-${i}`} className="fault fade-in">
-                      <td className="ltr">{fault.code}</td>
+                      <td className="ltr" colSpan={2}>
+                        {fault.code}
+                      </td>
                       <td className="state">{faultState(fault.present)}</td>
-                      <td colSpan={3}>
+                      <td colSpan={2}>
                         {fault.text}
                         {fault.detail ? <span className="faint ltr bmw-detail"> ({fault.detail})</span> : null}
                       </td>

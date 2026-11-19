@@ -706,6 +706,16 @@ export default function ConnectPage() {
     }, 7000);
   });
 
+  // --page connect-bmw: the way for BMW's E series with an E46 chosen.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "connect-bmw") return;
+    navigate("connect");
+    void call("catalog_search", { query: "BMW E46", limit: 1 }).then((found) => {
+      if (found?.[0]) setGeneration(found[0], 2003);
+      setMode("bmw");
+    });
+  });
+
   // Opens the Bluetooth choice and scans, without connecting.
   useAppEvent<string>("dev:page", (name) => {
     if (name !== "connect-ble") return;
