@@ -295,6 +295,116 @@ pub fn values_from_reply(reply: &[u8]) -> Vec<MeasuringValue> {
         .collect()
 }
 
+/// ISO 14230-2 checksum: the sum of every byte before it, modulo 256.
+pub fn kwp_checksum(bytes: &[u8]) -> u8 {
+    bytes.iter().fold(0u8, |sum, &b| sum.wrapping_add(b))
+}
+
+/// A KWP2000 message with address header: format byte (0x80 plus the
+/// data length), target, source, data and checksum. Data longer than 63
+/// bytes moves its length into a byte of its own after the addresses.
+/// VAG and BMW frame it the same way on the K-line, BMW-FAST too.
+pub fn kwp_frame(target: u8, source: u8, payload: &[u8]) -> Vec<u8> {
+    let mut frame = Vec::with_capacity(payload.len() + 5);
+    if payload.len() <= 0x3F {
+        frame.extend_from_slice(&[0x80 | payload.len() as u8, target, source]);
+    } else {
+        frame.extend_from_slice(&[0x80, target, source, payload.len().min(255) as u8]);
+    }
+    frame.extend_from_slice(payload);
+    frame.push(kwp_checksum(&frame));
+    frame
+}
+
+/// Reads one KWP2000 message with address header from the line: the
+/// target, the source and the data. `first_ms` is how long the first
+/// byte may take (P2), `byte_ms` the gap between two bytes after it.
+pub fn read_kwp_message<S: ByteStream + ?Sized>(
+    stream: &mut S,
+    first_ms: u64,
+    byte_ms: u64,
+) -> Result<(u8, u8, Vec<u8>), String> {
+    let Some(format) = stream.read_byte(first_ms) else {
+        return Err(l(
+            "Steuergerät antwortet nicht",
+            "Control unit does not respond",
+        )
+        .to_string());
+    };
+    read_kwp_rest(stream, format, byte_ms)
+}
+
+/// The rest of a KWP2000 message whose format byte the caller has read
+/// already (to tell silence from a garbled answer).
+pub fn read_kwp_rest<S: ByteStream + ?Sized>(
+    stream: &mut S,
+    format: u8,
+    byte_ms: u64,
+) -> Result<(u8, u8, Vec<u8>), String> {
+    if (format & 0xC0) != 0x80 {
+        return Err(format!(
+            "{}{}",
+            l("Unerwartetes Formatbyte ", "Unexpected format byte "),
+            hex2(format)
+        ));
+    }
+
+    let addresses = stream
+        .read_byte(byte_ms)
+        .and_then(|target| stream.read_byte(byte_ms).map(|source| (target, source)));
+    let Some((target, source)) = addresses else {
+        return Err(l(
+            "Adressbytes fehlen in der Antwort",
+            "Address bytes missing in the response",
+        )
+        .to_string());
+    };
+
+    let mut checksum = format.wrapping_add(target).wrapping_add(source);
+    let mut length = usize::from(format & 0x3F);
+    if length == 0 {
+        // The length is in a separate byte after the addresses.
+        let Some(extra) = stream.read_byte(byte_ms) else {
+            return Err(l("Längenbyte fehlt", "Length byte missing").to_string());
+        };
+        checksum = checksum.wrapping_add(extra);
+        length = usize::from(extra);
+    }
+
+    let mut payload = Vec::with_capacity(length);
+    for i in 0..length {
+        let Some(byte) = stream.read_byte(byte_ms) else {
+            return Err(format!(
+                "{}{}{}{}{}",
+                l("Antwort bricht nach ", "Response breaks off after "),
+                i,
+                l(" von ", " of "),
+                length,
+                l(" Bytes ab", " bytes")
+            ));
+        };
+        payload.push(byte);
+        checksum = checksum.wrapping_add(byte);
+    }
+
+    let Some(received) = stream.read_byte(byte_ms) else {
+        return Err(l("Prüfsumme fehlt", "Checksum missing").to_string());
+    };
+    if received != checksum {
+        return Err(format!(
+            "{}{}{}{}",
+            l(
+                "Prüfsumme stimmt nicht: erwartet ",
+                "Checksum mismatch: expected "
+            ),
+            hex2(checksum),
+            l(", bekommen ", ", got "),
+            hex2(received)
+        ));
+    }
+    Ok((target, source, payload))
+}
+
 /// KWP2000 on a K-line after the wake-up. Owns the byte stream; get it back
 /// with [`Kwp2000::into_stream`].
 pub struct Kwp2000<S: ByteStream> {
@@ -356,10 +466,7 @@ impl<S: ByteStream> Kwp2000<S> {
             .to_string());
         }
 
-        let mut frame = vec![0x80 | payload.len() as u8, self.target, self.source];
-        frame.extend_from_slice(payload);
-        let checksum = frame.iter().fold(0u8, |sum, &b| sum.wrapping_add(b));
-        frame.push(checksum);
+        let frame = kwp_frame(self.target, self.source, payload);
 
         if self.log.is_some() {
             let text: String = frame.iter().map(|&b| hex2(b) + " ").collect();
@@ -400,76 +507,7 @@ impl<S: ByteStream> Kwp2000<S> {
     }
 
     fn receive_message(&mut self) -> Result<Vec<u8>, String> {
-        let Some(format) = self.stream.read_byte(BYTE_TIMEOUT_MS) else {
-            return Err(l(
-                "Steuergerät antwortet nicht",
-                "Control unit does not respond",
-            )
-            .to_string());
-        };
-        if (format & 0xC0) != 0x80 {
-            return Err(format!(
-                "{}{}",
-                l("Unerwartetes Formatbyte ", "Unexpected format byte "),
-                hex2(format)
-            ));
-        }
-
-        let addresses = self.stream.read_byte(BYTE_TIMEOUT_MS).and_then(|target| {
-            self.stream
-                .read_byte(BYTE_TIMEOUT_MS)
-                .map(|source| (target, source))
-        });
-        let Some((target, source)) = addresses else {
-            return Err(l(
-                "Adressbytes fehlen in der Antwort",
-                "Address bytes missing in the response",
-            )
-            .to_string());
-        };
-
-        let mut length = usize::from(format & 0x3F);
-        if length == 0 {
-            // The length is in a separate byte after the addresses.
-            let Some(extra) = self.stream.read_byte(BYTE_TIMEOUT_MS) else {
-                return Err(l("Längenbyte fehlt", "Length byte missing").to_string());
-            };
-            length = usize::from(extra);
-        }
-
-        let mut checksum = format.wrapping_add(target).wrapping_add(source);
-        let mut payload = Vec::with_capacity(length);
-        for i in 0..length {
-            let Some(byte) = self.stream.read_byte(BYTE_TIMEOUT_MS) else {
-                return Err(format!(
-                    "{}{}{}{}{}",
-                    l("Antwort bricht nach ", "Response breaks off after "),
-                    i,
-                    l(" von ", " of "),
-                    length,
-                    l(" Bytes ab", " bytes")
-                ));
-            };
-            payload.push(byte);
-            checksum = checksum.wrapping_add(byte);
-        }
-
-        let Some(received) = self.stream.read_byte(BYTE_TIMEOUT_MS) else {
-            return Err(l("Prüfsumme fehlt", "Checksum missing").to_string());
-        };
-        if received != checksum {
-            return Err(format!(
-                "{}{}{}{}",
-                l(
-                    "Prüfsumme stimmt nicht: erwartet ",
-                    "Checksum mismatch: expected "
-                ),
-                hex2(checksum),
-                l(", bekommen ", ", got "),
-                hex2(received)
-            ));
-        }
-
+        let (_, _, payload) = read_kwp_message(&mut self.stream, BYTE_TIMEOUT_MS, BYTE_TIMEOUT_MS)?;
         if self.log.is_some() {
             let text: String = payload.iter().map(|&b| hex2(b) + " ").collect();
             self.log(&format!("   <- {text}"));
