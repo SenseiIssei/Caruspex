@@ -337,6 +337,20 @@ function kklPossible(data: CatalogData, g: GenRecord, year: number): boolean {
   return c === Connector.Obd2 && (g[10] === Bus.KLine || g[10] === Bus.Mixed) && y <= 2008;
 }
 
+// catalog::bmw_kline_possible: E-series BMW on the K-line.
+const BMW_KLINE_ALWAYS = ["E36", "E36/7", "E38", "E39", "E46", "E52", "E53", "E83", "E85"];
+const BMW_KLINE_UNTIL_2007 = ["E60", "E63", "E65", "E87", "E90"];
+function bmwKlinePossible(g: GenRecord, year: number): boolean {
+  const y = year <= 0 ? g[3] : year;
+  const c = connectorFor(g, y);
+  if (g[0] !== "BMW" || (c !== Connector.Obd2 && c !== Connector.Bmw20)) return false;
+  return BMW_KLINE_ALWAYS.includes(g[2]) || (BMW_KLINE_UNTIL_2007.includes(g[2]) && y <= 2007);
+}
+
+const bmwKlineHint = () =>
+  L(" Alle Steuergeräte erreicht Caruspex mit einem K+DCAN-Kabel im K-Line-Modus oder einem KKL-Kabel (DS2, KWP2000 nach BMW-Art).",
+    " Caruspex reaches every control unit with a K+DCAN cable in K-line mode or a KKL cable (DS2, KWP2000 in BMW style).");
+
 function supportFor(g: GenRecord, year: number, powertrain = 0): number {
   const y = year <= 0 ? g[3] : year;
   const pt = powertrain || g[6];
@@ -386,6 +400,7 @@ function diagnosisText(data: CatalogData, g: GenRecord, year: number): string {
   const y = year <= 0 ? g[3] : year;
   const c = connectorFor(g, y);
   const kkl = kklPossible(data, g, y);
+  const bmwKline = bmwKlinePossible(g, y);
   let out = "";
   switch (supportFor(g, y)) {
     case Support.None:
@@ -410,6 +425,10 @@ function diagnosisText(data: CatalogData, g: GenRecord, year: number): string {
         out = L("Herstellereigener Diagnosestecker, falls vorhanden. Ein ELM327 kann damit nicht sprechen, oft lassen sich aber Blinkcodes auslesen.",
           "Manufacturer diagnostic plug, if fitted. An ELM327 cannot talk to it, but blink codes can often be read.");
       }
+      if (bmwKline) {
+        out += L(" Mit einem Adapter vom Rundstecker auf die OBD-Buchse und einem K+DCAN- oder KKL-Kabel liest Caruspex die Steuergeräte über DS2.",
+          " With an adapter from the round plug to an OBD socket and a K+DCAN or KKL cable Caruspex reads the control units over DS2.");
+      }
       break;
     case Support.Partial:
       if (onlyElectric(g[6])) {
@@ -420,6 +439,7 @@ function diagnosisText(data: CatalogData, g: GenRecord, year: number): string {
           "16-pin OBD socket present, but OBD was not yet mandatory for this model year (EU: petrol from 2001, diesel from 2004; USA from 1996). Many engine control units answer anyway, it is worth a try.");
       }
       if (kkl) out += L(" Sicher klappt es mit einem KKL-Kabel über KWP1281.", " A KKL cable with KWP1281 works for sure.");
+      if (bmwKline) out += bmwKlineHint();
       break;
     case Support.Full:
       out = L("Volle OBD-II-Diagnose über die 16-polige Buchse: Fehlercodes, Messwerte und Bereitschaftstests.",
@@ -428,6 +448,7 @@ function diagnosisText(data: CatalogData, g: GenRecord, year: number): string {
         out += L(" Bei Dieselmotoren dieses Baujahrs war OBD noch keine Pflicht.", " For diesel engines of this model year OBD was not yet mandatory.");
       }
       if (kkl) out += L(" Die übrigen Steuergeräte erreicht Caruspex mit einem KKL-Kabel.", " Caruspex reaches the other control units with a KKL cable.");
+      if (bmwKline) out += bmwKlineHint();
       break;
   }
   if (g[9] && y < g[9] && g[8] !== g[7]) {
@@ -929,6 +950,7 @@ export const knowledgeHandlers: PartialHandlers = {
       engineCodes: null,
       diagnosisText: diagnosisText(data, g, y),
       kklPossible: kklPossible(data, g, y),
+      bmwKlinePossible: bmwKlinePossible(g, y),
       protocolOrder: g[11],
     };
   },

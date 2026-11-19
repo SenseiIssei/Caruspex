@@ -1160,6 +1160,24 @@ pub fn scan_all_ecus(state: State<'_, AppState>, device: String, clear_attempts:
     );
 }
 
+/// BMW E series on the K-line. `clear` only after the page asked.
+#[tauri::command]
+pub fn scan_bmw(state: State<'_, AppState>, device: String, clear: bool) {
+    job(&state, Job::ScanBmw { device, clear });
+}
+
+#[tauri::command]
+pub fn clear_bmw_unit(state: State<'_, AppState>, device: String, address: i32, protocol: String) {
+    job(
+        &state,
+        Job::ClearBmwUnit {
+            device,
+            address,
+            protocol,
+        },
+    );
+}
+
 #[tauri::command]
 pub fn read_adaptation_channel(state: State<'_, AppState>, channel: i32) {
     job(&state, Job::ReadAdaptation(channel));

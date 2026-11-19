@@ -871,6 +871,8 @@ export interface VehicleDiagnosisInfo {
   engineCodes: { petrol: string[]; diesel: string[]; source: string } | null;
   diagnosisText: string;
   kklPossible: boolean;
+  // An E-series BMW on the K-line (DS2, KWP2000): the BMW page.
+  bmwKlinePossible: boolean;
   protocolOrder: string;
 }
 

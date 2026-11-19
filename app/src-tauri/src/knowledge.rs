@@ -473,6 +473,8 @@ pub fn catalog_diagnosis(generation_id: usize, year: i32) -> Result<Value, Strin
         "engineCodes": engine_codes_json(g),
         "diagnosisText": catalog::diagnosis_text(g, y),
         "kklPossible": catalog::kkl_possible(g, y),
+        // An E-series BMW on the K-line: the BMW page with a K+DCAN cable.
+        "bmwKlinePossible": catalog::bmw_kline_possible(g, y),
         "protocolOrder": catalog::protocol_order_for(g),
     }))
 }
