@@ -13,6 +13,7 @@
 pub mod adapter_probe;
 #[cfg(feature = "ble")]
 pub mod ble;
+pub mod ble_gatt;
 pub mod ble_profile;
 pub mod bluetooth;
 #[cfg(feature = "bt-classic")]

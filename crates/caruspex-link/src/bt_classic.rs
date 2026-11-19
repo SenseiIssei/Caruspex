@@ -84,6 +84,7 @@ fn classic_device(address: u64, name: &str) -> BleDevice {
         score: obd_adapter_name_score(name),
         low_energy: false,
         classic: true,
+        profile: String::new(),
     }
 }
 

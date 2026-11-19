@@ -264,6 +264,34 @@ pub fn obd_adapter_name_score(name: &str) -> i32 {
     0
 }
 
+/// The known adapter profile ("FFF0", "vLinker", ...) whose service a device
+/// names in its advertisement, if any. Only a hint for the scan list: many
+/// adapters advertise no service at all, and whether a device may be
+/// written to is decided after connecting, by [`is_obd_adapter`].
+pub fn advertised_profile<S: AsRef<str>>(service_uuids: &[S]) -> Option<&'static str> {
+    let advertised: Vec<String> = service_uuids
+        .iter()
+        .map(|u| normalize_ble_uuid(u.as_ref()))
+        .collect();
+    known_profiles()
+        .into_iter()
+        .find(|p| advertised.contains(&p.service))
+        .map(|p| p.name)
+}
+
+/// The score of a device in the scan list: its name, and an advertised
+/// service that only OBD adapters use (vLinker, OBDLink/LELink) counts like
+/// an adapter name. The common serial modules (FFF0, FFE0, Nordic UART) are
+/// also in lamps and toys, so they only lift a device above a stranger.
+pub fn scan_score(name: &str, profile: Option<&str>) -> i32 {
+    let by_name = obd_adapter_name_score(name);
+    match profile {
+        Some("vLinker" | "E781") => by_name.max(3),
+        Some(_) => by_name.max(1),
+        None => by_name,
+    }
+}
+
 /// Whether a device may be written to at all. A serial channel alone proves
 /// nothing: lamps, sensors and toys use the same FFF0, FFE0 or Nordic UART
 /// modules as cheap adapters, and an ATZ sent to them may switch or
@@ -484,5 +512,30 @@ mod tests {
         assert!(is_obd_adapter("", &vlinker));
         // Without a channel nothing is an adapter.
         assert!(!is_obd_adapter("OBDII", &BleChannel::default()));
+    }
+
+    #[test]
+    fn advertised_services_name_the_profile() {
+        assert_eq!(
+            advertised_profile(&["0000FFF0-0000-1000-8000-00805F9B34FB"]),
+            Some("FFF0")
+        );
+        assert_eq!(advertised_profile(&["180a", "18f0"]), Some("vLinker"));
+        assert_eq!(
+            advertised_profile(&["E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"]),
+            Some("E781")
+        );
+        assert_eq!(advertised_profile(&["180f"]), None);
+        assert_eq!(advertised_profile::<&str>(&[]), None);
+    }
+
+    #[test]
+    fn the_scan_score_trusts_only_adapter_services() {
+        assert_eq!(scan_score("", Some("vLinker")), 3);
+        assert_eq!(scan_score("", Some("E781")), 3);
+        // A lamp with an FFF0 module is lifted above strangers, not more.
+        assert_eq!(scan_score("Govee_H6008_1A2B", Some("FFF0")), 1);
+        assert_eq!(scan_score("OBDII", Some("FFF0")), 3);
+        assert_eq!(scan_score("Jakobs Kopfhörer", None), 0);
     }
 }

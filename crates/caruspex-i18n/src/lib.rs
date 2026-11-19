@@ -186,6 +186,9 @@ pub fn set_language(language: Language) {
 thread_local! {
     /// The language `with_language` set for this thread only, so a test or
     /// a report in another language never changes what other threads see.
+    // It is const already; on Android (emulated thread locals) clippy
+    // still asks for it.
+    #[allow(clippy::missing_const_for_thread_local)]
     static OVERRIDE: Cell<Option<Language>> = const { Cell::new(None) };
 }
 

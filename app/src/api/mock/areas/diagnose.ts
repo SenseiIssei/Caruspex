@@ -62,9 +62,9 @@ const DEMO_J2534: J2534DeviceRow[] = [
 // What a scan near a car typically finds: a BLE adapter, a dual mode one and
 // a speaker that is no adapter at all (Worker::bleScanFinished scores).
 const DEMO_BLE: BleDeviceRow[] = [
-  { id: "D2:5C:41:7A:09:3E", name: "IOS-Vlink", score: 5, kinds: 1 },
-  { id: "00:1D:A5:68:98:8B", name: "OBDII", score: 4, kinds: 3 },
-  { id: "F4:4E:FD:12:6B:70", name: "JBL Flip 5", score: 0, kinds: 2 },
+  { id: "D2:5C:41:7A:09:3E", name: "IOS-Vlink", score: 5, kinds: 1, rssi: -58, profile: "FFF0" },
+  { id: "00:1D:A5:68:98:8B", name: "OBDII", score: 4, kinds: 3, rssi: -71, profile: "" },
+  { id: "F4:4E:FD:12:6B:70", name: "JBL Flip 5", score: 0, kinds: 2, rssi: 0, profile: "" },
 ];
 
 // --- Two-language phrases (core/analysis/Common.h) ------------------------------------
