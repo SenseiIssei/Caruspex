@@ -683,3 +683,98 @@ fn kkl_pages_use_tp20_on_the_can_interface() {
     worker.handle(Job::Close);
     assert!(worker.can_link.is_none());
 }
+
+fn bare_worker() -> (Worker, Arc<Collect>) {
+    let sink = Arc::new(Collect::default());
+    let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+    worker.apply_settings(AppSettings::default());
+    (worker, sink)
+}
+
+#[test]
+fn the_bmw_scan_runs_on_the_simulated_e46_and_clears_only_when_asked() {
+    let (mut worker, sink) = bare_worker();
+    worker.handle(Job::ScanBmw {
+        device: "sim:e46".into(),
+        clear: false,
+    });
+    let events = sink.take();
+    let finished = &Collect::named(&events, "bmw_scan_finished")[0];
+    assert_eq!(finished["present"], 9, "{events:?}");
+    assert_eq!(finished["withFaults"], 4);
+    assert_eq!(finished["error"], "");
+    let units = Collect::named(&events, "bmw_unit");
+    let dme = units
+        .iter()
+        .map(|u| &u["row"])
+        .find(|r| r["address"] == 0x12)
+        .unwrap();
+    assert_eq!(dme["protocol"], "ds2");
+    assert_eq!(dme["protocolLabel"], "DS2");
+    assert_eq!(dme["faults"][0]["code"], "0x2A");
+    assert!(dme["faults"][0]["present"].is_null());
+    assert!(Collect::named(&events, "bmw_clear_result").is_empty());
+    assert!(Collect::named(&events, "bmw_scan_progress").len() >= 9);
+
+    // One unit cleared: the airbag is empty afterwards.
+    worker.handle(Job::ClearBmwUnit {
+        device: "sim:e46".into(),
+        address: 0xA4,
+        protocol: "ds2".into(),
+    });
+    let events = sink.take();
+    let result = &Collect::named(&events, "bmw_clear_result")[0];
+    assert_eq!(result["ok"], true);
+    assert_eq!(result["remaining"], 0);
+    let row = &Collect::named(&events, "bmw_unit")[0]["row"];
+    assert_eq!(row["faults"].as_array().unwrap().len(), 0);
+
+    // The simulated car remembers it in the next scan.
+    worker.handle(Job::ScanBmw {
+        device: "sim:e46".into(),
+        clear: false,
+    });
+    let events = sink.take();
+    assert_eq!(
+        Collect::named(&events, "bmw_scan_finished")[0]["withFaults"],
+        3
+    );
+}
+
+#[test]
+fn the_bmw_scan_with_clearing_leaves_only_faults_with_a_cause() {
+    let (mut worker, sink) = bare_worker();
+    worker.handle(Job::ScanBmw {
+        device: "sim:e60".into(),
+        clear: true,
+    });
+    let events = sink.take();
+    let finished = &Collect::named(&events, "bmw_scan_finished")[0];
+    assert_eq!(finished["present"], 8);
+    // The engine keeps the fault whose cause is still there.
+    assert_eq!(finished["withFaults"], 1);
+    let clears = Collect::named(&events, "bmw_clear_result");
+    assert_eq!(clears.len(), 4);
+    assert!(clears.iter().all(|c| c["ok"] == true));
+    assert!(clears.iter().any(|c| c["remaining"] == 1));
+}
+
+#[test]
+fn the_bmw_page_needs_a_serial_cable() {
+    let (mut worker, sink) = bare_worker();
+    worker.handle(Job::ScanBmw {
+        device: TP20_DEVICE.into(),
+        clear: false,
+    });
+    let events = sink.take();
+    let finished = &Collect::named(&events, "bmw_scan_finished")[0];
+    assert_eq!(finished["present"], 0);
+    assert!(finished["error"].as_str().unwrap().contains("K+DCAN"));
+    worker.handle(Job::ClearBmwUnit {
+        device: "j2534:x.dll".into(),
+        address: 0x12,
+        protocol: "ds2".into(),
+    });
+    let events = sink.take();
+    assert_eq!(Collect::named(&events, "bmw_clear_result")[0]["ok"], false);
+}

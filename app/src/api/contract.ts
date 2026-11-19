@@ -19,6 +19,7 @@ import type {
   AppInfo,
   AppSettings,
   BleDeviceRow,
+  BmwUnitRow,
   BluetoothAccess,
   BrandFamily,
   CatalogMatch,
@@ -216,6 +217,13 @@ export interface Commands {
   // Control units the K-line pages offer (knownEcus() with ecuName()).
   kkl_ecus: Cmd<None, KklEcuInfo[]>;
 
+  // --- BMW E series on the K-line (DS2, KWP2000, BMW-FAST) ----------------------
+  // device: a serial port with a K+DCAN or KKL cable, or "sim:e46" /
+  // "sim:e60". clear: clear every unit with entries (only after asking).
+  scan_bmw: Cmd<{ device: string; clear: boolean }, void>;
+  // protocol: the key of the unit's row ("ds2", "kwp2000", "bmw-fast").
+  clear_bmw_unit: Cmd<{ device: string; address: number; protocol: string }, void>;
+
   // --- Knowledge (core data, answered directly) --------------------------------
   lookup_dtc: Cmd<{ code: string; brand: string }, DtcInfo>;
   locate_dtc: Cmd<{ code: string }, ZoneInfo>;
@@ -317,6 +325,14 @@ export interface Events {
   uds_ecu_result: { row: UdsEcuRow };
   uds_scan_finished: { present: number; withFaults: number; cancelled: boolean; note: string };
   uds_clear_result: { name: string; ok: boolean; message: string };
+  // BMW on the K-line: index counts every address and protocol of the
+  // plan; error says why the scan could not run at all.
+  bmw_scan_started: { total: number };
+  bmw_scan_progress: { index: number; total: number; name: string; protocol: string; address: number };
+  bmw_unit: { row: BmwUnitRow };
+  bmw_scan_finished: { present: number; withFaults: number; cancelled: boolean; error: string };
+  // remaining: entries still there after reading back.
+  bmw_clear_result: { address: number; protocol: string; ok: boolean; remaining: number; error: string };
   // Command line (main.cpp): the page of --page once a connection has
   // settled, and --report asking the interface for the document.
   cli_page: { page: string };

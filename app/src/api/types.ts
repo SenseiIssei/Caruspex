@@ -278,6 +278,29 @@ export interface EcuScanRow {
   note: string;
 }
 
+// BMW E series on the K-line (worker/bmw.rs).
+export interface BmwFaultRow {
+  // "0x2A" (DS2) or "0x2A82" (KWP2000); BMW has no public text table.
+  code: string;
+  // Present right now; null when the unit does not say (DS2).
+  present: boolean | null;
+  // The other bytes of the entry as hex.
+  detail: string;
+  text: string;
+}
+
+export interface BmwUnitRow {
+  address: number;
+  // "ds2", "kwp2000", "bmw-fast": what clear_bmw_unit gets back.
+  protocol: string;
+  protocolLabel: string;
+  name: string;
+  identification: string;
+  faultsRead: boolean;
+  faults: BmwFaultRow[];
+  note: string;
+}
+
 export interface MonitorRow {
   name: string;
   component: string;
@@ -871,6 +894,8 @@ export interface VehicleDiagnosisInfo {
   engineCodes: { petrol: string[]; diesel: string[]; source: string } | null;
   diagnosisText: string;
   kklPossible: boolean;
+  // An E-series BMW on the K-line (DS2, KWP2000): the BMW page.
+  bmwKlinePossible: boolean;
   protocolOrder: string;
 }
 

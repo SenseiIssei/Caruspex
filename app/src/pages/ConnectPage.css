@@ -115,6 +115,7 @@
 /* --- Connect button and state ---------------------------------------------- */
 
 .connect-button { min-height: 48px; width: 100%; font-size: 15px; }
+.connect-bmw { align-self: flex-start; max-width: 100%; }
 .connect-button.pulse:not(:disabled) { animation: connect-glow 2.4s ease-in-out infinite; }
 @keyframes connect-glow {
   0%, 100% { box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 22%, transparent); }

@@ -6,8 +6,11 @@
 //! [`caruspex_link::ByteStream`] (a KKL cable or a simulated control unit)
 //! and hand it back with `into_stream`. KWP2000 over VAG TP 2.0 on CAN
 //! ([`vag_tp20::VagTp20`]) owns a [`caruspex_link::MessageLink`] instead.
+//! BMW's E series on the K-line (DS2, KWP2000 in BMW style, BMW-FAST) is
+//! [`bmw_kline::BmwKLine`].
 #![forbid(unsafe_code)]
 
+pub mod bmw_kline;
 pub mod ecu_address;
 pub mod j1939;
 pub mod kwp1281;
@@ -17,6 +20,7 @@ pub mod uds;
 pub mod vag_kline;
 pub mod vag_tp20;
 
+pub use bmw_kline::{BmwFault, BmwKLine, BmwProtocol, BmwUnit};
 pub use ecu_address::{EcuRole, ecu_display_name, ecu_role, ecu_role_name};
 pub use j1939::{J1939Session, J1939Unit, UnitFaults};
 pub use kwp1281::{Ecu, KLineLog, Kwp1281, Kwp1281Fault, MeasuringValue, decode_measurement};

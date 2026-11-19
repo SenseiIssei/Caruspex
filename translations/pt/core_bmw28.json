@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " O Caruspex chega a todas as centralinas com um cabo K+DCAN no modo K-Line ou um cabo KKL (DS2, KWP2000 ao estilo da BMW).",
+ "c-bmw28-2": " Com um adaptador da ficha redonda para uma tomada OBD e um cabo K+DCAN ou KKL, o Caruspex lê as centralinas por DS2.",
+ "c-bmw28-3": "Resposta de outro endereço: ",
+ "c-bmw28-4": "K-Line da BMW via %1",
+ "c-bmw28-5": "Específico da BMW, o texto só existe com os dados do fabricante",
+ "c-bmw28-6": "A K-Line da BMW precisa de um cabo K+DCAN com o interruptor em K-Line ou de um cabo KKL numa porta COM.",
+ "c-bmw28-7": "O Caruspex não envia este pedido: só lê e apaga avarias.",
+ "c-bmw28-8": "Resposta DS2 com comprimento errado: ",
+ "c-bmw28-9": "Estrutura desta memória de avarias desconhecida, os dados em bruto estão ao lado.",
+ "c-bmw28-10": "O cabo não se ouve a si próprio. O interruptor do cabo K+DCAN está em K-Line e o cabo bem encaixado na tomada? Um cabo KKL é alimentado pela tomada, por isso ignição ligada.",
+ "c-bmw28-11": "Não é possível mudar a linha para ",
+ "c-bmw28-12": "Resposta inesperada: "
+}

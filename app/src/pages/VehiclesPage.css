@@ -67,3 +67,5 @@
 .vehicles-diagnosis { margin: 4px 0 0; line-height: 1.55; }
 .vehicles-line { margin: 0; }
 .vehicles-detail .btn.primary { min-height: 42px; max-width: 100%; }
+/* The way to the BMW page next to "connect", below it when narrow. */
+.vehicles-detail .vehicles-bmw { min-height: 42px; max-width: 100%; margin: 8px 0 0; margin-inline-start: 8px; }

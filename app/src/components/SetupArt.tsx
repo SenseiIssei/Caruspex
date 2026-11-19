@@ -4,7 +4,7 @@
 // dark, light and high contrast; no photos.
 import type { ReactNode } from "react";
 
-export type AdapterKind = "usb" | "bluetooth" | "wifi" | "enet" | "kkl";
+export type AdapterKind = "usb" | "bluetooth" | "wifi" | "enet" | "kkl" | "kdcan";
 
 const LINE = { fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
@@ -81,6 +81,18 @@ export function AdapterArt({ kind }: { kind: AdapterKind }) {
           <path d="M52 41 C62 41 64 50 70 50" {...LINE} />
           <rect x={70} y={43} width={20} height={14} rx={4} {...LINE} fill="var(--surface-high)" />
           <path d="M90 50 C96 50 92 63 98 63" {...LINE} />
+          <UsbPlug x={98} y={57} />
+        </>
+      ) : null}
+      {kind === "kdcan" ? (
+        <>
+          <ObdPlug x={8} y={30} />
+          {/* The box with its slide switch, set to the K-line side. */}
+          <path d="M52 41 C60 41 62 47 66 47" {...LINE} />
+          <rect x={66} y={38} width={26} height={18} rx={4} {...LINE} fill="var(--surface-high)" />
+          <rect x={71} y={44} width={16} height={6} rx={3} {...LINE} strokeWidth={1.4} />
+          <rect x={72} y={45} width={7} height={4} rx={2} fill="var(--accent)" />
+          <path d="M92 47 C98 47 92 63 98 63" {...LINE} />
           <UsbPlug x={98} y={57} />
         </>
       ) : null}

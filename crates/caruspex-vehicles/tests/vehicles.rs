@@ -398,6 +398,19 @@ fn diagnosis_is_described_honestly() {
     assert_eq!(catalog::support_for(e36, 1995, 0), ObdSupport::Manufacturer);
     assert_eq!(e36.location, SocketLocation::EngineBay);
 
+    // E series on the K-line: the BMW page; the E90 only until D-CAN came.
+    assert!(catalog::bmw_kline_possible(e36, 1995));
+    let e46 = find("BMW", "3er", 2003);
+    assert!(catalog::bmw_kline_possible(e46, 2003));
+    assert!(catalog::diagnosis_text(e46, 2003).contains("K+DCAN"));
+    let e90 = find("BMW", "3er", 2006);
+    assert_eq!(e90.generation, "E90");
+    assert!(catalog::bmw_kline_possible(e90, 2006));
+    assert!(!catalog::bmw_kline_possible(e90, 2010));
+    let f30 = find("BMW", "3er", 2015);
+    assert!(!catalog::bmw_kline_possible(f30, 2015));
+    assert!(!catalog::bmw_kline_possible(golf4, 1999));
+
     let f150 = find("Ford", "F-150", 1998);
     assert!(f150.us_market);
     assert_eq!(f150.bus, BusKind::Pwm);

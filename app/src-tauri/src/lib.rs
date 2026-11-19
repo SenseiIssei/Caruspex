@@ -356,6 +356,8 @@ pub fn run() {
             commands::stop_basic_setting,
             commands::set_basic_setting_session,
             commands::scan_all_ecus,
+            commands::scan_bmw,
+            commands::clear_bmw_unit,
             commands::read_adaptation_channel,
             commands::run_actuator_test,
             commands::kkl_ecus,

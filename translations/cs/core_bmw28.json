@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " Caruspex se dostane ke každé řídicí jednotce kabelem K+DCAN v režimu K-Line nebo kabelem KKL (DS2, KWP2000 ve stylu BMW).",
+ "c-bmw28-2": " S redukcí z kulatého konektoru na zásuvku OBD a kabelem K+DCAN nebo KKL čte Caruspex řídicí jednotky přes DS2.",
+ "c-bmw28-3": "Odpověď z jiné adresy: ",
+ "c-bmw28-4": "K-Line BMW přes %1",
+ "c-bmw28-5": "Specifické pro BMW, text jen s daty výrobce",
+ "c-bmw28-6": "K-Line BMW potřebuje kabel K+DCAN s přepínačem na K-Line nebo kabel KKL na portu COM.",
+ "c-bmw28-7": "Tento požadavek Caruspex neposílá, jen čte a maže závady.",
+ "c-bmw28-8": "Odpověď DS2 se špatnou délkou: ",
+ "c-bmw28-9": "Uspořádání této paměti závad je neznámé, surová data jsou vedle.",
+ "c-bmw28-10": "Kabel neslyší sám sebe. Je přepínač kabelu K+DCAN na K-Line a kabel pevně v zásuvce? Kabel KKL bere proud ze zásuvky, takže zapalování zapnuté.",
+ "c-bmw28-11": "Linku nelze přepnout na ",
+ "c-bmw28-12": "Neočekávaná odpověď: "
+}

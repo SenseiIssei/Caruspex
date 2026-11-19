@@ -24,7 +24,7 @@ import { isAndroid } from "../lib/platform";
 import { navigate } from "../shell/nav";
 import type { PageId } from "../shell/pages";
 import { garageStore, rememberedRoute } from "../state/garage";
-import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
+import { appendLog, applySettings, markConnecting, setProMode, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
@@ -79,13 +79,15 @@ const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.st
 const tc = translator("caruspex::ConnectHelp");
 // Texts of the truck option (SAE J1939).
 const tk = translator("caruspex::Truck");
+const tb = translator("caruspex::BmwPage");
 const MW = "caruspex::MainWindow";
 
 // The values of core/Elm327.cpp: kProtocolOrderKLineFirst, kProtocolOrderCanFirst.
 const ORDER_KLINE_FIRST = "54312678";
 const ORDER_CAN_FIRST = "67891543";
 
-type Mode = "cable" | "wifi" | "demo" | "replay" | "ble" | "enet" | "can";
+// "bmw": BMW's E series on the K-line, which goes to its own page.
+type Mode = "cable" | "wifi" | "demo" | "replay" | "ble" | "enet" | "can" | "bmw";
 
 interface BleChoice {
   id: string;
@@ -274,6 +276,8 @@ export default function ConnectPage() {
   const [year, setYear] = useState(2010);
   const [yearRange, setYearRange] = useState<[number, number]>([1980, currentYear() + 1]);
   const [profileNote, setProfileNote] = useState("");
+  // The chosen car is an E-series BMW on the K-line (catalog).
+  const [bmwKline, setBmwKline] = useState(false);
   const [socketHint, setSocketHint] = useState(defaultSocketHint);
 
   // Connection state
@@ -371,6 +375,7 @@ export default function ConnectPage() {
       );
       setSocketHint(defaultSocketHint());
       setMotoSteps([]);
+      setBmwKline(false);
       return;
     }
     let cancelled = false;
@@ -378,6 +383,7 @@ export default function ConnectPage() {
       .then((info) => {
         if (cancelled || !info) return;
         setProfileNote(info.diagnosisText);
+        setBmwKline(info.bmwKlinePossible ?? false);
         setSocketHint(tr("Bei diesem Auto: %1", info.locationText));
         setMotoSteps(info.connectSteps ?? []);
       })
@@ -474,6 +480,11 @@ export default function ConnectPage() {
       return route && fits(route) ? route : undefined;
     };
     switch (override?.mode ?? s.mode) {
+      case "bmw":
+        // The K+DCAN and KKL cable talk to the units on the BMW page.
+        setProMode(true);
+        navigate("bmw");
+        return;
       case "cable": {
         const device = override?.port ?? s.port;
         markConnecting(device ? t(MW, "Verbinde über %1 ...", device) : t(MW, "Suche den Adapter an allen Anschlüssen ..."));
@@ -704,6 +715,16 @@ export default function ConnectPage() {
     }, 7000);
   });
 
+  // --page connect-bmw: the way for BMW's E series with an E46 chosen.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "connect-bmw") return;
+    navigate("connect");
+    void call("catalog_search", { query: "BMW E46", limit: 1 }).then((found) => {
+      if (found?.[0]) setGeneration(found[0], 2003);
+      setMode("bmw");
+    });
+  });
+
   // Opens the Bluetooth choice and scans, without connecting.
   useAppEvent<string>("dev:page", (name) => {
     if (name !== "connect-ble") return;
@@ -759,7 +780,7 @@ export default function ConnectPage() {
     { value: 250, label: tk("250 kbit/s (schwarze Buchse, Typ 1)") },
     { value: 500, label: tk("500 kbit/s (grüne Buchse, Typ 2)") },
   ];
-  const truckPossible = mode !== "enet" && mode !== "replay";
+  const truckPossible = mode !== "enet" && mode !== "replay" && mode !== "bmw";
   const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
   return (
@@ -860,6 +881,8 @@ export default function ConnectPage() {
             {isAndroid ? null : <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />}
             <ModeChip mode="demo" current={mode} icon="sparkles" label={tr("Demo-Auto")} onPick={setMode} />
             <ModeChip mode="replay" current={mode} icon="play" label={tr("Aufnahme")} onPick={setMode} />
+            {/* The K-line cables need a COM port, which a phone does not have. */}
+            {isAndroid ? null : <ModeChip mode="bmw" current={mode} icon="car" label={tb("BMW E-Reihe")} onPick={setMode} />}
           </div>
 
           <div className="connect-mode fade-in" key={mode}>
@@ -973,6 +996,21 @@ export default function ConnectPage() {
               </>
             ) : null}
 
+            {mode === "bmw" ? (
+              <>
+                <div className="hint">
+                  {tb(
+                    "Für BMW der E-Reihe von etwa 1995 bis 2007 (E36, E38, E39, E46, E53, E83, E85, dazu E60, E87 und E90 bis 03/2007): ein K+DCAN-Kabel mit dem Schalter auf K-Line oder ein KKL-Kabel. Caruspex fragt damit jedes Steuergerät über DS2 oder KWP2000.",
+                  )}
+                </div>
+                <div className="hint">
+                  {tb(
+                    "Den Schalter vor dem Einstecken umlegen; K-Line ist bei den meisten Kabeln die linke Stellung und verbindet Pin 7 und 8. BMW ab 03/2007 und die F- und G-Reihe sprechen D-CAN oder Ethernet: dafür USB, WLAN oder Netzwerkkabel wählen.",
+                  )}
+                </div>
+              </>
+            ) : null}
+
             {mode === "can" ? (
               <>
                 <div className="connect-line">
@@ -1079,6 +1117,11 @@ export default function ConnectPage() {
             </label>
           </div>
           <div className="hint">{profileNote}</div>
+          {bmwKline && mode !== "bmw" ? (
+            <Button variant="ghost" icon="car" className="connect-bmw" onClick={() => setMode("bmw")}>
+              {tb("Alle Steuergeräte über K+DCAN oder KKL")}
+            </Button>
+          ) : null}
 
           <hr className="divider" />
 
@@ -1089,7 +1132,7 @@ export default function ConnectPage() {
             disabled={connecting}
             onClick={() => startConnect()}
           >
-            {connected ? tr("Trennen") : tr("Verbinden")}
+            {connected ? tr("Trennen") : mode === "bmw" ? tb("Zur BMW-Seite") : tr("Verbinden")}
           </Button>
 
           <div className="connect-state">

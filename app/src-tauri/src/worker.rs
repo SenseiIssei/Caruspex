@@ -28,6 +28,7 @@ mod adapter;
 /// needs it (android.rs has the same functions for the phone).
 #[cfg(not(target_os = "android"))]
 mod ble;
+mod bmw;
 mod connect;
 mod convert;
 mod faults;
@@ -145,6 +146,19 @@ pub enum Job {
     },
     ReadAdaptation(i32),
     ActuatorTest,
+    /// BMW E series on the K-line: every known unit; with `clear` every
+    /// unit with entries is cleared (the page asked first).
+    ScanBmw {
+        device: String,
+        clear: bool,
+    },
+    /// Clears one BMW unit found by the scan ("ds2", "kwp2000",
+    /// "bmw-fast").
+    ClearBmwUnit {
+        device: String,
+        address: i32,
+        protocol: String,
+    },
     ApplySettings(AppSettings),
     /// Trucks over SAE J1939 for the connect jobs that follow: the bit rate
     /// in kbit/s (250, 500, or 0 for both in turn); `None` for cars.
@@ -256,6 +270,9 @@ pub struct Worker {
     /// While the remembered way is tried quietly: a failure is only noted
     /// here instead of reported.
     quiet: Option<Option<String>>,
+    /// The simulated BMWs of the BMW page, kept so a cleared fault memory
+    /// stays cleared until the program ends.
+    bmw_sims: Vec<(caruspex_demo::bmw::BmwCar, caruspex_demo::bmw::BmwSimLine)>,
     /// Connected to a truck: how its J1939 bus is reached.
     truck: Option<TruckLink>,
     /// What was heard on the J1939 bus, and the tester's address.
@@ -292,6 +309,7 @@ impl Worker {
             route: ConnectRoute::default(),
             prefer_protocol: String::new(),
             quiet: None,
+            bmw_sims: Vec::new(),
             truck: None,
             truck_session: caruspex_protocols::J1939Session::new(),
             truck_request: None,
@@ -538,6 +556,12 @@ impl Worker {
             } => self.scan_all_ecus(&device, clear_attempts),
             Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
             Job::ActuatorTest => self.run_actuator_test(),
+            Job::ScanBmw { device, clear } => self.scan_bmw(&device, clear),
+            Job::ClearBmwUnit {
+                device,
+                address,
+                protocol,
+            } => self.clear_bmw_unit(&device, address, &protocol),
             Job::ApplySettings(values) => self.apply_settings(values),
             Job::SetTruck(rate) => self.truck_request = rate,
             Job::Shutdown => self.shutdown(),
