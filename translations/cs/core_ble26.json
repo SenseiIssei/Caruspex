@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android nespustil vyhledávání Bluetooth. Vypněte a znovu zapněte Bluetooth a hledejte znovu.",
+ "c-ble26-2": "Až do Androidu 11 najde vyhledávání adaptéry Bluetooth LE jen s přístupem k poloze. Povolte ho výše; spárované klasické adaptéry fungují i bez něj.",
+ "c-ble26-3": "Až do Androidu 11 hledá Android adaptéry Bluetooth LE jen se zapnutou polohou. Zapněte ji v rychlém nastavení a hledejte znovu."
+}

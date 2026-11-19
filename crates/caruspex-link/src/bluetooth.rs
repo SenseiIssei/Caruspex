@@ -16,6 +16,9 @@ pub struct BleDevice {
     pub low_energy: bool,
     /// Offers classic Bluetooth (RFCOMM serial port).
     pub classic: bool,
+    /// The known adapter profile the device advertised in the scan
+    /// ([`crate::ble_profile::advertised_profile`]), empty if none.
+    pub profile: String,
 }
 
 /// Bit mask for passing the two flags around: 1 = LE, 2 = classic.
@@ -140,6 +143,7 @@ mod tests {
             score,
             low_energy: true,
             classic: false,
+            profile: String::new(),
         }
     }
 
@@ -210,6 +214,7 @@ mod tests {
             score: 0,
             low_energy: true,
             classic: false,
+            profile: "FFF0".into(),
         }];
         let classic = vec![
             BleDevice {
@@ -234,6 +239,7 @@ mod tests {
         assert_eq!(found[0].score, 4);
         assert_eq!(bluetooth_kinds(&found[0]), 3);
         assert_eq!(found[0].rssi, -60);
+        assert_eq!(found[0].profile, "FFF0");
         assert_eq!(bluetooth_kinds(&found[1]), 2);
     }
 

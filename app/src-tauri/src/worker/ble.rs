@@ -9,15 +9,7 @@ use crate::rows::BleDeviceRow;
 pub fn scan(milliseconds: i32) -> (Vec<BleDeviceRow>, String) {
     match scan_bluetooth_devices(milliseconds.max(0) as u64) {
         Ok(devices) => (
-            devices
-                .iter()
-                .map(|d| BleDeviceRow {
-                    id: d.id.clone(),
-                    name: d.name.clone(),
-                    score: d.score,
-                    kinds: bluetooth_kinds(d),
-                })
-                .collect(),
+            devices.iter().map(BleDeviceRow::from).collect(),
             String::new(),
         ),
         Err(error) => (Vec::new(), error),

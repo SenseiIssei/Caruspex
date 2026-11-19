@@ -941,6 +941,10 @@ export interface BleDeviceRow {
   score: number;
   // 1 = Bluetooth LE, 2 = classic, 3 = both.
   kinds: number;
+  // Signal strength in dBm, 0 when unknown (paired classic devices).
+  rssi: number;
+  // The known adapter profile the device advertised ("FFF0", "vLinker"), empty if none.
+  profile: string;
 }
 
 export interface J2534DeviceRow {
@@ -977,6 +981,8 @@ export interface BluetoothAccess {
   needsPermission: boolean;
   granted: boolean;
   enabled: boolean;
+  // Android up to 11: the Bluetooth LE search needs the location, which is not allowed yet.
+  locationNeeded: boolean;
 }
 
 export interface UpdateInfo {

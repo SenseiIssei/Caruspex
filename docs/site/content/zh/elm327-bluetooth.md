@@ -4,7 +4,7 @@
 
 ## 低功耗蓝牙（Bluetooth LE）
 
-较新的适配器，例如 Vgate iCar Pro BLE、vLinker、OBDLink CX 和 Veepeak BLE，使用低功耗蓝牙。它们**不需要配对**：在 **连接** 页面选择 **蓝牙**，点击 **搜索蓝牙设备**，然后从列表中选出适配器。这在 Windows、Linux 和 macOS 上都可以用。
+较新的适配器，例如 Vgate iCar Pro BLE、vLinker、OBDLink CX 和 Veepeak BLE，使用低功耗蓝牙。它们**不需要配对**：在 **连接** 页面选择 **蓝牙**，点击 **搜索蓝牙设备**，然后从列表中选出适配器。这在 Windows、Linux、macOS 和 Android 上都可以用。
 
 ## 经典蓝牙
 
@@ -14,6 +14,12 @@
 2. 在 Caruspex 中选择 **蓝牙**，再选出已配对的适配器；列表会注明设备是 LE、经典还是两者都支持。
 
 在 Windows 和 Linux 上，Caruspex 会直接连接已配对的经典蓝牙适配器。另外，Windows 也会为适配器创建一个 COM 端口，用法和[通过 USB 连接 ELM327](elm327-usb.md)一样。在 macOS 上，只有系统为经典蓝牙适配器提供串口时它才能用；在那里，低功耗蓝牙适配器是更好的选择。
+
+## 在 Android 上
+
+- 低功耗蓝牙适配器在这里同样不需要配对：选择 **蓝牙** 并搜索，列表会显示每个设备的信号强度。
+- 经典蓝牙适配器只需在 Android 设置中配对一次，之后就会出现在列表中。
+- 从 Android 12 起，系统会询问一次是否允许访问附近的设备。在 Android 11 及更早版本上，只有允许 Caruspex 使用位置信息并且位置信息已开启，搜索才能找到低功耗蓝牙适配器；Caruspex 不会读取位置。已配对的经典蓝牙适配器无需此权限。
 
 ## 小贴士
 

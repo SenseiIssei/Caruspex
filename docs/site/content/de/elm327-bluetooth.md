@@ -4,7 +4,7 @@ Kleine Stecker ohne Kabel. Es gibt zwei Arten von Bluetooth, und Caruspex sprich
 
 ## Bluetooth LE
 
-Neuere Adapter wie Vgate iCar Pro BLE, vLinker, OBDLink CX und Veepeak BLE nutzen Bluetooth Low Energy. Sie müssen **nicht gekoppelt** werden: Auf der Seite **Verbinden** **Bluetooth** wählen, auf **Nach Bluetooth-Geräten suchen** klicken und den Adapter aus der Liste nehmen. Das geht unter Windows, Linux und macOS.
+Neuere Adapter wie Vgate iCar Pro BLE, vLinker, OBDLink CX und Veepeak BLE nutzen Bluetooth Low Energy. Sie müssen **nicht gekoppelt** werden: Auf der Seite **Verbinden** **Bluetooth** wählen, auf **Nach Bluetooth-Geräten suchen** klicken und den Adapter aus der Liste nehmen. Das geht unter Windows, Linux, macOS und Android.
 
 ## Klassisches Bluetooth
 
@@ -14,6 +14,12 @@ Neuere Adapter wie Vgate iCar Pro BLE, vLinker, OBDLink CX und Veepeak BLE nutze
 2. In Caruspex **Bluetooth** wählen und den gekoppelten Adapter nehmen; die Liste sagt, ob ein Gerät LE, klassisch oder beides kann.
 
 Unter Windows und Linux verbindet sich Caruspex direkt mit gekoppelten klassischen Adaptern. Alternativ legt Windows einen COM-Port für den Adapter an, der wie [ELM327 über USB](elm327-usb.md) funktioniert. Unter macOS gehen klassische Bluetooth-Adapter nur, wenn das System einen seriellen Anschluss für sie anbietet; Adapter mit Bluetooth LE sind dort die bessere Wahl.
+
+## Auf Android
+
+- Adapter mit Bluetooth LE brauchen auch hier keine Kopplung: **Bluetooth** wählen und suchen; die Liste zeigt die Signalstärke jedes Geräts.
+- Klassische Adapter einmal in den Android-Einstellungen koppeln, danach stehen sie in der Liste.
+- Ab Android 12 fragt das System einmal nach dem Zugriff auf Geräte in der Nähe. Bis Android 11 findet die Suche Adapter mit Bluetooth LE nur, wenn Caruspex den Standort verwenden darf und der Standort eingeschaltet ist; Caruspex liest ihn nicht. Gekoppelte klassische Adapter gehen auch ohne.
 
 ## Tipps
 

@@ -803,6 +803,10 @@ pub struct BluetoothAccess {
     pub needs_permission: bool,
     pub granted: bool,
     pub enabled: bool,
+    /// Android up to 11: a Bluetooth LE search needs the location, which is
+    /// not allowed yet. Classic adapters work without it.
+    #[serde(default)]
+    pub location_needed: bool,
 }
 
 impl Default for BluetoothAccess {
@@ -812,6 +816,7 @@ impl Default for BluetoothAccess {
             needs_permission: false,
             granted: true,
             enabled: true,
+            location_needed: false,
         }
     }
 }
@@ -826,7 +831,8 @@ pub async fn bluetooth_access() -> Result<BluetoothAccess> {
     Ok(BluetoothAccess::default())
 }
 
-/// Shows the system question for Bluetooth (Android 12 and newer).
+/// Shows the system question for Bluetooth (Android 12 and newer), or up
+/// to Android 11 the one for the location the Bluetooth LE search needs.
 #[tauri::command]
 pub async fn request_bluetooth_access() -> Result<BluetoothAccess> {
     #[cfg(target_os = "android")]

@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android no inició la búsqueda de Bluetooth. Apaga y vuelve a encender el Bluetooth y busca de nuevo.",
+ "c-ble26-2": "Hasta Android 11, la búsqueda solo encuentra adaptadores Bluetooth LE con acceso a la ubicación. Permítelo arriba; los adaptadores clásicos emparejados funcionan sin él.",
+ "c-ble26-3": "Hasta Android 11, Android solo busca adaptadores Bluetooth LE si la ubicación está activada. Actívala en los ajustes rápidos y busca de nuevo."
+}

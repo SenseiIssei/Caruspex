@@ -4,7 +4,7 @@ Kablosuz küçük soketler. İki tür Bluetooth vardır ve Caruspex ikisini de k
 
 ## Bluetooth LE
 
-Vgate iCar Pro BLE, vLinker, OBDLink CX ve Veepeak BLE gibi yeni adaptörler Bluetooth Low Energy kullanır. **Eşleştirme gerekmez**: **Bağlan** sayfasında **Bluetooth** seçin, **Bluetooth cihazlarını ara** düğmesine tıklayın ve listeden adaptörü seçin. Bu Windows, Linux ve macOS'ta çalışır.
+Vgate iCar Pro BLE, vLinker, OBDLink CX ve Veepeak BLE gibi yeni adaptörler Bluetooth Low Energy kullanır. **Eşleştirme gerekmez**: **Bağlan** sayfasında **Bluetooth** seçin, **Bluetooth cihazlarını ara** düğmesine tıklayın ve listeden adaptörü seçin. Bu Windows, Linux, macOS ve Android'de çalışır.
 
 ## Klasik Bluetooth
 
@@ -14,6 +14,12 @@ Eski ve birçok ucuz adaptör, seri profilli klasik Bluetooth kullanır.
 2. Caruspex'te **Bluetooth** seçin ve eşleştirilmiş adaptörü seçin; liste bir cihazın LE mi, klasik mi yoksa ikisi birden mi olduğunu söyler.
 
 Windows ve Linux'ta Caruspex eşleştirilmiş klasik adaptörlere doğrudan bağlanır. Alternatif olarak Windows adaptör için bir COM portu oluşturur; bu da [USB üzerinden ELM327](elm327-usb.md) gibi çalışır. macOS'ta klasik Bluetooth adaptörleri yalnızca sistem onlar için bir seri port sunarsa çalışır; orada Bluetooth LE'li adaptörler daha iyi bir seçimdir.
+
+## Android'de
+
+- Bluetooth LE adaptörleri burada da eşleştirme gerektirmez: **Bluetooth** seçin ve arayın; liste her cihazın sinyal gücünü gösterir.
+- Klasik adaptörler Android ayarlarında bir kez eşleştirilir, sonra listede görünür.
+- Android 12 ve sonrasında sistem bir kez yakındaki cihazlara erişim ister. Android 11'e kadar arama, Bluetooth LE adaptörlerini yalnızca Caruspex konumu kullanabiliyorsa ve konum açıksa bulur; Caruspex konumu okumaz. Eşleştirilmiş klasik adaptörler konum olmadan da çalışır.
 
 ## İpuçları
 

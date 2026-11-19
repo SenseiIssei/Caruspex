@@ -34,22 +34,32 @@ const tr = translator("caruspex::ConnectPage");
 
 // Texts of the Android app.
 const ta = translator("caruspex::Android");
+// Texts that came with Bluetooth LE on Android.
+const tb = translator("caruspex::Bluetooth");
 
 // Android 12 and newer: before the system asks for "nearby devices", the
-// page says why, and where to allow it later when it was refused.
-function BluetoothPermission({ refused, onAllow }: { refused: boolean; onAllow: () => void }) {
+// page says why, and where to allow it later when it was refused. Up to
+// Android 11 the same for the location, which only the Bluetooth LE search
+// needs there.
+function BluetoothPermission({ refused, location, onAllow }: { refused: boolean; location?: boolean; onAllow: () => void }) {
   return (
     <div className="connect-permission">
       <div className="connect-permission-head">
         <Icon name="bluetooth" size={18} />
-        <span>{ta("Zugriff auf Geräte in der Nähe")}</span>
+        <span>{location ? ta("Standort für Bluetooth LE") : ta("Zugriff auf Geräte in der Nähe")}</span>
       </div>
       <div className="subtle">
-        {ta(
-          "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
-            "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
-            "liest keinen Standort und schickt nichts weg.",
-        )}
+        {location
+          ? ta(
+              "Bis Android 11 findet die Suche Adapter mit Bluetooth LE nur, wenn Caruspex den Standort " +
+                "verwenden darf. Caruspex liest ihn nicht und schickt nichts weg. Gekoppelte klassische " +
+                "Adapter gehen auch ohne.",
+            )
+          : ta(
+              "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
+                "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
+                "liest keinen Standort und schickt nichts weg.",
+            )}
       </div>
       {refused ? (
         <div className="hint">
@@ -230,19 +240,15 @@ export default function ConnectPage() {
   // Bluetooth
   const [ble, setBle] = useState(initialBle);
   const [bleScanning, setBleScanning] = useState(false);
+  // The same on the phone: Bluetooth LE through Android's own GATT, classic
+  // adapters once paired in the settings.
   const [bleNote, setBleNote] = useState(() =>
-    isAndroid
-      ? ta(
-          "Klassische Bluetooth-Adapter einmal in den Android-Einstellungen koppeln, die PIN ist " +
-            "meist 1234 oder 0000, danach stehen sie hier in der Liste. Adapter mit Bluetooth LE " +
-            "folgen in einer späteren Version.",
-        )
-      : tr(
-          "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
-            "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
-            "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
-            "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
-        ),
+    tr(
+      "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
+        "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
+        "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
+        "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
+    ),
   );
   // Android: may the app use Bluetooth, and whether the user was asked.
   const [btAccess, setBtAccess] = useState<BluetoothAccess | null>(null);
@@ -577,6 +583,9 @@ export default function ConnectPage() {
       let label = d.name ? d.name : tr("Unbenanntes Gerät (%1)", d.id);
       label += `  ·  ${kind === 2 ? tr("klassisch") : kind === 3 ? tr("LE und klassisch") : tr("LE")}`;
       if (adapter) label += `  ·  ${tr("OBD-Adapter")}`;
+      // A known serial service is a hint only: lamps use the same modules.
+      else if (d.profile) label += `  ·  ${tb("Serieller Dienst %1", d.profile)}`;
+      if (d.rssi) label += `  ·  ${d.rssi} dBm`;
       items.push({ id: d.id, name: d.name, kinds: kind, label });
     }
     setBle((before) => {
@@ -738,6 +747,7 @@ export default function ConnectPage() {
     if (access.granted) scanBle();
   };
   const btBlocked = isAndroid && !!btAccess && btAccess.needsPermission && !btAccess.granted;
+  const locationNeeded = isAndroid && !btBlocked && !!btAccess?.locationNeeded;
 
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
@@ -923,6 +933,8 @@ export default function ConnectPage() {
             ) : null}
 
             {mode === "ble" && btBlocked ? <BluetoothPermission refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
+
+            {mode === "ble" && locationNeeded ? <BluetoothPermission location refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
 
             {mode === "ble" && !btBlocked ? (
               <>
