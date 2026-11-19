@@ -14,10 +14,11 @@ import { useAppEvent } from "../lib/hooks";
 import { emitApp } from "../lib/store";
 import { bodyStyleFor, identifyGeneration } from "../lib/vehicleIdentity";
 import { navigate } from "../shell/nav";
-import { useSession } from "../state/session";
+import { setProMode, useSession } from "../state/session";
 import "./VehiclesPage.css";
 
 const tr = translator("caruspex::VehiclesPage");
+const tb = translator("caruspex::BmwPage");
 
 // ObdSupport: 0 None, 1 Manufacturer, 2 Kkl, 3 Partial, 4 Full.
 function supportTone(support: number): string {
@@ -466,6 +467,18 @@ export default function VehiclesPage() {
               >
                 {tr("Mit diesem Auto verbinden")}
               </Button>
+              {detail.diagnosis.bmwKlinePossible ? (
+                <Button
+                  icon="cable"
+                  className="vehicles-bmw"
+                  onClick={() => {
+                    setProMode(true);
+                    navigate("bmw");
+                  }}
+                >
+                  {tb("Alle Steuergeräte über K+DCAN oder KKL")}
+                </Button>
+              ) : null}
             </div>
           </Card>
         ) : null}

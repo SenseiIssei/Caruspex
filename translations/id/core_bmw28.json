@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " Caruspex menjangkau setiap unit kontrol dengan kabel K+DCAN dalam mode K-Line atau kabel KKL (DS2, KWP2000 gaya BMW).",
+ "c-bmw28-2": " Dengan adaptor dari colokan bundar ke soket OBD dan kabel K+DCAN atau KKL, Caruspex membaca unit kontrol lewat DS2.",
+ "c-bmw28-3": "Jawaban dari alamat lain: ",
+ "c-bmw28-4": "K-Line BMW lewat %1",
+ "c-bmw28-5": "Khusus BMW, teksnya hanya ada di data pabrikan",
+ "c-bmw28-6": "K-Line BMW memerlukan kabel K+DCAN dengan sakelar di K-Line atau kabel KKL di port COM.",
+ "c-bmw28-7": "Caruspex tidak mengirim permintaan ini, ia hanya membaca dan menghapus kerusakan.",
+ "c-bmw28-8": "Jawaban DS2 dengan panjang yang salah: ",
+ "c-bmw28-9": "Susunan memori kerusakan ini tidak diketahui, data mentahnya ada di sebelahnya.",
+ "c-bmw28-10": "Kabel tidak mendengar dirinya sendiri. Apakah sakelar kabel K+DCAN di posisi K-Line dan kabel terpasang kuat di soket? Kabel KKL mendapat daya dari soket, jadi kunci kontak harus menyala.",
+ "c-bmw28-11": "Jalur tidak dapat dialihkan ke ",
+ "c-bmw28-12": "Jawaban tak terduga: "
+}

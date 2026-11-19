@@ -1,0 +1,62 @@
+[
+ {
+  "id": "c-bmw28-1",
+  "de": " Alle Steuergeräte erreicht Caruspex mit einem K+DCAN-Kabel im K-Line-Modus oder einem KKL-Kabel (DS2, KWP2000 nach BMW-Art).",
+  "en": " Caruspex reaches every control unit with a K+DCAN cable in K-line mode or a KKL cable (DS2, KWP2000 in BMW style)."
+ },
+ {
+  "id": "c-bmw28-2",
+  "de": " Mit einem Adapter vom Rundstecker auf die OBD-Buchse und einem K+DCAN- oder KKL-Kabel liest Caruspex die Steuergeräte über DS2.",
+  "en": " With an adapter from the round plug to an OBD socket and a K+DCAN or KKL cable Caruspex reads the control units over DS2."
+ },
+ {
+  "id": "c-bmw28-3",
+  "de": "Antwort von einer anderen Adresse: ",
+  "en": "Answer from another address: "
+ },
+ {
+  "id": "c-bmw28-4",
+  "de": "BMW-K-Line über %1",
+  "en": "BMW K-line via %1"
+ },
+ {
+  "id": "c-bmw28-5",
+  "de": "BMW-spezifisch, Text nur mit Herstellerdaten",
+  "en": "BMW specific, text only with manufacturer data"
+ },
+ {
+  "id": "c-bmw28-6",
+  "de": "Für die BMW-K-Line braucht es ein K+DCAN-Kabel mit Schalter auf K-Line oder ein KKL-Kabel an einem COM-Anschluss.",
+  "en": "BMW's K-line needs a K+DCAN cable switched to K-line or a KKL cable on a COM port."
+ },
+ {
+  "id": "c-bmw28-7",
+  "de": "Diese Anfrage schickt Caruspex nicht, es liest nur und löscht Fehler.",
+  "en": "Caruspex does not send this request, it only reads and clears faults."
+ },
+ {
+  "id": "c-bmw28-8",
+  "de": "DS2-Antwort mit falscher Länge: ",
+  "en": "DS2 answer with a wrong length: "
+ },
+ {
+  "id": "c-bmw28-9",
+  "de": "Aufbau dieses Fehlerspeichers unbekannt, die Rohdaten stehen daneben.",
+  "en": "Layout of this fault memory unknown, the raw data is next to it."
+ },
+ {
+  "id": "c-bmw28-10",
+  "de": "Das Kabel hört sich selbst nicht. Steht der Schalter des K+DCAN-Kabels auf K-Line, und steckt es fest in der Buchse? Ein KKL-Kabel braucht Strom von der Buchse, also Zündung an.",
+  "en": "The cable does not hear itself. Is the K+DCAN cable switched to K-line and firmly in the socket? A KKL cable needs power from the socket, so ignition on."
+ },
+ {
+  "id": "c-bmw28-11",
+  "de": "Die Leitung lässt sich nicht auf ",
+  "en": "The line cannot be switched to "
+ },
+ {
+  "id": "c-bmw28-12",
+  "de": "Unerwartete Antwort: ",
+  "en": "Unexpected answer: "
+ }
+]

@@ -59,6 +59,13 @@
 .scan-table td.bad { color: var(--bad); font-weight: 600; }
 .scan-table .placeholder td { color: var(--text-faint); text-align: center; padding: 28px 10px; }
 
+/* --- BMW E series on the K-line ---------------------------------------------------------- */
+
+.bmw-steps { margin: 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 4px; white-space: normal; }
+.bmw-table td.bmw-action { width: 1%; white-space: nowrap; text-align: end; }
+.bmw-table td.bmw-action .btn { min-height: 30px; }
+.bmw-address, .bmw-detail { font-family: var(--font-mono); font-size: 12px; font-weight: 400; }
+
 /* --- Throttle -------------------------------------------------------------------------- */
 
 .throttle-gauges { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }

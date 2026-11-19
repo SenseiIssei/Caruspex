@@ -17,6 +17,7 @@ import { navigate } from "./nav";
 import "./SetupAssistant.css";
 
 const tu = translator("caruspex::Usability");
+const tb = translator("caruspex::BmwPage");
 
 // What ConnectPage does with the result (app event "connect:setup").
 export interface SetupChoice {
@@ -52,6 +53,11 @@ const KINDS: { kind: AdapterKind; title: () => string; text: () => string }[] = 
     title: () => tu("KKL-Kabel"),
     text: () => tu("USB-Kabel ohne ELM327, für ältere VW, Audi, Seat und Skoda."),
   },
+  {
+    kind: "kdcan",
+    title: () => tb("K+DCAN-Kabel"),
+    text: () => tb("USB-Kabel mit Schalter, für BMW der E-Reihe bis 2007 auf K-Line gestellt."),
+  },
 ];
 
 const MODE_OF: Record<AdapterKind, SetupChoice["mode"]> = {
@@ -60,7 +66,11 @@ const MODE_OF: Record<AdapterKind, SetupChoice["mode"]> = {
   wifi: "wifi",
   enet: "enet",
   kkl: "cable",
+  kdcan: "cable",
 };
+
+// The cables that talk to the control units directly, on their own page.
+const OWN_PAGE: Partial<Record<AdapterKind, "scan" | "bmw">> = { kkl: "scan", kdcan: "bmw" };
 
 function currentYear(): number {
   return new Date().getFullYear();
@@ -148,10 +158,11 @@ function SetupDialog() {
 
   const finish = (choice: Partial<SetupChoice>) => {
     closeSetup();
-    if (kind === "kkl" && choice.mode !== "demo") {
-      // The KKL cable talks to the control units directly, on its own page.
+    const own = OWN_PAGE[kind];
+    if (own && choice.mode !== "demo") {
+      // KKL and K+DCAN talk to the control units directly, on their own page.
       setProMode(true);
-      navigate("scan");
+      navigate(own);
       return;
     }
     const full: SetupChoice = { mode: MODE_OF[kind], generation, year, connect: false, ...choice };
@@ -193,8 +204,8 @@ function SetupDialog() {
               {t(ACCESS, "Weiter")}
             </Button>
           ) : (
-            <Button variant="primary" icon={kind === "kkl" ? "cable" : "plug"} onClick={() => finish({ connect: true })}>
-              {kind === "kkl" ? tu("Zur KKL-Seite") : tu("Jetzt verbinden")}
+            <Button variant="primary" icon={OWN_PAGE[kind] ? "cable" : "plug"} onClick={() => finish({ connect: true })}>
+              {kind === "kkl" ? tu("Zur KKL-Seite") : kind === "kdcan" ? tb("Zur BMW-Seite") : tu("Jetzt verbinden")}
             </Button>
           )}
         </>
@@ -321,6 +332,12 @@ function SetupDialog() {
             {kind === "kkl" ? (
               <Note icon="info" tone="var(--info)">
                 {tu("Das KKL-Kabel spricht direkt mit den Steuergeräten. Das geht auf der Seite Steuergeräte über KKL, die mit dem Profimodus kommt; der wird dafür eingeschaltet.")}
+              </Note>
+            ) : kind === "kdcan" ? (
+              <Note icon="info" tone="var(--info)">
+                {tb(
+                  "Den Schalter am Kabel auf K-Line stellen. Das Kabel spricht dann auf der Seite BMW über K-Line direkt mit den Steuergeräten; sie kommt mit dem Profimodus, der wird dafür eingeschaltet. BMW ab 03/2007 und die F- und G-Reihe gehen stattdessen über D-CAN oder ENET.",
+                )}
               </Note>
             ) : (
               <div className="subtle">

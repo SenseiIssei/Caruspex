@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " Caruspex bereikt elke regeleenheid met een K+DCAN-kabel in K-Line-modus of een KKL-kabel (DS2, KWP2000 op de manier van BMW).",
+ "c-bmw28-2": " Met een adapter van de ronde stekker naar een OBD-aansluiting en een K+DCAN- of KKL-kabel leest Caruspex de regeleenheden via DS2.",
+ "c-bmw28-3": "Antwoord van een ander adres: ",
+ "c-bmw28-4": "BMW-K-Line via %1",
+ "c-bmw28-5": "BMW-specifiek, tekst alleen met fabrieksgegevens",
+ "c-bmw28-6": "De BMW-K-Line heeft een K+DCAN-kabel met de schakelaar op K-Line of een KKL-kabel aan een COM-poort nodig.",
+ "c-bmw28-7": "Caruspex stuurt dit verzoek niet, het leest alleen en wist storingen.",
+ "c-bmw28-8": "DS2-antwoord met verkeerde lengte: ",
+ "c-bmw28-9": "Opbouw van dit foutgeheugen onbekend, de ruwe gegevens staan ernaast.",
+ "c-bmw28-10": "De kabel hoort zichzelf niet. Staat de schakelaar van de K+DCAN-kabel op K-Line en zit de kabel goed in de aansluiting? Een KKL-kabel krijgt stroom uit de aansluiting, dus contact aan.",
+ "c-bmw28-11": "De lijn kan niet worden omgezet naar ",
+ "c-bmw28-12": "Onverwacht antwoord: "
+}

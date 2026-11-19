@@ -22,6 +22,7 @@ import EcuPage from "../pages/EcuPage";
 import ScanPage from "../pages/ScanPage";
 import ThrottlePage from "../pages/ThrottlePage";
 import KklToolsPage from "../pages/KklToolsPage";
+import BmwPage from "../pages/BmwPage";
 import VehiclesPage from "../pages/VehiclesPage";
 import LexiconPage from "../pages/LexiconPage";
 import GlossaryPage from "../pages/GlossaryPage";
@@ -54,6 +55,7 @@ export type PageId =
   | "scan"
   | "throttle"
   | "kkl"
+  | "bmw"
   | "vehicles"
   | "lexicon"
   | "glossary"
@@ -95,6 +97,7 @@ export const PAGES: PageEntry[] = [
   { id: "scan", icon: "cable", label: () => t(MW, "Steuergeräte über KKL"), component: ScanPage, pro: true },
   { id: "throttle", icon: "throttle", label: () => t(MW, "Drosselklappe"), component: ThrottlePage, pro: true },
   { id: "kkl", icon: "sliders", label: () => t(MW, "Anpassung und Stellglieder"), component: KklToolsPage, pro: true },
+  { id: "bmw", icon: "car", label: () => t(MW, "BMW über K-Line"), component: BmwPage, pro: true },
   { id: "vehicles", icon: "car", label: () => t(MW, "Fahrzeuge"), section: () => t(MW, "Wissen"), component: VehiclesPage, pro: true },
   { id: "lexicon", icon: "book", label: () => t(MW, "Fehlercode-Lexikon"), component: LexiconPage, pro: true },
   { id: "glossary", icon: "help", label: () => t(US, "Glossar"), component: GlossaryPage },
