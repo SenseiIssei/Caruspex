@@ -9,6 +9,7 @@ import { sessionHandlers } from "./session";
 import { diagnoseHandlers } from "./areas/diagnose";
 import { measureHandlers } from "./areas/measure";
 import { workshopHandlers } from "./areas/workshop";
+import { kklTestHandlers } from "./areas/kklTest";
 import { usedCarHandlers } from "./areas/usedCar";
 import { knowledgeHandlers as catalogHandlers } from "./areas/knowledge";
 import { xrayHandlers } from "./areas/xray";
@@ -20,6 +21,7 @@ const handlers: PartialHandlers = {
   ...diagnoseHandlers,
   ...measureHandlers,
   ...workshopHandlers,
+  ...kklTestHandlers,
   ...catalogHandlers,
   ...xrayHandlers,
   ...usedCarHandlers,
