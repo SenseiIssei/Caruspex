@@ -301,8 +301,11 @@ fn an_answer_reaches_the_sink_quickly() {
         Duration::from_secs(2),
         settings(),
     );
+    // Under 1 ms on a desktop; the virtual macOS runners of the CI wake
+    // threads much later (15 ms seen), so the guard only catches real
+    // regressions such as a sleep in the path.
     assert!(
-        r.latency_median < Duration::from_millis(15),
+        r.latency_median < Duration::from_millis(50),
         "median {:?}",
         r.latency_median
     );
