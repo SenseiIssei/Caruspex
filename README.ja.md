@@ -8,6 +8,10 @@
 **ドキュメント：** [インストール、はじめに、各アダプターとインターフェース、プライバシー、よくある質問](https://senseiissei.github.io/Caruspex/ja/index.html)、18 言語すべてで。
 <!-- /docs -->
 
+<!-- contrib -->
+**貢献：** コード、翻訳、テストレポートを歓迎します。[CONTRIBUTING.md](CONTRIBUTING.md)（英語）をご覧ください。
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ KKL ケーブルは K-Line をそのまま通すので、Caruspex 自身がプ�
 
 ## ビルド
 
-必要なもの：安定版の Rust ツールチェーン（edition 2024、Rust 1.85 以降）、npm つきの Node 24、そしてジェネレーターと翻訳チェック用の
+必要なもの：安定版の Rust ツールチェーン（edition 2024、Rust 1.90 以降）、npm つきの Node 24、そしてジェネレーターと翻訳チェック用の
 Python 3。Linux では、画面とアダプター接続に必要なシステムパッケージも必要です
 （Debian と Ubuntu での名前）。
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` は、開発中にライブリロードつきでアプリを起動します。Tauri のウィンドウなしの
+`npm --prefix app run dev:app` は、開発中にライブリロードつきでアプリを起動します。Tauri のウィンドウなしの
 画面だけなら、内蔵のデモカーを使って普通のブラウザーで動かせます。
 
 ```bash

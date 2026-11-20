@@ -39,3 +39,5 @@ Hayır. Yalnızca güncelleme kontrolü GitHub'a en yeni sürümü sorar ve bu k
 ## Nasıl yardım edebilirim?
 
 Aracınızdan bir test raporu gönderin, bir kayıt paylaşın, hataları bildirin ya da bir çeviriyi iyileştirin: rehber [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md) dosyasıdır ve ayarlardaki **Çeviriyi iyileştir** düğmesi onu açar.
+
+Kod da memnuniyetle karşılanır: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md), Caruspex'in nasıl derleneceğini ve bir pull request için nelerin gerektiğini (İngilizce) anlatır.

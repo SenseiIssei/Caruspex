@@ -8,6 +8,10 @@
 **문서:** [설치, 첫걸음, 모든 어댑터와 인터페이스, 개인정보, 자주 묻는 질문](https://senseiissei.github.io/Caruspex/ko/index.html), 18개 언어 모두로.
 <!-- /docs -->
 
+<!-- contrib -->
+**기여하기:** 코드, 번역, 테스트 보고서를 환영합니다. [CONTRIBUTING.md](CONTRIBUTING.md)(영어)를 참고하세요.
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ KKL 케이블은 K-Line을 그대로 통과시키므로 Caruspex가 프로토콜
 
 ## 빌드
 
-필요한 것: 안정 버전 Rust 툴체인(edition 2024, Rust 1.85 이상), npm이 포함된 Node 24, 그리고 생성기와 번역 검사용
+필요한 것: 안정 버전 Rust 툴체인(edition 2024, Rust 1.90 이상), npm이 포함된 Node 24, 그리고 생성기와 번역 검사용
 Python 3. Linux에서는 화면과 어댑터 연결에 필요한 시스템 패키지도 필요합니다
 (Debian과 Ubuntu에서의 이름).
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev`는 개발하는 동안 라이브 리로드와 함께 앱을 실행합니다. Tauri 창 없이
+`npm --prefix app run dev:app`는 개발하는 동안 라이브 리로드와 함께 앱을 실행합니다. Tauri 창 없이
 화면만 일반 브라우저에서 내장 데모 차량과 함께 실행할 수도 있습니다.
 
 ```bash

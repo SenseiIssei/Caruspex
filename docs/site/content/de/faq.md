@@ -39,3 +39,5 @@ Nein. Nur die Update-Suche fragt GitHub nach der neuesten Version, und sie läss
 ## Wie kann ich helfen?
 
 Einen Testbericht vom eigenen Auto schicken, einen Mitschnitt teilen, Fehler melden oder eine Übersetzung verbessern: Die Anleitung ist [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), und der Knopf **Übersetzung verbessern** in den Einstellungen öffnet sie.
+
+Auch Code ist willkommen: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) erklärt auf Englisch, wie man Caruspex baut und was ein Pull Request braucht, mit einem kurzen deutschen Teil am Ende.

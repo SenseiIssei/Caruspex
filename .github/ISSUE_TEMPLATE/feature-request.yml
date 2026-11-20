@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest something new for Caruspex, or a better way to do something it does already.
+title: "Idea: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the idea. Suggestions in German are welcome too.
+
+        Caruspex is a reading tool. It does not code control units, write adaptation values, flash software or
+        touch the immobiliser, keys or the mileage, and requests for that are closed.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What do you want to do?
+      description: The situation and the problem, from the point of view of the person at the car.
+      placeholder: "When I check a used car, I want to see ..."
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How could Caruspex help?
+      description: What it could show or do. Screens of other tools or sketches are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: cars
+    attributes:
+      label: Which cars and adapters
+      description: Makes, models, years and adapters this is about, if it is not about every car.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: |
+        If the idea needs data (manufacturer values, control unit addresses, protocol details): where
+        does it come from, and under which licence? Only freely licensed sources can be used.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This is not about coding, writing adaptation values, flashing, the immobiliser, keys or the mileage.
+          required: true

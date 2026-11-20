@@ -39,3 +39,5 @@ No. Only the update check asks GitHub for the newest version, and it can be swit
 ## How can I help?
 
 Send a test report from your car, share a recording, report bugs, or improve a translation: the guide is [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), and the button **Improve translation** in the settings opens it.
+
+Code is welcome too: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) explains how to build Caruspex and what a pull request needs.

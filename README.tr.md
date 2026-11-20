@@ -8,6 +8,10 @@
 **Belgeler:** [kurulum, ilk adımlar, her adaptör ve arayüz, gizlilik, sık sorulan sorular](https://senseiissei.github.io/Caruspex/tr/index.html), 18 dilin hepsinde.
 <!-- /docs -->
 
+<!-- contrib -->
+**Katkıda bulunmak:** kod, çeviriler ve test raporları memnuniyetle karşılanır, bkz. [CONTRIBUTING.md](CONTRIBUTING.md) (İngilizce).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ uygulamayı ilk kez sağ tıklayıp "Aç" ile açın.
 
 ## Derleme
 
-Gereksinimler: kararlı Rust araç zinciri (edition 2024, Rust 1.85 veya daha yeni), npm'li Node 24 ve
+Gereksinimler: kararlı Rust araç zinciri (edition 2024, Rust 1.90 veya daha yeni), npm'li Node 24 ve
 üreticiler ile çeviri denetimleri için Python 3. Linux'ta arayüzün ve adaptör bağlantılarının ihtiyaç duyduğu sistem paketleri
 (Debian ve Ubuntu adlarıyla):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` siz üzerinde çalışırken uygulamayı canlı yenilemeyle başlatır. Arayüzün tek başına,
+`npm --prefix app run dev:app` siz üzerinde çalışırken uygulamayı canlı yenilemeyle başlatır. Arayüzün tek başına,
 Tauri penceresi olmadan, yerleşik demo araçla sıradan bir tarayıcıda çalışır:
 
 ```bash

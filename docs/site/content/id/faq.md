@@ -39,3 +39,5 @@ Tidak. Hanya pemeriksaan pembaruan yang menanyakan versi terbaru ke GitHub, dan 
 ## Bagaimana saya bisa membantu?
 
 Kirim laporan uji dari mobilmu, bagikan rekaman, laporkan bug, atau perbaiki terjemahan: panduannya ada di [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), dan tombol **Perbaiki terjemahan** di pengaturan membukanya.
+
+Kode juga sangat diterima: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) menjelaskan (dalam bahasa Inggris) cara membangun Caruspex dan apa yang dibutuhkan sebuah pull request.

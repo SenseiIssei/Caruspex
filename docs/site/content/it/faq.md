@@ -39,3 +39,5 @@ No. Solo il controllo degli aggiornamenti chiede a GitHub la versione più recen
 ## Come posso aiutare?
 
 Invia un rapporto di prova dalla tua auto, condividi una registrazione, segnala bug o migliora una traduzione: la guida è [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), e il pulsante **Migliora la traduzione** nelle impostazioni la apre.
+
+Anche il codice è benvenuto: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) spiega (in inglese) come compilare Caruspex e cosa serve a una pull request.

@@ -39,3 +39,5 @@ Nee. Alleen de updatecontrole vraagt GitHub naar de nieuwste versie, en die kun 
 ## Hoe kan ik helpen?
 
 Stuur een testrapport van je auto, deel een opname, meld bugs of verbeter een vertaling: de handleiding is [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), en de knop **Vertaling verbeteren** in de instellingen opent die.
+
+Code is ook welkom: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) legt (in het Engels) uit hoe je Caruspex bouwt en wat een pull request nodig heeft.

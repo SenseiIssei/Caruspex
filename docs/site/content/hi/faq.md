@@ -39,3 +39,5 @@ K-Line वाली गाड़ियाँ (यूरोप में लग�
 ## मैं कैसे मदद कर सकता हूँ?
 
 अपनी गाड़ी से टेस्ट रिपोर्ट भेजें, रिकॉर्डिंग शेयर करें, बग रिपोर्ट करें, या अनुवाद सुधारें: गाइड [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md) है, और सेटिंग्स में **अनुवाद सुधारें** बटन उसे खोलता है।
+
+कोड का भी स्वागत है: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) (अंग्रेज़ी में) बताता है कि Caruspex कैसे बनाएँ और pull request में क्या चाहिए।
