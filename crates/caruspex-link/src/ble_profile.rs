@@ -472,7 +472,7 @@ mod tests {
         assert_eq!(obd_adapter_name_score("V-LINK"), 3);
         assert_eq!(obd_adapter_name_score("Veepeak"), 3);
         assert_eq!(obd_adapter_name_score("BLE Device"), 1);
-        assert_eq!(obd_adapter_name_score("Jakobs Kopfhörer"), 0);
+        assert_eq!(obd_adapter_name_score("Meine Kopfhörer"), 0);
         assert_eq!(obd_adapter_name_score(""), 0);
     }
 
@@ -536,6 +536,6 @@ mod tests {
         // A lamp with an FFF0 module is lifted above strangers, not more.
         assert_eq!(scan_score("Govee_H6008_1A2B", Some("FFF0")), 1);
         assert_eq!(scan_score("OBDII", Some("FFF0")), 3);
-        assert_eq!(scan_score("Jakobs Kopfhörer", None), 0);
+        assert_eq!(scan_score("Meine Kopfhörer", None), 0);
     }
 }
