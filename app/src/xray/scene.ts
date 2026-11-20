@@ -11,6 +11,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { CarZone } from "../api/types";
 import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3, Wheel } from "./layout";
 import { BUSES, LAYERS, faceLine, lampOutlines } from "./layout";
+import { disposeTree } from "./dispose";
 import { contactAxles, fitShell, looksLikeGlass, looksLikeWheel, orientation, type Bounds, type ShellFit } from "./shell";
 
 export interface XrayPalette {
@@ -388,6 +389,15 @@ export class XrayScene {
   private routes = new Map<string, { curve: THREE.CatmullRomCurve3; bus: BusKind }>();
   private diagRoute: { curve: THREE.CatmullRomCurve3; bus: BusKind } | null = null;
   private packets: Packet[] = [];
+  // Every packet shares one ball and, per bus, one pair of materials: a new
+  // geometry and material per packet made the graphics driver build and
+  // throw away buffers several times a second, and compile the shader again
+  // whenever the last packet had finished.
+  private packetBall = new THREE.SphereGeometry(0.018, 12, 8);
+  private packetLooks = new Map<BusKind, { ball: THREE.MeshBasicMaterial; glow: THREE.SpriteMaterial }>();
+  // Colours of the palette as three.js colours, made once instead of in
+  // every frame.
+  private tints = new Map<string, THREE.Color>();
   private flashes = new Map<string, number>();
   // The labels with their measured size (measured once per text, so placing
   // them every frame does not make the page lay itself out again).
@@ -398,6 +408,8 @@ export class XrayScene {
   private tween: Tween | null = null;
   private raf = 0;
   private active = true;
+  // The window is minimised or covered: no frames, like a hidden page.
+  private hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
   private dirty = true;
   private last = 0;
   private hovered: string | null = null;
@@ -488,6 +500,7 @@ export class XrayScene {
     canvas.addEventListener("pointerdown", this.onPointerDown);
     canvas.addEventListener("pointerup", this.onPointerUp);
     container.addEventListener("keydown", this.onKeyDown);
+    document.addEventListener("visibilitychange", this.onVisibility);
 
     this.resize = new ResizeObserver(() => this.fit());
     this.resize.observe(container);
@@ -1104,9 +1117,9 @@ export class XrayScene {
     if (this.diagRoute && route.bus !== "kline") points.push(...this.diagRoute.curve.getSpacedPoints(24));
     points.push(...route.curve.getSpacedPoints(Math.max(16, Math.round(route.curve.getLength() * 30))));
     const curve = new THREE.CatmullRomCurve3(points, false, "centripetal", 0);
-    const color = new THREE.Color(this.palette.bus[route.bus]);
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.018, 12, 8), new THREE.MeshBasicMaterial({ color: color.clone().lerp(new THREE.Color("#ffffff"), 0.5), toneMapped: false }));
-    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: this.glow, color, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+    const look = this.packetLook(route.bus);
+    const mesh = new THREE.Mesh(this.packetBall, look.ball);
+    const glow = new THREE.Sprite(look.glow);
     glow.scale.setScalar(0.13);
     mesh.add(glow);
     mesh.renderOrder = 20;
@@ -1207,17 +1220,63 @@ export class XrayScene {
 
   setPalette(palette: XrayPalette): void {
     this.palette = palette;
+    for (const [bus, look] of this.packetLooks) this.paintPacketLook(bus, look);
     if (this.layout) this.setCar(this.layout, true);
   }
 
   setActive(active: boolean): void {
     if (this.active === active) return;
     this.active = active;
-    if (active && !this.raf) {
+    this.resume();
+  }
+
+  // Counts of the renderer (geometries, textures, shader programs), for the
+  // measurements in docs/performance.md.
+  memoryInfo(): { geometries: number; textures: number; programs: number } {
+    const { geometries, textures } = this.renderer.info.memory;
+    return { geometries, textures, programs: this.renderer.info.programs?.length ?? 0 };
+  }
+
+  private onVisibility = () => {
+    this.hidden = document.visibilityState === "hidden";
+    this.resume();
+  };
+
+  // Starts the frames again once the page is shown and the window visible.
+  private resume(): void {
+    if (this.active && !this.hidden && !this.raf && !this.disposed) {
       this.dirty = true;
       this.last = 0;
       this.raf = requestAnimationFrame(this.loop);
     }
+  }
+
+  private tint(css: string): THREE.Color {
+    let colour = this.tints.get(css);
+    if (!colour) {
+      colour = new THREE.Color(css);
+      this.tints.set(css, colour);
+    }
+    return colour;
+  }
+
+  private packetLook(bus: BusKind): { ball: THREE.MeshBasicMaterial; glow: THREE.SpriteMaterial } {
+    let look = this.packetLooks.get(bus);
+    if (!look) {
+      look = {
+        ball: new THREE.MeshBasicMaterial({ toneMapped: false }),
+        glow: new THREE.SpriteMaterial({ map: this.glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }),
+      };
+      this.paintPacketLook(bus, look);
+      this.packetLooks.set(bus, look);
+    }
+    return look;
+  }
+
+  private paintPacketLook(bus: BusKind, look: { ball: THREE.MeshBasicMaterial; glow: THREE.SpriteMaterial }): void {
+    const color = new THREE.Color(this.palette.bus[bus]);
+    look.glow.color.copy(color);
+    look.ball.color.copy(color).lerp(new THREE.Color("#ffffff"), 0.5);
   }
 
   // --- Cuts ------------------------------------------------------------------------------
@@ -1568,7 +1627,7 @@ export class XrayScene {
 
   private loop = (now: number) => {
     if (this.disposed) return;
-    if (!this.active) {
+    if (!this.active || this.hidden) {
       this.raf = 0;
       return;
     }
@@ -1598,8 +1657,8 @@ export class XrayScene {
       for (const p of [...this.packets]) {
         p.t += (dt * 2.2) / Math.max(0.5, p.length);
         if (p.t >= 1) {
+          // The ball and its materials are shared (packetLook).
           this.packetGroup.remove(p.mesh);
-          disposeTree(p.mesh);
           this.packets.splice(this.packets.indexOf(p), 1);
           this.flashes.set(p.target, performance.now());
           continue;
@@ -1611,7 +1670,7 @@ export class XrayScene {
 
     // Pulsing faults and flashing units.
     const pulse = this.reducedMotion ? 0.75 : 0.55 + 0.45 * Math.sin(now / 260);
-    const bad = new THREE.Color(this.palette.bad);
+    const bad = this.tint(this.palette.bad);
     let animating = false;
     for (const [, mesh] of this.partMeshes) {
       if (!mesh.userData.affected) continue;
@@ -1637,7 +1696,7 @@ export class XrayScene {
       const flash = this.flashes.get(key);
       const since = flash ? Math.max(0, performance.now() - flash) / 1000 : 9;
       if (since < 0.6) {
-        mat.emissive.copy(new THREE.Color(this.palette.bus[node.bus])).lerp(new THREE.Color("#ffffff"), 0.6 * (1 - since / 0.6));
+        mat.emissive.copy(this.tint(this.palette.bus[node.bus])).lerp(this.tint("#ffffff"), 0.6 * (1 - since / 0.6));
         mat.emissiveIntensity = 1.6 - since;
         animating = true;
       } else if (node.faulty) {
@@ -1645,7 +1704,7 @@ export class XrayScene {
         mat.emissiveIntensity = 0.5 + pulse * 0.9;
         animating = true;
       } else if (node.asking) {
-        mat.emissive.copy(new THREE.Color(this.palette.accent));
+        mat.emissive.copy(this.tint(this.palette.accent));
         mat.emissiveIntensity = 0.4 + pulse * 0.6;
         animating = true;
       } else {
@@ -1895,11 +1954,17 @@ export class XrayScene {
     canvas.removeEventListener("pointerdown", this.onPointerDown);
     canvas.removeEventListener("pointerup", this.onPointerUp);
     this.container.removeEventListener("keydown", this.onKeyDown);
+    document.removeEventListener("visibilitychange", this.onVisibility);
     this.container.removeEventListener("pointerdown", this.onSectionDown, true);
     canvas.removeEventListener("pointermove", this.onSectionMove);
     canvas.removeEventListener("pointerup", this.onSectionUp);
     this.controls.dispose();
     disposeTree(this.scene);
+    this.packetBall.dispose();
+    for (const look of this.packetLooks.values()) {
+      look.ball.dispose();
+      look.glow.dispose();
+    }
     this.glow.dispose();
     this.scene.environment?.dispose();
     this.renderer.dispose();
@@ -1916,20 +1981,6 @@ function merged(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   if (!out) return geos[0]!;
   for (const g of geos) g.dispose();
   return out;
-}
-
-function disposeTree(root: THREE.Object3D): void {
-  root.traverse((o) => {
-    const mesh = o as THREE.Mesh;
-    if (mesh.geometry) mesh.geometry.dispose();
-    const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
-    if (!mat) return;
-    for (const m of Array.isArray(mat) ? mat : [mat]) {
-      const map = (m as THREE.MeshBasicMaterial).map;
-      if (map) map.dispose();
-      m.dispose();
-    }
-  });
 }
 
 // Whether this computer can draw WebGL at all (not over some remote
