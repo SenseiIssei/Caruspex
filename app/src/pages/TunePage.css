@@ -1,0 +1,70 @@
+/* Tuning simulator: the "simulation only" banner, the offset table, the
+   torque and power chart, warnings and the comparison table. */
+
+.tune-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--info) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--info) 35%, transparent);
+}
+.tune-banner .icon { color: var(--info); flex: none; margin-top: 1px; }
+.tune-banner strong { display: block; margin-bottom: 2px; }
+
+.tune-conditions { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; }
+.tune-field { display: flex; flex-direction: column; gap: 6px; }
+.tune-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.table.tune-offsets td, .table.tune-offsets th { vertical-align: middle; }
+.tune-offsets .number-input { max-width: 130px; }
+
+.tune-peaks { display: flex; flex-wrap: wrap; gap: 14px 36px; align-items: flex-end; }
+.tune-peak-value { font-family: var(--font-display); font-size: 30px; font-weight: 800; line-height: 1.1; }
+.tune-unit { font-size: 15px; color: var(--text-muted); font-weight: 600; }
+.tune-delta { font-size: 16px; color: var(--good); font-weight: 700; }
+.tune-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-left: auto; color: var(--text-muted); font-size: 13px; }
+.tune-legend .swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 4px; }
+.tune-legend .swatch.torque { border-color: var(--series-1); }
+.tune-legend .swatch.power { border-color: var(--series-2); }
+.tune-legend .swatch.dashed { border-top-style: dashed; border-color: var(--text-muted); }
+
+.tune-chart { width: 100%; height: auto; min-height: 220px; display: block; margin: 8px 0; }
+.tune-grid { stroke: var(--border); stroke-width: 1; }
+.tune-axis { fill: var(--text-muted); font-size: 12px; }
+.tune-axis.torque { fill: var(--series-1); }
+.tune-axis.power { fill: var(--series-2); }
+.tune-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
+.tune-line.torque { stroke: var(--series-1); }
+.tune-line.power { stroke: var(--series-2); }
+.tune-line.stock { stroke-dasharray: 6 5; stroke-width: 1.8; opacity: 0.7; }
+
+.tune-ok { display: flex; align-items: center; gap: 8px; color: var(--good); }
+.tune-warnings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.tune-warning {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--warn);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tune-warning.note { border-left-color: var(--info); }
+.tune-warning.limit { border-left-color: var(--bad); }
+.tune-warning-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.tune-inner td:first-child { white-space: nowrap; }
+.tune-was { color: var(--text-muted); font-size: 12px; }
+
+.tune-compare { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.tune-compare-table td { white-space: nowrap; }
+.tune-dev { color: var(--text-muted); font-size: 12px; }
+.tune-example { display: flex; align-items: center; gap: 6px; color: var(--warn); font-weight: 600; }
+.tune-error { color: var(--bad); }
+
+@media (max-width: 640px) {
+  .tune-legend { margin-left: 0; }
+  .tune-peak-value { font-size: 24px; }
+}

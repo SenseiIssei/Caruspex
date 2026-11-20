@@ -22,6 +22,7 @@ history and in the v0.8.0 release.
 | caruspex-advice | plain advice: "what should I do now?" in three steps from faults, readiness, health check and live values, and the checklist of the connection assistant | i18n, data, analysis |
 | caruspex-demo | the built-in demo car: an ELM327 or an OBDLink (STN commands, MS-CAN and SW-CAN) with simulated control units, and a demo truck on SAE J1939, an injectable clock and a count of the simulated adapter time | link |
 | caruspex-pdf | a small PDF 1.4 writer without dependencies: the standard fonts (Helvetica, Courier) with WinAnsiEncoding, explicit stand-ins for characters it lacks ("?" and a note for anything else), lines, filled boxes, pages, and a flow layout with wrapped text, tables whose rows stay on one page and page numbers | |
+| caruspex-tune | the tuning simulator: a transparent full-load model of the BMW N55 (air path, turbo and intercooler, knock limit, friction, exhaust temperature, fuel system, gearbox) with plain warnings, and the comparison of recorded live values with it. Computes only: no link, no protocol, nothing that reaches a car, no map writing | i18n |
 | caruspex-cli | `caruspex_cli`, the command-line tool, with the PDF report (`report`) | all of the above |
 | app/src-tauri | the app: the worker thread, settings, garage, report, the signed updater; a library (`lib.rs`) that `main.rs` starts on the desktop and the Android project in `gen/android` loads, with USB and classic Bluetooth adapters through `android.rs` and its Kotlin plugin (see `docs/android.md`) | all of the above |
 

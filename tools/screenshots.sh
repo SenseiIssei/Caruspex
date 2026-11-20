@@ -43,4 +43,5 @@ shot battery battery 7000
 shot todo todo 8000
 shot used-car used-car-run 30000
 shot xray xray-scan 16000
+shot tune tune-demo 7000
 echo "screenshots in $out"

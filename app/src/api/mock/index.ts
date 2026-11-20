@@ -13,6 +13,7 @@ import { kklTestHandlers } from "./areas/kklTest";
 import { usedCarHandlers } from "./areas/usedCar";
 import { knowledgeHandlers as catalogHandlers } from "./areas/knowledge";
 import { xrayHandlers } from "./areas/xray";
+import { tuneHandlers } from "./areas/tune";
 
 const handlers: PartialHandlers = {
   ...appHandlers,
@@ -25,6 +26,7 @@ const handlers: PartialHandlers = {
   ...catalogHandlers,
   ...xrayHandlers,
   ...usedCarHandlers,
+  ...tuneHandlers,
 };
 
 export function createMockBackend(): Backend {

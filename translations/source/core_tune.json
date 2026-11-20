@@ -1,0 +1,162 @@
+[
+ {
+  "id": "c-tune-1",
+  "de": "%1 Nm liegen über den %2 Nm, für die ZF das 8HP45 auslegt. Meist begrenzt das Getriebesteuergerät selbst, sonst leiden Kupplungen und Wandler.",
+  "en": "%1 Nm is above the %2 Nm ZF rates the 8HP45 for. The gearbox control usually limits it by itself, otherwise clutches and converter suffer."
+ },
+ {
+  "id": "c-tune-2",
+  "de": "%1 Nm liegen über den etwa %2 Nm, die für Schaltgetriebe und Kupplung angenommen sind. Die Kupplung rutscht zuerst.",
+  "en": "%1 Nm is above the roughly %2 Nm assumed for manual gearbox and clutch. The clutch slips first."
+ },
+ {
+  "id": "c-tune-3",
+  "de": "Mit %1 Nm bleibt wenig Reserve zur Getriebegrenze von %2 Nm.",
+  "en": "At %1 Nm little reserve is left to the gearbox limit of %2 Nm."
+ },
+ {
+  "id": "c-tune-4",
+  "de": "Bei dieser Drehzahl reicht die Abgasenergie nicht für das Ladedruckziel; möglich sind nur etwa %1 bar.",
+  "en": "At this rpm the exhaust energy is not enough for the boost target; only about %1 bar is possible."
+ },
+ {
+  "id": "c-tune-5",
+  "de": "Unter %2 1/min steigt der Mitteldruck auf bis zu %1 bar (Serie etwa 17 bar). Dort wächst das Risiko der Vorentflammung bei niedriger Drehzahl (LSPI), die Kolben und Pleuel auf einen Schlag beschädigen kann.",
+  "en": "Below %2 rpm the mean effective pressure rises to up to %1 bar (stock about 17 bar). There the risk of low-speed pre-ignition (LSPI) grows, which can damage pistons and con rods in one go."
+ },
+ {
+  "id": "c-tune-6",
+  "de": "Ladedruckaufbau",
+  "en": "Boost build-up"
+ },
+ {
+  "id": "c-tune-7",
+  "de": "Ladelufttemperatur",
+  "en": "Charge air temperature"
+ },
+ {
+  "id": "c-tune-8",
+  "de": "Ladeluft bis etwa %1 °C. Heiße Ladeluft senkt die Klopfgrenze; im Sommer und bei mehrfacher Volllast wird es mehr.",
+  "en": "Charge air up to about %1 °C. Hot charge air lowers the knock limit; in summer and on repeated full load it gets more."
+ },
+ {
+  "id": "c-tune-9",
+  "de": "Abgas vor dem Turbo bis etwa %1 °C, über der angenommenen Grenze von %2 °C. Das Steuergerät würde anfetten oder Leistung zurücknehmen; auf Dauer leiden Turbo und Katalysator.",
+  "en": "Exhaust before the turbo up to about %1 °C, above the assumed limit of %2 °C. The engine control would richen the mixture or cut power; over time turbo and catalyst suffer."
+ },
+ {
+  "id": "c-tune-10",
+  "de": "Abgastemperatur",
+  "en": "Exhaust temperature"
+ },
+ {
+  "id": "c-tune-11",
+  "de": "Hochdruckpumpe",
+  "en": "High-pressure pump"
+ },
+ {
+  "id": "c-tune-12",
+  "de": "Hochdruckpumpe fast voll",
+  "en": "High-pressure pump nearly full"
+ },
+ {
+  "id": "c-tune-13",
+  "de": "Einspritzventile",
+  "en": "Injectors"
+ },
+ {
+  "id": "c-tune-14",
+  "de": "Einspritzventile fast voll",
+  "en": "Injectors nearly full"
+ },
+ {
+  "id": "c-tune-15",
+  "de": "Klopfgrenze",
+  "en": "Knock limit"
+ },
+ {
+  "id": "c-tune-16",
+  "de": "Lambda %1 unter Volllast ist mager: heißeres Abgas und weniger Abstand zur Klopfgrenze. Kein Serienmotor fährt unter Volllast mager.",
+  "en": "Lambda %1 at full load is lean: hotter exhaust and less distance to the knock limit. No stock engine runs lean at full load."
+ },
+ {
+  "id": "c-tune-17",
+  "de": "Lambda %1 ist sehr fett: kaum mehr Leistung, aber mehr Verbrauch, Ruß und Last für den Katalysator.",
+  "en": "Lambda %1 is very rich: hardly more power, but more fuel, soot and load on the catalyst."
+ },
+ {
+  "id": "c-tune-18",
+  "de": "Mageres Gemisch",
+  "en": "Lean mixture"
+ },
+ {
+  "id": "c-tune-19",
+  "de": "Wenig Klopfreserve",
+  "en": "Little knock reserve"
+ },
+ {
+  "id": "c-tune-20",
+  "de": "Nur noch %1° Abstand zur Klopfgrenze. Wärmere Luft oder schlechterer Kraftstoff reichen, damit die Klopfregelung eingreift.",
+  "en": "Only %1° left to the knock limit. Warmer air or poorer fuel is enough for the knock control to step in."
+ },
+ {
+  "id": "c-tune-21",
+  "de": "Vorentflammung (LSPI)",
+  "en": "Pre-ignition (LSPI)"
+ },
+ {
+  "id": "c-tune-22",
+  "de": "Die Hochdruckpumpe ist zu %1 % ausgelastet, kaum noch Reserve.",
+  "en": "The high-pressure pump is %1 % loaded, hardly any reserve left."
+ },
+ {
+  "id": "c-tune-23",
+  "de": "Die Hochdruckpumpe müsste %1 % ihrer angenommenen Fördermenge liefern. Der Raildruck fällt, das Gemisch magert ab.",
+  "en": "The high-pressure pump would have to deliver %1 % of its assumed flow. Rail pressure drops and the mixture goes lean."
+ },
+ {
+  "id": "c-tune-24",
+  "de": "Die Zündung verlangt bis zu %1° mehr, als die Klopfgrenze erlaubt. Die Klopfregelung des Motors nimmt das zurück: kein Gewinn, aber Klopfen, bis sie eingreift.",
+  "en": "The ignition asks for up to %1° more than the knock limit allows. The engine's knock control pulls it back: no gain, but knocking until it does."
+ },
+ {
+  "id": "c-tune-25",
+  "de": "Die Einspritzventile nutzen %1 % des Einspritzfensters.",
+  "en": "The injectors use %1 % of the injection window."
+ },
+ {
+  "id": "c-tune-26",
+  "de": "Die Einspritzventile bräuchten %1 % des Einspritzfensters. Mehr Kraftstoff passt nicht in einen Arbeitstakt.",
+  "en": "The injectors would need %1 % of the injection window. More fuel does not fit into one cycle."
+ },
+ {
+  "id": "c-tune-27",
+  "de": "In der Aufnahme stehen keine Live-Werte mit Motordrehzahl. Nimm eine Fahrt mit offenen Live-Werten auf (Drehzahl, Saugrohrdruck, Ansauglufttemperatur, Zündzeitpunkt, Last).",
+  "en": "The recording holds no live values with engine speed. Record a drive with the live values open (engine speed, manifold pressure, intake air temperature, ignition timing, load)."
+ },
+ {
+  "id": "c-tune-28",
+  "de": "Der Turbo ist am Ende (%1 % seiner Grenze): der Ladedruck bleibt unter dem Ziel. Ein höheres Ziel bringt hier nichts außer höherer Laderdrehzahl und heißerer Luft.",
+  "en": "The turbo is at its end (%1 % of its limit): boost stays below the target. A higher target gains nothing here except more turbo speed and hotter air."
+ },
+ {
+  "id": "c-tune-29",
+  "de": "Der Turbo arbeitet mit %1 % nahe an seiner Grenze. Die Grenze ist eine Annahme für einen kleinen Twin-Scroll-Lader, kein gemessenes Kennfeld.",
+  "en": "The turbo works close to its limit at %1 %. The limit is an assumption for a small twin-scroll turbo, not a measured map."
+ },
+ {
+  "id": "c-tune-30",
+  "de": "Grenze des Turbos",
+  "en": "Turbo limit"
+ },
+ {
+  "id": "c-tune-31",
+  "de": "Turbo nahe der Grenze",
+  "en": "Turbo near its limit"
+ },
+ {
+  "id": "c-tune-32",
+  "de": "Sehr fettes Gemisch",
+  "en": "Very rich mixture"
+ }
+]

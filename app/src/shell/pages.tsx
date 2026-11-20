@@ -15,6 +15,7 @@ import MonitorPage from "../pages/MonitorPage";
 import LivePage from "../pages/LivePage";
 import TripPage from "../pages/TripPage";
 import PerformancePage from "../pages/PerformancePage";
+import TunePage from "../pages/TunePage";
 import BatteryPage from "../pages/BatteryPage";
 import EvPage from "../pages/EvPage";
 import StatsPage from "../pages/StatsPage";
@@ -49,6 +50,7 @@ export type PageId =
   | "drive"
   | "trip"
   | "performance"
+  | "tune"
   | "battery"
   | "ev"
   | "stats"
@@ -92,6 +94,7 @@ export const PAGES: PageEntry[] = [
   { id: "drive", icon: "steering", label: () => t(US, "Fahrmodus"), component: DrivePage },
   { id: "trip", icon: "fuel", label: () => t(MW, "Bordcomputer"), component: TripPage, pro: true },
   { id: "performance", icon: "timer", label: () => t(MW, "Leistung"), component: PerformancePage, pro: true },
+  { id: "tune", icon: "gauge", label: () => t(MW, "Tuning-Simulator"), component: TunePage, pro: true },
   { id: "battery", icon: "battery", label: () => t(MW, "Batterie"), component: BatteryPage },
   { id: "ev", icon: "bolt-circle", label: () => t(MW, "E-Auto-Akku"), component: EvPage },
   { id: "stats", icon: "chart", label: () => t(MW, "Statistik"), component: StatsPage, pro: true },

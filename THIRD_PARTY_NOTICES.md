@@ -42,6 +42,7 @@ License 1.1 at https://openfontlicense.org.
 | Control unit addresses per brand | own compilation, confirmed by opendbc, OVMS, evDash (MIT) and OBDb (addresses only, as facts); named per row | MIT | data/ecus/ |
 | Manufacturer fault codes and generic fault codes | own compilation and wording; generic numbering after SAE J2012 / ISO 15031-6 | MIT | tools/dtc/ |
 | Outer dimensions per model generation | Wikidata, https://www.wikidata.org | CC0 1.0 | data/wikidata/ |
+| Rated figures of the BMW N55 engine and the ZF 8HP45 gearbox (tuning simulator) | Wikipedia "BMW N55" and "ZF 8HP transmission", taken as facts with the source named at each value; everything else there is my own assumption | MIT | crates/caruspex-tune/src/spec.rs |
 | Fonts JetBrains Mono, Inter, Plus Jakarta Sans | https://github.com/JetBrains/JetBrainsMono, https://github.com/rsms/inter, https://github.com/tokotype/PlusJakartaSans | SIL Open Font License 1.1 | resources/fonts/ (OFL.txt, OFL-Inter.txt, OFL-PlusJakartaSans.txt; shipped next to the fonts in the app) |
 
 The adapted data under CC BY-SA 4.0 (the OBDb packs, the battery value packs

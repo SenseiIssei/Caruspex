@@ -63,6 +63,7 @@ import type {
 } from "./types";
 // Types of the measure pages (trip computer, performance, battery test).
 import type { BatteryInput, BatteryReport, BatteryStepInfo, PerformanceReport, SpeedSample, TripConfig, TripSummary } from "./types";
+import type { TuneComparison, TuneInput, TuneResult } from "./types";
 
 type Cmd<A, R> = { args: A; result: R };
 type None = Record<never, never>;
@@ -198,6 +199,14 @@ export interface Commands {
   // analysis::evaluateBattery and the step instructions of the guided test.
   evaluate_battery: Cmd<{ input: BatteryInput }, BatteryReport>;
   battery_test_steps: Cmd<None, BatteryStepInfo[]>;
+
+  // --- Tuning simulator (caruspex-tune). Computes only, never reaches the car --
+  // Stock and changed curve of the N55 model under the same conditions.
+  tune_simulate: Cmd<{ input: TuneInput }, TuneResult>;
+  // A recording's full-load samples against the model.
+  tune_compare_log: Cmd<{ path: string; input: TuneInput }, TuneComparison>;
+  // The same with an invented full-load pull, to see how the table reads.
+  tune_compare_example: Cmd<{ input: TuneInput }, TuneComparison>;
 
   // --- UDS -----------------------------------------------------------------------
   // Empty family: generic sweep over the usual address range.

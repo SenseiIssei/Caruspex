@@ -523,6 +523,7 @@ dependencies = [
  "caruspex-net",
  "caruspex-protocols",
  "caruspex-record",
+ "caruspex-tune",
  "caruspex-vehicles",
  "dirs",
  "gtk",
@@ -659,6 +660,13 @@ dependencies = [
  "miniz_oxide 0.9.1",
  "proptest",
  "serde_json",
+]
+
+[[package]]
+name = "caruspex-tune"
+version = "0.19.0"
+dependencies = [
+ "caruspex-i18n",
 ]
 
 [[package]]
