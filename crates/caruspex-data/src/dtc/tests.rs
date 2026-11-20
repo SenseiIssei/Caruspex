@@ -72,8 +72,10 @@ fn code_families_count_in_decimal_like_the_standard() {
     // Cylinder 10 is P0210 and P0310, not P020A or P030A.
     assert!(lookup_dtc("P0210", "").text.contains("Zylinder 10"));
     assert!(lookup_dtc("P0310", "").text.contains("Zylinder 10"));
-    assert!(!lookup_dtc("P020A", "").known);
-    assert!(!lookup_dtc("P030A", "").known);
+    // P020A and P030A exist, but with a meaning of their own (cylinder 1
+    // injection timing, ignition A control signal), not cylinder 10.
+    assert!(!lookup_dtc("P020A", "").text.contains("Zylinder 10"));
+    assert!(!lookup_dtc("P030A", "").text.contains("Zylinder 10"));
     // Bank 1 sensor 2 runs from P0136 to P0141.
     assert!(lookup_dtc("P0140", "").text.contains("Bank 1, Sonde 2"));
     // P0736 is reverse, P0775 a pressure control solenoid.
@@ -187,19 +189,20 @@ fn unknown_codes_fall_back_to_their_group() {
     assert!(renault.text.contains("kein Klartext"));
     assert!(!renault.advice.is_empty());
 
-    let gearbox = lookup_dtc("P0999", "");
+    let gearbox = lookup_dtc("P09FE", "");
     assert!(!gearbox.known);
     assert_eq!(gearbox.system, DtcSystem::Transmission);
     assert!(gearbox.text.contains("Getriebe"));
 
     // An unknown airbag code still gets the airbag help.
-    let airbag = lookup_dtc("B0099", "");
+    let airbag = lookup_dtc("B00FE", "");
     assert!(!airbag.known);
     assert_eq!(airbag.system, DtcSystem::Airbag);
     assert!(airbag.has_details);
     assert_eq!(airbag.severity, Severity::High);
 
-    let lost_comm = lookup_dtc("U0177", "");
+    let lost_comm = lookup_dtc("U02FE", "");
+    assert!(!lost_comm.known);
     assert_eq!(lost_comm.system, DtcSystem::Network);
     assert!(lost_comm.has_details);
 
@@ -394,4 +397,183 @@ fn the_generated_tables_are_sorted_and_free_of_duplicates() {
             assert!(r.detail == NO_DETAIL || (r.detail as usize) < tables::details().len());
         }
     }
+}
+
+#[test]
+fn composed_codes_read_like_written_ones() {
+    let lang = german();
+    // Part with a letter, then the fault type.
+    let hv = lookup_dtc("P0ABC", "");
+    assert!(hv.known);
+    assert_eq!(hv.system, DtcSystem::Hybrid);
+    assert!(hv.text.starts_with("Hybridbatterie"), "{}", hv.text);
+    assert!(
+        hv.text.contains(" A ") && hv.text.ends_with(" - Stromkreis Spannung zu niedrig"),
+        "{}",
+        hv.text
+    );
+    // Lost communication leads with the fault type.
+    let comm = lookup_dtc("U0201", "");
+    assert!(comm.known);
+    assert!(comm.text.starts_with("Keine Verbindung: "), "{}", comm.text);
+    assert!(comm.has_details);
+    lang.set(Language::English);
+    assert_eq!(
+        lookup_dtc("P0ABC", "").text,
+        "Hybrid/EV battery pack voltage sense A - circuit low"
+    );
+    assert_eq!(
+        lookup_dtc("U0201", "").text,
+        "Lost communication: Door control module C"
+    );
+    // Two arguments, bank and sensor.
+    assert_eq!(
+        lookup_dtc("P2082", "").text,
+        "Exhaust gas temperature sensor bank 2 sensor 1 - circuit range/performance"
+    );
+    // Every other language translates the phrases instead of falling back to English.
+    for info in languages() {
+        if matches!(info.id, Language::English | Language::German) {
+            continue;
+        }
+        lang.set(info.id);
+        let text = lookup_dtc("U0201", "").text;
+        assert!(
+            !text.contains("Lost communication"),
+            "{}: {text}",
+            info.code
+        );
+        assert!(
+            !lookup_dtc("P0ABC", "").text.contains("circuit low"),
+            "{}",
+            info.code
+        );
+    }
+}
+
+#[test]
+fn every_composed_text_is_complete_in_every_language() {
+    let lang = english();
+    for info in languages() {
+        lang.set(info.id);
+        for letter in SYSTEM_LETTERS {
+            for r in generic_for(letter) {
+                let text = r.text();
+                assert!(!text.is_empty(), "{} {}", info.code, r.code);
+                assert!(!text.contains('%'), "{} {}: {text}", info.code, r.code);
+                assert!(!has_long_dash(&text), "{} {}: {text}", info.code, r.code);
+            }
+        }
+    }
+}
+
+#[test]
+fn the_hybrid_network_body_and_chassis_blocks_are_filled() {
+    let count = |letter: char, lo: i32, hi: i32| {
+        generic_for(letter)
+            .iter()
+            .filter(|r| (lo..=hi).contains(&code_number(r.code)))
+            .count()
+    };
+    assert!(
+        count('P', 0x0A00, 0x0FFF) > 400,
+        "hybrid and electric P0A00 to P0FFF"
+    );
+    assert!(count('P', 0x2A00, 0x2FFF) > 100, "P2A00 to P2FFF");
+    assert!(count('U', 0x0000, 0x0FFF) > 200, "network U0");
+    assert!(count('U', 0x3000, 0x3FFF) > 15, "network U3");
+    assert!(count('C', 0x0000, 0x0FFF) > 100, "chassis C0");
+    assert!(count('B', 0x0000, 0x0FFF) > 15, "body B0");
+}
+
+#[test]
+fn unknown_codes_take_the_area_of_their_neighbours() {
+    let _lang = german();
+    // P013x is oxygen sensor bank 1 sensor 1 throughout; a code the table
+    // does not list still names the exhaust area.
+    let rule = find_rule("P013F").expect("rule");
+    assert_eq!(rule.system, DtcSystem::Exhaust);
+    assert_eq!(rule.hi - rule.lo, 0xF);
+    // Wider ranges still answer where no block rule exists.
+    let u06 = lookup_dtc("U06FE", "");
+    assert!(!u06.known);
+    assert_eq!(u06.system, DtcSystem::Network);
+    assert!(u06.text.contains("Sensor oder Steller"), "{}", u06.text);
+    assert!(u06.has_details);
+    let hv = lookup_dtc("U3FFE", "");
+    assert_eq!(hv.system, DtcSystem::Hybrid);
+    assert_eq!(hv.severity, Severity::High);
+    let power = lookup_dtc("U34FE", "");
+    assert!(power.text.contains("Versorgung"), "{}", power.text);
+    // Manufacturer ranges keep the wide group rules only.
+    let maker = find_rule("P113F").expect("rule");
+    assert!(maker.hi - maker.lo > 0xF);
+    // Every code of every letter finds some group.
+    for letter in SYSTEM_LETTERS {
+        for second in 0..4 {
+            for n in (0..0x1000).step_by(0x37) {
+                let code = format!("{letter}{second}{n:03X}");
+                assert!(find_rule(&code).is_some(), "{code}");
+            }
+        }
+    }
+}
+
+#[test]
+fn single_source_codes_say_so_in_every_language() {
+    let lang = german();
+    // Two sources agree on P0ABC: no note.
+    let confirmed = lookup_dtc("P0ABC", "");
+    assert!(!confirmed.single_source);
+    assert_eq!(confirmed.source_note(), "");
+    // Only obdex defines U0177 (lost communication with restraints sensor H).
+    let single = lookup_dtc("U0177", "");
+    assert!(single.known && single.single_source);
+    assert_eq!(single.source_note(), "Bedeutung aus einer Quelle");
+    assert!(single.text.contains(" H"), "{}", single.text);
+    lang.set(Language::English);
+    assert_eq!(
+        lookup_dtc("U0177", "").source_note(),
+        "Meaning from one source"
+    );
+    for info in languages() {
+        if matches!(info.id, Language::English | Language::German) {
+            continue;
+        }
+        lang.set(info.id);
+        let note = lookup_dtc("U0177", "").source_note();
+        assert!(
+            !note.is_empty() && note != "Meaning from one source",
+            "{}",
+            info.code
+        );
+    }
+    // Written-out codes and unknown codes carry no note.
+    assert_eq!(lookup_dtc("P0300", "").source_note(), "");
+    assert_eq!(lookup_dtc("P09FE", "").source_note(), "");
+    // The lexicon carries the flag too.
+    let lexicon = dtc_lexicon();
+    assert!(lexicon.iter().any(|e| e.code == "U0177" && e.single_source));
+    assert!(
+        lexicon
+            .iter()
+            .any(|e| e.code == "P0ABC" && !e.single_source)
+    );
+}
+
+#[test]
+fn both_tiers_fill_every_sae_block() {
+    let (mut confirmed, mut single) = (0, 0);
+    for letter in SYSTEM_LETTERS {
+        for r in generic_for(letter) {
+            if r.single_source {
+                single += 1;
+            } else {
+                confirmed += 1;
+            }
+        }
+    }
+    assert!(confirmed > 3000, "{confirmed}");
+    assert!(single > 5000, "{single}");
+    assert!(dtc_count("") > 9000);
 }

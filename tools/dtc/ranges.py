@@ -13,7 +13,9 @@ and the brand family to the text.
 
 from __future__ import annotations
 
-from .model import SEVERITIES, SYSTEMS, check_text
+from collections import Counter
+
+from .model import SEVERITIES, SYSTEMS, check_text, is_manufacturer
 
 # (letter, lo, hi, German, English, severity, system, detail)
 RANGES: list[tuple] = []
@@ -82,6 +84,45 @@ rule("U", 0x0300, 0x03FF, "Software oder Codierung eines Steuergeräts passt nic
      "Control module software or coding incompatibility", "medium", "network")
 rule("U", 0x0400, 0x05FF, "Unplausible Daten von einem Steuergerät", "Invalid data received from a control module",
      "medium", "network", "invalid_data")
-rule("U", 0x0600, 0x0FFF, "Datenbus und Vernetzung", "Network and vehicle communication", "medium", "network")
+rule("U", 0x0600, 0x06FF, "Keine Verbindung zu einem Sensor oder Steller", "Lost communication with a sensor or actuator",
+     "medium", "network", "lost_comm")
+rule("U", 0x0700, 0x0FFF, "Datenbus und Vernetzung", "Network and vehicle communication", "medium", "network")
 rule("U", 0x1000, 0x2FFF, "Datenbus und Vernetzung", "Network and vehicle communication", "medium", "network")
-rule("U", 0x3000, 0x3FFF, "Datenbus (von SAE reserviert)", "Network (reserved by SAE)", "medium", "network")
+rule("U", 0x3000, 0x34FF, "Steuergerät: Versorgung, Masse, Aufwecken oder Freigabe",
+     "Control module: power supply, ground, wake-up or authentication", "medium", "engine", "ecu_power")
+rule("U", 0x3500, 0x3FFF, "Hochvoltsystem und Brennstoffzelle", "High voltage system and fuel cell", "high", "hybrid",
+     "hybrid_system")
+
+
+def fine_rules(known: dict[str, tuple[str, str]]) -> list[tuple]:
+    """Rules for single blocks of sixteen codes (the fourth character),
+    derived from the codes we know.
+
+    SAE numbers related codes next to each other (P0130 to P013F are all
+    oxygen sensor bank 1 sensor 1), so an unknown code most likely concerns
+    the same system as its known neighbours. A block gets a rule when at
+    least three of its codes are known and at least 70 % of them belong to
+    one system; the severity is the median of those codes. Text and help
+    stay the ones of the wider range, the system names the area.
+    Only SAE ranges: what a maker puts into its own range is unknown.
+    """
+    blocks: dict[tuple[str, int], list[tuple[str, str]]] = {}
+    for code, (sev, sys) in known.items():
+        if is_manufacturer(code):
+            continue
+        number = int(code[1:], 16)
+        blocks.setdefault((code[0], number & ~0xF), []).append((sev, sys))
+    order = list(SEVERITIES)
+    out = []
+    for (letter, lo), recs in sorted(blocks.items()):
+        if len(recs) < 3:
+            continue
+        systems = Counter(sys for _, sys in recs)
+        sys, n = max(systems.items(), key=lambda kv: (kv[1], kv[0]))
+        if n / len(recs) < 0.7:
+            continue
+        sevs = sorted(order.index(sev) for sev, s in recs if s == sys)
+        sev = order[sevs[len(sevs) // 2]]
+        wide = next(r for r in RANGES if r[0] == letter and r[1] <= lo <= r[2])
+        out.append((letter, lo, lo + 0xF, wide[3], wide[4], sev, sys, wide[7]))
+    return out

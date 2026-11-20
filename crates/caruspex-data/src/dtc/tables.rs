@@ -5,21 +5,43 @@
 //! and the generated files use these types.
 
 use super::{CostClass, DtcSystem};
-use crate::generated::{dtc_brands, dtc_details, dtc_generic_cbu, dtc_generic_p};
+use crate::generated::{dtc_brands, dtc_details, dtc_generic_cbu, dtc_generic_p, dtc_phrases};
 use crate::severity::Severity;
 use caruspex_i18n::Text;
 
 pub const NO_DETAIL: u16 = 0xFFFF;
+/// `how` of a composed text without a fault type.
+pub const NO_PHRASE: u16 = 0xFFFF;
+
+/// How a record names its fault.
+#[derive(Clone, Copy, Debug)]
+pub enum Desc {
+    /// The whole text, written out.
+    Plain(Text),
+    /// Composed from the phrase table: the part (`what`, with `%1`, `%2`
+    /// filled from `args`, separated by '|') and the fault type (`how`),
+    /// as "part - fault type", or with `lead` as "fault type: part" (lost
+    /// communication and the like). Most codes of a family share both
+    /// phrases, so each phrase is translated once instead of once per code.
+    Parts {
+        what: u16,
+        args: &'static str,
+        how: u16,
+        lead: bool,
+    },
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct Record {
     pub code: &'static str,
-    pub text: Text,
+    pub desc: Desc,
     pub severity: Severity,
     pub system: DtcSystem,
     /// Index into `details()`, or `NO_DETAIL`.
     pub detail: u16,
     pub throttle: bool,
+    /// Only one source defines the meaning (see tools/dtc/extended.py).
+    pub single_source: bool,
 }
 
 /// Shorthand the generated tables use, one call per code.
@@ -34,12 +56,91 @@ pub const fn r(
 ) -> Record {
     Record {
         code,
-        text: Text::new(de, en),
+        desc: Desc::Plain(Text::new(de, en)),
         severity,
         system,
         detail,
         throttle,
+        single_source: false,
     }
+}
+
+/// Shorthand for a composed record, see `Desc::Parts`.
+#[allow(clippy::too_many_arguments)]
+pub const fn q(
+    code: &'static str,
+    what: u16,
+    args: &'static str,
+    how: u16,
+    lead: bool,
+    single_source: bool,
+    severity: Severity,
+    system: DtcSystem,
+    detail: u16,
+) -> Record {
+    Record {
+        code,
+        desc: Desc::Parts {
+            what,
+            args,
+            how,
+            lead,
+        },
+        severity,
+        system,
+        detail,
+        throttle: false,
+        single_source,
+    }
+}
+
+impl Record {
+    /// The description in the active language.
+    pub fn text(&self) -> String {
+        match self.desc {
+            Desc::Plain(text) => text.get().to_string(),
+            Desc::Parts {
+                what,
+                args,
+                how,
+                lead,
+            } => {
+                let table = phrases();
+                let part = fill(table[what as usize].get(), args);
+                if how == NO_PHRASE {
+                    return part;
+                }
+                let how = table[how as usize].get();
+                if lead {
+                    format!("{how}: {part}")
+                } else {
+                    format!("{part} - {how}")
+                }
+            }
+        }
+    }
+}
+
+/// Puts the arguments into `%1` to `%9` of a phrase.
+fn fill(phrase: &str, args: &str) -> String {
+    if args.is_empty() {
+        return phrase.to_string();
+    }
+    let args: Vec<&str> = args.split('|').collect();
+    let mut out = String::with_capacity(phrase.len() + 8);
+    let mut chars = phrase.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '%'
+            && let Some(d) = chars.peek().and_then(|d| d.to_digit(10))
+            && (1..=args.len() as u32).contains(&d)
+        {
+            chars.next();
+            out.push_str(args[d as usize - 1]);
+            continue;
+        }
+        out.push(c);
+    }
+    out
 }
 
 /// Plain-language help shared by many codes. Causes and checks hold one
@@ -100,4 +201,9 @@ pub fn details() -> &'static [Detail] {
 
 pub fn range_rules() -> &'static [RangeRule] {
     dtc_details::RANGE_RULES
+}
+
+/// Parts and fault types the composed records are built from.
+pub fn phrases() -> &'static [Text] {
+    dtc_phrases::PHRASES
 }

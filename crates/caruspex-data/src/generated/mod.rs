@@ -4,4 +4,5 @@ pub mod dtc_brands;
 pub mod dtc_details;
 pub mod dtc_generic_cbu;
 pub mod dtc_generic_p;
+pub mod dtc_phrases;
 pub mod ecu_rows;

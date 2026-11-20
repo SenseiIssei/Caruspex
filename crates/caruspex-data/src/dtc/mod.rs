@@ -14,7 +14,7 @@ pub mod tables;
 use std::collections::{HashMap, HashSet};
 use std::sync::OnceLock;
 
-use caruspex_i18n::{Language, Text, l, language};
+use caruspex_i18n::{Language, Text, l, language, with_language};
 
 use crate::severity::Severity;
 use tables::{Detail, Family, NO_DETAIL, RangeRule, Record};
@@ -215,6 +215,8 @@ pub struct DtcInfo {
     pub manufacturer_specific: bool,
     /// The exact code is in the database.
     pub known: bool,
+    /// Only one source defines the meaning; see `source_note()`.
+    pub single_source: bool,
     /// Causes and checks come from the database.
     pub has_details: bool,
     pub throttle_related: bool,
@@ -238,12 +240,30 @@ impl Default for DtcInfo {
             cost_class: CostClass::Unknown,
             manufacturer_specific: false,
             known: false,
+            single_source: false,
             has_details: false,
             throttle_related: false,
             family: String::new(),
             family_label: String::new(),
         }
     }
+}
+
+impl DtcInfo {
+    /// Short note for the meaning of a code that only one source defines,
+    /// shown next to the text in the app and in the reports. Empty otherwise.
+    pub fn source_note(&self) -> &'static str {
+        if self.single_source {
+            source_note_text()
+        } else {
+            ""
+        }
+    }
+}
+
+/// The note itself, in the active language.
+pub fn source_note_text() -> &'static str {
+    l("Bedeutung aus einer Quelle", "Meaning from one source")
 }
 
 /// One line of the offline lexicon.
@@ -257,6 +277,8 @@ pub struct DtcLexiconEntry {
     pub text: String,
     pub severity: Severity,
     pub system: DtcSystem,
+    /// Only one source defines the meaning.
+    pub single_source: bool,
 }
 
 const SYSTEM_LETTERS: [char; 4] = ['P', 'C', 'B', 'U'];
@@ -460,7 +482,8 @@ fn lookup(raw: &str, family: Option<&'static Family>, label_family: bool) -> Dtc
     let mut detail = NO_DETAIL;
     if let Some(record) = record {
         info.known = true;
-        info.text = record.text.get().to_string();
+        info.single_source = record.single_source;
+        info.text = record.text();
         info.severity = record.severity;
         info.system = record.system;
         info.throttle_related = record.throttle;
@@ -602,16 +625,32 @@ pub fn is_throttle_dtc(code: &str) -> bool {
     dtc_throttle_codes().contains(code)
 }
 
-/// All generic and VAG codes with their description in both languages.
+/// All generic and VAG codes with their description in German and English.
 pub fn dtc_texts() -> &'static HashMap<&'static str, Text> {
     static TEXTS: OnceLock<HashMap<&'static str, Text>> = OnceLock::new();
     TEXTS.get_or_init(|| {
         let mut map = HashMap::new();
         for_each_legacy_record(|r| {
-            map.entry(r.code).or_insert(r.text);
+            map.entry(r.code).or_insert_with(|| both_languages(r));
         });
         map
     })
+}
+
+/// A record's text in German and English. Composed texts are built once and
+/// kept for the life of the program, like the tables themselves.
+fn both_languages(r: &'static Record) -> Text {
+    match r.desc {
+        tables::Desc::Plain(text) => text,
+        tables::Desc::Parts { .. } => {
+            let de = with_language(Language::German, || r.text());
+            let en = with_language(Language::English, || r.text());
+            Text::new(
+                Box::leak(de.into_boxed_str()),
+                Box::leak(en.into_boxed_str()),
+            )
+        }
+    }
 }
 
 pub fn dtc_throttle_codes() -> &'static HashSet<&'static str> {
@@ -665,9 +704,10 @@ pub fn dtc_lexicon() -> Vec<DtcLexiconEntry> {
         code: r.code.to_string(),
         family: family.to_string(),
         family_label: label.to_string(),
-        text: r.text.get().to_string(),
+        text: r.text(),
         severity: r.severity,
         system: r.system,
+        single_source: r.single_source,
     };
     for letter in SYSTEM_LETTERS {
         for r in generic_for(letter) {

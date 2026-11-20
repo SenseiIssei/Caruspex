@@ -528,6 +528,9 @@ export interface DtcInfo {
   costHint: string;
   manufacturerSpecific: boolean;
   known: boolean;
+  // "Meaning from one source" in the active language when only one source
+  // defines the meaning, empty otherwise.
+  sourceNote: string;
   hasDetails: boolean;
   throttleRelated: boolean;
   family: string;
@@ -571,6 +574,8 @@ export interface DtcLexiconEntry {
   // language, for the lexicon columns.
   systemName?: string;
   severityLabel?: string;
+  // Same as DtcInfo.sourceNote.
+  sourceNote?: string;
 }
 
 export interface BrandFamily {

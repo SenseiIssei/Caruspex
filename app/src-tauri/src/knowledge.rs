@@ -6,7 +6,7 @@ use std::sync::OnceLock;
 use caruspex_data::dtc::{
     brand_families as family_keys, brand_family as family_of_brand, brand_family_label,
     cost_class_hint, cost_class_label, dtc_count, dtc_lexicon as lexicon, dtc_system_name,
-    lookup_dtc as lookup,
+    lookup_dtc as lookup, source_note_text,
 };
 use caruspex_data::dtc_location::locate_dtc as locate;
 use caruspex_data::ecu_addresses::{ecu_definitions, ecu_families as ecu_family_keys};
@@ -150,6 +150,7 @@ pub fn lookup_dtc(code: &str, brand: &str) -> Value {
         "costHint": cost_class_hint(d.cost_class),
         "manufacturerSpecific": d.manufacturer_specific,
         "known": d.known,
+        "sourceNote": d.source_note(),
         "hasDetails": d.has_details,
         "throttleRelated": d.throttle_related,
         "family": d.family,
@@ -183,6 +184,7 @@ pub fn dtc_lexicon() -> Value {
                 "system": e.system as i32,
                 "systemName": system,
                 "severityLabel": severity,
+                "sourceNote": if e.single_source { source_note_text() } else { "" },
             })
         })
         .collect();

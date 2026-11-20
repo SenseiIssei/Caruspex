@@ -73,6 +73,7 @@ export async function describeFault(code: string, brand: string): Promise<{ info
       costHint: "",
       manufacturerSpecific: false,
       known: false,
+      sourceNote: "",
       hasDetails: false,
       throttleRelated: false,
       family: "",
@@ -396,6 +397,7 @@ function FaultDetail({
   if (info.systemName) meta.push(info.systemName);
   if (info.manufacturerSpecific && info.familyLabel) meta.push(tr("Herstellercode %1", info.familyLabel));
   if (!info.known) meta.push(tr("genaue Bedeutung unbekannt, das ist die Gruppe"));
+  if (info.sourceNote) meta.push(info.sourceNote);
   const kindTerm: TermId = fault.stored ? "dtc-stored" : fault.permanent ? "dtc-permanent" : "dtc-pending";
 
   // The freeze frame the control unit stored together with this code.

@@ -7,7 +7,7 @@ Halaman **Memori kesalahan** membaca apa yang disimpan unit kontrol dan menjelas
 ## Yang kamu lihat
 
 - Kode **tersimpan, tertunda, dan permanen**. Kalau ada beberapa unit kontrol, setiap kode menunjukkan siapa yang melaporkannya (mesin, transmisi).
-- Sekitar 1.400 kode standar (P, C, B, U) dan kode pabrikan dari VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai dan Kia, Subaru, dan lainnya. Kode P1 dibaca sesuai arti dari merek yang terdeteksi.
+- Sekitar 9.400 kode standar (P, C, B, U) dan kode pabrikan dari VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai dan Kia, Subaru, dan lainnya. Kode P1 dibaca sesuai arti dari merek yang terdeteksi.
 - **Lampu lalu lintas** per kode dan pertanyaan yang pertama kali ditanyakan semua orang: masih boleh jalan terus?
 - Penyebab yang umum, hal yang bisa kamu cek sendiri, dan perkiraan kelas biaya.
 - Letak komponennya: mobil dalam tampilan tembus pandang, atau [Tampilan tembus](xray.md).

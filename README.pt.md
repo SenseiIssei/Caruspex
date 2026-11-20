@@ -55,7 +55,7 @@ forçado a cada execução com `--language fr` e assim por diante. Como as tradu
   gerações de modelos desde 1980 dizem qual carro está conectado e o que funciona com ele.
 - **Carro de demonstração integrado**: um ELM327 no próprio processo com um motor e uma caixa de câmbio em CAN, para experimentar tudo
   sem hardware.
-- **Dados gerados, não digitados à mão**: cerca de 1.700 códigos de falha, muitos deles calculados a partir de famílias de códigos regulares
+- **Dados gerados, não digitados à mão**: cerca de 9.700 códigos de falha, muitos deles calculados a partir de famílias de códigos regulares
   (por cilindro, por banco, por sensor de oxigênio) com `tools/gen_dtc.py`.
 
 ## Funções
@@ -79,7 +79,7 @@ forçado a cada execução com `--language fr` e assim por diante. Como as tradu
 
 ### Memória de falhas
 - Códigos armazenados, pendentes e permanentes; com várias centrais, cada código mostra quem o reportou (motor, caixa de câmbio).
-- Cerca de 1.400 códigos padrão (P, C, B, U) mais códigos de fabricante para VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru e outros. Um código P1 é lido do jeito que a marca detectada o entende.
+- Cerca de 9.400 códigos padrão (P, C, B, U) mais códigos de fabricante para VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru e outros. Um código P1 é lido do jeito que a marca detectada o entende.
 - Um semáforo por código e a pergunta que todo mundo faz primeiro: posso continuar dirigindo?
 - Causas comuns, coisas que você mesmo pode verificar e uma faixa de custo aproximada.
 - O carro em visão transparente mostra onde fica a peça afetada.
