@@ -11,10 +11,14 @@ import { confirm } from "../components/Modal";
 import { Button, Card, Page, PageHeader, Progress, Select } from "../components/ui";
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
+import { useLiveValues } from "../state/liveView";
 import { useSession, useSettings } from "../state/session";
 import { KklMessage, KklState, PortChoice, noWay, useMessageBox, usePorts } from "./WorkshopShared";
 
 const tr = translator("caruspex::ThrottlePage");
+
+// Absolute throttle position, relative throttle position, engine speed.
+const EOBD_PIDS = [0x11, 0x45, 0x0c] as const;
 
 // Address of the engine control unit (Ecu::Engine).
 const ENGINE = 0x01;
@@ -85,10 +89,11 @@ export default function ThrottlePage() {
   });
 
   // As long as only EOBD is connected, the throttle can at least be observed.
-  useBackendEvent("live_value", ({ row }) => {
-    if (row.pid === 0x11 || row.pid === 0x45) setAngle(row.value);
-    if (row.pid === 0x0c) setRpm(row.value);
-  });
+  // Through useLiveValues: at most one render per frame and none while the
+  // page is hidden (it used to render on every reading of every page).
+  const [eobdThrottle, eobdRelative, eobdRpm] = useLiveValues(EOBD_PIDS);
+  const shownAngle = kklConnected ? angle : (eobdThrottle ?? eobdRelative ?? angle);
+  const shownRpm = kklConnected ? rpm : (eobdRpm ?? rpm);
 
   const connectOrClose = () => {
     if (kklConnected) {
@@ -210,8 +215,8 @@ export default function ThrottlePage() {
         <KklMessage text={message.text} error={message.error} />
 
         <div className="throttle-gauges">
-          <Gauge title={tr("Klappenwinkel")} unit={tr("%")} min={0} max={100} decimals={1} value={angle} />
-          <Gauge title={tr("Leerlauf")} unit={tr("1/min")} min={0} max={3000} value={rpm} warnFrom={600} warnTo={1100} />
+          <Gauge title={tr("Klappenwinkel")} unit={tr("%")} min={0} max={100} decimals={1} value={shownAngle} />
+          <Gauge title={tr("Leerlauf")} unit={tr("1/min")} min={0} max={3000} value={shownRpm} warnFrom={600} warnTo={1100} />
         </div>
 
         <div className="table-wrap" style={{ minHeight: 170 }}>
