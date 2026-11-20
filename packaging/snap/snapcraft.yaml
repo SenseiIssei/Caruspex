@@ -11,13 +11,15 @@ description: |
   live values, asks every control unit of the car and checks used cars before
   the purchase. It works with ELM327 and OBDLink adapters over USB, Bluetooth
   and Wi-Fi, KKL cables for older VW group cars, BMW ENET and DoIP cables,
-  SocketCAN and SLCAN interfaces. 18 languages, only reads, sends nothing.
+  SocketCAN and SLCAN interfaces. 18 languages, no account, no tracking; it
+  writes to the car only after asking. Not affiliated with any vehicle or
+  adapter maker; use at your own risk and never while driving.
 
   Serial adapters, Bluetooth and CAN need their interfaces connected once:
   sudo snap connect caruspex:raw-usb
   sudo snap connect caruspex:bluez
   sudo snap connect caruspex:can-bus
-license: MIT
+license: MIT AND CC-BY-SA-4.0
 grade: stable
 confinement: strict
 website: https://github.com/SenseiIssei/Caruspex

@@ -9,7 +9,7 @@ PublisherUrl: https://github.com/SenseiIssei
 PublisherSupportUrl: https://github.com/SenseiIssei/Caruspex/issues
 PackageName: Caruspex
 PackageUrl: https://github.com/SenseiIssei/Caruspex
-License: MIT
+License: MIT (code), CC BY-SA 4.0 (bundled vehicle data)
 LicenseUrl: https://github.com/SenseiIssei/Caruspex/blob/main/LICENSE
 Copyright: SenseiIssei, MIT licence
 ShortDescription: Free car diagnostics over OBD-II, K-Line, CAN and Ethernet.
@@ -17,7 +17,8 @@ Description: |-
   Caruspex reads and clears fault codes, shows live values, asks every control unit of the car
   and checks used cars before the purchase. It works with ELM327 and OBDLink adapters over USB,
   Bluetooth and Wi-Fi, KKL cables for older VW group cars, BMW ENET and DoIP cables and
-  J2534, PEAK and Kvaser CAN interfaces. 18 languages, only reads, nothing is sent anywhere.
+  J2534, PEAK and Kvaser CAN interfaces. 18 languages, no account, no tracking; it writes to the
+  car only after asking. Not affiliated with any vehicle or adapter maker; use at your own risk.
 Moniker: caruspex
 Tags:
   - obd
