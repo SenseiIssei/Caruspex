@@ -20,7 +20,7 @@ Caruspex to darmowy program diagnostyczny do samochodów i motocykli. Działa na
 3. Znajdź swój adapter w dziale [adaptery i interfejsy](interfaces.md).
 4. Przeczytaj w dziale [prywatność](privacy.md), co Caruspex zapisuje i wysyła. W skrócie: nic nie opuszcza twojego komputera, chyba że sam to udostępnisz.
 
-> Caruspex tylko odczytuje. Nigdy nie koduje sterowników, nigdy nie zmienia przebiegu i nigdy nie rusza immobilizera. Kasowanie kodów błędów to jedyna rzecz, którą zapisuje w aucie.
+> Caruspex głównie odczytuje. Zapisuje tylko po zapytaniu cię o zgodę: kasowanie kodów błędów oraz, przez kabel VAG KKL, test elementów wykonawczych i podstawowe ustawienie przepustnicy. Nigdy nie koduje sterowników, nigdy nie zmienia przebiegu i nigdy nie rusza immobilizera.
 
 ## Uczciwy stan
 

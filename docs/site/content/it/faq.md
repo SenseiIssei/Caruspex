@@ -18,7 +18,7 @@ Sinceramente: non ancora. Caruspex è testato contro centraline simulate; su har
 
 ## Caruspex può rovinare la mia auto?
 
-Caruspex legge soltanto. L'unica cosa che scrive è la cancellazione dei codici errore, e avvisa prima di farlo. Non codifica mai, non fa mai flash e non cambia mai i valori di adattamento. Non usarlo mentre guidi.
+Caruspex per lo più legge. Scrive solo dopo averti chiesto conferma: la cancellazione dei codici errore e, con il cavo KKL VAG, il test attuatori e la regolazione di base della farfalla. Non codifica mai, non fa mai flash e non cambia mai i valori di adattamento. Non usarlo mentre guidi.
 
 ## Può modificare i chilometri, l'immobilizer o codificare funzioni?
 
@@ -39,3 +39,5 @@ No. Solo il controllo degli aggiornamenti chiede a GitHub la versione più recen
 ## Come posso aiutare?
 
 Invia un rapporto di prova dalla tua auto, condividi una registrazione, segnala bug o migliora una traduzione: la guida è [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), e il pulsante **Migliora la traduzione** nelle impostazioni la apre.
+
+Anche il codice è benvenuto: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) spiega (in inglese) come compilare Caruspex e cosa serve a una pull request.

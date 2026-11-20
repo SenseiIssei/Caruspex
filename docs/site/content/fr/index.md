@@ -20,7 +20,7 @@ Caruspex est un logiciel de diagnostic gratuit pour voitures et motos. Il tourne
 3. Cherchez votre adaptateur dans [adaptateurs et interfaces](interfaces.md).
 4. Lisez ce que Caruspex enregistre et envoie dans [confidentialité](privacy.md). En bref : rien ne quitte votre ordinateur, sauf si vous le partagez vous-même.
 
-> Caruspex ne fait que lire. Il ne code jamais les calculateurs, ne modifie jamais le kilométrage et ne touche jamais à l'antidémarrage. Effacer les codes défaut est la seule chose qu'il écrit dans la voiture.
+> Caruspex lit surtout. Il n'écrit qu'après vous avoir demandé : l'effacement des codes défaut et, avec le câble KKL VAG, le test des actionneurs et le réglage de base du papillon. Il ne code jamais les calculateurs, ne modifie jamais le kilométrage et ne touche jamais à l'antidémarrage.
 
 ## État honnête
 

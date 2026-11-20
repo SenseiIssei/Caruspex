@@ -7,7 +7,7 @@ Kabel KKL je kabel USB se sériovým čipem a budičem K-Line, bez ELM327 uvnit�
 - Každá řídicí jednotka VW, Audi, Seat a Škoda zhruba z let 1990 až 2004: motor, převodovka, ABS, airbag, přístrojový panel, komfort a další.
 - KWP1281 a KWP2000 (ISO 14230), automaticky rozpoznané podle klíčových bajtů po probuzení.
 - Paměť závad každé řídicí jednotky, bloky naměřených hodnot a skutečné základní nastavení škrticí klapky (blok naměřených hodnot 060 nebo 098).
-- Adaptační kanály a testy akčních členů jsou záměrně jen pro čtení.
+- Adaptační kanály jsou záměrně jen pro čtení. Test akčních členů spíná skutečné díly a spustí se až po vašem potvrzení.
 
 Tyto stránky jsou v **profesionálním režimu**: **Řídicí jednotky přes KKL**, **Škrticí klapka** a **Adaptace a testy akčních členů**. Každá si kabel otevře sama: vyberte sériový port, řídicí jednotku, spustit.
 

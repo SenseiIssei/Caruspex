@@ -8,6 +8,10 @@
 **Dokumentasi:** [pemasangan, langkah pertama, setiap adaptor dan antarmuka, privasi, pertanyaan umum](https://senseiissei.github.io/Caruspex/id/index.html), dalam ke-18 bahasa.
 <!-- /docs -->
 
+<!-- contrib -->
+**Berkontribusi:** kode, terjemahan, dan laporan uji sangat diterima, lihat [CONTRIBUTING.md](CONTRIBUTING.md) (dalam bahasa Inggris).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ buka aplikasi pertama kali dengan klik kanan dan "Buka".
 
 ## Membangun
 
-Persyaratan: toolchain Rust stabil (edisi 2024, Rust 1.85 atau lebih baru), Node 24 dengan npm, dan Python 3 untuk
+Persyaratan: toolchain Rust stabil (edisi 2024, Rust 1.90 atau lebih baru), Node 24 dengan npm, dan Python 3 untuk
 generator dan pemeriksaan terjemahan. Di Linux diperlukan paket sistem yang dibutuhkan antarmuka dan tautan adaptor
 (nama di Debian dan Ubuntu):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` menjalankan aplikasi dengan live reload selagi Anda mengerjakannya. Antarmuka
+`npm --prefix app run dev:app` menjalankan aplikasi dengan live reload selagi Anda mengerjakannya. Antarmuka
 saja, tanpa jendela Tauri, berjalan di peramban biasa dengan mobil demo bawaan:
 
 ```bash

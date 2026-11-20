@@ -18,7 +18,7 @@ Honestly: not yet. Caruspex is tested against simulated control units; on real h
 
 ## Can Caruspex break my car?
 
-Caruspex only reads. The one thing it writes is clearing fault codes, and it warns before it does. It never codes, never flashes and never changes adaptation values. Do not use it while driving.
+Caruspex mostly reads. It writes only after asking you: clearing fault codes and, over the VAG KKL cable, the output test and the throttle basic setting. It never codes, never flashes and never changes adaptation values. Do not use it while driving.
 
 ## Can it change the mileage, the immobiliser or code features?
 
@@ -39,3 +39,5 @@ No. Only the update check asks GitHub for the newest version, and it can be swit
 ## How can I help?
 
 Send a test report from your car, share a recording, report bugs, or improve a translation: the guide is [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), and the button **Improve translation** in the settings opens it.
+
+Code is welcome too: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) explains how to build Caruspex and what a pull request needs.

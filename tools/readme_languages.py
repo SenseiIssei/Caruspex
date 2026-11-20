@@ -9,8 +9,10 @@
    reader's language, between <!-- docs --> and <!-- /docs --> below the bar.
 3. The honest list of what has been tested, between <!-- tested --> and
    <!-- /tested -->, put right before the download section the first time.
+4. The pointer to CONTRIBUTING.md in the reader's language, between
+   <!-- contrib --> and <!-- /contrib --> below the documentation link.
 
-The texts of 2 and 3 are in tools/readme_blocks.json, one entry per language.
+The texts of 2 to 4 are in tools/readme_blocks.json, one entry per language.
 The English README.md is the reference, the other files are translations of it.
 """
 
@@ -99,6 +101,7 @@ def main() -> int:
             raise SystemExit(f"tools/readme_blocks.json ({code}) contains a long dash")
         docs = texts["docs"].replace("{docs}", DOCS_URL.format(code=code))
         new = set_block(new, "docs", docs, after="<!-- /languages -->")
+        new = set_block(new, "contrib", texts["contrib"], after="<!-- /docs -->")
         tested = texts["tested"].replace("{form}", FORM_URL)
         new = set_block(new, "tested", tested, before=texts["before"])
         if new != text:

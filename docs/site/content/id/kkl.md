@@ -7,7 +7,7 @@ Kabel KKL adalah kabel USB dengan chip serial dan driver K-Line, tanpa ELM327 di
 - Setiap unit kontrol VW, Audi, Seat, dan Skoda dari sekitar 1990 sampai 2004: mesin, transmisi, ABS, airbag, panel instrumen, sistem kenyamanan, dan lainnya.
 - KWP1281 dan KWP2000 (ISO 14230), dikenali otomatis dari key byte setelah wake-up.
 - Memori kesalahan per unit kontrol, blok pengukuran, dan setelan dasar throttle body yang sebenarnya (blok pengukuran 060 atau 098).
-- Kanal adaptasi dan tes aktuator sengaja dibuat hanya-baca.
+- Kanal adaptasi sengaja dibuat hanya-baca. Tes aktuator menggerakkan komponen sungguhan dan baru mulai setelah Anda mengonfirmasi.
 
 Halaman-halaman ini ada di **mode profesional**: **Unit kontrol lewat KKL**, **Throttle body**, dan **Adaptasi dan tes output**. Masing-masing membuka kabel sendiri: pilih port serial, unit kontrol, lalu mulai.
 

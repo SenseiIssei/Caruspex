@@ -20,7 +20,7 @@ Caruspex es un programa de diagnosis gratuito para coches y motos. Funciona en W
 3. Busca tu adaptador en [adaptadores e interfaces](interfaces.md).
 4. Lee qué guarda y qué envía Caruspex en [privacidad](privacy.md). En resumen: nada sale de tu ordenador a menos que lo compartas tú.
 
-> Caruspex solo lee. Nunca codifica unidades de control, nunca cambia el kilometraje y nunca toca el inmovilizador. Borrar códigos de avería es lo único que escribe en el coche.
+> Caruspex casi siempre solo lee. Solo escribe después de preguntarte: el borrado de códigos de avería y, con el cable KKL de VAG, el test de actuadores y el ajuste básico de la mariposa. Nunca codifica unidades de control, nunca cambia el kilometraje y nunca toca el inmovilizador.
 
 ## Estado real
 

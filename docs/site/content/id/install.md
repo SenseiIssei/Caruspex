@@ -34,6 +34,15 @@ sudo usermod -aG dialout $USER
 
 Untuk skrip dan server ada `caruspex_cli` tanpa antarmuka, untuk Windows, Linux, dan macOS. `caruspex_cli help` menampilkan daftar perintahnya.
 
+`caruspex_cli report` menulis laporan diagnosis sebagai berkas PDF, tanpa aplikasi dan lewat setiap koneksi yang dikenal perintah lainnya (`--demo`, `--port`, `--tcp`, `--enet`, `--can`, `--replay`):
+
+```
+caruspex_cli report --demo report.pdf
+caruspex_cli report --port COM5 --lang de report.pdf
+```
+
+Laporan bisa dibuat dalam bahasa Jerman, Inggris, Spanyol, Prancis, Portugis, Italia, Belanda, dan Indonesia (`--lang`). Untuk bahasa lain, laporan keluar dalam bahasa Inggris, karena huruf bahasa itu tidak ada di fon bawaan setiap penampil PDF.
+
 ## Pembaruan
 
 Saat dijalankan, Caruspex menanyakan ke GitHub apakah ada versi yang lebih baru, dan tidak lebih dari itu. Versi baru hanya dipasang kalau tanda tangannya cocok dengan kunci yang tertanam di aplikasi. Pemeriksaan dan pemasangan otomatis sama-sama bisa dimatikan di pengaturan.

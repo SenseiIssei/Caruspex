@@ -18,7 +18,7 @@ Ehrlich: noch nicht. Caruspex wird gegen nachgebildete Steuergeräte getestet; a
 
 ## Kann Caruspex mein Auto kaputt machen?
 
-Caruspex liest nur. Das Einzige, was es schreibt, ist das Löschen von Fehlercodes, und davor warnt es. Es codiert nie, flasht nie und ändert keine Anpassungswerte. Nicht während der Fahrt benutzen.
+Caruspex liest überwiegend. Geschrieben wird nur nach Rückfrage: Fehlercodes löschen und, über das VAG-KKL-Kabel, der Stellglieddiagnose-Test und die Grundeinstellung der Drosselklappe. Es codiert nie, flasht nie und ändert keine Anpassungswerte. Nicht während der Fahrt benutzen.
 
 ## Kann es den Kilometerstand, die Wegfahrsperre oder Codierungen ändern?
 
@@ -39,3 +39,5 @@ Nein. Nur die Update-Suche fragt GitHub nach der neuesten Version, und sie läss
 ## Wie kann ich helfen?
 
 Einen Testbericht vom eigenen Auto schicken, einen Mitschnitt teilen, Fehler melden oder eine Übersetzung verbessern: Die Anleitung ist [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), und der Knopf **Übersetzung verbessern** in den Einstellungen öffnet sie.
+
+Auch Code ist willkommen: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) erklärt auf Englisch, wie man Caruspex baut und was ein Pull Request braucht, mit einem kurzen deutschen Teil am Ende.

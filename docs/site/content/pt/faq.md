@@ -18,7 +18,7 @@ Sinceramente: ainda não. O Caruspex é testado com centrais simuladas; em hardw
 
 ## O Caruspex pode estragar meu carro?
 
-O Caruspex só lê. A única coisa que ele escreve é o apagamento de códigos de falha, e ele avisa antes de fazer isso. Ele nunca codifica, nunca reprograma e nunca muda valores de adaptação. Não use enquanto dirige.
+O Caruspex quase só lê. Ele só escreve depois de perguntar a você: o apagamento de códigos de falha e, com o cabo KKL da VAG, o teste de atuadores e o ajuste básico da borboleta. Ele nunca codifica, nunca reprograma e nunca muda valores de adaptação. Não use enquanto dirige.
 
 ## Ele consegue mudar a quilometragem, o imobilizador ou codificar funções?
 
@@ -39,3 +39,5 @@ Não. Só a verificação de atualizações pergunta ao GitHub pela versão mais
 ## Como posso ajudar?
 
 Envie um relatório de teste do seu carro, compartilhe uma gravação, relate bugs ou melhore uma tradução: o guia é o [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), e o botão **Melhorar tradução** nas configurações abre esse guia.
+
+Código também é bem-vindo: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) explica (em inglês) como compilar o Caruspex e o que um pull request precisa.

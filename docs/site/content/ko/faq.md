@@ -18,7 +18,7 @@ OBD-II나 EOBD가 있는 차라면 엔진은 다 돼요: 유럽에서는 2001년
 
 ## Caruspex 때문에 차가 고장 날 수 있나요?
 
-Caruspex는 읽기만 해요. 유일하게 쓰는 것은 고장 코드 삭제이고, 그 전에 경고해요. 코딩도, 플래싱도, 적응값 변경도 절대 하지 않아요. 운전 중에는 쓰지 마세요.
+Caruspex는 주로 읽기만 해요. 쓰기는 먼저 물어본 뒤에만 해요. 고장 코드 삭제, 그리고 VAG KKL 케이블에서는 액추에이터 테스트와 스로틀 기본 설정이에요. 코딩도, 플래싱도, 적응값 변경도 절대 하지 않아요. 운전 중에는 쓰지 마세요.
 
 ## 주행 거리나 이모빌라이저를 바꾸거나 기능을 코딩할 수 있나요?
 
@@ -39,3 +39,5 @@ K-Line을 쓰는 차(유럽에서 대략 2001년부터 2007년)는 원래 응답
 ## 어떻게 도울 수 있나요?
 
 내 차의 테스트 보고서를 보내거나, 기록을 공유하거나, 버그를 보고하거나, 번역을 개선해 주세요: 안내서는 [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md)이고, 설정의 **번역 개선** 버튼으로도 열 수 있어요.
+
+코드도 환영합니다. [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md)(영어)에 Caruspex를 빌드하는 방법과 pull request에 필요한 것이 설명되어 있습니다.

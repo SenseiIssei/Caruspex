@@ -7,7 +7,7 @@ Ein KKL-Kabel ist ein USB-Kabel mit einem seriellen Chip und einem K-Line-Treibe
 - Alle Steuergeräte von VW, Audi, Seat und Skoda von etwa 1990 bis 2004: Motor, Getriebe, ABS, Airbag, Kombiinstrument, Komfort und mehr.
 - KWP1281 und KWP2000 (ISO 14230), automatisch erkannt an den Schlüsselbytes nach dem Wecken.
 - Fehlerspeicher je Steuergerät, Messwertblöcke und die echte Grundeinstellung der Drosselklappe (Messwertblock 060 oder 098).
-- Anpassungskanäle und Stellglieddiagnose werden mit Absicht nur gelesen.
+- Anpassungskanäle werden mit Absicht nur gelesen. Die Stellglieddiagnose schaltet echte Teile und startet erst nach einer Bestätigung.
 
 Diese Seiten gibt es im **Profimodus**: **Steuergeräte über KKL**, **Drosselklappe** und **Anpassung und Stellglieder**. Jede öffnet das Kabel selbst: seriellen Anschluss wählen, Steuergerät wählen, starten.
 

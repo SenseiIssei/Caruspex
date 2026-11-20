@@ -18,7 +18,7 @@
 
 ## Caruspex 会弄坏我的车吗？
 
-Caruspex 只读取。它唯一写入的操作是清除故障码，而且清除前会提醒你。它从不编码，从不刷写，也从不修改匹配值。开车时请不要使用。
+Caruspex 以读取为主。只有先征得你的同意，它才会写入：清除故障码，以及通过 VAG KKL 线缆进行的执行器测试和节气门基本设定。它从不编码，从不刷写，也从不修改匹配值。开车时请不要使用。
 
 ## 它能改里程、防盗器或者编码功能吗？
 
@@ -39,3 +39,5 @@ Caruspex 只读取。它唯一写入的操作是清除故障码，而且清除�
 ## 我能帮什么忙？
 
 发一份你车上的测试报告，分享一段记录，报告错误，或者改进翻译：指南是 [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md)，设置里的 **改进翻译** 按钮也会打开它。
+
+也欢迎提交代码：[CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md)（英文）说明了如何构建 Caruspex 以及 pull request 需要满足什么。

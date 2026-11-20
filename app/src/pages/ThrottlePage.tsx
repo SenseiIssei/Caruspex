@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { call } from "../api";
 import type { LiveRow } from "../api";
 import { Gauge } from "../components/Gauge";
+import { confirm } from "../components/Modal";
 import { Button, Card, Page, PageHeader, Progress, Select } from "../components/ui";
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
@@ -101,13 +102,24 @@ export default function ThrottlePage() {
     void call("open_kkl", { device: ports.port, ecuAddress: ENGINE });
   };
 
-  const runOrStop = () => {
+  const runOrStop = async () => {
     if (running) {
       void call("stop_basic_setting");
       setRunning(false);
       return;
     }
-    void call("start_basic_setting", { group });
+    // The basic setting moves the throttle by itself: ask every time.
+    const ok = await confirm({
+      title: tr("Grundeinstellung starten?"),
+      text: tr(
+        "Die Drosselklappe fährt dabei von selbst ganz auf und zu, damit das Steuergerät ihre Anschläge lernt. Zündung an, Motor aus, das Gaspedal nicht treten und nichts in die Nähe der Klappe halten. Bricht der Vorgang ab, kann der Leerlauf bis zum nächsten Anlernen unruhig sein.",
+      ),
+      confirm: tr("Ja, starten"),
+      cancel: tr("Abbrechen"),
+      danger: true,
+      icon: "alert",
+    });
+    if (ok) void call("start_basic_setting", { group });
   };
 
   const changeSession = (mode: number) => {
@@ -163,7 +175,7 @@ export default function ThrottlePage() {
               { value: 1, label: tr("Messwertblock 001 (nur beobachten, verändert nichts)") },
             ]}
           />
-          <Button variant={running ? "danger" : "primary"} icon={running ? "stop" : "play"} disabled={!kklConnected} onClick={runOrStop}>
+          <Button variant={running ? "danger" : "primary"} icon={running ? "stop" : "play"} disabled={!kklConnected} onClick={() => void runOrStop()}>
             {running ? tr("Grundeinstellung beenden") : tr("Grundeinstellung starten")}
           </Button>
         </div>

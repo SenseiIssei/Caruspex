@@ -7,7 +7,7 @@ Um cabo KKL é um cabo USB com um chip serial e um driver de K-Line, sem ELM327 
 - Todas as centrais de VW, Audi, Seat e Skoda de 1990 a 2004, mais ou menos: motor, câmbio, ABS, airbag, painel de instrumentos, conforto e outras.
 - KWP1281 e KWP2000 (ISO 14230), detectados automaticamente pelos bytes-chave depois do despertar.
 - Memória de falhas por central, blocos de medição e o ajuste básico real do corpo de borboleta (bloco de medição 060 ou 098).
-- Canais de adaptação e testes de saídas são só leitura, de propósito.
+- Os canais de adaptação são só leitura, de propósito. O teste de saídas aciona peças reais e só começa depois da sua confirmação.
 
 Estas páginas estão no **modo profissional**: **Centrais via KKL**, **Corpo de borboleta** e **Adaptação e testes de saídas**. Cada uma abre o cabo por conta própria: escolha a porta serial, a central e comece.
 

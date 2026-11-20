@@ -18,7 +18,7 @@ Jujur saja: belum. Caruspex diuji dengan unit kontrol simulasi; di perangkat ker
 
 ## Apakah Caruspex bisa merusak mobil saya?
 
-Caruspex hanya membaca. Satu-satunya yang ia tulis adalah penghapusan kode kesalahan, dan ia memperingatkan sebelumnya. Ia tidak pernah melakukan coding, tidak pernah flashing, dan tidak pernah mengubah nilai adaptasi. Jangan memakainya sambil menyetir.
+Caruspex sebagian besar hanya membaca. Ia menulis hanya setelah bertanya kepada Anda: penghapusan kode kesalahan dan, lewat kabel VAG KKL, uji aktuator serta setelan dasar throttle. Ia tidak pernah melakukan coding, tidak pernah flashing, dan tidak pernah mengubah nilai adaptasi. Jangan memakainya sambil menyetir.
 
 ## Bisakah ia mengubah jarak tempuh, immobilizer, atau coding fitur?
 
@@ -39,3 +39,5 @@ Tidak. Hanya pemeriksaan pembaruan yang menanyakan versi terbaru ke GitHub, dan 
 ## Bagaimana saya bisa membantu?
 
 Kirim laporan uji dari mobilmu, bagikan rekaman, laporkan bug, atau perbaiki terjemahan: panduannya ada di [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), dan tombol **Perbaiki terjemahan** di pengaturan membukanya.
+
+Kode juga sangat diterima: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) menjelaskan (dalam bahasa Inggris) cara membangun Caruspex dan apa yang dibutuhkan sebuah pull request.

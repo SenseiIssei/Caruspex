@@ -8,6 +8,10 @@
 **Dokumentacja:** [instalacja, pierwsze kroki, każdy adapter i interfejs, prywatność, najczęstsze pytania](https://senseiissei.github.io/Caruspex/pl/index.html), we wszystkich 18 językach.
 <!-- /docs -->
 
+<!-- contrib -->
+**Współtworzenie:** kod, tłumaczenia i raporty z testów są mile widziane, zobacz [CONTRIBUTING.md](CONTRIBUTING.md) (po angielsku).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ otwórz aplikację za pierwszym razem prawym przyciskiem myszy i "Otwórz".
 
 ## Budowanie
 
-Wymagania: stabilny toolchain Rusta (edycja 2024, Rust 1.85 lub nowszy), Node 24 z npm oraz Python 3 dla
+Wymagania: stabilny toolchain Rusta (edycja 2024, Rust 1.90 lub nowszy), Node 24 z npm oraz Python 3 dla
 generatorów i kontroli tłumaczeń. W Linuksie pakiety systemowe potrzebne interfejsowi i łączom adapterów
 (nazwy dla Debiana i Ubuntu):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` uruchamia aplikację z przeładowaniem na żywo podczas pracy nad nią. Sam
+`npm --prefix app run dev:app` uruchamia aplikację z przeładowaniem na żywo podczas pracy nad nią. Sam
 interfejs, bez okna Tauri, działa w zwykłej przeglądarce z wbudowanym samochodem demo:
 
 ```bash

@@ -7,7 +7,7 @@ A KKL cable is a USB cable with a serial chip and a K-Line driver, without an EL
 - Every control unit of VW, Audi, Seat and Skoda from about 1990 to 2004: engine, gearbox, ABS, airbag, instrument cluster, comfort and more.
 - KWP1281 and KWP2000 (ISO 14230), detected automatically from the key bytes after the wake-up.
 - Fault memory per control unit, measuring blocks, and the real basic setting of the throttle body (measuring block 060 or 098).
-- Adaptation channels and output tests are read-only on purpose.
+- Adaptation channels are read-only on purpose. The output test switches real parts and starts only after you confirm.
 
 These pages are in the **pro mode**: **Control units via KKL**, **Throttle body** and **Adaptation and output tests**. Each opens the cable itself: pick the serial port, the control unit, start.
 

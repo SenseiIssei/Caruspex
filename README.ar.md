@@ -8,6 +8,10 @@
 **التوثيق:** [التثبيت، الخطوات الأولى، كل محوّل وكل واجهة، الخصوصية، الأسئلة الشائعة](https://senseiissei.github.io/Caruspex/ar/index.html)، بجميع اللغات الـ18.
 <!-- /docs -->
 
+<!-- contrib -->
+**المساهمة:** نرحّب بالشيفرة والترجمات وتقارير الاختبار، راجع [CONTRIBUTING.md](CONTRIBUTING.md) (بالإنجليزية).
+<!-- /contrib -->
+
 <div dir="rtl">
 
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
@@ -288,7 +292,7 @@
 
 ## البناء
 
-المتطلبات: سلسلة أدوات Rust المستقرة (edition 2024، وRust 1.85 أو أحدث)، وNode 24 مع npm، وPython 3 من أجل
+المتطلبات: سلسلة أدوات Rust المستقرة (edition 2024، وRust 1.90 أو أحدث)، وNode 24 مع npm، وPython 3 من أجل
 المولّدات وفحوص الترجمة. وفي Linux حزم النظام التي تحتاجها الواجهة ووصلات المحوّلات
 (بأسماء Debian وUbuntu):
 
@@ -312,7 +316,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-يشغّل `npm --prefix app run tauri -- dev` التطبيق مع إعادة تحميل فورية أثناء عملك عليه. وتعمل
+يشغّل `npm --prefix app run dev:app` التطبيق مع إعادة تحميل فورية أثناء عملك عليه. وتعمل
 الواجهة وحدها، دون نافذة Tauri، في متصفح عادي مع السيارة التجريبية المدمجة:
 
 ```bash

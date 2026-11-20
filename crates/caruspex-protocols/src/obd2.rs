@@ -496,6 +496,13 @@ pub fn info_text(payload: &[u8]) -> String {
     text.trim_matches(' ').to_string()
 }
 
+/// The ECU name of mode 09 PID 0A is 20 bytes (SAE J1979). With headers off
+/// the answers of two units arrive as one, so only the first 20 bytes count;
+/// otherwise "ECM-EngineControl" and "TCM-TransmissionCtl" run together.
+pub fn ecu_name(payload: &[u8]) -> String {
+    info_text(&payload[..payload.len().min(20)])
+}
+
 /// Calibration IDs are 16 characters each, padded with zero bytes.
 pub fn info_calibration_ids(payload: &[u8]) -> Vec<String> {
     let mut out = Vec::new();
@@ -1354,7 +1361,7 @@ impl<'a> Obd2<'a> {
         if name.ok()
             && let Some((_, messages)) = group_by_source(&name).first()
         {
-            identity.ecu_name = info_text(&info_payload(messages));
+            identity.ecu_name = ecu_name(&info_payload(messages));
         }
         identity.calibration_id = join(&cal_ids);
         identity.calibration_verification = join(&cvns);
@@ -1403,7 +1410,7 @@ impl<'a> Obd2<'a> {
                                 vin
                             };
                         }
-                        0x0A => e.name = info_text(&payload),
+                        0x0A => e.name = ecu_name(&payload),
                         0x04 => e.calibration_ids.extend(info_calibration_ids(&payload)),
                         0x06 => e.cvns.extend(info_cvns(&payload)),
                         0x08 | 0x0B => {

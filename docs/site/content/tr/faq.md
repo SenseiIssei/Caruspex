@@ -18,7 +18,7 @@ Dürüst olmak gerekirse: henüz değil. Caruspex simüle edilmiş kontrol ünit
 
 ## Caruspex aracımı bozabilir mi?
 
-Caruspex yalnızca okur. Yazdığı tek şey arıza kodlarını silmektir ve bunu yapmadan önce uyarır. Asla kodlama yapmaz, asla yazılım yüklemez ve asla adaptasyon değerlerini değiştirmez. Sürüş sırasında kullanmayın.
+Caruspex çoğunlukla okur. Yalnızca size sorduktan sonra yazar: arıza kodlarını silme ve VAG KKL kablosuyla aktüatör testi ile kelebek gövdesi temel ayarı. Asla kodlama yapmaz, asla yazılım yüklemez ve asla adaptasyon değerlerini değiştirmez. Sürüş sırasında kullanmayın.
 
 ## Kilometreyi, immobilizeri değiştirebilir veya özellik kodlayabilir mi?
 
@@ -39,3 +39,5 @@ Hayır. Yalnızca güncelleme kontrolü GitHub'a en yeni sürümü sorar ve bu k
 ## Nasıl yardım edebilirim?
 
 Aracınızdan bir test raporu gönderin, bir kayıt paylaşın, hataları bildirin ya da bir çeviriyi iyileştirin: rehber [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md) dosyasıdır ve ayarlardaki **Çeviriyi iyileştir** düğmesi onu açar.
+
+Kod da memnuniyetle karşılanır: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md), Caruspex'in nasıl derleneceğini ve bir pull request için nelerin gerektiğini (İngilizce) anlatır.

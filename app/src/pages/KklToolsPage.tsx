@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { call } from "../api";
 import type { KklEcuInfo, LiveRow } from "../api";
+import { confirm } from "../components/Modal";
 import { Button, Card, NumberInput, Page, PageHeader, Select } from "../components/ui";
 import { fixed, translator } from "../i18n";
 import { useBackendEvent } from "../lib/hooks";
@@ -53,6 +54,29 @@ export default function KklToolsPage() {
   const [shown, setShown] = useState<LiveRow[]>([]);
   const [actuator, setActuator] = useState("--");
   const [actuatorLog, setActuatorLog] = useState<string[]>([]);
+  // The output test switches real parts, so the first step of every
+  // connection asks once; the following presses only step on.
+  const [actuatorAsked, setActuatorAsked] = useState(false);
+  useEffect(() => {
+    if (!connected) setActuatorAsked(false);
+  }, [connected]);
+  const nextActuator = async () => {
+    if (!actuatorAsked) {
+      const ok = await confirm({
+        title: tr("Stellglieddiagnose starten?"),
+        text: tr(
+          "Das Steuergerät schaltet jetzt echte Bauteile, eins nach dem anderen: Ventile klicken, Pumpen und Lüfter laufen kurz an. Zündung an, Motor aus, das Auto gesichert abstellen und nicht am Motorraum hantieren, solange der Test läuft.",
+        ),
+        confirm: tr("Ja, starten"),
+        cancel: tr("Abbrechen"),
+        danger: true,
+        icon: "alert",
+      });
+      if (!ok) return;
+      setActuatorAsked(true);
+    }
+    void call("run_actuator_test");
+  };
   const [message, setMessage] = useState(() => ({ text: unavailable(), error: false }));
   const logRef = useRef<HTMLDivElement>(null);
 
@@ -159,7 +183,7 @@ export default function KklToolsPage() {
           )}
         </div>
         <div className="kkl-row">
-          <Button icon="play" disabled={!connected} onClick={() => void call("run_actuator_test")}>
+          <Button icon="play" disabled={!connected} onClick={() => void nextActuator()}>
             {tr("Nächstes Stellglied")}
           </Button>
           <span className="ws-big accent grow fade-in" key={actuator}>

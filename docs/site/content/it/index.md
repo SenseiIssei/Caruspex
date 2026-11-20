@@ -20,7 +20,7 @@ Caruspex è un programma di diagnosi gratuito per auto e moto. Gira su Windows, 
 3. Cerca il tuo adattatore in [adattatori e interfacce](interfaces.md).
 4. Leggi cosa Caruspex salva e invia in [privacy](privacy.md). In breve: niente lascia il tuo computer, a meno che non sia tu a condividerlo.
 
-> Caruspex legge soltanto. Non codifica mai le centraline, non cambia mai i chilometri e non tocca mai l'immobilizer. Cancellare i codici errore è l'unica cosa che scrive sull'auto.
+> Caruspex per lo più legge. Scrive solo dopo averti chiesto conferma: la cancellazione dei codici errore e, con il cavo KKL VAG, il test attuatori e la regolazione di base della farfalla. Non codifica mai le centraline, non cambia mai i chilometri e non tocca mai l'immobilizer.
 
 ## Lo stato reale
 

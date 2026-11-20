@@ -18,7 +18,7 @@ Szczerze: jeszcze nie. Caruspex jest testowany na symulowanych sterownikach; na 
 
 ## Czy Caruspex może zepsuć mi auto?
 
-Caruspex tylko odczytuje. Jedyna rzecz, którą zapisuje, to kasowanie kodów błędów, i ostrzega, zanim to zrobi. Nigdy nie koduje, nigdy nie programuje i nigdy nie zmienia wartości adaptacji. Nie używaj go podczas jazdy.
+Caruspex głównie odczytuje. Zapisuje tylko po zapytaniu cię o zgodę: kasowanie kodów błędów oraz, przez kabel VAG KKL, test elementów wykonawczych i podstawowe ustawienie przepustnicy. Nigdy nie koduje, nigdy nie programuje i nigdy nie zmienia wartości adaptacji. Nie używaj go podczas jazdy.
 
 ## Czy może zmienić przebieg, immobilizer albo dokodować funkcje?
 
@@ -39,3 +39,5 @@ Nie. Tylko sprawdzanie aktualizacji pyta GitHuba o najnowszą wersję i można j
 ## Jak mogę pomóc?
 
 Wyślij raport z testu swojego auta, udostępnij nagranie, zgłaszaj błędy albo popraw tłumaczenie: przewodnik to [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), a przycisk **Popraw tłumaczenie** w ustawieniach go otwiera.
+
+Kod też jest mile widziany: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) wyjaśnia (po angielsku), jak zbudować Caruspex i czego potrzebuje pull request.

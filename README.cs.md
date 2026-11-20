@@ -8,6 +8,10 @@
 **Dokumentace:** [instalace, první kroky, každý adaptér a rozhraní, soukromí, časté otázky](https://senseiissei.github.io/Caruspex/cs/index.html), ve všech 18 jazycích.
 <!-- /docs -->
 
+<!-- contrib -->
+**Přispívání:** kód, překlady a zprávy o testech jsou vítány, viz [CONTRIBUTING.md](CONTRIBUTING.md) (anglicky).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ otevřete aplikaci poprvé pravým kliknutím a "Otevřít".
 
 ## Sestavení
 
-Požadavky: stabilní toolchain Rustu (edice 2024, Rust 1.85 nebo novější), Node 24 s npm a Python 3 pro
+Požadavky: stabilní toolchain Rustu (edice 2024, Rust 1.90 nebo novější), Node 24 s npm a Python 3 pro
 generátory a kontroly překladů. V Linuxu systémové balíčky, které potřebuje rozhraní a spojení s adaptéry
 (názvy pro Debian a Ubuntu):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` spustí aplikaci s živým přenačítáním, když na ní pracujete. Samotné
+`npm --prefix app run dev:app` spustí aplikaci s živým přenačítáním, když na ní pracujete. Samotné
 rozhraní, bez okna Tauri, běží v běžném prohlížeči s vestavěným demo autem:
 
 ```bash

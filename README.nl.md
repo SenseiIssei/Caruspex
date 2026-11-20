@@ -8,6 +8,10 @@
 **Documentatie:** [installeren, eerste stappen, elke adapter en interface, privacy, veelgestelde vragen](https://senseiissei.github.io/Caruspex/nl/index.html), in alle 18 talen.
 <!-- /docs -->
 
+<!-- contrib -->
+**Bijdragen:** code, vertalingen en testrapporten zijn welkom, zie [CONTRIBUTING.md](CONTRIBUTING.md) (in het Engels).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ de eerste keer met een rechtsklik en "Open".
 
 ## Bouwen
 
-Vereisten: de stabiele Rust-toolchain (edition 2024, Rust 1.85 of nieuwer), Node 24 met npm en Python 3 voor
+Vereisten: de stabiele Rust-toolchain (edition 2024, Rust 1.90 of nieuwer), Node 24 met npm en Python 3 voor
 de generatoren en vertaalcontroles. Op Linux de systeempakketten die de interface en de adapterverbindingen nodig hebben
 (namen voor Debian en Ubuntu):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` start de applicatie met live herladen terwijl je eraan werkt. De
+`npm --prefix app run dev:app` start de applicatie met live herladen terwijl je eraan werkt. De
 interface alleen, zonder het Tauri-venster, draait in een gewone browser met de ingebouwde demo-auto:
 
 ```bash

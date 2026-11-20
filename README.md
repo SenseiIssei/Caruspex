@@ -8,6 +8,10 @@
 **Documentation:** [install, first steps, every adapter and interface, privacy, FAQ](https://senseiissei.github.io/Caruspex/en/index.html), in all 18 languages.
 <!-- /docs -->
 
+<!-- contrib -->
+**Contributing:** code, translations and test reports are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -163,7 +167,7 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 ### VW and Audi over a KKL cable (KWP1281 and KWP2000)
 - Throttle body adaptation: the real basic setting in measuring block 060 or 098.
 - Scan every control unit, including ABS, airbag, instrument cluster and comfort, with a printable report.
-- Adaptation channels and output tests, deliberately read-only.
+- Adaptation channels, deliberately read-only, and the output test (it switches real parts and starts only after you confirm).
 
 ### Manufacturer and custom values
 - Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening on the CAN bus); every value with a documented source.
@@ -288,7 +292,7 @@ open the app the first time with right click and "Open".
 
 ## Building
 
-Requirements: the stable Rust toolchain (edition 2024, Rust 1.85 or newer), Node 24 with npm, and Python 3 for
+Requirements: the stable Rust toolchain (edition 2024, Rust 1.90 or newer), Node 24 with npm, and Python 3 for
 the generators and translation checks. On Linux the system packages the interface and the adapter links need
 (Debian and Ubuntu names):
 
@@ -312,7 +316,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` starts the application with live reload while you work on it. The
+`npm --prefix app run dev:app` starts the application with live reload while you work on it. The
 interface alone, without the Tauri window, runs in a normal browser with the built-in demo car:
 
 ```bash

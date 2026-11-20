@@ -34,6 +34,15 @@ sudo usermod -aG dialout $USER
 
 Do skryptów i serwerów jest `caruspex_cli` bez interfejsu, dla Windows, Linux i macOS. `caruspex_cli help` wyświetla polecenia.
 
+`caruspex_cli report` zapisuje raport diagnostyczny jako plik PDF, bez aplikacji i przez każde połączenie, które znają pozostałe polecenia (`--demo`, `--port`, `--tcp`, `--enet`, `--can`, `--replay`):
+
+```
+caruspex_cli report --demo report.pdf
+caruspex_cli report --port COM5 --lang de report.pdf
+```
+
+Raport może być po niemiecku, angielsku, hiszpańsku, francusku, portugalsku, włosku, niderlandzku i indonezyjsku (`--lang`). W pozostałych językach, także po polsku, powstaje po angielsku, bo czcionkom wbudowanym w każdą przeglądarkę PDF brakuje ich liter.
+
 ## Aktualizacje
 
 Przy starcie Caruspex pyta GitHuba, czy jest nowsza wersja, i nic poza tym. Nowa wersja jest instalowana tylko wtedy, gdy jej podpis pasuje do klucza wbudowanego w aplikację. Zarówno sprawdzanie, jak i automatyczną instalację można wyłączyć w ustawieniach.

@@ -20,7 +20,7 @@ Caruspex ist ein freies Diagnoseprogramm für Autos und Motorräder. Es läuft u
 3. Den eigenen Adapter unter [Adapter und Schnittstellen](interfaces.md) nachschlagen.
 4. Unter [Datenschutz](privacy.md) lesen, was Caruspex speichert und sendet. Kurz gesagt: Nichts verlässt den Rechner, außer man teilt es selbst.
 
-> Caruspex liest nur. Es codiert keine Steuergeräte, verändert nie den Kilometerstand und fasst die Wegfahrsperre nicht an. Fehlercodes löschen ist das Einzige, was es ins Auto schreibt.
+> Caruspex liest überwiegend. Geschrieben wird nur nach Rückfrage: Fehlercodes löschen und, über das VAG-KKL-Kabel, der Stellglieddiagnose-Test und die Grundeinstellung der Drosselklappe. Es codiert keine Steuergeräte, verändert nie den Kilometerstand und fasst die Wegfahrsperre nicht an.
 
 ## Ehrlicher Stand
 

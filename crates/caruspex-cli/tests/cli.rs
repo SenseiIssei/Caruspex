@@ -480,3 +480,167 @@ fn j1939_reads_the_demo_truck() {
             .starts_with("Connection failed: Nothing can be heard on the J1939 bus.")
     );
 }
+
+// ---------------------------------------------------------------------------
+// report: the PDF
+// ---------------------------------------------------------------------------
+
+/// A file in the temp directory that is removed again.
+struct TempPdf(PathBuf);
+
+impl TempPdf {
+    fn new(name: &str) -> Self {
+        Self(std::env::temp_dir().join(format!("caruspex-cli-{}-{name}.pdf", std::process::id())))
+    }
+    fn arg(&self) -> &str {
+        self.0.to_str().unwrap()
+    }
+    fn bytes(&self) -> Vec<u8> {
+        std::fs::read(&self.0).unwrap()
+    }
+}
+
+impl Drop for TempPdf {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.0);
+    }
+}
+
+fn page_count(pdf: &str) -> usize {
+    let at = pdf.find("/Type /Pages").expect("page tree");
+    let count = &pdf[at..][pdf[at..].find("/Count ").unwrap() + 7..];
+    count
+        .chars()
+        .take_while(char::is_ascii_digit)
+        .collect::<String>()
+        .parse()
+        .unwrap()
+}
+
+/// The text pdftotext reads from the file, if it is installed.
+fn pdftotext(path: &std::path::Path) -> Option<String> {
+    let out = Command::new("pdftotext")
+        .args(["-enc", "UTF-8"])
+        .arg(path)
+        .arg("-")
+        .output()
+        .ok()?;
+    out.status
+        .success()
+        .then(|| String::from_utf8_lossy(&out.stdout).into_owned())
+}
+
+#[test]
+fn report_of_the_demo_car_is_a_pdf_with_its_faults() {
+    let file = TempPdf::new("demo");
+    // No live series: the findings, and so the page count, do not depend
+    // on how fast the machine is.
+    let r = run(&["report", "--demo", "--seconds", "0", file.arg()]);
+    assert_eq!(r.code, 0, "{}{}", r.out, r.err);
+    assert!(r.err.is_empty(), "{}", r.err);
+    assert!(r.out.contains("Report     : "), "{}", r.out);
+    assert!(r.out.trim_end().ends_with("(3 pages)"), "{}", r.out);
+
+    let bytes = file.bytes();
+    assert!(bytes.starts_with(b"%PDF-"));
+    assert!(bytes.ends_with(b"%%EOF\n"));
+    let pdf = String::from_utf8_lossy(&bytes);
+    assert_eq!(page_count(&pdf), 3);
+    assert_eq!(pdf.matches("/Type /Page /Parent").count(), 3);
+    for code in ["P0171", "P0420", "P0300"] {
+        assert!(pdf.contains(&format!("({code}) Tj")), "{code}");
+    }
+    assert!(pdf.contains("(YCXDE15C7MC048217) Tj"));
+    assert!(pdf.contains("(Diagnostic report) Tj"));
+    assert!(pdf.contains("(Page 3 of 3) Tj"));
+    assert!(pdf.contains("(Freeze frame data) Tj"));
+
+    // A real reader, where one is installed, sees the same.
+    if let Some(text) = pdftotext(&file.0) {
+        assert!(text.contains("P0420"), "{text}");
+        assert!(text.contains("Catalyst system efficiency below threshold"));
+        assert!(text.contains("Page 1 of 3"));
+    }
+}
+
+#[test]
+fn report_in_german_keeps_its_umlauts() {
+    let file = TempPdf::new("de");
+    let r = run(&[
+        "report",
+        "--demo",
+        "--seconds",
+        "0",
+        "--lang",
+        "de",
+        file.arg(),
+    ]);
+    assert_eq!(r.code, 0, "{}{}", r.out, r.err);
+    assert!(r.err.is_empty(), "nothing replaced: {}", r.err);
+    let pdf = String::from_utf8_lossy(&file.bytes()).into_owned();
+    // "Prüfbericht" with ü as WinAnsi 0xFC.
+    assert!(pdf.contains("(Pr\\374fbericht) Tj"));
+    assert!(pdf.contains("(gespeichert) Tj"));
+    if let Some(text) = pdftotext(&file.0) {
+        assert!(text.contains("Prüfbericht"), "{text}");
+        assert!(text.contains("Bereitschaftstests"));
+    }
+}
+
+#[test]
+fn report_falls_back_to_english_for_other_scripts() {
+    let file = TempPdf::new("ja");
+    let r = run(&[
+        "report",
+        "--demo",
+        "--seconds",
+        "0",
+        "--lang",
+        "ja",
+        "--json",
+        file.arg(),
+    ]);
+    assert_eq!(r.code, 0, "{}", r.err);
+    assert_eq!(
+        r.err,
+        "Note: the PDF fonts cannot show \u{65E5}\u{672C}\u{8A9E} (ja), so the report is in English.\n"
+    );
+    let v: serde_json::Value = serde_json::from_str(&r.out).unwrap();
+    assert_eq!(v["language"], "en");
+    assert_eq!(v["pages"], 3);
+    assert_eq!(v["faults"], 3);
+    assert!(String::from_utf8_lossy(&file.bytes()).contains("(Diagnostic report) Tj"));
+}
+
+#[test]
+fn report_from_a_recording() {
+    let file = TempPdf::new("replay");
+    let r = run(&["report", "--replay", DEMO_REC, "--seconds", "0", file.arg()]);
+    assert_eq!(r.code, 0, "{}{}", r.out, r.err);
+    let pdf = String::from_utf8_lossy(&file.bytes()).into_owned();
+    assert!(pdf.contains("(P0171) Tj"));
+}
+
+#[test]
+fn report_errors() {
+    let r = run(&["report", "--demo"]);
+    assert_eq!(r.code, 1);
+    assert!(r.out.starts_with("report needs the name of the PDF file"));
+    let r = run(&["report", "--demo", "--lang", "xx", "x.pdf"]);
+    assert_eq!(r.code, 1);
+    assert!(r.out.starts_with("Unknown language: xx"));
+    // Other commands still refuse a stray argument.
+    let r = run(&["read", "--demo", "x.pdf"]);
+    assert_eq!(r.code, 1);
+    assert!(
+        r.out
+            .starts_with("Unknown option: x.pdf\n\nUsage: caruspex_cli")
+    );
+    let r = run(&["report", "--demo", "--seconds", "0", "no/such/dir/x.pdf"]);
+    assert_eq!(r.code, 5);
+    assert!(
+        r.out.contains("Cannot write no/such/dir/x.pdf"),
+        "{}",
+        r.out
+    );
+}
