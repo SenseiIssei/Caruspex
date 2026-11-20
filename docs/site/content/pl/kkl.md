@@ -7,7 +7,7 @@ Kabel KKL to kabel USB z układem szeregowym i driverem linii K-Line, bez ELM327
 - Każdy sterownik VW, Audi, Seata i Skody z lat około 1990 do 2004: silnik, skrzynia biegów, ABS, poduszki powietrzne, zestaw wskaźników, komfort i inne.
 - KWP1281 i KWP2000 (ISO 14230), rozpoznawane automatycznie po bajtach kluczowych po wybudzeniu.
 - Pamięć usterek każdego sterownika, bloki pomiarowe i prawdziwe ustawienie podstawowe przepustnicy (blok pomiarowy 060 lub 098).
-- Kanały adaptacji i testy wyjść są celowo tylko do odczytu.
+- Kanały adaptacji są celowo tylko do odczytu. Test wyjść uruchamia prawdziwe części i startuje dopiero po twoim potwierdzeniu.
 
 Te strony są w **trybie profesjonalnym**: **Sterowniki przez KKL**, **Przepustnica** oraz **Adaptacja i testy wyjść**. Każda sama otwiera kabel: wybierz port szeregowy, sterownik, start.
 

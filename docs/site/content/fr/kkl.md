@@ -7,7 +7,7 @@ Un câble KKL est un câble USB avec une puce série et un pilote de ligne K, sa
 - Tous les calculateurs de VW, Audi, Seat et Skoda d'environ 1990 à 2004 : moteur, boîte de vitesses, ABS, airbag, combiné d'instruments, confort et d'autres.
 - KWP1281 et KWP2000 (ISO 14230), détectés automatiquement d'après les octets clés après le réveil.
 - Mémoire de défauts par calculateur, blocs de mesure, et le vrai réglage de base du boîtier papillon (bloc de mesure 060 ou 098).
-- Les canaux d'adaptation et les tests des sorties sont volontairement en lecture seule.
+- Les canaux d'adaptation sont volontairement en lecture seule. Le test des sorties actionne de vraies pièces et ne démarre qu'après votre confirmation.
 
 Ces pages se trouvent dans le **mode expert** : **Calculateurs via KKL**, **Boîtier papillon** et **Adaptation et tests des sorties**. Chacune ouvre elle-même le câble : choisissez le port série, le calculateur, lancez.
 

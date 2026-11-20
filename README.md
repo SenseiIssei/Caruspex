@@ -167,7 +167,7 @@ addressing, listening to broadcast values (Tesla), recording and replay.
 ### VW and Audi over a KKL cable (KWP1281 and KWP2000)
 - Throttle body adaptation: the real basic setting in measuring block 060 or 098.
 - Scan every control unit, including ABS, airbag, instrument cluster and comfort, with a printable report.
-- Adaptation channels and output tests, deliberately read-only.
+- Adaptation channels, deliberately read-only, and the output test (it switches real parts and starts only after you confirm).
 
 ### Manufacturer and custom values
 - Electric car batteries: state of health, charge, cell voltages with spread, temperatures, for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening on the CAN bus); every value with a documented source.

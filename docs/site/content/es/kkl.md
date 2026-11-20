@@ -7,7 +7,7 @@ Un cable KKL es un cable USB con un chip serie y un driver de K-Line, sin ningú
 - Todas las unidades de control de VW, Audi, Seat y Skoda de 1990 a 2004 aproximadamente: motor, caja de cambios, ABS, airbag, cuadro de instrumentos, confort y más.
 - KWP1281 y KWP2000 (ISO 14230), detectados automáticamente por los bytes clave tras el despertar.
 - Memoria de averías por unidad de control, bloques de valores de medición y el ajuste básico real de la mariposa (bloque de valores 060 o 098).
-- Los canales de adaptación y las pruebas de salidas son de solo lectura a propósito.
+- Los canales de adaptación son de solo lectura a propósito. La prueba de salidas activa piezas reales y solo empieza tras tu confirmación.
 
 Estas páginas están en el **modo profesional**: **Unidades de control por KKL**, **Mariposa** y **Adaptación y pruebas de salidas**. Cada una abre el cable por sí misma: elige el puerto serie, la unidad de control y empieza.
 
