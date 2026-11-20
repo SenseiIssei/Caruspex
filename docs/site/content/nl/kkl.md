@@ -7,7 +7,7 @@ Een KKL-kabel is een USB-kabel met een seriële chip en een K-Line-driver, zonde
 - Elke regeleenheid van VW, Audi, Seat en Skoda van ongeveer 1990 tot 2004: motor, versnellingsbak, ABS, airbag, instrumentenpaneel, comfort en meer.
 - KWP1281 en KWP2000 (ISO 14230), automatisch herkend aan de keybytes na het wekken.
 - Foutgeheugen per regeleenheid, meetwaardeblokken en de echte basisinstelling van het gasklephuis (meetwaardeblok 060 of 098).
-- Adaptatiekanalen en uitgangstests zijn met opzet alleen-lezen.
+- Adaptatiekanalen zijn met opzet alleen-lezen. De uitgangstest schakelt echte onderdelen en start pas na je bevestiging.
 
 Deze pagina's zitten in de **expertmodus**: **Regeleenheden via KKL**, **Gasklephuis** en **Adaptatie en uitgangstests**. Elk ervan opent de kabel zelf: kies de seriële poort, de regeleenheid, starten.
 

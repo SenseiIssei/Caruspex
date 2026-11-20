@@ -18,7 +18,7 @@ Sinceramente: ainda não. O Caruspex é testado com centrais simuladas; em hardw
 
 ## O Caruspex pode estragar meu carro?
 
-O Caruspex só lê. A única coisa que ele escreve é o apagamento de códigos de falha, e ele avisa antes de fazer isso. Ele nunca codifica, nunca reprograma e nunca muda valores de adaptação. Não use enquanto dirige.
+O Caruspex quase só lê. Ele só escreve depois de perguntar a você: o apagamento de códigos de falha e, com o cabo KKL da VAG, o teste de atuadores e o ajuste básico da borboleta. Ele nunca codifica, nunca reprograma e nunca muda valores de adaptação. Não use enquanto dirige.
 
 ## Ele consegue mudar a quilometragem, o imobilizador ou codificar funções?
 

@@ -7,7 +7,7 @@ KKL kablosu, içinde ELM327 olmayan, seri çipli ve K-Line sürücülü bir USB 
 - Yaklaşık 1990 ile 2004 arası VW, Audi, Seat ve Skoda'ların her kontrol ünitesi: motor, şanzıman, ABS, hava yastığı, gösterge paneli, konfor ve daha fazlası.
 - KWP1281 ve KWP2000 (ISO 14230), uyandırmadan sonraki anahtar baytlardan otomatik olarak tanınır.
 - Her kontrol ünitesi için arıza belleği, ölçüm blokları ve gaz kelebeği gövdesinin gerçek temel ayarı (ölçüm bloğu 060 veya 098).
-- Adaptasyon kanalları ve çıkış testleri bilerek yalnızca okunur.
+- Adaptasyon kanalları bilerek yalnızca okunur. Çıkış testi gerçek parçaları çalıştırır ve yalnızca onayınızdan sonra başlar.
 
 Bu sayfalar **profesyonel modda** bulunur: **KKL ile kontrol üniteleri**, **Gaz kelebeği gövdesi** ve **Adaptasyon ve çıkış testleri**. Her biri kabloyu kendisi açar: seri portu, kontrol ünitesini seçin, başlatın.
 

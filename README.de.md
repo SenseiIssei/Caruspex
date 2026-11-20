@@ -119,7 +119,7 @@ Caruspex erkennt selbst, was angesteckt ist und was das Auto spricht.
 **VW und Audi über KKL-Kabel (KWP1281 und KWP2000)**
 - Drosselklappe anlernen: echte Grundeinstellung im Messwertblock 060 oder 098
 - Alle Steuergeräte durchsuchen, auch ABS, Airbag, Kombi und Komfort, mit Prüfbericht
-- Anpassungskanäle lesen und Stellglieddiagnose, bewusst nur lesend
+- Anpassungskanäle lesen, bewusst nur lesend, und Stellglieddiagnose (schaltet echte Teile, startet erst nach Bestätigung)
 
 **Herstellerwerte und eigene Werte**
 - Akku von E-Autos: Akkugesundheit, Ladestand, Zellspannungen mit Spreizung, Temperaturen, für Hyundai Kona und Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf und Tesla Model 3 und Y (per Mithören am CAN-Bus); jeder Wert mit belegter Quelle

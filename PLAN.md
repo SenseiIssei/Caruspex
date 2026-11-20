@@ -334,7 +334,7 @@ kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 
 ## Was bewusst nicht kommt
 
-- Schreiben in Anpassungskanäle oder Codierung: ein falscher Wert legt das Auto lahm, das bleibt nur lesend. Löschen von Fehlern ist die einzige schreibende Aktion
+- Schreiben in Anpassungskanäle oder Codierung: ein falscher Wert legt das Auto lahm, das bleibt nur lesend. Geschrieben wird nur nach Rückfrage: Fehler löschen und, nur über das VAG-KKL-Kabel, Stellglieddiagnose-Test und Grundeinstellung der Drosselklappe
 - Wegfahrsperre, Schlüssel anlernen, Kilometerstand verändern: rechtlich heikel und nicht der Zweck dieses Werkzeugs
 - VAG TP 2.0 über ELM327 (siehe Phase 6), dafür bleibt KKL
 - Konstruktionsdaten und Stromlaufpläne der Hersteller im 3D-Modell: sie sind nur gegen Lizenz zu haben, deshalb zeigt Phase 20 Lage, Geräte und Busse statt jedes einzelnen Drahts

@@ -20,7 +20,7 @@ Caruspex je bezplatný diagnostický program pro auta a motorky. Běží na Wind
 3. Najděte svůj adaptér v části [adaptéry a rozhraní](interfaces.md).
 4. V části [soukromí](privacy.md) si přečtěte, co Caruspex ukládá a posílá. Ve zkratce: nic neopustí váš počítač, pokud to sami nesdílíte.
 
-> Caruspex jen čte. Nikdy nekóduje řídicí jednotky, nikdy nemění stav tachometru a nikdy nesahá na imobilizér. Mazání chybových kódů je jediná věc, kterou do auta zapisuje.
+> Caruspex většinou jen čte. Zapisuje, až když se vás zeptá: mazání chybových kódů a přes kabel VAG KKL test akčních členů a základní nastavení škrticí klapky. Nikdy nekóduje řídicí jednotky, nikdy nemění stav tachometru a nikdy nesahá na imobilizér.
 
 ## Upřímný stav
 

@@ -7,7 +7,7 @@ Un cavo KKL è un cavo USB con un chip seriale e un driver K-Line, senza un ELM3
 - Tutte le centraline di VW, Audi, Seat e Skoda dal 1990 al 2004 circa: motore, cambio, ABS, airbag, quadro strumenti, comfort e altre.
 - KWP1281 e KWP2000 (ISO 14230), riconosciuti automaticamente dai byte chiave dopo il risveglio.
 - Memoria errori per ogni centralina, blocchi di misura e la vera impostazione di base del corpo farfallato (blocco di misura 060 o 098).
-- I canali di adattamento e i test delle uscite sono di proposito in sola lettura.
+- I canali di adattamento sono di proposito in sola lettura. Il test delle uscite aziona componenti reali e parte solo dopo la tua conferma.
 
 Queste pagine sono nella **modalità esperto**: **Centraline via KKL**, **Corpo farfallato** e **Adattamento e test delle uscite**. Ognuna apre il cavo da sola: scegli la porta seriale, la centralina, avvia.
 

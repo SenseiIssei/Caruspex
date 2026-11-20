@@ -18,7 +18,7 @@ Sinceramente: todavía no. Caruspex se prueba contra unidades de control simulad
 
 ## ¿Puede Caruspex estropear mi coche?
 
-Caruspex solo lee. Lo único que escribe es el borrado de códigos de avería, y avisa antes de hacerlo. Nunca codifica, nunca programa y nunca cambia valores de adaptación. No lo uses mientras conduces.
+Caruspex casi siempre solo lee. Solo escribe después de preguntarte: el borrado de códigos de avería y, con el cable KKL de VAG, el test de actuadores y el ajuste básico de la mariposa. Nunca codifica, nunca programa y nunca cambia valores de adaptación. No lo uses mientras conduces.
 
 ## ¿Puede cambiar el kilometraje, el inmovilizador o codificar funciones?
 

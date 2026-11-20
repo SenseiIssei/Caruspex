@@ -20,7 +20,7 @@ O Caruspex é um programa de diagnóstico gratuito para carros e motos. Ele roda
 3. Procure seu adaptador em [adaptadores e interfaces](interfaces.md).
 4. Leia o que o Caruspex guarda e envia em [privacidade](privacy.md). Resumindo: nada sai do seu computador a não ser que você mesmo compartilhe.
 
-> O Caruspex só lê. Ele nunca codifica centrais, nunca muda a quilometragem e nunca mexe no imobilizador. Apagar códigos de falha é a única coisa que ele escreve no carro.
+> O Caruspex quase só lê. Ele só escreve depois de perguntar a você: o apagamento de códigos de falha e, com o cabo KKL da VAG, o teste de atuadores e o ajuste básico da borboleta. Ele nunca codifica centrais, nunca muda a quilometragem e nunca mexe no imobilizador.
 
 ## Situação real
 

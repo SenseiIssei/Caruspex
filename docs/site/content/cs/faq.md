@@ -18,7 +18,7 @@ Upřímně: zatím ne. Caruspex se testuje proti simulovaným řídicím jednotk
 
 ## Může Caruspex moje auto poškodit?
 
-Caruspex jen čte. Jediné, co zapisuje, je mazání chybových kódů, a než to udělá, varuje vás. Nikdy nekóduje, nikdy neflashuje a nikdy nemění adaptační hodnoty. Nepoužívejte ho za jízdy.
+Caruspex většinou jen čte. Zapisuje, až když se vás zeptá: mazání chybových kódů a přes kabel VAG KKL test akčních členů a základní nastavení škrticí klapky. Nikdy nekóduje, nikdy neflashuje a nikdy nemění adaptační hodnoty. Nepoužívejte ho za jízdy.
 
 ## Umí změnit stav tachometru, imobilizér nebo nakódovat funkce?
 

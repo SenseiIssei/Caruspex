@@ -18,7 +18,7 @@ Honestly: not yet. Caruspex is tested against simulated control units; on real h
 
 ## Can Caruspex break my car?
 
-Caruspex only reads. The one thing it writes is clearing fault codes, and it warns before it does. It never codes, never flashes and never changes adaptation values. Do not use it while driving.
+Caruspex mostly reads. It writes only after asking you: clearing fault codes and, over the VAG KKL cable, the output test and the throttle basic setting. It never codes, never flashes and never changes adaptation values. Do not use it while driving.
 
 ## Can it change the mileage, the immobiliser or code features?
 
