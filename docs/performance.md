@@ -90,6 +90,7 @@ harness added.
 | Worker, adapter prompt to event, median / p95 | 0.4 / 0.6 ms | 0.3 / 0.6 ms |
 | Worker, heap growth over 5 s of live values | none (about -2 KB) | none (under 2 KB, the latencies the probe keeps) |
 | Start: English names of the PID table and the built-in packs | | 0.7 ms, 302 KiB heap |
+| Soak of the driver and protocols, 60 s (6.2 million rounds of 6 PIDs, adapter at once) | | heap +0 bytes |
 
 The OBDLink rows of the protocols report change less: with the batched commands of the STN chip a round of
 12 PIDs is already one line, and the answer count digit is not put into batched lines (see below).
