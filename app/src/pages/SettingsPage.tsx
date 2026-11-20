@@ -429,7 +429,7 @@ export default function SettingsPage() {
           </Check>
         </Full>
         <Full>
-          <Check checked={values.checkUpdates} onChange={(v) => change({ checkUpdates: v })}>
+          <Check checked={values.checkUpdates && values.updateChoiceMade} onChange={(v) => change({ checkUpdates: v, updateChoiceMade: true })}>
             {tr("Beim Start nach einer neuen Version suchen (fragt nur GitHub, sonst nichts)")}
           </Check>
         </Full>

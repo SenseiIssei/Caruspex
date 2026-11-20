@@ -358,6 +358,9 @@ export interface AppSettings {
   // Window.
   rememberGeometry: boolean;
   checkUpdates: boolean;
+  // The question whether to look for updates was answered; until then no
+  // request goes to GitHub.
+  updateChoiceMade: boolean;
   // Installs a newer version found at start without asking first.
   autoInstallUpdates: boolean;
   // "auto" or a language code.
@@ -394,6 +397,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   logPath: "",
   rememberGeometry: true,
   checkUpdates: true,
+  updateChoiceMade: false,
   autoInstallUpdates: false,
   language: "auto",
   appearance: "auto",

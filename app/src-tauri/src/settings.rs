@@ -52,6 +52,10 @@ pub struct AppSettings {
     pub remember_geometry: bool,
     /// Ask GitHub for a newer version at start.
     pub check_updates: bool,
+    /// The user answered the question whether to look for updates. Until
+    /// then no request goes to GitHub, also on copies updated from versions
+    /// before the question existed (the field is missing there).
+    pub update_choice_made: bool,
     /// Install a newer version found at start without asking first (the
     /// signature is checked either way).
     pub auto_install_updates: bool,
@@ -111,6 +115,7 @@ impl Default for AppSettings {
             log_path: String::new(),
             remember_geometry: true,
             check_updates: true,
+            update_choice_made: false,
             auto_install_updates: false,
             language: "auto".into(),
             appearance: "auto".into(),

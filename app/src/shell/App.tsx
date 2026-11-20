@@ -4,6 +4,7 @@
 // listening to the backend while another one is on screen.
 import { memo, useEffect, useRef, useState, type ComponentType } from "react";
 import { call, on, type CrashReport, type UpdateInfo } from "../api";
+import { confirm } from "../components/Modal";
 import { Toaster } from "../components/Toast";
 import { t, tn } from "../i18n";
 import { PageActiveContext } from "../lib/hooks";
@@ -11,8 +12,8 @@ import { emitApp, onApp, useStore } from "../lib/store";
 import { ReportPreview } from "../report/ReportPreview";
 import { setFontScale, setHighContrast } from "../lib/access";
 import { isAndroid, usePhoneLayout } from "../lib/platform";
-import { appendLog, settingsStore } from "../state/session";
-import { openSetup } from "../state/setup";
+import { appendLog, applySettings, settingsStore } from "../state/session";
+import { openSetup, setupStore } from "../state/setup";
 import { SetupAssistant } from "./SetupAssistant";
 import { LogDrawer } from "./LogDrawer";
 import { navigate, navStore, useCurrentPage } from "./nav";
@@ -22,6 +23,7 @@ import { TitleBar } from "./TitleBar";
 import { UpdateDialog } from "./UpdateDialog";
 import { CrashDialog } from "./CrashDialog";
 
+const tu = (de: string) => t("caruspex::UpdateConsent", de);
 const MW = "caruspex::MainWindow";
 
 // One page in its slot. Memoised, so a change of page renders the two pages
@@ -114,7 +116,8 @@ export function App({ startPage }: { startPage: string | null }) {
   // never opens the dialog in the middle of a diagnosis.
   useEffect(() => {
     const timer = window.setInterval(() => {
-      if (!settingsStore.get().values.checkUpdates) return;
+      const values = settingsStore.get().values;
+      if (!values.checkUpdates || !values.updateChoiceMade) return;
       void call("check_for_update")
         .then((found) => {
           if (found) setUpdate((current) => (current?.version === found.version ? current : found));
@@ -150,9 +153,37 @@ export function App({ startPage }: { startPage: string | null }) {
         }
       }
       appendLog(t(MW, "Caruspex bereit. Adapter einstecken, Zündung an, dann verbinden."));
-      const settings = settingsStore.get().values;
+      let settings = settingsStore.get().values;
       if (settings.autoConnect && settings.lastPort) emitApp("connect:auto", settings.lastPort);
-      if (settings.checkUpdates) {
+      // Asked once, on every installation, also after an update from a
+      // version without the question: nothing goes to GitHub before a yes.
+      // Runs from the command line (a page, the demo car) are not asked.
+      const automated = startPage !== null || new URLSearchParams(location.search).has("demo");
+      if (!settings.updateChoiceMade && !automated && !cancelled) {
+        // On a first start the assistant comes first; the question follows
+        // once it is closed, so two dialogs never sit on top of each other.
+        await new Promise<void>((resolve) => {
+          if (!setupStore.get().open) return resolve();
+          const stop = setupStore.subscribe(() => {
+            if (!setupStore.get().open) {
+              stop();
+              resolve();
+            }
+          });
+        });
+        const yes = await confirm({
+          title: tu("Nach Updates suchen?"),
+          text: tu(
+            "Caruspex kann beim Start und alle sechs Stunden bei GitHub nachsehen, ob es eine neue Version gibt. Dabei sieht GitHub wie bei jedem Download die IP-Adresse dieses Rechners; Caruspex selbst sendet und speichert dabei nichts weiter. Ohne die Suche ab und zu auf der Release-Seite nachsehen. In den Einstellungen lässt sich das jederzeit ändern.",
+          ),
+          confirm: tu("Ja, nach Updates suchen"),
+          cancel: tu("Nein"),
+          icon: "download",
+        });
+        settings = { ...settingsStore.get().values, checkUpdates: yes, updateChoiceMade: true };
+        await applySettings(settings);
+      }
+      if (settings.checkUpdates && settings.updateChoiceMade) {
         try {
           const found = await call("check_for_update");
           if (found && !cancelled) {

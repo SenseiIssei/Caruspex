@@ -143,7 +143,7 @@ pub async fn check_for_update(state: State<'_, AppState>) -> Result<Value> {
     let allowed = state
         .settings
         .lock()
-        .map(|s| s.check_updates)
+        .map(|s| s.check_updates && s.update_choice_made)
         .unwrap_or(false)
         && state.cli.allows_update_check();
     if !allowed {
