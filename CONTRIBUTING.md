@@ -29,6 +29,8 @@ conventions in [crates/README.md](crates/README.md).
 - **Improve a translation**: see [translations/TRANSLATING.md](translations/TRANSLATING.md).
 - **Correct the documentation**: the website is built from `docs/site/content/<language>/*.md`.
 - **Report a security problem** privately, as described in [SECURITY.md](SECURITY.md), not in a public issue.
+  What the EU Cyber Resilience Act means for Caruspex (scope, risk assessment, requirements) is in
+  [docs/cra/](docs/cra/scope.md).
 
 ## Build and run
 
@@ -162,6 +164,12 @@ What else runs in the CI:
 - **Android**: an unsigned APK for arm64 (see [docs/android.md](docs/android.md)).
 - **Sanitizers**: AddressSanitizer and Rust's undefined behaviour checks on the modules with `unsafe` code,
   on nightly. It may fail without blocking a pull request.
+- **SBOM**: `python tools/sbom.py --check` builds the software bills of materials (CycloneDX) of every platform
+  from `Cargo.lock` and `app/package-lock.json` and checks them; the release attaches them.
+- **Audit** (`.github/workflows/audit.yml`): `python tools/audit.py` looks up every crate and the npm packages of
+  the interface in the RustSec and npm advisory databases, on dependency changes and once a week. It needs
+  `cargo install cargo-audit --locked`. A finding that does not affect Caruspex goes into
+  `tools/audit_exceptions.toml` with a reason and an expiry date ([SECURITY.md](SECURITY.md#dependencies)).
 
 Pull requests from forks run all of this without any secrets. Signing and the release only run for version
 tags in the main repository, and only the main repository publishes the documentation website. GitHub may ask

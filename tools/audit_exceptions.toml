@@ -1,0 +1,12 @@
+# Accepted findings of tools/audit.py (RustSec and npm audit).
+#
+# Only for a finding that does not affect Caruspex: the vulnerable function is
+# not used, the platform is not built, the package is not shipped. Every entry
+# needs all four keys; expires is at most one year ahead. When it has passed,
+# the audit fails until the entry is checked again (renewed or removed).
+#
+# [[exception]]
+# id = "RUSTSEC-2026-0000"     # or the GHSA id that npm audit shows
+# package = "name-of-the-crate"
+# reason = "Why Caruspex is not affected, with the file or function that shows it."
+# expires = 2027-03-31

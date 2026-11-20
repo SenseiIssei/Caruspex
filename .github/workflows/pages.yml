@@ -11,6 +11,10 @@ on:
       - "docs/**"
       - "tools/readme_languages.py"
       - ".github/workflows/pages.yml"
+  # Once a month, so the Expires date of /.well-known/security.txt
+  # (docs/site/build.py) never runs out while the site stays unchanged.
+  schedule:
+    - cron: "23 4 1 * *"
   workflow_dispatch:
 
 permissions:

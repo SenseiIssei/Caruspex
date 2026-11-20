@@ -223,9 +223,28 @@ pub fn serialise(cars: &[GarageCar]) -> String {
 }
 
 pub fn load(path: &Path) -> Vec<GarageCar> {
-    std::fs::read_to_string(path)
-        .map(|t| parse(&t))
-        .unwrap_or_default()
+    let Ok(bytes) = std::fs::read(path) else {
+        return Vec::new();
+    };
+    match std::str::from_utf8(&bytes) {
+        Ok(text) if text.trim().is_empty() || serde_json::from_str::<GarageFile>(text).is_ok() => {
+            parse(text)
+        }
+        _ => {
+            // A garage that cannot be read would be overwritten by the next
+            // save: keep the damaged file next to it, so nothing is lost
+            // without a trace (docs/cra/requirements.md, Annex I part I 2(f)).
+            let _ = std::fs::copy(path, damaged_copy(path));
+            Vec::new()
+        }
+    }
+}
+
+/// garage.json -> garage.json.damaged (an older copy is replaced).
+pub fn damaged_copy(path: &Path) -> PathBuf {
+    let mut name = path.as_os_str().to_owned();
+    name.push(".damaged");
+    PathBuf::from(name)
 }
 
 pub fn save(path: &Path, cars: &[GarageCar]) -> Result<(), String> {
@@ -308,6 +327,33 @@ mod tests {
         assert_eq!(prefer_protocol("67", "3"), "67");
         assert_eq!(prefer_protocol("67", ""), "67");
         assert_eq!(prefer_protocol("67", "67"), "67");
+    }
+
+    #[test]
+    fn a_damaged_garage_is_kept_before_it_can_be_overwritten() {
+        let dir = std::env::temp_dir().join(format!("caruspex-garage-{}", new_id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("garage.json");
+        let copy = damaged_copy(&path);
+        assert_eq!(copy, dir.join("garage.json.damaged"));
+
+        // Missing, empty and valid files: no copy.
+        assert!(load(&path).is_empty());
+        std::fs::write(&path, " \n").unwrap();
+        assert!(load(&path).is_empty());
+        std::fs::write(&path, QT_FILE).unwrap();
+        assert!(!load(&path).is_empty());
+        assert!(!copy.exists());
+
+        // Cut off JSON and bytes that are no text: kept as they were.
+        let cut = &QT_FILE[..QT_FILE.len() / 2];
+        std::fs::write(&path, cut).unwrap();
+        assert!(load(&path).is_empty());
+        assert_eq!(std::fs::read_to_string(&copy).unwrap(), cut);
+        std::fs::write(&path, [0xff, 0xfe, b'{']).unwrap();
+        assert!(load(&path).is_empty());
+        assert_eq!(std::fs::read(&copy).unwrap(), [0xff, 0xfe, b'{']);
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]

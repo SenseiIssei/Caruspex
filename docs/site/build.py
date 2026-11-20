@@ -32,6 +32,7 @@ resolve, no long dashes (U+2014, U+2013), no placeholders left over.
 
 from __future__ import annotations
 
+import datetime
 import html
 import json
 import os
@@ -74,7 +75,7 @@ GROUPS = [
         ],
     ),
     ("group_using", ["faults", "live", "xray", "used-car"]),
-    ("group_more", ["privacy", "legal", "faq"]),
+    ("group_more", ["privacy", "security", "legal", "faq"]),
 ]
 PAGES = [page for _, pages in GROUPS for page in pages]
 
@@ -419,6 +420,22 @@ def root_index(base: str = "", redirect: bool = True) -> str:
 """
 
 
+def security_txt(now: datetime.datetime) -> str:
+    """RFC 9116. The project site lives below /Caruspex/ on github.io, not at
+    the root of the origin where the RFC wants the file, so scanners that
+    only look at the root miss it; it still names the contact and the policy
+    for anyone who looks here. Expires is half a year after the build (the
+    RFC asks for less than a year); pages.yml rebuilds the site every month."""
+    expires = (now + datetime.timedelta(days=183)).strftime("%Y-%m-%dT00:00:00Z")
+    return (
+        f"Contact: {REPO}/security/advisories/new\n"
+        f"Expires: {expires}\n"
+        f"Policy: {REPO}/blob/main/SECURITY.md\n"
+        "Preferred-Languages: en, de\n"
+        f"Canonical: {BASE_URL}.well-known/security.txt\n"
+    )
+
+
 # --- Build ---------------------------------------------------------------------------------
 
 
@@ -503,6 +520,9 @@ def build(out: str) -> Problems:
         f.write(root_index("/Caruspex/", redirect=False))
     # No Jekyll on GitHub Pages: the files are served as they are.
     open(os.path.join(out, ".nojekyll"), "w").close()
+    os.makedirs(os.path.join(out, ".well-known"))
+    with open(os.path.join(out, ".well-known", "security.txt"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(security_txt(datetime.datetime.now(datetime.timezone.utc)))
     return problems
 
 

@@ -127,4 +127,16 @@ The X-ray page (`app/src/pages/XrayPage.tsx`) shows the connected car, or any ge
 - The updater in the app (`app/src-tauri/src/update.rs`) asks the newest release of this repository for
   `latest.json`, downloads only from this repository's releases and installs a package only when its signature
   matches the public key in the app. Both the check and the installation can be switched off in the settings.
+- Next to the packages every release carries `SHA256SUMS`, a Sigstore bundle of GitHub's build provenance for
+  every file (`actions/attest-build-provenance`) and one SBOM per platform (`tools/sbom.py`, CycloneDX). These
+  files have their own names and are added before the release is created, so `latest.json` and the update
+  packages stay exactly as the updater expects them. How to check a download is in
+  [SECURITY.md](../SECURITY.md#checking-a-download).
 - None of the release steps run for pull requests or in forks.
+
+## Security and the Cyber Resilience Act
+
+[docs/cra/](cra/scope.md) holds the scope assessment for the EU Cyber Resilience Act, the risk assessment of
+Caruspex, the mapping of the essential requirements to the code ([requirements.md](cra/requirements.md)), the user
+information and the support statement. Keep [risk-assessment.md](cra/risk-assessment.md) current when a change
+adds a new way to an adapter, a new file format, a network request or a step in the release workflow.
