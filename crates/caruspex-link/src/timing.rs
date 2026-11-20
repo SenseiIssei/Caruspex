@@ -9,6 +9,9 @@ thread_local! {
     /// simulator runs here, the short pauses of the protocol code move its
     /// clock instead of the thread, so a slow machine cannot make a
     /// simulated control unit see a reply as late.
+    // It is const already; on Android (emulated thread locals) clippy
+    // still asks for it.
+    #[allow(clippy::missing_const_for_thread_local)]
     static VIRTUAL_US: Cell<Option<u64>> = const { Cell::new(None) };
 }
 
