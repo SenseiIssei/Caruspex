@@ -5,7 +5,9 @@
                                              data/wmi_seen.txt and data/obdb_seen.txt
 
 Checked:
-  - the WMI list on Wikibooks: codes there that crates/caruspex-vehicles/src/vin.rs does not know
+  - the WMI list on Wikibooks: codes there that the WMI tables do not know. vin.rs only takes
+    codes NHTSA vPIC or Wikidata confirm; a code only Wikibooks has goes into data/wmi/wmi.csv
+    (CC BY-SA 4.0, tools/gen_wmi.py)
   - OBDb (github.com/OBDb, CC BY-SA 4.0): vehicle repositories that are new since the last
     check, by name, and those changed since the packs in data/obdb were made
     (tools/gen_obdb.py), by name
@@ -70,9 +72,11 @@ def listed(lines: list[str], items: list[str]) -> None:
 # --- VIN codes ---------------------------------------------------------------
 
 def known_wmis() -> set[str]:
-    # One table entry per line: w("WVW", "Volkswagen AG", ...
-    path = os.path.join(ROOT, "crates", "caruspex-vehicles", "src", "vin.rs")
-    text = open(path, encoding="utf-8").read()
+    # One table entry per line: w("WVW", "Volkswagen AG", ... in vin.rs and in the
+    # generated part after Wikibooks (data/wmi, CC BY-SA).
+    src = os.path.join(ROOT, "crates", "caruspex-vehicles", "src")
+    text = "".join(open(os.path.join(src, *name), encoding="utf-8").read()
+                   for name in [("vin.rs",), ("generated", "wmi_cc_by_sa.rs")])
     return set(re.findall(r'^\s*w\("([A-Z0-9]{2,3})",', text, re.MULTILINE))
 
 

@@ -74,23 +74,28 @@ DATA = """\
 ## Data and fonts
 
 These are part of the programs as well. Their licence texts are in the source
-code next to the data, the MIT texts of opendbc and model3dbc also at the end
-of this file; the CC BY-SA 4.0 licence is at
+code next to the data, the MIT texts of opendbc, model3dbc, OVMS and evDash
+also at the end of this file; the CC BY-SA 4.0 licence is at
 https://creativecommons.org/licenses/by-sa/4.0/legalcode, the SIL Open Font
 License 1.1 at https://openfontlicense.org.
 
 | What | From | Licence | In the source code |
 |---|---|---|---|
 | Manufacturer values (PID packs) for about 550 vehicles | OBDb, https://github.com/OBDb, by its contributors; converted and compressed by tools/gen_obdb.py | CC BY-SA 4.0 | data/obdb/ (LICENSE, ATTRIBUTION.md with every repository and commit) |
+| Battery value packs for the Hyundai Ioniq, Kona, Kia e-Niro, Nissan Leaf and Renault Zoe | OBDb (CC BY-SA 4.0), Open Vehicle Monitoring System, https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3, and evDash, https://github.com/nickn17/evDash (both MIT); written as Torque equations | CC BY-SA 4.0 (adapted from OBDb); the OVMS and evDash parts MIT, Copyright (c) 2011-2017 Open Vehicles and the authors named in LICENSE-OVMS, Copyright (c) 2020 NiCK.n17 | data/pids/ (ATTRIBUTION.md, LICENSE-CC-BY-SA-4.0, LICENSE-OVMS, LICENSE-evDash) |
 | CAN signal definitions | opendbc by comma.ai, https://github.com/commaai/opendbc; converted by tools/gen_opendbc.py | MIT, Copyright (c) 2020, Comma.ai, Inc. | data/opendbc/ (LICENSE) |
 | Tesla Model 3 and Y signal definitions | model3dbc, https://github.com/joshwardell/model3dbc | MIT, Copyright (c) 2019 Josh Wardell | data/tesla/LICENSE-model3dbc, data/pids/tesla-model3-y.csv |
 | Engine codes per model generation | Wikipedia articles, the article and revision are named in every row | CC BY-SA 4.0 | data/engines/ (LICENSE) |
-| Part of the world manufacturer identifiers (VIN) | the WMI list on Wikibooks, https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/World_Manufacturer_Identifier_(WMI) | CC BY-SA 4.0 | crates/caruspex-vehicles/src/vin.rs |
+| World manufacturer identifiers (VIN) | NHTSA vPIC, https://vpic.nhtsa.dot.gov (US government work), and Wikidata | public domain, CC0 1.0 | crates/caruspex-vehicles/src/vin.rs |
+| The world manufacturer identifiers that vPIC and Wikidata do not have | the WMI list on Wikibooks, https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/World_Manufacturer_Identifier_(WMI), revision 4682957, by the Wikibooks contributors | CC BY-SA 4.0 | data/wmi/ (LICENSE, ATTRIBUTION.md) |
+| Control unit addresses per brand | own compilation, confirmed by opendbc, OVMS, evDash (MIT) and OBDb (addresses only, as facts); named per row | MIT | data/ecus/ |
+| Manufacturer fault codes and generic fault codes | own compilation and wording; generic numbering after SAE J2012 / ISO 15031-6 | MIT | tools/dtc/ |
 | Outer dimensions per model generation | Wikidata, https://www.wikidata.org | CC0 1.0 | data/wikidata/ |
 | Fonts JetBrains Mono, Inter, Plus Jakarta Sans | https://github.com/JetBrains/JetBrainsMono, https://github.com/rsms/inter, https://github.com/tokotype/PlusJakartaSans | SIL Open Font License 1.1 | resources/fonts/ (OFL.txt, OFL-Inter.txt, OFL-PlusJakartaSans.txt; shipped next to the fonts in the app) |
 
-The adapted data under CC BY-SA 4.0 (the OBDb packs and the engine codes) is
-itself licensed under CC BY-SA 4.0, not under the MIT licence of the code.
+The adapted data under CC BY-SA 4.0 (the OBDb packs, the battery value packs
+in data/pids, the engine codes and the WMI codes in data/wmi) is itself
+licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 """
 
 
@@ -370,7 +375,9 @@ def npm(notices: Notices) -> None:
 def data(notices: Notices) -> None:
     """The MIT texts of the data compiled in (the table in DATA lists them;
     their copyright lines differ from the other MIT texts)."""
-    for label, rel in [("opendbc (data)", "data/opendbc/LICENSE"), ("model3dbc (data)", "data/tesla/LICENSE-model3dbc")]:
+    for label, rel in [("opendbc (data)", "data/opendbc/LICENSE"), ("model3dbc (data)", "data/tesla/LICENSE-model3dbc"),
+                       ("Open Vehicle Monitoring System (data)", "data/pids/LICENSE-OVMS"),
+                       ("evDash (data)", "data/pids/LICENSE-evDash")]:
         text = norm(open(os.path.join(ROOT, rel), encoding="utf-8").read())
         notices.add("data", label, "", "MIT", rel, [(rel, text)])
 

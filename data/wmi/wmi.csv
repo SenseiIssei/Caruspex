@@ -1,0 +1,139 @@
+# World manufacturer identifiers (the first three VIN characters) that the
+# public domain and CC0 sources do not list: NHTSA vPIC knows the codes of
+# makers that sell in the USA, Wikidata only a few. These rows follow the WMI
+# list on Wikibooks,
+# https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/World_Manufacturer_Identifier_(WMI),
+# revision 4682957 of 2026-11-19, by the Wikibooks contributors (see the
+# page history). Only the code and the maker are taken, as facts; the year
+# and model code rules and the brand names are Caruspex's own.
+# Like Wikibooks this file is under CC BY-SA 4.0 (see LICENSE next to it),
+# not under the MIT licence of the code. Read by tools/gen_wmi.py.
+#
+# year_rule: STD (position 10 is the model year), UNK (not sure), NO_YEAR
+# code_rule: NO_CODE, VAG, MB, POR, TESLA (where the model code sits)
+# country:   NO_COUNTRY or one of the IN_ constants of vin.rs
+wmi,manufacturer,brands,year_rule,code_rule,country
+8AW,Volkswagen Argentina,Volkswagen,STD,VAG,NO_COUNTRY
+AAV,Volkswagen South Africa,Volkswagen,STD,VAG,NO_COUNTRY
+LSV,SAIC Volkswagen,Volkswagen|Škoda,STD,VAG,NO_COUNTRY
+LFV,FAW-Volkswagen,Volkswagen|Audi,STD,VAG,NO_COUNTRY
+XW8,Volkswagen Group Rus,Volkswagen|Škoda,STD,VAG,NO_COUNTRY
+TMB,Škoda Auto,Škoda,STD,VAG,NO_COUNTRY
+VSS,SEAT,SEAT|Cupra,STD,VAG,NO_COUNTRY
+LBV,BMW Brilliance,BMW,STD,NO_CODE,NO_COUNTRY
+WDF,Mercedes-Benz (Transporter),Mercedes-Benz,UNK,MB,NO_COUNTRY
+W1V,Mercedes-Benz (Transporter),Mercedes-Benz,UNK,MB,NO_COUNTRY
+W1T,Mercedes-Benz (Lkw),Mercedes-Benz,UNK,MB,NO_COUNTRY
+9BM,Mercedes-Benz do Brasil,Mercedes-Benz,STD,NO_CODE,NO_COUNTRY
+TCC,Micro Compact Car,Smart,UNK,MB,NO_COUNTRY
+VXK,Opel Automobile GmbH (Stellantis),Opel,UNK,NO_CODE,IN_FRANCE
+VXE,"Opel Automobile GmbH (Stellantis, Transporter)",Opel,UNK,NO_CODE,IN_FRANCE
+VSX,Opel España,Opel,STD,NO_CODE,NO_COUNTRY
+XP7,Tesla Gigafactory Berlin-Brandenburg,Tesla,STD,TESLA,IN_GERMANY
+VF2,Renault,Renault,UNK,NO_CODE,NO_COUNTRY
+VF6,Renault Trucks,Renault Trucks|Renault,UNK,NO_CODE,NO_COUNTRY
+VS5,Renault España,Renault,UNK,NO_CODE,NO_COUNTRY
+VFA,Alpine,Alpine,UNK,NO_CODE,NO_COUNTRY
+VR3,Peugeot (Stellantis),Peugeot,UNK,NO_CODE,NO_COUNTRY
+VF7,Citroën,Citroën|DS,UNK,NO_CODE,NO_COUNTRY
+VR7,Citroën (Stellantis),Citroën,UNK,NO_CODE,NO_COUNTRY
+VS7,Citroën España,Citroën,UNK,NO_CODE,NO_COUNTRY
+VR1,DS Automobiles,DS,UNK,NO_CODE,NO_COUNTRY
+VF8,Matra Automobile,Matra,UNK,NO_CODE,NO_COUNTRY
+9BD,Fiat Automóveis (Brasilien),Fiat,STD,NO_CODE,NO_COUNTRY
+8AP,Fiat Auto Argentina,Fiat,STD,NO_CODE,NO_COUNTRY
+SUF,Fiat Auto Poland,Fiat,UNK,NO_CODE,NO_COUNTRY
+NM4,Tofaş,Fiat,UNK,NO_CODE,NO_COUNTRY
+ZS1,Leapmotor International,Leapmotor,STD,NO_CODE,NO_COUNTRY
+SAR,Rover Group / MG Rover,Rover|MG,UNK,NO_CODE,NO_COUNTRY
+SFA,Ford Motor Company UK,Ford,UNK,NO_CODE,NO_COUNTRY
+SJN,Nissan Motor Manufacturing UK,Nissan,UNK,NO_CODE,NO_COUNTRY
+XMC,NedCar (Mitsubishi),Mitsubishi,UNK,NO_CODE,NO_COUNTRY
+XLR,DAF Trucks,DAF,UNK,NO_CODE,NO_COUNTRY
+YAR,Toyota Motor Europe,Toyota,UNK,NO_CODE,NO_COUNTRY
+TMA,Hyundai Motor Manufacturing Czech,Hyundai,STD,NO_CODE,NO_COUNTRY
+TSM,Magyar Suzuki,Suzuki,UNK,NO_CODE,NO_COUNTRY
+TW1,Toyota Caetano Portugal,Toyota,UNK,NO_CODE,NO_COUNTRY
+U6Y,Kia Slovakia (SUV),Kia,STD,NO_CODE,NO_COUNTRY
+UU1,Dacia,Dacia,UNK,NO_CODE,NO_COUNTRY
+UU6,Daewoo Automobile Romania,Daewoo,UNK,NO_CODE,NO_COUNTRY
+VSK,Nissan Motor Ibérica,Nissan,UNK,NO_CODE,NO_COUNTRY
+VSE,Santana Motor (Suzuki),Suzuki,UNK,NO_CODE,NO_COUNTRY
+VS6,Ford España,Ford,UNK,NO_CODE,NO_COUNTRY
+SUP,FSO / Daewoo-FSO,Daewoo|FSO,UNK,NO_CODE,NO_COUNTRY
+XTA,AvtoVAZ,Lada,UNK,NO_CODE,NO_COUNTRY
+XTT,UAZ,UAZ,UNK,NO_CODE,NO_COUNTRY
+X9L,GM-AvtoVAZ,Chevrolet,UNK,NO_CODE,NO_COUNTRY
+X7L,Renault Russia,Renault,UNK,NO_CODE,NO_COUNTRY
+NLH,Hyundai Assan,Hyundai,STD,NO_CODE,NO_COUNTRY
+JMZ,Mazda Motor Corporation (Europa),Mazda,UNK,NO_CODE,NO_COUNTRY
+JMB,Mitsubishi Motors (Europa),Mitsubishi,UNK,NO_CODE,NO_COUNTRY
+JMY,Mitsubishi Motors,Mitsubishi,UNK,NO_CODE,NO_COUNTRY
+JDA,Daihatsu Motor Co.,Daihatsu,UNK,NO_CODE,NO_COUNTRY
+KNE,Kia Corporation (Europa),Kia,STD,NO_CODE,NO_COUNTRY
+KPT,SsangYong Motor,SsangYong,UNK,NO_CODE,NO_COUNTRY
+KPA,SsangYong Motor (Pick-up),SsangYong,UNK,NO_CODE,NO_COUNTRY
+LRW,Tesla Gigafactory Shanghai,Tesla,STD,TESLA,NO_COUNTRY
+LSJ,"SAIC Motor (MG, Roewe)",MG,STD,NO_CODE,NO_COUNTRY
+LB3,Geely Automobile,Geely,STD,NO_CODE,NO_COUNTRY
+HJN,NIO,NIO,STD,NO_CODE,NO_COUNTRY
+LGW,"Great Wall Motor (GWM, Haval, ORA, Tank, WEY)",Great Wall|ORA,STD,NO_CODE,NO_COUNTRY
+LVV,"Chery Automobile (Omoda, Jaecoo)",Chery|Omoda|Jaecoo,STD,NO_CODE,NO_COUNTRY
+PRB,Chery (Jaecoo),Jaecoo,STD,NO_CODE,NO_COUNTRY
+LVX,Aiways Automobiles,Aiways,STD,NO_CODE,NO_COUNTRY
+SDB,Talbot,Talbot,UNK,NO_CODE,NO_COUNTRY
+VF4,Talbot,Talbot,UNK,NO_CODE,NO_COUNTRY
+VSC,Talbot,Talbot,UNK,NO_CODE,NO_COUNTRY
+SNT,Trabant (VEB Sachsenring),Trabant,UNK,NO_CODE,NO_COUNTRY
+SNE,Wartburg (Automobilwerk Eisenach),Wartburg,UNK,NO_CODE,NO_COUNTRY
+LNN,"Chery Automobile (Omoda, Jaecoo)",Chery|Omoda|Jaecoo,STD,NO_CODE,NO_COUNTRY
+LVU,"Chery Automobile (Jetour, Omoda, Jaecoo)",Chery|Omoda|Jaecoo,STD,NO_CODE,NO_COUNTRY
+L1N,XPeng Motors,Xpeng,STD,NO_CODE,NO_COUNTRY
+LMV,"XPeng Motors (G3, made by Haima)",Xpeng,STD,NO_CODE,NO_COUNTRY
+LJ1,NIO,NIO,STD,NO_CODE,NO_COUNTRY
+HLX,Li Auto,Li Auto,STD,NO_CODE,NO_COUNTRY
+LW4,Li Auto,Li Auto,STD,NO_CODE,NO_COUNTRY
+HXM,Xiaomi Auto,Xiaomi,STD,NO_CODE,NO_COUNTRY
+LFZ,Leapmotor,Leapmotor,STD,NO_CODE,NO_COUNTRY
+LFB,"FAW Group (Hongqi, Bestune)",Hongqi,STD,NO_CODE,NO_COUNTRY
+LSF,SAIC Maxus,Maxus,STD,NO_CODE,NO_COUNTRY
+LSH,SAIC Maxus,Maxus,STD,NO_CODE,NO_COUNTRY
+LSK,SAIC Maxus,Maxus,STD,NO_CODE,NO_COUNTRY
+LM8,Seres (AITO),Aito,STD,NO_CODE,NO_COUNTRY
+LDP,Dongfeng (Voyah),Voyah,STD,NO_CODE,NO_COUNTRY
+LS6,"Changan (Deepal, Avatr)",Avatr,STD,NO_CODE,NO_COUNTRY
+LK6,SAIC-GM-Wuling,Wuling,STD,NO_CODE,NO_COUNTRY
+LPA,Changan PSA (DS),DS,STD,NO_CODE,NO_COUNTRY
+LBE,Beijing Hyundai,Hyundai,STD,NO_CODE,NO_COUNTRY
+LFM,FAW Toyota,Toyota,STD,NO_CODE,NO_COUNTRY
+LHG,GAC Honda,Honda,STD,NO_CODE,NO_COUNTRY
+LVH,Dongfeng Honda,Honda,STD,NO_CODE,NO_COUNTRY
+LDC,Dongfeng Peugeot Citroën,Peugeot|Citroën,STD,NO_CODE,NO_COUNTRY
+LGB,Dongfeng Nissan,Nissan,STD,NO_CODE,NO_COUNTRY
+LZW,SAIC-GM-Wuling,Wuling,STD,NO_CODE,NO_COUNTRY
+RLN,VinFast,VinFast,STD,NO_CODE,NO_COUNTRY
+MA1,Mahindra & Mahindra,Mahindra,UNK,NO_CODE,NO_COUNTRY
+MA3,Maruti Suzuki,Suzuki,UNK,NO_CODE,NO_COUNTRY
+MAT,Tata Motors,Tata,UNK,NO_CODE,NO_COUNTRY
+MAL,Hyundai Motor India,Hyundai,STD,NO_CODE,NO_COUNTRY
+MR0,Toyota Motor Thailand,Toyota,UNK,NO_CODE,NO_COUNTRY
+MMB,Mitsubishi Motors Thailand,Mitsubishi,UNK,NO_CODE,NO_COUNTRY
+MPA,Isuzu Motors Thailand,Isuzu,UNK,NO_CODE,NO_COUNTRY
+PL1,Proton,Proton,UNK,NO_CODE,NO_COUNTRY
+6H8,General Motors-Holden,Holden,UNK,NO_CODE,NO_COUNTRY
+9BG,General Motors do Brasil,Chevrolet,STD,NO_CODE,NO_COUNTRY
+8AG,General Motors de Argentina,Chevrolet,STD,NO_CODE,NO_COUNTRY
+8AF,Ford Argentina,Ford,STD,NO_CODE,NO_COUNTRY
+6FP,Ford Australia,Ford,UNK,NO_CODE,NO_COUNTRY
+AFA,Ford South Africa,Ford,UNK,NO_CODE,NO_COUNTRY
+9BR,Toyota do Brasil,Toyota,STD,NO_CODE,NO_COUNTRY
+8AJ,Toyota Argentina,Toyota,STD,NO_CODE,NO_COUNTRY
+93H,Honda Automóveis do Brasil,Honda,STD,NO_CODE,NO_COUNTRY
+93Y,Renault do Brasil,Renault,STD,NO_CODE,NO_COUNTRY
+936,Peugeot Citroën do Brasil (Peugeot),Peugeot,STD,NO_CODE,NO_COUNTRY
+935,Peugeot Citroën do Brasil (Citroën),Citroën,STD,NO_CODE,NO_COUNTRY
+8AD,Peugeot Citroën Argentina (Peugeot),Peugeot,STD,NO_CODE,NO_COUNTRY
+94D,Nissan do Brasil,Nissan,STD,NO_CODE,NO_COUNTRY
+9BH,Hyundai Motor Brasil,Hyundai,STD,NO_CODE,NO_COUNTRY
+AHT,Toyota South Africa,Toyota,UNK,NO_CODE,NO_COUNTRY
+6T1,Toyota Motor Corporation Australia,Toyota,UNK,NO_CODE,NO_COUNTRY

@@ -25,23 +25,28 @@ bootstrapper and runs it only when the runtime is missing.
 ## Data and fonts
 
 These are part of the programs as well. Their licence texts are in the source
-code next to the data, the MIT texts of opendbc and model3dbc also at the end
-of this file; the CC BY-SA 4.0 licence is at
+code next to the data, the MIT texts of opendbc, model3dbc, OVMS and evDash
+also at the end of this file; the CC BY-SA 4.0 licence is at
 https://creativecommons.org/licenses/by-sa/4.0/legalcode, the SIL Open Font
 License 1.1 at https://openfontlicense.org.
 
 | What | From | Licence | In the source code |
 |---|---|---|---|
 | Manufacturer values (PID packs) for about 550 vehicles | OBDb, https://github.com/OBDb, by its contributors; converted and compressed by tools/gen_obdb.py | CC BY-SA 4.0 | data/obdb/ (LICENSE, ATTRIBUTION.md with every repository and commit) |
+| Battery value packs for the Hyundai Ioniq, Kona, Kia e-Niro, Nissan Leaf and Renault Zoe | OBDb (CC BY-SA 4.0), Open Vehicle Monitoring System, https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3, and evDash, https://github.com/nickn17/evDash (both MIT); written as Torque equations | CC BY-SA 4.0 (adapted from OBDb); the OVMS and evDash parts MIT, Copyright (c) 2011-2017 Open Vehicles and the authors named in LICENSE-OVMS, Copyright (c) 2020 NiCK.n17 | data/pids/ (ATTRIBUTION.md, LICENSE-CC-BY-SA-4.0, LICENSE-OVMS, LICENSE-evDash) |
 | CAN signal definitions | opendbc by comma.ai, https://github.com/commaai/opendbc; converted by tools/gen_opendbc.py | MIT, Copyright (c) 2020, Comma.ai, Inc. | data/opendbc/ (LICENSE) |
 | Tesla Model 3 and Y signal definitions | model3dbc, https://github.com/joshwardell/model3dbc | MIT, Copyright (c) 2019 Josh Wardell | data/tesla/LICENSE-model3dbc, data/pids/tesla-model3-y.csv |
 | Engine codes per model generation | Wikipedia articles, the article and revision are named in every row | CC BY-SA 4.0 | data/engines/ (LICENSE) |
-| Part of the world manufacturer identifiers (VIN) | the WMI list on Wikibooks, https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/World_Manufacturer_Identifier_(WMI) | CC BY-SA 4.0 | crates/caruspex-vehicles/src/vin.rs |
+| World manufacturer identifiers (VIN) | NHTSA vPIC, https://vpic.nhtsa.dot.gov (US government work), and Wikidata | public domain, CC0 1.0 | crates/caruspex-vehicles/src/vin.rs |
+| The world manufacturer identifiers that vPIC and Wikidata do not have | the WMI list on Wikibooks, https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/World_Manufacturer_Identifier_(WMI), revision 4682957, by the Wikibooks contributors | CC BY-SA 4.0 | data/wmi/ (LICENSE, ATTRIBUTION.md) |
+| Control unit addresses per brand | own compilation, confirmed by opendbc, OVMS, evDash (MIT) and OBDb (addresses only, as facts); named per row | MIT | data/ecus/ |
+| Manufacturer fault codes and generic fault codes | own compilation and wording; generic numbering after SAE J2012 / ISO 15031-6 | MIT | tools/dtc/ |
 | Outer dimensions per model generation | Wikidata, https://www.wikidata.org | CC0 1.0 | data/wikidata/ |
 | Fonts JetBrains Mono, Inter, Plus Jakarta Sans | https://github.com/JetBrains/JetBrainsMono, https://github.com/rsms/inter, https://github.com/tokotype/PlusJakartaSans | SIL Open Font License 1.1 | resources/fonts/ (OFL.txt, OFL-Inter.txt, OFL-PlusJakartaSans.txt; shipped next to the fonts in the app) |
 
-The adapted data under CC BY-SA 4.0 (the OBDb packs and the engine codes) is
-itself licensed under CC BY-SA 4.0, not under the MIT licence of the code.
+The adapted data under CC BY-SA 4.0 (the OBDb packs, the battery value packs
+in data/pids, the engine codes and the WMI codes in data/wmi) is itself
+licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 
 ## Rust crates
 
@@ -10653,6 +10658,74 @@ Used by: model3dbc (data).
 MIT License
 
 Copyright (c) 2019 Josh Wardell
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Text 199
+
+Used by: Open Vehicle Monitoring System (data).
+
+```text
+MIT License
+
+Copyright (c) 2011-2017 Open Vehicles
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+The Open Vehicle Monitoring System files Caruspex takes values from carry
+this licence in their headers, with these copyright lines:
+vehicle_renaultzoe.cpp: (C) 2011 Michael Stegen / Stegen Electronics,
+(C) 2011-2017 Mark Webb-Johnson, (C) 2011 Sonny Chen @ EPRO/DX,
+(C) 2018 Marcos Mezo, (C) 2019 Thomas Heuer;
+vehicle_hyundai_ioniqvfl.cpp: (c) 2021 Michael Balzer;
+kn_can_poll.cpp: (C) 2019 Geir Øyvind Vælidalo;
+vehicle_nissanleaf.cpp: (C) 2011 Michael Stegen / Stegen Electronics,
+(C) 2011-2017 Mark Webb-Johnson, (C) 2011 Sonny Chen @ EPRO/DX,
+(C) 2017 Tom Parker.
+Source: https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3
+```
+
+### Text 200
+
+Used by: evDash (data).
+
+```text
+MIT License
+
+Copyright (c) 2020 NiCK.n17
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

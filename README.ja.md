@@ -524,8 +524,9 @@ Caruspex は自由な趣味のプロジェクトであり、[MIT ライセンス
 
 - 約 550 車種のメーカー値。[OBDb](https://github.com/OBDb) から変換したもので、OBDb と同じく CC BY-SA 4.0 です。コードとは別に [data/obdb](data/obdb) に置かれ、ライセンスと出典一覧（[ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)）が付いています。
 - CAN 信号の定義は [opendbc](https://github.com/commaai/opendbc)（comma.ai）と [model3dbc](https://github.com/joshwardell/model3dbc) から、MIT ライセンス（[data/opendbc](data/opendbc)、[data/tesla](data/tesla)）。
+- Hyundai Ioniq と Kona、Kia e-Niro、Nissan Leaf、Renault Zoe のバッテリー値は OBDb（CC BY-SA 4.0、このパックも同じ）、[Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3)、[evDash](https://github.com/nickn17/evDash)（どちらも MIT）に基づきます：[data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md))。
 - エンジンコードは Wikipedia の記事から、CC BY-SA 4.0（[data/engines](data/engines)、各行に記事と版を記載）。
-- VIN のメーカーコードの一部は [Wikibooks の WMI 一覧](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) に基づく、CC BY-SA 4.0。
+- VIN のメーカーコードは [NHTSA vPIC](https://vpic.nhtsa.dot.gov)（パブリックドメイン）と [Wikidata](https://www.wikidata.org)（CC0）で確認済み。[Wikibooks の WMI 一覧](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) にしかないコードは CC BY-SA 4.0 で、[data/wmi](data/wmi) に分けて置いています。
 - 車両の寸法は [Wikidata](https://www.wikidata.org) から、CC0。
 - SIL Open Font License 1.1 のフォント：JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt))。
 <!-- /legal -->

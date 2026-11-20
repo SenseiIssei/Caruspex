@@ -524,8 +524,9 @@ Caruspex является свободным любительским проек
 
 - Значения производителей примерно для 550 автомобилей, преобразованные из [OBDb](https://github.com/OBDb), как и OBDb, под CC BY-SA 4.0: хранятся отдельно от кода в [data/obdb](data/obdb) вместе с лицензией и списком источников ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - Описания сигналов CAN из [opendbc](https://github.com/commaai/opendbc) (comma.ai) и [model3dbc](https://github.com/joshwardell/model3dbc), лицензия MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Значения батареи для Hyundai Ioniq и Kona, Kia e-Niro, Nissan Leaf и Renault Zoe по OBDb (CC BY-SA 4.0, как и эти пакеты), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) и [evDash](https://github.com/nickn17/evDash) (оба MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Коды двигателей из статей Википедии, CC BY-SA 4.0 ([data/engines](data/engines), со статьёй и версией в каждой строке).
-- Часть кодов производителей VIN по [списку WMI в Викиучебнике](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Коды производителей VIN сверены с [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (общественное достояние) и [Wikidata](https://www.wikidata.org) (CC0); коды, которые есть только в [списке WMI в Викиучебнике](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), распространяются по CC BY-SA 4.0 и хранятся отдельно в [data/wmi](data/wmi).
 - Размеры автомобилей из [Викиданных](https://www.wikidata.org), CC0.
 - Шрифты по лицензии SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

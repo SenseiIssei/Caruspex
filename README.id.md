@@ -524,8 +524,9 @@ Kode berlisensi MIT, lihat [LICENSE](LICENSE). Pustaka di dalam program dan lise
 
 - Nilai pabrikan untuk sekitar 550 kendaraan, dikonversi dari [OBDb](https://github.com/OBDb), berlisensi CC BY-SA 4.0 seperti OBDb: terpisah dari kode di [data/obdb](data/obdb) bersama lisensi dan daftar sumbernya ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - Definisi sinyal CAN dari [opendbc](https://github.com/commaai/opendbc) (comma.ai) dan [model3dbc](https://github.com/joshwardell/model3dbc), lisensi MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Nilai baterai untuk Hyundai Ioniq dan Kona, Kia e-Niro, Nissan Leaf, dan Renault Zoe menurut OBDb (CC BY-SA 4.0, seperti paket ini), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3), dan [evDash](https://github.com/nickn17/evDash) (keduanya MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Kode mesin dari artikel Wikipedia, CC BY-SA 4.0 ([data/engines](data/engines), dengan artikel dan revisi di setiap baris).
-- Sebagian kode pabrikan VIN menurut [daftar WMI di Wikibuku](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Kode pabrikan VIN diperiksa dengan [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (domain publik) dan [Wikidata](https://www.wikidata.org) (CC0); kode yang hanya ada di [daftar WMI di Wikibuku](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) berlisensi CC BY-SA 4.0 dan disimpan terpisah di [data/wmi](data/wmi).
 - Dimensi kendaraan dari [Wikidata](https://www.wikidata.org), CC0.
 - Fon berlisensi SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

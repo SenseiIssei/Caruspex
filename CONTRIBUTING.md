@@ -131,6 +131,7 @@ python tools/gen_vehicles.py
 python tools/gen_ecus.py
 python tools/gen_pids.py
 python tools/gen_engines.py
+python tools/gen_wmi.py
 python tools/gen_obdb.py --fixtures
 python tools/gen_dimensions.py
 python tools/gen_dimensions.py --fixtures
@@ -210,6 +211,13 @@ The full guide is [translations/TRANSLATING.md](translations/TRANSLATING.md); th
   manufacturer software, paid databases or leaked documents is not accepted, and neither are tables taken
   from projects under the GPL, under a non-commercial licence (such as CC BY-NC) or without any licence.
   New data that ends up in the programs also needs a line in the data table of `tools/gen_notices.py`.
+- **A permissive project only counts for what it wrote itself.** Name the file and commit. Lines a project
+  quotes from a GPL source (OVMS comments that repeat CanZE field lines, OVMS's BMW i3 files derived from
+  EdiabasLib) are not a source. A PID pack that takes anything from OBDb is CC BY-SA 4.0 and says
+  `#@ licence: CC BY-SA 4.0`; `tools/gen_pids.py` checks this. VIN maker codes go into `vin.rs` only when
+  NHTSA vPIC or Wikidata lists them, otherwise into `data/wmi/wmi.csv` (CC BY-SA, after Wikibooks). A
+  control unit address needs a source in the note column of its row; a value nobody freely licensed
+  confirms stays out.
 - **New dependencies** must have a licence that allows shipping them in an MIT program (MIT, BSD, ISC,
   Apache-2.0, Zlib, MPL-2.0 and similar; no GPL, AGPL or non-commercial licences). After changing
   `Cargo.lock`, `app/package-lock.json` or the Android libraries run `python tools/gen_notices.py`, which

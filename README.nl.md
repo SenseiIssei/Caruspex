@@ -524,8 +524,9 @@ De code valt onder de MIT-licentie, zie [LICENSE](LICENSE). De bibliotheken in d
 
 - Fabrikantwaarden voor ongeveer 550 voertuigen, omgezet uit [OBDb](https://github.com/OBDb), onder CC BY-SA 4.0 zoals OBDb: los van de code in [data/obdb](data/obdb) met de licentie en de lijst van bronnen ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - CAN-signaaldefinities uit [opendbc](https://github.com/commaai/opendbc) (comma.ai) en [model3dbc](https://github.com/joshwardell/model3dbc), MIT-licentie ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Accuwaarden voor de Hyundai Ioniq en Kona, de Kia e-Niro, de Nissan Leaf en de Renault Zoe volgens OBDb (CC BY-SA 4.0, net als deze pakketten), het [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) en [evDash](https://github.com/nickn17/evDash) (beide MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Motorcodes uit Wikipedia-artikelen, CC BY-SA 4.0 ([data/engines](data/engines), met artikel en versie in elke regel).
-- Een deel van de fabrikantcodes van het VIN volgens de [WMI-lijst op Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Fabrikantcodes van het VIN, gecontroleerd met [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (publiek domein) en [Wikidata](https://www.wikidata.org) (CC0); de codes die alleen de [WMI-lijst op Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) kent, vallen onder CC BY-SA 4.0 en staan apart in [data/wmi](data/wmi).
 - Afmetingen van voertuigen uit [Wikidata](https://www.wikidata.org), CC0.
 - Lettertypen onder de SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

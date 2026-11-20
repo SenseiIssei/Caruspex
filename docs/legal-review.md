@@ -49,28 +49,45 @@ macOS, Android). This is a technical review against the licence texts and source
 
 ## Open points for the owner, by risk
 
-1. **Hand-written PID packs built from sources with incompatible or missing licences** (medium).
-   `data/pids/renault-zoe-ph1.csv` takes its field definitions from CanZE (`_Fields.csv`, GPL-3.0).
-   `data/pids/hyundai-ioniq-28.csv` names EVNotify, whose licence is CC BY-NC 4.0 (non-commercial), and the
-   JejuSoul PID repository, which has no licence at all; `hyundai-kona-niro-ev.csv` names JejuSoul too. The other
-   sources (OVMS: MIT for most of its code; OBDb: CC BY-SA 4.0) are compatible, OBDb with share-alike. The values are
-   byte positions and scale factors; whether such facts are protected is a legal question this review does not
-   answer. It also contradicts CONTRIBUTING and the note in PLAN.md that CanZE was to be used as protocol
-   knowledge only. Options: re-derive each value only from OVMS and OBDb (and mark packs that rely on OBDb as
-   CC BY-SA 4.0 like `data/obdb`), dropping values that only CanZE, EVNotify or JejuSoul back; or ask those
-   projects for permission.
-2. **Control unit address lists citing GPL and proprietary tools** (low to medium). `data/ecus/bmw.csv` cites a GPL-3.0
-   community list, `renault.csv` the DDT4all address tables and CanZE (both GPL-3.0), `psa.csv` arduino-psa-diag
-   (GPL-3.0); Ford, Mazda, VAG, Toyota and BMW rows cite scan logs of FORScan, VCDS, OBDeleven, Techstream, E-Sys
-   and ISTA. About 105 rows of single addresses. Decide whether to keep them as facts, or reword the sources as own
-   observations after cross-checking against permissive sources.
-3. **WMI codes partly after Wikibooks** (low to medium). Part of the table in `vin.rs` follows the Wikibooks WMI list
-   (CC BY-SA 4.0). Attribution is now given. Share-alike would apply to adapted material; decide whether to move
-   those entries into a CC BY-SA data file like `data/engines`, or to verify them against public-domain sources
-   (NHTSA vPIC) and drop the dependency.
-4. **Manufacturer fault code texts without named sources** (low to medium). `tools/dtc/brands.py` (298 codes in 17
-   families) names no sources, unlike `data/`. Generic codes follow SAE J2012 / ISO 15031-6 numbering in the
-   project's own words. Add the sources, or confirm they are an own compilation.
+1. **Hand-written PID packs: resolved (2026-11-20).** Every value now rests on OBDb (CC BY-SA 4.0), the Open
+   Vehicle Monitoring System or evDash (both MIT), named per value with the file and commit in each pack.
+   CanZE, EVNotify and JejuSoul are no longer sources; `tools/gen_pids.py` refuses source lines that name them
+   (and DDT4all, pyren, python-OBD). The four packs that adapt OBDb (`hyundai-ioniq-28`, `hyundai-kona-niro-ev`,
+   `nissan-leaf-ze0-aze0`, `renault-zoe-ph1`) carry `#@ licence: CC BY-SA 4.0`, with `data/pids/ATTRIBUTION.md`,
+   the licence text and the MIT notices of OVMS and evDash next to them; the generator checks that an OBDb
+   source has that line. Kept: all 29 Ioniq and 33 Kona/e-Niro values, all 7 Leaf values, 22 of 24 Zoe values.
+   Dropped (no permissive source): Zoe state of health of the EVC (22 3206) and average battery temperature
+   (21 04 byte BV). The Zoe cell voltage maximum and minimum are now taken as MAX and MIN of the two fields,
+   because evDash and the older definition disagree on which field is which. Remaining risk: OVMS and evDash
+   name CanZE as where their Renault knowledge came from; only their own code (not the CanZE field lines OVMS
+   quotes in comments or in `docs/PIDs_Renault_Zoe.txt`) is used. The OVMS BMW i3 address files are
+   GPL-3.0 (derived from EdiabasLib) and were not used.
+2. **Control unit address lists: resolved (2026-11-20).** Every row of `data/ecus/*.csv` names its sources in
+   the note column: the ISO 15765-4 convention for 7E0/7E8 and 7E1/7E9, opendbc, OVMS and evDash (MIT), and
+   OBDb (CC BY-SA 4.0, used only to confirm single addresses, which are facts). The GPL lists (bmw-f, DDT4all,
+   CanZE, arduino-psa-diag) and the scan logs of commercial tools are no longer sources. Kept 72 of 105 rows.
+   Dropped 33 rows that no permissive or public source confirms: BMW 19 (01 ACSM, 10 gateway, 67 ZBE, 61 ATM,
+   37 AMP, 3F ASD, 72 REM, 17 EKPM, 1C ICM, 76 VDC, 0F GHAS, 5D KAFAS, 06 TRSVC, 41 to 44 lights, 6D and 6E
+   seats), Ford 8 (737 airbag, 716 gateway, 724 SCCM, 733 HVAC, 736 PAM, 740 and 741 doors, 727 audio), Hyundai
+   7D2 airbag, Nissan 745 BCM, PSA 6AD brakes and 772 airbag, VAG 70C steering column and 70A parking aid. The
+   BMW address sweep and the generic 700 to 7F7 sweep still find these units, by address instead of by name.
+   No own observation was available, so no row is marked as observed.
+3. **WMI codes: resolved (2026-11-20).** The table in `vin.rs` now holds only codes that NHTSA vPIC (public
+   domain) or Wikidata (P6793, CC0) confirm: 285 checked codes plus 66 three character codes from vPIC that
+   replace the two character ranges 1G, 2G, 3G, KL, 1F, 2F, 3F, 1L, 5L and JN (vPIC shows other makers inside
+   those ranges); JT stays a range because every JT code in vPIC is Toyota. 124 codes that only the Wikibooks
+   list has (mostly makers that do not sell in the USA, such as TMB, VSS, VF7, VR3, XTA, UU1) moved to
+   `data/wmi/wmi.csv` under CC BY-SA 4.0 with `LICENSE` and `ATTRIBUTION.md` (revision 4682957); `tools/gen_wmi.py`
+   writes them into a generated file that `vin.rs` includes. Dropped: TMC (vPIC assigns it to another maker),
+   JHG and MRX (in no source). The Wikibooks attribution stays, now pointing at `data/wmi`.
+4. **Manufacturer fault code texts: resolved as own compilation (2026-11-20).** No freely licensed data set of
+   manufacturer codes exists (OBDb and Wikidata hold none; the open source scan tools with code lists are GPL).
+   All 298 codes are kept as Caruspex's own compilation of facts (code number and meaning) in its own words;
+   `tools/dtc/brands.py` says so in `SOURCES`, which `tools/gen_dtc.py` writes into the head of
+   `dtc_brands.rs`. The generic tables (`tools/dtc/generic.py`) state the SAE J2012 / ISO 15031-6 numbering
+   and that nothing is taken from GPL scan tools. Owner to confirm: that the brand texts were indeed written
+   without copying a list (this review could not check the history before 2026-11-09), and whether the English
+   generic texts, which use the standard's short fault names, are acceptable as they are.
 5. **Default-on update check** (low). On start, official builds ask GitHub (a US service) for `latest.json`, which
    shows the IP address. It is disclosed on the privacy page and can be switched off. Decide whether to keep it on
    by default or ask on the first start.

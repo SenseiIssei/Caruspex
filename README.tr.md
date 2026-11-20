@@ -524,8 +524,9 @@ Kod MIT lisanslıdır, bkz. [LICENSE](LICENSE). Programlardaki kütüphaneler ve
 
 - Yaklaşık 550 araç için üretici değerleri, [OBDb](https://github.com/OBDb) kaynağından dönüştürülmüş, OBDb gibi CC BY-SA 4.0 lisanslı: koddan ayrı olarak [data/obdb](data/obdb) klasöründe lisans ve kaynak listesiyle ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - [opendbc](https://github.com/commaai/opendbc) (comma.ai) ve [model3dbc](https://github.com/joshwardell/model3dbc) kaynaklı CAN sinyal tanımları, MIT lisansı ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Hyundai Ioniq ve Kona, Kia e-Niro, Nissan Leaf ve Renault Zoe için batarya değerleri OBDb (CC BY-SA 4.0, bu paketler gibi), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) ve [evDash](https://github.com/nickn17/evDash) (ikisi de MIT) kaynaklıdır: [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Wikipedia makalelerinden motor kodları, CC BY-SA 4.0 ([data/engines](data/engines), her satırda makale ve sürümüyle).
-- VIN üretici kodlarının bir kısmı [Wikibooks'taki WMI listesine](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) göre, CC BY-SA 4.0.
+- VIN üretici kodları [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (kamu malı) ve [Wikidata](https://www.wikidata.org) (CC0) ile doğrulandı; yalnızca [Wikibooks'taki WMI listesinde](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) yer alan kodlar CC BY-SA 4.0 lisanslıdır ve ayrı olarak [data/wmi](data/wmi) içinde durur.
 - [Wikidata](https://www.wikidata.org) kaynaklı araç ölçüleri, CC0.
 - SIL Open Font License 1.1 lisanslı yazı tipleri: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

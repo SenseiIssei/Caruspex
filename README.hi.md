@@ -524,8 +524,9 @@ Caruspex एक मुफ़्त शौकिया परियोजना �
 
 - लगभग 550 वाहनों के निर्माता मान, [OBDb](https://github.com/OBDb) से बदले गए, OBDb की तरह CC BY-SA 4.0 के तहत: कोड से अलग [data/obdb](data/obdb) में लाइसेंस और स्रोतों की सूची ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)) के साथ।
 - CAN सिग्नल की परिभाषाएँ [opendbc](https://github.com/commaai/opendbc) (comma.ai) और [model3dbc](https://github.com/joshwardell/model3dbc) से, MIT लाइसेंस ([data/opendbc](data/opendbc), [data/tesla](data/tesla))।
+- Hyundai Ioniq और Kona, Kia e-Niro, Nissan Leaf और Renault Zoe के बैटरी मान OBDb (CC BY-SA 4.0, इन पैक की तरह), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) और [evDash](https://github.com/nickn17/evDash) (दोनों MIT) के अनुसार: [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md))।
 - इंजन कोड विकिपीडिया लेखों से, CC BY-SA 4.0 ([data/engines](data/engines), हर पंक्ति में लेख और संस्करण के साथ)।
-- VIN के निर्माता कोड का एक हिस्सा [विकिपुस्तक की WMI सूची](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) के अनुसार, CC BY-SA 4.0।
+- VIN के निर्माता कोड [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (सार्वजनिक डोमेन) और [Wikidata](https://www.wikidata.org) (CC0) से जाँचे गए हैं; जो कोड केवल [विकिपुस्तक की WMI सूची](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) में हैं, वे CC BY-SA 4.0 के तहत हैं और अलग से [data/wmi](data/wmi) में रखे गए हैं।
 - वाहनों के माप [विकिडेटा](https://www.wikidata.org) से, CC0।
 - SIL Open Font License 1.1 के तहत फ़ॉन्ट: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt))।
 <!-- /legal -->
