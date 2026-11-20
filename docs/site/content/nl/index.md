@@ -20,7 +20,7 @@ Caruspex is een gratis diagnoseprogramma voor auto's en motoren. Het draait op W
 3. Zoek je adapter op onder [adapters en interfaces](interfaces.md).
 4. Lees onder [privacy](privacy.md) wat Caruspex opslaat en verstuurt. Kort gezegd: er verlaat niets je computer, tenzij je het zelf deelt.
 
-> Caruspex leest alleen. Het codeert nooit regeleenheden, verandert nooit de kilometerstand en komt nooit aan de startonderbreker. Foutcodes wissen is het enige wat het naar de auto schrijft.
+> Caruspex leest vooral. Het schrijft alleen nadat het je dat gevraagd heeft: het wissen van foutcodes en, via de VAG-KKL-kabel, de actuatortest en de basisinstelling van de gasklep. Het codeert nooit regeleenheden, verandert nooit de kilometerstand en komt nooit aan de startonderbreker.
 
 ## Eerlijke stand
 

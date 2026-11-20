@@ -18,7 +18,7 @@ Pour être honnête : pas encore. Caruspex est testé avec des calculateurs simu
 
 ## Caruspex peut-il abîmer ma voiture ?
 
-Caruspex ne fait que lire. La seule chose qu'il écrit, c'est l'effacement des codes défaut, et il prévient avant de le faire. Il ne code jamais, ne reprogramme jamais et ne modifie jamais les valeurs d'adaptation. Ne l'utilisez pas en roulant.
+Caruspex lit surtout. Il n'écrit qu'après vous avoir demandé : l'effacement des codes défaut et, avec le câble KKL VAG, le test des actionneurs et le réglage de base du papillon. Il ne code jamais, ne reprogramme jamais et ne modifie jamais les valeurs d'adaptation. Ne l'utilisez pas en roulant.
 
 ## Peut-il modifier le kilométrage, l'antidémarrage ou coder des fonctions ?
 

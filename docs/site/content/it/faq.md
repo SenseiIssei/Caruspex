@@ -18,7 +18,7 @@ Sinceramente: non ancora. Caruspex è testato contro centraline simulate; su har
 
 ## Caruspex può rovinare la mia auto?
 
-Caruspex legge soltanto. L'unica cosa che scrive è la cancellazione dei codici errore, e avvisa prima di farlo. Non codifica mai, non fa mai flash e non cambia mai i valori di adattamento. Non usarlo mentre guidi.
+Caruspex per lo più legge. Scrive solo dopo averti chiesto conferma: la cancellazione dei codici errore e, con il cavo KKL VAG, il test attuatori e la regolazione di base della farfalla. Non codifica mai, non fa mai flash e non cambia mai i valori di adattamento. Non usarlo mentre guidi.
 
 ## Può modificare i chilometri, l'immobilizer o codificare funzioni?
 

@@ -20,7 +20,7 @@ Caruspex is a free diagnostics program for cars and motorcycles. It runs on Wind
 3. Look up your adapter under [adapters and interfaces](interfaces.md).
 4. Read what Caruspex stores and sends under [privacy](privacy.md). In short: nothing leaves your computer unless you share it yourself.
 
-> Caruspex only reads. It never codes control units, never changes the mileage and never touches the immobiliser. Clearing fault codes is the only thing it writes to the car.
+> Caruspex mostly reads. It writes only after asking you: clearing fault codes and, over the VAG KKL cable, the output test and the throttle basic setting. It never codes control units, never changes the mileage and never touches the immobiliser.
 
 ## Honest state
 

@@ -18,7 +18,7 @@ Dürüst olmak gerekirse: henüz değil. Caruspex simüle edilmiş kontrol ünit
 
 ## Caruspex aracımı bozabilir mi?
 
-Caruspex yalnızca okur. Yazdığı tek şey arıza kodlarını silmektir ve bunu yapmadan önce uyarır. Asla kodlama yapmaz, asla yazılım yüklemez ve asla adaptasyon değerlerini değiştirmez. Sürüş sırasında kullanmayın.
+Caruspex çoğunlukla okur. Yalnızca size sorduktan sonra yazar: arıza kodlarını silme ve VAG KKL kablosuyla aktüatör testi ile kelebek gövdesi temel ayarı. Asla kodlama yapmaz, asla yazılım yüklemez ve asla adaptasyon değerlerini değiştirmez. Sürüş sırasında kullanmayın.
 
 ## Kilometreyi, immobilizeri değiştirebilir veya özellik kodlayabilir mi?
 

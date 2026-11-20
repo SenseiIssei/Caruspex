@@ -18,7 +18,7 @@ Eerlijk gezegd: nog niet. Caruspex wordt getest tegen gesimuleerde regeleenheden
 
 ## Kan Caruspex mijn auto kapotmaken?
 
-Caruspex leest alleen. Het enige wat het schrijft, is het wissen van foutcodes, en het waarschuwt voordat het dat doet. Het codeert nooit, flasht nooit en verandert nooit adaptatiewaarden. Gebruik het niet tijdens het rijden.
+Caruspex leest vooral. Het schrijft alleen nadat het je dat gevraagd heeft: het wissen van foutcodes en, via de VAG-KKL-kabel, de actuatortest en de basisinstelling van de gasklep. Het codeert nooit, flasht nooit en verandert nooit adaptatiewaarden. Gebruik het niet tijdens het rijden.
 
 ## Kan het de kilometerstand of de startonderbreker veranderen of functies vrijcoderen?
 

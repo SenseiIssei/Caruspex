@@ -20,7 +20,7 @@ Caruspex, otomobiller ve motosikletler için ücretsiz bir arıza teşhis progra
 3. Adaptörünüzü [adaptörler ve arayüzler](interfaces.md) bölümünde bulun.
 4. Caruspex'in neyi kaydettiğini ve gönderdiğini [gizlilik](privacy.md) bölümünde okuyun. Kısacası: siz kendiniz paylaşmadıkça bilgisayarınızdan hiçbir şey çıkmaz.
 
-> Caruspex yalnızca okur. Kontrol ünitelerini asla kodlamaz, kilometreyi asla değiştirmez ve immobilizere asla dokunmaz. Arıza kodlarını silmek, araca yazdığı tek şeydir.
+> Caruspex çoğunlukla okur. Yalnızca size sorduktan sonra yazar: arıza kodlarını silme ve VAG KKL kablosuyla aktüatör testi ile kelebek gövdesi temel ayarı. Kontrol ünitelerini asla kodlamaz, kilometreyi asla değiştirmez ve immobilizere asla dokunmaz.
 
 ## Dürüst durum
 

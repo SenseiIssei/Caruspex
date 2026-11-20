@@ -20,7 +20,7 @@ Caruspex adalah program diagnosis gratis untuk mobil dan sepeda motor. Ia berjal
 3. Cari adaptormu di [adaptor dan antarmuka](interfaces.md).
 4. Baca apa yang disimpan dan dikirim Caruspex di [privasi](privacy.md). Singkatnya: tidak ada yang keluar dari komputermu kecuali kamu sendiri yang membagikannya.
 
-> Caruspex hanya membaca. Ia tidak pernah melakukan coding unit kontrol, tidak pernah mengubah jarak tempuh, dan tidak pernah menyentuh immobilizer. Menghapus kode kesalahan adalah satu-satunya hal yang ia tulis ke mobil.
+> Caruspex sebagian besar hanya membaca. Ia menulis hanya setelah bertanya kepada Anda: penghapusan kode kesalahan dan, lewat kabel VAG KKL, uji aktuator serta setelan dasar throttle. Ia tidak pernah melakukan coding unit kontrol, tidak pernah mengubah jarak tempuh, dan tidak pernah menyentuh immobilizer.
 
 ## Kondisi sejujurnya
 

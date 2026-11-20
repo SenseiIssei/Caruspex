@@ -18,7 +18,7 @@ Jujur saja: belum. Caruspex diuji dengan unit kontrol simulasi; di perangkat ker
 
 ## Apakah Caruspex bisa merusak mobil saya?
 
-Caruspex hanya membaca. Satu-satunya yang ia tulis adalah penghapusan kode kesalahan, dan ia memperingatkan sebelumnya. Ia tidak pernah melakukan coding, tidak pernah flashing, dan tidak pernah mengubah nilai adaptasi. Jangan memakainya sambil menyetir.
+Caruspex sebagian besar hanya membaca. Ia menulis hanya setelah bertanya kepada Anda: penghapusan kode kesalahan dan, lewat kabel VAG KKL, uji aktuator serta setelan dasar throttle. Ia tidak pernah melakukan coding, tidak pernah flashing, dan tidak pernah mengubah nilai adaptasi. Jangan memakainya sambil menyetir.
 
 ## Bisakah ia mengubah jarak tempuh, immobilizer, atau coding fitur?
 
