@@ -119,6 +119,12 @@ jobs:
           npm --prefix app run build
           npm --prefix app test
 
+      # The start of the app stays small: a large dependency or data file in
+      # the entry chunk fails here (budgets and how to look in
+      # docs/performance.md).
+      - name: Interface size budget
+        run: python tools/bundle_budget.py
+
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
 
