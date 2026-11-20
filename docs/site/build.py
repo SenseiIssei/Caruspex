@@ -74,7 +74,7 @@ GROUPS = [
             "doip",
         ],
     ),
-    ("group_using", ["faults", "live", "xray", "used-car"]),
+    ("group_using", ["faults", "live", "xray", "used-car", "tuning-simulator"]),
     ("group_more", ["privacy", "security", "legal", "faq"]),
 ]
 PAGES = [page for _, pages in GROUPS for page in pages]
