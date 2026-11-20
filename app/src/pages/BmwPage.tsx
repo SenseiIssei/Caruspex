@@ -13,7 +13,7 @@ import { Button, Note, Page, PageHeader, Progress, type Option } from "../compon
 import { translator } from "../i18n";
 import { useAppEvent, useBackendEvent } from "../lib/hooks";
 import { navigate } from "../shell/nav";
-import { setProMode } from "../state/session";
+import { settingsStore } from "../state/session";
 import { PortChoice, useMessageBox } from "./WorkshopShared";
 
 const tb = translator("caruspex::BmwPage");
@@ -77,7 +77,9 @@ export default function BmwPage() {
   useAppEvent<string>("dev:page", (name) => {
     const device = name === "bmw-ds2" ? BMW_SIM_E46 : name === "bmw-e60" ? BMW_SIM_E60 : "";
     if (!device) return;
-    setProMode(true);
+    // Pro mode for this run only, like --mode pro: a test run must not
+    // change the saved settings.
+    settingsStore.set({ modeOverride: true });
     navigate("bmw");
     void refresh(device).then(() => startScan(device, false));
   });
