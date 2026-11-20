@@ -18,6 +18,14 @@ kept in git, as Tauri recommends.
   then it is in the list of the Bluetooth choice. Android 12 and newer ask for
   "nearby devices"; the connection page explains why before the system asks.
   Older versions need no question for paired devices.
+- **Bluetooth LE adapters** (Vgate iCar Pro BLE, vLinker, OBDLink CX and MX+
+  in BLE mode, Veepeak BLE, other FFF0 and FFE0 dongles): no pairing, the
+  search of the Bluetooth choice finds them, with signal strength and the
+  serial service they advertise. Android 12 and newer need the same "nearby
+  devices" as classic Bluetooth (the scan is declared `neverForLocation`).
+  Android 7 to 11 only report LE devices when the app may use the location
+  and the location is switched on; the page asks for it separately, paired
+  classic adapters keep working without it.
 - **USB adapters on an OTG cable** (FTDI, CH340, CP210x, PL2303, CDC) through
   [usb-serial-for-android](https://github.com/mik3y/usb-serial-for-android)
   (MIT). Android asks once per adapter whether Caruspex may use it.
@@ -31,12 +39,42 @@ kept in git, as Tauri recommends.
   (`Android/data/dev.senseiissei.caruspex/files/Documents`, visible from a
   computer over USB).
 
+### How Bluetooth LE works on the phone
+
+btleplug (the desktop's Bluetooth LE library) would need its own Java
+classes in the APK and a JNI start-up from the activity. Instead the Kotlin
+plugin uses Android's `BluetoothLeScanner` and `BluetoothGatt` directly, the
+same way it opens classic Bluetooth, and the Rust side keeps every decision:
+
+1. `bleScan` listens for the given time and returns address, name, RSSI and
+   the advertised service UUIDs. Nothing is sent.
+   `ble_profile::advertised_profile` and `scan_score` turn that into the list
+   (a vLinker or OBDLink service counts like an adapter name; FFF0, FFE0 and
+   Nordic UART modules are also in lamps and toys and only lift a device a
+   little).
+2. `bleConnect` connects (`TRANSPORT_LE`, one more try after a quick error
+   133), discovers the services and returns them with their property bits.
+   Still nothing is written.
+3. `ble_gatt::plan_channel` picks the channel with the same profiles as the
+   desktop (`ble_profile.rs`) and refuses every device that is not
+   recognised as an OBD adapter by name or by a vendor service only adapters
+   use. A refused device is disconnected without a single write.
+4. Only then `bleSetup` asks for an MTU of 517, writes the CCC descriptor
+   (notifications, or indications when the characteristic only indicates)
+   and allows writes on that link.
+5. `ble_gatt::GattTransport` is the `Transport` the ELM327 driver reads: it
+   cuts every write to the agreed MTU minus 3 bytes, the Kotlin side waits
+   for each write's callback before the next one, and notifications are
+   collected in the same inbox as the bytes of a serial port.
+
+The worker's connect job is the same as on the desktop (`Job::OpenBle`): LE
+first, for a dual-mode adapter then classic as the second try. The logic of
+steps 3 and 5 is tested on the desktop with fake links
+(`crates/caruspex-link/src/ble_gatt.rs`, `tests/ble_gatt.rs`, the driver over
+notifications of 20 bytes); the Kotlin side has not run on a phone yet.
+
 ## Not yet
 
-- **Bluetooth LE adapters** (Vgate iCar Pro BLE, vLinker, OBDLink CX). btleplug
-  compiles for Android but needs its Java side (droidplug) in the APK and a
-  JNI start-up from the activity; without a phone to test on that was left
-  out. The Bluetooth choice says so.
 - **KKL cables** (K-line bit timing over USB) and **CAN interfaces**: the
   choices are hidden on the phone.
 - The app has no own updater on Android; it shows that a newer version exists

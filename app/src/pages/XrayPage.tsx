@@ -34,6 +34,7 @@ import {
   type Layer,
   type Vec3,
 } from "../xray/layout";
+import { HEAVY_KINDS, heavySpec, type HeavyKind } from "../xray/heavy";
 import { MOTO_STYLES, motoSpec, type MotoStyle } from "../xray/moto";
 import type { FrameStats, SectionAxis, XrayLabel, XrayPalette, XrayScene } from "../xray/scene";
 import { bodyVariants } from "../xray/shape";
@@ -89,6 +90,29 @@ function busName(bus: BusKind): string {
   }
 }
 
+function heavyKindName(kind: HeavyKind): string {
+  switch (kind) {
+    case "tractor": return tr("Sattelzugmaschine");
+    case "rigid": return tr("Lkw mit Kofferaufbau");
+    case "citybus": return tr("Stadtbus");
+    case "coach": return tr("Reisebus");
+  }
+}
+
+// SAE J1939 source addresses and the kind of unit behind them (J1939-71
+// preferred addresses); the tachograph (0xEE) goes by its name.
+const J1939_KINDS: Record<number, number> = {
+  0x00: EcuKind.Engine,
+  0x01: EcuKind.Engine,
+  0x03: EcuKind.Gearbox,
+  0x04: EcuKind.Gearbox,
+  0x0b: EcuKind.Brakes,
+  0x17: EcuKind.Instruments,
+  0x19: EcuKind.Climate,
+  0x21: EcuKind.Body,
+  0x31: EcuKind.Body,
+};
+
 function motoStyleName(style: MotoStyle): string {
   switch (style) {
     case "naked": return tr("Naked Bike");
@@ -113,7 +137,12 @@ function partName(id: string): string {
   if (is("obd-adapter")) return tr("OBD-Adapter");
   if (is("obd-cable")) return tr("Adapterkabel");
   // The motorcycle.
-  if (is("frame", "steering-head")) return tr("Rahmen");
+  if (is("frame", "steering-head", "subframe", "underrun-guard", "fifth-wheel-mount")) return tr("Rahmen");
+  // Trucks and buses, off-roaders.
+  if (is("fifth-wheel")) return tr("Sattelkupplung");
+  if (is("adblue-tank", "adblue-line")) return tr("AdBlue-Tank");
+  if (is("spare-wheel")) return tr("Reserverad");
+  if (is("front-axle", "rear-axle")) return tr("Achse");
   if (is("fork", "fork-slider", "clamp")) return tr("Gabel");
   if (is("swingarm")) return tr("Schwinge");
   if (is("shock")) return tr("Federbein");
@@ -267,6 +296,7 @@ export default function XrayPage() {
   const vin = useSession((s) => s.vin);
   const faults = useSession((s) => s.faults);
   const udsEcus = useSession((s) => s.udsEcus);
+  const j1939Units = useSession((s) => s.j1939Units);
   const protocol = useSession((s) => s.protocol);
   const supported = useSession((s) => s.supportedPids);
   const themeVersion = useThemeVersion();
@@ -284,15 +314,18 @@ export default function XrayPage() {
   const [variant, setVariant] = useState<BodyType | null>(null);
   // The kind of a motorcycle picked in the view, null for the one of the table.
   const [motoStyle, setMotoStyle] = useState<MotoStyle | null>(null);
+  // The kind of a truck or bus picked in the view, null for the one of the table.
+  const [heavyKind, setHeavyKind] = useState<HeavyKind | null>(null);
   const year = (shown ? shown.yearFrom : identity?.year) || generation?.yearFrom || (connected ? 2012 : 2018);
   const [powertrain, setPowertrain] = useState(0);
   const [anatomy, setAnatomy] = useState<VehicleAnatomy | null>(null);
-  const pendingVariant = useRef<{ body: BodyType | null; moto: MotoStyle | null }>({ body: null, moto: null });
+  const pendingVariant = useRef<{ body: BodyType | null; moto: MotoStyle | null; heavy: HeavyKind | null }>({ body: null, moto: null, heavy: null });
   useEffect(() => {
     setPowertrain(0);
     setVariant(pendingVariant.current.body);
     setMotoStyle(pendingVariant.current.moto);
-    pendingVariant.current = { body: null, moto: null };
+    setHeavyKind(pendingVariant.current.heavy);
+    pendingVariant.current = { body: null, moto: null, heavy: null };
   }, [generation?.id]);
   const [devView, setDevView] = useState<"side" | "rear" | "front" | null>(null);
   // Further switches of the screenshot option after the view: "stats",
@@ -308,6 +341,7 @@ export default function XrayPage() {
       pendingVariant.current = {
         body: VARIANT_NAMES[name] ?? null,
         moto: (MOTO_STYLES as string[]).includes(name) ? (name as MotoStyle) : null,
+        heavy: (HEAVY_KINDS as string[]).includes(name) ? (name as HeavyKind) : null,
       };
       setShown(g);
     });
@@ -412,6 +446,11 @@ export default function XrayPage() {
       if (!r.present) continue;
       list.push({ key: `kkl-${r.address}`, kind: KKL_KINDS[r.address] ?? EcuKind.Other, name: r.name, faulty: r.faults.length > 0, source: "kline" });
     }
+    // The units of a truck's J1939 network, with their active faults (DM1).
+    for (const u of j1939Units) {
+      const name = u.address === 0xee ? `${u.label} (TCO)` : u.label;
+      list.push({ key: `j1939-${u.address}`, kind: J1939_KINDS[u.address] ?? EcuKind.Other, name, faulty: u.active > 0, source: "uds" });
+    }
     if (connected) {
       // Plain OBD always reaches the engine, and the gearbox when it reports.
       const gearboxFaults = faults.filter((f) => responseOf(f.ecu) === 0x7e9);
@@ -427,7 +466,7 @@ export default function XrayPage() {
       list.push({ key: asking.key, kind: asking.kind, name: asking.name, faulty: false, source: asking.source, asking: true, bus: asking.bus });
     }
     return list;
-  }, [udsEcus, otherBuses, kklRows, faults, connected, kline, asking]);
+  }, [udsEcus, otherBuses, kklRows, j1939Units, faults, connected, kline, asking]);
 
   // --- Faults and their zones -----------------------------------------------------------
   const [zoneFindings, setZoneFindings] = useState<ZoneFinding[]>([]);
@@ -461,11 +500,12 @@ export default function XrayPage() {
   const variants = useMemo(() => (anatomy ? bodyVariants(anatomy, body) : [body]), [anatomy, body]);
   const drawn = variant !== null && variants.includes(variant) ? variant : body;
   const isMoto = body === BodyType.Motorcycle;
+  const isHeavy = body === BodyType.Truck;
   const layout = useMemo<CarLayout | null>(
-    () => (anatomy ? buildLayout({ anatomy, body, variant: drawn, ecus: ecuInputs, kline, turbo, motoStyle: motoStyle ?? undefined }) : null),
-    [anatomy, body, drawn, ecuInputs, kline, turbo, motoStyle],
+    () => (anatomy ? buildLayout({ anatomy, body, variant: drawn, ecus: ecuInputs, kline, turbo, motoStyle: motoStyle ?? undefined, heavyKind: heavyKind ?? undefined }) : null),
+    [anatomy, body, drawn, ecuInputs, kline, turbo, motoStyle, heavyKind],
   );
-  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${motoStyle}|${turbo}|${themeVersion}` : "";
+  const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${motoStyle}|${heavyKind}|${turbo}|${themeVersion}` : "";
 
   // --- The scene ---------------------------------------------------------------------------
   const host = useRef<HTMLDivElement>(null);
@@ -871,13 +911,16 @@ export default function XrayPage() {
   // Values Wikidata lacks for a measured car are estimates: marked with ≈.
   const metres = (mm: number, bit: number) =>
     `${anatomy && anatomy.dimensionSource !== "typical" && !(anatomy.measuredFields & bit) ? "≈" : ""}${localeNumber(mm / 1000, 2)}`;
-  const dims = anatomy
+  // The dimensions drawn: without any of the generation the typical ones of
+  // its class (a Sprinter, a truck), not the catalog's typical van.
+  const size = layout?.size ?? anatomy;
+  const dims = size
     ? tr(
         "%1 m lang, %2 m breit, %3 m hoch, Radstand %4 m",
-        metres(anatomy.lengthMm, 1),
-        metres(anatomy.widthMm, 2),
-        metres(anatomy.heightMm, 4),
-        metres(anatomy.wheelbaseMm, 8),
+        metres(size.lengthMm, 1),
+        metres(size.widthMm, 2),
+        metres(size.heightMm, 4),
+        metres(size.wheelbaseMm, 8),
       )
     : "";
   const source =
@@ -1057,6 +1100,19 @@ export default function XrayPage() {
                         value={layout?.moto?.style ?? motoSpec(anatomy.brand, anatomy.model).style}
                         options={MOTO_STYLES.map((s) => ({ value: s, label: motoStyleName(s) }))}
                         onChange={(v) => setMotoStyle(v as MotoStyle)}
+                      />
+                    </label>
+                  </>
+                ) : null}
+                {isHeavy ? (
+                  <>
+                    <div className="hint">{tr("Gezeichnet wird ein Lkw oder Bus dieser Bauart in typischen Maßen, nicht das genaue Modell.")}</div>
+                    <label className="xray-select">
+                      <span className="hint">{tr("Bauart")}</span>
+                      <Select
+                        value={layout?.heavy?.kind ?? heavySpec(anatomy.brand, anatomy.model).kind}
+                        options={HEAVY_KINDS.map((k) => ({ value: k, label: heavyKindName(k) }))}
+                        onChange={(v) => setHeavyKind(v as HeavyKind)}
                       />
                     </label>
                   </>

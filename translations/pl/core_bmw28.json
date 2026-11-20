@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " Caruspex dociera do każdego sterownika kablem K+DCAN w trybie K-Line albo kablem KKL (DS2, KWP2000 w wersji BMW).",
+ "c-bmw28-2": " Z przejściówką z okrągłej wtyczki na gniazdo OBD i kablem K+DCAN lub KKL Caruspex odczytuje sterowniki przez DS2.",
+ "c-bmw28-3": "Odpowiedź z innego adresu: ",
+ "c-bmw28-4": "K-Line BMW przez %1",
+ "c-bmw28-5": "Specyficzny dla BMW, opis tylko z danymi producenta",
+ "c-bmw28-6": "K-Line BMW wymaga kabla K+DCAN z przełącznikiem na K-Line albo kabla KKL na porcie COM.",
+ "c-bmw28-7": "Caruspex nie wysyła tego zapytania, tylko czyta i kasuje błędy.",
+ "c-bmw28-8": "Odpowiedź DS2 o złej długości: ",
+ "c-bmw28-9": "Nieznany układ tej pamięci błędów, surowe dane są obok.",
+ "c-bmw28-10": "Kabel nie słyszy sam siebie. Czy przełącznik kabla K+DCAN stoi na K-Line, a kabel siedzi mocno w gnieździe? Kabel KKL bierze zasilanie z gniazda, więc zapłon włączony.",
+ "c-bmw28-11": "Nie da się przełączyć linii na ",
+ "c-bmw28-12": "Nieoczekiwana odpowiedź: "
+}

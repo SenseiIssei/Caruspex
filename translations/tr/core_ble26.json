@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android Bluetooth aramasını başlatmadı. Bluetooth'u kapatıp yeniden açın ve tekrar arayın.",
+ "c-ble26-2": "Android 11'e kadar arama, Bluetooth LE adaptörlerini yalnızca konum erişimiyle bulur. Lütfen yukarıdan izin verin; eşleştirilmiş klasik adaptörler izin olmadan da çalışır.",
+ "c-ble26-3": "Android 11'e kadar Android, Bluetooth LE adaptörlerini yalnızca konum açıkken arar. Lütfen hızlı ayarlardan açın ve tekrar arayın."
+}

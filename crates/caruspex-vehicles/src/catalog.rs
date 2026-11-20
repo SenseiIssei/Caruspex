@@ -919,6 +919,26 @@ pub fn kkl_possible(g: &VehicleGeneration, year: i32) -> bool {
     c == Connector::Obd2 && matches!(g.bus, BusKind::KLine | BusKind::Mixed) && year <= 2008
 }
 
+/// BMW generations that kept the K-line at the diagnostic socket to the
+/// end (DS2, later KWP2000 in BMW style).
+const BMW_KLINE_ALWAYS: &[&str] = &[
+    "E36", "E36/7", "E38", "E39", "E46", "E52", "E53", "E83", "E85",
+];
+/// The E60 generation: K-line (KWP2000, BMW-FAST) until BMW moved the
+/// socket to D-CAN in March 2007.
+const BMW_KLINE_UNTIL_2007: &[&str] = &["E60", "E63", "E65", "E87", "E90"];
+
+/// True when an E-series BMW is diagnosed on the K-line, with a K+DCAN
+/// cable switched to K-line or a KKL cable (the BMW page of Caruspex).
+pub fn bmw_kline_possible(g: &VehicleGeneration, year: i32) -> bool {
+    let year = if year <= 0 { g.year_from } else { year };
+    if g.brand != "BMW" || !matches!(connector_for(g, year), Connector::Obd2 | Connector::Bmw20) {
+        return false;
+    }
+    BMW_KLINE_ALWAYS.contains(&g.generation)
+        || (BMW_KLINE_UNTIL_2007.contains(&g.generation) && year <= 2007)
+}
+
 /// What diagnosis is possible for this generation in a given year
 /// (0 = first year) and with which engine (0 = as listed).
 pub fn support_for(g: &VehicleGeneration, year: i32, powertrain: u32) -> ObdSupport {
@@ -1006,6 +1026,7 @@ pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
         return out;
     }
     let kkl = kkl_possible(g, year);
+    let bmw_kline = bmw_kline_possible(g, year);
     let mut out: String;
     match support_for(g, year, 0) {
         ObdSupport::None => {
@@ -1057,6 +1078,12 @@ pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
                 )
             }
             .to_string();
+            if bmw_kline {
+                out.push_str(l(
+                    " Mit einem Adapter vom Rundstecker auf die OBD-Buchse und einem K+DCAN- oder KKL-Kabel liest Caruspex die Steuergeräte über DS2.",
+                    " With an adapter from the round plug to an OBD socket and a K+DCAN or KKL cable Caruspex reads the control units over DS2.",
+                ));
+            }
         }
         ObdSupport::Partial => {
             out = if only_electric(g.powertrains) {
@@ -1083,6 +1110,9 @@ pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
                     " A KKL cable with KWP1281 works for sure.",
                 ));
             }
+            if bmw_kline {
+                out.push_str(bmw_kline_hint());
+            }
         }
         ObdSupport::Full => {
             out = l(
@@ -1104,6 +1134,9 @@ pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
                     " Caruspex reaches the other control units with a KKL cable.",
                 ));
             }
+            if bmw_kline {
+                out.push_str(bmw_kline_hint());
+            }
         }
     }
     if g.connector_change != 0 && year < g.connector_change && g.late_connector != g.connector {
@@ -1121,6 +1154,13 @@ pub fn diagnosis_text(g: &VehicleGeneration, year: i32) -> String {
         out.push_str(note);
     }
     out
+}
+
+fn bmw_kline_hint() -> &'static str {
+    l(
+        " Alle Steuergeräte erreicht Caruspex mit einem K+DCAN-Kabel im K-Line-Modus oder einem KKL-Kabel (DS2, KWP2000 nach BMW-Art).",
+        " Caruspex reaches every control unit with a K+DCAN cable in K-line mode or a KKL cable (DS2, KWP2000 in BMW style).",
+    )
 }
 
 // Texts for the enums, in the active language.

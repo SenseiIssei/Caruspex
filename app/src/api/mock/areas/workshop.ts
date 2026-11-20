@@ -11,6 +11,7 @@ import type {
   AdapterCheckRow,
   AdapterRow,
   AppSettings,
+  BmwUnitRow,
   BrandFamily,
   EcuScanRow,
   FaultRow,
@@ -1125,7 +1126,143 @@ async function scanAllEcus(device: string, clearAttempts: number): Promise<void>
 
 // ---------------------------------------------------------------------------
 
+// --- BMW E series on the K-line ---------------------------------------------------
+// The two simulated cars of caruspex_demo::bmw in short: which units answer,
+// their fault memory, and the faults that come back after clearing. Real
+// ports answer like the worker when nobody is on the K-line.
+
+interface BmwSimUnit {
+  address: number;
+  name: [string, string];
+  ident: string;
+  faults: [string, boolean | null, string][];
+  stubborn?: [string, boolean | null, string];
+}
+
+const BMW_NAMES: Record<string, [string, string]> = {
+  dme: ["Motor (DME/DDE)", "Engine (DME/DDE)"],
+  egs: ["Getriebe (EGS)", "Gearbox (EGS)"],
+  abs: ["Bremsen und ABS (ABS/ASC/DSC)", "Brakes and ABS (ABS/ASC/DSC)"],
+  dsc: ["Bremsen und ABS (DSC)", "Brakes and ABS (DSC)"],
+  mrs: ["Airbag (MRS)", "Airbag (MRS)"],
+  acsm: ["Airbag (ACSM/MRS)", "Airbag (ACSM/MRS)"],
+  ike: ["Kombiinstrument (IKE/KOMBI)", "Instrument cluster (IKE/KOMBI)"],
+  kombi: ["Kombiinstrument (KOMBI)", "Instrument cluster (KOMBI)"],
+  ews: ["Wegfahrsperre (EWS)", "Immobilizer (EWS)"],
+  cas: ["Wegfahrsperre (CAS)", "Immobilizer (CAS)"],
+  gm: ["Zentralelektronik (GM/ZKE)", "Body electronics (GM/ZKE)"],
+  jbe: ["Zentralelektronik (JBE)", "Body electronics (JBE)"],
+  lcm: ["Licht (LCM/LSZ)", "Lighting (LCM/LSZ)"],
+  ihka: ["Klimaanlage (IHKA)", "Climate control (IHKA)"],
+};
+
+const bmwSims: Record<string, { protocol: string; label: string; units: BmwSimUnit[] }> = {
+  "sim:e46": {
+    protocol: "ds2",
+    label: "DS2",
+    units: [
+      { address: 0x12, name: BMW_NAMES.dme!, ident: "7519308 DME MS43 SIM", faults: [["0x2A", null, "01 10 05"]], stubborn: ["0x51", null, "21 00 00"] },
+      { address: 0x32, name: BMW_NAMES.egs!, ident: "7514822 EGS GS20 SIM", faults: [] },
+      { address: 0x56, name: BMW_NAMES.abs!, ident: "6750920 DSC MK60 SIM", faults: [["0x5D", null, "20 01"]] },
+      { address: 0xa4, name: BMW_NAMES.mrs!, ident: "6962580 MRS3 SIM", faults: [["0x1F", null, "80"]] },
+      { address: 0x80, name: BMW_NAMES.ike!, ident: "6914880 IKE SIM", faults: [] },
+      { address: 0x44, name: BMW_NAMES.ews!, ident: "6905668 EWS3 SIM", faults: [] },
+      { address: 0x00, name: BMW_NAMES.gm!, ident: "6904330 GM5 SIM", faults: [] },
+      { address: 0xd0, name: BMW_NAMES.lcm!, ident: "6928730 LCM SIM", faults: [["0x09", null, "00"]] },
+      { address: 0x5b, name: BMW_NAMES.ihka!, ident: "6911540 IHKA SIM", faults: [] },
+    ],
+  },
+  "sim:e60": {
+    protocol: "kwp2000",
+    label: "KWP2000 (BMW)",
+    units: [
+      { address: 0x12, name: BMW_NAMES.dme!, ident: "7560301 DME MSV70 SIM", faults: [["0x2A82", true, "60"]], stubborn: ["0x29CC", false, "20"] },
+      { address: 0x18, name: BMW_NAMES.egs!, ident: "7577850 EGS GA6HP SIM", faults: [] },
+      { address: 0x29, name: BMW_NAMES.dsc!, ident: "6769390 DSC SIM", faults: [["0x5E20", false, "20"]] },
+      { address: 0x01, name: BMW_NAMES.acsm!, ident: "6961066 ACSM SIM", faults: [["0x934B", true, "60"]] },
+      { address: 0x60, name: BMW_NAMES.kombi!, ident: "6974990 KOMBI SIM", faults: [] },
+      { address: 0x40, name: BMW_NAMES.cas!, ident: "6954720 CAS2 SIM", faults: [] },
+      { address: 0x00, name: BMW_NAMES.jbe!, ident: "6966355 JBE SIM", faults: [["0xA0B8", false, "20"]] },
+      { address: 0x78, name: BMW_NAMES.ihka!, ident: "6983710 IHKA SIM", faults: [] },
+    ],
+  },
+};
+
+function bmwRow(protocol: string, label: string, unit: BmwSimUnit): BmwUnitRow {
+  const all = unit.stubborn ? [...unit.faults, unit.stubborn] : unit.faults;
+  return {
+    address: unit.address,
+    protocol,
+    protocolLabel: label,
+    name: L(unit.name[0], unit.name[1]),
+    identification: unit.ident,
+    faultsRead: true,
+    faults: all.map(([code, present, detail]) => ({
+      code,
+      present,
+      detail,
+      text: L("BMW-spezifisch, Text nur mit Herstellerdaten", "BMW specific, text only with manufacturer data"),
+    })),
+    note: "",
+  };
+}
+
+const BMW_NO_CABLE = () =>
+  L(
+    "Für die BMW-K-Line braucht es ein K+DCAN-Kabel mit Schalter auf K-Line oder ein KKL-Kabel an einem COM-Anschluss.",
+    "BMW's K-line needs a K+DCAN cable switched to K-line or a KKL cable on a COM port.",
+  );
+
+async function scanBmw(device: string, clear: boolean): Promise<void> {
+  link.cancel = false;
+  const sim = bmwSims[device];
+  if (!sim) {
+    await wait(150);
+    emit("bmw_scan_finished", { present: 0, withFaults: 0, cancelled: false, error: portError(device) || BMW_NO_CABLE() });
+    return;
+  }
+  const total = 41;
+  emit("bmw_scan_started", { total });
+  emit("busy", { active: true });
+  let found = 0;
+  for (const [i, unit] of sim.units.entries()) {
+    if (link.cancel) break;
+    emit("bmw_scan_progress", { index: i, total, name: L(unit.name[0], unit.name[1]), protocol: sim.label, address: unit.address });
+    await wait(260);
+    emit("bmw_unit", { row: bmwRow(sim.protocol, sim.label, unit) });
+    ++found;
+  }
+  let withFaults = sim.units.filter((u) => u.faults.length > 0 || u.stubborn).length;
+  if (clear && !link.cancel) {
+    for (const unit of sim.units.filter((u) => u.faults.length > 0 || u.stubborn)) {
+      await wait(300);
+      clearBmwSim(sim, unit);
+      if (!unit.stubborn) --withFaults;
+    }
+  }
+  emit("busy", { active: false });
+  emit("bmw_scan_finished", { present: found, withFaults, cancelled: link.cancel, error: "" });
+}
+
+function clearBmwSim(sim: { protocol: string; label: string }, unit: BmwSimUnit): void {
+  unit.faults = [];
+  emit("bmw_clear_result", { address: unit.address, protocol: sim.protocol, ok: true, remaining: unit.stubborn ? 1 : 0, error: "" });
+  emit("bmw_unit", { row: bmwRow(sim.protocol, sim.label, unit) });
+}
+
 export const workshopHandlers: PartialHandlers = {
+  scan_bmw: ({ device, clear }) => {
+    void scanBmw(device, clear);
+  },
+  clear_bmw_unit: ({ device, address }) => {
+    const sim = bmwSims[device];
+    const unit = sim?.units.find((u) => u.address === address);
+    if (!sim || !unit) {
+      emit("bmw_clear_result", { address, protocol: "ds2", ok: false, remaining: 0, error: BMW_NO_CABLE() });
+      return;
+    }
+    void wait(400).then(() => clearBmwSim(sim, unit));
+  },
   ecu_families: (): BrandFamily[] =>
     ecuFamilies().map((key) => {
       const label = FAMILY_LABELS[key];

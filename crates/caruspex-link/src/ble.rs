@@ -30,9 +30,10 @@ use futures::StreamExt;
 use tokio::runtime::Runtime;
 use tokio::task::JoinHandle;
 
+use crate::ble_gatt::plan_channel;
 use crate::ble_profile::{
-    BleChannel, BleCharacteristicDesc, BleServiceDesc, choose_ble_channel, is_obd_adapter,
-    obd_adapter_name_score,
+    BleChannel, BleCharacteristicDesc, BleServiceDesc, advertised_profile, choose_ble_channel,
+    is_obd_adapter, scan_score,
 };
 use crate::transport::Transport;
 
@@ -129,13 +130,16 @@ async fn device_of(p: &Peripheral) -> Option<BleDevice> {
     if id.is_empty() {
         return None;
     }
+    let advertised: Vec<String> = props.services.iter().map(|u| u.to_string()).collect();
+    let profile = advertised_profile(&advertised);
     Some(BleDevice {
-        score: obd_adapter_name_score(&name),
+        score: scan_score(&name, profile),
         id,
         name,
         rssi: i32::from(props.rssi.unwrap_or(0)),
         low_energy: true,
         classic: false,
+        profile: profile.unwrap_or_default().to_string(),
     })
 }
 
@@ -353,28 +357,16 @@ impl BleTransport {
             }
         );
         let c = connect_and_discover(device.clone()).await?;
-        let (Some(service), Some(notify), Some(write)) = (
-            c.channel.service,
-            c.channel.notify_characteristic,
-            c.channel.write_characteristic,
-        ) else {
-            let _ = c.peripheral.disconnect().await;
-            return Err(l(
-                "Auf diesem Gerät wurde kein serieller Kanal für OBD gefunden. Ist es ein OBD-Adapter mit Bluetooth LE?",
-                "No serial channel for OBD was found on this device. Is it an OBD adapter with Bluetooth LE?",
-            )
-            .to_string());
+        // The same choice and the same refusal as on Android.
+        let plan = match plan_channel(&c.name, &c.services) {
+            Ok(plan) => plan,
+            Err(e) => {
+                let _ = c.peripheral.disconnect().await;
+                return Err(e);
+            }
         };
-        if !is_obd_adapter(&c.name, &c.channel) {
-            let _ = c.peripheral.disconnect().await;
-            return Err(l(
-                "Das Gerät sieht nicht wie ein OBD-Adapter aus. An unbekannte Geräte sendet Caruspex nichts.",
-                "The device does not look like an OBD adapter. Caruspex sends nothing to unknown devices.",
-            )
-            .to_string());
-        }
-        let notify_char = c.characteristics[service][notify].clone();
-        let write_char = c.characteristics[service][write].clone();
+        let notify_char = c.characteristics[plan.service][plan.notify].clone();
+        let write_char = c.characteristics[plan.service][plan.write].clone();
         let peripheral = c.peripheral;
         let shared = Arc::new(Shared {
             buffer: Mutex::new(Vec::new()),
@@ -435,7 +427,7 @@ impl BleTransport {
         }
         Ok(Self {
             peripheral,
-            write_type: if c.channel.write_without_response {
+            write_type: if plan.write_without_response {
                 WriteType::WithoutResponse
             } else {
                 WriteType::WithResponse
@@ -447,7 +439,7 @@ impl BleTransport {
             shared,
             tasks,
             name: label,
-            profile: c.channel.profile,
+            profile: plan.profile,
         })
     }
 

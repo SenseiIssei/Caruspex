@@ -1,4 +1,6 @@
-//! KWP1281 over a KKL cable (VAG 409.1).
+//! The K-line through a plain serial cable: a KKL cable (VAG 409.1) or a
+//! K+DCAN cable switched to the K-line. Both are a USB serial chip with a
+//! K-line driver behind it, so the tester hears every byte it sends.
 
 use std::collections::VecDeque;
 
@@ -6,10 +8,22 @@ use caruspex_i18n::l;
 
 use crate::serial::Serial;
 use crate::timing::{now_ms, sleep_ms, sleep_until_ms};
-use crate::transport::ByteStream;
+use crate::transport::{ByteStream, LineParity};
 
 /// 5 baud means 200 milliseconds per bit.
 const BIT_MS: u64 = 200;
+
+/// ISO 14230-2 fast init: the bus idles at least W5 = 300 ms, then the
+/// tester pulls it low for TiniL = 25 ms and releases it for the rest of
+/// TWuP = 50 ms before the StartCommunication request goes out.
+const FAST_INIT_IDLE_MS: u64 = 300;
+const FAST_INIT_LOW_MS: u64 = 25;
+const FAST_INIT_WAKE_UP_MS: u64 = 50;
+/// The answer to StartCommunication comes within P2max = 50 ms; a
+/// generous margin for the USB latency of the serial chip.
+const FAST_INIT_ANSWER_MS: u64 = 250;
+const ECHO_MS: u64 = 100;
+const INTER_BYTE_MS: u64 = 60;
 
 /// The ten bits of the 5-baud wake-up address: start bit, 7 data bits (LSB
 /// first), odd parity, stop bit. `true` is a one (line released).
@@ -67,8 +81,42 @@ impl KLineStream {
         Ok(())
     }
 
+    /// Opens a K+DCAN or KKL cable for BMW's K-line protocols: 9600 baud
+    /// to begin with, DTR and RTS off. Those two lines are what the
+    /// EDIABAS drivers leave alone on cables that echo (EdiabasLib,
+    /// EdInterfaceObd, read as protocol knowledge); the K-line or D-CAN mode
+    /// itself comes from the switch on the cable.
+    pub fn open_bmw(&mut self, device: &str) -> Result<(), String> {
+        self.open(device, 9600)?;
+        self.port.set_control_lines(false, false);
+        Ok(())
+    }
+
     pub fn close(&mut self) {
         self.port.close();
+    }
+
+    /// Reads the rest of a KWP2000 message whose format byte came in: the
+    /// address bytes when the format says so, the length byte when the
+    /// format carries none, the data and the checksum.
+    fn read_kwp_rest(&mut self, format: u8) -> Option<Vec<u8>> {
+        let mut frame = vec![format];
+        let with_addresses = format & 0xC0 != 0;
+        let mut header = if with_addresses { 2 } else { 0 };
+        let mut length = usize::from(format & 0x3F);
+        if length == 0 {
+            header += 1;
+        }
+        for _ in 0..header {
+            frame.push(self.read_byte(INTER_BYTE_MS)?);
+        }
+        if length == 0 {
+            length = usize::from(*frame.last()?);
+        }
+        for _ in 0..=length {
+            frame.push(self.read_byte(INTER_BYTE_MS)?);
+        }
+        Some(frame)
     }
 
     pub fn is_open(&self) -> bool {
@@ -145,6 +193,52 @@ impl ByteStream for KLineStream {
     fn echoes_own_bytes(&self) -> bool {
         true
     }
+
+    // The low pulse is clocked by hand with the break like the 5-baud
+    // address; every edge gets a fixed target time from the start of the
+    // pattern. Returns the whole answer message, header to checksum.
+    fn fast_init(&mut self, start: &[u8]) -> Option<Vec<u8>> {
+        if !self.port.is_open() || start.is_empty() {
+            return None;
+        }
+        self.port.set_break(false);
+        sleep_ms(FAST_INIT_IDLE_MS);
+        let begin = now_ms();
+        self.port.set_break(true);
+        sleep_until_ms(begin + FAST_INIT_LOW_MS);
+        self.port.set_break(false);
+        sleep_until_ms(begin + FAST_INIT_WAKE_UP_MS);
+        // The low pulse may come back as a 0x00 with a framing error.
+        self.port.flush_input();
+        self.buffer.clear();
+
+        if !self.port.write(start) {
+            return None;
+        }
+        for &sent in start {
+            if self.read_byte(ECHO_MS) != Some(sent) {
+                return None;
+            }
+        }
+        let format = self.read_byte(FAST_INIT_ANSWER_MS)?;
+        self.read_kwp_rest(format)
+    }
+
+    fn set_line(&mut self, baud: u32, parity: LineParity) -> bool {
+        if !self.port.is_open() {
+            return false;
+        }
+        self.buffer.clear();
+        if self.port.baud() != baud && !self.port.change_baud(baud) {
+            return false;
+        }
+        if !self.port.set_parity(parity) {
+            return false;
+        }
+        self.baud_after_init = baud;
+        self.port.flush_input();
+        true
+    }
 }
 
 #[cfg(test)]
@@ -173,5 +267,7 @@ mod tests {
         assert!(!k.slow_init(0x01));
         assert!(!k.write_byte(0x55));
         assert_eq!(k.read_byte(5), None);
+        assert_eq!(k.fast_init(&[0x81, 0x12, 0xF1, 0x81, 0x05]), None);
+        assert!(!k.set_line(10400, LineParity::None));
     }
 }

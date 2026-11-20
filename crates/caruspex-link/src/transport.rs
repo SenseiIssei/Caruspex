@@ -92,6 +92,15 @@ impl<T: FrameLink + ?Sized> FrameLink for Box<T> {
     }
 }
 
+/// Parity of a serial K-line. BMW's DS2 runs with 8E1, everything else
+/// on the K-line with 8N1.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum LineParity {
+    #[default]
+    None,
+    Even,
+}
+
 /// One byte out, one byte in, for KWP1281 and KWP2000 on a K-line.
 /// Kept separate from the cable so the state machines can be tested against
 /// a simulated control unit.
@@ -111,6 +120,13 @@ pub trait ByteStream: Send {
     fn fast_init(&mut self, start: &[u8]) -> Option<Vec<u8>> {
         let _ = start;
         None
+    }
+    /// Switches baud rate and parity without closing the line. BMW's
+    /// E series mixes DS2 (9600 8E1), KWP2000 (10400 8N1) and BMW-FAST
+    /// (115200 8N1) on one K-line. False if the line cannot do it.
+    fn set_line(&mut self, baud: u32, parity: LineParity) -> bool {
+        let _ = (baud, parity);
+        false
     }
 }
 
@@ -172,6 +188,9 @@ impl<T: ByteStream + ?Sized> ByteStream for Box<T> {
     }
     fn fast_init(&mut self, start: &[u8]) -> Option<Vec<u8>> {
         (**self).fast_init(start)
+    }
+    fn set_line(&mut self, baud: u32, parity: LineParity) -> bool {
+        (**self).set_line(baud, parity)
     }
 }
 

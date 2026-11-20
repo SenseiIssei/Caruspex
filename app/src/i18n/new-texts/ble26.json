@@ -1,0 +1,71 @@
+[
+ {
+  "context": "caruspex::Android",
+  "de": "Standort für Bluetooth LE",
+  "en": "Location for Bluetooth LE",
+  "tr": {
+   "es": "Ubicación para Bluetooth LE",
+   "fr": "Localisation pour le Bluetooth LE",
+   "pt": "Localização para Bluetooth LE",
+   "it": "Posizione per Bluetooth LE",
+   "nl": "Locatie voor Bluetooth LE",
+   "pl": "Lokalizacja dla Bluetooth LE",
+   "cs": "Poloha pro Bluetooth LE",
+   "ru": "Местоположение для Bluetooth LE",
+   "uk": "Місцезнаходження для Bluetooth LE",
+   "tr": "Bluetooth LE için konum",
+   "ar": "الموقع من أجل Bluetooth LE",
+   "zh": "用于蓝牙 LE 的位置权限",
+   "ja": "Bluetooth LE のための位置情報",
+   "ko": "Bluetooth LE용 위치",
+   "hi": "Bluetooth LE के लिए लोकेशन",
+   "id": "Lokasi untuk Bluetooth LE"
+  }
+ },
+ {
+  "context": "caruspex::Android",
+  "de": "Bis Android 11 findet die Suche Adapter mit Bluetooth LE nur, wenn Caruspex den Standort verwenden darf. Caruspex liest ihn nicht und schickt nichts weg. Gekoppelte klassische Adapter gehen auch ohne.",
+  "en": "Up to Android 11 the search only finds Bluetooth LE adapters when Caruspex may use the location. Caruspex does not read it and sends nothing anywhere. Paired classic adapters work without it.",
+  "tr": {
+   "es": "Hasta Android 11, la búsqueda solo encuentra adaptadores Bluetooth LE si Caruspex puede usar la ubicación. Caruspex no la lee ni envía nada. Los adaptadores clásicos emparejados funcionan sin ella.",
+   "fr": "Jusqu'à Android 11, la recherche ne trouve les adaptateurs Bluetooth LE que si Caruspex peut utiliser la localisation. Caruspex ne la lit pas et n'envoie rien. Les adaptateurs classiques appairés fonctionnent sans.",
+   "pt": "Até ao Android 11, a pesquisa só encontra adaptadores Bluetooth LE se o Caruspex puder usar a localização. O Caruspex não a lê e não envia nada. Os adaptadores clássicos emparelhados funcionam sem ela.",
+   "it": "Fino ad Android 11 la ricerca trova gli adattatori Bluetooth LE solo se Caruspex può usare la posizione. Caruspex non la legge e non invia nulla. Gli adattatori classici associati funzionano anche senza.",
+   "nl": "Tot en met Android 11 vindt de zoekopdracht Bluetooth LE-adapters alleen als Caruspex de locatie mag gebruiken. Caruspex leest die niet en verstuurt niets. Gekoppelde klassieke adapters werken ook zonder.",
+   "pl": "Do Androida 11 wyszukiwanie znajduje adaptery Bluetooth LE tylko wtedy, gdy Caruspex może używać lokalizacji. Caruspex jej nie odczytuje i niczego nie wysyła. Sparowane klasyczne adaptery działają także bez niej.",
+   "cs": "Až do Androidu 11 najde vyhledávání adaptéry Bluetooth LE jen tehdy, když Caruspex smí používat polohu. Caruspex ji nečte a nic neposílá. Spárované klasické adaptéry fungují i bez ní.",
+   "ru": "До Android 11 поиск находит адаптеры Bluetooth LE, только если Caruspex может использовать местоположение. Caruspex его не считывает и ничего не отправляет. Сопряжённые классические адаптеры работают и без него.",
+   "uk": "До Android 11 пошук знаходить адаптери Bluetooth LE, лише якщо Caruspex може використовувати місцезнаходження. Caruspex його не зчитує і нічого не надсилає. Сполучені класичні адаптери працюють і без нього.",
+   "tr": "Android 11'e kadar arama, Bluetooth LE adaptörlerini yalnızca Caruspex konumu kullanabiliyorsa bulur. Caruspex konumu okumaz ve hiçbir şey göndermez. Eşleştirilmiş klasik adaptörler konum olmadan da çalışır.",
+   "ar": "حتى أندرويد 11 لا يجد البحث محولات Bluetooth LE إلا إذا سُمح لـ Caruspex باستخدام الموقع. لا يقرأ Caruspex الموقع ولا يرسل شيئًا. تعمل المحولات الكلاسيكية المقترنة من دونه.",
+   "zh": "在 Android 11 及更早版本上，只有允许 Caruspex 使用位置信息，搜索才能找到蓝牙 LE 适配器。Caruspex 不会读取位置，也不会发送任何内容。已配对的经典蓝牙适配器无需此权限也能使用。",
+   "ja": "Android 11 までは、Caruspex が位置情報を使えるときだけ検索で Bluetooth LE アダプターが見つかります。Caruspex は位置情報を読み取らず、何も送信しません。ペアリング済みのクラシックアダプターは位置情報なしでも使えます。",
+   "ko": "Android 11까지는 Caruspex가 위치를 사용할 수 있을 때만 검색에서 Bluetooth LE 어댑터를 찾습니다. Caruspex는 위치를 읽지 않으며 아무것도 보내지 않습니다. 페어링된 클래식 어댑터는 위치 없이도 작동합니다.",
+   "hi": "Android 11 तक खोज Bluetooth LE एडाप्टर तभी ढूँढती है जब Caruspex को लोकेशन इस्तेमाल करने की अनुमति हो। Caruspex लोकेशन नहीं पढ़ता और कुछ भी नहीं भेजता। पेयर किए गए क्लासिक एडाप्टर इसके बिना भी चलते हैं।",
+   "id": "Hingga Android 11, pencarian hanya menemukan adaptor Bluetooth LE jika Caruspex boleh memakai lokasi. Caruspex tidak membacanya dan tidak mengirim apa pun. Adaptor klasik yang sudah dipasangkan tetap berfungsi tanpanya."
+  }
+ },
+ {
+  "context": "caruspex::Bluetooth",
+  "de": "Serieller Dienst %1",
+  "en": "Serial service %1",
+  "tr": {
+   "es": "Servicio serie %1",
+   "fr": "Service série %1",
+   "pt": "Serviço série %1",
+   "it": "Servizio seriale %1",
+   "nl": "Seriële dienst %1",
+   "pl": "Usługa szeregowa %1",
+   "cs": "Sériová služba %1",
+   "ru": "Последовательный сервис %1",
+   "uk": "Послідовний сервіс %1",
+   "tr": "Seri hizmet %1",
+   "ar": "خدمة تسلسلية %1",
+   "zh": "串行服务 %1",
+   "ja": "シリアルサービス %1",
+   "ko": "시리얼 서비스 %1",
+   "hi": "सीरियल सेवा %1",
+   "id": "Layanan serial %1"
+  }
+ }
+]

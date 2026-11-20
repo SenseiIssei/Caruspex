@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "O Android não iniciou a pesquisa Bluetooth. Desligue e volte a ligar o Bluetooth e pesquise novamente.",
+ "c-ble26-2": "Até ao Android 11, a pesquisa só encontra adaptadores Bluetooth LE com acesso à localização. Permita-o acima; os adaptadores clássicos emparelhados funcionam sem ele.",
+ "c-ble26-3": "Até ao Android 11, o Android só procura adaptadores Bluetooth LE com a localização ligada. Ligue-a nas definições rápidas e pesquise novamente."
+}

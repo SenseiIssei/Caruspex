@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android tidak memulai pencarian Bluetooth. Matikan lalu nyalakan lagi Bluetooth dan cari ulang.",
+ "c-ble26-2": "Hingga Android 11, pencarian hanya menemukan adaptor Bluetooth LE dengan akses ke lokasi. Izinkan di atas; adaptor klasik yang sudah dipasangkan berfungsi tanpanya.",
+ "c-ble26-3": "Hingga Android 11, Android hanya mencari adaptor Bluetooth LE saat lokasi menyala. Nyalakan di setelan cepat lalu cari ulang."
+}

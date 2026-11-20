@@ -24,7 +24,7 @@ import { isAndroid } from "../lib/platform";
 import { navigate } from "../shell/nav";
 import type { PageId } from "../shell/pages";
 import { garageStore, rememberedRoute } from "../state/garage";
-import { appendLog, applySettings, markConnecting, settingsStore } from "../state/session";
+import { appendLog, applySettings, markConnecting, setProMode, settingsStore } from "../state/session";
 import { openSetup } from "../state/setup";
 import type { SetupChoice } from "../shell/SetupAssistant";
 import "./ConnectPage.css";
@@ -34,22 +34,32 @@ const tr = translator("caruspex::ConnectPage");
 
 // Texts of the Android app.
 const ta = translator("caruspex::Android");
+// Texts that came with Bluetooth LE on Android.
+const tb = translator("caruspex::Bluetooth");
 
 // Android 12 and newer: before the system asks for "nearby devices", the
-// page says why, and where to allow it later when it was refused.
-function BluetoothPermission({ refused, onAllow }: { refused: boolean; onAllow: () => void }) {
+// page says why, and where to allow it later when it was refused. Up to
+// Android 11 the same for the location, which only the Bluetooth LE search
+// needs there.
+function BluetoothPermission({ refused, location, onAllow }: { refused: boolean; location?: boolean; onAllow: () => void }) {
   return (
     <div className="connect-permission">
       <div className="connect-permission-head">
         <Icon name="bluetooth" size={18} />
-        <span>{ta("Zugriff auf Geräte in der Nähe")}</span>
+        <span>{location ? ta("Standort für Bluetooth LE") : ta("Zugriff auf Geräte in der Nähe")}</span>
       </div>
       <div className="subtle">
-        {ta(
-          "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
-            "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
-            "liest keinen Standort und schickt nichts weg.",
-        )}
+        {location
+          ? ta(
+              "Bis Android 11 findet die Suche Adapter mit Bluetooth LE nur, wenn Caruspex den Standort " +
+                "verwenden darf. Caruspex liest ihn nicht und schickt nichts weg. Gekoppelte klassische " +
+                "Adapter gehen auch ohne.",
+            )
+          : ta(
+              "Damit Caruspex mit dem Bluetooth-Adapter sprechen kann, fragt Android einmal nach dem " +
+                "Zugriff auf Geräte in der Nähe. Caruspex verbindet sich damit nur mit dem Adapter, es " +
+                "liest keinen Standort und schickt nichts weg.",
+            )}
       </div>
       {refused ? (
         <div className="hint">
@@ -69,13 +79,15 @@ const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.st
 const tc = translator("caruspex::ConnectHelp");
 // Texts of the truck option (SAE J1939).
 const tk = translator("caruspex::Truck");
+const tbmw = translator("caruspex::BmwPage");
 const MW = "caruspex::MainWindow";
 
 // The values of core/Elm327.cpp: kProtocolOrderKLineFirst, kProtocolOrderCanFirst.
 const ORDER_KLINE_FIRST = "54312678";
 const ORDER_CAN_FIRST = "67891543";
 
-type Mode = "cable" | "wifi" | "demo" | "replay" | "ble" | "enet" | "can";
+// "bmw": BMW's E series on the K-line, which goes to its own page.
+type Mode = "cable" | "wifi" | "demo" | "replay" | "ble" | "enet" | "can" | "bmw";
 
 interface BleChoice {
   id: string;
@@ -230,19 +242,15 @@ export default function ConnectPage() {
   // Bluetooth
   const [ble, setBle] = useState(initialBle);
   const [bleScanning, setBleScanning] = useState(false);
+  // The same on the phone: Bluetooth LE through Android's own GATT, classic
+  // adapters once paired in the settings.
   const [bleNote, setBleNote] = useState(() =>
-    isAndroid
-      ? ta(
-          "Klassische Bluetooth-Adapter einmal in den Android-Einstellungen koppeln, die PIN ist " +
-            "meist 1234 oder 0000, danach stehen sie hier in der Liste. Adapter mit Bluetooth LE " +
-            "folgen in einer späteren Version.",
-        )
-      : tr(
-          "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
-            "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
-            "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
-            "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
-        ),
+    tr(
+      "Adapter mit Bluetooth LE (Vgate iCar Pro BLE, vLinker, OBDLink CX, " +
+        "Veepeak BLE) findet Caruspex direkt, ohne Koppeln. Klassische " +
+        "Bluetooth-Adapter einmal in den Systemeinstellungen koppeln, die PIN " +
+        "ist meist 1234 oder 0000, danach stehen sie hier in der Liste.",
+    ),
   );
   // Android: may the app use Bluetooth, and whether the user was asked.
   const [btAccess, setBtAccess] = useState<BluetoothAccess | null>(null);
@@ -268,6 +276,8 @@ export default function ConnectPage() {
   const [year, setYear] = useState(2010);
   const [yearRange, setYearRange] = useState<[number, number]>([1980, currentYear() + 1]);
   const [profileNote, setProfileNote] = useState("");
+  // The chosen car is an E-series BMW on the K-line (catalog).
+  const [bmwKline, setBmwKline] = useState(false);
   const [socketHint, setSocketHint] = useState(defaultSocketHint);
 
   // Connection state
@@ -365,6 +375,7 @@ export default function ConnectPage() {
       );
       setSocketHint(defaultSocketHint());
       setMotoSteps([]);
+      setBmwKline(false);
       return;
     }
     let cancelled = false;
@@ -372,6 +383,7 @@ export default function ConnectPage() {
       .then((info) => {
         if (cancelled || !info) return;
         setProfileNote(info.diagnosisText);
+        setBmwKline(info.bmwKlinePossible ?? false);
         setSocketHint(tr("Bei diesem Auto: %1", info.locationText));
         setMotoSteps(info.connectSteps ?? []);
       })
@@ -468,6 +480,11 @@ export default function ConnectPage() {
       return route && fits(route) ? route : undefined;
     };
     switch (override?.mode ?? s.mode) {
+      case "bmw":
+        // The K+DCAN and KKL cable talk to the units on the BMW page.
+        setProMode(true);
+        navigate("bmw");
+        return;
       case "cable": {
         const device = override?.port ?? s.port;
         markConnecting(device ? t(MW, "Verbinde über %1 ...", device) : t(MW, "Suche den Adapter an allen Anschlüssen ..."));
@@ -577,6 +594,9 @@ export default function ConnectPage() {
       let label = d.name ? d.name : tr("Unbenanntes Gerät (%1)", d.id);
       label += `  ·  ${kind === 2 ? tr("klassisch") : kind === 3 ? tr("LE und klassisch") : tr("LE")}`;
       if (adapter) label += `  ·  ${tr("OBD-Adapter")}`;
+      // A known serial service is a hint only: lamps use the same modules.
+      else if (d.profile) label += `  ·  ${tb("Serieller Dienst %1", d.profile)}`;
+      if (d.rssi) label += `  ·  ${d.rssi} dBm`;
       items.push({ id: d.id, name: d.name, kinds: kind, label });
     }
     setBle((before) => {
@@ -695,6 +715,16 @@ export default function ConnectPage() {
     }, 7000);
   });
 
+  // --page connect-bmw: the way for BMW's E series with an E46 chosen.
+  useAppEvent<string>("dev:page", (name) => {
+    if (name !== "connect-bmw") return;
+    navigate("connect");
+    void call("catalog_search", { query: "BMW E46", limit: 1 }).then((found) => {
+      if (found?.[0]) setGeneration(found[0], 2003);
+      setMode("bmw");
+    });
+  });
+
   // Opens the Bluetooth choice and scans, without connecting.
   useAppEvent<string>("dev:page", (name) => {
     if (name !== "connect-ble") return;
@@ -738,6 +768,7 @@ export default function ConnectPage() {
     if (access.granted) scanBle();
   };
   const btBlocked = isAndroid && !!btAccess && btAccess.needsPermission && !btAccess.granted;
+  const locationNeeded = isAndroid && !btBlocked && !!btAccess?.locationNeeded;
 
   const portOptions = [{ value: "", label: tr("Automatisch suchen") }, ...ports.map((p) => ({ value: p.device, label: portLabel(p) }))];
   const bleOptions = ble.items.map((i) => ({ value: i.id, label: i.label }));
@@ -749,7 +780,7 @@ export default function ConnectPage() {
     { value: 250, label: tk("250 kbit/s (schwarze Buchse, Typ 1)") },
     { value: 500, label: tk("500 kbit/s (grüne Buchse, Typ 2)") },
   ];
-  const truckPossible = mode !== "enet" && mode !== "replay";
+  const truckPossible = mode !== "enet" && mode !== "replay" && mode !== "bmw";
   const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
   return (
@@ -850,6 +881,8 @@ export default function ConnectPage() {
             {isAndroid ? null : <ModeChip mode="can" current={mode} icon="cpu" label={tr("CAN-Interface")} onPick={setMode} />}
             <ModeChip mode="demo" current={mode} icon="sparkles" label={tr("Demo-Auto")} onPick={setMode} />
             <ModeChip mode="replay" current={mode} icon="play" label={tr("Aufnahme")} onPick={setMode} />
+            {/* The K-line cables need a COM port, which a phone does not have. */}
+            {isAndroid ? null : <ModeChip mode="bmw" current={mode} icon="car" label={tbmw("BMW E-Reihe")} onPick={setMode} />}
           </div>
 
           <div className="connect-mode fade-in" key={mode}>
@@ -924,6 +957,8 @@ export default function ConnectPage() {
 
             {mode === "ble" && btBlocked ? <BluetoothPermission refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
 
+            {mode === "ble" && locationNeeded ? <BluetoothPermission location refused={btAsked} onAllow={() => void askBluetooth()} /> : null}
+
             {mode === "ble" && !btBlocked ? (
               <>
                 <div className="connect-line">
@@ -956,6 +991,21 @@ export default function ConnectPage() {
                       "Einstecken braucht der Rechner bis zu einer Minute für seine " +
                       "automatische Adresse. Caruspex liest nur, Codieren und Flashen gehören " +
                       "in die Werkstattsoftware.",
+                  )}
+                </div>
+              </>
+            ) : null}
+
+            {mode === "bmw" ? (
+              <>
+                <div className="hint">
+                  {tbmw(
+                    "Für BMW der E-Reihe von etwa 1995 bis 2007 (E36, E38, E39, E46, E53, E83, E85, dazu E60, E87 und E90 bis 03/2007): ein K+DCAN-Kabel mit dem Schalter auf K-Line oder ein KKL-Kabel. Caruspex fragt damit jedes Steuergerät über DS2 oder KWP2000.",
+                  )}
+                </div>
+                <div className="hint">
+                  {tbmw(
+                    "Den Schalter vor dem Einstecken umlegen; K-Line ist bei den meisten Kabeln die linke Stellung und verbindet Pin 7 und 8. BMW ab 03/2007 und die F- und G-Reihe sprechen D-CAN oder Ethernet: dafür USB, WLAN oder Netzwerkkabel wählen.",
                   )}
                 </div>
               </>
@@ -1067,6 +1117,11 @@ export default function ConnectPage() {
             </label>
           </div>
           <div className="hint">{profileNote}</div>
+          {bmwKline && mode !== "bmw" ? (
+            <Button variant="ghost" icon="car" className="connect-bmw" onClick={() => setMode("bmw")}>
+              {tbmw("Alle Steuergeräte über K+DCAN oder KKL")}
+            </Button>
+          ) : null}
 
           <hr className="divider" />
 
@@ -1077,7 +1132,7 @@ export default function ConnectPage() {
             disabled={connecting}
             onClick={() => startConnect()}
           >
-            {connected ? tr("Trennen") : tr("Verbinden")}
+            {connected ? tr("Trennen") : mode === "bmw" ? tbmw("Zur BMW-Seite") : tr("Verbinden")}
           </Button>
 
           <div className="connect-state">

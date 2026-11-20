@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android nie uruchomił wyszukiwania Bluetooth. Wyłącz i ponownie włącz Bluetooth, a potem wyszukaj jeszcze raz.",
+ "c-ble26-2": "Do Androida 11 wyszukiwanie znajduje adaptery Bluetooth LE tylko z dostępem do lokalizacji. Zezwól na niego powyżej; sparowane klasyczne adaptery działają bez niego.",
+ "c-ble26-3": "Do Androida 11 Android szuka adapterów Bluetooth LE tylko przy włączonej lokalizacji. Włącz ją w szybkich ustawieniach i wyszukaj ponownie."
+}

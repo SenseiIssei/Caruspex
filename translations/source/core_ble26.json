@@ -1,0 +1,17 @@
+[
+ {
+  "id": "c-ble26-1",
+  "de": "Android hat die Bluetooth-Suche nicht gestartet. Bitte Bluetooth kurz aus- und wieder einschalten und neu suchen.",
+  "en": "Android did not start the Bluetooth search. Please switch Bluetooth off and on again and search again."
+ },
+ {
+  "id": "c-ble26-2",
+  "de": "Bis Android 11 findet die Suche Adapter mit Bluetooth LE nur mit Zugriff auf den Standort. Bitte oben erlauben; gekoppelte klassische Adapter gehen auch ohne.",
+  "en": "Up to Android 11 the search only finds Bluetooth LE adapters with access to the location. Please allow it above; paired classic adapters work without it."
+ },
+ {
+  "id": "c-ble26-3",
+  "de": "Bis Android 11 sucht Android nur nach Adaptern mit Bluetooth LE, wenn der Standort eingeschaltet ist. Bitte in den Schnelleinstellungen einschalten und neu suchen.",
+  "en": "Up to Android 11, Android only searches for Bluetooth LE adapters while the location is switched on. Please switch it on in the quick settings and search again."
+ }
+]

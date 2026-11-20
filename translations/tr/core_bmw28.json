@@ -1,0 +1,14 @@
+{
+ "c-bmw28-1": " Caruspex, K-Line modundaki bir K+DCAN kablosuyla veya bir KKL kablosuyla her kontrol ünitesine ulaşır (DS2, BMW usulü KWP2000).",
+ "c-bmw28-2": " Yuvarlak fişten OBD soketine bir adaptör ve bir K+DCAN ya da KKL kablosuyla Caruspex kontrol ünitelerini DS2 üzerinden okur.",
+ "c-bmw28-3": "Başka bir adresten yanıt: ",
+ "c-bmw28-4": "%1 üzerinden BMW K-Line",
+ "c-bmw28-5": "BMW'ye özgü, metin yalnızca üretici verileriyle var",
+ "c-bmw28-6": "BMW K-Line için anahtarı K-Line konumunda bir K+DCAN kablosu veya bir COM portunda KKL kablosu gerekir.",
+ "c-bmw28-7": "Caruspex bu isteği göndermez, yalnızca okur ve arızaları siler.",
+ "c-bmw28-8": "Uzunluğu hatalı DS2 yanıtı: ",
+ "c-bmw28-9": "Bu arıza belleğinin yapısı bilinmiyor, ham veriler yanında.",
+ "c-bmw28-10": "Kablo kendini duymuyor. K+DCAN kablosunun anahtarı K-Line konumunda mı ve kablo sokete sıkıca takılı mı? KKL kablosu gücünü soketten alır, bu yüzden kontak açık olmalı.",
+ "c-bmw28-11": "Hat şu hıza geçirilemiyor: ",
+ "c-bmw28-12": "Beklenmeyen yanıt: "
+}

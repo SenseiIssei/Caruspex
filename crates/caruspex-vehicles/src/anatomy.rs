@@ -591,7 +591,8 @@ pub fn drivetrain(brand: &str, model: &str, body: BodyType, year: i32, variant: 
         let dual = body == BodyType::Suv && !matches!(brand, "Volkswagen" | "Škoda" | "Cupra")
             || (brand == "Tesla" && (model.contains('S') || model.contains('X')))
             || model.contains("GT");
-        let rear = rear_motor_platform(brand, model);
+        // Electric trucks drive the rear axle like the diesel ones.
+        let rear = rear_motor_platform(brand, model) || body == BodyType::Truck;
         return Drivetrain {
             engine: EngineLayout::None,
             driven: if dual {
@@ -610,6 +611,9 @@ pub fn drivetrain(brand: &str, model: &str, body: BodyType, year: i32, variant: 
     let (engine, mut driven) = match exception(brand, model, year) {
         Some(e) => (e.engine, e.driven),
         None if body == BodyType::Pickup => (Long, Rear),
+        // Trucks and buses: engine along the frame, rear axle driven. The
+        // X-ray view places a bus engine at the back itself.
+        None if body == BodyType::Truck => (Long, Rear),
         None => (Across, Front),
     };
     if body == BodyType::Pickup && engine == Long {
@@ -841,6 +845,16 @@ mod tests {
 
     #[test]
     fn layouts_follow_the_rule() {
+        let truck = drivetrain("MAN", "TGX", BodyType::Truck, 2020, PT_DIESEL);
+        assert_eq!(
+            (truck.engine, truck.driven),
+            (EngineLayout::FrontLongitudinal, DrivenAxles::Rear)
+        );
+        let etruck = drivetrain("Volvo", "FH Electric", BodyType::Truck, 2023, PT_ELECTRIC);
+        assert_eq!(
+            (etruck.driven, etruck.rear_motor),
+            (DrivenAxles::Rear, true)
+        );
         let golf = drivetrain("Volkswagen", "Golf", BodyType::Hatchback, 2005, PT_PETROL);
         assert_eq!(golf.engine, EngineLayout::FrontTransverse);
         assert_eq!(golf.driven, DrivenAxles::Front);

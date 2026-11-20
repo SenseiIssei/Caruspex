@@ -7,17 +7,19 @@ picture each and puts them together on one contact sheet: for the README and
 for a look over many cars at once after a change to app/src/xray/.
 
     py -I tools/xray_shots.py                     the default set into target/xray-shots/
-    py -I tools/xray_shots.py --sheet docs/xray-cars.png
+    py -I tools/xray_shots.py --readme --sheet docs/xray-cars.png
     py -I tools/xray_shots.py "BMW|3er|F30|estate" "Yamaha|MT-07|II|touring" 1924
+    py -I tools/xray_shots.py "MAN|TGS|II|citybus=City bus (on the MAN TGS)"
     py -I tools/xray_shots.py --check             only check that the default set is in the catalog
 
 A car is "Brand|Model|Generation" as in the catalog (data/vehicles/), with an
 optional fourth part for the body variant (hatch, sedan, estate, suv, van,
-coupe, cabrio, pickup, mpv, roadster) or the kind of motorcycle (naked,
-sport, touring, enduro, cruiser, scooter), or the catalog id of a
-generation. Names are looked up in the copy of the catalog the browser
-preview uses (app/src/api/mock/data/catalog.json), whose order is the order
-of the ids.
+coupe, cabrio, pickup, mpv, roadster), the kind of motorcycle (naked,
+sport, touring, enduro, cruiser, scooter) or the kind of truck or bus
+(tractor, rigid, citybus, coach), or the catalog id of a generation;
+"=Caption" at the end replaces the caption on the sheet. Names are looked
+up in the copy of the catalog the browser preview uses
+(app/src/api/mock/data/catalog.json), whose order is the order of the ids.
 
 Needs the release build of the app (cargo build --release -p caruspex-app
 after npm --prefix app run build, or tools/package.sh); --app points
@@ -42,8 +44,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CATALOG = os.path.join(ROOT, "app", "src", "api", "mock", "data", "catalog.json")
 
 # One of each body and drivetrain the view draws differently: front engine
-# across and along, rear and mid engine, electric, hybrid, kei cars, van,
-# off-roader, pickup, a convertible variant and four kinds of motorcycle.
+# across and along, rear and mid engine, electric, hybrid, kei cars, a
+# convertible variant, a mid and a large van, an off-roader with its spare
+# wheel, two pickups, a European and an American tractor, a rigid truck, a
+# city bus and a coach, and four kinds of motorcycle.
 DEFAULT_SET = [
     "Volkswagen|Golf|VII",
     "BMW|3er|F30",
@@ -55,16 +59,45 @@ DEFAULT_SET = [
     "Suzuki|Cappuccino|EA11R",
     "Fiat|500|I",
     "Volkswagen|Transporter|T6",
+    "Mercedes-Benz|Sprinter|W907",
     "Land Rover|Defender|L663",
+    "Toyota|Hilux|AN120",
     "Ford|F-150|XIV",
+    "MAN|TGX|II",
+    "Freightliner|Cascadia|II",
+    "MAN|TGS|II",
+    "Mercedes-Benz|Actros|MP5|citybus=City bus (kind picked on the Actros)",
+    "Mercedes-Benz|Actros|MP5|coach=Coach (kind picked on the Actros)",
     "Yamaha|MT-07|II",
     "BMW|R 1250 GS|I",
     "Harley-Davidson|Sportster S|I",
     "Kawasaki|Ninja 650|I",
 ]
 
+# The mix on the README's contact sheet: a few cars, a van, an off-roader,
+# a pickup, trucks, a bus and a motorcycle.
+README_SET = [
+    "Volkswagen|Golf|VII",
+    "BMW|3er|F30",
+    "Mercedes-Benz|E-Klasse|W213|cabrio",
+    "Porsche|911|992",
+    "Tesla|Model 3|I",
+    "Fiat|500|I",
+    "Volkswagen|Transporter|T6",
+    "Mercedes-Benz|Sprinter|W907",
+    "Land Rover|Defender|L663",
+    "Toyota|Hilux|AN120",
+    "Ford|F-150|XIV",
+    "MAN|TGX|II",
+    "Freightliner|Cascadia|II",
+    "Mercedes-Benz|Actros|MP5|citybus=City bus (generic shape)",
+    "Yamaha|MT-07|II",
+    "BMW|R 1250 GS|I",
+]
+
 VARIANTS = {"hatch", "sedan", "estate", "suv", "van", "coupe", "cabrio", "pickup", "mpv", "roadster",
-            "naked", "sport", "touring", "enduro", "cruiser", "scooter"}
+            "naked", "sport", "touring", "enduro", "cruiser", "scooter",
+            "tractor", "rigid", "citybus", "coach"}
 
 # The dark theme's window colour, behind and between the pictures.
 SHEET_BACKGROUND = (10, 12, 17)
@@ -81,6 +114,10 @@ MOTORCYCLE = 11  # BodyType of the catalog
 
 def resolve(spec: str, generations: list[list]) -> tuple[int, str, str, bool]:
     """The id, the variant, a caption and whether it is a motorcycle."""
+    spec, _, own_caption = spec.partition("=")
+    if own_caption.strip():
+        gid, variant, _caption, moto = resolve(spec, generations)
+        return gid, variant, own_caption.strip(), moto
     if re.fullmatch(r"\d+", spec.strip()):
         gid = int(spec)
         if gid >= len(generations):
@@ -181,7 +218,8 @@ def contact_sheet(shots: list[tuple[str, str]], out: str, columns: int, tile_wid
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("cars", nargs="*", help="Brand|Model|Generation[|variant] or a catalog id; default: a set of 16")
+    parser.add_argument("cars", nargs="*", help="Brand|Model|Generation[|variant][=caption] or a catalog id; default: a set of 23")
+    parser.add_argument("--readme", action="store_true", help="the 16 of the README's contact sheet instead of the default set")
     parser.add_argument("--out", default=os.path.join(ROOT, "target", "xray-shots"), help="folder for the single pictures")
     parser.add_argument("--sheet", help="the contact sheet (default: xray-cars.png in --out)")
     parser.add_argument("--app", help="the app to start (default: target/release/caruspex)")
@@ -198,7 +236,7 @@ def main() -> int:
     args = parser.parse_args()
 
     generations = load_catalog()
-    cars = [resolve(spec, generations) for spec in (args.cars or DEFAULT_SET)]
+    cars = [resolve(spec, generations) for spec in (args.cars or (README_SET if args.readme else DEFAULT_SET))]
     if args.check:
         for gid, _variant, caption, _moto in cars:
             print(f"{gid:5}  {caption}")

@@ -1305,13 +1305,22 @@ fn score(
         ),
     };
     if skipped > 0 {
-        summary = Message::default().list(vec![summary]).list(vec![
+        // One skipped check gets its own sentence, "1 Prüfungen" reads wrong.
+        let skipped_text = if skipped == 1 {
+            text(
+                "Eine Prüfung war mangels Daten nicht möglich.",
+                "One check was not possible for lack of data.",
+            )
+        } else {
             text(
                 "%1 Prüfungen waren mangels Daten nicht möglich.",
                 "%1 checks were not possible for lack of data.",
             )
-            .num(skipped as f64, 0),
-        ]);
+            .num(skipped as f64, 0)
+        };
+        summary = Message::default()
+            .list(vec![summary])
+            .list(vec![skipped_text]);
     }
     (s, grade, summary)
 }

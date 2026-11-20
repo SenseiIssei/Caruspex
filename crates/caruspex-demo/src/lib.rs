@@ -35,12 +35,17 @@
 //! control units on an SAE J1939 bus (see [`truck`]), heard in protocol A
 //! (`ATSPA`) with headers on and CAN auto formatting off.
 //!
+//! [`bmw`] has two BMWs of the E series behind a simulated K-line cable
+//! (an E46 with DS2, an E60 with KWP2000 in BMW style), for the K-line
+//! protocols that do not go through an ELM327.
+//!
 //! For tests the clock can be injected (see [`DemoClock`]) and the answer
 //! delay switched off, so every response is deterministic.
 
 #![forbid(unsafe_code)]
 
 mod adapter;
+pub mod bmw;
 mod codec;
 mod sim;
 pub mod truck;

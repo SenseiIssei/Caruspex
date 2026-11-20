@@ -757,5 +757,7 @@ export function buildMotoLayout(input: XrayInput): CarLayout {
     hub: network.hub,
     anchors,
     moto: spec,
+    heavy: null,
+    size: { lengthMm: a.lengthMm, widthMm: a.widthMm, heightMm: a.heightMm, wheelbaseMm: a.wheelbaseMm, trackMm: a.trackMm, wheelMm: a.wheelMm },
   };
 }

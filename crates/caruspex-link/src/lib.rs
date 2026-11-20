@@ -13,6 +13,7 @@
 pub mod adapter_probe;
 #[cfg(feature = "ble")]
 pub mod ble;
+pub mod ble_gatt;
 pub mod ble_profile;
 pub mod bluetooth;
 #[cfg(feature = "bt-classic")]
@@ -34,5 +35,6 @@ pub use kline_stream::KLineStream;
 pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
 pub use tcp::TcpTransport;
 pub use transport::{
-    BusFrame, ByteStream, FrameLink, IsoTpBatch, IsoTpRequest, LogFn, MessageLink, Transport,
+    BusFrame, ByteStream, FrameLink, IsoTpBatch, IsoTpRequest, LineParity, LogFn, MessageLink,
+    Transport,
 };

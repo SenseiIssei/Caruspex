@@ -1,0 +1,5 @@
+{
+ "c-ble26-1": "Android heeft de Bluetooth-zoekopdracht niet gestart. Zet Bluetooth uit en weer aan en zoek opnieuw.",
+ "c-ble26-2": "Tot en met Android 11 vindt de zoekopdracht Bluetooth LE-adapters alleen met toegang tot de locatie. Sta die hierboven toe; gekoppelde klassieke adapters werken ook zonder.",
+ "c-ble26-3": "Tot en met Android 11 zoekt Android alleen naar Bluetooth LE-adapters als de locatie aanstaat. Zet die aan in de snelle instellingen en zoek opnieuw."
+}

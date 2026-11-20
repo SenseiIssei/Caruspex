@@ -8,7 +8,7 @@ use std::time::Duration;
 use caruspex_i18n::l;
 use serialport::{ClearBuffer, DataBits, FlowControl, Parity, SerialPort, StopBits};
 
-use crate::transport::Transport;
+use crate::transport::{LineParity, Transport};
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct PortInfo {
@@ -359,12 +359,13 @@ pub fn enumerate_ports() -> Vec<PortInfo> {
     Vec::new()
 }
 
-/// Baud rates the POSIX version can set.
+/// Baud rates the POSIX version can set. 10400 is the K-line speed of
+/// KWP2000 (ISO 14230); the serialport crate sets it as a custom rate.
 #[cfg(unix)]
 fn baud_supported(baud: u32) -> bool {
     matches!(
         baud,
-        9600 | 19200 | 38400 | 57600 | 115200 | 230400 | 460800 | 500000 | 921600
+        9600 | 10400 | 19200 | 38400 | 57600 | 115200 | 230400 | 460800 | 500000 | 921600
     )
 }
 
@@ -487,6 +488,30 @@ impl Serial {
         }
         self.baud = baud;
         true
+    }
+
+    /// Parity on the fly: BMW's DS2 needs even parity, the rest none.
+    pub fn set_parity(&mut self, parity: LineParity) -> bool {
+        let Some(port) = self.port.as_mut() else {
+            return false;
+        };
+        let wanted = match parity {
+            LineParity::None => Parity::None,
+            LineParity::Even => Parity::Even,
+        };
+        port.set_parity(wanted).is_ok()
+    }
+
+    /// Sets the DTR and RTS lines. Open turns both on, which the ELM327
+    /// adapters like; a K+DCAN cable on the K-line is driven with both off,
+    /// the way the EDIABAS drivers leave them for cables that echo.
+    pub fn set_control_lines(&mut self, dtr: bool, rts: bool) -> bool {
+        let Some(port) = self.port.as_mut() else {
+            return false;
+        };
+        let dtr_ok = port.write_data_terminal_ready(dtr).is_ok();
+        let rts_ok = port.write_request_to_send(rts).is_ok();
+        dtr_ok && rts_ok
     }
 
     pub fn device(&self) -> &str {

@@ -273,6 +273,24 @@ pub struct BleDeviceRow {
     pub name: String,
     pub score: i32,
     pub kinds: i32,
+    /// Signal strength in dBm, 0 when unknown (paired classic devices).
+    pub rssi: i32,
+    /// The known adapter profile the device advertised ("FFF0", "vLinker"),
+    /// empty if none.
+    pub profile: String,
+}
+
+impl From<&caruspex_link::bluetooth::BleDevice> for BleDeviceRow {
+    fn from(d: &caruspex_link::bluetooth::BleDevice) -> Self {
+        Self {
+            id: d.id.clone(),
+            name: d.name.clone(),
+            score: d.score,
+            kinds: caruspex_link::bluetooth::bluetooth_kinds(d),
+            rssi: d.rssi,
+            profile: d.profile.clone(),
+        }
+    }
 }
 
 /// One finding of the used car check.
