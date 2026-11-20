@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Echo van de K-Line",
  "c-kkltest34-22": "FTDI is de chip waarmee KWP1281 het betrouwbaarst werkt.",
  "c-kkltest34-23": "Eerste byte %1 na %2 ms, sleutelbytes %3",
- "c-kkltest34-24": "Eerste test klaar: %1 van %2 regeleenheden hebben geantwoord. Als je het rapport opslaat en naar ons stuurt, helpt dat om de K-Line op meer auto's te controleren.",
+ "c-kkltest34-24": "Eerste test klaar: %1 van %2 regeleenheden hebben geantwoord. Als je het rapport opslaat en naar mij stuurt, helpt dat om de K-Line op meer auto's te controleren.",
  "c-kkltest34-25": "Latentietimer van het stuurprogramma: %1 ms",
  "c-kkltest34-26": "Veel PL2303-kabels hebben nagemaakte chips die nieuwere stuurprogramma's weigeren (code 10 in Apparaatbeheer). Werkt de poort, dan meet de test hieronder de timing.",
  "c-kkltest34-27": "Meetblokken 001 tot 003",

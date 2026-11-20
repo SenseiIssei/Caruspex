@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Eco de la K-Line",
  "c-kkltest34-22": "FTDI es el chip con el que KWP1281 funciona de forma más fiable.",
  "c-kkltest34-23": "Primer byte %1 tras %2 ms, bytes de clave %3",
- "c-kkltest34-24": "Primera prueba terminada: %1 de %2 unidades de control han respondido. Guardar el informe y enviárnoslo ayuda a comprobar la K-Line en más coches.",
+ "c-kkltest34-24": "Primera prueba terminada: %1 de %2 unidades de control han respondido. Guardar el informe y enviármelo ayuda a comprobar la K-Line en más coches.",
  "c-kkltest34-25": "Temporizador de latencia del controlador: %1 ms",
  "c-kkltest34-26": "Muchos cables PL2303 llevan chips clonados que los controladores nuevos rechazan (código 10 en el Administrador de dispositivos). Si el puerto funciona, la prueba de abajo mide los tiempos.",
  "c-kkltest34-27": "Bloques de valores medidos 001 a 003",

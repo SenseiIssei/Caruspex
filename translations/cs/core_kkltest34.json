@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Echo K-Line",
  "c-kkltest34-22": "FTDI je čip, se kterým KWP1281 běží nejspolehlivěji.",
  "c-kkltest34-23": "První bajt %1 po %2 ms, bajty klíče %3",
- "c-kkltest34-24": "První test je hotový: odpovědělo %1 z %2 řídicích jednotek. Když zprávu uložíte a pošlete nám ji, pomůžete prověřit K-Line na dalších autech.",
+ "c-kkltest34-24": "První test je hotový: odpovědělo %1 z %2 řídicích jednotek. Když zprávu uložíte a pošlete mi ji, pomůžete prověřit K-Line na dalších autech.",
  "c-kkltest34-25": "Časovač latence ovladače: %1 ms",
  "c-kkltest34-26": "U kabelů PL2303 je mnoho čipů napodobenin, které novější ovladače odmítají (kód 10 ve Správci zařízení). Pokud port funguje, test níže změří časování.",
  "c-kkltest34-27": "Měřicí bloky 001 až 003",
