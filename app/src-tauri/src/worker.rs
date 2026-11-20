@@ -34,6 +34,7 @@ mod convert;
 mod faults;
 mod health;
 mod kkl;
+pub(crate) mod kkl_test;
 mod live;
 mod truck;
 mod truck_check;
@@ -146,6 +147,10 @@ pub enum Job {
     },
     ReadAdaptation(i32),
     ActuatorTest,
+    /// The test of a KKL cable on USB only (worker/kkl_test.rs).
+    KklCableCheck(String),
+    /// The guided, read-only first test of a KKL cable on the car.
+    KklFirstTest(String),
     /// BMW E series on the K-line: every known unit; with `clear` every
     /// unit with entries is cleared (the page asked first).
     ScanBmw {
@@ -556,6 +561,8 @@ impl Worker {
             } => self.scan_all_ecus(&device, clear_attempts),
             Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
             Job::ActuatorTest => self.run_actuator_test(),
+            Job::KklCableCheck(device) => self.kkl_cable_check(&device),
+            Job::KklFirstTest(device) => self.kkl_first_test(&device),
             Job::ScanBmw { device, clear } => self.scan_bmw(&device, clear),
             Job::ClearBmwUnit {
                 device,

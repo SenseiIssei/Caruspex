@@ -1,0 +1,367 @@
+[
+ {
+  "id": "c-kkltest34-1",
+  "de": "%1 Einträge im Fehlerspeicher",
+  "en": "%1 entries in the fault memory"
+ },
+ {
+  "id": "c-kkltest34-2",
+  "de": "%1 von 3 Blöcken gelesen",
+  "en": "%1 of 3 blocks read"
+ },
+ {
+  "id": "c-kkltest34-3",
+  "de": "%1: neuer Versuch in 2,6 s mit %2",
+  "en": "%1: next attempt in 2.6 s with %2"
+ },
+ {
+  "id": "c-kkltest34-4",
+  "de": "1 Eintrag im Fehlerspeicher",
+  "en": "1 entry in the fault memory"
+ },
+ {
+  "id": "c-kkltest34-5",
+  "de": "Ein KKL-Kabel hört alles, was es sendet, sobald die K-Line Strom hat, also steckt es schon im Auto. Die Weckadresse misst deshalb erst der erste Test, damit kein Steuergerät ungefragt geweckt wird.",
+  "en": "A KKL cable hears everything it sends once the K-line has power, so it is already in the car. That is why only the first test measures the wake-up address, so no control unit is woken unasked."
+ },
+ {
+  "id": "c-kkltest34-6",
+  "de": "Ein Byte braucht %1 ms bis zum Echo, eigentlich reicht 1 ms. Der USB-Chip hält die Bytes zurück (Latenz-Timer).",
+  "en": "A byte takes %1 ms until its echo, 1 ms would do. The USB chip holds the bytes back (latency timer)."
+ },
+ {
+  "id": "c-kkltest34-7",
+  "de": "Bits der Adresse: größte Abweichung %1 ms (erlaubt 10 ms), ganze Adresse %2 ms (Soll 2000 ms)",
+  "en": "Address bits: largest deviation %1 ms (10 ms allowed), whole address %2 ms (target 2000 ms)"
+ },
+ {
+  "id": "c-kkltest34-8",
+  "de": "Es kam eine Antwort, aber nicht das Synchronbyte 0x55",
+  "en": "An answer came, but not the sync byte 0x55"
+ },
+ {
+  "id": "c-kkltest34-9",
+  "de": "Versuch %1: %2, %3 Baud",
+  "en": "Attempt %1: %2, %3 baud"
+ },
+ {
+  "id": "c-kkltest34-10",
+  "de": "Break-Aufruf dauert: an %1 ms, aus %2 ms",
+  "en": "Break call takes: on %1 ms, off %2 ms"
+ },
+ {
+  "id": "c-kkltest34-11",
+  "de": "Break-Leitung und Bitzeiten",
+  "en": "Break line and bit times"
+ },
+ {
+  "id": "c-kkltest34-12",
+  "de": "CH340-Kabel gehen oft, schalten die Break-Leitung aber manchmal zu langsam für die 5-Baud-Weckadresse. Der Test unten misst das.",
+  "en": "CH340 cables often work, but sometimes switch the break line too slowly for the 5-baud wake-up address. The test below measures it."
+ },
+ {
+  "id": "c-kkltest34-13",
+  "de": "CP210x-Kabel kommen mit der K-Line in der Regel gut zurecht.",
+  "en": "CP210x cables usually handle the K-line well."
+ },
+ {
+  "id": "c-kkltest34-14",
+  "de": "Kabel in Ordnung, aber keine Antwort vom Auto",
+  "en": "Cable OK, but no answer from the car"
+ },
+ {
+  "id": "c-kkltest34-15",
+  "de": "Kabel in Ordnung, bereit für das Auto",
+  "en": "Cable OK, ready for the car"
+ },
+ {
+  "id": "c-kkltest34-16",
+  "de": "Kabel und Echo",
+  "en": "Cable and echo"
+ },
+ {
+  "id": "c-kkltest34-17",
+  "de": "Den Latenz-Timer des FTDI-Treibers konnte Caruspex nicht lesen. Für die K-Line sollte er auf 1 ms stehen: Geräte-Manager, Anschlüsse (COM & LPT), den USB Serial Port öffnen, Anschlusseinstellungen, Erweitert, Latency Timer (msec) auf 1.",
+  "en": "Caruspex could not read the latency timer of the FTDI driver. For the K-line it should be 1 ms: Device Manager, Ports (COM & LPT), open the USB Serial Port, Port Settings, Advanced, Latency Timer (msec) to 1."
+ },
+ {
+  "id": "c-kkltest34-18",
+  "de": "Diesen Chip kennt Caruspex nicht. Der Test unten zeigt, ob die Zeiten reichen.",
+  "en": "Caruspex does not know this chip. The test below shows whether the timing is good enough."
+ },
+ {
+  "id": "c-kkltest34-19",
+  "de": "Echo nach %1 ms",
+  "en": "Echo after %1 ms"
+ },
+ {
+  "id": "c-kkltest34-20",
+  "de": "Echo und Zeiten passen, nur das Steuergerät schweigt. Ist die Zündung an (Motor aus)? Adresse 01 ist das Motorsteuergerät. Das Auto muss die K-Line an Pin 7 haben; Autos ab etwa 2005 werden über CAN diagnostiziert.",
+  "en": "Echo and timing are fine, only the control unit stays silent. Is the ignition on (engine off)? Address 01 is the engine control unit. The car needs the K-line on pin 7; cars from about 2005 are diagnosed over CAN."
+ },
+ {
+  "id": "c-kkltest34-21",
+  "de": "Echo der K-Line",
+  "en": "Echo of the K-line"
+ },
+ {
+  "id": "c-kkltest34-22",
+  "de": "FTDI ist der Chip, mit dem KWP1281 am verlässlichsten läuft.",
+  "en": "FTDI is the chip KWP1281 runs most reliably with."
+ },
+ {
+  "id": "c-kkltest34-23",
+  "de": "Erstes Byte %1 nach %2 ms, Schlüsselbytes %3",
+  "en": "First byte %1 after %2 ms, key bytes %3"
+ },
+ {
+  "id": "c-kkltest34-24",
+  "de": "Erster Test fertig: %1 von %2 Steuergeräten haben geantwortet. Den Bericht zu speichern und uns zu schicken hilft, die K-Line auf weiteren Autos zu prüfen.",
+  "en": "First test done: %1 of %2 control units answered. Saving the report and sending it to us helps to check the K-line on more cars."
+ },
+ {
+  "id": "c-kkltest34-25",
+  "de": "Latenz-Timer des Treibers: %1 ms",
+  "en": "Latency timer of the driver: %1 ms"
+ },
+ {
+  "id": "c-kkltest34-26",
+  "de": "Bei PL2303-Kabeln sind viele Chips Nachbauten, die neuere Treiber abweisen (Code 10 im Geräte-Manager). Läuft der Port, misst der Test unten die Zeiten.",
+  "en": "Many PL2303 cables carry cloned chips that newer drivers refuse (code 10 in the Device Manager). If the port works, the test below measures the timing."
+ },
+ {
+  "id": "c-kkltest34-27",
+  "de": "Messwertblöcke 001 bis 003",
+  "en": "Measuring blocks 001 to 003"
+ },
+ {
+  "id": "c-kkltest34-28",
+  "de": "Nach der Adresse kam kein Byte.",
+  "en": "No byte came after the address."
+ },
+ {
+  "id": "c-kkltest34-29",
+  "de": "Kein Echo, so soll es ohne Auto sein",
+  "en": "No echo, as it should be without the car"
+ },
+ {
+  "id": "c-kkltest34-30",
+  "de": "Kein Echo: das Kabel hört sich selbst nicht",
+  "en": "No echo: the cable does not hear itself"
+ },
+ {
+  "id": "c-kkltest34-31",
+  "de": "Kein Eintrag im Fehlerspeicher",
+  "en": "No entries in the fault memory"
+ },
+ {
+  "id": "c-kkltest34-32",
+  "de": "Kein Anschluss gewählt. Das KKL-Kabel anstecken und auf Suchen drücken.",
+  "en": "No port chosen. Plug in the KKL cable and press Search."
+ },
+ {
+  "id": "c-kkltest34-33",
+  "de": "Am Auto hört ein KKL-Kabel alles, was es sendet. Ohne Echo steckt der Stecker nicht richtig in der OBD-Buchse, oder an Pin 16 fehlen die 12 V (Sicherung der Diagnosebuchse prüfen). Ohne Auto ist kein Echo normal.",
+  "en": "On the car a KKL cable hears everything it sends. Without an echo the plug is not seated in the OBD socket, or pin 16 has no 12 V (check the fuse of the diagnostic socket). Without the car, no echo is normal."
+ },
+ {
+  "id": "c-kkltest34-34",
+  "de": "Port öffnen und Baudrate wechseln",
+  "en": "Open the port and switch the baud rate"
+ },
+ {
+  "id": "c-kkltest34-35",
+  "de": "Port offen, 9600 und 10400 Baud lassen sich setzen",
+  "en": "Port open, 9600 and 10400 baud can be set"
+ },
+ {
+  "id": "c-kkltest34-36",
+  "de": "Fehlerspeicher lesen",
+  "en": "Read the fault memory"
+ },
+ {
+  "id": "c-kkltest34-37",
+  "de": "Kennung lesen",
+  "en": "Read the identification"
+ },
+ {
+  "id": "c-kkltest34-38",
+  "de": "Antwort auf die Schlüsselbytes nach %1 ms, Echo nach %2 ms",
+  "en": "Reply to the key bytes after %1 ms, echo after %2 ms"
+ },
+ {
+  "id": "c-kkltest34-39",
+  "de": "Die Baudrate lässt sich nicht wechseln",
+  "en": "The baud rate cannot be switched"
+ },
+ {
+  "id": "c-kkltest34-40",
+  "de": "Die Bits der 5-Baud-Adresse weichen um mehr als 20 ms von 200 ms ab, so erkennt das Steuergerät seine Adresse nicht. Das Kabel direkt am Rechner statt an einem USB-Hub anstecken, andere Programme schließen, den Energiesparmodus ausschalten, beim FTDI-Kabel den Latenz-Timer auf 1 ms stellen.",
+  "en": "The bits of the 5-baud address are more than 20 ms off 200 ms, so the control unit does not recognise its address. Plug the cable into the computer directly instead of a USB hub, close other programs, turn power saving off, set the latency timer of an FTDI cable to 1 ms."
+ },
+ {
+  "id": "c-kkltest34-41",
+  "de": "Die Bits der Weckadresse weichen bis zu %1 ms ab (erlaubt sind 10 ms). Es hat gereicht, aber knapp.",
+  "en": "The bits of the wake-up address are up to %1 ms off (10 ms are allowed). It was enough, but only just."
+ },
+ {
+  "id": "c-kkltest34-42",
+  "de": "Die Break-Leitung oder die Baudrate ließen sich nicht setzen. Ein anderes Programm am Port schließen, den Treiber des Kabels neu installieren oder ein anderes Kabel probieren: manche Nachbau-Chips können keine Break-Leitung.",
+  "en": "The break line or the baud rate could not be set. Close any other program on the port, reinstall the cable's driver or try another cable: some cloned chips cannot drive the break line."
+ },
+ {
+  "id": "c-kkltest34-43",
+  "de": "Das Kabel lässt sich nicht so schalten, wie die K-Line es braucht",
+  "en": "The cable cannot be switched the way the K-line needs"
+ },
+ {
+  "id": "c-kkltest34-44",
+  "de": "Das Kabel hört sich selbst, die K-Line hat Strom",
+  "en": "The cable hears itself, the K-line has power"
+ },
+ {
+  "id": "c-kkltest34-45",
+  "de": "Das Kabel hört sich selbst: es steckt an einer K-Line mit Strom",
+  "en": "The cable hears itself: it is on a powered K-line"
+ },
+ {
+  "id": "c-kkltest34-46",
+  "de": "Das Steuergerät hat sich gemeldet",
+  "en": "The control unit answered"
+ },
+ {
+  "id": "c-kkltest34-47",
+  "de": "Das Steuergerät hat die Antwort auf die Schlüsselbytes nicht angenommen",
+  "en": "The control unit did not accept the reply to the key bytes"
+ },
+ {
+  "id": "c-kkltest34-48",
+  "de": "Vielleicht spricht das Steuergerät eine andere Baudrate; Caruspex hat 10400 Baud mitprobiert. Möglich sind auch Störungen auf der Leitung: Stecker und Masse prüfen.",
+  "en": "The control unit may use another baud rate; Caruspex also tried 10400 baud. Interference on the line is possible too: check the plug and the ground."
+ },
+ {
+  "id": "c-kkltest34-49",
+  "de": "Das Steuergerät hat angefangen und dann aufgehört. Oft hilft ein zweiter Versuch; kommt es jedes Mal, gehen im Kabel Bytes verloren.",
+  "en": "The control unit started and then stopped. A second attempt often helps; if it happens every time, the cable loses bytes."
+ },
+ {
+  "id": "c-kkltest34-50",
+  "de": "Das Steuergerät wartet höchstens 50 ms auf das umgedrehte zweite Schlüsselbyte. Die Bytes bleiben zu lange im USB-Chip: beim FTDI-Kabel den Latenz-Timer auf 1 ms stellen und das Kabel nicht über einen USB-Hub anschließen.",
+  "en": "The control unit waits at most 50 ms for the inverted second key byte. The bytes stay too long in the USB chip: set the latency timer of an FTDI cable to 1 ms and do not connect the cable through a USB hub."
+ },
+ {
+  "id": "c-kkltest34-51",
+  "de": "Das Echo ist verfälscht",
+  "en": "The echo is garbled"
+ },
+ {
+  "id": "c-kkltest34-52",
+  "de": "Der erste Test braucht ein KKL-Kabel an einem seriellen Port.",
+  "en": "The first test needs a KKL cable on a serial port."
+ },
+ {
+  "id": "c-kkltest34-53",
+  "de": "Der Latenz-Timer des FTDI-Treibers steht auf %1 ms. Für die K-Line besser 1 ms: Geräte-Manager öffnen, Anschlüsse (COM & LPT), den USB Serial Port doppelt anklicken, Anschlusseinstellungen, Erweitert, unter BM Options Latency Timer (msec) auf 1 stellen, mit OK bestätigen und das Kabel einmal ab- und wieder anstecken. Caruspex ändert diese Einstellung nicht selbst.",
+  "en": "The latency timer of the FTDI driver is set to %1 ms. The K-line works better with 1 ms: open the Device Manager, Ports (COM & LPT), double-click the USB Serial Port, Port Settings, Advanced, under BM Options set Latency Timer (msec) to 1, confirm with OK and unplug the cable once. Caruspex does not change this setting itself."
+ },
+ {
+  "id": "c-kkltest34-54",
+  "de": "Die Antwort kam rechtzeitig und ihr Echo stimmte, trotzdem kam danach nichts mehr. Das kann ein anderes Gerät an der K-Line oder ein Wackelkontakt sein. Die Zündung einmal aus- und wieder einschalten und neu versuchen.",
+  "en": "The reply came in time and its echo matched, yet nothing followed. Another device on the K-line or a loose contact can cause this. Switch the ignition off and on once and try again."
+ },
+ {
+  "id": "c-kkltest34-55",
+  "de": "Die Antwort auf die Schlüsselbytes kam zu spät",
+  "en": "The reply to the key bytes came too late"
+ },
+ {
+  "id": "c-kkltest34-56",
+  "de": "Die Antwort auf die Schlüsselbytes ging nach %1 ms raus, das Steuergerät wartet höchstens 50 ms.",
+  "en": "The reply to the key bytes went out after %1 ms, the control unit waits at most 50 ms."
+ },
+ {
+  "id": "c-kkltest34-57",
+  "de": "Das Synchronbyte kam, die Schlüsselbytes nicht",
+  "en": "The sync byte came, the key bytes did not"
+ },
+ {
+  "id": "c-kkltest34-58",
+  "de": "Die Weckadresse ist zu ungenau getaktet",
+  "en": "The wake-up address is clocked too unevenly"
+ },
+ {
+  "id": "c-kkltest34-59",
+  "de": "Die Weckadresse hat geklappt, danach riss der Austausch der Blöcke ab. Die genaue Stelle steht im Protokoll darunter.",
+  "en": "The wake-up address worked, then the exchange of blocks broke off. The exact place is in the log below."
+ },
+ {
+  "id": "c-kkltest34-60",
+  "de": "Für diesen Port gibt es keine USB-Kennung. Ein KKL-Kabel meldet sich normalerweise als USB-Seriell-Port.",
+  "en": "This port has no USB ids. A KKL cable normally shows up as a USB serial port."
+ },
+ {
+  "id": "c-kkltest34-61",
+  "de": "Motor wecken (Adresse 01)",
+  "en": "Wake the engine (address 01)"
+ },
+ {
+  "id": "c-kkltest34-62",
+  "de": "Zurück kommt nicht das, was gesendet wurde. Steckt noch ein anderes Gerät an der Buchse (Tracker, zweiter Tester)? Hat das Kabel einen Umschalter (K+DCAN), muss er auf K-Line stehen. Sonst Kabel und Stecker prüfen.",
+  "en": "What comes back is not what was sent. Is another device on the socket (tracker, second tester)? If the cable has a switch (K+DCAN), it must be on K-line. Otherwise check the cable and the plug."
+ },
+ {
+  "id": "c-kkltest34-63",
+  "de": "Ohne Auto kommt kein Echo zurück, das ist richtig so. Die Break-Leitung schaltet genau genug für die 5-Baud-Weckadresse. Als Nächstes das Kabel ins Auto stecken und den ersten Test starten.",
+  "en": "Without the car no echo comes back, which is how it should be. The break line switches accurately enough for the 5-baud wake-up address. Next, plug the cable into the car and start the first test."
+ },
+ {
+  "id": "c-kkltest34-64",
+  "de": "Geweckt, aber danach brach der Austausch ab",
+  "en": "Woken, but the exchange broke off afterwards"
+ },
+ {
+  "id": "c-kkltest34-65",
+  "de": "Break-Aufrufe vorgezogen",
+  "en": "break calls started early"
+ },
+ {
+  "id": "c-kkltest34-66",
+  "de": "meldet sich nicht, vielleicht nicht verbaut",
+  "en": "does not answer, maybe not fitted"
+ },
+ {
+  "id": "c-kkltest34-67",
+  "de": "kein USB-Chip erkannt",
+  "en": "no USB chip recognised"
+ },
+ {
+  "id": "c-kkltest34-68",
+  "de": "nicht gelaufen",
+  "en": "not run"
+ },
+ {
+  "id": "c-kkltest34-69",
+  "de": "anderer USB-Chip",
+  "en": "other USB chip"
+ },
+ {
+  "id": "c-kkltest34-70",
+  "de": "gesendet %1, zurück %2",
+  "en": "sent %1, back %2"
+ },
+ {
+  "id": "c-kkltest34-71",
+  "de": "simuliert",
+  "en": "simulated"
+ },
+ {
+  "id": "c-kkltest34-72",
+  "de": "normal getaktet",
+  "en": "standard timing"
+ },
+ {
+  "id": "c-kkltest34-73",
+  "de": "Die K-Line läuft: der Motor hat sich gemeldet",
+  "en": "The K-line works: the engine answered"
+ }
+]
