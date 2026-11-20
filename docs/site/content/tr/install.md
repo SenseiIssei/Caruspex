@@ -34,6 +34,15 @@ sudo usermod -aG dialout $USER
 
 Betikler ve sunucular için arayüzsüz `caruspex_cli` vardır, Windows, Linux ve macOS için. `caruspex_cli help` komutları listeler.
 
+`caruspex_cli report` teşhis raporunu uygulama olmadan bir PDF dosyasına yazar; diğer komutların bildiği her bağlantıyla çalışır (`--demo`, `--port`, `--tcp`, `--enet`, `--can`, `--replay`):
+
+```
+caruspex_cli report --demo report.pdf
+caruspex_cli report --port COM5 --lang de report.pdf
+```
+
+Rapor Almanca, İngilizce, İspanyolca, Fransızca, Portekizce, İtalyanca, Felemenkçe ve Endonezce olabilir (`--lang`). Türkçe dahil diğer dillerde İngilizce çıkar, çünkü her PDF görüntüleyicide yerleşik olan yazı tiplerinde bu dillerin harfleri yoktur.
+
 ## Güncellemeler
 
 Caruspex açılışta GitHub'a daha yeni bir sürüm olup olmadığını sorar, başka hiçbir şey sormaz. Yeni bir sürüm yalnızca imzası uygulamaya gömülü anahtarla eşleşirse kurulur. Hem kontrol hem de otomatik kurulum ayarlardan kapatılabilir.

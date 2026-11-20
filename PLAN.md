@@ -75,7 +75,8 @@ Stand 09.11.2026, nach 0.3.0. Größen: klein heißt ein paar Stunden, mittel ei
 - [x] Rundanzeigen auf der Startseite selbst wählen. Klein
 - [x] Hellmodus wie in Odysync, umschaltbar oder nach System. Mittel
 - [x] Kommandozeile: `health`, `vin`, `probe`, `freeze`, `--demo` und `--json` für Skripte. Mittel
-- [ ] Bericht als PDF auch aus der Kommandozeile. Die kommt heute ohne Qt aus, für PDF bräuchte sie QtGui oder einen eigenen kleinen PDF-Schreiber. Klein
+- [x] Bericht als PDF auch aus der Kommandozeile. Die kommt heute ohne Qt aus, für PDF bräuchte sie QtGui oder einen eigenen kleinen PDF-Schreiber. Klein
+  Stand: `caruspex_cli report [Verbindung] [--lang CODE] [--seconds N] DATEI.pdf` schreibt den Prüfbericht wie die App (Fahrzeug, Gesundheitscheck mit Befunden, Fehlerspeicher mit Stufe und Ort, Motorkontrollleuchte, Bereitschaft, Umgebungsdaten, Bauteilprüfung), über jede Verbindung der anderen Befehle, auch `--replay`. Eigener Schreiber in `crates/caruspex-pdf` ohne Abhängigkeiten: PDF 1.4, Standardschriften mit WinAnsiEncoding, nichts eingebettet. Die mitgelieferten Inter-Schriften sind auf Latin-1 gekürzt und brächten nichts; Kyrillisch, Arabisch, Devanagari und CJK bräuchten große Schriften und zum Teil Textformung. Deshalb Deutsch, Englisch, Spanisch, Französisch, Portugiesisch, Italienisch, Niederländisch und Indonesisch im Bericht, die übrigen zehn Sprachen auf Englisch mit einem Hinweis auf stderr; ein Test prüft die acht gegen ihre Kataloge. Fehlende Zeichen bekommen einen ausdrücklichen Ersatz ("≥" als ">=", "ł" als "l"), alles andere ein "?" und einen Hinweis. Der Rauchtest schreibt den Bericht auf jedem System
 
 ## Phase 6: Alle Steuergeräte über CAN mit dem ELM327 (größter Mehrwert)
 
