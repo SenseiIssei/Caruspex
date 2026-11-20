@@ -7,287 +7,34 @@
 // three.js loads only when this page is opened for the first time. Without
 // WebGL (some remote desktops, a blocked GPU) the page shows the 2D side
 // view with its see-through mode instead.
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { call } from "../api";
-import type { EcuScanRow, LiveRow, VehicleAnatomy, VehicleGenerationInfo, ZoneInfo } from "../api";
 import { BodyType, CarZone, Powertrain } from "../api";
-import { Icon } from "../components/Icon";
-import { Button, Card, Chip, Page, PageHeader, Select, type Option } from "../components/ui";
+import { Button, Page, PageHeader } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
-import { localeNumber, t, translator } from "../i18n";
-import { ACCESS } from "../lib/access";
-import { useAppEvent, useBackendEvent, useInterval, usePageActive } from "../lib/hooks";
-import { onApp } from "../lib/store";
-import { cssColor, toCss, useThemeVersion } from "../lib/theme";
-import { DEMO_VIN, bodyStyleFor } from "../lib/vehicleIdentity";
-import { navigate } from "../shell/nav";
-import { setXrayModel, useGarage } from "../state/garage";
-import { live, useSession } from "../state/session";
-import {
-  EcuKind,
-  LAYERS,
-  buildLayout,
-  zoneAnchor,
-  type BusKind,
-  type CarLayout,
-  type EcuInput,
-  type Layer,
-  type Vec3,
-} from "../xray/layout";
-import { HEAVY_KINDS, heavySpec, type HeavyKind } from "../xray/heavy";
-import { MOTO_STYLES, motoSpec, type MotoStyle } from "../xray/moto";
-import type { FrameStats, SectionAxis, XrayLabel, XrayPalette, XrayScene } from "../xray/scene";
+import { t, translator } from "../i18n";
+import { useBackendEvent, usePageActive } from "../lib/hooks";
+import { useThemeVersion } from "../lib/theme";
+import { bodyStyleFor } from "../lib/vehicleIdentity";
+import { useSession } from "../state/session";
+import { EcuKind, LAYERS, buildLayout, type BusKind, type CarLayout, type Layer } from "../xray/layout";
+import type { SectionAxis } from "../xray/scene";
 import { bodyVariants } from "../xray/shape";
-import { externalFiles } from "../xray/shell";
+import { useReducedMotion } from "./xray/support";
+import { useXrayCar } from "./xray/useXrayCar";
+import { useXrayUnits } from "./xray/useXrayUnits";
+import { useXrayScene } from "./xray/useXrayScene";
+import { useOwnModel } from "./xray/useOwnModel";
+import { useXrayLive } from "./xray/useXrayLive";
+import { useXrayTour } from "./xray/useXrayTour";
+import { useXrayLabels } from "./xray/useXrayLabels";
+import { useXrayEntries } from "./xray/useXrayEntries";
+import { XrayControls } from "./xray/XrayControls";
+import { XrayTour } from "./xray/XrayTour";
+import { XrayCarCard, XrayEcuCard } from "./xray/XraySide";
 import "./XrayPage.css";
 
 const tr = translator("caruspex::XrayPage");
-// A phone or tablet: the help names fingers instead of the mouse.
-const touchScreen = typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
-const VD = "caruspex::VehicleDiagram";
-
-// The live values that get a label, and where.
-const LIVE_KEYS: { pid: number; anchor: string; decimals: number }[] = [
-  { pid: 0x05, anchor: "cooling", decimals: 0 },
-  { pid: 0x0c, anchor: "engine", decimals: 0 },
-  { pid: 0x42, anchor: "battery", decimals: 1 },
-  { pid: 0x0d, anchor: "wheel", decimals: 0 },
-  { pid: 0x2f, anchor: "fuel", decimals: 0 },
-  { pid: 0x0f, anchor: "intake", decimals: 0 },
-  { pid: 0x5b, anchor: "hv", decimals: 0 },
-];
-
-// VAG K-line addresses and the kind of unit behind them.
-const KKL_KINDS: Record<number, number> = {
-  0x01: EcuKind.Engine, 0x02: EcuKind.Gearbox, 0x03: EcuKind.Brakes, 0x08: EcuKind.Climate,
-  0x09: EcuKind.Body, 0x15: EcuKind.Airbag, 0x16: EcuKind.Steering, 0x17: EcuKind.Instruments,
-  0x19: EcuKind.Gateway, 0x44: EcuKind.Steering, 0x46: EcuKind.Body, 0x56: EcuKind.Infotainment,
-  0x76: EcuKind.Parking, 0x36: EcuKind.Seats, 0x42: EcuKind.Doors, 0x52: EcuKind.Doors,
-};
-
-const udsKey = (request: number) => `uds-${request.toString(16)}`;
-
-function layerName(layer: Layer, energy: string, moto: boolean): string {
-  switch (layer) {
-    case "body": return moto ? tr("Rahmen") : tr("Karosserie");
-    case "drivetrain": return tr("Antrieb");
-    case "cooling": return t(VD, "Kühlung");
-    case "energy": return energy;
-    case "electrics": return tr("Elektrik");
-    case "network": return tr("Netz");
-  }
-}
-
-function busName(bus: BusKind): string {
-  switch (bus) {
-    case "powertrain": return tr("Antriebs-CAN");
-    case "comfort": return tr("Komfort-CAN");
-    case "diagnostic": return tr("Diagnose-CAN");
-    case "kline": return tr("K-Leitung");
-    case "infotainment": return tr("Infotainment-CAN");
-    case "mscan": return tr("MS-CAN (Ford)");
-    case "swcan": return tr("SW-CAN (GM)");
-  }
-}
-
-function heavyKindName(kind: HeavyKind): string {
-  switch (kind) {
-    case "tractor": return tr("Sattelzugmaschine");
-    case "rigid": return tr("Lkw mit Kofferaufbau");
-    case "citybus": return tr("Stadtbus");
-    case "coach": return tr("Reisebus");
-  }
-}
-
-// SAE J1939 source addresses and the kind of unit behind them (J1939-71
-// preferred addresses); the tachograph (0xEE) goes by its name.
-const J1939_KINDS: Record<number, number> = {
-  0x00: EcuKind.Engine,
-  0x01: EcuKind.Engine,
-  0x03: EcuKind.Gearbox,
-  0x04: EcuKind.Gearbox,
-  0x0b: EcuKind.Brakes,
-  0x17: EcuKind.Instruments,
-  0x19: EcuKind.Climate,
-  0x21: EcuKind.Body,
-  0x31: EcuKind.Body,
-};
-
-function motoStyleName(style: MotoStyle): string {
-  switch (style) {
-    case "naked": return tr("Naked Bike");
-    case "sport": return tr("Sportler mit Verkleidung");
-    case "touring": return tr("Tourer");
-    case "enduro": return tr("Reiseenduro");
-    case "cruiser": return tr("Cruiser");
-    case "scooter": return tr("Roller");
-  }
-}
-
-// What a part of the model is called (the zone names of the side view
-// where they fit).
-function partName(id: string): string {
-  const is = (...prefixes: string[]) => prefixes.some((p) => id === p || id.startsWith(`${p}-`));
-  // The harness and the socket.
-  if (is("main-fuses")) return tr("Hauptsicherungen");
-  if (is("ground", "ground-point")) return tr("Masse");
-  if (is("starter", "starter-cable")) return tr("Anlasser");
-  if (is("engine-harness")) return tr("Motorkabelbaum");
-  if (is("harness", "harness-front", "harness-rear", "obd-feed")) return tr("Kabelbaum");
-  if (is("obd-adapter")) return tr("OBD-Adapter");
-  if (is("obd-cable")) return tr("Adapterkabel");
-  // The motorcycle.
-  if (is("frame", "steering-head", "subframe", "underrun-guard", "fifth-wheel-mount")) return tr("Rahmen");
-  // Trucks and buses, off-roaders.
-  if (is("fifth-wheel")) return tr("Sattelkupplung");
-  if (is("adblue-tank", "adblue-line")) return tr("AdBlue-Tank");
-  if (is("spare-wheel")) return tr("Reserverad");
-  if (is("front-axle", "rear-axle")) return tr("Achse");
-  if (is("fork", "fork-slider", "clamp")) return tr("Gabel");
-  if (is("swingarm")) return tr("Schwinge");
-  if (is("shock")) return tr("Federbein");
-  if (id === "seat" || id === "pillion") return tr("Sitzbank");
-  if (is("handlebar", "grip")) return tr("Lenker");
-  if (is("headlight")) return tr("Scheinwerfer");
-  if (is("tail-light")) return tr("Rücklicht");
-  if (is("dash")) return tr("Instrumente");
-  if (is("chain", "belt", "shaft", "final-drive", "sprocket")) return tr("Endantrieb");
-  if (is("silencer")) return t(VD, "Abgas");
-  if (is("footrest")) return tr("Fußrasten");
-  if (is("engine", "cylinder")) return t(VD, "Motor");
-  if (is("coil")) return t(VD, "Zündung");
-  if (is("intake", "airbox")) return t(VD, "Ansaugung");
-  if (is("fuel-rail")) return t(VD, "Einspritzung");
-  if (is("throttle")) return t(VD, "Drosselklappe");
-  if (is("gearbox", "front-diff", "rear-diff", "shaft", "prop")) return t(VD, "Getriebe");
-  if (is("catalyst")) return tr("Katalysator");
-  if (is("exhaust", "middle-silencer", "rear-silencer")) return t(VD, "Abgas");
-  if (is("turbo")) return t(VD, "Turbo");
-  if (is("radiator", "fan", "hose", "expansion")) return t(VD, "Kühlung");
-  if (is("fuel-tank", "filler", "fuel-line")) return t(VD, "Tank");
-  if (is("hv-battery")) return tr("Hochvoltakku");
-  if (is("hv-cable", "inverter")) return tr("Hochvolt");
-  if (is("motor")) return tr("Elektromotor");
-  if (is("battery12", "alternator", "fuse-box", "harness")) return t(VD, "Bordnetz");
-  if (id === "obd") return tr("OBD-Buchse");
-  return t(VD, "Innenraum");
-}
-
-function zoneLabel(zone: CarZone): string {
-  switch (zone) {
-    case CarZone.Intake: return t(VD, "Ansaugung");
-    case CarZone.Throttle: return t(VD, "Drosselklappe");
-    case CarZone.Injection: return t(VD, "Einspritzung");
-    case CarZone.Ignition: return t(VD, "Zündung");
-    case CarZone.Cylinders: return t(VD, "Motor");
-    case CarZone.Cooling: return t(VD, "Kühlung");
-    case CarZone.Turbo: return t(VD, "Turbo");
-    case CarZone.Exhaust: return t(VD, "Abgas");
-    case CarZone.FuelTank: return t(VD, "Tank");
-    case CarZone.Gearbox: return t(VD, "Getriebe");
-    case CarZone.Ecu: return t(VD, "Steuergerät");
-    case CarZone.Electrics: return t(VD, "Bordnetz");
-    case CarZone.Network: return t(VD, "Datenbus");
-    case CarZone.Wheels: return t(VD, "Räder und ABS");
-    case CarZone.Cabin: return t(VD, "Innenraum");
-  }
-  return "";
-}
-
-function readPalette(): XrayPalette {
-  const css = (name: string) => toCss(cssColor(name));
-  return {
-    light: document.documentElement.dataset.theme === "light",
-    accent: css("--accent"),
-    sky: css("--sky"),
-    good: css("--good"),
-    warn: css("--warn"),
-    bad: css("--bad"),
-    info: css("--info"),
-    text: css("--text"),
-    muted: css("--text-muted"),
-    bus: {
-      powertrain: css("--bus-powertrain"),
-      comfort: css("--bus-comfort"),
-      diagnostic: css("--bus-diagnostic"),
-      kline: css("--bus-kline"),
-      infotainment: css("--bus-infotainment"),
-      mscan: css("--bus-mscan"),
-      swcan: css("--bus-swcan"),
-    },
-  };
-}
-
-function useReducedMotion(): boolean {
-  const query = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-  const [reduced, setReduced] = useState(query?.matches ?? false);
-  useEffect(() => {
-    if (!query) return;
-    const on = () => setReduced(query.matches);
-    query.addEventListener("change", on);
-    return () => query.removeEventListener("change", on);
-  }, [query]);
-  return reduced;
-}
-
-// "Motor (7E8)" -> 0x7E8; 0 when the text has no address.
-function responseOf(ecu: string): number {
-  const m = ecu.match(/\(([0-9A-Fa-f]{3,8})\)/);
-  return m ? Number.parseInt(m[1]!, 16) : 0;
-}
-
-// Body variants for the hidden screenshot option "xray-generation:<id or
-// search>|<variant>".
-const VARIANT_NAMES: Record<string, BodyType> = {
-  hatch: BodyType.Hatchback, sedan: BodyType.Sedan, estate: BodyType.Estate, suv: BodyType.Suv, van: BodyType.Van,
-  coupe: BodyType.Coupe, cabrio: BodyType.Convertible, pickup: BodyType.Pickup, mpv: BodyType.Mpv, roadster: BodyType.Roadster,
-};
-
-// A generation by its catalog id or a search ("Golf VII", "Gran Coupe F36").
-async function findGeneration(text: string): Promise<VehicleGenerationInfo | null> {
-  const query = text.trim();
-  if (/^\d+$/.test(query)) {
-    const d = await call("catalog_diagnosis", { generationId: Number(query), year: 0 }).catch(() => null);
-    return d?.generation ?? null;
-  }
-  const found = await call("catalog_search", { query, limit: 1 }).catch(() => []);
-  return found[0] ?? null;
-}
-
-// The folder of a path, with its separator.
-function folderOf(path: string): string {
-  const i = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
-  return i >= 0 ? path.slice(0, i + 1) : "";
-}
-
-// The bytes of a model and, for a .gltf, the files it names next to itself.
-async function readModel(path: string): Promise<{ data: ArrayBuffer; files: Map<string, Blob> }> {
-  const data = await call("read_model_file", { path });
-  const files = new Map<string, Blob>();
-  if (/\.gltf$/i.test(path)) {
-    const json = JSON.parse(new TextDecoder().decode(data)) as Parameters<typeof externalFiles>[0];
-    for (const name of externalFiles(json)) {
-      files.set(name, new Blob([await call("read_model_file", { path: folderOf(path) + name })]));
-    }
-  }
-  return { data, files };
-}
-
-interface ZoneFinding {
-  zone: CarZone;
-  info: ZoneInfo;
-  codes: string[];
-}
-
-interface Finding {
-  id: string;
-  anchor: Vec3;
-  title: string;
-  text: string;
-  zone: CarZone | null;
-  ecu: string | null;
-  tone: "bad" | "warn" | "good";
-}
 
 export default function XrayPage() {
   const active = usePageActive();
@@ -302,198 +49,16 @@ export default function XrayPage() {
   const themeVersion = useThemeVersion();
   const reduced = useReducedMotion();
 
+  // The unit the next packet goes to: set by a scan, sent once the scene has
+  // the unit drawn.
+  const pendingPacket = useRef<string | null>(null);
+
   // --- Which car -------------------------------------------------------------------
-  // A generation picked by the hidden screenshot option (xray-generation)
-  // takes the place of the connected car.
-  const [shown, setShown] = useState<VehicleGenerationInfo | null>(null);
-  const generation = shown ?? identity?.generation ?? null;
-  const demo = vin === DEMO_VIN && !shown;
-  // The body of the catalog; variants (an estate of a saloon generation) are
-  // drawn on top of it.
-  const body = generation ? generation.body : demo ? BodyType.Estate : BodyType.Hatchback;
-  const [variant, setVariant] = useState<BodyType | null>(null);
-  // The kind of a motorcycle picked in the view, null for the one of the table.
-  const [motoStyle, setMotoStyle] = useState<MotoStyle | null>(null);
-  // The kind of a truck or bus picked in the view, null for the one of the table.
-  const [heavyKind, setHeavyKind] = useState<HeavyKind | null>(null);
-  const year = (shown ? shown.yearFrom : identity?.year) || generation?.yearFrom || (connected ? 2012 : 2018);
-  const [powertrain, setPowertrain] = useState(0);
-  const [anatomy, setAnatomy] = useState<VehicleAnatomy | null>(null);
-  const pendingVariant = useRef<{ body: BodyType | null; moto: MotoStyle | null; heavy: HeavyKind | null }>({ body: null, moto: null, heavy: null });
-  useEffect(() => {
-    setPowertrain(0);
-    setVariant(pendingVariant.current.body);
-    setMotoStyle(pendingVariant.current.moto);
-    setHeavyKind(pendingVariant.current.heavy);
-    pendingVariant.current = { body: null, moto: null, heavy: null };
-  }, [generation?.id]);
-  const [devView, setDevView] = useState<"side" | "rear" | "front" | null>(null);
-  // Further switches of the screenshot option after the view: "stats",
-  // "explode", "section=x:0.4", "hide=body,cooling", "bare".
-  const [devFlags, setDevFlags] = useState<string[]>([]);
-  const showGeneration = useCallback((arg: string) => {
-    const [query, variantName, view, ...flags] = arg.split("|");
-    if (view === "side" || view === "rear" || view === "front") setDevView(view);
-    setDevFlags(flags.map((f) => f.trim()).filter(Boolean));
-    void findGeneration(query ?? "").then((g) => {
-      if (!g) return;
-      const name = variantName?.trim().toLowerCase() ?? "";
-      pendingVariant.current = {
-        body: VARIANT_NAMES[name] ?? null,
-        moto: (MOTO_STYLES as string[]).includes(name) ? (name as MotoStyle) : null,
-        heavy: (HEAVY_KINDS as string[]).includes(name) ? (name as HeavyKind) : null,
-      };
-      setShown(g);
-    });
-  }, []);
-  useEffect(() => {
-    const arg = new URLSearchParams(window.location.search).get("xray-generation");
-    if (arg) showGeneration(arg);
-  }, [showGeneration]);
-  useEffect(() => {
-    let stale = false;
-    void call("vehicle_anatomy", {
-      generationId: generation?.id ?? -1,
-      year,
-      body,
-      brand: generation?.brand ?? "",
-      model: generation?.model ?? "",
-      powertrain: generation ? powertrain : Powertrain.Petrol,
-    }).then(
-      (a) => !stale && setAnatomy(a),
-      () => undefined,
-    );
-    return () => {
-      stale = true;
-    };
-  }, [generation, year, body, powertrain]);
+  const { shown, generation, body, variant, setVariant, motoStyle, setMotoStyle, heavyKind, setHeavyKind, setPowertrain, anatomy, devView, setDevView, devFlags, setDevFlags, showGeneration } =
+    useXrayCar({ connected, identity, vin });
 
-  // --- Control units ------------------------------------------------------------------
-  const [asking, setAsking] = useState<{ key: string; kind: number; name: string; source: "uds" | "kline"; bus?: string } | null>(null);
-  const [scanning, setScanning] = useState<{ index: number; total: number; name: string } | null>(null);
-  const [kklRows, setKklRows] = useState<EcuScanRow[]>([]);
-  const [kklOpen, setKklOpen] = useState(false);
-  const kline = /9141|14230|KWP/i.test(protocol) || kklOpen;
-
-  // The bus the running scan asks on ("hs", "ms", "sw").
-  const scanBus = useRef("hs");
-  // Scans still to run one after the other (the dev option "xray-scan-all").
-  const scanQueue = useRef<string[]>([]);
-  useBackendEvent("uds_scan_started", ({ total, bus }) => {
-    scanBus.current = bus ?? "hs";
-    setScanning({ index: 0, total, name: "" });
-  });
-  // A sweep asks hundreds of addresses in a few seconds: the unit being
-  // asked is shown at most every 150 ms, so the scene is not rebuilt for each.
-  const nextAsk = useRef<{ scanning: { index: number; total: number; name: string }; asking: { key: string; kind: number; name: string; source: "uds"; bus: string } } | null>(null);
-  const askTimer = useRef<number | null>(null);
-  const flushAsk = () => {
-    askTimer.current = null;
-    const next = nextAsk.current;
-    if (!next) return;
-    setScanning(next.scanning);
-    setAsking(next.asking);
-    pendingPacket.current = next.asking.key;
-  };
-  useBackendEvent("uds_scan_progress", ({ name, index, total, request, kind }) => {
-    const key = scanBus.current !== "hs" ? `${udsKey(request)}-${scanBus.current}` : udsKey(request);
-    nextAsk.current = { scanning: { index, total, name }, asking: { key, kind, name, source: "uds", bus: scanBus.current } };
-    askTimer.current ??= window.setTimeout(flushAsk, 150);
-  });
-  useBackendEvent("uds_scan_finished", () => {
-    if (askTimer.current !== null) window.clearTimeout(askTimer.current);
-    askTimer.current = null;
-    nextAsk.current = null;
-    setScanning(null);
-    setAsking(null);
-    const next = scanQueue.current.shift();
-    if (next !== undefined) setTimeout(() => void call("scan_uds", { family: next }), 400);
-  });
-  useBackendEvent("scan_started", ({ total }) => {
-    setKklRows([]);
-    setScanning({ index: 0, total, name: "" });
-  });
-  useBackendEvent("scan_progress", ({ ecuName, index, total, address }) => {
-    setScanning({ index, total, name: ecuName });
-    setAsking({ key: `kkl-${address}`, kind: KKL_KINDS[address] ?? EcuKind.Other, name: ecuName, source: "kline" });
-    pendingPacket.current = `kkl-${address}`;
-  });
-  useBackendEvent("scan_ecu_result", ({ row }) => setKklRows((rows) => [...rows.filter((r) => r.address !== row.address), row]));
-  useBackendEvent("scan_finished", () => {
-    setScanning(null);
-    setAsking(null);
-  });
-  useBackendEvent("kkl_connected", ({ connected: on }) => setKklOpen(on));
-  useEffect(() => {
-    if (connected) return;
-    setKklRows([]);
-    setScanning(null);
-    setAsking(null);
-  }, [connected]);
-
-  const otherBuses = useSession((s) => s.udsOtherBuses);
-  const ecuInputs = useMemo<EcuInput[]>(() => {
-    const list: EcuInput[] = [];
-    // The units of this scan and those an earlier scan found on another bus
-    // (the MS-CAN or SW-CAN of an OBDLink).
-    for (const r of [...otherBuses, ...udsEcus]) {
-      if (!r.present) continue;
-      const key = r.bus && r.bus !== "hs" ? `${udsKey(r.request)}-${r.bus}` : udsKey(r.request);
-      if (list.some((e) => e.key === key)) continue;
-      list.push({ key, kind: r.kind, name: r.kind === EcuKind.Other && r.systemName ? r.systemName : r.name, faulty: r.dtcs.length > 0, source: "uds", bus: r.bus });
-    }
-    for (const r of kklRows) {
-      if (!r.present) continue;
-      list.push({ key: `kkl-${r.address}`, kind: KKL_KINDS[r.address] ?? EcuKind.Other, name: r.name, faulty: r.faults.length > 0, source: "kline" });
-    }
-    // The units of a truck's J1939 network, with their active faults (DM1).
-    for (const u of j1939Units) {
-      const name = u.address === 0xee ? `${u.label} (TCO)` : u.label;
-      list.push({ key: `j1939-${u.address}`, kind: J1939_KINDS[u.address] ?? EcuKind.Other, name, faulty: u.active > 0, source: "uds" });
-    }
-    if (connected) {
-      // Plain OBD always reaches the engine, and the gearbox when it reports.
-      const gearboxFaults = faults.filter((f) => responseOf(f.ecu) === 0x7e9);
-      const engineFaults = faults.filter((f) => responseOf(f.ecu) !== 0x7e9);
-      const engine = list.find((e) => e.kind === EcuKind.Engine);
-      if (engine) engine.faulty ||= engineFaults.length > 0;
-      else list.push({ key: "obd-engine", kind: EcuKind.Engine, name: t(VD, "Motor"), faulty: engineFaults.length > 0, source: kline ? "kline" : "obd" });
-      const gearbox = list.find((e) => e.kind === EcuKind.Gearbox);
-      if (gearbox) gearbox.faulty ||= gearboxFaults.length > 0;
-      else if (gearboxFaults.length > 0) list.push({ key: "obd-gearbox", kind: EcuKind.Gearbox, name: t(VD, "Getriebe"), faulty: true, source: kline ? "kline" : "obd" });
-    }
-    if (asking && !list.some((e) => e.key === asking.key)) {
-      list.push({ key: asking.key, kind: asking.kind, name: asking.name, faulty: false, source: asking.source, asking: true, bus: asking.bus });
-    }
-    return list;
-  }, [udsEcus, otherBuses, kklRows, j1939Units, faults, connected, kline, asking]);
-
-  // --- Faults and their zones -----------------------------------------------------------
-  const [zoneFindings, setZoneFindings] = useState<ZoneFinding[]>([]);
-  const codes = useMemo(() => {
-    const set = new Set<string>(faults.map((f) => f.code));
-    for (const r of udsEcus) for (const d of r.dtcs) set.add(d.code);
-    for (const r of kklRows) for (const f of r.faults) set.add(f.code);
-    return [...set];
-  }, [faults, udsEcus, kklRows]);
-  useEffect(() => {
-    let stale = false;
-    void Promise.all(codes.map((code) => call("locate_dtc", { code }).catch(() => null))).then((found) => {
-      if (stale) return;
-      const byZone = new Map<CarZone, ZoneFinding>();
-      found.forEach((info, i) => {
-        if (!info || info.zone === CarZone.Unknown) return;
-        const entry = byZone.get(info.zone) ?? { zone: info.zone, info, codes: [] };
-        entry.codes.push(codes[i]!);
-        byZone.set(info.zone, entry);
-      });
-      setZoneFindings([...byZone.values()]);
-    });
-    return () => {
-      stale = true;
-    };
-  }, [codes]);
-  const zones = useMemo(() => zoneFindings.map((z) => z.zone), [zoneFindings]);
+  // --- Control units and the zones of the faults ---------------------------------------
+  const { scanning, kline, scanQueue, ecuInputs, zoneFindings, zones } = useXrayUnits({ connected, protocol, faults, udsEcus, j1939Units, pendingPacket });
 
   // --- Layout ----------------------------------------------------------------------------
   const turbo = (anatomy?.powertrain ?? 0) === Powertrain.Diesel || zones.includes(CarZone.Turbo);
@@ -507,134 +72,18 @@ export default function XrayPage() {
   );
   const carKey = anatomy ? `${JSON.stringify(anatomy)}|${body}|${drawn}|${motoStyle}|${heavyKind}|${turbo}|${themeVersion}` : "";
 
-  // --- The scene ---------------------------------------------------------------------------
-  const host = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<XrayScene | null>(null);
-  const [mode, setMode] = useState<"idle" | "loading" | "3d" | "2d">("idle");
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
-  const lastCar = useRef("");
-  const pendingPacket = useRef<string | null>(null);
-  const pickRef = useRef<(id: string | null) => void>(() => undefined);
+  // --- The scene -----------------------------------------------------------------------
+  const { host, sceneRef, mode, hovered, selected, setSelected, pickRef, section, setSection, stats } = useXrayScene({
+    active,
+    reduced,
+    layout,
+    carKey,
+    devView,
+    pendingPacket,
+  });
 
-  const started = useRef(false);
-  const unmounted = useRef(false);
-  useEffect(() => {
-    if (!active || started.current) return;
-    started.current = true;
-    setMode("loading");
-    void import("../xray/scene").then(
-      (mod) => {
-        if (unmounted.current || !host.current || sceneRef.current) return;
-        if (!mod.webglAvailable()) {
-          setMode("2d");
-          return;
-        }
-        try {
-          sceneRef.current = new mod.XrayScene(host.current, readPalette(), reduced, {
-            onHover: (id) => setHovered(id),
-            onPick: (id) => pickRef.current(id),
-            onSection: (t) => setSection((s) => (s ? { ...s, t } : s)),
-            onStats: (s) => setStats(s),
-          });
-          setMode("3d");
-        } catch {
-          setMode("2d");
-        }
-      },
-      () => !unmounted.current && setMode("2d"),
-    );
-    // The scene is made once; reduced motion is read at that moment.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
-
-  useEffect(() => {
-    unmounted.current = false;
-    return () => {
-      unmounted.current = true;
-      started.current = false;
-      lastCar.current = "";
-      sceneRef.current?.dispose();
-      sceneRef.current = null;
-    };
-  }, []);
-  useEffect(() => sceneRef.current?.setActive(active), [active, mode]);
-
-  useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene || !layout || mode !== "3d") return;
-    if (carKey !== lastCar.current) {
-      const sameCar = lastCar.current.split("|")[0] === carKey.split("|")[0];
-      if (sameCar) scene.setPalette(readPalette());
-      scene.setCar(layout, sameCar);
-      lastCar.current = carKey;
-    } else {
-      scene.setNetwork(layout);
-    }
-    if (pendingPacket.current) {
-      scene.sendPacket(pendingPacket.current);
-      pendingPacket.current = null;
-    }
-  }, [layout, carKey, mode]);
-
-  // The straight view of the screenshot option, once the car is drawn.
-  useEffect(() => {
-    if (!devView || mode !== "3d" || !carKey) return;
-    // Again a little later: the car may be redrawn once more while the demo
-    // connection settles.
-    const timers = [300, 2000, 5000].map((ms) => setTimeout(() => sceneRef.current?.viewFrom(devView), ms));
-    return () => timers.forEach(clearTimeout);
-  }, [devView, carKey, mode]);
-
-  // --- The owner's own 3D model ----------------------------------------------------------
-  // Kept per car in the garage; a car that is not in the garage keeps it for
-  // this session only.
-  const garageCar = useGarage((s) => (vin ? (s.cars.find((c) => c.vin === vin) ?? null) : null));
-  const [sessionModel, setSessionModel] = useState<{ path: string; turned: boolean } | null | undefined>(undefined);
-  useEffect(() => setSessionModel(undefined), [vin]);
-  const savedModel = garageCar?.xrayModel ? { path: garageCar.xrayModel, turned: !!garageCar.xrayModelTurned } : null;
-  const ownModel = shown ? (sessionModel ?? null) : sessionModel === undefined ? savedModel : sessionModel;
-  const [modelState, setModelState] = useState<{ path: string; state: "loading" | "shown" | "error"; error?: string } | null>(null);
-  const loadedPath = useRef("");
-  useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene || mode !== "3d" || !layout) return;
-    if (!ownModel) {
-      if (loadedPath.current) scene.clearShell();
-      loadedPath.current = "";
-      setModelState(null);
-      return;
-    }
-    if (loadedPath.current === ownModel.path) {
-      scene.turnShell(ownModel.turned);
-      return;
-    }
-    loadedPath.current = ownModel.path;
-    setModelState({ path: ownModel.path, state: "loading" });
-    void readModel(ownModel.path)
-      .then(({ data, files }) => scene.loadShell(data, { turned: ownModel.turned, files }))
-      .then(
-        () => setModelState({ path: ownModel.path, state: "shown" }),
-        (e: unknown) => {
-          loadedPath.current = "";
-          setModelState({ path: ownModel.path, state: "error", error: e instanceof Error ? e.message : String(e) });
-        },
-      );
-    // layout is only needed to be there; the scene re-places the model itself.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ownModel?.path, ownModel?.turned, mode, layout !== null]);
-  const keepModel = (model: { path: string; turned: boolean } | null) => {
-    setSessionModel(model);
-    if (garageCar && !shown) setXrayModel(garageCar.vin, model?.path ?? "", model?.turned ?? false);
-  };
-  const pickModel = async () => {
-    const path = await call("pick_open_path", {
-      title: tr("Eigenes 3D-Modell laden"),
-      filters: [{ name: tr("3D-Modell (glTF)"), extensions: ["glb", "gltf"] }],
-    }).catch(() => null);
-    if (path) keepModel({ path, turned: false });
-  };
-  const fileName = (path: string) => path.replace(/^.*[\\/]/, "");
+  // --- The owner's own 3D model --------------------------------------------------------
+  const { garageCar, setSessionModel, ownModel, modelState, keepModel, pickModel } = useOwnModel({ vin, shown, sceneRef, mode, layout });
 
   // Packets for everything the OBD side reads.
   const engineKey = useMemo(() => ecuInputs.find((e) => e.kind === EcuKind.Engine)?.key ?? "obd-engine", [ecuInputs]);
@@ -654,14 +103,9 @@ export default function XrayPage() {
   // --- Layers and cuts --------------------------------------------------------------------------
   const [layers, setLayers] = useState<Record<Layer, boolean>>({ body: true, drivetrain: true, cooling: true, energy: true, electrics: true, network: true });
   useEffect(() => sceneRef.current?.setLayers(layers), [layers, mode]);
-  // The section plane (dragged in the view or with the slider) and the
-  // exploded drivetrain.
-  const [section, setSection] = useState<{ axis: SectionAxis; t: number } | null>(null);
   useEffect(() => sceneRef.current?.setSection(section), [section, mode, carKey]);
   const [exploded, setExploded] = useState(false);
   useEffect(() => sceneRef.current?.setExplode(exploded), [exploded, mode, carKey]);
-  // The frame counter of the screenshot option ("stats").
-  const [stats, setStats] = useState<FrameStats | null>(null);
   const statsOn = devFlags.includes("stats");
   // "bare": the car alone over the whole window, without the page and the
   // controls, for the pictures of tools/xray_shots.py.
@@ -679,98 +123,20 @@ export default function XrayPage() {
   const energyName =
     anatomy && anatomy.battery !== 0 ? (anatomy.fuelTank ? tr("Kraftstoff und Hochvolt") : tr("Hochvolt")) : tr("Kraftstoff");
 
-  // --- Live values on the parts ---------------------------------------------------------------
-  const [liveRows, setLiveRows] = useState<LiveRow[]>([]);
-  useInterval(
-    () => {
-      const rows = LIVE_KEYS.map((k) => live.get(k.pid)).filter((r): r is LiveRow => !!r);
-      setLiveRows((old) => (old.length === rows.length && old.every((r, i) => r === rows[i]) ? old : rows));
-    },
-    active && connected ? 400 : null,
-  );
-  useEffect(() => {
-    if (!connected) setLiveRows([]);
-  }, [connected]);
-  const [liveOn, setLiveOn] = useState(false);
-  const startedLive = useRef(false);
-  const toggleLive = () => {
-    if (liveOn) {
-      void call("stop_live");
-      startedLive.current = false;
-      setLiveOn(false);
-      return;
-    }
-    const pids = LIVE_KEYS.map((k) => k.pid).filter((p) => supported.length === 0 || supported.includes(p));
-    void call("start_live", { pids });
-    startedLive.current = true;
-    setLiveOn(true);
-  };
-  useEffect(() => {
-    if ((active && connected) || !startedLive.current) return;
-    startedLive.current = false;
-    setLiveOn(false);
-    if (connected) void call("stop_live");
-  }, [active, connected]);
+  // --- Live values on the parts --------------------------------------------------------
+  const { liveRows, liveOn, toggleLive } = useXrayLive({ active, connected, supported });
 
-  // --- Findings and the guided check ----------------------------------------------------------
-  const findings = useMemo<Finding[]>(() => {
-    if (!layout) return [];
-    const out: Finding[] = [];
-    for (const z of zoneFindings) {
-      out.push({ id: `zone-${z.zone}`, anchor: zoneAnchor(layout, z.zone), title: z.info.name || zoneLabel(z.zone), text: `${z.codes.join(", ")}. ${z.info.hint}`.trim(), zone: z.zone, ecu: null, tone: "bad" });
-    }
-    for (const e of layout.ecus) {
-      if (!e.faulty || e.asking) continue;
-      out.push({ id: `ecu-${e.key}`, anchor: e.position, title: e.name, text: tr("Dieses Steuergerät hat Fehler gespeichert."), zone: null, ecu: e.key, tone: "bad" });
-    }
-    for (const row of liveRows) {
-      if (!row.warn) continue;
-      const key = LIVE_KEYS.find((k) => k.pid === row.pid)!;
-      const anchor = key.anchor === "wheel" ? zoneAnchor(layout, CarZone.Wheels) : layout.anchors[key.anchor];
-      if (anchor) out.push({ id: `live-${row.pid}`, anchor, title: row.name, text: `${localeNumber(row.value, key.decimals)} ${row.unit}`, zone: null, ecu: null, tone: "warn" });
-    }
-    return out;
-  }, [layout, zoneFindings, liveRows]);
-
-  const [tour, setTour] = useState<number | null>(null);
-  const waitingForFaults = useRef(false);
-  const startCheck = () => {
-    setSelected(null);
-    if (connected) {
-      waitingForFaults.current = true;
-      void call("read_faults");
-      // Start anyway if the car does not answer in time.
-      setTimeout(() => {
-        if (!waitingForFaults.current) return;
-        waitingForFaults.current = false;
-        setTour(0);
-      }, 4000);
-    } else {
-      setTour(0);
-    }
-  };
-  useBackendEvent("faults", () => {
-    if (!waitingForFaults.current) return;
-    waitingForFaults.current = false;
-    // The zones are looked up right after the codes arrive.
-    setTimeout(() => setTour(0), 700);
+  // --- Findings and the guided check ---------------------------------------------------
+  const { tour, setTour, steps, step, startCheck, endTour } = useXrayTour({
+    layout,
+    zoneFindings,
+    liveRows,
+    connected,
+    active,
+    reduced,
+    sceneRef,
+    setSelected,
   });
-  const steps = findings.length > 0 ? findings : null;
-  const step = tour !== null && steps ? steps[Math.min(tour, steps.length - 1)]! : null;
-  useEffect(() => {
-    const scene = sceneRef.current;
-    if (tour === null || !scene) return;
-    if (step) scene.flyTo(step.anchor);
-    else scene.resetView();
-  }, [tour, step?.id]);
-  useInterval(
-    () => setTour((i) => (i === null ? null : steps && i + 1 < steps.length ? i + 1 : i)),
-    tour !== null && steps && tour + 1 < steps.length && active ? (reduced ? 7000 : 4800) : null,
-  );
-  const endTour = () => {
-    setTour(null);
-    sceneRef.current?.resetView();
-  };
 
   // --- Picking ----------------------------------------------------------------------------------
   pickRef.current = (id) => {
@@ -792,68 +158,8 @@ export default function XrayPage() {
     if (at) scene.flyTo(at, 2.8);
   };
 
-  // --- Highlight and labels ---------------------------------------------------------------------
-  const selectedEcu = selected?.startsWith("ecu:") ? selected.slice(4) : null;
-  useEffect(() => {
-    sceneRef.current?.setHighlight({
-      zones,
-      focusZone: step?.zone ?? null,
-      focusEcu: step?.ecu ?? null,
-      selectedEcu,
-    });
-  }, [zones, step?.zone, step?.ecu, selectedEcu, mode, layout]);
-
-  useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene || !layout) return;
-    const labels: XrayLabel[] = [];
-    for (const z of zoneFindings) {
-      labels.push({ id: `zone-${z.zone}`, anchor: zoneAnchor(layout, z.zone), title: zoneLabel(z.zone), value: z.codes.join(" · "), tone: "bad" });
-    }
-    for (const row of liveRows) {
-      const key = LIVE_KEYS.find((k) => k.pid === row.pid)!;
-      const anchor = key.anchor === "wheel" ? zoneAnchor(layout, CarZone.Wheels) : layout.anchors[key.anchor];
-      if (!anchor) continue;
-      const value = row.text ? row.text : `${localeNumber(row.value, key.decimals)} ${row.unit}`.trim();
-      labels.push({ id: `live-${row.pid}`, anchor: [anchor[0], anchor[1] + 0.05, anchor[2]], title: row.name, value, tone: row.warn ? "warn" : "info" });
-    }
-    // The name of every bus on its line.
-    if (layers.network) {
-      for (const b of layout.busLabels) labels.push({ id: `bus-${b.bus}`, anchor: b.anchor, title: busName(b.bus), tone: "bus", bus: b.bus });
-    }
-    const pointed = hovered ?? selected;
-    if (pointed) {
-      if (pointed.startsWith("ecu:")) {
-        const e = layout.ecus.find((n) => n.key === pointed.slice(4));
-        if (e) labels.push({ id: "pointed", anchor: [e.position[0], e.position[1] + 0.06, e.position[2]], title: e.name, value: busName(e.bus), tone: e.faulty ? "bad" : "accent" });
-      } else {
-        const part = layout.parts.find((p) => p.id === pointed);
-        const tube = layout.tubes.find((p) => p.id === pointed);
-        const at = part
-          ? ([part.center[0], part.center[1] + part.size[1] / 2 + 0.03, part.center[2]] as Vec3)
-          : tube
-            ? tube.points[Math.floor((tube.points.length - 1) / 2)]!
-            : pointed.startsWith("obd")
-              ? layout.adapter.socket
-              : null;
-        if (at && !zoneFindings.some((z) => (part?.zones ?? tube?.zones ?? []).includes(z.zone))) {
-          labels.push({ id: "pointed", anchor: at, title: partName(pointed), tone: "accent" });
-        }
-      }
-    }
-    scene.setLabels(labels);
-  }, [layout, zoneFindings, liveRows, hovered, selected, mode, layers.network]);
-
-  // --- Entries from other pages ------------------------------------------------------------------
-  useEffect(
-    () =>
-      onApp<CarZone>("xray:zone", (zone) => {
-        if (!layout) return;
-        setTour(null);
-        setTimeout(() => sceneRef.current?.flyTo(zoneAnchor(layout, zone)), 350);
-      }),
-    [layout],
-  );
+  // --- Highlight and labels ------------------------------------------------------------
+  const selectedEcu = useXrayLabels({ sceneRef, layout, zones, zoneFindings, liveRows, step, selected, hovered, mode, layers });
 
   // --- Scan ---------------------------------------------------------------------------------------
   const brand = identity?.brand ?? "";
@@ -863,76 +169,24 @@ export default function XrayPage() {
     void call("scan_uds", { family });
   }, [connected, brand]);
 
-  // The switches "scan" and "scan-all" of xray-generation: the units of the
-  // connected (demo) car on the generation shown, once connected.
-  const devScanned = useRef(false);
-  useEffect(() => {
-    const all = devFlags.includes("scan-all");
-    if (devScanned.current || !connected || !(all || devFlags.includes("scan"))) return;
-    devScanned.current = true;
-    if (all) scanQueue.current = ["FORD@MS", "GM@SW"];
-    setTimeout(() => void startScan(), 1500);
-    // startScan only needs to exist; the scan runs once.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [devFlags, connected]);
-
-  // "xray-scan", "xray-check" and "xray-live" of --page, for pictures.
-  useAppEvent<string>("dev:page", (name) => {
-    if (!name.startsWith("xray")) return;
-    navigate("xray");
-    if (name.startsWith("xray-generation:")) showGeneration(name.slice("xray-generation:".length));
-    // A model file for pictures of the own-model view, without the dialog.
-    if (name.startsWith("xray-model:")) {
-      const [path, view] = name.slice("xray-model:".length).split("|");
-      setSessionModel({ path: path ?? "", turned: false });
-      if (view === "side" || view === "rear" || view === "front") setDevView(view);
-    }
-    if (name === "xray-scan") setTimeout(() => void startScan(), 600);
-    // Every bus one after the other: the CAN of the socket, then the MS-CAN
-    // and the SW-CAN (with CARUSPEX_DEMO_ADAPTER=obdlink-mx for the demo).
-    if (name === "xray-scan-all") {
-      scanQueue.current = ["FORD@MS", "GM@SW"];
-      setTimeout(() => void startScan(), 600);
-    }
-    if (name === "xray-stats") setDevFlags((f) => [...f, "stats"]);
-    if (name === "xray-check") setTimeout(startCheck, 1200);
-    if (name === "xray-live") setTimeout(() => !liveOn && toggleLive(), 600);
+  // Entries from other pages and the switches of the command line.
+  useXrayEntries({
+    layout,
+    setTour,
+    sceneRef,
+    devFlags,
+    setDevFlags,
+    connected,
+    scanQueue,
+    startScan,
+    showGeneration,
+    setSessionModel,
+    setDevView,
+    startCheck,
+    liveOn,
+    toggleLive,
   });
 
-  // --- Text for the side panel -----------------------------------------------------------------------
-  const title = shown
-    ? [shown.brand, shown.model, shown.generation].filter(Boolean).join(" ")
-    : connected
-      ? identity?.title || t("caruspex::DashboardPage", "Verbundenes Fahrzeug")
-      : tr("Beispielauto");
-  const facts = anatomy
-    ? [anatomy.engine !== 0 ? anatomy.engineName : "", anatomy.drivenName].filter(Boolean).join(" · ")
-    : "";
-  // Values Wikidata lacks for a measured car are estimates: marked with ≈.
-  const metres = (mm: number, bit: number) =>
-    `${anatomy && anatomy.dimensionSource !== "typical" && !(anatomy.measuredFields & bit) ? "≈" : ""}${localeNumber(mm / 1000, 2)}`;
-  // The dimensions drawn: without any of the generation the typical ones of
-  // its class (a Sprinter, a truck), not the catalog's typical van.
-  const size = layout?.size ?? anatomy;
-  const dims = size
-    ? tr(
-        "%1 m lang, %2 m breit, %3 m hoch, Radstand %4 m",
-        metres(size.lengthMm, 1),
-        metres(size.widthMm, 2),
-        metres(size.heightMm, 4),
-        metres(size.wheelbaseMm, 8),
-      )
-    : "";
-  const source =
-    modelState?.state === "shown"
-      ? tr("Eigenes Modell")
-      : anatomy?.dimensionSource === "manufacturer"
-        ? tr("Maße vom Hersteller, Form nachempfunden")
-        : anatomy?.dimensionSource === "wikidata"
-          ? tr("Maße aus Wikidata, Form nachempfunden")
-          : tr("Typische Maße für Aufbau und Baujahr");
-  const variantOptions: Option<number>[] = variants.map((b) => ({ value: b, label: anatomy?.bodyNames[b] ?? String(b) }));
-  const powertrainOptions: Option<number>[] = (anatomy?.powertrainChoices ?? []).map((c) => ({ value: c.flag, label: c.name }));
   const busesShown = useMemo(() => {
     const set = new Set<BusKind>();
     for (const r of layout?.routes ?? []) set.add(r.bus);
@@ -972,225 +226,49 @@ export default function XrayPage() {
           {mode === "loading" || mode === "idle" ? <div className="xray-loading hint">{tr("Das 3D-Modell wird geladen ...")}</div> : null}
 
           {mode === "3d" && !bare ? (
-            <>
-              <div className="xray-layers" role="group" aria-label={tr("Ebenen")}>
-                {LAYERS.map((layer) => (
-                  <Chip key={layer} on={layers[layer]} onClick={() => setLayers((l) => ({ ...l, [layer]: !l[layer] }))}>
-                    {layerName(layer, energyName, isMoto)}
-                  </Chip>
-                ))}
-              </div>
-              <div className="xray-view-buttons">
-                <Button small icon="refresh" title={tr("Ansicht zurücksetzen")} onClick={() => sceneRef.current?.resetView()} />
-              </div>
-              <div className="xray-tools" role="group" aria-label={tr("Schnitte")}>
-                <Chip on={exploded} onClick={() => setExploded((e) => !e)} title={tr("Motor, Getriebe und Auspuff auseinanderziehen")}>
-                  {tr("Antrieb zerlegen")}
-                </Chip>
-                <Chip on={section !== null} onClick={() => setSection((s) => (s ? null : { axis: "x", t: 0.55 }))} title={tr("Eine Ebene durch das Fahrzeug ziehen, die alles davor ausblendet")}>
-                  {tr("Schnitt")}
-                </Chip>
-                {section ? (
-                  <>
-                    {(["x", "z", "y"] as SectionAxis[]).map((axis) => (
-                      <Chip key={axis} on={section.axis === axis} onClick={() => setSection({ axis, t: section.axis === axis ? section.t : 0.5 })}>
-                        {axis === "x" ? tr("Quer") : axis === "z" ? tr("Längs") : tr("Von oben")}
-                      </Chip>
-                    ))}
-                    <input
-                      className="xray-section-slider"
-                      type="range"
-                      min={2}
-                      max={98}
-                      value={Math.round(section.t * 100)}
-                      aria-label={tr("Schnittebene verschieben")}
-                      title={tr("Schnittebene verschieben")}
-                      onChange={(e) => setSection({ axis: section.axis, t: Number(e.target.value) / 100 })}
-                    />
-                  </>
-                ) : null}
-              </div>
-              {(layers.network && busesShown.length > 0) || layers.electrics ? (
-                <div className="xray-legend">
-                  {layers.network
-                    ? busesShown.map((bus) => (
-                        <span key={bus} className="xray-legend-item">
-                          <span className="xray-legend-line" style={{ "--bus": `var(--bus-${bus})` } as CSSProperties} />
-                          {busName(bus)}
-                        </span>
-                      ))
-                    : null}
-                  {layers.electrics ? <span className="xray-legend-note">{tr("Kabelbaum vereinfacht: er zeigt, wo die Stränge laufen, kein Stromlaufplan.")}</span> : null}
-                </div>
-              ) : null}
-              {stats ? (
-                <div className="xray-stats hint">
-                  {tr("%1 Bilder pro Sekunde, %2 ms je Bild (%3 ms Zeichnen), %4 Zeichenaufrufe", localeNumber(stats.fps, 0), localeNumber(stats.frameMs, 1), localeNumber(stats.renderMs, 1), stats.calls)}
-                </div>
-              ) : null}
-              <div className="xray-help hint">
-                {touchScreen
-                  ? tr("Ziehen dreht, zwei Finger zoomen und verschieben, Tippen zeigt ein Teil.")
-                  : tr("Ziehen dreht, Mausrad zoomt, rechte Maustaste verschiebt.")}
-              </div>
-            </>
+            <XrayControls
+              layers={layers}
+              setLayers={setLayers}
+              energyName={energyName}
+              isMoto={isMoto}
+              sceneRef={sceneRef}
+              exploded={exploded}
+              setExploded={setExploded}
+              section={section}
+              setSection={setSection}
+              busesShown={busesShown}
+              stats={stats}
+            />
           ) : null}
 
-          {tour !== null ? (
-            <div className="xray-tour fade-in" key={step?.id ?? "none"} data-tone={step?.tone ?? "good"}>
-              <div className="xray-tour-head">
-                <Icon name={step ? "alert" : "check-circle"} size={18} />
-                <span className="strong">{step ? step.title : tr("Nichts gefunden")}</span>
-                {steps ? <span className="hint">{tr("%1 von %2", (tour ?? 0) + 1, steps.length)}</span> : null}
-              </div>
-              <div className="subtle">
-                {step ? step.text : connected ? tr("Kein Fehler gespeichert und jedes gefundene Steuergerät ist in Ordnung.") : tr("Erst verbinden, dann zeigt die Prüfung, wo am Auto etwas ist.")}
-              </div>
-              <div className="xray-tour-buttons">
-                {steps && steps.length > 1 ? (
-                  <>
-                    <Button
-                      small
-                      icon="chevron-left"
-                      title={t(ACCESS, "Zurück")}
-                      disabled={!tour}
-                      onClick={() => setTour((i) => Math.max(0, (i ?? 0) - 1))}
-                    />
-                    <Button
-                      small
-                      icon="chevron-right"
-                      title={t(ACCESS, "Weiter")}
-                      disabled={(tour ?? 0) + 1 >= steps.length}
-                      onClick={() => setTour((i) => Math.min(steps.length - 1, (i ?? 0) + 1))}
-                    />
-                  </>
-                ) : null}
-                <Button small onClick={endTour}>
-                  {t("caruspex::TitleBar", "Schließen")}
-                </Button>
-              </div>
-            </div>
-          ) : null}
+          {tour !== null ? <XrayTour tour={tour} step={step} steps={steps} connected={connected} setTour={setTour} endTour={endTour} /> : null}
         </div>
 
         <div className="xray-side">
-          <Card className="xray-car">
-            <div className="eyebrow">{connected ? t("caruspex::DashboardPage", "DEIN FAHRZEUG") : tr("NOCH NICHT VERBUNDEN")}</div>
-            <h2 className="section-title">{title}</h2>
-            {anatomy ? (
-              <>
-                <div className="subtle">{[generation?.bodyName, facts].filter(Boolean).join(" · ")}</div>
-                <div className="xray-reason">{anatomy.reason}</div>
-                <div className="xray-source" data-source={modelState?.state === "shown" ? "model" : anatomy.dimensionSource}>
-                  <Icon name={modelState?.state === "shown" ? "cube" : anatomy.dimensionSource !== "typical" ? "check-circle" : "info"} size={14} />
-                  <span>{source}</span>
-                </div>
-                <div className="hint">
-                  {dims}
-                  {anatomy.wikidataId ? ` · Wikidata ${anatomy.wikidataId}` : ""}
-                </div>
-                {anatomy.dimensionDocument ? <div className="hint xray-document">{tr("Quelle: %1", anatomy.dimensionDocument)}</div> : null}
-                <div className="hint">{anatomy.dimensionsText}</div>
-                {isMoto ? (
-                  <>
-                    <div className="hint">{tr("Gezeichnet wird ein Motorrad dieser Bauart mit diesem Motor, nicht das genaue Modell.")}</div>
-                    <label className="xray-select">
-                      <span className="hint">{tr("Bauart")}</span>
-                      <Select
-                        value={layout?.moto?.style ?? motoSpec(anatomy.brand, anatomy.model).style}
-                        options={MOTO_STYLES.map((s) => ({ value: s, label: motoStyleName(s) }))}
-                        onChange={(v) => setMotoStyle(v as MotoStyle)}
-                      />
-                    </label>
-                  </>
-                ) : null}
-                {isHeavy ? (
-                  <>
-                    <div className="hint">{tr("Gezeichnet wird ein Lkw oder Bus dieser Bauart in typischen Maßen, nicht das genaue Modell.")}</div>
-                    <label className="xray-select">
-                      <span className="hint">{tr("Bauart")}</span>
-                      <Select
-                        value={layout?.heavy?.kind ?? heavySpec(anatomy.brand, anatomy.model).kind}
-                        options={HEAVY_KINDS.map((k) => ({ value: k, label: heavyKindName(k) }))}
-                        onChange={(v) => setHeavyKind(v as HeavyKind)}
-                      />
-                    </label>
-                  </>
-                ) : null}
-                {variantOptions.length > 1 ? (
-                  <label className="xray-select">
-                    <span className="hint">{tr("Karosserie")}</span>
-                    <Select value={drawn} options={variantOptions} onChange={(v) => setVariant(Number(v) as BodyType)} />
-                  </label>
-                ) : null}
-                {powertrainOptions.length > 1 ? (
-                  <label className="xray-select">
-                    <span className="hint">{tr("Antrieb")}</span>
-                    <Select value={anatomy.powertrain} options={powertrainOptions} onChange={(v) => setPowertrain(Number(v))} />
-                  </label>
-                ) : null}
-              </>
-            ) : null}
-            {!connected ? <div className="hint">{tr("Verbinde dich mit deinem Auto oder dem Demo-Auto, dann zeigt das Modell seine Form, seine Steuergeräte und seine Fehler.")}</div> : null}
-            {mode === "3d" ? (
-              <div className="xray-model">
-                <div className="xray-model-buttons">
-                  <Button small icon="cube" onClick={() => void pickModel()}>
-                    {tr("Eigenes 3D-Modell laden")}
-                  </Button>
-                  {ownModel ? (
-                    <>
-                      <Button small icon="refresh" onClick={() => keepModel({ ...ownModel, turned: !ownModel.turned })}>
-                        {tr("Modell umdrehen")}
-                      </Button>
-                      <Button small icon="x" onClick={() => keepModel(null)}>
-                        {tr("Eigenes Modell entfernen")}
-                      </Button>
-                    </>
-                  ) : null}
-                </div>
-                {ownModel ? (
-                  <div className="hint">
-                    {modelState?.state === "loading" ? tr("Das 3D-Modell wird geladen ...") : fileName(ownModel.path)}
-                    {modelState?.state === "shown" && !garageCar ? ` · ${tr("Nur für diese Sitzung: das Auto ist nicht in der Garage.")}` : ""}
-                  </div>
-                ) : (
-                  <div className="hint">{tr("Ein glTF- oder GLB-Modell, das dir gehört, ersetzt die erzeugte Hülle; Antrieb, Steuergeräte und Leitungen bleiben.")}</div>
-                )}
-                {modelState?.state === "error" ? <div className="hint xray-model-error">{tr("Das Modell ließ sich nicht laden: %1", modelState.error ?? "")}</div> : null}
-              </div>
-            ) : null}
-          </Card>
+          <XrayCarCard
+            shown={shown}
+            connected={connected}
+            identity={identity}
+            generation={generation}
+            anatomy={anatomy}
+            layout={layout}
+            variants={variants}
+            drawn={drawn}
+            setVariant={setVariant}
+            setPowertrain={setPowertrain}
+            isMoto={isMoto}
+            setMotoStyle={setMotoStyle}
+            isHeavy={isHeavy}
+            setHeavyKind={setHeavyKind}
+            mode={mode}
+            ownModel={ownModel}
+            modelState={modelState}
+            garageCar={garageCar}
+            keepModel={keepModel}
+            pickModel={pickModel}
+          />
 
-          <Card className="xray-ecus" title={t("caruspex::MainWindow", "Alle Steuergeräte")} icon="cpu">
-            {scanning ? (
-              <div className="hint">{t("caruspex::EcuPage", "Frage %1 (%2 von %3)", scanning.name, scanning.index + 1, scanning.total)}</div>
-            ) : null}
-            {layout && layout.ecus.length > 0 ? (
-              <div className="xray-ecu-list">
-                {layout.ecus.map((e) => (
-                  <button
-                    key={e.key}
-                    type="button"
-                    className={`xray-ecu${selectedEcu === e.key ? " selected" : ""}${e.asking ? " asking" : ""}`}
-                    style={{ "--bus": `var(--bus-${e.bus})` } as CSSProperties}
-                    onClick={() => pickRef.current(`ecu:${e.key}`)}
-                  >
-                    <span className="xray-ecu-dot" data-faulty={e.faulty || undefined} />
-                    <span className="xray-ecu-name">{e.name}</span>
-                    <span className="hint">{e.faulty ? tr("Fehler") : e.asking ? tr("fragt ...") : busName(e.bus)}</span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="hint">{connected ? tr("Noch nicht gesucht. Steuergeräte suchen zeigt jedes Gerät an seinem Platz.") : tr("Nach dem Verbinden erscheinen hier die Steuergeräte.")}</div>
-            )}
-            {udsEcus.length > 0 ? (
-              <Button small icon="chevron-right" onClick={() => navigate("ecus")}>
-                {t("caruspex::MainWindow", "Alle Steuergeräte")}
-              </Button>
-            ) : null}
-          </Card>
+          <XrayEcuCard connected={connected} scanning={scanning} layout={layout} selectedEcu={selectedEcu} pickRef={pickRef} udsEcus={udsEcus} />
         </div>
       </div>
     </Page>
