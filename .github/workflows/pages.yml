@@ -44,7 +44,7 @@ jobs:
 
       - name: Upload for Pages
         if: vars.PAGES_ENABLED == 'true'
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
