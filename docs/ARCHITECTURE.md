@@ -26,6 +26,7 @@ that says more.
 | `caruspex-analysis` | Health check, battery test, readiness, drive cycles, trip computer, performance timer. |
 | `caruspex-advice` | "What should I do now?" from faults, readiness, health check and live values, and the checklist of the connection assistant. |
 | `caruspex-demo` | The built-in demo car and demo truck behind a simulated ELM327 or OBDLink. |
+| `caruspex-tune` | The tuning simulator: a full-load model of the BMW N55 with its limits and the comparison with a recording. Simulation only, it has no way to a car and writes no maps. |
 | `caruspex-cli` | `caruspex_cli`, the command-line tool on the same core, with golden-file tests. |
 | `app/src-tauri` (`caruspex-app`) | The app: window, Tauri commands, the worker thread, settings, garage, report, crash reports, the signed updater. A library (`lib.rs`) that `main.rs` starts on the desktop and the Android project loads. |
 
