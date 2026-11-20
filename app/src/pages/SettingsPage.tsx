@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { call } from "../api";
 import type { AppSettings } from "../api";
 import { DEFAULT_SETTINGS } from "../api";
+import { Modal } from "../components/Modal";
 import { Button, Card, Check, NumberInput, Page, PageHeader, Segmented, Select, TextInput } from "../components/ui";
 import { LANGUAGES, translator } from "../i18n";
 import { FONT_SCALES, setFontScale, setHighContrast } from "../lib/access";
@@ -82,12 +83,49 @@ function SettingNumber({
   );
 }
 
+// The licence texts that ship inside the interface (app/scripts/copy-fonts.mjs
+// puts them there), shown without a network. Loaded only when opened: the
+// notices of all components are about half a megabyte.
+const LICENCE_FILES = [
+  "legal/LICENSE.txt",
+  "legal/THIRD_PARTY_NOTICES.txt",
+  "fonts/OFL.txt",
+  "fonts/OFL-Inter.txt",
+  "fonts/OFL-PlusJakartaSans.txt",
+];
+
+function LicencesDialog({ onClose }: { onClose: () => void }) {
+  const [text, setText] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void Promise.all(
+      LICENCE_FILES.map((file) =>
+        fetch(`/${file}`)
+          .then((r) => (r.ok ? r.text() : ""))
+          .catch(() => "")
+          .then((body) => `==== ${file.split("/").pop()} ====\n\n${body.trim()}\n`),
+      ),
+    ).then((parts) => alive && setText(parts.join("\n\n")));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return (
+    <Modal title={tr("Lizenzen")} icon="file" wide onClose={onClose}>
+      <pre className="settings-licences" tabIndex={0}>
+        {text ?? "..."}
+      </pre>
+    </Modal>
+  );
+}
+
 export default function SettingsPage() {
   const values = useSettings();
   const pro = useProMode();
   // The path field reports on leaving it (editingFinished), not per key.
   const [logPath, setLogPath] = useState(values.logPath);
   useEffect(() => setLogPath(values.logPath), [values.logPath]);
+  const [licencesOpen, setLicencesOpen] = useState(false);
 
   const change = (patch: Partial<AppSettings>) => {
     const next = { ...values, ...patch };
@@ -439,7 +477,41 @@ export default function SettingsPage() {
             "Die Herstellerwerte für viele Modelle stammen aus OBDb (github.com/OBDb) und stehen unter der Lizenz CC BY-SA 4.0 (Namensnennung, Weitergabe unter gleichen Bedingungen). Die umgewandelten Daten liegen mit Lizenz und Liste der Quellen im Ordner data/obdb des Quellcodes.",
           )}
         </Hint>
+        <Hint>
+          {tr(
+            "Weitere Daten: CAN-Signale aus opendbc (comma.ai) und model3dbc, beide unter der MIT-Lizenz; Motorkennbuchstaben aus Wikipedia-Artikeln und ein Teil der Herstellerkennungen der FIN aus Wikibooks, beide unter CC BY-SA 4.0; Fahrzeugmaße aus Wikidata (CC0). Die Schriften JetBrains Mono, Inter und Plus Jakarta Sans stehen unter der SIL Open Font License 1.1.",
+          )}
+        </Hint>
+        <Hint>
+          {tr(
+            "Namen von Fahrzeugherstellern, Modellen, Adaptern und Programmen sind Marken ihrer Inhaber und stehen hier nur, um zu sagen, womit Caruspex arbeitet. Caruspex ist ein unabhängiges Projekt und mit keinem dieser Hersteller verbunden.",
+          )}
+        </Hint>
+        <Full>
+          <Button icon="file" onClick={() => setLicencesOpen(true)}>
+            {tr("Lizenzen der Bestandteile anzeigen")}
+          </Button>
+        </Full>
       </Group>
+
+      <Group title={tr("Sicherheit und Haftung")}>
+        <Hint>
+          {tr(
+            "Caruspex ist freie Software ohne jede Gewährleistung (siehe MIT-Lizenz). Die Nutzung geschieht auf eigene Gefahr.",
+          )}
+        </Hint>
+        <Hint>
+          {tr(
+            "Nie während der Fahrt bedienen. Fehler löschen, Stellglieddiagnose und Grundeinstellungen nur im Stand mit angezogener Handbremse und nur an Fahrzeugen, an denen du arbeiten darfst.",
+          )}
+        </Hint>
+        <Hint>
+          {tr(
+            "Caruspex ersetzt keine Werkstatt. Bremsen, Airbags, Lenkung und alles, was für die Sicherheit zählt, gehören in fachkundige Hände. Gelöschte Fehler und zurückgesetzte Bereitschaftstests können eine Abgas- oder Fahrzeugprüfung scheitern lassen.",
+          )}
+        </Hint>
+      </Group>
+      {licencesOpen ? <LicencesDialog onClose={() => setLicencesOpen(false)} /> : null}
 
       <div className="row wrap-row">
         <Button icon="refresh" onClick={reset}>
