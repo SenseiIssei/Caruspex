@@ -7,12 +7,12 @@ Status: 21 November 2026, Caruspex 0.17.
 - **Only the newest release gets fixes.** A security fix is published as a new release, which the built-in
   updater offers to every installation of Windows, Linux (AppImage) and macOS. Older versions do not get separate
   fixes; updating to the newest release is free and needs nothing else on the computer.
-- **No fixed end date.** Caruspex is a free, non-commercial project maintained in spare time. There is no
-  contract and no guaranteed support period. Vulnerabilities are handled as described in
-  [SECURITY.md](../../SECURITY.md) for as long as the project is maintained.
-- **Announced end.** If the project stops being maintained, this will be announced in the repository, in the
-  release notes of a last release and on the documentation website, at least 90 days ahead where possible. The
-  repository will then be archived; the releases, the SBOMs and the advisories stay available on GitHub.
+- **No support promise.** Caruspex is a free, non-commercial project maintained in spare time, on a best effort
+  basis. There is no contract, no guaranteed support period and no guaranteed response time. Vulnerabilities are
+  handled as described in [SECURITY.md](../../SECURITY.md), as spare time allows, for as long as the project is
+  maintained.
+- **End of maintenance.** If the project stops being maintained, the repository will be archived and say so; the
+  releases, the SBOMs and the advisories stay available on GitHub.
 - **Old releases** remain downloadable on the releases page for reference. They are unsupported: they may contain
   known vulnerabilities (CRA Article 13(11) asks to say exactly this when old versions stay available).
 

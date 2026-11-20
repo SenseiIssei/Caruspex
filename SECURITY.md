@@ -13,7 +13,7 @@ Report them privately with GitHub's private vulnerability reporting: open the
 [Security tab of the repository](https://github.com/SenseiIssei/Caruspex/security) and choose
 **Report a vulnerability**, or go straight to
 [the form for a new advisory](https://github.com/SenseiIssei/Caruspex/security/advisories/new).
-Only the maintainers of Caruspex see the report. Reports in English or German are welcome.
+Only I, the maintainer of Caruspex, see the report. Reports in English or German are welcome.
 
 Please include what is affected (version, system, which part of Caruspex), how to reproduce it, and what an
 attacker could do with it. You will get an answer in the advisory. Once a fix is released, the advisory is
@@ -21,7 +21,7 @@ published, with credit to you if you want it.
 
 ## What counts
 
-Caruspex runs on the user's computer or phone and talks to a car through an adapter. Examples of what we want to
+Caruspex runs on the user's computer or phone and talks to a car through an adapter. Examples of what I want to
 hear about:
 
 - the updater installing something that was not signed with the release key, or downloading from anywhere but the
@@ -47,26 +47,21 @@ get separate fixes.
 | the newest release | yes |
 | every older release | no, update to the newest |
 
-**Support period**: Caruspex is a free, non-commercial project maintained in spare time. There is no fixed end
-date and no contract. Vulnerabilities are handled as described here for as long as the project is maintained; if
-maintenance stops, the repository, a last release and the documentation website will say so in advance, at least
-90 days ahead where possible. Old releases stay on the releases page but are unsupported and may contain known
-vulnerabilities. The full statement is in [docs/cra/support.md](docs/cra/support.md).
+**No support promise**: Caruspex is a free, non-commercial project maintained in spare time, on a best effort
+basis. There is no contract, no guaranteed support period and no guaranteed response time. Reports are looked at
+and fixed as well and as soon as spare time allows, for as long as the project is maintained. If maintenance
+stops, the repository will be archived and say so. Old releases stay on the releases page but are unsupported and
+may contain known vulnerabilities. See also [docs/cra/support.md](docs/cra/support.md).
 
 ## How a report is handled
 
-Caruspex is maintained in spare time, so these are targets, not guarantees:
-
-| Step | Target |
-|---|---|
-| First answer in the advisory | within 7 days |
-| Assessment (confirmed or not, severity with CVSS) | within 14 days |
-| Fix released, critical or high severity | within 30 days of the confirmation |
-| Fix released, medium or low severity | with the next release, at the latest within 90 days |
+Caruspex is maintained in spare time, so there are no fixed deadlines. A report is usually handled in this
+order, as fast as spare time allows: a first answer in the advisory, an assessment (confirmed or not, severity
+with CVSS), then a fixed release, serious problems first.
 
 **Coordinated disclosure**: please keep the problem private until a fixed release is out. The advisory is
-published together with the fixed release, at the latest 90 days after the report unless we agree on another
-date with you (for example when a fix depends on another project). If the problem is already being exploited or
+published together with the fixed release. If a fix takes long, I agree on a publication date with you
+(for example when a fix depends on another project). If the problem is already being exploited or
 publicly known, the fix and the advisory come as fast as possible.
 
 **Publication**: fixed vulnerabilities are published as
@@ -76,7 +71,7 @@ the advisory, so the advisory also reaches the CVE list and the GitHub Advisory 
 fixed release point to the advisory, and the built-in updater offers the release to every installation.
 
 A vulnerability in a library that Caruspex uses is also reported to that library's maintainers, with the fix
-where we have one.
+where I have one.
 
 ## Checking a download
 
@@ -123,7 +118,7 @@ minisign -V -p caruspex-updater.pub -m <file> -x <file>.minisig
 - Dependabot (`.github/dependabot.yml`) proposes updates for Cargo, npm and the GitHub Actions every month, and
   security updates for these and for the Gradle files of the Android app.
 
-## For maintainers
+## For the maintainer
 
 **Repository settings** that this policy relies on (Settings, Advanced Security): private vulnerability
 reporting on, Dependabot alerts and Dependabot security updates on.
