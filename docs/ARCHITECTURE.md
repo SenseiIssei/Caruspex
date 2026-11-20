@@ -73,6 +73,7 @@ The tests of the worker use a `Sink` that collects events in a list (`app/src-ta
 | Catalog copy for the browser preview and UI tests | (from the Rust catalog) | `app/scripts/extract-catalog.py` | `app/src/api/mock/data/` |
 | Interface text catalogs | `translations/`, `app/src/i18n/new-texts*.json` | `app/scripts/gen-i18n.mjs` (on every UI build) | `app/src/i18n/generated/` (not in git) |
 | Core text catalogs | `translations/` | `crates/caruspex-i18n/build.rs` (at compile time) | the build directory |
+| Licences of everything shipped | `Cargo.lock`, `app/package-lock.json`, the Android build file, the data table in the script | `tools/gen_notices.py` | `THIRD_PARTY_NOTICES.md`, copied into `app/public/legal/` on every UI build |
 
 Files in `generated/` folders and `app/src/api/mock/data/` are never edited by hand. The CI runs the generators
 and fails when the result differs from what is committed.

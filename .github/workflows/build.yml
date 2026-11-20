@@ -122,6 +122,11 @@ jobs:
           npm --prefix app run build
           npm --prefix app test
 
+      # The licences of every crate, npm package and Android library the
+      # programs ship; needs app/node_modules from the step above.
+      - name: Third party notices are current
+        run: python tools/gen_notices.py --check
+
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
 
