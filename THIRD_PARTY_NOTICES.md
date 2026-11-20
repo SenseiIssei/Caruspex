@@ -50,7 +50,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 
 ## Rust crates
 
-502 components.
+507 components.
 
 | Component | Version | Licence | Source |
 |---|---|---|---|
@@ -240,11 +240,16 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | itoa | 1.0.19 | MIT OR Apache-2.0 | https://github.com/dtolnay/itoa |
 | javascriptcore-rs | 1.1.2 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
 | javascriptcore-rs-sys | 1.1.1 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
-| jiff | 0.2.42 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-core | 0.1.4 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-static | 0.2.42 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-core | 0.1.8 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-core | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-static | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-static | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb | 0.1.9 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-tzdb | 1.0.0 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb-platform | 0.1.3 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-tzdb-platform | 1.0.0 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jni | 0.21.1 | MIT/Apache-2.0 | https://github.com/jni-rs/jni-rs |
 | jni | 0.22.4 | MIT OR Apache-2.0 | https://github.com/jni-rs/jni-rs |
 | jni-macros | 0.22.4 | MIT OR Apache-2.0 | https://github.com/jni-rs/jni-rs |
@@ -619,7 +624,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 2
 
-Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.42, jiff-core 0.1.4, jiff-static 0.2.42, jiff-tzdb 0.1.9, jiff-tzdb-platform 0.1.3, memchr 2.8.3, walkdir 2.5.0.
+Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.46, jiff 1.0.1, jiff-core 0.1.8, jiff-core 1.0.1, jiff-static 0.2.46, jiff-static 1.0.1, jiff-tzdb 0.1.9, jiff-tzdb 1.0.0, jiff-tzdb-platform 0.1.3, jiff-tzdb-platform 1.0.0, memchr 2.8.3, walkdir 2.5.0.
 
 ```text
 The MIT License (MIT)

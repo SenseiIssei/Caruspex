@@ -312,7 +312,7 @@ pub fn open_log_file(app: &AppHandle, values: &AppSettings) {
             Ok(mut file) => {
                 let header = format!(
                     "\n=== Caruspex, {} ===\n",
-                    jiff::Zoned::now().strftime("%d.%m.%Y %H:%M")
+                    jiff::ZonedDateTime::now().strftime("%d.%m.%Y %H:%M")
                 );
                 let _ = file.write_all(header.as_bytes());
                 *slot = Some((path, file));

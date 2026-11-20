@@ -218,7 +218,7 @@ pub fn collect(obd: &mut Obd2, seconds: i32, progress: &dyn Fn(&str)) -> ReportD
     let (frame, freeze_code) = obd.read_freeze_frame();
 
     let elm = obd.elm();
-    let now = jiff::Zoned::now();
+    let now = jiff::ZonedDateTime::now();
     let info = &vin.info;
     let vehicle_name = match vin.matched.generation {
         Some(g) => catalog::display_name(g),
