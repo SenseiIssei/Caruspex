@@ -99,9 +99,13 @@ pub mod block {
     pub const BASIC_SETTING: u8 = 0x28;
     /// Read measuring block.
     pub const READ_GROUP: u8 = 0x29;
-    pub const READ_ADAPTATION: u8 = 0x2A;
-    pub const TEST_ADAPTATION: u8 = 0x2B;
-    pub const SAVE_ADAPTATION: u8 = 0x2C;
+    // Adaptation titles as in the public KW1281 lists (blafusel.de,
+    // kw1281test). Until November 2026 reading used 0x2A, which is "save
+    // adaptation": a unit could take it as a save of the channel.
+    /// Read an adaptation channel; only this one is used today.
+    pub const READ_ADAPTATION: u8 = 0x21;
+    pub const TEST_ADAPTATION: u8 = 0x22;
+    pub const SAVE_ADAPTATION: u8 = 0x2A;
     pub const LOGIN: u8 = 0x2B;
     pub const ASCII_DATA: u8 = 0xF6;
     pub const FAULT_LIST: u8 = 0xFC;
