@@ -10,8 +10,9 @@ import catalogRs from "../../../crates/caruspex-vehicles/src/generated/catalog.r
 import { anatomyOf } from "../api/mock/areas/xray";
 import type { MeasuredRecord } from "../api/mock/areas/knowledge";
 import { BodyType, CarZone, DrivenAxles, EngineLayout, Powertrain, type VehicleAnatomy } from "../api/types";
+import { HEAVY_KINDS, HEAVY_ROWS, heavySpec, type HeavyKind } from "./heavy";
 import { MOTO_ROWS, MOTO_STYLES, motoSpec } from "./moto";
-import { SHAPES, bodyVariants, defaultShape, shapeFor } from "./shape";
+import { SHAPES, bodyVariants, classSize, defaultShape, shapeFor, vanClass } from "./shape";
 import {
   ECU_KIND_COUNT,
   ECU_PLACES,
@@ -69,13 +70,21 @@ function shareInWheel(p: Part, w: Wheel): number {
 // Wheelbase and track as the data give them (the wheelbase capped at four
 // fifths of the length, the track at most a fifth narrower where the body
 // is rounder than the data's box), the pairs mirrored, and no part more
-// than grazing a tyre.
+// than grazing a tyre. Without dimensions of the generation the data are
+// the typical ones of its class (a Sprinter is longer than the catalog's
+// typical van); with them, the catalog's own.
 function checkWheels(layout: CarLayout, label: string, anatomy?: VehicleAnatomy): void {
   const wheelbase = layout.frontAxle - layout.rearAxle;
   const moto = layout.vehicle === "moto";
+  const size = layout.size;
   expect(wheelbase, `${label}: wheelbase`).toBeGreaterThan(moto ? 1.1 : 1.4);
   expect(wheelbase, `${label}: wheelbase`).toBeLessThan(moto ? 1.9 : 4.2);
-  if (anatomy && !moto) expect(wheelbase, `${label}: wheelbase of the data`).toBeCloseTo(Math.min(anatomy.wheelbaseMm, anatomy.lengthMm * 0.8) / 1000, 3);
+  if (anatomy && !moto) {
+    if (anatomy.dimensionSource !== "typical") {
+      expect([size.lengthMm, size.widthMm, size.heightMm, size.wheelbaseMm], `${label}: dimensions of the data`).toEqual([anatomy.lengthMm, anatomy.widthMm, anatomy.heightMm, anatomy.wheelbaseMm]);
+    }
+    expect(wheelbase, `${label}: wheelbase of the data`).toBeCloseTo(Math.min(size.wheelbaseMm, size.lengthMm * 0.8) / 1000, 3);
+  }
   if (!moto) {
     expect(layout.wheels.length, label).toBe(4);
     for (const [left, right] of [[0, 1], [2, 3]] as const) {
@@ -86,7 +95,7 @@ function checkWheels(layout: CarLayout, label: string, anatomy?: VehicleAnatomy)
       const track = l.center[2] - r.center[2];
       expect(track, `${label}: track`).toBeGreaterThan(0.9);
       expect(track + l.width, `${label}: track`).toBeLessThan(layout.hull.width + 0.06);
-      if (anatomy) expect(track, `${label}: track of the data`).toBeGreaterThan((anatomy.trackMm / 1000) * 0.8);
+      if (anatomy) expect(track, `${label}: track of the data`).toBeGreaterThan((size.trackMm / 1000) * 0.8);
     }
   }
   const wrong: string[] = [];
@@ -252,6 +261,113 @@ function checkMoto(layout: CarLayout, label: string): void {
   checkSocket(layout, label);
 }
 
+// A truck or bus: two or three axles, single tyres in front, twins on the
+// driven rear axles, every wheel on the road and under the body, the cab
+// (or the bus) as the hull and behind a truck's cab the open frame with its
+// tanks, battery box and aftertreatment on the sides, the control units in
+// the cab or on the frame, the round socket in the cab.
+function checkHeavy(layout: CarLayout, label: string): void {
+  const { hull } = layout;
+  const p = hull.profile;
+  const spec = layout.heavy!;
+  expect(spec, label).toBeTruthy();
+  const truck = spec.kind === "tractor" || spec.kind === "rigid";
+  expect(layout.wheels.length, `${label}: wheels`).toBe(2 * spec.axles);
+  const axles = [...new Set(layout.wheels.map((w) => w.center[0]))].sort((a, b) => b - a);
+  expect(axles.length, `${label}: axles`).toBe(spec.axles);
+  expect(axles[0], label).toBe(layout.frontAxle);
+  expect(axles[1], label).toBe(layout.rearAxle);
+  for (const x of axles) {
+    const pair = layout.wheels.filter((w) => w.center[0] === x);
+    expect(pair.length, label).toBe(2);
+    expect(pair[0]!.center[2], label).toBeCloseTo(-pair[1]!.center[2], 9);
+    expect(pair[0]!.dual === pair[1]!.dual, label).toBe(true);
+  }
+  // The tyres of a tandem do not touch.
+  for (let i = 1; i + 1 < axles.length; i++) {
+    const r = layout.wheels[0]!.radius;
+    expect(axles[i]! - axles[i + 1]!, `${label}: tandem`).toBeGreaterThan(2 * r + 0.05);
+  }
+  for (const w of layout.wheels) {
+    expect(w.center[1] - w.radius, label).toBeCloseTo(0, 6);
+    expect(w.center[0] + w.radius, label).toBeLessThan(hull.front);
+    expect(w.center[0] - w.radius, label).toBeGreaterThan(hull.rear);
+    expect(Math.abs(w.center[2]) + w.width / 2, `${label}: tyre inside the width`).toBeLessThan(hull.width / 2 + 0.01);
+    // Single tyres steer in front, twins carry the driven rear axles.
+    if (w.front) expect(w.dual ?? false, label).toBe(false);
+    if (w.driven) expect(w.dual, `${label}: twin tyres on a driven axle`).toBe(true);
+    expect(w.width, label).toBeGreaterThan(w.dual ? 0.5 : 0.25);
+  }
+  expect(layout.wheels.some((w) => w.driven), label).toBe(true);
+  // The profile runs from end to end, the roof is the height.
+  for (let i = 1; i < p.top.length; i++) expect(p.top[i]![0], label).toBeGreaterThan(p.top[i - 1]![0]);
+  let highest = 0;
+  for (let u = 0; u <= 1; u += 0.005) highest = Math.max(highest, hull.top(u));
+  expect(highest, label).toBeCloseTo(hull.height, 1);
+  expect(p.roofRear, label).toBeLessThan(p.roofFront);
+  expect(p.roofFront, label).toBeLessThan(p.cowl);
+  expect(p.dlo[2], label).toBeLessThan(p.dlo[0]);
+  expect(p.pillars.length, label).toBeLessThanOrEqual(16);
+  // A truck's cab is the hull, the frame behind it is open; a bus is closed.
+  expect(p.open > 0, `${label}: open frame`).toBe(truck);
+  const cabBack = hull.xAt(p.open);
+  const wrong: string[] = [];
+  for (const part of layout.parts) {
+    if (!insideHull(hull, part.center, 0.005)) wrong.push(`${part.id} outside at ${part.center.map((v) => v.toFixed(2))}`);
+    if (part.zones.includes(CarZone.Cabin) && truck && part.center[0] < cabBack) wrong.push(`${part.id} behind the cab`);
+  }
+  for (const t of layout.tubes) for (const s of [t.points, ...(t.branches ?? [])]) for (const q of s) if (!insideHull(hull, q, -0.02)) wrong.push(`tube ${t.id}`);
+  for (const r of layout.routes) for (const q of r.points) if (!insideHull(hull, q, -0.02)) wrong.push(`route to ${r.ecu}`);
+  for (const e of layout.ecus) if (!insideHull(hull, e.position, 0.03)) wrong.push(`ecu ${e.kind} (${e.place})`);
+  expect(wrong.slice(0, 3), label).toEqual([]);
+  const ids = new Set([...layout.parts.map((q) => q.id), ...layout.tubes.map((t) => t.id)]);
+  for (const id of ["dashboard", "steering-wheel", "battery12", "radiator", "harness", "obd-feed"]) expect(ids.has(id), `${label}: ${id}`).toBe(true);
+  if (truck) {
+    for (const id of ["frame-rail-1", "frame-rail--1", "mudguard-1", "tail-light-1", "tail-light--1"]) expect(ids.has(id), `${label}: ${id}`).toBe(true);
+    expect(ids.has("fifth-wheel"), `${label}: fifth wheel`).toBe(spec.kind === "tractor");
+    expect(ids.has("cargo-box"), `${label}: box body`).toBe(spec.kind === "rigid");
+    // Tanks, battery box and aftertreatment hang outside the rails, under
+    // their top, between the front wheels and the rear ones.
+    const rails = layout.parts.find((q) => q.id === "frame-rail-1")!;
+    const railTop = rails.center[1] + rails.size[1] / 2;
+    for (const id of ["fuel-tank", "adblue-tank", "battery12", "catalyst"]) {
+      const q = layout.parts.find((x) => x.id === id);
+      if (!q) continue;
+      expect(Math.abs(q.center[2]), `${label}: ${id} beside the frame`).toBeGreaterThan(rails.center[2] + 0.1);
+      expect(q.center[1], `${label}: ${id} under the frame's top`).toBeLessThan(railTop);
+      expect(q.center[0], `${label}: ${id} behind the front wheels`).toBeLessThan(layout.frontAxle - layout.wheels[0]!.radius);
+      expect(q.center[0], `${label}: ${id} ahead of the rear wheels`).toBeGreaterThan(layout.rearAxle + layout.wheels[0]!.radius);
+    }
+  } else {
+    // A bus has its engine at the rear, behind the rear axle.
+    const engine = layout.parts.find((q) => q.id === "engine");
+    if (engine) expect(engine.center[0], `${label}: rear engine`).toBeLessThan(layout.rearAxle);
+  }
+  // The socket of a truck is the round one, in the cab.
+  expect(layout.adapter.round, label).toBe(true);
+  checkWheelsClear(layout, label);
+  checkNumbers(layout, label);
+  checkSocket(layout, label);
+  // Headlights on the front face; the tail lights of a truck are parts on
+  // its frame, a bus has them on its rear face.
+  const lamps = lampOutlines(hull);
+  expect(new Set(lamps.head.map((l) => Math.sign(l[0]![2]))).size, `${label}: headlights`).toBe(2);
+  for (const l of lamps.head) for (const q of l) expect(q[0], `${label}: headlight`).toBeGreaterThan(layout.frontAxle);
+  expect(lamps.tail.length > 0, `${label}: tail lights on the body`).toBe(!truck);
+}
+
+// No part more than grazing a tyre (twin tyres count over both).
+function checkWheelsClear(layout: CarLayout, label: string): void {
+  const wrong: string[] = [];
+  for (const w of layout.wheels) {
+    for (const p of layout.parts) {
+      const share = shareInWheel(p, w);
+      if (share > 0.1) wrong.push(`${p.id} ${Math.round(share * 100)} % in the ${w.front ? "front" : "rear"} wheel`);
+    }
+  }
+  expect(wrong.slice(0, 3), label).toEqual([]);
+}
+
 // Headlights on the front face ahead of the front wheels, tail lights on the
 // rear face behind the rear wheels, both on the surface of the body, one on
 // each side; the grille between the headlights.
@@ -344,6 +460,7 @@ describe("x-ray layout", () => {
     expect(data.generations.length).toBe(Number(/(\d+) model generations/.exec(catalogRs)![1]));
     let measured = 0;
     let motorcycles = 0;
+    let trucks = 0;
     data.generations.forEach((g, i) => {
       const [brand, model, generation, from, to, body, powertrains] = g;
       const socket = { location: g[12], spot: g[18] };
@@ -360,6 +477,15 @@ describe("x-ray layout", () => {
           }
           continue;
         }
+        if (body === BodyType.Truck) {
+          // The kind the table gives, and every other kind the view offers.
+          trucks++;
+          checkHeavy(buildLayout({ anatomy, body, ecus: ALL_KINDS, kline: false, turbo: true }), `${brand} ${model} ${generation} ${year}`);
+          for (const heavyKind of HEAVY_KINDS) {
+            checkHeavy(buildLayout({ anatomy, body, ecus: ALL_KINDS.slice(0, 6), kline: false, turbo: true, heavyKind }), `${brand} ${model} ${generation} ${year} ${heavyKind}`);
+          }
+          continue;
+        }
         for (const variant of bodyVariants(anatomy, body as BodyType)) {
           const layout = buildLayout({ anatomy, body: body as BodyType, variant, ecus: ALL_KINDS.slice(0, 8), kline: false, turbo: false });
           checkCar(layout, `${brand} ${model} ${generation} ${year} ${BodyType[variant]}`, anatomy);
@@ -369,6 +495,7 @@ describe("x-ray layout", () => {
     // About half of the catalog has its dimensions from Wikidata.
     expect(measured / 2).toBeGreaterThan(900);
     expect(motorcycles / 2).toBeGreaterThanOrEqual(35);
+    expect(trucks / 2).toBeGreaterThanOrEqual(23);
     // Over 5000 cars: more than the default five seconds on a busy runner.
   }, 60_000);
 
@@ -631,6 +758,231 @@ describe("lamps and grille", () => {
       expect(Math.max(...across)).toBeGreaterThan(half * 0.6);
       expect(Math.min(...across)).toBeGreaterThan(0.04);
       expect(Math.max(...along) - Math.min(...along)).toBeGreaterThan(0.12);
+    }
+  });
+});
+
+describe("utility vehicles", () => {
+  const data = catalog as unknown as {
+    generations: GenRow[];
+    measured: Record<string, MeasuredRecord>;
+  };
+  const vehicle = (brand: string, model: string, generation: string, year = 0) => {
+    const i = data.generations.findIndex(([b, m, g]) => b === brand && m === model && g === generation);
+    expect(i, `${brand} ${model} ${generation}`).toBeGreaterThanOrEqual(0);
+    const g = data.generations[i]!;
+    const body = g[5] as BodyType;
+    const anatomy = anatomyOf(body, brand, model, year || g[3], g[6], 0, generation, data.measured[String(i)] ?? null, { location: g[12], spot: g[18] });
+    return { anatomy, body };
+  };
+  const draw = (brand: string, model: string, generation: string, heavyKind?: HeavyKind, ecus: EcuInput[] = []) => {
+    const { anatomy, body } = vehicle(brand, model, generation);
+    return buildLayout({ anatomy, body, ecus, kline: false, turbo: true, heavyKind });
+  };
+  const part = (layout: CarLayout, id: string) => layout.parts.find((q) => q.id === id);
+
+  it("draws a pickup with its cab and a bed that is open on top", () => {
+    const hilux = draw("Toyota", "Hilux", "AN120");
+    checkCar(hilux, "Hilux");
+    const p = hilux.hull.profile;
+    expect(hilux.shape.cab).toBe("double");
+    // The body is drawn from the cab's back wall on; over the bed the hull
+    // is only the envelope.
+    expect(p.open).toBeGreaterThan(0.2);
+    expect(p.open).toBeCloseTo(p.tail, 9);
+    const { floor, rim } = p.bed!;
+    expect(rim - floor).toBeGreaterThan(0.25);
+    expect(floor).toBeGreaterThan(2 * hilux.wheels[0]!.radius);
+    const bedFloor = part(hilux, "bed-floor")!;
+    const tailgate = part(hilux, "tailgate")!;
+    const sides = [part(hilux, "bed-side-1")!, part(hilux, "bed-side--1")!];
+    expect(bedFloor.center[1] + bedFloor.size[1] / 2).toBeCloseTo(floor, 2);
+    for (const wall of [...sides, tailgate]) expect(wall.center[1] + wall.size[1] / 2, wall.id).toBeCloseTo(rim, 2);
+    expect(sides[0]!.center[2]).toBeCloseTo(-sides[1]!.center[2], 9);
+    // Open on top: nothing lies across the bed between its walls above the floor.
+    const cabBack = hilux.hull.xAt(p.tail);
+    const inner = Math.abs(sides[0]!.center[2]) - sides[0]!.size[2] / 2;
+    const lids = hilux.parts.filter((q) => q.center[0] < cabBack && q.center[1] - q.size[1] / 2 > floor + 0.02 && q.size[2] > inner && !q.id.startsWith("bed-side"));
+    expect(lids.map((q) => q.id)).toEqual([]);
+    expect(tailgate.center[0]).toBeLessThan(hilux.hull.rear + 0.1);
+    // The rear bench stands in the cab, the frame under it all, higher off
+    // the road than a car.
+    expect(part(hilux, "back-rear")!.center[0] - 0.06).toBeGreaterThan(cabBack);
+    expect(part(hilux, "frame-rail-1")).toBeTruthy();
+    expect(hilux.hull.bottom(0.5)).toBeGreaterThan(0.2);
+    // A single cab leaves a longer bed: the Caddy I of 1979.
+    const caddy = draw("Volkswagen", "Caddy", "I");
+    checkCar(caddy, "Caddy I");
+    expect(caddy.shape.cab).toBe("single");
+    expect(caddy.hull.profile.rearSeats).toBe(false);
+    const bedShare = (l: CarLayout) => l.hull.profile.tail;
+    expect(bedShare(caddy)).toBeGreaterThan(bedShare(hilux));
+    // A full-size pickup without dimensions in the catalog gets the size of its class.
+    const f150 = draw("Ford", "F-150", "XIV");
+    expect(f150.size.lengthMm).toBeGreaterThan(5800);
+  });
+
+  it("draws vans by their class: tall box, short bonnet, sliding door, a high roof where the name or the height says so", () => {
+    expect(vanClass("Sprinter")).toBe("large");
+    expect(vanClass("Transit Connect")).toBe("compact");
+    expect(vanClass("Transit")).toBe("large");
+    expect(vanClass("Transporter")).toBe("mid");
+    const t6 = draw("Volkswagen", "Transporter", "T6");
+    checkCar(t6, "T6");
+    expect(t6.shape.sliding).toBe(true);
+    expect(t6.hull.profile.rail).not.toBeNull();
+    const [from, to, y] = t6.hull.profile.rail!;
+    expect(to).toBeGreaterThan(from);
+    expect(y).toBeLessThan(t6.hull.beltAt(t6.hull.station(from)) + 0.01);
+    // A sliding door's rear edge behind the B-pillar seam.
+    expect(t6.hull.profile.seams.some((s) => Math.abs(s.x - to) < 1e-9)).toBe(true);
+    // A Sprinter without dimensions in the catalog is drawn at the size of
+    // a large van, not of the typical van.
+    const { anatomy, body } = vehicle("Mercedes-Benz", "Sprinter", "W906");
+    expect(anatomy.dimensionSource).toBe("typical");
+    const size = classSize(anatomy, body);
+    expect(size.lengthMm).toBeGreaterThan(anatomy.lengthMm + 500);
+    const sprinter = buildLayout({ anatomy, body, ecus: ALL_KINDS, kline: false, turbo: true });
+    checkCar(sprinter, "Sprinter", anatomy);
+    expect(sprinter.hull.length).toBeCloseTo(size.lengthMm / 1000, 6);
+    expect(sprinter.hull.profile.glassTop).toBe(99);
+    // The high roof by its name: the windscreen header well below the roof.
+    const high = { ...anatomy, model: "Sprinter Hochdach" };
+    const tall = buildLayout({ anatomy: high, body, ecus: [], kline: false, turbo: true });
+    checkCar(tall, "Sprinter Hochdach");
+    const tp = tall.hull.profile;
+    expect(tp.glassTop).toBeLessThan(tall.hull.height - 0.2);
+    expect(tall.hull.top(tp.roofFront)).toBeLessThan(tall.hull.height - 0.2);
+    // A compact van stays a tall car with a bonnet.
+    const caddy = draw("Volkswagen", "Caddy", "V");
+    checkCar(caddy, "Caddy V");
+    expect(caddy.size.lengthMm).toBeLessThan(4600);
+  });
+
+  it("draws off-roaders as a box with the spare wheel on the tail door", () => {
+    const defender = draw("Land Rover", "Defender", "L663");
+    checkCar(defender, "Defender L663");
+    const p = defender.hull.profile;
+    const spare = part(defender, "spare-wheel")!;
+    expect(p.spare).not.toBeNull();
+    // The wheel behind the door, inside the length the maker measures; the
+    // tail lights on the door, not on the wheel.
+    const door = defender.hull.xAt(p.open);
+    expect(spare.center[0]).toBeLessThan(door);
+    expect(spare.center[0] - spare.size[0] / 2).toBeGreaterThan(defender.hull.rear - 0.01);
+    expect(p.rearFace).toBeCloseTo(p.open, 9);
+    for (const l of lampOutlines(defender.hull).tail) for (const q of l) expect(q[0]).toBeGreaterThan(door - 0.02);
+    // Upright glass and a flat roof, unlike a soft-roader.
+    const golfSuv = draw("Volkswagen", "Tiguan", "II");
+    expect(defender.shape.windscreen).toBeGreaterThan(golfSuv.shape.windscreen + 15);
+    expect(defender.shape.roofCrown).toBeLessThan(golfSuv.shape.roofCrown);
+    // The classic one on its frame, the G on its frame with its spare wheel.
+    for (const [b, m, g] of [["Land Rover", "Defender", "Classic"], ["Mercedes-Benz", "G-Klasse", "W463"], ["Jeep", "Wrangler", "JL"], ["Suzuki", "Jimny", "JB74"]] as const) {
+      const l = draw(b, m, g);
+      checkCar(l, `${m} ${g}`);
+      expect(part(l, "frame-rail-1"), `${m} ${g}`).toBeTruthy();
+      expect(part(l, "spare-wheel"), `${m} ${g}`).toBeTruthy();
+    }
+    // The Niva keeps its spare wheel in the engine bay.
+    expect(part(draw("Lada", "Niva", "2121"), "spare-wheel")).toBeUndefined();
+  });
+
+  it("knows the kind of every truck of the catalog and buses by their name", () => {
+    const trucks = data.generations.filter((g) => g[5] === BodyType.Truck);
+    expect(trucks.length).toBeGreaterThanOrEqual(23);
+    for (const [brand, model] of trucks) expect(heavySpec(brand, model).source, `${brand} ${model}`).toBe("table");
+    for (const row of HEAVY_ROWS) expect(trucks.some(([b, m]) => b === row.brand && m === row.model), `${row.brand} ${row.model}`).toBe(true);
+    // Cab over the engine in Europe, a bonnet in America.
+    expect(heavySpec("MAN", "TGX")).toMatchObject({ kind: "tractor", cab: "cabover", axles: 2 });
+    expect(heavySpec("Peterbilt", "579")).toMatchObject({ kind: "tractor", cab: "conventional", axles: 3 });
+    expect(heavySpec("Western Star", "49X").cab).toBe("conventional");
+    expect(heavySpec("MAN", "TGS")).toMatchObject({ kind: "rigid", axles: 3 });
+    expect(heavySpec("Mercedes-Benz", "Citaro").kind).toBe("citybus");
+    expect(heavySpec("Mercedes-Benz", "Tourismo").kind).toBe("coach");
+    expect(heavySpec("Setra", "S 516 HD").kind).toBe("coach");
+    expect(heavySpec("Solaris", "Urbino 12").kind).toBe("citybus");
+    expect(heavySpec("MAN", "TGX", "coach")).toMatchObject({ kind: "coach", source: "chosen" });
+  });
+
+  it("draws a European tractor: cab over the engine, open frame, fifth wheel, twin tyres", () => {
+    const named: EcuInput[] = [
+      { key: "e", kind: EcuKind.Engine, name: "Engine #1", faulty: false, source: "uds" },
+      { key: "g", kind: EcuKind.Gearbox, name: "Transmission #1", faulty: false, source: "uds" },
+      { key: "b", kind: EcuKind.Brakes, name: "Brakes (EBS)", faulty: true, source: "uds" },
+      { key: "i", kind: EcuKind.Instruments, name: "Instrument cluster", faulty: false, source: "uds" },
+      { key: "t", kind: EcuKind.Other, name: "Tachograph (TCO)", faulty: false, source: "uds" },
+    ];
+    const tgx = draw("MAN", "TGX", "II", undefined, named);
+    checkHeavy(tgx, "TGX");
+    const p = tgx.hull.profile;
+    const cabBack = tgx.hull.xAt(p.open);
+    // The engine under the cab over the front axle, the cab floor above it.
+    const engine = part(tgx, "engine")!;
+    expect(Math.abs(engine.center[0] - tgx.frontAxle)).toBeLessThan(0.5);
+    expect(engine.center[0]).toBeGreaterThan(cabBack);
+    expect(tgx.wheels.filter((w) => w.dual).length).toBe(2);
+    expect(part(tgx, "fifth-wheel")!.center[0]).toBeGreaterThan(tgx.rearAxle);
+    // Typical dimensions of a tractor, not of the catalog's van.
+    expect(tgx.size.lengthMm).toBeGreaterThan(5800);
+    expect(tgx.hull.height).toBeGreaterThan(3.5);
+    // Engine and gearbox units on their units, the EBS on the frame, the
+    // cluster and the tachograph in the cab, the socket in the cab.
+    const at = (key: string) => tgx.ecus.find((e) => e.key === key)!;
+    expect(at("t").place).toBe("tachograph");
+    for (const key of ["i", "t"]) {
+      expect(at(key).position[0], key).toBeGreaterThan(cabBack);
+      expect(at(key).position[1], key).toBeGreaterThan(1.3);
+    }
+    expect(at("b").position[0]).toBeLessThan(cabBack);
+    expect(at("b").position[1]).toBeLessThan(1.1);
+    expect(Math.hypot(at("e").position[0] - engine.center[0], at("e").position[1] - engine.center[1])).toBeLessThan(0.8);
+    expect(tgx.obd[0]).toBeGreaterThan(cabBack);
+    expect(tgx.obd[1]).toBeGreaterThan(1.35);
+  });
+
+  it("draws an American tractor with a bonnet and a tandem, a rigid truck with its box", () => {
+    const cascadia = draw("Freightliner", "Cascadia", "II");
+    checkHeavy(cascadia, "Cascadia");
+    const p = cascadia.hull.profile;
+    // The windscreen far behind the front axle, behind a long bonnet.
+    expect(cascadia.frontAxle - cascadia.hull.xAt(p.roofFront)).toBeGreaterThan(1.2);
+    expect(cascadia.wheels.length).toBe(6);
+    expect(cascadia.wheels.filter((w) => w.driven).length).toBe(4);
+    expect(part(cascadia, "fuel-tank-2")).toBeTruthy();
+    const tgs = draw("MAN", "TGS", "II");
+    checkHeavy(tgs, "TGS");
+    const cargo = part(tgs, "cargo-box")!;
+    // The box stands on the frame behind the cab, taller than the cab.
+    expect(cargo.center[0] + cargo.size[0] / 2).toBeLessThan(tgs.hull.xAt(tgs.hull.profile.open));
+    expect(cargo.center[1] + cargo.size[1] / 2).toBeGreaterThan(tgs.hull.top(0.95));
+  });
+
+  it("draws city buses and coaches with the engine at the rear", () => {
+    for (const kind of ["citybus", "coach"] as const) {
+      const bus = draw("MAN", "TGS", "II", kind, ALL_KINDS);
+      checkHeavy(bus, kind);
+      expect(bus.hull.length).toBeGreaterThan(11);
+      expect(bus.hull.profile.open).toBe(0);
+      // Rows of seats, doors as seams down to the floor.
+      expect(bus.parts.filter((q) => q.id.startsWith("row-") && !q.id.startsWith("row-back")).length).toBeGreaterThan(8);
+      expect(bus.hull.profile.seams.length).toBeGreaterThanOrEqual(6);
+      expect(bus.wheels.filter((w) => w.dual).length).toBe(2);
+    }
+    // A low floor in the city bus, a high one over the luggage holds in the coach.
+    const seatY = (kind: HeavyKind) => draw("MAN", "TGS", "II", kind).parts.find((q) => q.id === "row-0-1")!.center[1];
+    expect(seatY("coach") - seatY("citybus")).toBeGreaterThan(0.6);
+  });
+
+  it("builds every kind of truck and bus with every drivetrain", () => {
+    for (const kind of HEAVY_KINDS) {
+      for (const [brand, model] of [["MAN", "TGX"], ["Kenworth", "T680"], ["", ""]]) {
+        for (const v of [Powertrain.Diesel, Powertrain.Electric, Powertrain.Gas]) {
+          const anatomy = anatomyOf(BodyType.Truck, brand!, model!, 2022, v, v);
+          const layout = buildLayout({ anatomy, body: BodyType.Truck, ecus: ALL_KINDS, kline: false, turbo: v === Powertrain.Diesel, heavyKind: kind });
+          checkHeavy(layout, `${kind} ${brand} ${model} ${v}`);
+          expect(layout.parts.some((q) => q.id === "engine"), `${kind} ${v}`).toBe(v !== Powertrain.Electric);
+        }
+      }
     }
   });
 });

@@ -9,8 +9,9 @@
 // the car), y up (the road is 0), z across (+z is the left side, the
 // driver's side in a left-hand drive car).
 import { BodyType, CarZone, DrivenAxles, EngineLayout, TractionBattery, type VehicleAnatomy } from "../api/types";
+import { buildHeavyLayout, type HeavyKind, type HeavySpec } from "./heavy";
 import { buildMotoLayout, type MotoSpec, type MotoStyle } from "./moto";
-import { bodyGeometry, shapeFor, type Profile, type Shape } from "./shape";
+import { bodyGeometry, classSize, shapeFor, type Profile, type Shape, type Size } from "./shape";
 
 export type Vec3 = [number, number, number];
 
@@ -37,7 +38,9 @@ export type Material =
   | "seat"
   // Headlight and tail light.
   | "lamp"
-  | "rearlamp";
+  | "rearlamp"
+  // A spare wheel's tyre.
+  | "tyre";
 
 export interface Part {
   id: string;
@@ -80,6 +83,9 @@ export interface Wheel {
   width: number;
   front: boolean;
   driven: boolean;
+  // Twin tyres side by side (the rear axles of a truck or bus): width is
+  // over both, the centre between them.
+  dual?: boolean;
   // A motorcycle wheel: its brake discs (side +1 left, -1 right, and the
   // radius) and its rim.
   moto?: { discs: { side: number; radius: number }[]; spokes: "cast" | "wire" };
@@ -115,7 +121,8 @@ export type EcuPlace =
   | "roof"
   | "windscreen"
   | "fuelPump"
-  | "rearAxle";
+  | "rearAxle"
+  | "tachograph";
 
 // The usual mounting place per kind. Makers differ (and a few put the
 // gateway in the instrument cluster or the radio in the boot), but this is
@@ -153,6 +160,7 @@ const PLACE_WORDS: [RegExp, EcuPlace, number[] | null][] = [
   [/\bKAFAS\b|FRONTKAMERA|FRONT CAMERA|\bKAMERA FAHRERASSISTENZ|CAMERA DRIVER ASSIST/, "windscreen", null],
   [/\bEKPM\b|KRAFTSTOFFPUMPE|FUEL PUMP/, "fuelPump", null],
   [/\bGHAS\b|DIFFERENTIAL/, "rearAxle", null],
+  [/TACHO|FAHRTENSCHREIBER|\bTCO\b|\bDTCO\b/, "tachograph", null],
   [/\bAMP\b|VERSTÄRKER|AMPLIFIER/, "boot", null],
   [/\bSCCM\b|LENKSÄULE|STEERING COLUMN/, "steeringColumn", null],
   [/\bPDM\b|BEIFAHRERTÜR|PASSENGER DOOR/, "passengerDoor", null],
@@ -319,6 +327,9 @@ export interface Adapter {
   dir: Vec3;
   // The adapter cable from the maker's plug to that socket, null in a car.
   cable: Vec3[] | null;
+  // The round 9-pin socket of a truck or bus (SAE J1939-13) instead of the
+  // 16-pin one.
+  round?: boolean;
 }
 
 // The profile of the body comes from shape.ts (defaults per body type and
@@ -411,8 +422,8 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, profi
   const belt = profile.belt * height;
   const beltRear = profile.beltRear * height;
   const clearance = profile.clearance;
-  const dloRear = profile.dlo[2];
-  const beltAt = (u: number) => beltRear + (belt - beltRear) * smoothstep(dloRear, profile.cowl, u);
+  const beltFrom = profile.beltRun ?? profile.dlo[2];
+  const beltAt = (u: number) => beltRear + (belt - beltRear) * smoothstep(beltFrom, profile.cowl, u);
   // The underbody rises from behind the rear wheels and ahead of the front ones.
   const bottom = (u: number) =>
     clearance +
@@ -430,11 +441,14 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, profi
   // wrong way round gave 1 there and pulled the whole nose in by the
   // tumblehome, so the front wheels were drawn up to a quarter too close.
   const tumble = (y: number, u: number) => {
+    // Behind an open rear (a pickup's bed, a truck's frame) there is no glass.
+    if (u < profile.open) return 1;
     const from = beltAt(u) - 0.05;
     const to = top(u);
     return to <= from ? 1 : 1 - profile.tumblehome * smoothstep(from, to, y);
   };
-  const n = SECTION_EXPONENT;
+  // The envelope over an open rear is boxy: a bed's walls are flat.
+  const exponent = (u: number) => (u < profile.open ? 12 : profile.section ?? SECTION_EXPONENT);
   const hull: Hull = {
     length: lengthM,
     width: widthM,
@@ -457,6 +471,7 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, profi
       const yc = (yb + yt) / 2;
       const hh = (yt - yb) / 2;
       const r = Math.abs((y - yc) / hh);
+      const n = exponent(u);
       return planHalf(u) * Math.pow(Math.max(0, 1 - Math.pow(r, n)), 1 / n) * tumble(y, u);
     },
     section(u, theta) {
@@ -466,6 +481,7 @@ export function makeHull(lengthM: number, widthM: number, heightM: number, profi
       const hh = (yt - yb) / 2;
       const c = Math.cos(theta);
       const s = Math.sin(theta);
+      const n = exponent(u);
       const y = yc + hh * Math.sign(s) * Math.pow(Math.abs(s), 2 / n);
       const z = planHalf(u) * Math.sign(c) * Math.pow(Math.abs(c), 2 / n) * tumble(y, u);
       return [rear + u * lengthM, y, z];
@@ -485,8 +501,10 @@ export function insideHull(hull: Hull, p: Vec3, margin = 0.02): boolean {
 // Pulls a point inside the hull: first along the car, then up or down, then
 // towards the middle.
 export function clampInside(hull: Hull, p: Vec3, margin = 0.06): Vec3 {
-  const minX = hull.rear + hull.length * 0.03;
-  const maxX = hull.front - hull.length * 0.03;
+  // Off the ends by a share of a car's length, at most 15 cm on a bus.
+  const end = Math.min(hull.length * 0.03, 0.15);
+  const minX = hull.rear + end;
+  const maxX = hull.front - end;
   const x = Math.min(maxX, Math.max(minX, p[0]));
   const u = hull.station(x);
   const yb = hull.bottom(u) + margin;
@@ -518,8 +536,10 @@ function faceArc(hull: Hull, y: number, end: "front" | "rear"): FaceArc | null {
   // Never back past the wheel arches: a lamp on a car without overhangs
   // stays on its corner.
   const stop = end === "front" ? hull.profile.frontLift : hull.profile.rearLift;
+  // The tail lights sit on the tail door, not on the spare wheel behind it.
+  const start = end === "rear" ? Math.max(0, hull.profile.rearFace) : 0;
   for (let i = 0; i <= n; i++) {
-    const u = end === "front" ? 1 - (0.35 * i) / n : (0.35 * i) / n;
+    const u = end === "front" ? 1 - (0.35 * i) / n : start + (0.35 * i) / n;
     if (x.length > 2 && (end === "front" ? u < stop : u > stop)) break;
     const half = hull.halfWidth(u, y);
     if (half <= 0) {
@@ -562,6 +582,19 @@ function arcPoint(arc: FaceArc, dist: number, y: number, side: number): Vec3 {
   return [x[i]! + tx * t + nx * out, y, side * (z[i]! + tz * t + nz * out)];
 }
 
+// A line across the front (or rear) face at one height, from corner to
+// corner: the frame of a windscreen that ends below the roof.
+export function faceLine(hull: Hull, y: number, end: "front" | "rear"): Vec3[] {
+  const arc = faceArc(hull, y, end);
+  if (!arc) return [];
+  const pts: Vec3[] = [];
+  for (let i = 0; i <= 24; i++) {
+    const d = -arc.corner + (2 * arc.corner * i) / 24;
+    pts.push(arcPoint(arc, Math.abs(d), y, d < 0 ? -1 : 1));
+  }
+  return pts;
+}
+
 export interface LampOutlines {
   // Closed polylines on the body: headlights, tail lights and the openings
   // in the front (grille and intake).
@@ -599,7 +632,7 @@ export function lampOutlines(hull: Hull): LampOutlines {
     }
     return pts;
   };
-  const faceBottom = (end: "front" | "rear") => hull.bottom(end === "front" ? 0.985 : 0.015);
+  const faceBottom = (end: "front" | "rear") => hull.bottom(end === "front" ? 0.985 : Math.max(0, p.rearFace) + 0.015);
   const lamps = (end: "front" | "rear") => {
     const lamp = end === "front" ? p.headlight : p.taillight;
     // A low face (a wedge nose) gets a lamp in proportion.
@@ -659,7 +692,7 @@ export function lampOutlines(hull: Hull): LampOutlines {
     }
     return out.filter((l) => l.length > 1);
   };
-  return { head: lamps("front"), tail: lamps("rear"), grille: grille() };
+  return { head: lamps("front"), tail: p.rearFace < 0 ? [] : lamps("rear"), grille: grille() };
 }
 
 // --- The whole car ------------------------------------------------------------------
@@ -679,6 +712,9 @@ export interface XrayInput {
   // The kind of motorcycle to draw (naked, sport, touring ...); omitted: the
   // one moto.ts knows for the model.
   motoStyle?: MotoStyle;
+  // The kind of truck or bus to draw (tractor, rigid, city bus, coach);
+  // omitted: the one heavy.ts knows for the model.
+  heavyKind?: HeavyKind;
 }
 
 export interface CarLayout {
@@ -703,6 +739,11 @@ export interface CarLayout {
   anchors: Record<string, Vec3>;
   // The motorcycle drawn (kind, engine, final drive), null for a car.
   moto: MotoSpec | null;
+  // The truck or bus drawn (kind, cab, axles), null for anything else.
+  heavy: HeavySpec | null;
+  // The dimensions drawn: the catalog's, or for a generation without any
+  // the typical ones of its class (a Sprinter is not a Transporter).
+  size: Size;
 }
 
 export const box = (id: string, layer: Layer, material: Material, center: Vec3, size: Vec3, zones: CarZone[] = []): Part => ({
@@ -797,13 +838,15 @@ function labelBuses(routes: Route[]): BusLabel[] {
 
 export function buildLayout(input: XrayInput): CarLayout {
   if (input.body === BodyType.Motorcycle) return buildMotoLayout(input);
+  if (input.body === BodyType.Truck) return buildHeavyLayout(input);
   const a = input.anatomy;
-  const L = a.lengthMm / 1000;
-  const W = a.widthMm / 1000;
-  const H = a.heightMm / 1000;
-  const wheelbase = Math.min(a.wheelbaseMm / 1000, L * 0.8);
-  const track = Math.min(a.trackMm / 1000, W - 0.2);
   const body = input.variant ?? input.body;
+  const size = classSize(a, body);
+  const L = size.lengthMm / 1000;
+  const W = size.widthMm / 1000;
+  const H = size.heightMm / 1000;
+  const wheelbase = Math.min(size.wheelbaseMm / 1000, L * 0.8);
+  const track = Math.min(size.trackMm / 1000, W - 0.2);
   const shape = shapeFor(a, input.body, body);
   const geometry = bodyGeometry(L, H, wheelbase, shape.wheel / 2, shape);
   const hull = makeHull(L, W, H, geometry.profile);
@@ -859,7 +902,9 @@ export function buildLayout(input: XrayInput): CarLayout {
     parts.push(box(`seat-front-${side}`, "body", "cabin", [frontSeatX, seatY, side * 0.37], [0.5, 0.12, 0.5], [CarZone.Cabin]));
     parts.push(box(`back-front-${side}`, "body", "cabin", [frontSeatX - 0.27, seatY + 0.33, side * 0.37], [0.11, 0.6, 0.48], [CarZone.Cabin]));
   }
-  const rearSeatX = frontSeatX - 0.86;
+  // A pickup's rear bench stands in front of the cab's back wall.
+  const cabBack = p.bed ? hull.xAt(p.tail) : null;
+  const rearSeatX = cabBack !== null ? Math.max(frontSeatX - 0.86, cabBack + 0.38) : frontSeatX - 0.86;
   const rearRoom = p.rearSeats && rearSeatX - 0.3 > rearAxle - 0.15;
   if (rearRoom) {
     const bench = Math.min(W * 0.72, 2 * rearArch);
@@ -868,6 +913,7 @@ export function buildLayout(input: XrayInput): CarLayout {
   }
   parts.push(cylinder("steering-wheel", "body", "cabin", "x", [dashX - 0.32, clear + 0.78, lhd * 0.37], 0.04, 0.38, [CarZone.Cabin]));
   anchors.cabin = [dashX, clear + 0.75, 0];
+  parts.push(...bodyExtras(hull, shape, frontAxle, rearAxle, radius, clear));
 
   // --- Drivetrain.
   const combustion = a.engine !== EngineLayout.None;
@@ -1035,9 +1081,13 @@ export function buildLayout(input: XrayInput): CarLayout {
 
   // --- Energy: fuel tank and lines, or the high-voltage battery.
   if (a.fuelTank) {
-    const tankX = a.engine === EngineLayout.Mid || a.engine === EngineLayout.Rear ? frontAxle - 0.35 : rearAxle + 0.38;
-    const tank = clampInside(hull, [tankX, clear + 0.14, 0], 0.1);
-    parts.push(box("fuel-tank", "energy", "fuel", tank, [0.5, 0.22, Math.min(0.92, track * 0.62)], [CarZone.FuelTank]));
+    // On a ladder frame the tank hangs outside the right rail between the
+    // axles; in a unit body it sits in the middle in front of the rear axle.
+    const framed = shape.frame && wheelbase > 2.3;
+    const tankX = framed ? (frontAxle + rearAxle) / 2 - 0.25 : a.engine === EngineLayout.Mid || a.engine === EngineLayout.Rear ? frontAxle - 0.35 : rearAxle + 0.38;
+    const tankZ = framed ? -(FRAME_HALF + 0.27) : 0;
+    const tank = clampInside(hull, [tankX, clear + 0.17, tankZ], 0.1);
+    parts.push(box("fuel-tank", "energy", "fuel", tank, framed ? [0.8, 0.26, 0.4] : [0.5, 0.22, Math.min(0.92, track * 0.62)], [CarZone.FuelTank]));
     const filler: Vec3 = [rearAxle - 0.12, clear + 0.62, -(hull.halfWidth(hull.station(rearAxle - 0.12), clear + 0.62) - 0.06)];
     tubes.push({ id: "filler-neck", layer: "energy", points: [[tank[0] - 0.1, tank[1] + 0.05, -0.3], [rearAxle + 0.05, clear + 0.4, filler[2] * 0.8], filler], radius: 0.025, material: "fuel", zones: [CarZone.FuelTank] });
     if (combustion) {
@@ -1093,6 +1143,7 @@ export function buildLayout(input: XrayInput): CarLayout {
     hv: anchors.hv ?? null,
     motor: motors[0] ?? null,
     frontSeatX,
+    cabBack,
   });
   const minusPole: Vec3 = [battery12[0] - 0.08, battery12[1] + 0.1, battery12[2] - 0.04];
   const mainFuses = clampInside(hull, [battery12[0] + 0.06, battery12[1] + 0.13, battery12[2] - 0.05], 0.05);
@@ -1208,8 +1259,9 @@ export function buildLayout(input: XrayInput): CarLayout {
   for (const tube of tubes) if (tube.layer === "drivetrain") tube.explode ??= explodeOf(tube.id);
 
   // Small or unusual bodies (a Smart, a roadster) leave less room than the
-  // offsets above assume: whatever ended up outside is pulled back in.
-  for (const part of parts) part.center = clampInside(hull, part.center, 0.03);
+  // offsets above assume: whatever ended up outside is pulled back in. The
+  // bodywork (a bed's walls, the spare wheel) is placed on the body already.
+  for (const part of parts) if (part.material !== "shell" && part.material !== "tyre" && part.id !== "spare-wheel-rim") part.center = clampInside(hull, part.center, 0.03);
   for (const tube of tubes) {
     tube.points = tube.points.map((q) => clampInside(hull, q, tube.radius + 0.01));
     if (tube.branches) tube.branches = tube.branches.map((b) => b.map((q) => clampInside(hull, q, tube.radius + 0.01)));
@@ -1236,7 +1288,61 @@ export function buildLayout(input: XrayInput): CarLayout {
     hub: network.hub,
     anchors,
     moto: null,
+    heavy: null,
+    size,
   };
+}
+
+// Half the distance between the rails of a ladder frame.
+const FRAME_HALF = 0.43;
+
+// What the body has besides the hull: a pickup's open bed (floor, side
+// walls flush with the envelope, tailgate, wheel tubs), the rails and cross
+// members of a ladder frame, the spare wheel on the tail door. The bodywork
+// is glass like the hull, the frame metal.
+function bodyExtras(hull: Hull, shape: Shape, frontAxle: number, rearAxle: number, radius: number, clear: number): Part[] {
+  const p = hull.profile;
+  const out: Part[] = [];
+  const panel = (id: string, center: Vec3, size: Vec3): Part => ({ ...box(id, "body", "shell", center, size), round: 0.1 });
+  if (p.bed) {
+    const { floor, rim } = p.bed;
+    const front = hull.xAt(p.tail) - 0.02;
+    const back = hull.rear + 0.02;
+    const mid = (front + back) / 2;
+    const length = front - back;
+    const wall = 0.05;
+    const y = (floor + rim) / 2;
+    // The walls stand where the envelope is narrowest along the bed, so they
+    // stay inside it at both ends.
+    let half = Infinity;
+    for (let i = 0; i <= 8; i++) half = Math.min(half, hull.halfWidth(hull.station(back + 0.12 + ((length - 0.2) * i) / 8), y));
+    half = Math.max(0.4, half - 0.01);
+    out.push(panel("bed-floor", [mid, floor - 0.02, 0], [length, 0.04, 2 * (half - wall)]));
+    for (const side of [1, -1]) {
+      out.push(panel(`bed-side-${side}`, [mid, y, side * (half - wall / 2)], [length, rim - floor, wall]));
+      // The wheel tubs inside the bed over the rear wheels.
+      out.push(panel(`bed-tub-${side}`, [rearAxle, floor + 0.11, side * (half - wall - 0.13)], [2 * radius + 0.12, 0.22, 0.26]));
+    }
+    out.push(panel("tailgate", [back + wall / 2, y, 0], [wall, rim - floor, 2 * half]));
+  }
+  if (shape.frame) {
+    // The rails from ahead of the front axle to the rear end, cross members
+    // at the axles and between them, under the floor.
+    const from = Math.max(hull.rear + 0.15, rearAxle - (rearAxle - hull.rear) * 0.85);
+    // Under the floor, ending behind the bumper where the nose lifts.
+    const to = Math.min(hull.front - 0.35, frontAxle + 0.3);
+    const railY = clear + 0.2;
+    for (const side of [1, -1]) out.push(box(`frame-rail-${side}`, "body", "metal", [(from + to) / 2, railY, side * FRAME_HALF], [to - from, 0.13, 0.05]));
+    for (const [i, x] of [to - 0.05, frontAxle - radius - 0.2, (frontAxle + rearAxle) / 2, rearAxle + radius + 0.15, from + 0.05].entries()) {
+      out.push(box(`frame-cross-${i}`, "body", "metal", [x, railY, 0], [0.06, 0.08, 2 * FRAME_HALF]));
+    }
+  }
+  if (p.spare) {
+    out.push(cylinder("spare-wheel", "body", "tyre", "x", [p.spare.x, p.spare.y, 0], 0.2, 2 * p.spare.r));
+    // The rim shows on both faces of the tyre.
+    out.push(cylinder("spare-wheel-rim", "body", "metal", "x", [p.spare.x, p.spare.y, 0], 0.21, 1.3 * p.spare.r));
+  }
+  return out;
 }
 
 // The socket of a car at its spot, inside the cabin (in the engine bay for
@@ -1330,6 +1436,8 @@ interface PlaceContext {
   hv: Vec3 | null;
   motor: Vec3 | null;
   frontSeatX: number;
+  // The back wall of a pickup's cab, null for other bodies.
+  cabBack: number | null;
 }
 
 // Where each place is in this car, always inside the hull.
@@ -1381,7 +1489,8 @@ export function placeFinder(hull: Hull, c: PlaceContext): (place: EcuPlace) => V
         p = [c.frontSeatX, c.floor + 0.06, -0.37];
         break;
       case "boot":
-        p = [c.rearAxle - 0.35, c.clear + 0.42, 0.35];
+        // A pickup has no boot: behind the rear seats against the back wall.
+        p = c.cabBack !== null ? [c.cabBack + 0.12, c.floor + 0.35, 0.35] : [c.rearAxle - 0.35, c.clear + 0.42, 0.35];
         break;
       case "battery":
         p = c.hv ? [c.hv[0] + 0.3, c.hv[1] + 0.02, 0] : [c.battery12[0], c.battery12[1] + 0.16, c.battery12[2]];
@@ -1409,6 +1518,10 @@ export function placeFinder(hull: Hull, c: PlaceContext): (place: EcuPlace) => V
         break;
       case "rearAxle":
         p = [c.rearAxle + 0.05, c.clear + 0.38, 0];
+        break;
+      case "tachograph":
+        // Cars have none; a unit that calls itself so sits in the dashboard.
+        p = [c.cowlX - 0.2, c.clear + 0.55, 0.1];
         break;
     }
     return clampInside(hull, p, 0.09);

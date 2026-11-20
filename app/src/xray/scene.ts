@@ -10,7 +10,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { CarZone } from "../api/types";
 import type { BusKind, CarLayout, EcuNode, Layer, Material, Part, Tube, Vec3, Wheel } from "./layout";
-import { BUSES, LAYERS, lampOutlines } from "./layout";
+import { BUSES, LAYERS, faceLine, lampOutlines } from "./layout";
 import { contactAxles, fitShell, looksLikeGlass, looksLikeWheel, orientation, type Bounds, type ShellFit } from "./shell";
 
 export interface XrayPalette {
@@ -105,8 +105,10 @@ uniform float uRoofFront;
 uniform float uRoofRear;
 uniform float uTail;
 uniform vec4 uDlo;
-uniform vec4 uPillars;
-uniform vec4 uPillarW;
+uniform float uPillars[16];
+uniform float uPillarW[16];
+uniform float uBeltRun;
+uniform float uGlassTop;
 uniform float uKink;
 uniform float uGraphic;
 uniform float uWindowAll;
@@ -133,19 +135,22 @@ void main() {
   // A-pillar, its rear edge along the last pillar with the kink at the
   // bottom), split by the pillars between the doors; windscreen; rear window.
   float side = smoothstep(0.42, 0.62, abs(vNormalW.z));
-  float beltY = mix(uBeltRear, uBelt, smoothstep(uDlo.z, uCowl, u));
+  float beltY = mix(uBeltRear, uBelt, smoothstep(uBeltRun, uCowl, u));
   float k = clamp((y - beltY) / max(0.05, vTop - beltY), 0.0, 1.0);
   float frontEdge = mix(uDlo.x, uDlo.y, k);
   float rearEdge = mix(uDlo.z, uDlo.w, k) + uKink * (1.0 - smoothstep(0.0, 0.4, k));
   float sideWin = side * band(beltY + 0.015, vTop - 0.045, 0.012, y) * band(rearEdge, frontEdge, 0.005, u);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 16; i++) {
     float w = uPillarW[i];
     if (w > 0.0) sideWin *= smoothstep(w * 0.5, w * 0.5 + 0.003, abs(u - uPillars[i]));
   }
   float frontal = 1.0 - smoothstep(0.32, 0.55, abs(vNormalW.z));
   float notRoof = 1.0 - smoothstep(0.96, 0.995, vNormalW.y);
-  float shield = frontal * band(uRoofFront + 0.004, uCowl, 0.012, u) * smoothstep(uBelt, uBelt + 0.03, y) * notRoof;
-  float rearWin = frontal * band(uTail, uRoofRear - 0.004, 0.01, u) * smoothstep(uBeltRear, uBeltRear + 0.03, y) * notRoof;
+  // Under a high roof, a truck's roof cap or a bus's destination sign the
+  // glass ends below the roof.
+  float underTop = 1.0 - smoothstep(uGlassTop - 0.025, uGlassTop, y);
+  float shield = frontal * band(uRoofFront + 0.004, uCowl, 0.012, u) * smoothstep(uBelt, uBelt + 0.03, y) * notRoof * underTop;
+  float rearWin = frontal * band(uTail, uRoofRear - 0.004, 0.01, u) * smoothstep(uBeltRear, uBeltRear + 0.03, y) * notRoof * underTop;
   float win = clamp((sideWin + shield + rearWin) * uGraphic + uWindowAll, 0.0, 1.0);
 
   vec3 r = reflect(-v, n);
@@ -293,7 +298,10 @@ export function outlineSegments(layout: CarLayout): number[] {
   };
   const [frontBottom, frontTop, rearBottom, rearTop] = p.dlo;
   const belt = (u: number) => hull.beltAt(u) + 0.015;
-  const roof = (u: number) => hull.top(u) - 0.045;
+  const roof = (u: number) => Math.min(hull.top(u), p.glassTop) - 0.045;
+  // Over an open rear only a bed's walls carry lines: they stand where the
+  // envelope is.
+  const drawn = (u: number) => u >= p.open || p.bed !== null;
   const kinked = (k: number) => p.kink * (1 - Math.min(1, k / 0.4));
   for (const side of [1, -1]) {
     // Window opening: window line, A-pillar, roof edge, last pillar.
@@ -315,10 +323,15 @@ export function outlineSegments(layout: CarLayout): number[] {
     // Door seams below the window line.
     for (const seam of p.seams) {
       const u = hull.station(seam.x);
-      if (seam.top > seam.bottom + 0.05) line(sample(seam.top, seam.bottom, (y) => at(u, y, side), 12));
+      if (seam.top > seam.bottom + 0.05 && drawn(u)) line(sample(seam.top, seam.bottom, (y) => at(u, y, side), 12));
+    }
+    // The rail of a sliding door.
+    if (p.rail) {
+      const [from, to, y] = p.rail;
+      line(sample(hull.station(from), hull.station(to), (u) => at(u, y, side), 12));
     }
     // Wheel arches.
-    for (const w of layout.wheels.filter((w) => Math.sign(w.center[2]) === side)) {
+    for (const w of layout.wheels.filter((w) => Math.sign(w.center[2]) === side && drawn(hull.station(w.center[0])))) {
       const r = w.radius + 0.05;
       const pts: Vec3[] = [];
       for (let i = 0; i <= 24; i++) {
@@ -332,8 +345,15 @@ export function outlineSegments(layout: CarLayout): number[] {
       line(pts);
     }
   }
-  // Base of the windscreen and of the rear window, across the car.
-  for (const u of [p.cowl, p.tail + 0.004]) {
+  // A windscreen that ends below the roof (a high roof, a truck, a bus):
+  // its top and bottom edge across the front.
+  if (p.glassTop < 99) {
+    line(faceLine(hull, hull.belt + 0.02, "front"));
+    line(faceLine(hull, p.glassTop - 0.02, "front"));
+  }
+  // Base of the windscreen and of the rear window, across the car (none
+  // where there is no rear window).
+  for (const u of p.tail < p.roofRear ? [p.cowl, p.tail + 0.004] : [p.cowl]) {
     const y = hull.beltAt(u) + 0.02;
     const half = hull.halfWidth(u, y);
     if (half <= 0) continue;
@@ -527,9 +547,12 @@ export class XrayScene {
     // when the stage is narrow (the near front corner comes out large).
     const vfov = THREE.MathUtils.degToRad(this.camera.fov);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(0.5, this.camera.aspect));
-    const distance = ((L * 0.5) / Math.tan(Math.min(vfov, hfov) / 2)) * 1.12;
     this.home.target.set(0, H * 0.38, 0);
-    this.home.position.copy(new THREE.Vector3(0.62, 0.55, 0.62).normalize().multiplyScalar(distance).add(this.home.target));
+    const homeDir = new THREE.Vector3(0.62, 0.55, 0.62).normalize();
+    // A truck or bus is far from a car's proportions (a tall short tractor,
+    // a long thin bus): fit its box into the view instead.
+    const distance = layout.heavy ? this.fitDistance(homeDir, this.home.target, 1.1) : ((L * 0.5) / Math.tan(Math.min(vfov, hfov) / 2)) * 1.12;
+    this.home.position.copy(homeDir.multiplyScalar(distance).add(this.home.target));
     if (!keepView) {
       this.camera.position.copy(this.home.position);
       this.controls.target.copy(this.home.target);
@@ -545,10 +568,15 @@ export class XrayScene {
     const R = 96;
     const positions = new Float32Array((S + 1) * R * 3);
     const tops = new Float32Array((S + 1) * R);
+    // Over an open rear (a pickup's bed, a truck's frame, the spare wheel)
+    // the hull is only the envelope: the body starts where it ends.
+    const u0 = Math.max(0, Math.min(0.9, p.open));
+    // The side windows end at the top of the glass, not always at the roof.
+    const glassTop = (top: number) => Math.min(top, p.glassTop);
     for (let i = 0; i <= S; i++) {
       const t = i / S;
-      const u = 0.5 - 0.5 * Math.cos(Math.PI * t);
-      const top = hull.top(u);
+      const u = u0 + (1 - u0) * (0.5 - 0.5 * Math.cos(Math.PI * t));
+      const top = glassTop(hull.top(u));
       for (let k = 0; k < R; k++) {
         const theta = -Math.PI / 2 + (2 * Math.PI * k) / R;
         const q = hull.section(u, theta);
@@ -574,6 +602,26 @@ export class XrayScene {
     geo.setAttribute("aTop", new THREE.BufferAttribute(tops, 1));
     geo.setIndex(index);
     geo.computeVertexNormals();
+    // The flat wall where an open rear begins: the cab's back wall, the
+    // front wall of a bed, the tail door behind a spare wheel. Its own
+    // vertices, so its normals do not bend the sides.
+    const geos = [geo];
+    if (u0 > 0) {
+      const wall = new Float32Array((R + 1) * 3);
+      const ring = (k: number) => hull.section(u0, -Math.PI / 2 + (2 * Math.PI * k) / R);
+      let cy = 0;
+      for (let k = 0; k < R; k++) cy += ring(k)[1] / R;
+      wall.set([hull.xAt(u0), cy, 0], 0);
+      for (let k = 0; k < R; k++) wall.set(ring(k), (k + 1) * 3);
+      const fan: number[] = [];
+      for (let k = 0; k < R; k++) fan.push(0, 1 + ((k + 1) % R), 1 + k);
+      const cap = new THREE.BufferGeometry();
+      cap.setAttribute("position", new THREE.BufferAttribute(wall, 3));
+      cap.setAttribute("aTop", new THREE.BufferAttribute(new Float32Array(R + 1).fill(glassTop(hull.top(u0))), 1));
+      cap.setAttribute("normal", new THREE.BufferAttribute(new Float32Array((R + 1) * 3).map((_, j) => (j % 3 === 0 ? -1 : 0)), 3));
+      cap.setIndex(fan);
+      geos.push(cap);
+    }
 
     const pal = this.palette;
     const tint = pal.light ? new THREE.Color("#5f7196") : new THREE.Color(pal.accent).lerp(new THREE.Color(pal.sky), 0.45).multiplyScalar(0.55);
@@ -581,8 +629,8 @@ export class XrayScene {
     const windowTint = pal.light ? new THREE.Color("#22304f") : new THREE.Color("#03060c");
     const sky = pal.light ? new THREE.Color("#f2f5fb") : new THREE.Color("#2a3552");
     const ground = pal.light ? new THREE.Color("#8a93a8") : new THREE.Color("#06080d");
-    const pillars = new THREE.Vector4(...([0, 1, 2, 3].map((i) => p.pillars[i] ?? -1) as [number, number, number, number]));
-    const pillarWidths = new THREE.Vector4(...([0, 1, 2, 3].map((i) => p.pillarWidths[i] ?? 0) as [number, number, number, number]));
+    const pillars = Array.from({ length: 16 }, (_, i) => p.pillars[i] ?? -1);
+    const pillarWidths = Array.from({ length: 16 }, (_, i) => p.pillarWidths[i] ?? 0);
     const dlo = new THREE.Vector4(...p.dlo);
     const make = (side: THREE.Side, opacity: number, windowAlpha: number, order: number) => {
       const m = new THREE.ShaderMaterial({
@@ -612,15 +660,19 @@ export class XrayScene {
           uDlo: { value: dlo },
           uPillars: { value: pillars },
           uPillarW: { value: pillarWidths },
+          uBeltRun: { value: p.beltRun ?? p.dlo[2] },
+          uGlassTop: { value: p.glassTop },
           uKink: { value: p.kink },
           uGraphic: { value: 1 },
           uWindowAll: { value: 0 },
         },
       });
-      const mesh = new THREE.Mesh(geo, m);
-      mesh.renderOrder = order;
-      mesh.name = "hull";
-      this.layerGroups.get("body")!.add(mesh);
+      for (const g of geos) {
+        const mesh = new THREE.Mesh(g, m);
+        mesh.renderOrder = order;
+        mesh.name = "hull";
+        this.layerGroups.get("body")!.add(mesh);
+      }
       this.glass.push(m);
     };
     make(THREE.BackSide, pal.light ? 0.05 : 0.035, pal.light ? 0.16 : 0.2, 10);
@@ -686,29 +738,41 @@ export class XrayScene {
   private carWheel(w: Wheel, tyreMat: THREE.Material, rimMat: THREE.Material, discMat: THREE.MeshStandardMaterial, caliperMat: THREE.MeshStandardMaterial): THREE.Group {
     const g = new THREE.Group();
     const R = w.radius;
-    const half = w.width / 2;
-    const inner = R * 0.66;
-    // Tyre: a rounded profile turned round the axle.
-    const profile: THREE.Vector2[] = [];
-    const shoulder = Math.min(0.045, half * 0.4);
-    profile.push(new THREE.Vector2(inner, -half * 0.92));
-    for (let k = 0; k <= 6; k++) {
-      const a = -Math.PI / 2 + (k / 6) * (Math.PI / 2);
-      profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, -half + shoulder + Math.sin(a) * shoulder));
+    // A truck's 22.5-inch rim is small for its tyre.
+    const heavy = R > 0.44;
+    const inner = R * (heavy ? 0.56 : 0.66);
+    // Tyre: a rounded profile turned round the axle; twin tyres side by side.
+    const tyre = (width: number, z: number) => {
+      const h = width / 2;
+      const profile: THREE.Vector2[] = [];
+      const shoulder = Math.min(0.045, h * 0.4);
+      profile.push(new THREE.Vector2(inner, -h * 0.92));
+      for (let k = 0; k <= 6; k++) {
+        const a = -Math.PI / 2 + (k / 6) * (Math.PI / 2);
+        profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, -h + shoulder + Math.sin(a) * shoulder));
+      }
+      for (let k = 0; k <= 6; k++) {
+        const a = (k / 6) * (Math.PI / 2);
+        profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, h - shoulder + Math.sin(a) * shoulder));
+      }
+      profile.push(new THREE.Vector2(inner, h * 0.92));
+      return new THREE.LatheGeometry(profile, 48).rotateX(Math.PI / 2).translate(0, 0, z);
+    };
+    if (w.dual) {
+      const tw = (w.width - 0.04) / 2;
+      g.add(new THREE.Mesh(merged([tyre(tw, tw / 2 + 0.02), tyre(tw, -tw / 2 - 0.02)]), tyreMat));
+    } else {
+      g.add(new THREE.Mesh(tyre(w.width, 0), tyreMat));
     }
-    for (let k = 0; k <= 6; k++) {
-      const a = (k / 6) * (Math.PI / 2);
-      profile.push(new THREE.Vector2(R - shoulder + Math.cos(a) * shoulder, half - shoulder + Math.sin(a) * shoulder));
-    }
-    profile.push(new THREE.Vector2(inner, half * 0.92));
-    const tyreGeo = new THREE.LatheGeometry(profile, 48);
-    tyreGeo.rotateX(Math.PI / 2);
-    g.add(new THREE.Mesh(tyreGeo, tyreMat));
     const out = Math.sign(w.center[2]) || 1;
-    // Rim, five spokes on the outer face and the hub as one mesh.
+    // Rim, five spokes (a steel disc on a truck) on the outer face and the
+    // hub as one mesh.
     const pieces: THREE.BufferGeometry[] = [];
     pieces.push(new THREE.CylinderGeometry(inner, inner, w.width * 0.8, 40).rotateX(Math.PI / 2));
-    for (let s = 0; s < 5; s++) {
+    if (heavy) {
+      pieces.push(new THREE.CylinderGeometry(inner * 0.92, inner * 0.92, 0.02, 32).rotateX(Math.PI / 2).translate(0, 0, out * (w.width * 0.4)));
+    }
+    for (let s = 0; s < (heavy ? 0 : 5); s++) {
       const a = (s / 5) * Math.PI * 2;
       pieces.push(new THREE.BoxGeometry(inner * 0.9, inner * 0.16, 0.025).rotateZ(a).translate(Math.cos(a) * inner * 0.48, Math.sin(a) * inner * 0.48, out * (w.width * 0.42)));
     }
@@ -807,6 +871,7 @@ export class XrayScene {
       case "seat": return { color: c(p.light ? "#3a3f4a" : "#2a2e37"), metal: 0, rough: 0.95, opacity: p.light ? 0.75 : 0.7 };
       case "lamp": return { color: c(p.light ? "#e8eefc" : "#f4f8ff"), metal: 0.1, rough: 0.2, opacity: 1 };
       case "rearlamp": return { color: c(p.light ? "#c0362c" : "#ff5f57"), metal: 0.1, rough: 0.3, opacity: 1 };
+      case "tyre": return { color: c(p.light ? "#2a2d34" : "#15171c"), metal: 0.05, rough: 0.85, opacity: 1 };
       // Glass parts get the glass shader; these values are not used.
       case "shell":
       case "screen": return { color: c(p.accent), metal: 0, rough: 0.5, opacity: 0.2 };
@@ -859,8 +924,10 @@ export class XrayScene {
         uRoofRear: { value: 0 },
         uTail: { value: 0 },
         uDlo: { value: new THREE.Vector4() },
-        uPillars: { value: new THREE.Vector4(-1, -1, -1, -1) },
-        uPillarW: { value: new THREE.Vector4() },
+        uPillars: { value: new Array<number>(16).fill(-1) },
+        uPillarW: { value: new Array<number>(16).fill(0) },
+        uBeltRun: { value: 0 },
+        uGlassTop: { value: 99 },
         uKink: { value: 0 },
         uGraphic: { value: 0 },
         uWindowAll: { value: window ? 1 : 0 },
@@ -951,7 +1018,7 @@ export class XrayScene {
     const ad = layout.adapter;
     const dir = v3(ad.dir).normalize();
     const along = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir);
-    const socket = new THREE.Mesh(new RoundedBoxGeometry(0.03, 0.045, 0.06, 2, 0.008), socketMat);
+    const socket = new THREE.Mesh(ad.round ? new THREE.CylinderGeometry(0.032, 0.032, 0.04, 20).rotateZ(Math.PI / 2) : new RoundedBoxGeometry(0.03, 0.045, 0.06, 2, 0.008), socketMat);
     socket.position.set(...ad.socket);
     socket.quaternion.copy(along);
     socket.userData.pick = "obd";
@@ -1341,13 +1408,39 @@ export class XrayScene {
   viewFrom(side: "side" | "rear" | "front"): void {
     const L = this.layout?.hull.length ?? 4.5;
     const target = this.home.target.clone();
-    const distance = ((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))) * 1.25;
     this.tween = null;
-    const dir = side === "side" ? new THREE.Vector3(0, 0.08, 1) : side === "rear" ? new THREE.Vector3(-1, 0.25, 0.35) : new THREE.Vector3(1, 0.25, 0.35);
-    this.camera.position.copy(dir.normalize().multiplyScalar(distance).add(target));
+    const dir = (side === "side" ? new THREE.Vector3(0, 0.08, 1) : side === "rear" ? new THREE.Vector3(-1, 0.25, 0.35) : new THREE.Vector3(1, 0.25, 0.35)).normalize();
+    const distance = this.layout?.heavy ? this.fitDistance(dir, target, 1.1) : ((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2))) * 1.25;
+    this.camera.position.copy(dir.multiplyScalar(distance).add(target));
     this.controls.target.copy(target);
     this.controls.update();
     this.dirty = true;
+  }
+
+  // The distance along dir from target at which the vehicle's box fills the
+  // view (with a margin): its corners projected on the screen's axes, plus
+  // how far the nearest corner comes towards the camera.
+  private fitDistance(dir: THREE.Vector3, target: THREE.Vector3, margin: number): number {
+    const hull = this.layout!.hull;
+    const d = dir.clone().normalize();
+    const right = new THREE.Vector3().crossVectors(d, new THREE.Vector3(0, 1, 0)).normalize();
+    const up = new THREE.Vector3().crossVectors(right, d).normalize();
+    let across = 0;
+    let high = 0;
+    let depth = 0;
+    for (const x of [hull.rear, hull.front]) {
+      for (const y of [0, hull.height]) {
+        for (const z of [-hull.width / 2, hull.width / 2]) {
+          const q = new THREE.Vector3(x, y, z).sub(target);
+          across = Math.max(across, Math.abs(q.dot(right)));
+          high = Math.max(high, Math.abs(q.dot(up)));
+          depth = Math.max(depth, q.dot(d));
+        }
+      }
+    }
+    const vfov = THREE.MathUtils.degToRad(this.camera.fov) / 2;
+    const hfov = Math.atan(Math.tan(vfov) * Math.max(0.5, this.camera.aspect));
+    return Math.max(across / Math.tan(hfov), high / Math.tan(vfov)) * margin + depth;
   }
 
   private animateTo(position: THREE.Vector3, target: THREE.Vector3): void {

@@ -125,6 +125,19 @@ export interface ShapeSpec {
   quarterWindow: boolean;
   // The forward kink at the rear end of the side windows (BMW).
   kink: boolean;
+  // Pickups: two seats, two with a short space behind them, or a second
+  // row; the bed takes the rest of the length.
+  cab: "single" | "extended" | "double";
+  // Vans: a raised roof behind the windscreen header, a sliding side door.
+  highRoof: boolean;
+  sliding: boolean;
+  // Off-roaders: the spare wheel on the tail door; a body on a ladder frame
+  // (pickups too).
+  spare: boolean;
+  frame: boolean;
+  // Exponent of the cross-section: 5 a car's rounded flanks and roof
+  // edges, more for a box (an off-roader, a van, a truck's cab).
+  section: number;
   // Headlights, tail lights and the openings in the front.
   headlight: Lamp;
   taillight: Lamp;
@@ -162,7 +175,11 @@ export interface Shape extends ShapeSpec {
 
 // --- Defaults ----------------------------------------------------------------------
 
-type BodySpec = Omit<ShapeSpec, "headlight" | "taillight" | "grille">;
+type Traits = "cab" | "highRoof" | "sliding" | "spare" | "frame" | "section";
+type BodySpec = Omit<ShapeSpec, "headlight" | "taillight" | "grille" | Traits>;
+
+// Most bodies have none of these; the body defaults switch them on.
+const TRAITS: Pick<ShapeSpec, Traits> = { cab: "double", highRoof: false, sliding: false, spare: false, frame: false, section: 5 };
 
 const BASE: Record<BodyType, BodySpec> = {
   [BodyType.Hatchback]: {
@@ -263,18 +280,21 @@ function eraFront(year: number): { headlight: Lamp; taillight: Lamp; grille: Gri
 
 // The defaults for a body, year and drivetrain.
 export function defaultShape(body: BodyType, year: number, engine: EngineLayout, driven: DrivenAxles): ShapeSpec {
-  const s: ShapeSpec = { ...(BASE[body] ?? BASE[BodyType.Hatchback]), ...eraFront(year) };
+  const s: ShapeSpec = { ...TRAITS, ...(BASE[body] ?? BASE[BodyType.Hatchback]), ...eraFront(year) };
   // Tall bodies: a taller grille; estates, SUVs and vans: tail lights that
   // climb the last pillar beside the tailgate.
   switch (body) {
     case BodyType.Suv:
     case BodyType.Pickup:
+      s.frame = body === BodyType.Pickup;
       s.grille = { ...s.grille, height: s.grille.height * 1.45, width: s.grille.width * 1.1 };
       s.taillight = { ...s.taillight, height: s.taillight.height * 1.5, width: s.taillight.width * 0.85 };
       break;
     case BodyType.Van:
       s.grille = { ...s.grille, height: s.grille.height * 1.3 };
       s.taillight = { ...s.taillight, width: 0.16, wrap: 0.04, height: 0.42, drop: -0.25, round: 8 };
+      s.sliding = true;
+      s.section = 6;
       break;
     case BodyType.Estate:
     case BodyType.Mpv:
@@ -365,6 +385,15 @@ const EV_CLOSED: ShapeOverride = {
   grille: { openings: 0, intakeWidth: 0.32, intakeHeight: 0.06 },
   headlight: { width: 0.48, wrap: 0.16, drop: 0.03, height: 0.07, round: 4, rise: 0.05 },
   taillight: { width: 0.42, wrap: 0.24, drop: 0.02, height: 0.1, round: 5, rise: 0 },
+};
+// An off-roader: a box with upright glass, flat sides, a high ground
+// clearance, the spare wheel on the tail door and a ladder frame. Small
+// upright tail lights beside the door.
+const OFFROAD: ShapeOverride = {
+  taillight: { width: 0.12, wrap: 0.04, drop: 0.02, height: 0.2, round: 8, rise: 0 },
+  style: "suv", spare: true, frame: true, windscreen: 58, rearWindow: 88, roofCrown: 0.004, roofPeak: 0.5, roofDrop: 0,
+  belt: 0.57, beltRise: 0, rideHeight: 0.25, nose: 0.6, tail: 0.62, tumblehome: 0.05, noseRound: 9, tailRound: 14,
+  lastPillar: 0.16, quarterWindow: true, section: 7.5,
 };
 
 export const SHAPES: ShapeRow[] = [
@@ -719,6 +748,110 @@ export const SHAPES: ShapeRow[] = [
     shape: { headlight: { width: 0.21, wrap: -0.02, drop: 0.02, height: 0.2, round: 2, rise: 0 }, grille: { openings: 1, width: 0.3, height: 0.17, drop: 0.08, round: 3, intakeWidth: 0.3, intakeHeight: 0.06 }, taillight: { width: 0.16, wrap: 0, drop: 0, height: 0.26, round: 3, rise: 0 }, roofDrop: 0.0, style: "hatchback", doors: 2, frontShare: 0.53, cowl: 0.32, windscreen: 34, rearWindow: 76, roofCrown: 0.008, roofPeak: 0.5, belt: 0.66, beltRise: 0, nose: 0.53, tumblehome: 0.1, noseRound: 3.4, tailRound: 5, lastPillar: 0.18, wheel: 0.6 },
     note: "Three-door: round headlights in the wings, a large grille opening, upright windscreen, flat 'floating' roof over a band of glass, high window line, short overhangs, wheels at the corners. 175/65 R15 to 195/55 R16.",
   },
+  // --- Off-roaders: a box on a ladder frame, upright glass, the spare wheel
+  // on the side-hinged tail door.
+  {
+    brand: "Land Rover", model: "Defender", generations: ["Classic"],
+    shape: { ...OFFROAD, headlight: { width: 0.2, wrap: -0.16, drop: 0.07, height: 0.19, round: 2, rise: 0 }, grille: { openings: 1, width: 0.4, height: 0.2, drop: 0.04, round: 12, intakeWidth: 0, intakeHeight: 0 }, frontShare: 0.42, cowl: 0.78, windscreen: 78, belt: 0.55, nose: 0.6, tumblehome: 0.13, wheel: 0.8 },
+    note: "The 90 and 110 of 1983 to 2016: flat bonnet between the wings, near vertical windscreen, round headlights in the wings, the glasshouse leaning in, spare wheel on the side door, box frame. 235/85 R16.",
+  },
+  {
+    brand: "Land Rover", model: "Defender", generations: ["L663"],
+    shape: { ...OFFROAD, headlight: { width: 0.24, wrap: 0.02, drop: 0.05, height: 0.17, round: 4, rise: 0 }, frame: false, frontShare: 0.43, cowl: 0.62, windscreen: 48, roofCrown: 0.012, belt: 0.58, nose: 0.6, noseRound: 7, tumblehome: 0.06, rideHeight: 0.22, wheel: 0.81 },
+    note: "Unit body of 2019 with the old one's stance: short overhangs, upright tail door with the spare wheel, rounded square lamps. The 110 is 5018 mm long with the spare wheel, wheelbase 3022 mm, 255/70 R18.",
+  },
+  {
+    brand: "Mercedes-Benz", model: "G-Klasse", generations: ["W460", "W463", "W463 (2018)"],
+    shape: { ...OFFROAD, headlight: { width: 0.2, wrap: -0.07, drop: 0.06, height: 0.2, round: 2, rise: 0 }, grille: { openings: 1, width: 0.36, height: 0.26, drop: 0.04, round: 10, intakeWidth: 0.3, intakeHeight: 0.06 }, frontShare: 0.42, cowl: 0.74, windscreen: 64, nose: 0.62, noseRound: 12, tailRound: 16, wheel: 0.78 },
+    note: "The box since 1979: flat panels, round headlights on the wings, upright windscreen, the spare wheel on the side-hinged tail door, ladder frame. 265/60 R18 (W463).",
+  },
+  {
+    brand: "Jeep", model: "Wrangler", generations: ["YJ", "TJ"],
+    shape: { ...OFFROAD, headlight: { width: 0.19, wrap: -0.2, drop: 0.08, height: 0.18, round: 2, rise: 0 }, grille: { openings: 1, width: 0.3, height: 0.3, drop: 0.04, round: 10, intakeWidth: 0, intakeHeight: 0 }, doors: 2, frontShare: 0.47, cowl: 0.72, windscreen: 58, belt: 0.58, nose: 0.6, wheel: 0.76 },
+    note: "Two-door with the slotted grille between the lamps, flat windscreen frame, spare wheel on the tailgate, ladder frame. 215/75 R15.",
+  },
+  {
+    brand: "Jeep", model: "Wrangler", generations: ["JK", "JL"],
+    shape: { ...OFFROAD, headlight: { width: 0.2, wrap: -0.2, drop: 0.08, height: 0.2, round: 2, rise: 0 }, grille: { openings: 1, width: 0.34, height: 0.32, drop: 0.04, round: 10, intakeWidth: 0, intakeHeight: 0 }, frontShare: 0.45, cowl: 0.74, windscreen: 57, belt: 0.58, nose: 0.6, wheel: 0.8 },
+    note: "Unlimited, the four-door most of them are: round lamps, the slotted grille, spare wheel on the swing gate, ladder frame. 245/75 R17.",
+  },
+  {
+    brand: "Suzuki", model: "Jimny", generations: ["JB43", "JB74"],
+    shape: { ...OFFROAD, headlight: { width: 0.17, wrap: -0.1, drop: 0.07, height: 0.17, round: 2, rise: 0 }, doors: 2, frontShare: 0.48, cowl: 0.42, windscreen: 56, belt: 0.56, nose: 0.6, wheel: 0.69 },
+    note: "Small three-door on a ladder frame: short bonnet, upright glass, the spare wheel on the tail door. 195/80 R15.",
+  },
+  {
+    brand: "Toyota", model: "Land Cruiser", generations: ["J70"],
+    shape: { ...OFFROAD, frontShare: 0.45, cowl: 0.8, windscreen: 62, belt: 0.56, nose: 0.6, wheel: 0.78 },
+    note: "The working Land Cruiser since 1984: long flat bonnet, upright windscreen, rear barn doors with the spare wheel, ladder frame. 7.50 R16.",
+  },
+  {
+    brand: "Lada", model: "Niva", generations: ["2121"],
+    shape: { ...OFFROAD, spare: false, frame: false, headlight: { width: 0.18, wrap: -0.12, drop: 0.07, height: 0.18, round: 2, rise: 0 }, doors: 2, frontShare: 0.5, cowl: 0.5, windscreen: 50, rearWindow: 82, belt: 0.56, nose: 0.56, wheel: 0.69 },
+    note: "Three-door unit body with round lamps and an upright tailgate; the spare wheel lives in the engine bay. 3740 mm long, wheelbase 2200 mm, 175/80 R16.",
+  },
+  {
+    brand: "Ford", model: "Bronco", generations: ["VI"],
+    shape: { ...OFFROAD, headlight: { width: 0.2, wrap: -0.18, drop: 0.08, height: 0.2, round: 2, rise: 0 }, frontShare: 0.45, cowl: 0.72, windscreen: 58, belt: 0.58, nose: 0.62, wheel: 0.8 },
+    note: "Four-door of 2021: round lamps in a flat face, removable roof and doors, spare wheel on the swing gate, ladder frame. 255/70 R16.",
+  },
+  // --- Pickups: cab and an open bed on a ladder frame.
+  {
+    brand: "Toyota", model: "Hilux", generations: ["AN10", "AN120"],
+    shape: { cab: "double", frontShare: 0.41, cowl: 0.68, windscreen: 30, belt: 0.66, nose: 0.6, rideHeight: 0.24, wheel: 0.78 },
+    note: "Double cab, the body most of them have: long bonnet over the engine along the frame, bed behind the cab. 5330 mm long, wheelbase 3085 mm, 265/65 R17.",
+  },
+  {
+    brand: "Volkswagen", model: "Amarok", generations: ["I", "II"],
+    shape: { ...VW_BAND, cab: "double", frontShare: 0.42, cowl: 0.7, windscreen: 31, belt: 0.67, nose: 0.62, rideHeight: 0.24, wheel: 0.79 },
+    note: "Double cab with a wide bed. 5254 mm long (I), wheelbase 3095 mm, 245/70 R16 to 255/60 R18.",
+  },
+  {
+    brand: "Ford", model: "Ranger", generations: ["T6", "P703"],
+    shape: { cab: "double", frontShare: 0.42, cowl: 0.7, windscreen: 31, belt: 0.67, nose: 0.62, rideHeight: 0.24, wheel: 0.79 },
+    note: "Double cab, as sold in Europe. 5362 mm long, wheelbase 3220 mm, 265/65 R17.",
+  },
+  {
+    brand: "Ford", model: "F-150", generations: ["XIII", "XIV"],
+    shape: { grille: { openings: 1, width: 0.52, height: 0.36, drop: 0.03, round: 10, intakeWidth: 0.4, intakeHeight: 0.08 }, headlight: { width: 0.4, wrap: 0.08, drop: 0.03, height: 0.15, round: 6, rise: 0 }, taillight: { width: 0.14, wrap: 0.03, drop: 0.02, height: 0.36, round: 8, rise: 0 }, cab: "double", frontShare: 0.41, cowl: 0.82, windscreen: 31, belt: 0.67, nose: 0.68, rideHeight: 0.24, wheel: 0.82 },
+    note: "SuperCrew, the four-door most of them are: tall square bonnet, upright tail lights at the bed corners, a long bed behind the cab. 5890 mm long with the 5.5 ft bed, wheelbase 3683 mm, 275/65 R18.",
+  },
+  {
+    brand: "Ram", model: "1500", generations: ["IV", "V"],
+    shape: { grille: { openings: 1, width: 0.5, height: 0.36, drop: 0.03, round: 10, intakeWidth: 0.4, intakeHeight: 0.08 }, taillight: { width: 0.14, wrap: 0.03, drop: 0.02, height: 0.34, round: 8, rise: 0 }, cab: "double", frontShare: 0.41, cowl: 0.82, windscreen: 30, belt: 0.67, nose: 0.68, rideHeight: 0.24, wheel: 0.82 },
+    note: "Crew Cab: tall bonnet with a wide grille, four full doors, the bed behind. 5916 mm long, wheelbase 3672 mm, 275/65 R18.",
+  },
+  {
+    brand: "Chevrolet", model: "SSR", generations: ["I"],
+    shape: { cab: "single", doors: 2, frontShare: 0.45, cowl: 0.85, windscreen: 26, belt: 0.64, nose: 0.6, rideHeight: 0.18, wheel: 0.74 },
+    note: "Two-seat roadster pickup: a short cab with a retractable hardtop and a short covered bed. 4864 mm long, wheelbase 2946 mm.",
+  },
+  {
+    brand: "Volkswagen", model: "Caddy", generations: ["I"],
+    shape: { cab: "single", doors: 2, frame: false, frontShare: 0.55, cowl: 0.42, windscreen: 30, belt: 0.6, nose: 0.5, rideHeight: 0.15, wheel: 0.58 },
+    note: "The Golf I based pickup: front engine across, a single cab and a long bed on a unit body. 4380 mm long, wheelbase 2625 mm, 175/70 R13.",
+  },
+  {
+    brand: "INEOS", model: "Grenadier Quartermaster", generations: ["I"],
+    shape: { cab: "double", frontShare: 0.42, cowl: 0.72, windscreen: 64, rearWindow: 88, roofCrown: 0.005, belt: 0.58, nose: 0.62, noseRound: 10, tumblehome: 0.06, rideHeight: 0.26, wheel: 0.8 },
+    note: "Double cab of the Grenadier: box frame, upright windscreen and flat panels, a short bed. 5440 mm long, wheelbase 3227 mm, 265/70 R17.",
+  },
+  // --- Vans.
+  {
+    brand: "Volkswagen", model: "Transporter", generations: ["T5", "T6", "T6.1"],
+    shape: { frontShare: 0.49, cowl: 0.02, windscreen: 34, rearWindow: 86, belt: 0.53, nose: 0.5, wheel: 0.69 },
+    note: "Short bonnet over the engine across, the windscreen starting over the front axle, sliding side door, tailgate. 4890 mm long (short wheelbase 3000 mm), 215/65 R16.",
+  },
+  {
+    brand: "Mercedes-Benz", model: "Sprinter", generations: ["W906", "W907"],
+    shape: { ...MERCEDES, frontShare: 0.45, cowl: 0.32, windscreen: 37, rearWindow: 88, belt: 0.48, nose: 0.42, wheel: 0.71 },
+    note: "Large van with a short bonnet over the engine along the car, sliding door, rear barn doors. 5932 mm long with the middle wheelbase of 3665 mm, 235/65 R16.",
+  },
+  {
+    brand: "Ford", model: "Transit", generations: ["Mk7", "Mk8"],
+    shape: { frontShare: 0.47, cowl: 0.3, windscreen: 36, rearWindow: 88, belt: 0.48, nose: 0.42, wheel: 0.71 },
+    note: "Large van, short bonnet, sliding door and rear barn doors. Mk8: 5531 mm long with the middle wheelbase of 3300 mm, 235/65 R16.",
+  },
 ];
 
 // --- Choosing ------------------------------------------------------------------------
@@ -739,21 +872,126 @@ export function bodyVariants(anatomy: Pick<VehicleAnatomy, "brand" | "model" | "
   return out;
 }
 
-// The shape of a car: the defaults for its body, year and drivetrain, with
-// the hand-tuned row of its generation and body on top.
+// --- Classes inside a body type ----------------------------------------------------------
+
+// The catalog has one body type for a Caddy and a Sprinter, one for a
+// Hilux and an F-150; the name tells them apart. Compact vans are tall
+// cars with a bonnet, large ones stand high with a short bonnet.
+export type VanClass = "compact" | "mid" | "large";
+const COMPACT_VANS = /^(CADDY|KANGOO|BERLINGO|PARTNER|RIFTER|COMBO|DOBL|CITAN|TOWNSTAR|NV200|TRANSIT CONNECT|TRANSIT COURIER|DOKKER|FIORINO|INCA|PROACE CITY|EDELIVER 3)/;
+const LARGE_VANS = /^(SPRINTER|CRAFTER|LT$|TRANSIT$|DUCATO|BOXER|JUMPER|MASTER|MOVANO|INTERSTAR|DAILY|PROMASTER|EXPRESS|SAVANA|E-SERIES|DELIVER 9|EDELIVER 9)/;
+
+export function vanClass(model: string): VanClass {
+  const upper = model.toUpperCase();
+  if (COMPACT_VANS.test(upper)) return "compact";
+  if (LARGE_VANS.test(upper)) return "large";
+  return "mid";
+}
+
+// Full-size pickups of the US makers, a size above a Hilux.
+const FULL_SIZE_PICKUPS = /^(F-150|F-250|SILVERADO|SIERRA|1500|2500|RAM$|TUNDRA|TITAN|AVALANCHE|CYBERTRUCK|R1T|HUMMER EV)/;
+
+// A raised roof the name asks for (Hochdach, high roof, H2 and H3 of the
+// length and height codes).
+const HIGH_ROOF_WORDS = /HOCHDACH|HIGH ?ROOF|SUPERHOCH|\bL\dH[23]\b|\bH[23]\b/;
+
+// Words of the name that give the cab of a pickup.
+const CAB_WORDS: [RegExp, ShapeSpec["cab"]][] = [
+  [/SINGLE ?CAB|REGULAR ?CAB|EINZELKABINE|\bSC\b/, "single"],
+  [/EXTRA ?CAB|KING ?CAB|SUPER ?CAB|SPACE ?CAB|CLUB ?CAB|EXTENDED|ACCESS ?CAB|\bXTRACAB\b/, "extended"],
+  [/DOUBLE ?CAB|CREW ?CAB|SUPER ?CREW|DOPPELKABINE|QUAD ?CAB|\bDC\b/, "double"],
+];
+
+// Off-roaders outside the table: the same box as the rows.
+const OFFROAD_WORDS = /DEFENDER|G-KLASSE|WRANGLER|JIMNY|GRENADIER|^BRONCO$/;
+
+// The traits the name and the size give before any row: the van's class
+// and roof, the pickup's cab, the off-roader's box.
+function namePreset(anatomy: VehicleAnatomy, body: BodyType): ShapeOverride {
+  const upper = `${anatomy.model} ${anatomy.generation}`.toUpperCase();
+  switch (body) {
+    case BodyType.Van: {
+      const cls = vanClass(anatomy.model);
+      // Only a measured height or the name make the roof a high one: the
+      // typical large van has the middle roof.
+      const tall = (anatomy.measuredFields & 4) !== 0 && anatomy.heightMm >= (cls === "large" ? 2500 : 2250);
+      const highRoof = HIGH_ROOF_WORDS.test(upper) || tall;
+      if (cls === "compact") return { highRoof, frontShare: 0.53, cowl: 0.3, windscreen: 30, rearWindow: 82, belt: 0.55, nose: 0.47, tumblehome: 0.1 };
+      if (cls === "large") return { highRoof, section: 7, frontShare: 0.47, cowl: 0.3, windscreen: 36, rearWindow: 88, belt: 0.48, nose: 0.42, tumblehome: 0.06 };
+      return { highRoof };
+    }
+    case BodyType.Pickup:
+      return { cab: CAB_WORDS.find(([re]) => re.test(upper))?.[1] ?? "double" };
+    case BodyType.Suv:
+      return OFFROAD_WORDS.test(anatomy.model.toUpperCase()) ? OFFROAD : {};
+    default:
+      return {};
+  }
+}
+
+// The size of the class when the catalog has no dimensions of the
+// generation: its typical van is a Transporter and its typical pickup a
+// Hilux, so a Sprinter, a Caddy or an F-150 get the size of their class.
+// Values the catalog does have stay (measuredFields).
+export interface Size {
+  lengthMm: number;
+  widthMm: number;
+  heightMm: number;
+  wheelbaseMm: number;
+  trackMm: number;
+  wheelMm: number;
+}
+
+export function classSize(anatomy: VehicleAnatomy, body: BodyType): Size {
+  const own: Size = {
+    lengthMm: anatomy.lengthMm,
+    widthMm: anatomy.widthMm,
+    heightMm: anatomy.heightMm,
+    wheelbaseMm: anatomy.wheelbaseMm,
+    trackMm: anatomy.trackMm,
+    wheelMm: anatomy.wheelMm,
+  };
+  if (anatomy.dimensionSource !== "typical") return own;
+  let typical: Omit<Size, "wheelMm"> & { wheelMm?: number };
+  if (body === BodyType.Van && vanClass(anatomy.model) === "compact") {
+    typical = { lengthMm: 4400, widthMm: 1800, heightMm: 1830, wheelbaseMm: 2750, trackMm: 1540, wheelMm: 650 };
+  } else if (body === BodyType.Van && vanClass(anatomy.model) === "large") {
+    // A middle wheelbase with the middle roof (Sprinter, Transit, Ducato).
+    typical = { lengthMm: 5930, widthMm: 2020, heightMm: 2550, wheelbaseMm: 3665, trackMm: 1720, wheelMm: 720 };
+  } else if (body === BodyType.Pickup && FULL_SIZE_PICKUPS.test(anatomy.model.toUpperCase())) {
+    typical = { lengthMm: 5890, widthMm: 2030, heightMm: 1960, wheelbaseMm: 3680, trackMm: 1720, wheelMm: 810 };
+  } else {
+    return own;
+  }
+  const bit = (b: number) => (anatomy.measuredFields & b) !== 0;
+  return {
+    lengthMm: bit(1) ? own.lengthMm : typical.lengthMm,
+    widthMm: bit(2) ? own.widthMm : typical.widthMm,
+    heightMm: bit(4) ? own.heightMm : typical.heightMm,
+    wheelbaseMm: bit(8) ? own.wheelbaseMm : typical.wheelbaseMm,
+    trackMm: bit(16) ? own.trackMm : typical.trackMm,
+    wheelMm: typical.wheelMm ?? own.wheelMm,
+  };
+}
+
+// The shape of a car: the defaults for its body, year and drivetrain, the
+// traits its name gives, with the hand-tuned row of its generation and
+// body on top.
 export function shapeFor(anatomy: VehicleAnatomy, catalogBody: BodyType, body: BodyType = catalogBody): Shape {
   const rows = rowsFor(anatomy.brand, anatomy.model, anatomy.generation);
   const row = rows.find((r) => (r.body ?? catalogBody) === body);
   const base = defaultShape(body, anatomy.year, anatomy.engine, anatomy.driven);
+  const { wheel: presetWheel, headlight: presetHead, taillight: presetTail, grille: presetGrille, ...preset } = namePreset(anatomy, body);
   const { wheel, headlight, taillight, grille, ...spec } = row?.shape ?? {};
   return {
     ...base,
+    ...preset,
     ...spec,
-    headlight: { ...base.headlight, ...headlight },
-    taillight: { ...base.taillight, ...taillight },
-    grille: { ...base.grille, ...grille },
+    headlight: { ...base.headlight, ...presetHead, ...headlight },
+    taillight: { ...base.taillight, ...presetTail, ...taillight },
+    grille: { ...base.grille, ...presetGrille, ...grille },
     body,
-    wheel: wheel ?? anatomy.wheelMm / 1000,
+    wheel: wheel ?? presetWheel ?? classSize(anatomy, body).wheelMm / 1000,
     source: row ? "profile" : "typical",
     note: row?.note ?? "",
   };
@@ -805,6 +1043,31 @@ export interface Profile {
   grille: Grille;
   noseTop: number;
   tailTop: number;
+  // The rear part (stations 0 to open) where the hull is only the envelope
+  // the parts are kept in and is not drawn: the bed of a pickup, the spare
+  // wheel behind the tail door, the frame behind a truck's cab. The drawn
+  // body ends there with a flat wall. 0 for a closed body.
+  open: number;
+  // The bed of a pickup: heights of its floor and rim in metres. Its walls
+  // are parts of the layout, flush with the envelope.
+  bed: { floor: number; rim: number } | null;
+  // The spare wheel on the tail door: centre and radius in metres.
+  spare: { x: number; y: number; r: number } | null;
+  // Station of the rear face the tail lights are drawn on; -1 for none on
+  // the body (a truck has its lamps on the frame).
+  rearFace: number;
+  // Top edge of the side windows, the windscreen and the rear window in
+  // metres where they end below the roof (a high roof, a truck cab, a
+  // bus); 99 where they reach it.
+  glassTop: number;
+  // The rail of a sliding door along the side: from x to x at height y.
+  rail: [number, number, number] | null;
+  // Station from which the window line runs to its height at the
+  // windscreen; omitted: the rear end of the side windows. A coach's
+  // windows stay high to its front door, its windscreen comes down low.
+  beltRun?: number;
+  // Exponent of the cross-section (5 when omitted): higher for a box.
+  section?: number;
 }
 
 export interface BodyGeometry {
@@ -816,6 +1079,9 @@ export interface BodyGeometry {
 
 const rad = (deg: number) => (deg * Math.PI) / 180;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+
+// Length of a pickup's cab from the base of the windscreen to its back wall.
+const CAB_LENGTH: Record<ShapeSpec["cab"], number> = { single: 1.3, extended: 1.72, double: 2.15 };
 
 // The profile of one car in metres: length, height, wheelbase and the shape.
 export function bodyGeometry(length: number, height: number, wheelbase: number, wheelRadius: number, s: Shape): BodyGeometry {
@@ -833,11 +1099,19 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
   const frontAxle = xF - fo;
   const rearAxle = frontAxle - wb;
 
+  // A body with a tailgate and the spare wheel on it ends that much ahead
+  // of the length, which makers measure over the wheel.
+  const gate = s.style === "hatchback" || s.style === "estate" || s.style === "suv" || s.style === "van";
+  const spareDepth = s.spare && gate ? clamp(r * 0.62, 0.2, 0.3) : 0;
+  const xB = xR + spareDepth;
+
   const belt = clamp(s.belt, 0.45, 0.82) * H;
   const beltRear = Math.min(belt + s.beltRise, H - 0.25);
   const crown = s.roofCrown;
   // The ends of the roof: the front one a crown below the top, the rear one
-  // lower by the drop (a hatchback's roof falls towards its spoiler).
+  // lower by the drop (a hatchback's roof falls towards its spoiler). A high
+  // roof starts that much lower at the windscreen header and rises behind it.
+  const step = s.style === "van" && s.highRoof ? clamp(H - 2.0, 0.22, 0.6) : 0;
   const roofY = H - crown;
   const roofRearY = roofY - clamp(s.roofDrop, 0, 0.2);
   const noseY = clamp(s.nose * H, s.rideHeight + 0.3, belt - 0.05);
@@ -848,7 +1122,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
   const cowlX = clamp(frontAxle - s.cowl, rearAxle + wb * 0.55, xF - 0.3);
   const cowlY = belt + 0.02;
   // A roadster's height is the top of its windscreen frame.
-  const roofTop = s.style === "roadster" ? H : roofY;
+  const roofTop = s.style === "roadster" ? H : roofY - step;
   let roofFrontX = cowlX - (roofTop - cowlY) / tan(s.windscreen);
 
   // The rear: where the roof ends and what follows.
@@ -856,6 +1130,8 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
   let tailX: number;
   // The top edge of the rear face: boot lid, deck, bed or tailgate glass.
   let tailTop: number;
+  let bed: Profile["bed"] = null;
+  let open = 0;
   const rear: [number, number][] = [];
   const glassBottom = beltRear + 0.03;
   const tailY = clamp(s.tail * H, belt - 0.04, H - 0.2);
@@ -872,11 +1148,16 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       break;
     }
     case "pickup": {
-      const bedY = beltRear - 0.02;
-      tailX = xR + 0.05 + clamp(s.deck, 0.8, L * 0.4);
+      // The cab ends a cab length behind the windscreen, the bed takes the
+      // rest; its rim is about the window line, its floor clears the tyres.
+      // The bed is open on top: the hull over it is only the envelope.
+      const rim = clamp(beltRear, 2 * r + 0.3, H - 0.4);
+      tailX = clamp(cowlX - CAB_LENGTH[s.cab], xR + 0.9, cowlX - 1.1);
       roofRearX = tailX + 0.1;
-      rear.push([xR, bedY - 0.12], [xR + 0.03, bedY], [tailX - 0.06, bedY], [tailX, roofY - 0.2]);
-      tailTop = bedY - 0.02;
+      rear.push([xR, rim - 0.03], [xR + 0.03, rim], [tailX - 0.04, rim], [tailX, rim + 0.005]);
+      tailTop = rim - 0.02;
+      bed = { floor: clamp(2 * r + 0.07, rim - 0.6, rim - 0.25), rim };
+      open = station(tailX);
       break;
     }
     case "roadster": {
@@ -891,12 +1172,21 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       // Hatchback, estate, SUV, van: a tailgate whose glass starts at the
       // window line.
       const set = s.style === "hatchback" ? 0.15 : s.style === "van" ? 0.04 : 0.09;
-      tailX = xR + set;
+      tailX = xB + set;
       roofRearX = tailX + (roofRearY - glassBottom) / tan(s.rearWindow);
-      rear.push([xR, bumperY], [xR + 0.025, glassBottom - 0.16], [tailX, glassBottom]);
+      rear.push([xB, bumperY], [xB + 0.025, glassBottom - 0.16], [tailX, glassBottom]);
       tailTop = glassBottom - 0.02;
       break;
     }
+  }
+  // The spare wheel hangs on the tail door: the envelope reaches round it,
+  // the drawn body ends at the door.
+  let spare: Profile["spare"] = null;
+  if (spareDepth > 0) {
+    const y = clamp(belt - 0.12, r + 0.3, H - r - 0.12);
+    spare = { x: xR + spareDepth / 2, y, r };
+    rear.push([xR, y + r + 0.04], [xB - 0.03, y + r + 0.04]);
+    open = station(xB);
   }
   // The roof needs some length: a too flat rear window or windscreen for
   // this car gets steeper.
@@ -913,6 +1203,11 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
     // The open cockpit behind the windscreen frame, at the height of the doors.
     const rim = beltRear + 0.06;
     pts.push([tailX + 0.25, rim], [roofRearX - 0.12, rim], [roofRearX, roofTop - 0.06], [roofFrontX, roofTop]);
+  } else if (step > 0) {
+    // A high roof: flat from the back doors, a rounded front over the cab
+    // that drops to the windscreen header.
+    const riseX = Math.max(roofRearX + 0.3, roofFrontX - 0.55);
+    pts.push([roofRearX, roofY], [(roofRearX + riseX) / 2, H], [riseX, H - 0.01], [roofFrontX - 0.2, roofTop + step * 0.45], [roofFrontX, roofTop]);
   } else {
     const n = 8;
     const p = clamp(s.roofPeak, 0.2, 0.8);
@@ -957,7 +1252,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
     dloRearBottom = glassAtBelt + s.lastPillar;
     dloRearTop = roofRearX + Math.max(0.08, s.lastPillar * 0.45);
   }
-  dloRearBottom = clamp(dloRearBottom, xR + 0.15, dloFrontBottom - 0.8);
+  dloRearBottom = clamp(dloRearBottom, xB + 0.15, dloFrontBottom - 0.8);
   dloRearTop = clamp(dloRearTop, dloRearBottom - 0.6, dloFrontTop - 0.4);
 
   // Pillars and dividers between the windows, and the door seams below.
@@ -970,19 +1265,27 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
   const seamBottom = (x: number) =>
     Math.abs(x - frontAxle) < r + 0.06 || Math.abs(x - rearAxle) < r + 0.06 ? archTop + 0.02 : sill;
   const addSeam = (x: number) => seams.push({ x, top: belt + (beltRear - belt) * (1 - (x - dloRearBottom) / Math.max(0.1, dloFrontBottom - dloRearBottom)), bottom: seamBottom(x) });
+  let rail: Profile["rail"] = null;
   addSeam(cowlX - 0.02);
   if (s.style === "van") {
     const b = cowlX - 0.95;
     pillars.push(b, rearAxle + 0.1);
     widths.push(thick, thick);
     addSeam(b);
+    if (s.sliding) {
+      // The sliding door behind the B-pillar and the rail it runs in along
+      // the side below the windows, back from its rear edge.
+      const back = Math.max(rearAxle + r + 0.1, b - 1.25);
+      addSeam(back);
+      rail = [Math.max(xB + 0.3, back - 1.0), back, beltRear - 0.04];
+    }
   } else if (s.doors === 4) {
     const b = cowlX - (s.style === "pickup" ? 1.0 : 1.02);
     pillars.push(b);
     widths.push(thick);
     addSeam(b);
-    // The rear door ends over the rear wheel arch.
-    const rearDoor = clamp(rearAxle + r * 0.55, b - 1.15, b - 0.7);
+    // The rear door ends over the rear wheel arch, a pickup's at the cab.
+    const rearDoor = s.style === "pickup" ? Math.max(tailX + 0.12, b - 1.1) : clamp(rearAxle + r * 0.55, b - 1.15, b - 0.7);
     addSeam(rearDoor);
     if (s.style === "estate" || s.style === "suv") {
       pillars.push(rearDoor + 0.02);
@@ -992,9 +1295,9 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
       widths.push(0.025);
     }
   } else if (s.style !== "roadster") {
-    const door = cowlX - 1.28;
+    const door = s.style === "pickup" ? Math.max(tailX + 0.12, cowlX - 1.28) : cowlX - 1.28;
     addSeam(door);
-    if (s.quarterWindow) {
+    if (s.quarterWindow || (s.style === "pickup" && s.cab === "extended")) {
       pillars.push(door + 0.02);
       widths.push(s.frameless ? 0.025 : 0.05);
     }
@@ -1017,7 +1320,7 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
     kink: s.kink ? 0.09 / L : 0,
     seams,
     clearance: s.rideHeight,
-    rearSeats: s.style !== "roadster" && L > 3.1,
+    rearSeats: s.style !== "roadster" && L > 3.1 && !(s.style === "pickup" && s.cab !== "double"),
     tumblehome: s.tumblehome,
     noseRound: s.noseRound,
     tailRound: s.tailRound,
@@ -1028,6 +1331,13 @@ export function bodyGeometry(length: number, height: number, wheelbase: number, 
     grille: s.grille,
     noseTop: noseY - 0.02,
     tailTop,
+    open,
+    bed,
+    spare,
+    rearFace: spare ? open : 0,
+    glassTop: step > 0 ? roofTop - 0.03 : 99,
+    rail,
+    section: s.section,
   };
   return { profile, frontAxle, rearAxle, wheelRadius: r };
 }
