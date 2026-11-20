@@ -16,7 +16,7 @@ caruspex-record.workspace = true
 caruspex-analysis.workspace = true
 caruspex-demo.workspace = true
 caruspex-pdf.workspace = true
-chrono.workspace = true
+jiff.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

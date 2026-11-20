@@ -177,6 +177,36 @@ tags in the main repository, and only the main repository publishes the document
 the maintainer to approve the workflow runs of a first-time contributor, so the checks of your first pull
 request can wait a little.
 
+### Dependency updates
+
+Dependabot (`.github/dependabot.yml`) opens a pull request each month for the crates, the npm packages, the
+GitHub Actions and the Python packages of the release job. Any change of `Cargo.lock`, `app/package-lock.json`
+or the Android libraries also changes `THIRD_PARTY_NOTICES.md`, so the step **Third party notices are current**
+fails on such a pull request until the file is regenerated. The step writes the new file and attaches it to the
+run as the artifact `third-party-notices`; the error message names the run. On the branch of the pull request:
+
+```bash
+# Either regenerate it
+npm --prefix app ci
+python tools/gen_notices.py
+# or take the file the run made
+gh run download <run id> -n third-party-notices --repo SenseiIssei/Caruspex
+
+git diff THIRD_PARTY_NOTICES.md    # only new or changed packages and licences
+git commit -m "Third party notices" THIRD_PARTY_NOTICES.md
+```
+
+This stays a manual step on purpose. A workflow that commits to the pull request by itself would need a token
+with write access in a run that installs and executes what the pull request brings (npm install scripts, Cargo
+build scripts); that is the kind of run that can leak the token. The CI only hands the file over, with the
+read-only token every pull request gets. The SBOMs need nothing: they are built from the lock files in every
+run and never committed.
+
+Actions are pinned by commit SHA with the version in a comment (`uses: actions/checkout@<sha> # v7.0.1`), and
+the Python packages of the release job by version and hash (`tools/requirements-release.txt`); Dependabot updates
+both. Pin a new action the same way: `gh api repos/<owner>/<repo>/git/ref/tags/<tag>` gives the SHA (for an
+annotated tag follow `object.url` to the commit).
+
 ## How texts and translations work
 
 Caruspex speaks 18 languages. German and English are written in the code, the other 16 come from JSON files.

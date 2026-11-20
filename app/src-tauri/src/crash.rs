@@ -64,7 +64,7 @@ pub fn install(dir: PathBuf, app: AppHandle) {
         let Some(dir) = DIR.get() else {
             return;
         };
-        if let Ok(path) = write_report(dir, &text, &chrono::Local::now()) {
+        if let Ok(path) = write_report(dir, &text, &jiff::Zoned::now()) {
             // The window may still be there (a panic in the worker thread).
             if let Some(app) = APP.get() {
                 let _ = app.emit(
@@ -178,16 +178,12 @@ pub fn report_text(
 }
 
 /// Writes the report into `dir` as crash-<time>.txt.
-pub fn write_report(
-    dir: &Path,
-    text: &str,
-    when: &chrono::DateTime<chrono::Local>,
-) -> std::io::Result<PathBuf> {
+pub fn write_report(dir: &Path, text: &str, when: &jiff::Zoned) -> std::io::Result<PathBuf> {
     std::fs::create_dir_all(dir)?;
-    let mut path = dir.join(format!("crash-{}.txt", when.format("%Y%m%d-%H%M%S")));
+    let mut path = dir.join(format!("crash-{}.txt", when.strftime("%Y%m%d-%H%M%S")));
     let mut n = 2;
     while path.exists() {
-        path = dir.join(format!("crash-{}-{n}.txt", when.format("%Y%m%d-%H%M%S")));
+        path = dir.join(format!("crash-{}-{n}.txt", when.strftime("%Y%m%d-%H%M%S")));
         n += 1;
     }
     std::fs::write(&path, text)?;
@@ -287,7 +283,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("caruspex-crash-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         assert!(pending(&dir).is_none());
-        let when = chrono::Local::now();
+        let when = jiff::Zoned::now();
         let first = write_report(&dir, "one", &when).unwrap();
         let second = write_report(&dir, "two", &when).unwrap();
         assert_ne!(first, second);

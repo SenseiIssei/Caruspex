@@ -114,9 +114,14 @@ minisign -V -p caruspex-updater.pub -m <file> -x <file>.minisig
 - A finding that does not affect Caruspex (the vulnerable function is not used, the platform is not built) is
   accepted in `tools/audit_exceptions.toml` with the advisory id, the package, the reason and an expiry date at
   most one year ahead. An expired entry fails the audit until it is checked again. Unmaintained and unsound
-  crates are shown as warnings.
-- Dependabot (`.github/dependabot.yml`) proposes updates for Cargo, npm and the GitHub Actions every month, and
-  security updates for these and for the Gradle files of the Android app.
+  crates are shown as warnings; when one cannot be replaced yet, that decision is recorded the same way, with a
+  reason and an expiry, so it is looked at again.
+- Dependabot (`.github/dependabot.yml`) proposes updates for Cargo, npm, the GitHub Actions and the Python
+  packages of the release job every month, and security updates for these and for the Gradle files of the
+  Android app.
+- Every GitHub Action in the workflows is pinned by commit SHA, and the release job installs its Python packages
+  in exact versions with their hashes (`tools/requirements-release.txt`), so a moved tag or a replaced package
+  cannot change what the release job runs.
 
 ## For the maintainer
 
