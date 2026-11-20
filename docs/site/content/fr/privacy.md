@@ -13,12 +13,19 @@ Tout reste sur votre ordinateur :
 | Enregistrements et fichiers CSV | seulement quand vous les lancez | là où vous les enregistrez |
 | Fichier journal | seulement si vous l'activez dans les réglages | le chemin que vous choisissez |
 | Rapports de plantage | seulement si Caruspex plante | le dossier `crash-reports` à côté du garage |
+| Rapports du premier test KKL | seulement quand vous en enregistrez un | le dossier `test-reports` dans le dossier des réglages ; le VIN et le numéro d'antidémarrage sont raccourcis, sauf si vous cochez la case |
 
 Vous pouvez supprimer n'importe lequel de ces fichiers à tout moment.
 
 ## Ce qui est envoyé
 
 Au démarrage, Caruspex demande à GitHub s'il existe une version plus récente. Rien sur vous ni sur la voiture n'est envoyé avec. La vérification peut être désactivée dans les réglages. En dehors de cela, Caruspex ne se connecte pas à internet. La communication avec un adaptateur Wi-Fi, un câble ENET ou une voiture DoIP reste dans votre réseau local.
+
+Seules les versions publiées sur GitHub cherchent des mises à jour ; une copie que vous compilez vous-même ne le fait jamais. Comme pour toute requête sur internet, la vérification et le téléchargement d'une mise à jour montrent à GitHub votre adresse IP et la version de Caruspex ; la déclaration de confidentialité de GitHub s'applique. Les mises à jour ne sont téléchargées que depuis les versions du dépôt Caruspex. Des boutons comme **Signaler sur GitHub** ouvrent seulement votre navigateur ; ce que vous y publiez dépend de vous.
+
+## Android
+
+Jusqu'à Android 11, le système ne laisse une application trouver des adaptateurs Bluetooth LE qu'avec l'autorisation de localisation. Caruspex la demande uniquement pour cela et ne lit jamais votre position. À partir d'Android 12, il demande à la place l'autorisation Bluetooth, déclarée comme jamais utilisée pour la localisation.
 
 ## Rapports de plantage seulement sur demande
 

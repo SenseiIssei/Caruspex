@@ -13,12 +13,19 @@ Alles bleibt auf dem eigenen Rechner:
 | Aufnahmen und CSV-Dateien | nur, wenn man sie startet | wo man sie speichert |
 | Protokolldatei | nur, wenn man sie in den Einstellungen einschaltet | am gewählten Pfad |
 | Absturzberichte | nur, wenn Caruspex abstürzt | im Ordner `crash-reports` neben der Garage |
+| Testberichte des ersten KKL-Tests | nur, wenn man einen speichert | im Ordner `test-reports` im Einstellungsordner; FIN und Wegfahrsperrennummer werden gekürzt, außer man setzt das Häkchen |
 
 Jede dieser Dateien lässt sich jederzeit löschen.
 
 ## Was gesendet wird
 
 Beim Start fragt Caruspex bei GitHub nach, ob es eine neuere Version gibt. Dabei wird nichts über einen selbst oder das Auto mitgeschickt. Die Suche lässt sich in den Einstellungen abschalten. Sonst geht Caruspex nicht ins Internet. Das Gespräch mit einem WLAN-Adapter, einem ENET-Kabel oder einem DoIP-Auto bleibt im lokalen Netz.
+
+Nach Updates suchen nur die auf GitHub veröffentlichten Release-Builds; eine selbst gebaute Kopie tut das nie. Wie bei jeder Anfrage im Internet sieht GitHub bei der Suche und beim Herunterladen eines Updates die IP-Adresse und die Version von Caruspex; dafür gilt die Datenschutzerklärung von GitHub. Updates kommen nur aus den Releases des Caruspex-Repositorys. Knöpfe wie **Auf GitHub melden** öffnen nur den Browser; was man dort absendet, entscheidet man selbst.
+
+## Android
+
+Bis Android 11 lässt das System eine App Bluetooth-LE-Adapter nur mit der Standortberechtigung finden. Caruspex fragt nur deshalb danach und liest den Standort nie. Ab Android 12 fragt es stattdessen nach der Bluetooth-Berechtigung, die als nie für den Standort genutzt gekennzeichnet ist.
 
 ## Absturzberichte nur auf Wunsch
 

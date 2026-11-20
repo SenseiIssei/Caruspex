@@ -505,17 +505,29 @@ python tools/gen_vehicles.py
 ترسب السيارة في فحص الانبعاثات حتى تكمل عدة دورات قيادة كاملة، وسيعود الرمز الذي
 ما زال سببه قائماً بعد قيادة قصيرة. المسح ليس إصلاحاً.
 
-## إخلاء المسؤولية
+<!-- legal -->
+## السلامة والمسؤولية
 
-Caruspex مشروع هواية ويُقدَّم دون أي ضمان. استخدمه على مسؤوليتك، وفقط على المركبات
-المسموح لك بالعمل عليها، ولا تستخدمه أبداً أثناء القيادة. جميع أسماء المنتجات والماركات علامات تجارية
-لأصحابها؛ و Caruspex ليس تابعاً لأي شركة مصنّعة للمركبات ولا معتمداً منها.
+Caruspex مشروع هواية حر ويُقدَّم بلا أي ضمان، كما ينص [ترخيص MIT](LICENSE). تستخدمه على مسؤوليتك الخاصة.
 
-## الترخيص
+- لا تستخدمه أبدًا أثناء القيادة. اضبطه والسيارة متوقفة؛ ويمكن لراكب أن يتابع القيم المباشرة.
+- مسح الأعطال واختبارات المشغّلات والإعدادات الأساسية تجعل السيارة تقوم بشيء ما. يسأل Caruspex قبل كل منها؛ نفّذها فقط والسيارة متوقفة ومؤمّنة، وفقط على مركبات يحق لك العمل عليها.
+- لا يغني Caruspex عن الورشة. رمز العطل يدل على عَرَض، وليس دائمًا على سببه. المكابح والوسائد الهوائية والتوجيه وكل ما يهم السلامة يجب أن يتولاه مختصون.
+- المسح ليس إصلاحًا. قد يؤدي مسح الأعطال وإعادة ضبط اختبارات الجاهزية إلى الرسوب في فحص الانبعاثات أو الفحص الفني.
+- لا يغيّر Caruspex عداد المسافة ولا نظام منع التشغيل ولا المفاتيح ولا نظام التحكم في الانبعاثات ولا جهاز التاكوغراف، ولا يقبل المشروع مساهمات تفعل ذلك. التلاعب بعدادات المسافة أو أنظمة الانبعاثات أو أجهزة التاكوغراف مخالف للقانون في كثير من الدول.
 
-MIT، انظر [LICENSE](LICENSE). قيم الشركة المصنّعة لمئات الطرازات محوّلة من [OBDb](https://github.com/OBDb) ومرخّصة مثله برخصة CC BY-SA 4.0: وهي منفصلة عن الشيفرة في [data/obdb](data/obdb) مع الرخصة وقائمة المصادر ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
-الخطوط المرفقة مرخّصة برخصة SIL Open Font License 1.1:
-JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)) وInter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) و
-Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+## العلامات التجارية
 
-</div>
+أسماء الشركات المصنّعة للمركبات والطرازات والمحوّلات والبرامج والمعايير (مثل Volkswagen وAudi وBMW وMercedes-Benz وTesla وOBDLink وELM327 وVCDS وISTA) علامات تجارية لأصحابها. وهي مذكورة فقط لبيان السيارات والمحوّلات والواجهات التي يعمل معها Caruspex. Caruspex مشروع مستقل لا يرتبط بأي شركة مصنّعة للمركبات أو للمحوّلات أو مزوّد برمجيات، ولا تعتمده أو ترعاه أي منها. لا يستخدم التطبيق ولا هذا المستودع شعارات هذه الشركات.
+
+## الترخيص والمصادر
+
+الشيفرة مرخّصة بموجب ترخيص MIT، انظر [LICENSE](LICENSE). المكتبات الموجودة في البرامج وتراخيصها مدرجة في [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)؛ ويعرضها التطبيق في الإعدادات. البيانات المضمّنة في البرامج:
+
+- قيم الشركات المصنّعة لنحو 550 مركبة، محوّلة من [OBDb](https://github.com/OBDb)، ومرخّصة مثل OBDb بموجب CC BY-SA 4.0: منفصلة عن الشيفرة في [data/obdb](data/obdb) مع الترخيص وقائمة المصادر ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+- تعريفات إشارات CAN من [opendbc](https://github.com/commaai/opendbc) (comma.ai) و[model3dbc](https://github.com/joshwardell/model3dbc)، بترخيص MIT ([data/opendbc](data/opendbc)، [data/tesla](data/tesla)).
+- رموز المحركات من مقالات ويكيبيديا، CC BY-SA 4.0 ([data/engines](data/engines)، مع المقالة والمراجعة في كل سطر).
+- جزء من رموز الشركات المصنّعة في رقم VIN وفق [قائمة WMI في ويكي الكتب](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29)، CC BY-SA 4.0.
+- أبعاد المركبات من [ويكي بيانات](https://www.wikidata.org)، CC0.
+- خطوط مرخّصة بموجب SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+<!-- /legal -->

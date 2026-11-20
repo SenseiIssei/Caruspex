@@ -503,15 +503,29 @@ OBD mode 04 menghapus memori kesalahan, freeze frame, dan monitor kesiapan. Tepa
 mobil akan gagal uji emisi sampai menyelesaikan beberapa siklus berkendara penuh, dan kode yang penyebabnya
 masih ada akan muncul lagi setelah berkendara sebentar. Menghapus bukan memperbaiki.
 
-## Penafian
+<!-- legal -->
+## Keselamatan dan tanggung jawab
 
-Caruspex adalah proyek hobi dan disediakan tanpa jaminan. Gunakan dengan risiko Anda sendiri, hanya pada kendaraan
-yang boleh Anda kerjakan, dan jangan pernah saat mengemudi. Semua nama produk dan merek adalah merek dagang
-dari pemiliknya masing-masing; Caruspex tidak berafiliasi dengan atau didukung oleh pabrikan kendaraan mana pun.
+Caruspex adalah proyek hobi yang bebas dan diberikan tanpa jaminan apa pun, seperti tertulis dalam [lisensi MIT](LICENSE). Anda menggunakannya dengan risiko sendiri.
 
-## Lisensi
+- Jangan pernah mengoperasikannya saat mengemudi. Atur saat mobil berhenti; nilai langsung bisa dipantau oleh penumpang.
+- Menghapus kesalahan, uji aktuator, dan pengaturan dasar membuat mobil melakukan sesuatu. Caruspex bertanya sebelum masing-masing; lakukan hanya saat mobil berhenti dan diamankan, dan hanya pada kendaraan yang boleh Anda kerjakan.
+- Caruspex bukan pengganti bengkel. Kode kesalahan menunjukkan gejala, tidak selalu penyebabnya. Rem, airbag, kemudi, dan semua yang penting bagi keselamatan harus ditangani ahlinya.
+- Menghapus bukan memperbaiki. Kesalahan yang dihapus dan monitor kesiapan yang direset bisa membuat uji emisi atau uji kelaikan kendaraan gagal.
+- Caruspex tidak mengubah jarak tempuh, imobilizer, kunci, kendali emisi, atau tachograph, dan proyek ini tidak menerima kontribusi yang melakukannya. Memanipulasi odometer, kendali emisi, atau tachograph dilarang di banyak negara.
 
-MIT, lihat [LICENSE](LICENSE). Nilai pabrikan untuk ratusan model diubah dari [OBDb](https://github.com/OBDb) dan, seperti OBDb, dilisensikan di bawah CC BY-SA 4.0: nilai itu disimpan terpisah dari kode di [data/obdb](data/obdb) bersama lisensi dan daftar sumbernya ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
-Font yang disertakan dilisensikan di bawah SIL Open Font License 1.1:
-JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), dan
-Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+## Merek dagang
+
+Nama pabrikan kendaraan, model, adaptor, program, dan standar (misalnya Volkswagen, Audi, BMW, Mercedes-Benz, Tesla, OBDLink, ELM327, VCDS, atau ISTA) adalah merek dagang pemiliknya masing-masing. Nama-nama itu hanya disebut untuk menyatakan mobil, adaptor, dan antarmuka apa saja yang bisa dipakai bersama Caruspex. Caruspex adalah proyek independen dan tidak berafiliasi dengan, tidak didukung oleh, dan tidak disponsori oleh pabrikan kendaraan, pembuat adaptor, atau vendor perangkat lunak mana pun. Aplikasi dan repositori ini tidak memakai logo perusahaan-perusahaan tersebut.
+
+## Lisensi dan sumber
+
+Kode berlisensi MIT, lihat [LICENSE](LICENSE). Pustaka di dalam program dan lisensinya tercantum di [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); aplikasi menampilkannya di pengaturan. Data yang tertanam di dalam program:
+
+- Nilai pabrikan untuk sekitar 550 kendaraan, dikonversi dari [OBDb](https://github.com/OBDb), berlisensi CC BY-SA 4.0 seperti OBDb: terpisah dari kode di [data/obdb](data/obdb) bersama lisensi dan daftar sumbernya ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+- Definisi sinyal CAN dari [opendbc](https://github.com/commaai/opendbc) (comma.ai) dan [model3dbc](https://github.com/joshwardell/model3dbc), lisensi MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Kode mesin dari artikel Wikipedia, CC BY-SA 4.0 ([data/engines](data/engines), dengan artikel dan revisi di setiap baris).
+- Sebagian kode pabrikan VIN menurut [daftar WMI di Wikibuku](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Dimensi kendaraan dari [Wikidata](https://www.wikidata.org), CC0.
+- Fon berlisensi SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+<!-- /legal -->

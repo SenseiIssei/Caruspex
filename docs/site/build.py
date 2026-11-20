@@ -74,7 +74,7 @@ GROUPS = [
         ],
     ),
     ("group_using", ["faults", "live", "xray", "used-car"]),
-    ("group_more", ["privacy", "faq"]),
+    ("group_more", ["privacy", "legal", "faq"]),
 ]
 PAGES = [page for _, pages in GROUPS for page in pages]
 

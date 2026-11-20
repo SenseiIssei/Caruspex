@@ -13,12 +13,19 @@ Alles blijft op je computer:
 | Opnames en CSV-bestanden | alleen als je ze start | waar je ze opslaat |
 | Logbestand | alleen als je het in de instellingen aanzet | het pad dat je kiest |
 | Crashrapporten | alleen als Caruspex crasht | de map `crash-reports` naast de garage |
+| Testrapporten van de eerste KKL-test | alleen als je er een opslaat | de map `test-reports` in de map met instellingen; het VIN en het nummer van de startonderbreker worden ingekort, tenzij je het vakje aanvinkt |
 
 Je kunt elk van deze bestanden op elk moment verwijderen.
 
 ## Wat wordt verstuurd
 
 Bij het starten vraagt Caruspex aan GitHub of er een nieuwere versie is. Daarbij wordt niets over jou of de auto meegestuurd. De controle kun je in de instellingen uitzetten. Verder maakt Caruspex geen verbinding met internet. Het contact met een wifi-adapter, een ENET-kabel of een DoIP-auto blijft in je lokale netwerk.
+
+Alleen de op GitHub gepubliceerde releases zoeken naar updates; een kopie die je zelf bouwt doet dat nooit. Zoals bij elk verzoek op internet zien GitHub bij het zoeken en downloaden van een update je IP-adres en de versie van Caruspex; daarvoor geldt de privacyverklaring van GitHub. Updates komen alleen uit de releases van de Caruspex-repository. Knoppen als **Melden op GitHub** openen alleen je browser; wat je daar plaatst, bepaal je zelf.
+
+## Android
+
+Tot en met Android 11 laat het systeem een app Bluetooth LE-adapters alleen vinden met de locatietoestemming. Caruspex vraagt daar alleen om die reden om en leest je locatie nooit. Vanaf Android 12 vraagt het in plaats daarvan de Bluetooth-toestemming, gemarkeerd als nooit gebruikt voor locatie.
 
 ## Crashrapporten alleen op verzoek
 
