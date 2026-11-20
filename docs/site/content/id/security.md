@@ -39,15 +39,11 @@ berikutnya. Kerentanan yang sudah diperbaiki diterbitkan sebagai
 
 ## Pembaruan dan dukungan {#support}
 
-- Saat mulai, Caruspex bertanya ke GitHub apakah ada versi lebih baru dan menampilkannya. Memasang cukup satu klik,
-  dan aplikasi hanya memasang paket yang tanda tangannya cocok. AppImage dan aplikasi macOS memperbarui dirinya
-  sendiri; paket .deb dan aplikasi Android mendapat halaman unduhan.
-- Pencarian dan pemasangan otomatis adalah sakelar di pengaturan, di bagian **Jendela dan bahasa**. Tanpa pencarian,
-  sesekali lihat halaman rilis.
+- Pada setiap pemasangan, termasuk setelah memperbarui dari versi lama, Caruspex bertanya satu kali "Cari pembaruan?". Hanya setelah dijawab ya, Caruspex bertanya ke GitHub apakah ada versi lebih baru, saat mulai dan setiap enam jam selama berjalan. Versi baru hanya menyalakan sebuah tombol di bilah judul dan tidak pernah mengganggu. Memasang cukup satu klik, dan aplikasi hanya memasang paket yang tanda tangannya cocok. AppImage dan aplikasi macOS memperbarui dirinya sendiri; paket .deb dan aplikasi Android mendapat halaman unduhan.
+- Pencarian dan pemasangan otomatis adalah sakelar di pengaturan, di bagian **Jendela dan bahasa**, dan bisa diubah kapan saja. Tanpa jawaban ya, tidak ada permintaan yang dikirim ke GitHub; sesekali lihat halaman rilis.
 - Perbaikan keamanan hanya masuk ke rilis terbaru. Versi lama tidak mendapat perbaikan tersendiri, jadi selalu
   perbarui Caruspex.
-- Caruspex dirawat di waktu luang dan tidak punya tanggal akhir yang tetap. Jika perawatan berhenti, repositori dan
-  satu rilis terakhir akan mengumumkannya lebih dulu.
+- Caruspex dirawat oleh satu orang di waktu luang, sebisa waktu mengizinkan, tanpa janji apa pun: tanpa masa dukungan dan tanpa batas waktu balasan. Jika perawatan berhenti, repositori akan diarsipkan dan menyatakannya.
 
 ## Memeriksa unduhan {#verify}
 

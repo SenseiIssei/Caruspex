@@ -19,9 +19,9 @@ Każdy z tych plików możesz w dowolnej chwili usunąć.
 
 ## Co jest wysyłane
 
-Przy starcie Caruspex pyta GitHuba, czy jest nowsza wersja. Nic o tobie ani o aucie nie jest przy tym wysyłane. Sprawdzanie można wyłączyć w ustawieniach. Poza tym Caruspex nie łączy się z internetem. Komunikacja z adapterem Wi-Fi, kablem ENET czy autem DoIP zostaje w twojej sieci lokalnej.
+Przy każdej instalacji, także po aktualizacji ze starszej wersji, Caruspex pyta raz, czy ma szukać aktualizacji. Dopiero po odpowiedzi "tak" pyta GitHub, czy jest nowsza wersja, przy starcie i co sześć godzin, dopóki działa. Nic o tobie ani o aucie nie jest przy tym wysyłane. Bez "tak" żadne zapytanie nie trafia do GitHuba. Możesz to zmienić w każdej chwili w ustawieniach, w sekcji **Okno i język**. Poza tym Caruspex nie łączy się z internetem. Komunikacja z adapterem Wi-Fi, kablem ENET czy autem DoIP zostaje w twojej sieci lokalnej.
 
-Aktualizacji szukają tylko wydania opublikowane na GitHubie; kopia zbudowana samodzielnie nigdy tego nie robi. Jak przy każdym zapytaniu w internecie, sprawdzanie i pobieranie aktualizacji pokazuje GitHubowi twój adres IP i wersję Caruspex; obowiązuje przy tym oświadczenie o prywatności GitHuba. Aktualizacje są pobierane tylko z wydań repozytorium Caruspex. Przyciski takie jak **Zgłoś na GitHubie** tylko otwierają przeglądarkę; to, co tam opublikujesz, zależy od ciebie.
+Aktualizacji szukają tylko wydania opublikowane na GitHubie; kopia zbudowana samodzielnie nigdy tego nie robi. Gdy Caruspex szuka aktualizacji lub ją pobiera, GitHub widzi, jak przy każdym pobieraniu, adres IP komputera i wersję Caruspex; sam Caruspex nie wysyła ani nie zapisuje nic więcej, a nikt inny, także projekt, tego nie widzi. Obowiązuje przy tym oświadczenie o prywatności GitHuba. Aktualizacje są pobierane tylko z wydań repozytorium Caruspex. Przyciski takie jak **Zgłoś na GitHubie** tylko otwierają przeglądarkę; to, co tam opublikujesz, zależy od ciebie.
 
 ## Android
 

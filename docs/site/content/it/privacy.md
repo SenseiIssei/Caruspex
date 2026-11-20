@@ -19,9 +19,9 @@ Puoi cancellare uno qualsiasi di questi file in qualsiasi momento.
 
 ## Cosa viene inviato
 
-All'avvio Caruspex chiede a GitHub se c'è una versione più recente. Non viene inviato niente su di te o sull'auto. Il controllo si può disattivare nelle impostazioni. A parte questo Caruspex non si collega a internet. La comunicazione con un adattatore Wi-Fi, un cavo ENET o un'auto DoIP resta nella tua rete locale.
+A ogni installazione, anche dopo l'aggiornamento da una versione più vecchia, Caruspex chiede una volta se deve cercare aggiornamenti. Solo dopo un sì chiede a GitHub se c'è una versione più recente, all'avvio e ogni sei ore finché è in esecuzione. Non viene inviato niente su di te o sull'auto. Senza un sì nessuna richiesta va a GitHub. Puoi cambiarlo in qualsiasi momento nelle impostazioni, sotto **Finestra e lingua**. A parte questo Caruspex non si collega a internet. La comunicazione con un adattatore Wi-Fi, un cavo ENET o un'auto DoIP resta nella tua rete locale.
 
-Solo le versioni pubblicate su GitHub cercano aggiornamenti; una copia che compili da te non lo fa mai. Come per ogni richiesta su internet, la ricerca e il download di un aggiornamento mostrano a GitHub il tuo indirizzo IP e la versione di Caruspex, e vale l'informativa sulla privacy di GitHub. Gli aggiornamenti vengono scaricati solo dalle release del repository di Caruspex. Pulsanti come **Segnala su GitHub** aprono solo il browser; cosa pubblichi lì lo decidi tu.
+Solo le versioni pubblicate su GitHub cercano aggiornamenti; una copia che compili da te non lo fa mai. Quando Caruspex cerca o scarica un aggiornamento, GitHub vede, come per ogni download, l'indirizzo IP del computer e la versione di Caruspex; Caruspex stesso non invia né conserva altro, e nessun altro, nemmeno il progetto, lo vede. Vale l'informativa sulla privacy di GitHub. Gli aggiornamenti vengono scaricati solo dalle release del repository di Caruspex. Pulsanti come **Segnala su GitHub** aprono solo il browser; cosa pubblichi lì lo decidi tu.
 
 ## Android
 

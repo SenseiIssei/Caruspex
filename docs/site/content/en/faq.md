@@ -34,7 +34,7 @@ Cars on the K-Line (about 2001 to 2007 in Europe) answer slowly by design. CAN c
 
 ## Does Caruspex send my data anywhere?
 
-No. Only the update check asks GitHub for the newest version, and it can be switched off. See [privacy](privacy.md).
+No. Only the update check asks GitHub for the newest version, and only after you said yes to it; you can change that any time. See [privacy](privacy.md).
 
 ## How can I help?
 

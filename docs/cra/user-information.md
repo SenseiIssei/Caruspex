@@ -15,12 +15,12 @@ outside the scope of the CRA ([scope.md](scope.md)); the information is publishe
 | 4 Intended purpose, security environment, essential functions, security properties | security page, "The program"; [risk-assessment.md](risk-assessment.md) | |
 | 5 Known or foreseeable circumstances that may lead to significant cybersecurity risks | security page, "Risks to know about"; [risk-assessment.md](risk-assessment.md) | |
 | 6 Address of the EU declaration of conformity | security page, "For developers and companies" | Not applicable: no declaration is drawn up. |
-| 7 Type of technical security support, end of the support period | security page, "Updates and support"; [support.md](support.md); SECURITY.md, "Supported versions" | No fixed end date (see support.md). |
+| 7 Type of technical security support, end of the support period | security page, "Updates and support"; [support.md](support.md); SECURITY.md, "Supported versions" | No support promise: maintained by one person in spare time, as well as time allows; if maintenance stops, the repository will be archived and say so (see support.md). |
 | 8(a) Secure commissioning and use | security page, "Risks to know about", "Checking a download"; [install page](../site/content/en/install.md) | |
 | 8(b) How changes to the product can affect the security of data | security page, "Risks to know about" (copies from elsewhere, files from strangers) | |
 | 8(c) How to install security updates | security page, "Updates and support" | |
 | 8(d) Secure decommissioning, removal of user data | security page, "Removing Caruspex and your data"; [privacy page](../site/content/en/privacy.md) | |
-| 8(e) How to turn off automatic installation of security updates | security page, "Updates and support": the switches under **Window and language** in the settings | Automatic installation is off by default today; the check is on. |
+| 8(e) How to turn off automatic installation of security updates | security page, "Updates and support": the switches under **Window and language** in the settings | Automatic installation is off by default today; the check asks first since 0.18 and only runs after a yes. |
 | 8(f) Information for integrators | security page, "For developers and companies"; this folder; the SBOMs | |
 | 9 Where the SBOM can be found | security page, "For developers and companies"; SECURITY.md, "Checking a download" | `Caruspex-<version>-sbom-<platform>.cdx.json` on every release. |
 

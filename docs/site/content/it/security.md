@@ -40,15 +40,11 @@ succede dopo. Le vulnerabilità corrette vengono pubblicate come
 
 ## Aggiornamenti e supporto {#support}
 
-- All'avvio Caruspex chiede a GitHub se esiste una versione più recente e la mostra. L'installazione è un clic, e
-  l'app installa solo un pacchetto con la firma corretta. L'AppImage e l'app per macOS si aggiornano da sole; il
-  pacchetto .deb e l'app Android ricevono la pagina di download.
-- La ricerca e l'installazione automatica sono interruttori nelle impostazioni, sotto **Finestra e lingua**. Senza la
-  ricerca, guardate ogni tanto la pagina delle versioni.
+- A ogni installazione, anche dopo l'aggiornamento da una versione più vecchia, Caruspex chiede una volta "Cercare aggiornamenti?". Solo dopo un sì chiede a GitHub se esiste una versione più recente, all'avvio e ogni sei ore finché è in esecuzione. Una nuova versione si limita ad accendere un pulsante nella barra del titolo e non interrompe mai. L'installazione è un clic, e l'app installa solo un pacchetto con la firma corretta. L'AppImage e l'app per macOS si aggiornano da sole; il pacchetto .deb e l'app Android ricevono la pagina di download.
+- La ricerca e l'installazione automatica sono interruttori nelle impostazioni, sotto **Finestra e lingua**, e si possono cambiare in qualsiasi momento. Senza un sì nessuna richiesta va a GitHub; in quel caso guardate ogni tanto la pagina delle versioni.
 - Le correzioni di sicurezza vanno solo nella versione più recente. Le versioni vecchie non ricevono correzioni a
   parte: tenete Caruspex aggiornato.
-- Caruspex è curato nel tempo libero e non ha una data di fine fissa. Se la manutenzione finisce, il repository e
-  un'ultima versione lo annunceranno in anticipo.
+- Caruspex è curato da una sola persona nel tempo libero, per quanto il tempo lo permette e senza alcuna promessa: nessun periodo di supporto, nessun tempo di risposta. Se la manutenzione finisce, il repository sarà archiviato e lo dirà.
 
 ## Verificare un download {#verify}
 

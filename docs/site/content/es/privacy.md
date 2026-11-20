@@ -19,9 +19,9 @@ Puedes borrar cualquiera de estos archivos cuando quieras.
 
 ## Qué se envía
 
-Al arrancar, Caruspex pregunta a GitHub si hay una versión más nueva. Con ello no se envía nada sobre ti ni sobre el coche. La comprobación se puede desactivar en los ajustes. Aparte de eso, Caruspex no se conecta a internet. La comunicación con un adaptador Wi-Fi, un cable ENET o un coche DoIP se queda en tu red local.
+En cada instalación, también tras actualizar desde una versión anterior, Caruspex pregunta una vez si debe buscar actualizaciones. Solo después de un sí pregunta a GitHub si hay una versión más nueva, al arrancar y cada seis horas mientras está en marcha. Con ello no se envía nada sobre ti ni sobre el coche. Sin un sí no se envía ninguna petición a GitHub. Puedes cambiarlo en cualquier momento en los ajustes, en **Ventana e idioma**. Aparte de eso, Caruspex no se conecta a internet. La comunicación con un adaptador Wi-Fi, un cable ENET o un coche DoIP se queda en tu red local.
 
-Solo las versiones publicadas en GitHub buscan actualizaciones; una copia que compiles tú nunca lo hace. Como en cualquier petición en internet, la búsqueda y la descarga de una actualización muestran a GitHub tu dirección IP y la versión de Caruspex, y para ello rige la declaración de privacidad de GitHub. Las actualizaciones se descargan solo de las versiones del repositorio de Caruspex. Botones como **Informar en GitHub** solo abren tu navegador; lo que publiques allí lo decides tú.
+Solo las versiones publicadas en GitHub buscan actualizaciones; una copia que compiles tú nunca lo hace. Cuando Caruspex busca o descarga una actualización, GitHub ve, como en cualquier descarga, la dirección IP del ordenador y la versión de Caruspex; Caruspex no envía ni guarda nada más, y nadie más, tampoco el proyecto, lo ve. Para ello rige la declaración de privacidad de GitHub. Las actualizaciones se descargan solo de las versiones del repositorio de Caruspex. Botones como **Informar en GitHub** solo abren tu navegador; lo que publiques allí lo decides tú.
 
 ## Android
 

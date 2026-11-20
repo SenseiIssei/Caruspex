@@ -37,14 +37,10 @@ Fixed vulnerabilities are published as [security advisories](https://github.com/
 
 ## Updates and support {#support}
 
-- At start Caruspex asks GitHub whether there is a newer version and shows it. Installing takes one click, and the
-  app only installs a package whose signature matches. The AppImage and the macOS app update themselves; the .deb
-  package and the Android app get the download page.
-- Both the check and the automatic installation are switches in the settings, under **Window and language**.
-  Without the check, look at the releases page now and then.
+- On every installation, also after updating from an older version, Caruspex asks once "Look for updates?". Only after a yes does it ask GitHub whether there is a newer version, at start and every six hours while it runs. A new version only lights a button in the title bar and never interrupts. Installing takes one click, and the app only installs a package whose signature matches. The AppImage and the macOS app update themselves; the .deb package and the Android app get the download page.
+- The check and the automatic installation are switches in the settings, under **Window and language**, and can be changed any time. Without a yes no request goes to GitHub; then look at the releases page now and then.
 - Security fixes go into the newest release only. Older versions get no separate fixes, so keep Caruspex up to date.
-- Caruspex is maintained in spare time and has no fixed end date. If maintenance stops, the repository and a last
-  release will say so in advance.
+- I maintain Caruspex alone in my spare time, as well as time allows, and I promise nothing: no support period, no response times. If I stop, the repository will be archived and say so.
 
 ## Checking a download {#verify}
 

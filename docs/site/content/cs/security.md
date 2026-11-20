@@ -38,15 +38,11 @@ následuje. Opravené zranitelnosti se zveřejňují jako
 
 ## Aktualizace a podpora {#support}
 
-- Při spuštění se Caruspex zeptá GitHubu, zda existuje novější verze, a zobrazí ji. Instalace je jedno kliknutí a
-  aplikace nainstaluje jen balíček se správným podpisem. AppImage a aplikace pro macOS se aktualizují samy; balíček
-  .deb a aplikace pro Android dostanou stránku ke stažení.
-- Hledání i automatická instalace jsou přepínače v nastavení v části **Okno a jazyk**. Bez hledání se občas podívejte
-  na stránku vydání.
+- Při každé instalaci, i po aktualizaci ze starší verze, se Caruspex jednou zeptá "Hledat aktualizace?". Teprve po odpovědi "ano" se zeptá GitHubu, zda existuje novější verze, při spuštění a pak každých šest hodin, dokud běží. Nová verze jen rozsvítí tlačítko v záhlaví okna a nikdy nepřeruší práci. Instalace je jedno kliknutí a aplikace nainstaluje jen balíček se správným podpisem. AppImage a aplikace pro macOS se aktualizují samy; balíček .deb a aplikace pro Android dostanou stránku ke stažení.
+- Hledání i automatická instalace jsou přepínače v nastavení v části **Okno a jazyk** a lze je kdykoli změnit. Bez "ano" nejde na GitHub žádný požadavek; pak se občas podívejte na stránku vydání.
 - Bezpečnostní opravy jsou jen v nejnovějším vydání. Starší verze samostatné opravy nedostávají, proto Caruspex
   udržujte aktuální.
-- Caruspex se udržuje ve volném čase a nemá pevné datum konce. Pokud údržba skončí, repozitář a poslední vydání to
-  oznámí předem.
+- Caruspex udržuje jeden člověk ve volném čase, jak čas dovolí, bez jakýchkoli slibů: bez doby podpory a bez lhůt pro odpověď. Pokud údržba skončí, repozitář bude archivován a řekne to.
 
 ## Kontrola staženého souboru {#verify}
 

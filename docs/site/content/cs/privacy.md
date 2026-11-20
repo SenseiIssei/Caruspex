@@ -19,9 +19,9 @@ Kterýkoli z těchto souborů můžete kdykoli smazat.
 
 ## Co se odesílá
 
-Při spuštění se Caruspex zeptá GitHubu, jestli existuje novější verze. Nic o vás ani o autě se přitom neodesílá. Kontrolu lze vypnout v nastavení. Jinak se Caruspex k internetu nepřipojuje. Komunikace s adaptérem Wi-Fi, kabelem ENET nebo autem s DoIP zůstává ve vaší místní síti.
+Při každé instalaci, i po aktualizaci ze starší verze, se Caruspex jednou zeptá, zda má hledat aktualizace. Teprve po odpovědi "ano" se zeptá GitHubu, zda existuje novější verze, při spuštění a pak každých šest hodin, dokud běží. Nic o vás ani o autě se přitom neodesílá. Bez "ano" nejde na GitHub žádný požadavek. Lze to kdykoli změnit v nastavení v části **Okno a jazyk**. Jinak se Caruspex k internetu nepřipojuje. Komunikace s adaptérem Wi-Fi, kabelem ENET nebo autem s DoIP zůstává ve vaší místní síti.
 
-Aktualizace hledají jen verze zveřejněné na GitHubu; kopie, kterou si sestavíte sami, to nedělá nikdy. Jako u každého požadavku na internetu vidí GitHub při hledání a stahování aktualizace vaši IP adresu a verzi Caruspexu; platí pro to prohlášení o ochraně soukromí GitHubu. Aktualizace se stahují jen z vydání repozitáře Caruspex. Tlačítka jako **Nahlásit na GitHubu** jen otevřou prohlížeč; co tam odešlete, je na vás.
+Aktualizace hledají jen verze zveřejněné na GitHubu; kopie, kterou si sestavíte sami, to nedělá nikdy. Když Caruspex hledá aktualizaci nebo ji stahuje, vidí GitHub jako u každého stahování IP adresu počítače a verzi Caruspexu; Caruspex sám neodesílá ani neukládá nic dalšího a nikdo jiný, ani projekt, to nevidí. Platí pro to prohlášení o ochraně soukromí GitHubu. Aktualizace se stahují jen z vydání repozitáře Caruspex. Tlačítka jako **Nahlásit na GitHubu** jen otevřou prohlížeč; co tam odešlete, je na vás.
 
 ## Android
 

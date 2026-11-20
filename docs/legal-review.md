@@ -71,16 +71,20 @@ macOS, Android). This is a technical review against the licence texts and source
 4. **Manufacturer fault code texts without named sources** (low to medium). `tools/dtc/brands.py` (298 codes in 17
    families) names no sources, unlike `data/`. Generic codes follow SAE J2012 / ISO 15031-6 numbering in the
    project's own words. Add the sources, or confirm they are an own compilation.
-5. **Default-on update check** (low). On start, official builds ask GitHub (a US service) for `latest.json`, which
-   shows the IP address. It is disclosed on the privacy page and can be switched off. Decide whether to keep it on
-   by default or ask on the first start.
+5. **Default-on update check** (low). Resolved: asks first since 0.18. On every installation Caruspex asks once
+   "Look for updates?"; only after a yes do official builds ask GitHub (a US service) for `latest.json`, at start and
+   every six hours, which shows the IP address. No request goes out without a yes. It is disclosed on the privacy
+   page and can be changed in the settings.
 6. **Documentation website** (low). It runs on GitHub Pages. Whether it needs a provider identification
    (Impressum, section 5 DDG) and a privacy note for the hosting depends on whether it counts as a business-like
    service; not decided here.
+   **Owner's decision:** no imprint. The site stays purely private and non-commercial (no ads, no paid offers).
 7. **Personal data in the git history** (low, owner's own data). 9 early commits carry a second personal e-mail
    address as author and committer; 37 merge commits made in the GitHub web interface carry a first name as author
    name. Nothing else personal was found. Rewriting public history breaks the existing fork and clones; leaving it
    is an option.
+   **Owner's decision:** remove the extra e-mail address and the first name from the history (being done
+   separately).
 8. **Release secrets** (low). The release workflow passes the literal `none` as the updater key password, so the
    key is effectively unprotected by a password; it only exists as a repository secret. No secret is in the
    repository or its history.

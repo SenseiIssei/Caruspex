@@ -34,7 +34,7 @@ Auta na K-Line (w Europie mniej więcej od 2001 do 2007 roku) odpowiadają z nat
 
 ## Czy Caruspex gdzieś wysyła moje dane?
 
-Nie. Tylko sprawdzanie aktualizacji pyta GitHuba o najnowszą wersję i można je wyłączyć. Zobacz [prywatność](privacy.md).
+Nie. Tylko sprawdzanie aktualizacji pyta GitHuba o najnowszą wersję, i to dopiero po twoim "tak"; można to zmienić w każdej chwili. Zobacz [prywatność](privacy.md).
 
 ## Jak mogę pomóc?
 

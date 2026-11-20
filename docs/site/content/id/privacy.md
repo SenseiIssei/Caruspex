@@ -19,9 +19,9 @@ Kamu bisa menghapus file-file ini kapan saja.
 
 ## Yang dikirim
 
-Saat dijalankan, Caruspex menanyakan ke GitHub apakah ada versi yang lebih baru. Tidak ada apa pun tentang kamu atau mobilmu yang ikut terkirim. Pemeriksaan ini bisa dimatikan di pengaturan. Selain itu Caruspex tidak terhubung ke internet. Komunikasi dengan adaptor Wi-Fi, kabel ENET, atau mobil DoIP tetap berada di jaringan lokalmu.
+Pada setiap pemasangan, termasuk setelah memperbarui dari versi lama, Caruspex bertanya satu kali apakah perlu mencari pembaruan. Hanya setelah dijawab ya, Caruspex bertanya ke GitHub apakah ada versi yang lebih baru, saat mulai dan setiap enam jam selama berjalan. Tidak ada apa pun tentang kamu atau mobilmu yang ikut terkirim. Tanpa jawaban ya, tidak ada permintaan yang dikirim ke GitHub. Ini bisa kamu ubah kapan saja di pengaturan, di bagian **Jendela dan bahasa**. Selain itu Caruspex tidak terhubung ke internet. Komunikasi dengan adaptor Wi-Fi, kabel ENET, atau mobil DoIP tetap berada di jaringan lokalmu.
 
-Hanya build rilis yang diterbitkan di GitHub yang mencari pembaruan; salinan yang Anda bangun sendiri tidak pernah melakukannya. Seperti setiap permintaan di internet, pemeriksaan dan pengunduhan pembaruan memperlihatkan alamat IP Anda dan versi Caruspex kepada GitHub, dan untuk itu berlaku pernyataan privasi GitHub. Pembaruan hanya diunduh dari rilis repositori Caruspex. Tombol seperti **Laporkan di GitHub** hanya membuka peramban Anda; apa yang Anda kirim di sana adalah keputusan Anda.
+Hanya build rilis yang diterbitkan di GitHub yang mencari pembaruan; salinan yang Anda bangun sendiri tidak pernah melakukannya. Saat Caruspex mencari atau mengunduh pembaruan, GitHub melihat, seperti pada setiap unduhan, alamat IP komputer dan versi Caruspex; Caruspex sendiri tidak mengirim atau menyimpan hal lain, dan tidak ada pihak lain, termasuk proyek ini, yang melihatnya. Untuk itu berlaku pernyataan privasi GitHub. Pembaruan hanya diunduh dari rilis repositori Caruspex. Tombol seperti **Laporkan di GitHub** hanya membuka peramban Anda; apa yang Anda kirim di sana adalah keputusan Anda.
 
 ## Android
 

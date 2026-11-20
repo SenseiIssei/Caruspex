@@ -39,15 +39,11 @@ veröffentlicht.
 
 ## Updates und Unterstützung {#support}
 
-- Beim Start fragt Caruspex bei GitHub nach einer neueren Version und zeigt sie an. Installieren ist ein Klick, und
-  die App installiert nur ein Paket mit passender Signatur. AppImage und macOS-App aktualisieren sich selbst; das
-  .deb-Paket und die Android-App bekommen die Download-Seite.
-- Die Suche und die automatische Installation sind Schalter in den Einstellungen unter **Fenster und Sprache**.
-  Ohne die Suche ab und zu auf der Release-Seite nachsehen.
+- Caruspex fragt bei jeder Installation, auch nach dem Update von einer älteren Version, einmal "Nach Updates suchen?". Erst nach einem Ja fragt es bei GitHub nach einer neueren Version, beim Start und danach alle sechs Stunden, solange es läuft. Eine neue Version lässt nur einen Knopf in der Titelleiste aufleuchten und unterbricht nie. Installieren ist ein Klick, und die App installiert nur ein Paket mit passender Signatur. AppImage und macOS-App aktualisieren sich selbst; das .deb-Paket und die Android-App bekommen die Download-Seite.
+- Die Suche und die automatische Installation sind Schalter in den Einstellungen unter **Fenster und Sprache** und lassen sich jederzeit ändern. Ohne ein Ja geht keine Anfrage an GitHub; dann ab und zu auf der Release-Seite nachsehen.
 - Sicherheitskorrekturen gibt es nur im neuesten Release. Ältere Versionen bekommen keine eigenen Korrekturen,
   also Caruspex aktuell halten.
-- Caruspex wird in der Freizeit gepflegt und hat kein festes Enddatum. Endet die Pflege, sagen das Repository und
-  ein letztes Release es vorher an.
+- Ich pflege Caruspex allein in meiner Freizeit, so gut es die Zeit erlaubt, und verspreche nichts: keinen Zeitraum, keine Antwortzeiten. Höre ich auf, wird das Repository archiviert und sagt es dort.
 
 ## Einen Download prüfen {#verify}
 

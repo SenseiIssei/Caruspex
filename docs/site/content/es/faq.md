@@ -34,7 +34,7 @@ Los coches con K-Line (aproximadamente de 2001 a 2007 en Europa) responden despa
 
 ## ¿Caruspex envía mis datos a algún sitio?
 
-No. Solo la búsqueda de actualizaciones pregunta a GitHub por la versión más nueva, y se puede desactivar. Consulta [privacidad](privacy.md).
+No. Solo la búsqueda de actualizaciones pregunta a GitHub por la versión más nueva, y solo después de que digas que sí; puedes cambiarlo en cualquier momento. Consulta [privacidad](privacy.md).
 
 ## ¿Cómo puedo ayudar?
 

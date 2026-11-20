@@ -34,7 +34,7 @@ Autos an der K-Line (in Europa etwa 2001 bis 2007) antworten von Haus aus langsa
 
 ## Schickt Caruspex meine Daten irgendwohin?
 
-Nein. Nur die Update-Suche fragt GitHub nach der neuesten Version, und sie lässt sich abschalten. Siehe [Datenschutz](privacy.md).
+Nein. Nur die Update-Suche fragt GitHub nach der neuesten Version, und erst nach einem Ja; das lässt sich jederzeit ändern. Siehe [Datenschutz](privacy.md).
 
 ## Wie kann ich helfen?
 

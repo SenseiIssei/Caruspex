@@ -42,15 +42,11 @@ explique la suite. Les failles corrigées sont publiées comme
 
 ## Mises à jour et suivi {#support}
 
-- Au démarrage, Caruspex demande à GitHub s'il existe une version plus récente et l'affiche. L'installation se fait
-  en un clic, et l'application n'installe qu'un paquet dont la signature correspond. L'AppImage et l'application
-  macOS se mettent à jour elles-mêmes ; le paquet .deb et l'application Android reçoivent la page de téléchargement.
-- La recherche et l'installation automatique sont des interrupteurs dans les réglages, sous **Fenêtre et langue**.
-  Sans la recherche, consultez la page des versions de temps en temps.
+- À chaque installation, y compris après une mise à jour depuis une version plus ancienne, Caruspex demande une fois « Rechercher des mises à jour ? ». Ce n'est qu'après un oui qu'il demande à GitHub s'il existe une version plus récente, au démarrage et toutes les six heures tant qu'il tourne. Une nouvelle version ne fait qu'allumer un bouton dans la barre de titre et n'interrompt jamais. L'installation se fait en un clic, et l'application n'installe qu'un paquet dont la signature correspond. L'AppImage et l'application macOS se mettent à jour elles-mêmes ; le paquet .deb et l'application Android reçoivent la page de téléchargement.
+- La recherche et l'installation automatique sont des interrupteurs dans les réglages, sous **Fenêtre et langue**, modifiables à tout moment. Sans un oui, aucune requête n'est envoyée à GitHub ; consultez alors la page des versions de temps en temps.
 - Les correctifs de sécurité ne vont que dans la version la plus récente. Les anciennes versions ne reçoivent pas
   de correctifs séparés : gardez Caruspex à jour.
-- Caruspex est entretenu sur le temps libre et n'a pas de date de fin fixe. Si l'entretien s'arrête, le dépôt et une
-  dernière version l'annonceront à l'avance.
+- Caruspex est entretenu par une seule personne sur son temps libre, autant que le temps le permet, sans aucune promesse : ni durée de suivi ni délai de réponse. Si l'entretien s'arrête, le dépôt sera archivé et le dira.
 
 ## Vérifier un téléchargement {#verify}
 

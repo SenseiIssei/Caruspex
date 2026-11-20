@@ -34,7 +34,7 @@ K-Line'daki araçlar (Avrupa'da yaklaşık 2001 ile 2007 arası) doğası gereğ
 
 ## Caruspex verilerimi bir yere gönderiyor mu?
 
-Hayır. Yalnızca güncelleme kontrolü GitHub'a en yeni sürümü sorar ve bu kapatılabilir. Bkz. [gizlilik](privacy.md).
+Hayır. Yalnızca güncelleme kontrolü GitHub'a en yeni sürümü sorar, o da ancak siz evet dedikten sonra; bunu istediğiniz zaman değiştirebilirsiniz. Bkz. [gizlilik](privacy.md).
 
 ## Nasıl yardım edebilirim?
 
