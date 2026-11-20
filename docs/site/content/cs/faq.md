@@ -39,3 +39,5 @@ Ne. Jen kontrola aktualizací se ptá GitHubu na nejnovější verzi a lze ji vy
 ## Jak můžu pomoct?
 
 Pošlete zprávu o testu ze svého auta, sdílejte záznam, hlaste chyby nebo vylepšete překlad: návod je [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md) a tlačítko **Vylepšit překlad** v nastavení ho otevře.
+
+Vítán je i kód: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) vysvětluje (anglicky), jak Caruspex sestavit a co potřebuje pull request.

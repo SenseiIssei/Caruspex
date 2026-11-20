@@ -39,3 +39,5 @@ Caruspex يقرأ فقط. الشيء الوحيد الذي يكتبه هو مس�
 ## كيف يمكنني المساعدة؟
 
 أرسل تقرير اختبار من سيارتك، أو شارك تسجيلًا، أو أبلغ عن أخطاء، أو حسّن ترجمة: الدليل هو [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md)، والزر **تحسين الترجمة** في الإعدادات يفتحه.
+
+الشيفرة مرحّب بها أيضًا: يشرح [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) (بالإنجليزية) كيفية بناء Caruspex وما يحتاجه طلب الدمج.

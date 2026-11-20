@@ -39,3 +39,5 @@ Nie. Tylko sprawdzanie aktualizacji pyta GitHuba o najnowszą wersję i można j
 ## Jak mogę pomóc?
 
 Wyślij raport z testu swojego auta, udostępnij nagranie, zgłaszaj błędy albo popraw tłumaczenie: przewodnik to [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), a przycisk **Popraw tłumaczenie** w ustawieniach go otwiera.
+
+Kod też jest mile widziany: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) wyjaśnia (po angielsku), jak zbudować Caruspex i czego potrzebuje pull request.

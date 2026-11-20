@@ -8,6 +8,10 @@
 **文档：** [安装、入门、每种适配器和接口、隐私、常见问题](https://senseiissei.github.io/Caruspex/zh/index.html)，提供全部 18 种语言。
 <!-- /docs -->
 
+<!-- contrib -->
+**参与贡献：** 欢迎提交代码、翻译和测试报告，见 [CONTRIBUTING.md](CONTRIBUTING.md)（英文）。
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ KKL 线缆把 K-Line 原样透传，所以 Caruspex 可以自己说这个协议�
 
 ## 构建
 
-要求：稳定版 Rust 工具链（edition 2024，Rust 1.85 或更新）、带 npm 的 Node 24，以及用于
+要求：稳定版 Rust 工具链（edition 2024，Rust 1.90 或更新）、带 npm 的 Node 24，以及用于
 生成器和翻译检查的 Python 3。在 Linux 上还需要界面和适配器连接所需的系统软件包
 （Debian 和 Ubuntu 的包名）：
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` 会在你开发时以实时重载方式启动应用。只运行
+`npm --prefix app run dev:app` 会在你开发时以实时重载方式启动应用。只运行
 界面、不带 Tauri 窗口，可以在普通浏览器里配合内置演示车辆运行：
 
 ```bash

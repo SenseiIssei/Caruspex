@@ -1,0 +1,11 @@
+# Blank issues stay allowed on purpose: the crash dialog and "Share recording"
+# in the app open a prefilled issue (issues/new?title=...&body=...) without a
+# template, and installed versions keep doing so. The forms are offered first.
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/SenseiIssei/Caruspex/security/advisories/new
+    about: Please report security problems privately, not in a public issue. See SECURITY.md.
+  - name: Documentation and FAQ
+    url: https://senseiissei.github.io/Caruspex/en/faq.html
+    about: Installing, first steps, every adapter and interface, privacy and frequent questions, in 18 languages.

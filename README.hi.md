@@ -8,6 +8,10 @@
 **दस्तावेज़:** [इंस्टॉल, पहले कदम, हर एडैप्टर और इंटरफ़ेस, निजता, अक्सर पूछे जाने वाले सवाल](https://senseiissei.github.io/Caruspex/hi/index.html), सभी 18 भाषाओं में।
 <!-- /docs -->
 
+<!-- contrib -->
+**योगदान:** कोड, अनुवाद और टेस्ट रिपोर्ट का स्वागत है, देखें [CONTRIBUTING.md](CONTRIBUTING.md) (अंग्रेज़ी में)।
+<!-- /contrib -->
+
 [![Build](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml/badge.svg)](https://github.com/SenseiIssei/Caruspex/actions/workflows/build.yml)
 ![Rust](https://img.shields.io/badge/Rust-2024-orange)
 ![Tauri 2](https://img.shields.io/badge/Tauri-2-24c8db)
@@ -286,7 +290,7 @@ KKL केबल K-Line को कच्चा ही आगे पहुँच�
 
 ## बिल्ड करना
 
-ज़रूरतें: स्थिर Rust टूलचेन (edition 2024, Rust 1.85 या नया), npm के साथ Node 24, और जनरेटर व अनुवाद जाँच के लिए
+ज़रूरतें: स्थिर Rust टूलचेन (edition 2024, Rust 1.90 या नया), npm के साथ Node 24, और जनरेटर व अनुवाद जाँच के लिए
 Python 3। Linux पर वे सिस्टम पैकेज जो इंटरफ़ेस और एडैप्टर लिंक को चाहिए
 (Debian और Ubuntu के नाम):
 
@@ -310,7 +314,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` ऐप को लाइव रीलोड के साथ चलाता है जब आप उस पर काम कर रहे हों। अकेला
+`npm --prefix app run dev:app` ऐप को लाइव रीलोड के साथ चलाता है जब आप उस पर काम कर रहे हों। अकेला
 इंटरफ़ेस, Tauri विंडो के बिना, सामान्य ब्राउज़र में बिल्ट-इन डेमो गाड़ी के साथ चलता है:
 
 ```bash

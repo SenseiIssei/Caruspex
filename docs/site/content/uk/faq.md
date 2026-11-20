@@ -39,3 +39,5 @@ Caruspex лише читає. Єдине, що він записує: стира
 ## Як я можу допомогти?
 
 Надішліть звіт про тест зі свого авто, поділіться записом, повідомляйте про помилки або покращте переклад: посібник лежить у [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), а кнопка **Покращити переклад** у налаштуваннях відкриває його.
+
+Код теж вітається: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) пояснює (англійською), як зібрати Caruspex і що потрібно для pull request.

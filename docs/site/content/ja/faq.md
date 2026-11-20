@@ -39,3 +39,5 @@ K-Line の車（ヨーロッパではおよそ 2001 年から 2007 年）は、�
 ## どうすれば協力できますか？
 
 自分の車のテストレポートを送る、記録を共有する、バグを報告する、翻訳を改善する、などです。翻訳のガイドは [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md) で、設定の **翻訳を改善** ボタンでも開けます。
+
+コードも歓迎します。[CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md)（英語）に、Caruspex のビルド方法と pull request に必要なことが書いてあります。

@@ -39,3 +39,5 @@ K-Line을 쓰는 차(유럽에서 대략 2001년부터 2007년)는 원래 응답
 ## 어떻게 도울 수 있나요?
 
 내 차의 테스트 보고서를 보내거나, 기록을 공유하거나, 버그를 보고하거나, 번역을 개선해 주세요: 안내서는 [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md)이고, 설정의 **번역 개선** 버튼으로도 열 수 있어요.
+
+코드도 환영합니다. [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md)(영어)에 Caruspex를 빌드하는 방법과 pull request에 필요한 것이 설명되어 있습니다.

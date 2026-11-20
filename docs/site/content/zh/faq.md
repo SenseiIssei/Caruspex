@@ -39,3 +39,5 @@ Caruspex 只读取。它唯一写入的操作是清除故障码，而且清除�
 ## 我能帮什么忙？
 
 发一份你车上的测试报告，分享一段记录，报告错误，或者改进翻译：指南是 [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md)，设置里的 **改进翻译** 按钮也会打开它。
+
+也欢迎提交代码：[CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md)（英文）说明了如何构建 Caruspex 以及 pull request 需要满足什么。

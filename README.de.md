@@ -8,6 +8,10 @@
 **Dokumentation:** [Installieren, erste Schritte, jeder Adapter und jede Schnittstelle, Datenschutz, häufige Fragen](https://senseiissei.github.io/Caruspex/de/index.html), in allen 18 Sprachen.
 <!-- /docs -->
 
+<!-- contrib -->
+**Mitmachen:** Code, Übersetzungen und Testberichte sind willkommen, siehe [CONTRIBUTING.md](CONTRIBUTING.md) (auf Englisch, mit einem kurzen deutschen Teil).
+<!-- /contrib -->
+
 Freie Fahrzeugdiagnose für Windows, Linux und macOS, geschrieben in Rust mit einer Tauri-2-Oberfläche. Ein Kabel oder Dongle, eine Software, in 18 Sprachen.
 
 Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier eben aus denen des Autos.
@@ -256,7 +260,7 @@ Die CI (`.github/workflows/build.yml`) prüft zuerst unter Linux Formatierung, e
 
 ## Selbst bauen
 
-Vorausgesetzt: die stabile Rust-Toolchain (Edition 2024, Rust 1.85 oder neuer), Node 24 mit npm und Python 3 für die Generatoren und die Übersetzungsprüfung. Unter Linux kommen die Systempakete dazu, die Oberfläche und Adapteranbindung brauchen (Namen für Debian und Ubuntu):
+Vorausgesetzt: die stabile Rust-Toolchain (Edition 2024, Rust 1.90 oder neuer), Node 24 mit npm und Python 3 für die Generatoren und die Übersetzungsprüfung. Unter Linux kommen die Systempakete dazu, die Oberfläche und Adapteranbindung brauchen (Namen für Debian und Ubuntu):
 
 ```bash
 sudo apt-get install libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config
@@ -278,7 +282,7 @@ cargo build --release -p caruspex-cli
 npm --prefix app run tauri -- build
 ```
 
-`npm --prefix app run tauri -- dev` startet die Anwendung mit Live-Neuladen zum Entwickeln. Die Oberfläche allein, ohne das Tauri-Fenster, läuft in einem normalen Browser mit dem eingebauten Demo-Auto:
+`npm --prefix app run dev:app` startet die Anwendung mit Live-Neuladen zum Entwickeln. Die Oberfläche allein, ohne das Tauri-Fenster, läuft in einem normalen Browser mit dem eingebauten Demo-Auto:
 
 ```bash
 npm --prefix app run dev

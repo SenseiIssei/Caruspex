@@ -39,3 +39,5 @@ Caruspex только читает. Единственное, что он зап
 ## Как я могу помочь?
 
 Отправьте отчёт о тесте со своей машины, поделитесь записью, сообщайте об ошибках или улучшите перевод: руководство лежит в [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), а кнопка **Улучшить перевод** в настройках открывает его.
+
+Код тоже приветствуется: [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) объясняет (на английском), как собрать Caruspex и что нужно для pull request.

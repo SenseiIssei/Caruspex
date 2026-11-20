@@ -1,0 +1,83 @@
+name: Bug report
+description: Something in Caruspex does not work as it should.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug. Reports in German are welcome too.
+
+        Did you try Caruspex on a real car and want to say how it went in general? The
+        **Test report from a real car** form is made for that. A security problem belongs in a
+        private report instead, see SECURITY.md.
+
+        Please do not post the full VIN, your number plate or your name. A recording made with
+        **Share recording** in the app has them removed already.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you do, what did Caruspex do, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The shortest way to see the bug again, step by step.
+      placeholder: |
+        1. Connect to the demo car
+        2. Open the page "Fault memory"
+        3. ...
+  - type: dropdown
+    id: demo
+    attributes:
+      label: Does it happen with the demo car too?
+      description: Connect to the built-in demo car (Connect page, or start with --demo) and try again.
+      options:
+        - "Yes, also with the demo car"
+        - "No, only with a real car or adapter"
+        - "Not tried"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Caruspex version and system
+      description: The version is shown in the title bar of the app.
+      placeholder: "0.15.0 on Windows 11 / Ubuntu 24.04 / macOS 15 / Android 14"
+    validations:
+      required: true
+  - type: input
+    id: adapter
+    attributes:
+      label: Adapter or interface
+      description: If a real adapter was involved, its name and how it is connected.
+      placeholder: "ELM327 v1.5 over USB / OBDLink MX+ over Bluetooth / KKL cable"
+  - type: input
+    id: car
+    attributes:
+      label: Car
+      description: If a real car was involved, make, model, generation and year. Never the full VIN.
+      placeholder: "VW Golf IV, 2004"
+  - type: textarea
+    id: log
+    attributes:
+      label: Log or error message
+      description: The lines of the log around the problem, or the exact error message.
+      render: text
+  - type: textarea
+    id: recording
+    attributes:
+      label: Shared recording or screenshot
+      description: |
+        Optional. A recording made with "Share recording" (in German "Mitschnitt teilen") lets the bug be
+        replayed at the desk. Save the file and drag it into this field, the same for a screenshot.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: This report contains no full VIN, no number plate and no other personal data.
+          required: true

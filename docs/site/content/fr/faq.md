@@ -39,3 +39,5 @@ Non. Seule la recherche de mises à jour demande à GitHub la dernière version,
 ## Comment puis-je aider ?
 
 Envoyez un rapport de test de votre voiture, partagez un enregistrement, signalez des bugs ou améliorez une traduction : le guide est [TRANSLATING.md](https://github.com/SenseiIssei/Caruspex/blob/main/translations/TRANSLATING.md), et le bouton **Améliorer la traduction** dans les réglages l'ouvre.
+
+Le code est aussi le bienvenu : [CONTRIBUTING.md](https://github.com/SenseiIssei/Caruspex/blob/main/CONTRIBUTING.md) explique (en anglais) comment compiler Caruspex et ce qu'il faut pour une pull request.
