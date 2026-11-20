@@ -12,6 +12,7 @@ mod cli;
 mod commands;
 mod crash;
 mod garage;
+mod kkl_report;
 mod knowledge;
 mod measure;
 mod pdf;
@@ -361,6 +362,10 @@ pub fn run() {
             commands::read_adaptation_channel,
             commands::run_actuator_test,
             commands::kkl_ecus,
+            commands::kkl_cable_check,
+            commands::kkl_first_test,
+            commands::kkl_test_save_report,
+            commands::kkl_test_reveal,
             commands::lookup_dtc,
             commands::locate_dtc,
             commands::what_to_do,

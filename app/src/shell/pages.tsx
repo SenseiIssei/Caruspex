@@ -22,6 +22,7 @@ import EcuPage from "../pages/EcuPage";
 import ScanPage from "../pages/ScanPage";
 import ThrottlePage from "../pages/ThrottlePage";
 import KklToolsPage from "../pages/KklToolsPage";
+import KklFirstTestPage from "../pages/KklFirstTestPage";
 import BmwPage from "../pages/BmwPage";
 import VehiclesPage from "../pages/VehiclesPage";
 import LexiconPage from "../pages/LexiconPage";
@@ -53,6 +54,7 @@ export type PageId =
   | "stats"
   | "ecus"
   | "scan"
+  | "first-test"
   | "throttle"
   | "kkl"
   | "bmw"
@@ -95,6 +97,7 @@ export const PAGES: PageEntry[] = [
   { id: "stats", icon: "chart", label: () => t(MW, "Statistik"), component: StatsPage, pro: true },
   { id: "ecus", icon: "cpu", label: () => t(MW, "Alle Steuergeräte"), section: () => t(MW, "Werkstatt"), component: EcuPage, pro: true },
   { id: "scan", icon: "cable", label: () => t(MW, "Steuergeräte über KKL"), component: ScanPage, pro: true },
+  { id: "first-test", icon: "check-circle", label: () => t(MW, "Erster Test am Auto"), component: KklFirstTestPage, pro: true },
   { id: "throttle", icon: "throttle", label: () => t(MW, "Drosselklappe"), component: ThrottlePage, pro: true },
   { id: "kkl", icon: "sliders", label: () => t(MW, "Anpassung und Stellglieder"), component: KklToolsPage, pro: true },
   { id: "bmw", icon: "car", label: () => t(MW, "BMW über K-Line"), component: BmwPage, pro: true },

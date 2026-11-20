@@ -19,7 +19,9 @@ pub mod bluetooth;
 #[cfg(feature = "bt-classic")]
 pub mod bt_classic;
 pub mod elm327;
+pub mod kkl_cable;
 pub mod kline_stream;
+pub mod kline_timed;
 pub mod serial;
 pub mod tcp;
 pub mod timing;
@@ -31,7 +33,9 @@ pub use elm327::{
     decode_messages, header_format_for, hex_to_bytes, protocol_name, split_batch_answer,
     split_messages, stn_buses,
 };
+pub use kkl_cable::{CableFacts, ChipFamily};
 pub use kline_stream::KLineStream;
+pub use kline_timed::{RawKLine, SerialLine, TimedKLine, WakeStrategy, WakeTrace, WakeVerdict};
 pub use serial::{PortInfo, Serial, SerialTransport, enumerate_ports};
 pub use tcp::TcpTransport;
 pub use transport::{

@@ -1166,6 +1166,42 @@ pub fn scan_all_ecus(state: State<'_, AppState>, device: String, clear_attempts:
     );
 }
 
+/// The KKL cable test with the cable on USB only (page "Erster Test am Auto").
+#[tauri::command]
+pub fn kkl_cable_check(state: State<'_, AppState>, device: String) {
+    job(&state, Job::KklCableCheck(device));
+}
+
+/// The read-only first test of a KKL cable on the car.
+#[tauri::command]
+pub fn kkl_first_test(state: State<'_, AppState>, device: String) {
+    job(&state, Job::KklFirstTest(device));
+}
+
+/// Writes the report of a KKL test into the config folder (test-reports),
+/// the VIN masked unless `include_vin`.
+#[tauri::command]
+pub fn kkl_test_save_report(
+    state: State<'_, AppState>,
+    report: Value,
+    context: Vec<String>,
+    include_vin: bool,
+) -> Result<crate::kkl_report::SavedReport> {
+    crate::kkl_report::save(&state.config_dir, report, &context, include_vin)
+}
+
+/// Shows a saved KKL test report in the file manager.
+#[tauri::command]
+pub fn kkl_test_reveal(app: AppHandle, state: State<'_, AppState>, path: String) -> Result<()> {
+    let path = PathBuf::from(path);
+    if !crate::kkl_report::inside_report_folder(&state.config_dir, &path) {
+        return Err(path.display().to_string());
+    }
+    app.opener()
+        .reveal_item_in_dir(path)
+        .map_err(|e| e.to_string())
+}
+
 /// BMW E series on the K-line. `clear` only after the page asked.
 #[tauri::command]
 pub fn scan_bmw(state: State<'_, AppState>, device: String, clear: bool) {
