@@ -1,0 +1,11 @@
+[package]
+name = "caruspex-tune"
+description = "Tuning simulator: a transparent full-load model of the BMW N55 engine, for learning and for comparing with recorded live values. Simulation only, it never talks to a car."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# Deliberately no link, protocol or recording crate: this crate computes and
+# nothing else, so it cannot reach a car even by mistake.
+[dependencies]
+caruspex-i18n.workspace = true
