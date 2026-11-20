@@ -9,12 +9,16 @@ packages that end up in the interface) and fails when either reports a
 vulnerability that is not accepted in tools/audit_exceptions.toml.
 
 RustSec warnings (unmaintained, unsound, yanked) are printed but do not fail
-the run: they need a decision, not an emergency.
+the run: they need a decision, not an emergency. Once the decision is made
+it goes into tools/audit_exceptions.toml like an accepted vulnerability; the
+warning is then printed as accepted instead of as an annotation, until the
+entry expires.
 
 An exception is for a finding that does not affect Caruspex (code path not
-used, platform not built) and always has a reason and an expiry date. An
-expired exception fails the run, so it is looked at again; one that matches
-nothing any more is reported so it can be removed.
+used, platform not built) or, for a warning, one that cannot be fixed yet,
+and always has a reason and an expiry date. An expired exception fails the
+run, so it is looked at again; one that matches nothing any more is reported
+so it can be removed.
 """
 
 from __future__ import annotations
@@ -73,7 +77,7 @@ def run_json(command: list[str], cwd: str) -> dict:
         raise SystemExit(f"{' '.join(command)} gave no report:\n{result.stderr}")
 
 
-def rust_findings(report: dict) -> tuple[list[dict], list[str]]:
+def rust_findings(report: dict) -> tuple[list[dict], list[dict]]:
     findings = []
     for item in report.get("vulnerabilities", {}).get("list", []):
         advisory = item["advisory"]
@@ -86,10 +90,20 @@ def rust_findings(report: dict) -> tuple[list[dict], list[str]]:
     warnings = []
     for kind, items in sorted(report.get("warnings", {}).items()):
         for item in items:
+            # A yanked crate has no advisory, so no id an exception could name.
             advisory = item.get("advisory") or {}
-            warnings.append(f"{kind}: {item['package']['name']} {item['package']['version']}"
-                            f" {advisory.get('id', '')} {advisory.get('title', '')}".rstrip())
+            warnings.append({
+                "ids": {advisory["id"], *advisory.get("aliases", [])} if advisory.get("id") else set(),
+                "package": item["package"]["name"],
+                "text": f"{kind}: {item['package']['name']} {item['package']['version']}"
+                        f" {advisory.get('id', '')} {advisory.get('title', '')}".rstrip(),
+            })
     return findings, warnings
+
+
+def matching(exceptions: list[dict], finding: dict) -> int | None:
+    return next((i for i, e in enumerate(exceptions)
+                 if e["id"] in finding["ids"] and e["package"] == finding["package"]), None)
 
 
 def npm_findings(report: dict) -> list[dict]:
@@ -130,18 +144,23 @@ def main() -> int:
     used: set[int] = set()
     failing = []
     for finding in found:
-        match = next((i for i, e in enumerate(exceptions)
-                      if e["id"] in finding["ids"] and e["package"] == finding["package"]), None)
+        match = matching(exceptions, finding)
         if match is None:
             failing.append(finding["text"])
         else:
             used.add(match)
             print(f"accepted until {exceptions[match]['expires']}: {finding['text']} ({exceptions[match]['reason']})")
+    # Warnings never fail the run; an exception only records the decision.
+    for warning in warnings:
+        match = matching(exceptions, warning)
+        if match is None:
+            note("warning", f"RustSec {warning['text']}")
+        else:
+            used.add(match)
+            print(f"accepted until {exceptions[match]['expires']}: RustSec {warning['text']}")
     for i, entry in enumerate(exceptions):
         if i not in used:
             note("notice", f"exception {entry['id']} ({entry['package']}) matches nothing any more, remove it")
-    for warning in warnings:
-        note("warning", f"RustSec {warning}")
 
     db = rust.get("database", {})
     print(f"RustSec database {db.get('last-commit', '?')[:12]} ({db.get('advisory-count', '?')} advisories), "
