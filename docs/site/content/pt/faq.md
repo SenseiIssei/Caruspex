@@ -34,7 +34,7 @@ Carros na K-Line (mais ou menos de 2001 a 2007 na Europa) respondem devagar por 
 
 ## O Caruspex envia meus dados para algum lugar?
 
-Não. Só a verificação de atualizações pergunta ao GitHub pela versão mais nova, e ela pode ser desligada. Veja [privacidade](privacy.md).
+Não. Só a verificação de atualizações pergunta ao GitHub pela versão mais nova, e apenas depois de você dizer sim; isso pode ser mudado a qualquer momento. Veja [privacidade](privacy.md).
 
 ## Como posso ajudar?
 

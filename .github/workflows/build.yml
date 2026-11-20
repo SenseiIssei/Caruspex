@@ -29,6 +29,9 @@ defaults:
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: "0"
+  # Built here means published: only these builds look for updates
+  # (update::official_build), local and test builds stay quiet.
+  CARUSPEX_OFFICIAL_BUILD: "1"
 
 jobs:
   # Formatting, lints, generated tables and translations: once, on Linux.
@@ -79,6 +82,7 @@ jobs:
           python tools/gen_ecus.py
           python tools/gen_pids.py
           python tools/gen_engines.py
+          python tools/gen_wmi.py
           # The opendbc packs in data/opendbc are written from a download
           # cache by tools/gen_opendbc.py and refreshed by hand; gen_pids.py
           # above turns them into Rust like data/pids.
@@ -118,6 +122,16 @@ jobs:
           npm --prefix app ci
           npm --prefix app run build
           npm --prefix app test
+
+      # The start of the app stays small: a large dependency or data file in
+      # the entry chunk fails here (budgets and how to look in
+      # docs/performance.md).
+      - name: Interface size budget
+        run: python tools/bundle_budget.py
+      # The licences of every crate, npm package and Android library the
+      # programs ship; needs app/node_modules from the step above.
+      - name: Third party notices are current
+        run: python tools/gen_notices.py --check
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
@@ -277,6 +291,54 @@ jobs:
           path: smoke/
           if-no-files-found: ignore
 
+  # Software bills of materials (CycloneDX 1.6) of the release packages, one
+  # per platform, from Cargo.lock, app/package-lock.json, the fonts and the
+  # bundled data (tools/sbom.py, docs/cra/requirements.md). Runs for every
+  # push and pull request as a check; on version tags the release jobs attach
+  # the files. Read only: the artifact is the only thing it hands on.
+  sbom:
+    name: SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: SBOM files
+        run: |
+          # The commit time as the SBOM timestamp: the same commit gives the
+          # same files.
+          export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+          python tools/sbom.py --check
+          python tools/sbom.py --out sbom
+          # The Android SBOM goes with the APK (android-release), which is
+          # only attached when it was signed.
+          mkdir -p sbom-android
+          mv sbom/*-sbom-android-*.cdx.json sbom-android/
+          ls -l sbom sbom-android
+
+      # Not named caruspex-*: the release job collects those as packages.
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@v7
+        with:
+          name: sbom
+          path: sbom/
+          if-no-files-found: error
+
+      - name: Upload Android SBOM
+        uses: actions/upload-artifact@v7
+        with:
+          name: sbom-android
+          path: sbom-android/
+          if-no-files-found: error
+
   # The Android app (docs/android.md): an APK for arm64 phones. Not a
   # required check and not part of the release job above; on version tags
   # the APK is signed and attached to the release only when the signing
@@ -369,6 +431,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      # Build provenance of the APK (Sigstore through GitHub's OIDC token).
+      id-token: write
+      attestations: write
     steps:
       - name: Download APK
         uses: actions/download-artifact@v8
@@ -376,10 +441,33 @@ jobs:
           name: android-apk
           path: apk
 
+      # --- Supply chain: SBOM, provenance and checksum of the APK. ---------
+      - name: Download Android SBOM
+        uses: actions/download-artifact@v8
+        with:
+          name: sbom-android
+          path: apk
+
+      - name: Build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: apk/*
+
       - name: Attach to the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "$GITHUB_REF_NAME" apk/*.apk --repo "$GITHUB_REPOSITORY"
+
+      # After the APK is attached, so a problem here never keeps it back.
+      - name: SBOM and SHA256SUMS of the APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" apk/*.cdx.json --repo "$GITHUB_REPOSITORY"
+          gh release download "$GITHUB_REF_NAME" --pattern SHA256SUMS --dir sums --repo "$GITHUB_REPOSITORY"
+          (cd apk && sha256sum -- *) >> sums/SHA256SUMS
+          cat sums/SHA256SUMS
+          gh release upload "$GITHUB_REF_NAME" sums/SHA256SUMS --clobber --repo "$GITHUB_REPOSITORY"
 
   # Only for version tags: one release with all packages and the change list
   # from changelog/<version>.md, plus what the updater of the app reads:
@@ -389,10 +477,14 @@ jobs:
   release:
     name: Release
     if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.fork
-    needs: build
+    needs: [build, sbom]
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      # Only for the build provenance step (Sigstore through GitHub's OIDC
+      # token); no other step uses them.
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -458,6 +550,40 @@ jobs:
         run: |
           pip install --quiet cryptography
           python tools/release_assets.py "${{ steps.version.outputs.version }}" upload
+
+      # --- Supply chain (docs/cra/requirements.md) -------------------------
+      # SBOMs, SHA256SUMS and the build provenance. These steps only add
+      # files with new names (Caruspex-<v>-sbom-*.cdx.json, SHA256SUMS,
+      # Caruspex-<v>-provenance.sigstore.json) after the signing and
+      # latest.json, and run before the release exists: if one fails there is
+      # no release at all, never one without latest.json.
+      - name: Download SBOMs
+        uses: actions/download-artifact@v8
+        with:
+          name: sbom
+          path: upload
+
+      - name: Checksums
+        run: |
+          cd upload
+          test ! -e SHA256SUMS
+          find . -maxdepth 1 -type f -printf '%f\n' | LC_ALL=C sort | xargs -d '\n' sha256sum -- > ../SHA256SUMS
+          mv ../SHA256SUMS SHA256SUMS
+          cat SHA256SUMS
+
+      # A signed statement that these files were built by this workflow from
+      # this commit; `gh attestation verify` checks it (SECURITY.md).
+      - name: Build provenance
+        id: provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-checksums: upload/SHA256SUMS
+
+      - name: Provenance bundle next to the packages
+        env:
+          BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: cp "$BUNDLE" "upload/Caruspex-$VERSION-provenance.sigstore.json"
 
       - name: Publish release
         env:

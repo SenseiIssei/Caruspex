@@ -34,7 +34,7 @@ Les voitures sur K-Line (environ 2001 à 2007 en Europe) répondent lentement pa
 
 ## Caruspex envoie-t-il mes données quelque part ?
 
-Non. Seule la recherche de mises à jour demande à GitHub la dernière version, et elle peut être désactivée. Voir [confidentialité](privacy.md).
+Non. Seule la recherche de mises à jour demande à GitHub la dernière version, et seulement après un oui de votre part ; vous pouvez le modifier à tout moment. Voir [confidentialité](privacy.md).
 
 ## Comment puis-je aider ?
 

@@ -45,7 +45,7 @@ Het rapport kan in het Duits, Engels, Spaans, Frans, Portugees, Italiaans, Neder
 
 ## Updates
 
-Bij het starten vraagt Caruspex aan GitHub of er een nieuwere versie is, en verder niets. Een nieuwe versie wordt alleen geïnstalleerd als de handtekening past bij de sleutel die in de app is ingebouwd. Zowel de controle als de automatische installatie kun je in de instellingen uitschakelen.
+Bij elke installatie vraagt Caruspex één keer of het naar updates moet zoeken. Pas na een ja vraagt het aan GitHub of er een nieuwere versie is, en verder niets. Een nieuwe versie wordt alleen geïnstalleerd als de handtekening past bij de sleutel die in de app is ingebouwd. De controle en de automatische installatie kun je in de instellingen altijd wijzigen.
 
 ## Pakketbeheerders
 

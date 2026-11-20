@@ -34,7 +34,7 @@ Le auto su K-Line (in Europa circa dal 2001 al 2007) rispondono lentamente per c
 
 ## Caruspex invia i miei dati da qualche parte?
 
-No. Solo il controllo degli aggiornamenti chiede a GitHub la versione più recente, e si può disattivare. Vedi [privacy](privacy.md).
+No. Solo il controllo degli aggiornamenti chiede a GitHub la versione più recente, e solo dopo un tuo sì; lo puoi cambiare in qualsiasi momento. Vedi [privacy](privacy.md).
 
 ## Come posso aiutare?
 

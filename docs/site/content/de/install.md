@@ -45,7 +45,7 @@ Den Bericht gibt es auf Deutsch, Englisch, Spanisch, Französisch, Portugiesisch
 
 ## Updates
 
-Beim Start fragt Caruspex bei GitHub nach, ob es eine neuere Version gibt, und sonst nichts. Eine neue Version wird nur installiert, wenn ihre Signatur zum eingebauten Schlüssel passt. Die Suche und die automatische Installation lassen sich in den Einstellungen abschalten.
+Caruspex fragt bei jeder Installation einmal, ob es nach Updates suchen soll. Erst nach einem Ja fragt es bei GitHub nach, ob es eine neuere Version gibt, und sonst nichts. Eine neue Version wird nur installiert, wenn ihre Signatur zum eingebauten Schlüssel passt. Die Suche und die automatische Installation lassen sich jederzeit in den Einstellungen ändern.
 
 ## Paketverwaltungen
 

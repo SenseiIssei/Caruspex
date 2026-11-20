@@ -13,12 +13,19 @@ Her şey bilgisayarınızda kalır:
 | Kayıtlar ve CSV dosyaları | yalnızca siz başlattığınızda | onları kaydettiğiniz yerde |
 | Günlük dosyası | yalnızca ayarlarda açarsanız | seçtiğiniz yol |
 | Çökme raporları | yalnızca Caruspex çökerse | garajın yanındaki `crash-reports` klasörü |
+| İlk KKL testinin raporları | yalnızca bir rapor kaydettiğinizde | ayarlar klasöründeki `test-reports` klasörü; kutuyu işaretlemezseniz VIN ve immobilizer numarası kısaltılır |
 
 Bu dosyalardan herhangi birini istediğiniz zaman silebilirsiniz.
 
 ## Neler gönderilir
 
-Caruspex açılışta GitHub'a daha yeni bir sürüm olup olmadığını sorar. Bu sırada sizinle veya aracınızla ilgili hiçbir şey gönderilmez. Kontrol ayarlardan kapatılabilir. Bunun dışında Caruspex internete bağlanmaz. Bir Wi-Fi adaptörü, ENET kablosu veya DoIP araçla iletişim yerel ağınızda kalır.
+Caruspex her kurulumda, daha eski bir sürümden güncelleme yapıldığında da, bir kez güncelleme aranıp aranmayacağını sorar. Yalnızca evet yanıtından sonra GitHub'a daha yeni bir sürüm olup olmadığını sorar; açılışta ve çalıştığı sürece her altı saatte bir. Bu sırada sizinle veya aracınızla ilgili hiçbir şey gönderilmez. Evet demezseniz GitHub'a hiçbir istek gitmez. Bunu ayarlarda **Pencere ve dil** altından istediğiniz zaman değiştirebilirsiniz. Bunun dışında Caruspex internete bağlanmaz. Bir Wi-Fi adaptörü, ENET kablosu veya DoIP araçla iletişim yerel ağınızda kalır.
+
+Yalnızca GitHub'da yayımlanan sürümler güncelleme arar; kendi derlediğiniz bir kopya bunu asla yapmaz. Caruspex bir güncelleme aradığında veya indirdiğinde, GitHub her indirmede olduğu gibi bilgisayarın IP adresini ve Caruspex sürümünü görür; Caruspex bunun dışında hiçbir şey göndermez veya saklamaz, proje dahil kimse de bunu görmez. Bunun için GitHub'ın gizlilik bildirimi geçerlidir. Güncellemeler yalnızca Caruspex deposunun sürümlerinden indirilir. **GitHub'da bildir** gibi düğmeler yalnızca tarayıcınızı açar; orada ne paylaşacağınıza siz karar verirsiniz.
+
+## Android
+
+Android 11'e kadar sistem, bir uygulamanın Bluetooth LE adaptörlerini yalnızca konum izniyle bulmasına izin verir. Caruspex bu izni yalnızca bu nedenle ister ve konumunuzu asla okumaz. Android 12'den itibaren bunun yerine, konum için asla kullanılmadığı belirtilen Bluetooth iznini ister.
 
 ## Çökme raporları yalnızca istek üzerine
 

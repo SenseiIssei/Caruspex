@@ -69,10 +69,12 @@ The tests of the worker use a `Sink` that collects events in a list (`app/src-ta
 | Control unit addresses | `data/ecus/*.csv` | `tools/gen_ecus.py` | `crates/caruspex-data/src/generated/` |
 | PID packs | `data/pids/*.csv`, `data/obdb/`, `data/opendbc/` | `tools/gen_pids.py` | `crates/caruspex-record/src/generated/` |
 | Engine codes (Wikipedia, CC BY-SA) | `data/engines/` | `tools/gen_engines.py` | `crates/caruspex-vehicles/src/generated/` |
+| VIN maker codes only Wikibooks has (CC BY-SA); the rest is in `vin.rs` (NHTSA vPIC, Wikidata) | `data/wmi/` | `tools/gen_wmi.py` | `crates/caruspex-vehicles/src/generated/` |
 | Dimensions (Wikidata CC0, makers' data sheets) | `data/wikidata/`, `data/dimensions_manual.csv` | `tools/gen_dimensions.py` | `crates/caruspex-vehicles/src/generated/` |
 | Catalog copy for the browser preview and UI tests | (from the Rust catalog) | `app/scripts/extract-catalog.py` | `app/src/api/mock/data/` |
 | Interface text catalogs | `translations/`, `app/src/i18n/new-texts*.json` | `app/scripts/gen-i18n.mjs` (on every UI build) | `app/src/i18n/generated/` (not in git) |
 | Core text catalogs | `translations/` | `crates/caruspex-i18n/build.rs` (at compile time) | the build directory |
+| Licences of everything shipped | `Cargo.lock`, `app/package-lock.json`, the Android build file, the data table in the script | `tools/gen_notices.py` | `THIRD_PARTY_NOTICES.md`, copied into `app/public/legal/` on every UI build |
 
 Files in `generated/` folders and `app/src/api/mock/data/` are never edited by hand. The CI runs the generators
 and fails when the result differs from what is committed.
@@ -126,4 +128,16 @@ The X-ray page (`app/src/pages/XrayPage.tsx`) shows the connected car, or any ge
 - The updater in the app (`app/src-tauri/src/update.rs`) asks the newest release of this repository for
   `latest.json`, downloads only from this repository's releases and installs a package only when its signature
   matches the public key in the app. Both the check and the installation can be switched off in the settings.
+- Next to the packages every release carries `SHA256SUMS`, a Sigstore bundle of GitHub's build provenance for
+  every file (`actions/attest-build-provenance`) and one SBOM per platform (`tools/sbom.py`, CycloneDX). These
+  files have their own names and are added before the release is created, so `latest.json` and the update
+  packages stay exactly as the updater expects them. How to check a download is in
+  [SECURITY.md](../SECURITY.md#checking-a-download).
 - None of the release steps run for pull requests or in forks.
+
+## Security and the Cyber Resilience Act
+
+[docs/cra/](cra/scope.md) holds the scope assessment for the EU Cyber Resilience Act, the risk assessment of
+Caruspex, the mapping of the essential requirements to the code ([requirements.md](cra/requirements.md)), the user
+information and the support statement. Keep [risk-assessment.md](cra/risk-assessment.md) current when a change
+adds a new way to an adapter, a new file format, a network request or a step in the release workflow.

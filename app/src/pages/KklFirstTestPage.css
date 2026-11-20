@@ -1,0 +1,43 @@
+/* The first test of a KKL cable (KklFirstTestPage.tsx). */
+.kft-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.kft-grid .card { display: flex; flex-direction: column; gap: 12px; }
+.kft-grid .card > .btn { align-self: flex-start; }
+.kft-checks { display: flex; flex-direction: column; gap: 8px; }
+
+.kft-steps { display: flex; flex-direction: column; }
+.kft-step { border-top: 1px solid var(--border); padding: 8px 2px; }
+.kft-step:first-child { border-top: none; }
+.kft-step > summary, div.kft-step { display: flex; align-items: center; gap: 10px; list-style: none; cursor: default; }
+.kft-step > summary { cursor: pointer; }
+.kft-step > summary::-webkit-details-marker { display: none; }
+.kft-icon { display: inline-flex; width: 18px; justify-content: center; color: var(--text-faint); flex: none; }
+.kft-icon.st-ok { color: var(--good); }
+.kft-icon.st-warn { color: var(--warn); }
+.kft-icon.st-fail { color: var(--bad); }
+.kft-icon.st-running { color: var(--accent); }
+.kft-title { font-weight: 600; flex: 0 0 auto; min-width: 210px; }
+.kft-summary { color: var(--text-muted); flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.kft-step.st-skip .kft-title, .kft-step.st-pending .kft-title { color: var(--text-faint); font-weight: 500; }
+.kft-lines { margin: 8px 0 4px 28px; font-family: var(--font-mono); font-size: 12px; white-space: pre-wrap; user-select: text; overflow-wrap: anywhere; }
+.kft-log-title { margin: 6px 0 4px 28px; font-size: 12px; }
+.kft-log { margin-inline-start: 28px; max-height: 220px; }
+
+.kft-timing td.num, .kft-timing th.num { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kft-bits-cell { min-width: 220px; }
+.kft-bits { display: flex; gap: 2px; height: 22px; }
+.kft-bit {
+  display: flex; align-items: center; justify-content: center; min-width: 18px;
+  font-size: 10px; font-family: var(--font-mono); border-radius: 3px; overflow: hidden;
+  color: var(--text-muted);
+}
+.kft-bit.zero { background: color-mix(in srgb, var(--tone, var(--good)) 18%, transparent); }
+.kft-bit.one { background: color-mix(in srgb, var(--tone, var(--good)) 8%, transparent); border: 1px solid color-mix(in srgb, var(--tone, var(--good)) 30%, transparent); }
+.kft-bit.b-good { --tone: var(--good); }
+.kft-bit.b-warn { --tone: var(--warn); }
+.kft-bit.b-bad { --tone: var(--bad); color: var(--bad); }
+.kft-path { font-family: var(--font-mono); font-size: 12px; user-select: text; }
+
+@media (max-width: 720px) {
+  .kft-title { min-width: 0; }
+  .kft-step > summary, div.kft-step { flex-wrap: wrap; }
+}

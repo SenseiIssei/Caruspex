@@ -12,6 +12,10 @@
 #            dist/Caruspex-<v>-macos.app.tar.gz      (the app bundle for the updater)
 #            dist/caruspex_cli-<v>-macos.tar.gz
 #
+# Every package carries LICENSE and THIRD_PARTY_NOTICES.md (tools/gen_notices.py):
+# the zips and CLI archives as files, the app packages inside the interface,
+# where Settings shows them.
+#
 # The release job signs the update packages (setup.exe, AppImage,
 # .app.tar.gz) and writes latest.json, see tools/release_assets.py.
 #
@@ -44,12 +48,12 @@ MINGW* | MSYS* | CYGWIN*)
     if command -v rustup >/dev/null; then rustup target add i686-pc-windows-msvc; fi
     cargo build --release -p caruspex-j2534 --bin caruspex-j2534-bridge --target i686-pc-windows-msvc
     BRIDGE="$CARGO_TARGET_DIR/i686-pc-windows-msvc/release/caruspex-j2534-bridge.exe"
-    cp "$RELEASE/caruspex.exe" "$RELEASE/caruspex_cli.exe" "$BRIDGE" LICENSE "$STAGE/"
+    cp "$RELEASE/caruspex.exe" "$RELEASE/caruspex_cli.exe" "$BRIDGE" LICENSE THIRD_PARTY_NOTICES.md "$STAGE/"
 
     (cd "$STAGE" && powershell -NoProfile -Command \
-        "Compress-Archive -Path caruspex.exe,caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
+        "Compress-Archive -Path caruspex.exe,caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE,THIRD_PARTY_NOTICES.md -DestinationPath '$(cygpath -w "$DIST")\\Caruspex-$VERSION-windows-x64.zip'")
     (cd "$STAGE" && powershell -NoProfile -Command \
-        "Compress-Archive -Path caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE -DestinationPath '$(cygpath -w "$DIST")\\caruspex_cli-$VERSION-windows-x64.zip'")
+        "Compress-Archive -Path caruspex_cli.exe,caruspex-j2534-bridge.exe,LICENSE,THIRD_PARTY_NOTICES.md -DestinationPath '$(cygpath -w "$DIST")\\caruspex_cli-$VERSION-windows-x64.zip'")
 
     # Microsoft's small WebView2 bootstrapper: the installer runs it only on
     # the rare Windows without the runtime.
@@ -79,7 +83,7 @@ Linux)
     cp "$RELEASE"/bundle/appimage/*.AppImage "$DIST/Caruspex-$VERSION-linux-x86_64.AppImage"
     cp "$RELEASE"/bundle/deb/*.deb "$DIST/Caruspex-$VERSION-linux-amd64.deb"
     tar -czf "$DIST/caruspex_cli-$VERSION-linux-x86_64.tar.gz" \
-        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE
+        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE THIRD_PARTY_NOTICES.md
     ;;
 
 Darwin)
@@ -91,7 +95,7 @@ Darwin)
     COPYFILE_DISABLE=1 tar -czf "$DIST/Caruspex-$VERSION-macos.app.tar.gz" \
         -C "$(dirname "$BUNDLE")" "$(basename "$BUNDLE")"
     tar -czf "$DIST/caruspex_cli-$VERSION-macos.tar.gz" \
-        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE
+        -C "$RELEASE" caruspex_cli -C "$ROOT" LICENSE THIRD_PARTY_NOTICES.md
     ;;
 
 *)

@@ -1,0 +1,77 @@
+name: Audit
+
+# Known vulnerabilities in the dependencies: RustSec for every crate of
+# Cargo.lock and npm audit for the packages of the interface bundle
+# (tools/audit.py). On every push to main and pull request that changes the
+# dependencies or this check, and once a week, because new advisories appear
+# without any change here. A finding that does not affect Caruspex is
+# accepted with a reason and an expiry date in tools/audit_exceptions.toml
+# (SECURITY.md, "Dependencies").
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Cargo.lock"
+      - "**/Cargo.toml"
+      - "app/package.json"
+      - "app/package-lock.json"
+      - "tools/audit.py"
+      - "tools/audit_exceptions.toml"
+      - ".github/workflows/audit.yml"
+  pull_request:
+    paths:
+      - "Cargo.lock"
+      - "**/Cargo.toml"
+      - "app/package.json"
+      - "app/package-lock.json"
+      - "tools/audit.py"
+      - "tools/audit_exceptions.toml"
+      - ".github/workflows/audit.yml"
+  schedule:
+    - cron: "41 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Pinned: a new cargo-audit can change its report format.
+      CARGO_AUDIT_VERSION: "0.22.2"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # Keeps the installed cargo-audit between runs (cache-bin).
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: cargo-audit-${{ env.CARGO_AUDIT_VERSION }}
+
+      - name: cargo-audit
+        run: |
+          if ! cargo audit --version 2>/dev/null | grep -q " $CARGO_AUDIT_VERSION\$"; then
+            cargo install cargo-audit --locked --version "$CARGO_AUDIT_VERSION" --force
+          fi
+          cargo audit --version
+
+      - name: Known vulnerabilities
+        run: python tools/audit.py

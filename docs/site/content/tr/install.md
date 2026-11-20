@@ -45,7 +45,7 @@ Rapor Almanca, İngilizce, İspanyolca, Fransızca, Portekizce, İtalyanca, Fele
 
 ## Güncellemeler
 
-Caruspex açılışta GitHub'a daha yeni bir sürüm olup olmadığını sorar, başka hiçbir şey sormaz. Yeni bir sürüm yalnızca imzası uygulamaya gömülü anahtarla eşleşirse kurulur. Hem kontrol hem de otomatik kurulum ayarlardan kapatılabilir.
+Caruspex her kurulumda bir kez güncelleme aranıp aranmayacağını sorar. Yalnızca evet yanıtından sonra GitHub'a daha yeni bir sürüm olup olmadığını sorar, başka hiçbir şey sormaz. Yeni bir sürüm yalnızca imzası uygulamaya gömülü anahtarla eşleşirse kurulur. Kontrol ve otomatik kurulum ayarlardan istediğiniz zaman değiştirilebilir.
 
 ## Paket yöneticileri
 

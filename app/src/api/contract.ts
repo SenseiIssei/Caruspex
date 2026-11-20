@@ -38,6 +38,9 @@ import type {
   J1939ValueRow,
   J2534DeviceRow,
   KklEcuInfo,
+  KklSavedReport,
+  KklTestReport,
+  KklTestStep,
   LiveRow,
   MonitorRow,
   OpenedTextFile,
@@ -216,6 +219,18 @@ export interface Commands {
   run_actuator_test: Cmd<None, void>;
   // Control units the K-line pages offer (knownEcus() with ecuName()).
   kkl_ecus: Cmd<None, KklEcuInfo[]>;
+  // The first test of a KKL cable (worker/kkl_test.rs), both read only and
+  // only on the port given: the cable test on USB only, and the guided test
+  // on the car. "sim:a2" and "sim:a2:<fault>" are the simulated A2. Steps
+  // come as kkl_test_step, the end as kkl_test_finished.
+  kkl_cable_check: Cmd<{ device: string }, void>;
+  kkl_first_test: Cmd<{ device: string }, void>;
+  // Writes the report (JSON and text) into test-reports in the config
+  // folder; VIN and immobiliser id masked unless includeVin. context: lines
+  // the page adds (car, checklist).
+  kkl_test_save_report: Cmd<{ report: KklTestReport; context: string[]; includeVin: boolean }, KklSavedReport>;
+  // Shows a saved report in the file manager (only inside test-reports).
+  kkl_test_reveal: Cmd<{ path: string }, void>;
 
   // --- BMW E series on the K-line (DS2, KWP2000, BMW-FAST) ----------------------
   // device: a serial port with a K+DCAN or KKL cable, or "sim:e46" /
@@ -304,6 +319,8 @@ export interface Events {
   scan_finished: { present: number; withFaults: number; cancelled: boolean };
   clear_progress: { line: string };
   clear_finished: { everythingGone: boolean; remaining: number };
+  kkl_test_step: { step: KklTestStep };
+  kkl_test_finished: { report: KklTestReport };
   adaptation_result: { channel: number; value: number; shown: LiveRow[] };
   actuator_result: { actuator: string };
   monitor_results: { rows: MonitorRow[]; note: string };

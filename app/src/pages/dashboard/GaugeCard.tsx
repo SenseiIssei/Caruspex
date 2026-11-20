@@ -1,14 +1,14 @@
 // The live gauges of the start page, with the menu to choose them.
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { call } from "../../api";
-import type { LiveRow, PidInfo } from "../../api";
+import type { PidInfo } from "../../api";
 import { Gauge } from "../../components/Gauge";
 import { Icon } from "../../components/Icon";
 import { Button, Card } from "../../components/ui";
 import { translator } from "../../i18n";
 import { useAppEvent, useBackendEvent } from "../../lib/hooks";
 import { navigate } from "../../shell/nav";
-import { live } from "../../state/session";
+import { useLiveValues } from "../../state/liveView";
 
 const tr = translator("caruspex::DashboardPage");
 
@@ -167,16 +167,9 @@ export function GaugeCard({ connected }: { connected: boolean }) {
   );
 }
 
-// One gauge that follows its own value.
+// One gauge that follows its own value (cleared with the connection).
 function LiveGauge({ spec }: { spec: PidInfo }) {
-  const [value, setValue] = useState<number | null>(() => {
-    const last: LiveRow | undefined = live.get(spec.key);
-    return last ? last.value : null;
-  });
-  useBackendEvent("live_value", ({ row }) => {
-    if (row.pid === spec.key) setValue(row.value);
-  });
-  useBackendEvent("closed", () => setValue(null));
+  const value = useLiveValues([spec.key])[0] ?? null;
 
   let low = spec.displayMin;
   let high = spec.displayMax;

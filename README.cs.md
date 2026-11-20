@@ -503,14 +503,30 @@ Režim OBD 04 maže paměť závad, zmrazený rámec a monitory připravenosti. 
 auto neprojde emisním testem, dokud neabsolvuje několik úplných jízdních cyklů, a kód, jehož příčina
 stále trvá, se po krátké jízdě vrátí. Mazání není oprava.
 
-## Upozornění
+<!-- legal -->
+## Bezpečnost a odpovědnost
 
-Caruspex je hobby projekt a poskytuje se bez záruky. Používáte ho na vlastní riziko, jen na vozidlech,
-na kterých smíte pracovat, a nikdy za jízdy. Všechny názvy produktů a značek jsou ochranné známky jejich
-příslušných vlastníků; Caruspex není spojen s žádným výrobcem vozidel ani jím podporován.
+Caruspex je svobodný hobby projekt bez jakékoli záruky, jak říká [licence MIT](LICENSE). Používáte ho na vlastní nebezpečí.
 
-## Licence
+- Nikdy ho neovládejte za jízdy. Nastavte ho ve stojícím voze; živé hodnoty může sledovat spolujezdec.
+- Mazání závad, testy akčních členů a základní nastavení nutí auto něco dělat. Caruspex se před každým z nich zeptá; provádějte je jen ve stojícím a zajištěném voze a jen u vozidel, na kterých smíte pracovat.
+- Caruspex nenahrazuje servis. Kód závady ukazuje příznak, ne vždy příčinu. Brzdy, airbagy, řízení a vše, na čem závisí bezpečnost, patří do odborných rukou.
+- Smazání není oprava. Smazané závady a vynulované testy připravenosti mohou způsobit neúspěch při měření emisí nebo technické kontrole.
+- Caruspex nemění stav tachometru, imobilizér, klíče, systém čištění výfukových plynů ani tachograf a projekt nepřijímá příspěvky, které by to dělaly. Manipulace s počítadly kilometrů, čištěním výfukových plynů nebo tachografy je v mnoha zemích nezákonná.
 
-MIT, viz [LICENSE](LICENSE). Hodnoty výrobce pro stovky modelů jsou převedeny z [OBDb](https://github.com/OBDb) a stejně jako OBDb podléhají licenci CC BY-SA 4.0: leží odděleně od kódu v [data/obdb](data/obdb) s licencí a seznamem zdrojů ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Přibalená písma podléhají licenci SIL Open Font License 1.1:
-JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) a
-Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+## Ochranné známky
+
+Názvy výrobců vozidel, modelů, adaptérů, programů a norem (například Volkswagen, Audi, BMW, Mercedes-Benz, Tesla, OBDLink, ELM327, VCDS nebo ISTA) jsou ochranné známky jejich vlastníků. Uvádějí se jen proto, aby bylo jasné, s jakými auty, adaptéry a rozhraními Caruspex pracuje. Caruspex je nezávislý projekt a není spojen s žádným výrobcem vozidel, výrobcem adaptérů ani dodavatelem softwaru, není jimi schválen ani sponzorován. Aplikace a tento repozitář nepoužívají loga těchto firem.
+
+## Licence a zdroje
+
+Kód je pod licencí MIT, viz [LICENSE](LICENSE). Knihovny obsažené v programech a jejich licence jsou uvedeny v [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); aplikace je ukazuje v nastavení. Data zabudovaná do programů:
+
+- Hodnoty výrobců pro asi 550 vozidel, převedené z [OBDb](https://github.com/OBDb), stejně jako OBDb pod CC BY-SA 4.0: odděleně od kódu v [data/obdb](data/obdb) s licencí a seznamem zdrojů ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+- Definice signálů CAN z [opendbc](https://github.com/commaai/opendbc) (comma.ai) a [model3dbc](https://github.com/joshwardell/model3dbc), licence MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Hodnoty baterie pro Hyundai Ioniq a Kona, Kia e-Niro, Nissan Leaf a Renault Zoe podle OBDb (CC BY-SA 4.0, stejně jako tyto balíčky), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) a [evDash](https://github.com/nickn17/evDash) (oba MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
+- Kódy motorů z článků Wikipedie, CC BY-SA 4.0 ([data/engines](data/engines), s článkem a verzí v každém řádku).
+- Kódy výrobců z VIN ověřené v [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (volné dílo) a [Wikidata](https://www.wikidata.org) (CC0); kódy, které má jen [seznam WMI na Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), jsou pod CC BY-SA 4.0 a leží zvlášť v [data/wmi](data/wmi).
+- Rozměry vozidel z [Wikidat](https://www.wikidata.org), CC0.
+- Písma pod licencí SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+<!-- /legal -->

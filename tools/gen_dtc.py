@@ -28,7 +28,7 @@ import unicodedata
 # -I does not put the script directory on sys.path, so add it by hand.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from dtc.brands import FAMILIES  # noqa: E402
+from dtc.brands import FAMILIES, SOURCES  # noqa: E402
 from dtc.details import DETAILS  # noqa: E402
 from dtc.generic import T as GENERIC  # noqa: E402
 from dtc.model import COSTS, SEVERITIES, SYSTEMS, Table, is_manufacturer  # noqa: E402
@@ -127,7 +127,9 @@ def write_all_rust(parts: dict[str, Table]) -> None:
     write_rust("dtc_generic_cbu.rs", lines[:-1])
 
     brand_total = sum(len(f.table) for f in FAMILIES)
-    lines = rust_header(f"{brand_total} manufacturer-specific codes in {len(FAMILIES)} brand families.",
+    # The source statement of brands.py goes into the head of the file.
+    lines = rust_header(f"{brand_total} manufacturer-specific codes in {len(FAMILIES)} brand families.\n// "
+                        + "\n// ".join(SOURCES),
                         ["use crate::dtc::DtcSystem;",
                          "use crate::dtc::tables::{Family, NO_DETAIL, Record, r};",
                          "use crate::severity::Severity;",

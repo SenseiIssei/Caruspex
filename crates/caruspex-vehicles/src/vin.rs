@@ -146,13 +146,23 @@ const fn w(
     }
 }
 
-// World manufacturer identifiers. Three character entries are exact, two
-// character entries catch the rest of a range that belongs to one maker
-// (JT is Toyota unless a more specific entry says otherwise).
+// World manufacturer identifiers. Three character entries are exact, the
+// two character entry JT catches the rest of a range that belongs to one
+// maker (JT is Toyota unless a more specific entry says otherwise).
 //
-// Sources are the public WMI lists (SAE, NHTSA, ISO 3780 ranges). Where a
-// code is shared by several brands of one group, all of them are listed and
-// the catalog decides by the model code or leaves it open.
+// Every code here is in a public domain or CC0 source, checked on
+// 2026-11-20: NHTSA vPIC (vpic.nhtsa.dot.gov, US government work, public
+// domain), DecodeWMI for the code, or GetWMIsForManufacturer for the six
+// character codes of small makers (VF9 Bugatti as VF9795, LA9 BYD as
+// LA9LC0); or Wikidata, property P6793 "WMI code" (CC0: ZLA, WMA, YS2, TMT,
+// LE4, 8A1). For JT every code vPIC lists is Toyota. The maker names, brand
+// lists and the year and model code rules are Caruspex's own. Where a code is
+// shared by several brands of one group, all of them are listed and the
+// catalog decides by the model code or leaves it open.
+//
+// Codes these sources do not have (mostly makers that do not sell in the
+// USA) follow the WMI list on Wikibooks, which is under CC BY-SA 4.0; they
+// are kept apart in data/wmi/ under that licence and come in as WMI_CC_BY_SA.
 #[rustfmt::skip]
 static WMI: &[WmiEntry] = &[
     // --- Germany ---------------------------------------------------------
@@ -170,13 +180,6 @@ static WMI: &[WmiEntry] = &[
     w("3VW", "Volkswagen de México", "Volkswagen", STD, VAG, NO_COUNTRY),
     w("3VV", "Volkswagen de México (SUV)", "Volkswagen", STD, VAG, NO_COUNTRY),
     w("9BW", "Volkswagen do Brasil", "Volkswagen", STD, VAG, NO_COUNTRY),
-    w("8AW", "Volkswagen Argentina", "Volkswagen", STD, VAG, NO_COUNTRY),
-    w("AAV", "Volkswagen South Africa", "Volkswagen", STD, VAG, NO_COUNTRY),
-    w("LSV", "SAIC Volkswagen", "Volkswagen|Škoda", STD, VAG, NO_COUNTRY),
-    w("LFV", "FAW-Volkswagen", "Volkswagen|Audi", STD, VAG, NO_COUNTRY),
-    w("XW8", "Volkswagen Group Rus", "Volkswagen|Škoda", STD, VAG, NO_COUNTRY),
-    w("TMB", "Škoda Auto", "Škoda", STD, VAG, NO_COUNTRY),
-    w("VSS", "SEAT", "SEAT|Cupra", STD, VAG, NO_COUNTRY),
     w("WP0", "Porsche AG", "Porsche", STD, POR, NO_COUNTRY),
     w("WP1", "Porsche AG (SUV)", "Porsche", STD, POR, NO_COUNTRY),
     w("WBA", "BMW AG", "BMW", UNK, NO_CODE, NO_COUNTRY),
@@ -187,49 +190,29 @@ static WMI: &[WmiEntry] = &[
     w("5UX", "BMW Manufacturing USA (SUV)", "BMW", STD, NO_CODE, NO_COUNTRY),
     w("5YM", "BMW Manufacturing USA (M SUV)", "BMW", STD, NO_CODE, NO_COUNTRY),
     w("3MW", "BMW de México", "BMW", STD, NO_CODE, NO_COUNTRY),
-    w("LBV", "BMW Brilliance", "BMW", STD, NO_CODE, NO_COUNTRY),
     w("WMW", "BMW AG (MINI)", "Mini", UNK, NO_CODE, NO_COUNTRY),
     w("WAP", "Alpina", "Alpina", UNK, NO_CODE, NO_COUNTRY),
     w("WDB", "Mercedes-Benz", "Mercedes-Benz|Maybach", UNK, MB, NO_COUNTRY),
     w("WDD", "Mercedes-Benz (Pkw)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("WDC", "Mercedes-Benz (SUV)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
-    w("WDF", "Mercedes-Benz (Transporter)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("W1K", "Mercedes-Benz (Pkw)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("W1N", "Mercedes-Benz (SUV)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
-    w("W1V", "Mercedes-Benz (Transporter)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("W1W", "Mercedes-Benz (Transporter, Nordamerika)", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
-    w("W1T", "Mercedes-Benz (Lkw)", "Mercedes-Benz", UNK, MB, NO_COUNTRY),
     w("4JG", "Mercedes-Benz U.S. International (SUV)", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
     w("55S", "Mercedes-Benz U.S. International", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
     w("LE4", "Beijing Benz", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
-    w("9BM", "Mercedes-Benz do Brasil", "Mercedes-Benz", STD, NO_CODE, NO_COUNTRY),
     w("WME", "smart", "Smart", UNK, MB, NO_COUNTRY),
-    w("TCC", "Micro Compact Car", "Smart", UNK, MB, NO_COUNTRY),
     w("W1A", "smart", "Smart", UNK, NO_CODE, NO_COUNTRY),
     w("W0L", "Adam Opel AG", "Opel", STD, NO_CODE, NO_COUNTRY),
     w("W0V", "Opel Automobile GmbH", "Opel", STD, NO_CODE, NO_COUNTRY),
-    w("VXK", "Opel Automobile GmbH (Stellantis)", "Opel", UNK, NO_CODE, IN_FRANCE),
-    w("VXE", "Opel Automobile GmbH (Stellantis, Transporter)", "Opel", UNK, NO_CODE, IN_FRANCE),
-    w("VSX", "Opel España", "Opel", STD, NO_CODE, NO_COUNTRY),
     w("WF0", "Ford-Werke (Ford of Europe)", "Ford", UNK, NO_CODE, NO_COUNTRY),
     w("WF1", "Ford-Werke (Merkur)", "Merkur", STD, NO_CODE, NO_COUNTRY),
     w("WMA", "MAN Truck & Bus", "MAN", UNK, NO_CODE, NO_COUNTRY),
     w("WZ1", "Toyota Supra, gebaut von Magna Steyr", "Toyota", STD, NO_CODE, IN_AUSTRIA),
-    w("XP7", "Tesla Gigafactory Berlin-Brandenburg", "Tesla", STD, TESLA, IN_GERMANY),
 
     // --- France ----------------------------------------------------------
     w("VF1", "Renault", "Renault|Dacia|Alpine", UNK, NO_CODE, NO_COUNTRY),
-    w("VF2", "Renault", "Renault", UNK, NO_CODE, NO_COUNTRY),
-    w("VF6", "Renault Trucks", "Renault Trucks|Renault", UNK, NO_CODE, NO_COUNTRY),
-    w("VS5", "Renault España", "Renault", UNK, NO_CODE, NO_COUNTRY),
-    w("VFA", "Alpine", "Alpine", UNK, NO_CODE, NO_COUNTRY),
     w("VF3", "Peugeot", "Peugeot", UNK, NO_CODE, NO_COUNTRY),
-    w("VR3", "Peugeot (Stellantis)", "Peugeot", UNK, NO_CODE, NO_COUNTRY),
-    w("VF7", "Citroën", "Citroën|DS", UNK, NO_CODE, NO_COUNTRY),
-    w("VR7", "Citroën (Stellantis)", "Citroën", UNK, NO_CODE, NO_COUNTRY),
-    w("VS7", "Citroën España", "Citroën", UNK, NO_CODE, NO_COUNTRY),
-    w("VR1", "DS Automobiles", "DS", UNK, NO_CODE, NO_COUNTRY),
-    w("VF8", "Matra Automobile", "Matra", UNK, NO_CODE, NO_COUNTRY),
     w("VF9", "Bugatti Automobiles", "Bugatti", UNK, NO_CODE, NO_COUNTRY),
     w("VNK", "Toyota Motor Manufacturing France", "Toyota", UNK, NO_CODE, NO_COUNTRY),
 
@@ -245,10 +228,6 @@ static WMI: &[WmiEntry] = &[
     w("ZAC", "FCA Italy (Jeep, Dodge)", "Jeep|Dodge", UNK, NO_CODE, NO_COUNTRY),
     w("ZCF", "Iveco", "Iveco", UNK, NO_CODE, NO_COUNTRY),
     w("3C3", "FCA México", "Fiat|Chrysler", STD, NO_CODE, NO_COUNTRY),
-    w("9BD", "Fiat Automóveis (Brasilien)", "Fiat", STD, NO_CODE, NO_COUNTRY),
-    w("8AP", "Fiat Auto Argentina", "Fiat", STD, NO_CODE, NO_COUNTRY),
-    w("SUF", "Fiat Auto Poland", "Fiat", UNK, NO_CODE, NO_COUNTRY),
-    w("NM4", "Tofaş", "Fiat", UNK, NO_CODE, NO_COUNTRY),
 
     // --- United Kingdom --------------------------------------------------
     w("SAJ", "Jaguar Cars", "Jaguar", STD, NO_CODE, NO_COUNTRY),
@@ -256,8 +235,6 @@ static WMI: &[WmiEntry] = &[
     w("SAL", "Land Rover", "Land Rover", STD, NO_CODE, NO_COUNTRY),
     w("SC6", "INEOS Automotive (SUV)", "INEOS", STD, NO_CODE, NO_COUNTRY),
     w("SH7", "INEOS Automotive (pick-up)", "INEOS", STD, NO_CODE, NO_COUNTRY),
-    w("ZS1", "Leapmotor International", "Leapmotor", STD, NO_CODE, NO_COUNTRY),
-    w("SAR", "Rover Group / MG Rover", "Rover|MG", UNK, NO_CODE, NO_COUNTRY),
     w("SAX", "Austin Rover Group", "Austin|Rover", UNK, NO_CODE, NO_COUNTRY),
     w("SCA", "Rolls-Royce", "Rolls-Royce", STD, NO_CODE, NO_COUNTRY),
     w("SCB", "Bentley", "Bentley", STD, NO_CODE, NO_COUNTRY),
@@ -266,10 +243,8 @@ static WMI: &[WmiEntry] = &[
     w("SCF", "Aston Martin", "Aston Martin", STD, NO_CODE, NO_COUNTRY),
     w("SBM", "McLaren Automotive", "McLaren", STD, NO_CODE, NO_COUNTRY),
     w("SFZ", "Tesla Roadster, gebaut von Lotus", "Tesla", STD, NO_CODE, NO_COUNTRY),
-    w("SFA", "Ford Motor Company UK", "Ford", UNK, NO_CODE, NO_COUNTRY),
     w("SHH", "Honda of the UK Manufacturing", "Honda", UNK, NO_CODE, NO_COUNTRY),
     w("SHS", "Honda of the UK Manufacturing (SUV)", "Honda", UNK, NO_CODE, NO_COUNTRY),
-    w("SJN", "Nissan Motor Manufacturing UK", "Nissan", UNK, NO_CODE, NO_COUNTRY),
     w("SJK", "Nissan Motor Manufacturing UK (Infiniti)", "Infiniti", UNK, NO_CODE, NO_COUNTRY),
     w("SB1", "Toyota Motor Manufacturing UK", "Toyota", UNK, NO_CODE, NO_COUNTRY),
 
@@ -286,34 +261,15 @@ static WMI: &[WmiEntry] = &[
     w("YK1", "Saab, gebaut von Valmet Automotive", "Saab", STD, NO_CODE, NO_COUNTRY),
     w("3G0", "Saab 9-4X (GM México)", "Saab", STD, NO_CODE, NO_COUNTRY),
     w("YH4", "Fisker Automotive (Karma), gebaut von Valmet", "Fisker", STD, NO_CODE, NO_COUNTRY),
-    w("XMC", "NedCar (Mitsubishi)", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
-    w("XLR", "DAF Trucks", "DAF", UNK, NO_CODE, NO_COUNTRY),
     w("YV2", "Volvo Trucks", "Volvo Trucks", UNK, NO_CODE, NO_COUNTRY),
     w("YS2", "Scania (Lkw)", "Scania", UNK, NO_CODE, NO_COUNTRY),
-    w("YAR", "Toyota Motor Europe", "Toyota", UNK, NO_CODE, NO_COUNTRY),
 
     // --- Central and Eastern Europe, Russia, Turkey ---------------------
-    w("TMA", "Hyundai Motor Manufacturing Czech", "Hyundai", STD, NO_CODE, NO_COUNTRY),
-    w("TMC", "Hyundai Motor Manufacturing Czech (SUV)", "Hyundai", STD, NO_CODE, NO_COUNTRY),
     w("TMT", "Tatra", "Tatra", UNK, NO_CODE, NO_COUNTRY),
-    w("TSM", "Magyar Suzuki", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
-    w("TW1", "Toyota Caetano Portugal", "Toyota", UNK, NO_CODE, NO_COUNTRY),
     w("U5Y", "Kia Slovakia", "Kia", STD, NO_CODE, NO_COUNTRY),
-    w("U6Y", "Kia Slovakia (SUV)", "Kia", STD, NO_CODE, NO_COUNTRY),
-    w("UU1", "Dacia", "Dacia", UNK, NO_CODE, NO_COUNTRY),
-    w("UU6", "Daewoo Automobile Romania", "Daewoo", UNK, NO_CODE, NO_COUNTRY),
-    w("VSK", "Nissan Motor Ibérica", "Nissan", UNK, NO_CODE, NO_COUNTRY),
-    w("VSE", "Santana Motor (Suzuki)", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
-    w("VS6", "Ford España", "Ford", UNK, NO_CODE, NO_COUNTRY),
     w("VCF", "Fisker Ocean, gebaut von Magna Steyr", "Fisker", STD, NO_CODE, NO_COUNTRY),
-    w("SUP", "FSO / Daewoo-FSO", "Daewoo|FSO", UNK, NO_CODE, NO_COUNTRY),
-    w("XTA", "AvtoVAZ", "Lada", UNK, NO_CODE, NO_COUNTRY),
-    w("XTT", "UAZ", "UAZ", UNK, NO_CODE, NO_COUNTRY),
-    w("X9L", "GM-AvtoVAZ", "Chevrolet", UNK, NO_CODE, NO_COUNTRY),
-    w("X7L", "Renault Russia", "Renault", UNK, NO_CODE, NO_COUNTRY),
     w("NM0", "Ford Otosan", "Ford", STD, NO_CODE, NO_COUNTRY),
     w("NMT", "Toyota Motor Manufacturing Turkey", "Toyota", UNK, NO_CODE, NO_COUNTRY),
-    w("NLH", "Hyundai Assan", "Hyundai", STD, NO_CODE, NO_COUNTRY),
 
     // --- Japan -----------------------------------------------------------
     w("JT", "Toyota Motor Corporation", "Toyota", UNK, NO_CODE, NO_COUNTRY),
@@ -323,24 +279,25 @@ static WMI: &[WmiEntry] = &[
     w("JTL", "Toyota Motor Corporation (Scion)", "Scion", STD, NO_CODE, NO_COUNTRY),
     w("JHM", "Honda Motor Co.", "Honda", UNK, NO_CODE, NO_COUNTRY),
     w("JHL", "Honda Motor Co. (SUV)", "Honda", UNK, NO_CODE, NO_COUNTRY),
-    w("JHG", "Honda Motor Co.", "Honda", UNK, NO_CODE, NO_COUNTRY),
     w("JH4", "Honda Motor Co. (Acura)", "Acura", STD, NO_CODE, NO_COUNTRY),
-    w("JN", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JNT", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JNX", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JN1", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JN3", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JN6", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
+    w("JN8", "Nissan Motor Co.", "Nissan", UNK, NO_CODE, NO_COUNTRY),
     w("JNK", "Nissan Motor Co. (Infiniti)", "Infiniti", UNK, NO_CODE, NO_COUNTRY),
     w("JNR", "Nissan Motor Co. (Infiniti SUV)", "Infiniti", UNK, NO_CODE, NO_COUNTRY),
     w("JM1", "Mazda Motor Corporation", "Mazda", UNK, NO_CODE, NO_COUNTRY),
     w("JM3", "Mazda Motor Corporation (SUV)", "Mazda", UNK, NO_CODE, NO_COUNTRY),
-    w("JMZ", "Mazda Motor Corporation (Europa)", "Mazda", UNK, NO_CODE, NO_COUNTRY),
     w("JA3", "Mitsubishi Motors", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
     w("JA4", "Mitsubishi Motors (SUV)", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
-    w("JMB", "Mitsubishi Motors (Europa)", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
-    w("JMY", "Mitsubishi Motors", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
     w("JF1", "Subaru (Fuji Heavy Industries)", "Subaru", UNK, NO_CODE, NO_COUNTRY),
     w("JF2", "Subaru (Fuji Heavy Industries, SUV)", "Subaru", UNK, NO_CODE, NO_COUNTRY),
     w("JS2", "Suzuki Motor Corporation", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
     w("JS3", "Suzuki Motor Corporation (SUV)", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
     w("JSA", "Suzuki Motor Corporation (Europa)", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
-    // Motorcycles (Wikibooks WMI list).
+    // Motorcycles.
     w("JH2", "Honda Motor Co. (Motorrad)", "Honda", UNK, NO_CODE, NO_COUNTRY),
     w("JS1", "Suzuki Motor Corporation (Motorrad)", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
     w("JYA", "Yamaha Motor Co. (Motorrad)", "Yamaha", UNK, NO_CODE, NO_COUNTRY),
@@ -350,7 +307,6 @@ static WMI: &[WmiEntry] = &[
     w("SMT", "Triumph Motorcycles", "Triumph", UNK, NO_CODE, NO_COUNTRY),
     w("1HD", "Harley-Davidson", "Harley-Davidson", UNK, NO_CODE, NO_COUNTRY),
     w("WB1", "BMW Motorrad", "BMW", UNK, NO_CODE, NO_COUNTRY),
-    w("JDA", "Daihatsu Motor Co.", "Daihatsu", UNK, NO_CODE, NO_COUNTRY),
     w("JAA", "Isuzu Motors", "Isuzu", UNK, NO_CODE, NO_COUNTRY),
     w("JAC", "Isuzu Motors (SUV)", "Isuzu", UNK, NO_CODE, NO_COUNTRY),
 
@@ -362,77 +318,33 @@ static WMI: &[WmiEntry] = &[
     w("KMU", "Genesis Motor (SUV)", "Genesis", STD, NO_CODE, NO_COUNTRY),
     w("KNA", "Kia Corporation", "Kia", STD, NO_CODE, NO_COUNTRY),
     w("KND", "Kia Corporation (SUV)", "Kia", STD, NO_CODE, NO_COUNTRY),
-    w("KNE", "Kia Corporation (Europa)", "Kia", STD, NO_CODE, NO_COUNTRY),
     w("KLA", "Daewoo Motor", "Daewoo", UNK, NO_CODE, NO_COUNTRY),
     w("KL1", "GM Daewoo / GM Korea", "Chevrolet|Daewoo", STD, NO_CODE, NO_COUNTRY),
     w("KL4", "GM Korea (Buick)", "Buick", STD, NO_CODE, NO_COUNTRY),
     w("KL7", "GM Korea (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("KL8", "GM Korea (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
-    w("KPT", "SsangYong Motor", "SsangYong", UNK, NO_CODE, NO_COUNTRY),
-    w("KPA", "SsangYong Motor (Pick-up)", "SsangYong", UNK, NO_CODE, NO_COUNTRY),
     w("KNM", "Renault Samsung Motors", "Renault|Nissan", STD, NO_CODE, NO_COUNTRY),
 
     // --- China, Vietnam, India, South East Asia -------------------------
-    w("LRW", "Tesla Gigafactory Shanghai", "Tesla", STD, TESLA, NO_COUNTRY),
-    w("LSJ", "SAIC Motor (MG, Roewe)", "MG", STD, NO_CODE, NO_COUNTRY),
     w("LSG", "SAIC-GM", "Buick|Chevrolet|Cadillac", STD, NO_CODE, NO_COUNTRY),
     w("LGX", "BYD Auto", "BYD", STD, NO_CODE, NO_COUNTRY),
     w("LC0", "BYD Auto", "BYD", STD, NO_CODE, NO_COUNTRY),
     w("LPE", "BYD Auto", "BYD", STD, NO_CODE, NO_COUNTRY),
     w("LA9", "BYD Auto", "BYD", STD, NO_CODE, NO_COUNTRY),
     w("L6T", "Zhejiang Geely (Geely, Zeekr, Lynk & Co)", "Geely|Zeekr|Lynk & Co", STD, NO_CODE, NO_COUNTRY),
-    w("LB3", "Geely Automobile", "Geely", STD, NO_CODE, NO_COUNTRY),
-    w("HJN", "NIO", "NIO", STD, NO_CODE, NO_COUNTRY),
-    w("LGW", "Great Wall Motor (GWM, Haval, ORA, Tank, WEY)", "Great Wall|ORA", STD, NO_CODE, NO_COUNTRY),
-    w("LVV", "Chery Automobile (Omoda, Jaecoo)", "Chery|Omoda|Jaecoo", STD, NO_CODE, NO_COUNTRY),
-    w("PRB", "Chery (Jaecoo)", "Jaecoo", STD, NO_CODE, NO_COUNTRY),
-    w("LVX", "Aiways Automobiles", "Aiways", STD, NO_CODE, NO_COUNTRY),
-    w("SDB", "Talbot", "Talbot", UNK, NO_CODE, NO_COUNTRY),
-    w("VF4", "Talbot", "Talbot", UNK, NO_CODE, NO_COUNTRY),
-    w("VSC", "Talbot", "Talbot", UNK, NO_CODE, NO_COUNTRY),
-    w("SNT", "Trabant (VEB Sachsenring)", "Trabant", UNK, NO_CODE, NO_COUNTRY),
-    w("SNE", "Wartburg (Automobilwerk Eisenach)", "Wartburg", UNK, NO_CODE, NO_COUNTRY),
-    w("LNN", "Chery Automobile (Omoda, Jaecoo)", "Chery|Omoda|Jaecoo", STD, NO_CODE, NO_COUNTRY),
-    w("LVU", "Chery Automobile (Jetour, Omoda, Jaecoo)", "Chery|Omoda|Jaecoo", STD, NO_CODE, NO_COUNTRY),
-    w("L1N", "XPeng Motors", "Xpeng", STD, NO_CODE, NO_COUNTRY),
-    w("LMV", "XPeng Motors (G3, made by Haima)", "Xpeng", STD, NO_CODE, NO_COUNTRY),
-    w("LJ1", "NIO", "NIO", STD, NO_CODE, NO_COUNTRY),
-    w("HLX", "Li Auto", "Li Auto", STD, NO_CODE, NO_COUNTRY),
-    w("LW4", "Li Auto", "Li Auto", STD, NO_CODE, NO_COUNTRY),
-    w("HXM", "Xiaomi Auto", "Xiaomi", STD, NO_CODE, NO_COUNTRY),
-    w("LFZ", "Leapmotor", "Leapmotor", STD, NO_CODE, NO_COUNTRY),
-    w("LFB", "FAW Group (Hongqi, Bestune)", "Hongqi", STD, NO_CODE, NO_COUNTRY),
     w("LFP", "FAW Car (Hongqi, Bestune)", "Hongqi", STD, NO_CODE, NO_COUNTRY),
-    w("LSF", "SAIC Maxus", "Maxus", STD, NO_CODE, NO_COUNTRY),
-    w("LSH", "SAIC Maxus", "Maxus", STD, NO_CODE, NO_COUNTRY),
-    w("LSK", "SAIC Maxus", "Maxus", STD, NO_CODE, NO_COUNTRY),
-    w("LM8", "Seres (AITO)", "Aito", STD, NO_CODE, NO_COUNTRY),
-    w("LDP", "Dongfeng (Voyah)", "Voyah", STD, NO_CODE, NO_COUNTRY),
-    w("LS6", "Changan (Deepal, Avatr)", "Avatr", STD, NO_CODE, NO_COUNTRY),
-    w("LK6", "SAIC-GM-Wuling", "Wuling", STD, NO_CODE, NO_COUNTRY),
-    w("LPA", "Changan PSA (DS)", "DS", STD, NO_CODE, NO_COUNTRY),
-    w("LBE", "Beijing Hyundai", "Hyundai", STD, NO_CODE, NO_COUNTRY),
-    w("LFM", "FAW Toyota", "Toyota", STD, NO_CODE, NO_COUNTRY),
-    w("LHG", "GAC Honda", "Honda", STD, NO_CODE, NO_COUNTRY),
-    w("LVH", "Dongfeng Honda", "Honda", STD, NO_CODE, NO_COUNTRY),
-    w("LDC", "Dongfeng Peugeot Citroën", "Peugeot|Citroën", STD, NO_CODE, NO_COUNTRY),
-    w("LGB", "Dongfeng Nissan", "Nissan", STD, NO_CODE, NO_COUNTRY),
-    w("LZW", "SAIC-GM-Wuling", "Wuling", STD, NO_CODE, NO_COUNTRY),
     w("RLL", "VinFast", "VinFast", STD, NO_CODE, NO_COUNTRY),
-    w("RLN", "VinFast", "VinFast", STD, NO_CODE, NO_COUNTRY),
-    w("MA1", "Mahindra & Mahindra", "Mahindra", UNK, NO_CODE, NO_COUNTRY),
-    w("MA3", "Maruti Suzuki", "Suzuki", UNK, NO_CODE, NO_COUNTRY),
-    w("MAT", "Tata Motors", "Tata", UNK, NO_CODE, NO_COUNTRY),
-    w("MAL", "Hyundai Motor India", "Hyundai", STD, NO_CODE, NO_COUNTRY),
     w("MAJ", "Ford India", "Ford", UNK, NO_CODE, NO_COUNTRY),
-    w("MR0", "Toyota Motor Thailand", "Toyota", UNK, NO_CODE, NO_COUNTRY),
-    w("MMB", "Mitsubishi Motors Thailand", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
-    w("MPA", "Isuzu Motors Thailand", "Isuzu", UNK, NO_CODE, NO_COUNTRY),
-    w("MRX", "BYD Auto Thailand", "BYD", STD, NO_CODE, NO_COUNTRY),
-    w("PL1", "Proton", "Proton", UNK, NO_CODE, NO_COUNTRY),
 
     // --- USA: General Motors --------------------------------------------
-    w("1G", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1GA", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1GE", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1GG", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1GH", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1GJ", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1G0", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1G5", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
+    w("1G7", "General Motors USA", "Chevrolet|GMC|Buick|Cadillac|Pontiac|Oldsmobile|Saturn", STD, NO_CODE, NO_COUNTRY),
     w("1G1", "General Motors (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("1GC", "General Motors (Chevrolet Truck)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("1GN", "General Motors (Chevrolet SUV)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
@@ -447,14 +359,38 @@ static WMI: &[WmiEntry] = &[
     w("1GT", "General Motors (GMC Truck)", "GMC", STD, NO_CODE, NO_COUNTRY),
     w("1GK", "General Motors (GMC SUV)", "GMC", STD, NO_CODE, NO_COUNTRY),
     w("1GD", "General Motors (GMC Nutzfahrzeug)", "GMC", STD, NO_CODE, NO_COUNTRY),
-    w("2G", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GA", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GB", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GC", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GD", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GE", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GH", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GJ", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2GT", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G0", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G3", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G5", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G6", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G7", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
+    w("2G8", "General Motors of Canada", "Chevrolet|Pontiac|Buick|GMC", STD, NO_CODE, NO_COUNTRY),
     w("2G1", "General Motors of Canada (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("2G2", "General Motors of Canada (Pontiac)", "Pontiac", STD, NO_CODE, NO_COUNTRY),
     w("2G4", "General Motors of Canada (Buick)", "Buick", STD, NO_CODE, NO_COUNTRY),
     w("2GN", "General Motors of Canada (Chevrolet SUV)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("2GK", "General Motors of Canada (GMC SUV)", "GMC", STD, NO_CODE, NO_COUNTRY),
     w("2CN", "CAMI Automotive (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
-    w("3G", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GB", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GC", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GD", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GG", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GK", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GM", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GP", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GT", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3GY", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3G3", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3G4", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
+    w("3G5", "General Motors de México", "Chevrolet|GMC|Buick|Cadillac|Pontiac", STD, NO_CODE, NO_COUNTRY),
     w("3G1", "General Motors de México (Chevrolet)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("3GN", "General Motors de México (Chevrolet SUV)", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("3G2", "General Motors de México (Pontiac)", "Pontiac", STD, NO_CODE, NO_COUNTRY),
@@ -469,13 +405,14 @@ static WMI: &[WmiEntry] = &[
     w("137", "AM General (Hummer H1)", "Hummer", STD, NO_CODE, NO_COUNTRY),
     w("6G1", "General Motors-Holden", "Holden|Chevrolet", STD, NO_CODE, NO_COUNTRY),
     w("6G2", "General Motors-Holden (Pontiac)", "Pontiac", STD, NO_CODE, NO_COUNTRY),
-    w("6H8", "General Motors-Holden", "Holden", UNK, NO_CODE, NO_COUNTRY),
-    w("9BG", "General Motors do Brasil", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
-    w("8AG", "General Motors de Argentina", "Chevrolet", STD, NO_CODE, NO_COUNTRY),
-    w("KL", "GM Daewoo / GM Korea", "Chevrolet|Daewoo", STD, NO_CODE, NO_COUNTRY),
+    w("KL2", "GM Daewoo / GM Korea", "Chevrolet|Daewoo", STD, NO_CODE, NO_COUNTRY),
 
     // --- USA: Ford --------------------------------------------------------
-    w("1F", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1FB", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1FC", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1FL", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1F1", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1F7", "Ford Motor Company", "Ford", STD, NO_CODE, NO_COUNTRY),
     w("1FA", "Ford Motor Company (Pkw)", "Ford", STD, NO_CODE, NO_COUNTRY),
     w("1FM", "Ford Motor Company (SUV, MPV)", "Ford", STD, NO_CODE, NO_COUNTRY),
     w("1FT", "Ford Motor Company (Truck)", "Ford", STD, NO_CODE, NO_COUNTRY),
@@ -483,18 +420,31 @@ static WMI: &[WmiEntry] = &[
     w("1FU", "Freightliner", "Freightliner", STD, NO_CODE, NO_COUNTRY),
     w("1FV", "Freightliner", "Freightliner", STD, NO_CODE, NO_COUNTRY),
     w("1ZV", "AutoAlliance International (Ford)", "Ford", STD, NO_CODE, NO_COUNTRY),
-    w("2F", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
-    w("3F", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
-    w("1L", "Ford Motor Company (Lincoln)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
-    w("5L", "Ford Motor Company (Lincoln SUV)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("2FA", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("2FB", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("2FC", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("2FD", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("2FM", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("2FT", "Ford Motor Company of Canada", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FA", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FB", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FC", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FD", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FE", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FM", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("3FT", "Ford de México", "Ford", STD, NO_CODE, NO_COUNTRY),
+    w("1LJ", "Ford Motor Company (Lincoln)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("1LN", "Ford Motor Company (Lincoln)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("1L1", "Ford Motor Company (Lincoln)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("5LD", "Ford Motor Company (Lincoln SUV)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("5LM", "Ford Motor Company (Lincoln SUV)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("5LT", "Ford Motor Company (Lincoln SUV)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
+    w("5L1", "Ford Motor Company (Lincoln SUV)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
     w("2LM", "Ford Motor Company of Canada (Lincoln)", "Lincoln", STD, NO_CODE, NO_COUNTRY),
     w("1ME", "Ford Motor Company (Mercury)", "Mercury", STD, NO_CODE, NO_COUNTRY),
     w("2ME", "Ford Motor Company of Canada (Mercury)", "Mercury", STD, NO_CODE, NO_COUNTRY),
     w("4M2", "Ford Motor Company (Mercury SUV)", "Mercury", STD, NO_CODE, NO_COUNTRY),
     w("9BF", "Ford do Brasil", "Ford", STD, NO_CODE, NO_COUNTRY),
-    w("8AF", "Ford Argentina", "Ford", STD, NO_CODE, NO_COUNTRY),
-    w("6FP", "Ford Australia", "Ford", UNK, NO_CODE, NO_COUNTRY),
-    w("AFA", "Ford South Africa", "Ford", UNK, NO_CODE, NO_COUNTRY),
 
     // --- USA: Chrysler, Dodge, Jeep, Plymouth, Ram ----------------------
     w("1C3", "Chrysler (Pkw)", "Chrysler|Dodge", STD, NO_CODE, NO_COUNTRY),
@@ -575,7 +525,7 @@ static WMI: &[WmiEntry] = &[
     w("7PD", "Rivian Automotive", "Rivian", STD, NO_CODE, NO_COUNTRY),
     w("50E", "Lucid Motors", "Lucid", STD, NO_CODE, NO_COUNTRY),
     w("1M8", "Motor Coach Industries", "MCI", STD, NO_CODE, NO_COUNTRY),
-    // Heavy trucks (Wikibooks WMI list): complete and incomplete vehicles.
+    // Heavy trucks: complete and incomplete vehicles.
     w("3AK", "Freightliner Trucks (México)", "Freightliner", STD, NO_CODE, NO_COUNTRY),
     w("4V4", "Volvo Trucks North America", "Volvo Trucks", STD, NO_CODE, NO_COUNTRY),
     w("4V5", "Volvo Trucks North America", "Volvo Trucks", STD, NO_CODE, NO_COUNTRY),
@@ -593,18 +543,7 @@ static WMI: &[WmiEntry] = &[
     w("1M2", "Mack Trucks", "Mack", STD, NO_CODE, NO_COUNTRY),
 
     // --- South America, Africa, Australia: other makers -----------------
-    w("9BR", "Toyota do Brasil", "Toyota", STD, NO_CODE, NO_COUNTRY),
-    w("8AJ", "Toyota Argentina", "Toyota", STD, NO_CODE, NO_COUNTRY),
-    w("93H", "Honda Automóveis do Brasil", "Honda", STD, NO_CODE, NO_COUNTRY),
-    w("93Y", "Renault do Brasil", "Renault", STD, NO_CODE, NO_COUNTRY),
     w("8A1", "Renault Argentina", "Renault", STD, NO_CODE, NO_COUNTRY),
-    w("936", "Peugeot Citroën do Brasil (Peugeot)", "Peugeot", STD, NO_CODE, NO_COUNTRY),
-    w("935", "Peugeot Citroën do Brasil (Citroën)", "Citroën", STD, NO_CODE, NO_COUNTRY),
-    w("8AD", "Peugeot Citroën Argentina (Peugeot)", "Peugeot", STD, NO_CODE, NO_COUNTRY),
-    w("94D", "Nissan do Brasil", "Nissan", STD, NO_CODE, NO_COUNTRY),
-    w("9BH", "Hyundai Motor Brasil", "Hyundai", STD, NO_CODE, NO_COUNTRY),
-    w("AHT", "Toyota South Africa", "Toyota", UNK, NO_CODE, NO_COUNTRY),
-    w("6T1", "Toyota Motor Corporation Australia", "Toyota", UNK, NO_CODE, NO_COUNTRY),
     w("6MM", "Mitsubishi Motors Australia", "Mitsubishi", UNK, NO_CODE, NO_COUNTRY),
 ];
 
@@ -778,9 +717,14 @@ fn substr(text: &str, start: usize, len: usize) -> String {
     String::from_utf8_lossy(&b[start..end]).into_owned()
 }
 
-/// The whole WMI table, for statistics and tests.
-pub fn wmi_table() -> &'static [WmiEntry] {
-    WMI
+// The codes that only the Wikibooks WMI list backs (data/wmi/wmi.csv,
+// CC BY-SA 4.0), written by tools/gen_wmi.py.
+#[rustfmt::skip]
+static WMI_CC_BY_SA: &[WmiEntry] = &include!("generated/wmi_cc_by_sa.rs");
+
+/// The whole WMI table, both parts, for statistics and tests.
+pub fn wmi_table() -> Vec<&'static WmiEntry> {
+    WMI.iter().chain(WMI_CC_BY_SA).collect()
 }
 
 /// Looks up the WMI table: three characters first, then the two character
@@ -795,7 +739,7 @@ pub fn find_wmi(vin_or_wmi: &str) -> Option<&'static WmiEntry> {
         *k = t.to_ascii_uppercase();
     }
     let mut prefix = None;
-    for e in WMI {
+    for e in WMI.iter().chain(WMI_CC_BY_SA) {
         let wmi = e.wmi.as_bytes();
         if wmi.len() == 3 && key[2] != 0 && wmi == key {
             return Some(e);

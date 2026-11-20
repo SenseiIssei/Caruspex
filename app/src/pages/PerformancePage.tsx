@@ -11,10 +11,12 @@ import { StatTile } from "../components/Tiles";
 import { Button, Card, Page, PageHeader } from "../components/ui";
 import { localeNumber, translator } from "../i18n";
 import { useBackendEvent, useInterval } from "../lib/hooks";
+import { useLiveValues } from "../state/liveView";
 import { useSession } from "../state/session";
 import "./PerformancePage.css";
 
 const tr = translator("caruspex::PerformancePage");
+const SPEED_PID = [0x0d];
 
 interface Shown {
   value: string;
@@ -52,7 +54,9 @@ type RunKey = "zeroTo100" | "eightyTo120" | "zeroTo60mph" | "quarterMile" | "bra
 export default function PerformancePage() {
   const connected = useSession((s) => s.connected);
   const [running, setRunning] = useState(false);
-  const [speed, setSpeed] = useState<string>("--");
+  // The speed on screen; the timing below takes every reading.
+  const speedNow = useLiveValues(SPEED_PID)[0];
+  const speed = speedNow !== undefined ? speedNow.toFixed(0) : "--";
   const [state, setState] = useState(tr("Bereit machen: anhalten, dann auf Messen drücken."));
   const [accuracy, setAccuracy] = useState("");
   const [runs, setRuns] = useState<Partial<Record<RunKey, Shown>>>({});
@@ -111,7 +115,6 @@ export default function PerformancePage() {
 
   useBackendEvent("live_value", ({ row }) => {
     if (row.pid !== 0x0d) return;
-    setSpeed(row.value.toFixed(0));
     if (runningRef.current) samples.current.push({ t: row.time, kmh: row.value });
   });
 

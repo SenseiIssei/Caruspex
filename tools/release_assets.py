@@ -127,7 +127,13 @@ def main() -> int:
             fail(f"{name}.sig is missing, the package was not signed")
         signature = open(path + ".sig", encoding="utf-8").read().strip()
         verify(path, signature, key)
-        platforms[platform] = {"url": DOWNLOAD.format(version=version, name=name), "signature": signature}
+        # The app refuses a package whose signed file name is not the
+        # download name with this version in it (update::check_signed_name),
+        # so a mismatch here would strand every installation.
+        trusted = minisign_lines(signature)[2]
+        if f"file:{name}" not in trusted.split("\t") or f"-{version}-" not in name:
+            fail(f"{name}: the signature names another file ({trusted}), the app would refuse it")
+        platforms[platform] ={"url": DOWNLOAD.format(version=version, name=name), "signature": signature}
         print(f"{platform}: {name} signature ok")
 
     manifest = {

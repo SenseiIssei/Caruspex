@@ -1,11 +1,17 @@
-# Mazda with CAN, roughly from 2004 on (Mazda 3 and 6 onwards). Mazda shares
-# the Ford address scheme for the main modules, response = request + 8.
-# Only the modules where the shared scheme holds for Mazda are listed.
-# Sources: FORScan (which supports Mazda), Mazda owner forum scan logs.
+# Mazda with CAN, roughly from 2004 on (Mazda 3 and 6 onwards). Mazda uses
+# the same address scheme as Ford for the main modules, response = request + 8.
+#
+# Sources (checked 2026-11-20), named per row in the note column:
+#   opendbc github.com/commaai/opendbc, opendbc/car/mazda/fingerprints.py at
+#           commit c81a2155976b27d73f2fc72026f8bd4b083ce280 (MIT)
+#   OBDb    the Mazda signal sets of github.com/OBDb (Mazda-CX-5, Mazda-3 and
+#           more, main branch), CC BY-SA 4.0: the hdr of the commands, with
+#           signal names that say which module it is. Only the address is
+#           taken, as a fact.
 family,kind,request,response,bits,name_de,name_en,note
-MAZDA,engine,7E0,7E8,11,Motorsteuerung (PCM),Powertrain control (PCM),
-MAZDA,gearbox,7E1,7E9,11,Getriebesteuerung (TCM),Transmission control (TCM),
-MAZDA,brakes,760,768,11,Bremsen und ABS,Brakes and ABS,ABS/DSC
-MAZDA,airbag,737,73F,11,Airbag (RCM),Airbag (RCM),RCM
-MAZDA,steering,730,738,11,Lenkhilfe (EPS),Power steering (EPS),EPS
-MAZDA,instruments,720,728,11,Kombiinstrument,Instrument cluster,IC
+MAZDA,engine,7E0,7E8,11,Motorsteuerung (PCM),Powertrain control (PCM),opendbc; OBDb
+MAZDA,gearbox,7E1,7E9,11,Getriebesteuerung (TCM),Transmission control (TCM),opendbc; OBDb
+MAZDA,brakes,760,768,11,Bremsen und ABS,Brakes and ABS,ABS/DSC; opendbc; OBDb
+MAZDA,airbag,737,73F,11,Airbag (RCM),Airbag (RCM),RCM; OBDb
+MAZDA,steering,730,738,11,Lenkhilfe (EPS),Power steering (EPS),EPS; opendbc; OBDb
+MAZDA,instruments,720,728,11,Kombiinstrument,Instrument cluster,IC; OBDb

@@ -13,12 +13,19 @@ Wszystko zostaje na twoim komputerze:
 | Nagrania i pliki CSV | tylko gdy je uruchomisz | tam, gdzie je zapiszesz |
 | Plik dziennika | tylko jeśli włączysz go w ustawieniach | ścieżka, którą wybierzesz |
 | Raporty awarii | tylko jeśli Caruspex się zawiesi | folder `crash-reports` obok garażu |
+| Raporty z pierwszego testu KKL | tylko gdy zapiszesz raport | folder `test-reports` w folderze ustawień; numer VIN i numer immobilizera są skracane, chyba że zaznaczysz pole |
 
 Każdy z tych plików możesz w dowolnej chwili usunąć.
 
 ## Co jest wysyłane
 
-Przy starcie Caruspex pyta GitHuba, czy jest nowsza wersja. Nic o tobie ani o aucie nie jest przy tym wysyłane. Sprawdzanie można wyłączyć w ustawieniach. Poza tym Caruspex nie łączy się z internetem. Komunikacja z adapterem Wi-Fi, kablem ENET czy autem DoIP zostaje w twojej sieci lokalnej.
+Przy każdej instalacji, także po aktualizacji ze starszej wersji, Caruspex pyta raz, czy ma szukać aktualizacji. Dopiero po odpowiedzi "tak" pyta GitHub, czy jest nowsza wersja, przy starcie i co sześć godzin, dopóki działa. Nic o tobie ani o aucie nie jest przy tym wysyłane. Bez "tak" żadne zapytanie nie trafia do GitHuba. Możesz to zmienić w każdej chwili w ustawieniach, w sekcji **Okno i język**. Poza tym Caruspex nie łączy się z internetem. Komunikacja z adapterem Wi-Fi, kablem ENET czy autem DoIP zostaje w twojej sieci lokalnej.
+
+Aktualizacji szukają tylko wydania opublikowane na GitHubie; kopia zbudowana samodzielnie nigdy tego nie robi. Gdy Caruspex szuka aktualizacji lub ją pobiera, GitHub widzi, jak przy każdym pobieraniu, adres IP komputera i wersję Caruspex; sam Caruspex nie wysyła ani nie zapisuje nic więcej, a nikt inny, także projekt, tego nie widzi. Obowiązuje przy tym oświadczenie o prywatności GitHuba. Aktualizacje są pobierane tylko z wydań repozytorium Caruspex. Przyciski takie jak **Zgłoś na GitHubie** tylko otwierają przeglądarkę; to, co tam opublikujesz, zależy od ciebie.
+
+## Android
+
+Do Androida 11 system pozwala aplikacji znaleźć adaptery Bluetooth LE tylko z uprawnieniem do lokalizacji. Caruspex prosi o nie wyłącznie z tego powodu i nigdy nie odczytuje twojej lokalizacji. Od Androida 12 prosi zamiast tego o uprawnienie Bluetooth, oznaczone jako nigdy nieużywane do lokalizacji.
 
 ## Raporty awarii tylko na życzenie
 

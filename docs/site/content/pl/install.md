@@ -45,7 +45,7 @@ Raport może być po niemiecku, angielsku, hiszpańsku, francusku, portugalsku, 
 
 ## Aktualizacje
 
-Przy starcie Caruspex pyta GitHuba, czy jest nowsza wersja, i nic poza tym. Nowa wersja jest instalowana tylko wtedy, gdy jej podpis pasuje do klucza wbudowanego w aplikację. Zarówno sprawdzanie, jak i automatyczną instalację można wyłączyć w ustawieniach.
+Przy każdej instalacji Caruspex pyta raz, czy ma szukać aktualizacji. Dopiero po odpowiedzi "tak" pyta GitHub, czy jest nowsza wersja, i nic poza tym. Nowa wersja jest instalowana tylko wtedy, gdy jej podpis pasuje do klucza wbudowanego w aplikację. Sprawdzanie i automatyczną instalację można zmienić w ustawieniach w każdej chwili.
 
 ## Menedżery pakietów
 

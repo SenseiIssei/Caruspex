@@ -29,6 +29,8 @@ conventions in [crates/README.md](crates/README.md).
 - **Improve a translation**: see [translations/TRANSLATING.md](translations/TRANSLATING.md).
 - **Correct the documentation**: the website is built from `docs/site/content/<language>/*.md`.
 - **Report a security problem** privately, as described in [SECURITY.md](SECURITY.md), not in a public issue.
+  What the EU Cyber Resilience Act means for Caruspex (scope, risk assessment, requirements) is in
+  [docs/cra/](docs/cra/scope.md).
 
 ## Build and run
 
@@ -86,6 +88,14 @@ OBDLink with its extra buses. `--replay <file.jsonl>` plays back a recorded sess
 somebody attached to a test report. All tests run against simulated control units, fake gateways, a fake J2534
 driver and the demo car; no test needs hardware.
 
+### Speed and memory
+
+Caruspex should answer quickly and stay small. [docs/performance.md](docs/performance.md) has the benchmark
+harness (the demo car behind a simulated serial line with the delays of a real ELM327), the numbers it gives,
+the guard tests that fail when the live loop gets clearly slower or hungrier, and the commands for the full
+report and the ten minute soak. Run the report before and after a change to the driver, the protocols or the
+worker.
+
 ## Developer switches
 
 The app's options are parsed in `app/src-tauri/src/cli.rs`; `caruspex --help` lists the ones meant for users.
@@ -95,7 +105,7 @@ These help most while developing:
 |---|---|
 | `--demo` | Connect to the demo car at start. |
 | `--replay <file.jsonl>` | Play back a recording instead of talking to an adapter. |
-| `--page <name>` | Start on this page. The names are the ids in `app/src/shell/pages.tsx` (`faults`, `live`, `xray`, `used-car`, `settings`, ...). A few extra views exist for screenshots and tests: `setup`, `setup-socket`, `setup-ignition`, `setup-connect`, `term-hint`, `contrast` (`app/src/shell/App.tsx`), `connect-bmw` (`ConnectPage.tsx`) and `xray-generation:<id or search>` with more parts behind it (`XrayPage.tsx`, see `tools/xray_shots.py`). |
+| `--page <name>` | Start on this page. The names are the ids in `app/src/shell/pages.tsx` (`faults`, `live`, `xray`, `used-car`, `settings`, ...). A few extra views exist for screenshots and tests: `setup`, `setup-socket`, `setup-ignition`, `setup-connect`, `term-hint`, `contrast` (`app/src/shell/App.tsx`), `connect-bmw` (`ConnectPage.tsx`), `kkl-firsttest` and `kkl-cabletest` with an optional fault of the simulated A2 (`kkl-firsttest:slow-read`; the faults are in `crates/caruspex-demo/src/a2.rs`, `KklFirstTestPage.tsx`) and `xray-generation:<id or search>` with more parts behind it (`XrayPage.tsx`, see `tools/xray_shots.py`). |
 | `--mode <beginner\|pro>` | Beginner or pro mode for this run, without changing the setting. Most workshop pages are pro only. |
 | `--language <code>` | Language for this run: `de`, `en`, `fr`, `ar` and the other codes of `translations/`. (It is `--language`, not `--lang`.) |
 | `--theme <dark\|light>` | Appearance for this run. |
@@ -123,6 +133,7 @@ python tools/gen_vehicles.py
 python tools/gen_ecus.py
 python tools/gen_pids.py
 python tools/gen_engines.py
+python tools/gen_wmi.py
 python tools/gen_obdb.py --fixtures
 python tools/gen_dimensions.py
 python tools/gen_dimensions.py --fixtures
@@ -135,6 +146,7 @@ python docs/site/build.py --check
 python tools/dist_manifests.py --check-templates
 
 npm --prefix app ci
+python tools/gen_notices.py --check
 I18N_STRICT=1 npm --prefix app run build
 I18N_STRICT=1 npm --prefix app test
 
@@ -153,6 +165,12 @@ What else runs in the CI:
 - **Android**: an unsigned APK for arm64 (see [docs/android.md](docs/android.md)).
 - **Sanitizers**: AddressSanitizer and Rust's undefined behaviour checks on the modules with `unsafe` code,
   on nightly. It may fail without blocking a pull request.
+- **SBOM**: `python tools/sbom.py --check` builds the software bills of materials (CycloneDX) of every platform
+  from `Cargo.lock` and `app/package-lock.json` and checks them; the release attaches them.
+- **Audit** (`.github/workflows/audit.yml`): `python tools/audit.py` looks up every crate and the npm packages of
+  the interface in the RustSec and npm advisory databases, on dependency changes and once a week. It needs
+  `cargo install cargo-audit --locked`. A finding that does not affect Caruspex goes into
+  `tools/audit_exceptions.toml` with a reason and an expiry date ([SECURITY.md](SECURITY.md#dependencies)).
 
 Pull requests from forks run all of this without any secrets. Signing and the release only run for version
 tags in the main repository, and only the main repository publishes the documentation website. GitHub may ask
@@ -198,7 +216,20 @@ The full guide is [translations/TRANSLATING.md](translations/TRANSLATING.md); th
 - **Only freely licensed data, with its source.** Every data file says where its rows come from (look at the
   comment lines at the top of `data/ecus/*.csv` or `data/pids/*.csv`). Data under another licence keeps its
   licence file next to it (`data/engines/LICENSE`, `data/obdb/LICENSE`, `data/opendbc/LICENSE`). Data from
-  manufacturer software, paid databases or leaked documents is not accepted.
+  manufacturer software, paid databases or leaked documents is not accepted, and neither are tables taken
+  from projects under the GPL, under a non-commercial licence (such as CC BY-NC) or without any licence.
+  New data that ends up in the programs also needs a line in the data table of `tools/gen_notices.py`.
+- **A permissive project only counts for what it wrote itself.** Name the file and commit. Lines a project
+  quotes from a GPL source (OVMS comments that repeat CanZE field lines, OVMS's BMW i3 files derived from
+  EdiabasLib) are not a source. A PID pack that takes anything from OBDb is CC BY-SA 4.0 and says
+  `#@ licence: CC BY-SA 4.0`; `tools/gen_pids.py` checks this. VIN maker codes go into `vin.rs` only when
+  NHTSA vPIC or Wikidata lists them, otherwise into `data/wmi/wmi.csv` (CC BY-SA, after Wikibooks). A
+  control unit address needs a source in the note column of its row; a value nobody freely licensed
+  confirms stays out.
+- **New dependencies** must have a licence that allows shipping them in an MIT program (MIT, BSD, ISC,
+  Apache-2.0, Zlib, MPL-2.0 and similar; no GPL, AGPL or non-commercial licences). After changing
+  `Cargo.lock`, `app/package-lock.json` or the Android libraries run `python tools/gen_notices.py`, which
+  rewrites `THIRD_PARTY_NOTICES.md` and fails on a licence it does not know.
 - **Generated files are never edited by hand.** `crates/*/src/generated/`, `app/src/api/mock/data/` and
   `app/src/i18n/generated/` are written by the generators; change their input and run the generator.
 - **Errors are `Result<T, String>`** with a message the user can read; `unsafe` only where the operating system
@@ -214,7 +245,11 @@ A diagnostics program can do damage. These rules are not up for discussion in a 
   output test or a basic setting is started by the user, never by itself, and a new action of that kind asks
   first in plain words what will happen.
 - **Never coding, writing adaptation values, flashing or memory writes**, and never anything about the
-  immobiliser, keys or the mileage. Pull requests that add them are closed. Where a protocol module can send
+  immobiliser, keys or the mileage. Pull requests that add them are closed.
+- **Nothing that helps to break the law.** No odometer changes, no switching off or bypassing emissions
+  control (EGR, particulate filter, AdBlue/SCR, lambda or catalyst monitoring), no immobiliser or key bypass,
+  no tachograph manipulation, also not "for testing" or behind a hidden switch. Such changes are illegal in
+  many countries; issues and pull requests that ask for them are closed. Where a protocol module can send
   arbitrary requests, keep them behind an allow list like `request_allowed` in `bmw_kline.rs`.
 - **Respect the timing.** Keep the timeouts and pauses that real control units need; `caruspex_link::timing`
   has the helpers.
@@ -309,4 +344,5 @@ Die Regeln in Kürze: Texte auf Deutsch und Englisch im Code, die anderen 16 Spr
 (`tools/i18n_rust.py --write --area NAME`); keine langen Gedankenstriche; Kommentare erklären das Warum; kleine
 Pull Requests; kein Code aus GPL-Projekten; nur frei lizenzierte Daten mit Quelle; nur lesen, alles, was das
 Auto etwas tun lässt, nur nach Rückfrage, und nie Codierung, Anpassung, Flashen, Wegfahrsperre oder
-Kilometerstand.
+Kilometerstand. Nichts, was beim Gesetzesbruch hilft: kein Verstellen des Kilometerstands, kein Abschalten
+der Abgasreinigung, kein Umgehen der Wegfahrsperre, keine Eingriffe in den Tachographen.

@@ -13,12 +13,19 @@ Everything stays on your computer:
 | Recordings and CSV files | only when you start them | where you save them |
 | Log file | only if you switch it on in the settings | the path you choose |
 | Crash reports | only if Caruspex crashes | the `crash-reports` folder next to the garage |
+| Test reports of the KKL first test | only when you save one | the `test-reports` folder in the settings folder; the VIN and the immobiliser number are shortened unless you tick the box |
 
 You can delete any of these files at any time.
 
 ## What is sent
 
-At start Caruspex asks GitHub whether there is a newer version. Nothing about you or the car is sent with it. The check can be switched off in the settings. Apart from that Caruspex does not connect to the internet. Talking to a Wi-Fi adapter, an ENET cable or a DoIP car stays in your local network.
+On every installation, also after updating from an older version, Caruspex asks once whether it should look for updates. Only after a yes does it ask GitHub whether there is a newer version, at start and every six hours while it runs. Nothing about you or the car is sent with it. Without a yes no request goes to GitHub. You can change this any time in the settings under **Window and language**. Apart from that Caruspex does not connect to the internet. Talking to a Wi-Fi adapter, an ENET cable or a DoIP car stays in your local network.
+
+Only the release builds published on GitHub look for updates; a copy you build yourself never does. When Caruspex looks for an update or downloads one, GitHub sees, like with any download, your computer's IP address and the version of Caruspex; Caruspex itself sends and stores nothing else, and nobody else, the project included, sees it. GitHub's privacy statement applies to that. Updates are downloaded only from the releases of the Caruspex repository. Buttons such as **Report on GitHub** only open your browser; what you post there is up to you.
+
+## Android
+
+Up to Android 11 the system lets an app find Bluetooth LE adapters only with the location permission. Caruspex asks for it for that reason alone and never reads your location. From Android 12 on it asks for the Bluetooth permission instead, marked as never used for location.
 
 ## Crash reports only on request
 

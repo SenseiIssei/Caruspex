@@ -503,14 +503,30 @@ El modo 04 de OBD borra la memoria de averías, los datos de congelación y los 
 coche no pasará una prueba de emisiones hasta que haya completado varios ciclos de conducción completos, y un código cuya causa
 siga presente volverá tras un trayecto corto. Borrar no es reparar.
 
-## Aviso legal
+<!-- legal -->
+## Seguridad y responsabilidad
 
-Caruspex es un proyecto de afición y se ofrece sin garantía. Úsalo bajo tu propia responsabilidad, solo en vehículos
-en los que tengas permiso para trabajar y nunca mientras conduces. Todos los nombres de productos y marcas son marcas comerciales de sus
-respectivos propietarios; Caruspex no está afiliado a ningún fabricante de vehículos ni cuenta con su respaldo.
+Caruspex es un proyecto libre de aficionado y se ofrece sin ninguna garantía, como dice la [licencia MIT](LICENSE). Lo usas bajo tu propia responsabilidad.
 
-## Licencia
+- No lo uses nunca mientras conduces. Configúralo con el coche parado; un acompañante puede vigilar los valores en vivo.
+- Borrar fallos, las pruebas de actuadores y los ajustes básicos hacen que el coche haga algo. Caruspex pregunta antes de cada uno; hazlos solo con el coche parado y asegurado, y solo en vehículos en los que puedas trabajar.
+- Caruspex no sustituye a un taller. Un código de fallo indica un síntoma, no siempre su causa. Frenos, airbags, dirección y todo lo que importa para la seguridad debe quedar en manos expertas.
+- Borrar no es reparar. Los fallos borrados y los monitores de disponibilidad reiniciados pueden hacer que falle una inspección de emisiones o técnica.
+- Caruspex no cambia el kilometraje, el inmovilizador, las llaves, el control de emisiones ni el tacógrafo, y el proyecto no acepta contribuciones que lo hagan. Manipular cuentakilómetros, el control de emisiones o tacógrafos es ilegal en muchos países.
 
-MIT, véase [LICENSE](LICENSE). Los valores del fabricante de cientos de modelos están convertidos de [OBDb](https://github.com/OBDb) y, como OBDb, tienen licencia CC BY-SA 4.0: están separados del código en [data/obdb](data/obdb) con la licencia y la lista de fuentes ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). Las fuentes incluidas tienen licencia SIL Open Font License 1.1:
-JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) y
-Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+## Marcas
+
+Los nombres de fabricantes de vehículos, modelos, adaptadores, programas y normas (por ejemplo Volkswagen, Audi, BMW, Mercedes-Benz, Tesla, OBDLink, ELM327, VCDS o ISTA) son marcas de sus respectivos titulares. Aparecen solo para indicar con qué coches, adaptadores e interfaces funciona Caruspex. Caruspex es un proyecto independiente y no está vinculado, respaldado ni patrocinado por ningún fabricante de vehículos, fabricante de adaptadores ni proveedor de software. La aplicación y este repositorio no usan logotipos de estas empresas.
+
+## Licencia y créditos
+
+El código está bajo la licencia MIT, ver [LICENSE](LICENSE). Las bibliotecas de los programas y sus licencias están en [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); la aplicación las muestra en los ajustes. Datos incluidos en los programas:
+
+- Valores de fabricante para unos 550 vehículos, convertidos de [OBDb](https://github.com/OBDb), bajo CC BY-SA 4.0 como OBDb: separados del código en [data/obdb](data/obdb) con la licencia y la lista de fuentes ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+- Definiciones de señales CAN de [opendbc](https://github.com/commaai/opendbc) (comma.ai) y [model3dbc](https://github.com/joshwardell/model3dbc), licencia MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Valores de batería del Hyundai Ioniq y Kona, el Kia e-Niro, el Nissan Leaf y el Renault Zoe según OBDb (CC BY-SA 4.0, como estos paquetes), el [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) y [evDash](https://github.com/nickn17/evDash) (ambos MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
+- Códigos de motor de artículos de Wikipedia, CC BY-SA 4.0 ([data/engines](data/engines), con artículo y revisión en cada fila).
+- Códigos de fabricante del VIN comprobados con [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (dominio público) y [Wikidata](https://www.wikidata.org) (CC0); los códigos que solo tiene la [lista WMI de Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) están bajo CC BY-SA 4.0 y se guardan aparte en [data/wmi](data/wmi).
+- Dimensiones de los vehículos de [Wikidata](https://www.wikidata.org), CC0.
+- Fuentes bajo la SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+<!-- /legal -->

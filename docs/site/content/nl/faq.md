@@ -34,7 +34,7 @@ Auto's op de K-Line (in Europa ongeveer 2001 tot 2007) antwoorden van nature tra
 
 ## Stuurt Caruspex mijn gegevens ergens heen?
 
-Nee. Alleen de updatecontrole vraagt GitHub naar de nieuwste versie, en die kun je uitzetten. Zie [privacy](privacy.md).
+Nee. Alleen de updatecontrole vraagt GitHub naar de nieuwste versie, en pas nadat je ja hebt gezegd; dat kun je altijd wijzigen. Zie [privacy](privacy.md).
 
 ## Hoe kan ik helpen?
 

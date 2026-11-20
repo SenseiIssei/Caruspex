@@ -34,6 +34,7 @@ mod convert;
 mod faults;
 mod health;
 mod kkl;
+pub(crate) mod kkl_test;
 mod live;
 mod truck;
 mod truck_check;
@@ -146,6 +147,10 @@ pub enum Job {
     },
     ReadAdaptation(i32),
     ActuatorTest,
+    /// The test of a KKL cable on USB only (worker/kkl_test.rs).
+    KklCableCheck(String),
+    /// The guided, read-only first test of a KKL cable on the car.
+    KklFirstTest(String),
     /// BMW E series on the K-line: every known unit; with `clear` every
     /// unit with entries is cleared (the page asked first).
     ScanBmw {
@@ -222,6 +227,12 @@ impl Timer {
     fn rearm(&mut self) {
         if self.active {
             self.next = Some(Instant::now() + Duration::from_millis(self.interval_ms));
+        }
+    }
+    /// The next tick one interval after `start`, at once if that is past.
+    fn rearm_from(&mut self, start: Instant) {
+        if self.active {
+            self.next = Some(start + Duration::from_millis(self.interval_ms));
         }
     }
 }
@@ -322,11 +333,13 @@ impl Worker {
         self.sink
             .emit(event, serde_json::to_value(payload).unwrap_or(Value::Null));
     }
+    // The frequent events hand their json! straight to the sink: through
+    // `emit` the finished Value would be copied once more by to_value.
     fn log(&self, line: impl Into<String>) {
-        self.emit("log_line", json!({ "line": line.into() }));
+        self.sink.emit("log_line", json!({ "line": line.into() }));
     }
     fn busy(&self, active: bool) {
-        self.emit("busy", json!({ "active": active }));
+        self.sink.emit("busy", json!({ "active": active }));
     }
     fn failed(&self, error: impl Into<String>) {
         self.emit("failed", json!({ "error": error.into() }));
@@ -360,7 +373,7 @@ impl Worker {
     }
     fn emit_live(&self, row: LiveRow) {
         self.sink.live(&row);
-        self.emit("live_value", json!({ "row": row }));
+        self.sink.emit("live_value", json!({ "row": row }));
     }
     fn kkl_message(&self, message: impl Into<String>, is_error: bool) {
         self.emit(
@@ -384,7 +397,7 @@ impl Worker {
         let refused = std::mem::take(&mut self.batch_refused);
         let mut obd = Obd2::with_batch_memory(&mut self.elm, refused);
         let result = f(&mut obd);
-        self.batch_refused = obd.batch_refused_pids().clone();
+        self.batch_refused = obd.into_batch_memory();
         result
     }
 
@@ -442,7 +455,11 @@ impl Worker {
         let now = Instant::now();
         if self.poll_timer.due(now) {
             self.poll_tick();
-            self.poll_timer.rearm();
+            // The interval counts from the start of the tick: a slow adapter
+            // goes straight on to the next round instead of idling another
+            // interval, a fast one still gets no more ticks than the
+            // interval allows.
+            self.poll_timer.rearm_from(now);
         }
         if self.basic_setting_timer.due(now) {
             self.basic_setting_tick();
@@ -556,6 +573,8 @@ impl Worker {
             } => self.scan_all_ecus(&device, clear_attempts),
             Job::ReadAdaptation(channel) => self.read_adaptation_channel(channel),
             Job::ActuatorTest => self.run_actuator_test(),
+            Job::KklCableCheck(device) => self.kkl_cable_check(&device),
+            Job::KklFirstTest(device) => self.kkl_first_test(&device),
             Job::ScanBmw { device, clear } => self.scan_bmw(&device, clear),
             Job::ClearBmwUnit {
                 device,

@@ -1,0 +1,94 @@
+[
+ {
+  "context": "caruspex::UpdateConsent",
+  "de": "Nach Updates suchen?",
+  "en": "Look for updates?",
+  "tr": {
+   "es": "¿Buscar actualizaciones?",
+   "fr": "Rechercher des mises à jour ?",
+   "pt": "Procurar atualizações?",
+   "it": "Cercare aggiornamenti?",
+   "nl": "Naar updates zoeken?",
+   "pl": "Szukać aktualizacji?",
+   "cs": "Hledat aktualizace?",
+   "ru": "Искать обновления?",
+   "uk": "Шукати оновлення?",
+   "tr": "Güncellemeler aransın mı?",
+   "ar": "هل تريد البحث عن تحديثات؟",
+   "zh": "要检查更新吗？",
+   "ja": "アップデートを確認しますか？",
+   "ko": "업데이트를 확인할까요?",
+   "hi": "अपडेट खोजें?",
+   "id": "Cari pembaruan?"
+  }
+ },
+ {
+  "context": "caruspex::UpdateConsent",
+  "de": "Caruspex kann beim Start und alle sechs Stunden bei GitHub nachsehen, ob es eine neue Version gibt. Dabei sieht GitHub wie bei jedem Download die IP-Adresse dieses Rechners; Caruspex selbst sendet und speichert dabei nichts weiter. Ohne die Suche ab und zu auf der Release-Seite nachsehen. In den Einstellungen lässt sich das jederzeit ändern.",
+  "en": "Caruspex can ask GitHub at start and every six hours whether there is a new version. Like with any download, GitHub sees the IP address of this computer; Caruspex itself sends and stores nothing else. Without the check, look at the releases page now and then. You can change this in the settings at any time.",
+  "tr": {
+   "es": "Caruspex puede preguntar a GitHub al iniciar y cada seis horas si hay una versión nueva. Como en cualquier descarga, GitHub ve la dirección IP de este equipo; Caruspex no envía ni guarda nada más. Sin la búsqueda, consulte de vez en cuando la página de versiones. Puede cambiarlo en la configuración en cualquier momento.",
+   "fr": "Caruspex peut demander à GitHub au démarrage et toutes les six heures s'il existe une nouvelle version. Comme pour tout téléchargement, GitHub voit l'adresse IP de cet ordinateur ; Caruspex n'envoie et n'enregistre rien d'autre. Sans cette recherche, consultez de temps en temps la page des versions. Vous pouvez modifier ce choix à tout moment dans les paramètres.",
+   "pt": "O Caruspex pode perguntar ao GitHub ao iniciar e a cada seis horas se há uma versão nova. Como em qualquer download, o GitHub vê o endereço IP deste computador; o Caruspex não envia nem guarda mais nada. Sem a verificação, consulte de vez em quando a página de versões. Você pode mudar isso nas configurações a qualquer momento.",
+   "it": "Caruspex può chiedere a GitHub all'avvio e ogni sei ore se c'è una nuova versione. Come per ogni download, GitHub vede l'indirizzo IP di questo computer; Caruspex non invia e non salva nient'altro. Senza la ricerca, controlla ogni tanto la pagina delle versioni. Puoi cambiarlo nelle impostazioni in qualsiasi momento.",
+   "nl": "Caruspex kan bij het starten en elke zes uur bij GitHub navragen of er een nieuwe versie is. Zoals bij elke download ziet GitHub het IP-adres van deze computer; Caruspex zelf verstuurt en bewaart verder niets. Zonder de controle af en toe op de releasepagina kijken. Je kunt dit altijd wijzigen in de instellingen.",
+   "pl": "Caruspex może przy starcie i co sześć godzin sprawdzać w GitHubie, czy jest nowa wersja. Jak przy każdym pobieraniu, GitHub widzi adres IP tego komputera; sam Caruspex nic więcej nie wysyła ani nie zapisuje. Bez sprawdzania zaglądaj od czasu do czasu na stronę wydań. Można to w każdej chwili zmienić w ustawieniach.",
+   "cs": "Caruspex se může při spuštění a každých šest hodin zeptat GitHubu, zda existuje nová verze. Jako u každého stahování vidí GitHub IP adresu tohoto počítače; Caruspex sám nic dalšího neodesílá ani neukládá. Bez kontroly se občas podívejte na stránku vydání. V nastavení to lze kdykoli změnit.",
+   "ru": "Caruspex может при запуске и каждые шесть часов спрашивать у GitHub, есть ли новая версия. Как при любой загрузке, GitHub видит IP-адрес этого компьютера; сам Caruspex больше ничего не отправляет и не сохраняет. Без проверки время от времени заглядывайте на страницу выпусков. Это можно изменить в настройках в любой момент.",
+   "uk": "Caruspex може під час запуску та кожні шість годин питати GitHub, чи є нова версія. Як і під час будь-якого завантаження, GitHub бачить IP-адресу цього комп'ютера; сам Caruspex більше нічого не надсилає й не зберігає. Без перевірки час від часу заглядайте на сторінку випусків. Це можна змінити в налаштуваннях будь-коли.",
+   "tr": "Caruspex, başlangıçta ve her altı saatte bir GitHub'a yeni bir sürüm olup olmadığını sorabilir. Her indirmede olduğu gibi GitHub bu bilgisayarın IP adresini görür; Caruspex başka hiçbir şey göndermez veya kaydetmez. Arama kapalıyken ara sıra sürümler sayfasına bakın. Bunu ayarlardan istediğiniz zaman değiştirebilirsiniz.",
+   "ar": "يمكن لـ Caruspex أن يسأل GitHub عند البدء وكل ست ساعات عما إذا كان هناك إصدار جديد. وكما في أي تنزيل، يرى GitHub عنوان IP لهذا الحاسوب؛ ولا يرسل Caruspex نفسه أو يحفظ أي شيء آخر. من دون البحث، راجع صفحة الإصدارات من حين لآخر. يمكنك تغيير ذلك في الإعدادات في أي وقت.",
+   "zh": "Caruspex 可以在启动时以及每六小时向 GitHub 查询是否有新版本。与任何下载一样，GitHub 会看到这台电脑的 IP 地址；Caruspex 本身不会发送或保存其他任何内容。如果不检查，请不时查看发布页面。你可以随时在设置中更改。",
+   "ja": "Caruspex は起動時と 6 時間ごとに、新しいバージョンがあるかを GitHub に確認できます。通常のダウンロードと同じく、GitHub にはこのコンピューターの IP アドレスが見えます。Caruspex 自体はそれ以外に何も送信・保存しません。確認しない場合は、ときどきリリースページを見てください。設定でいつでも変更できます。",
+   "ko": "Caruspex는 시작할 때와 6시간마다 GitHub에 새 버전이 있는지 확인할 수 있습니다. 다른 다운로드와 마찬가지로 GitHub는 이 컴퓨터의 IP 주소를 봅니다. Caruspex 자체는 그 밖에 아무것도 보내거나 저장하지 않습니다. 확인하지 않으면 가끔 릴리스 페이지를 살펴보세요. 설정에서 언제든지 바꿀 수 있습니다.",
+   "hi": "Caruspex शुरू होने पर और हर छह घंटे में GitHub से पूछ सकता है कि कोई नया संस्करण है या नहीं। हर डाउनलोड की तरह GitHub इस कंप्यूटर का IP पता देखता है; Caruspex खुद इसके अलावा कुछ नहीं भेजता या सहेजता। जाँच के बिना कभी-कभी रिलीज़ पेज देख लें। इसे सेटिंग्स में कभी भी बदला जा सकता है।",
+   "id": "Caruspex dapat menanyakan ke GitHub saat mulai dan setiap enam jam apakah ada versi baru. Seperti setiap unduhan, GitHub melihat alamat IP komputer ini; Caruspex sendiri tidak mengirim atau menyimpan apa pun lagi. Tanpa pemeriksaan, sesekali lihat halaman rilis. Anda dapat mengubahnya kapan saja di pengaturan."
+  }
+ },
+ {
+  "context": "caruspex::UpdateConsent",
+  "de": "Ja, nach Updates suchen",
+  "en": "Yes, look for updates",
+  "tr": {
+   "es": "Sí, buscar actualizaciones",
+   "fr": "Oui, rechercher les mises à jour",
+   "pt": "Sim, procurar atualizações",
+   "it": "Sì, cerca aggiornamenti",
+   "nl": "Ja, naar updates zoeken",
+   "pl": "Tak, szukaj aktualizacji",
+   "cs": "Ano, hledat aktualizace",
+   "ru": "Да, искать обновления",
+   "uk": "Так, шукати оновлення",
+   "tr": "Evet, güncellemeleri ara",
+   "ar": "نعم، ابحث عن تحديثات",
+   "zh": "是，检查更新",
+   "ja": "はい、確認する",
+   "ko": "예, 업데이트 확인",
+   "hi": "हाँ, अपडेट खोजें",
+   "id": "Ya, cari pembaruan"
+  }
+ },
+ {
+  "context": "caruspex::UpdateConsent",
+  "de": "Nein",
+  "en": "No",
+  "tr": {
+   "es": "No",
+   "fr": "Non",
+   "pt": "Não",
+   "it": "No",
+   "nl": "Nee",
+   "pl": "Nie",
+   "cs": "Ne",
+   "ru": "Нет",
+   "uk": "Ні",
+   "tr": "Hayır",
+   "ar": "لا",
+   "zh": "否",
+   "ja": "いいえ",
+   "ko": "아니요",
+   "hi": "नहीं",
+   "id": "Tidak"
+  }
+ }
+]

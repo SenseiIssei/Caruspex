@@ -12,6 +12,7 @@ mod cli;
 mod commands;
 mod crash;
 mod garage;
+mod kkl_report;
 mod knowledge;
 mod measure;
 mod pdf;
@@ -26,6 +27,16 @@ mod webview_mac;
 #[cfg(windows)]
 mod webview_win;
 mod worker;
+
+/// The worker as tests/perf.rs measures it (docs/performance.md). Not an
+/// interface for anything else.
+#[doc(hidden)]
+pub mod bench {
+    pub use crate::knowledge::init_english_names;
+    pub use crate::rows::LiveRow;
+    pub use crate::settings::AppSettings;
+    pub use crate::worker::{Job, Sink, Worker};
+}
 
 use std::fs::File;
 use std::io::Write;
@@ -134,7 +145,7 @@ pub fn run() {
 
     // Answers that need no window come first: on a machine without a display
     // (a server, the CI) the window system cannot even start.
-    if cli.help || cli.version || (cli.report.is_some() && !cli.connects()) {
+    if cli.help || cli.version || cli.build_info || (cli.report.is_some() && !cli.connects()) {
         // The same folder Tauri uses for app_config_dir: <config>/<identifier>.
         let config_dir = dirs::config_dir()
             .unwrap_or_default()
@@ -150,6 +161,17 @@ pub fn run() {
         }
         if cli.version {
             print_and_exit(&format!("Caruspex {}", env!("CARGO_PKG_VERSION")), 0);
+        }
+        if cli.build_info {
+            let updates = if update::official_build() {
+                "on"
+            } else {
+                "off"
+            };
+            print_and_exit(
+                &format!("Caruspex {}\nupdates: {updates}", env!("CARGO_PKG_VERSION")),
+                0,
+            );
         }
         print_and_exit(
             &texts::main_text(
@@ -361,6 +383,10 @@ pub fn run() {
             commands::read_adaptation_channel,
             commands::run_actuator_test,
             commands::kkl_ecus,
+            commands::kkl_cable_check,
+            commands::kkl_first_test,
+            commands::kkl_test_save_report,
+            commands::kkl_test_reveal,
             commands::lookup_dtc,
             commands::locate_dtc,
             commands::what_to_do,

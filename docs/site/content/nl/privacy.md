@@ -13,12 +13,19 @@ Alles blijft op je computer:
 | Opnames en CSV-bestanden | alleen als je ze start | waar je ze opslaat |
 | Logbestand | alleen als je het in de instellingen aanzet | het pad dat je kiest |
 | Crashrapporten | alleen als Caruspex crasht | de map `crash-reports` naast de garage |
+| Testrapporten van de eerste KKL-test | alleen als je er een opslaat | de map `test-reports` in de map met instellingen; het VIN en het nummer van de startonderbreker worden ingekort, tenzij je het vakje aanvinkt |
 
 Je kunt elk van deze bestanden op elk moment verwijderen.
 
 ## Wat wordt verstuurd
 
-Bij het starten vraagt Caruspex aan GitHub of er een nieuwere versie is. Daarbij wordt niets over jou of de auto meegestuurd. De controle kun je in de instellingen uitzetten. Verder maakt Caruspex geen verbinding met internet. Het contact met een wifi-adapter, een ENET-kabel of een DoIP-auto blijft in je lokale netwerk.
+Bij elke installatie, ook na een update vanaf een oudere versie, vraagt Caruspex één keer of het naar updates moet zoeken. Pas na een ja vraagt het aan GitHub of er een nieuwere versie is, bij het starten en daarna elke zes uur zolang het draait. Daarbij wordt niets over jou of de auto meegestuurd. Zonder ja gaat er geen verzoek naar GitHub. Je kunt dit altijd wijzigen in de instellingen, onder **Venster en taal**. Verder maakt Caruspex geen verbinding met internet. Het contact met een wifi-adapter, een ENET-kabel of een DoIP-auto blijft in je lokale netwerk.
+
+Alleen de op GitHub gepubliceerde releases zoeken naar updates; een kopie die je zelf bouwt doet dat nooit. Zoekt Caruspex naar een update of downloadt het er een, dan ziet GitHub, zoals bij elke download, het IP-adres van de computer en de versie van Caruspex; Caruspex zelf verstuurt en bewaart verder niets, en niemand anders, het project inbegrepen, ziet het. Daarvoor geldt de privacyverklaring van GitHub. Updates komen alleen uit de releases van de Caruspex-repository. Knoppen als **Melden op GitHub** openen alleen je browser; wat je daar plaatst, bepaal je zelf.
+
+## Android
+
+Tot en met Android 11 laat het systeem een app Bluetooth LE-adapters alleen vinden met de locatietoestemming. Caruspex vraagt daar alleen om die reden om en leest je locatie nooit. Vanaf Android 12 vraagt het in plaats daarvan de Bluetooth-toestemming, gemarkeerd als nooit gebruikt voor locatie.
 
 ## Crashrapporten alleen op verzoek
 

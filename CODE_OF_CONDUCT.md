@@ -11,5 +11,5 @@ people's private data, which here includes VINs and number plates.
 ## Reporting
 
 If someone breaks these rules, report the comment, issue or pull request with GitHub's **Report content** menu
-(the three dots next to it). The maintainers look at every report that reaches them, keep it confidential and act
+(the three dots next to it). I look at every report that reaches me, keep it confidential and act
 on it as the Contributor Covenant describes, from a warning up to a ban from the project.

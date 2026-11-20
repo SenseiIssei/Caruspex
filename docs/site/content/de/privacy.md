@@ -13,12 +13,19 @@ Alles bleibt auf dem eigenen Rechner:
 | Aufnahmen und CSV-Dateien | nur, wenn man sie startet | wo man sie speichert |
 | Protokolldatei | nur, wenn man sie in den Einstellungen einschaltet | am gewählten Pfad |
 | Absturzberichte | nur, wenn Caruspex abstürzt | im Ordner `crash-reports` neben der Garage |
+| Testberichte des ersten KKL-Tests | nur, wenn man einen speichert | im Ordner `test-reports` im Einstellungsordner; FIN und Wegfahrsperrennummer werden gekürzt, außer man setzt das Häkchen |
 
 Jede dieser Dateien lässt sich jederzeit löschen.
 
 ## Was gesendet wird
 
-Beim Start fragt Caruspex bei GitHub nach, ob es eine neuere Version gibt. Dabei wird nichts über einen selbst oder das Auto mitgeschickt. Die Suche lässt sich in den Einstellungen abschalten. Sonst geht Caruspex nicht ins Internet. Das Gespräch mit einem WLAN-Adapter, einem ENET-Kabel oder einem DoIP-Auto bleibt im lokalen Netz.
+Caruspex fragt bei jeder Installation, auch nach dem Update von einer älteren Version, einmal, ob es nach Updates suchen soll. Erst nach einem Ja fragt es bei GitHub nach, ob es eine neuere Version gibt, beim Start und danach alle sechs Stunden, solange es läuft. Dabei wird nichts über einen selbst oder das Auto mitgeschickt. Ohne ein Ja geht keine Anfrage an GitHub. Das lässt sich jederzeit in den Einstellungen unter **Fenster und Sprache** ändern. Sonst geht Caruspex nicht ins Internet. Das Gespräch mit einem WLAN-Adapter, einem ENET-Kabel oder einem DoIP-Auto bleibt im lokalen Netz.
+
+Nach Updates suchen nur die auf GitHub veröffentlichten Release-Builds; eine selbst gebaute Kopie tut das nie. Sucht Caruspex nach einem Update oder lädt eines herunter, sieht GitHub wie bei jedem Download die IP-Adresse des Computers und die Version von Caruspex; Caruspex selbst sendet und speichert darüber hinaus nichts, und niemand sonst, auch nicht das Projekt, bekommt das zu sehen. Dafür gilt die Datenschutzerklärung von GitHub. Updates kommen nur aus den Releases des Caruspex-Repositorys. Knöpfe wie **Auf GitHub melden** öffnen nur den Browser; was man dort absendet, entscheidet man selbst.
+
+## Android
+
+Bis Android 11 lässt das System eine App Bluetooth-LE-Adapter nur mit der Standortberechtigung finden. Caruspex fragt nur deshalb danach und liest den Standort nie. Ab Android 12 fragt es stattdessen nach der Bluetooth-Berechtigung, die als nie für den Standort genutzt gekennzeichnet ist.
 
 ## Absturzberichte nur auf Wunsch
 

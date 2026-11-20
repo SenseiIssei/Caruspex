@@ -358,6 +358,9 @@ export interface AppSettings {
   // Window.
   rememberGeometry: boolean;
   checkUpdates: boolean;
+  // The question whether to look for updates was answered; until then no
+  // request goes to GitHub.
+  updateChoiceMade: boolean;
   // Installs a newer version found at start without asking first.
   autoInstallUpdates: boolean;
   // "auto" or a language code.
@@ -394,6 +397,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   logPath: "",
   rememberGeometry: true,
   checkUpdates: true,
+  updateChoiceMade: false,
   autoInstallUpdates: false,
   language: "auto",
   appearance: "auto",
@@ -1134,5 +1138,105 @@ export interface SharedRecording {
 // call chain, without vehicle data. Never sent by itself.
 export interface CrashReport {
   path: string;
+  text: string;
+}
+
+// --- KKL first test (worker/kkl_test.rs) -------------------------------------------
+
+// The cable as the port list knows it, nothing opened.
+export interface KklCableRow {
+  device: string;
+  description: string;
+  vid: number;
+  pid: number;
+  chip: string;
+  // "ftdi", "ch340", "prolific", "cp210x", "other", "none".
+  family: string;
+  familyName: string;
+  // The latency timer of an FTDI driver, when it could be read.
+  latencyMs: number | null;
+  chipAdvice: string;
+  latencyAdvice: string;
+  simulated: boolean;
+}
+
+export interface KklEchoRow {
+  sent: string;
+  received: string;
+  state: "clean" | "none" | "broken";
+  roundTripMs: number | null;
+}
+
+// A stretch of the 5-baud address with one level.
+export interface KklPhaseRow {
+  one: boolean;
+  bits: number;
+  measuredMs: number;
+  targetMs: number;
+  callMs: number;
+}
+
+// One wake-up attempt with everything measured.
+export interface KklWakeRow {
+  address: number;
+  unit: string;
+  attempt: number;
+  strategy: string;
+  baud: number;
+  phases: KklPhaseRow[];
+  worstErrorMs: number;
+  addressMs: number;
+  onCallMs: number;
+  offCallMs: number;
+  addressEcho: number;
+  firstByte: string;
+  firstByteAfterMs: number | null;
+  keyBytes: string;
+  replyAfterMs: number | null;
+  replyEcho: boolean | null;
+  replyRoundTripMs: number | null;
+  verdict: string;
+  headline: string;
+  error: string;
+}
+
+export interface KklVerdictRow {
+  // WakeVerdict::key: "connected", "no-echo", "timing-unstable", ...
+  kind: string;
+  ok: boolean;
+  headline: string;
+  advice: string;
+  warnings: string[];
+}
+
+export type KklStepState = "pending" | "running" | "ok" | "warn" | "fail" | "skip";
+
+export interface KklTestStep {
+  id: string;
+  title: string;
+  state: KklStepState;
+  summary: string;
+  lines: string[];
+  log: string[];
+}
+
+export interface KklTestReport {
+  kind: "cable" | "car";
+  version: string;
+  platform: string;
+  date: string;
+  device: string;
+  cable: KklCableRow;
+  echo: KklEchoRow | null;
+  wakes: KklWakeRow[];
+  steps: KklTestStep[];
+  verdict: KklVerdictRow;
+  cancelled: boolean;
+}
+
+// Where kkl_test_save_report put the two files.
+export interface KklSavedReport {
+  folder: string;
+  json: string;
   text: string;
 }

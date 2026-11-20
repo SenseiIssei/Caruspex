@@ -503,14 +503,30 @@ OBD mode 04 wist het foutgeheugen, het freeze frame en de gereedheidsmonitoren. 
 valt de auto door een uitlaatgassenkeuring totdat hij meerdere volledige rijcycli heeft voltooid, en een code waarvan de oorzaak
 nog aanwezig is, komt na een korte rit terug. Wissen is geen reparatie.
 
-## Disclaimer
+<!-- legal -->
+## Veiligheid en aansprakelijkheid
 
-Caruspex is een hobbyproject en wordt zonder garantie geleverd. Gebruik het op eigen risico, alleen op voertuigen
-waaraan je mag werken, en nooit tijdens het rijden. Alle product- en merknamen zijn handelsmerken van hun
-respectieve eigenaren; Caruspex is niet verbonden aan of goedgekeurd door een autofabrikant.
+Caruspex is een vrij hobbyproject en komt zonder enige garantie, zoals de [MIT-licentie](LICENSE) zegt. Gebruik is op eigen risico.
 
-## Licentie
+- Bedien het nooit tijdens het rijden. Stel het in terwijl de auto stilstaat; een passagier kan de live-waarden in de gaten houden.
+- Fouten wissen, actuatortests en basisinstellingen laten de auto iets doen. Caruspex vraagt vóór elk daarvan om bevestiging; doe ze alleen met de auto stilstaand en beveiligd, en alleen bij voertuigen waaraan je mag werken.
+- Caruspex vervangt geen garage. Een foutcode noemt een symptoom, niet altijd de oorzaak. Remmen, airbags, stuurinrichting en alles wat voor de veiligheid telt, horen in deskundige handen.
+- Wissen is geen reparatie. Gewiste fouten en teruggezette gereedheidstests kunnen een emissietest of APK laten mislukken.
+- Caruspex verandert de kilometerstand, de startonderbreker, sleutels, emissiebeheer of een tachograaf niet, en het project neemt geen bijdragen aan die dat doen. Knoeien met kilometertellers, emissiebeheer of tachografen is in veel landen verboden.
 
-MIT, zie [LICENSE](LICENSE). De fabrikantwaarden voor honderden modellen zijn omgezet vanuit [OBDb](https://github.com/OBDb) en vallen, net als OBDb, onder CC BY-SA 4.0: ze staan los van de code in [data/obdb](data/obdb) met de licentie en de lijst met bronnen ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)). De meegeleverde lettertypen vallen onder de SIL Open Font License 1.1:
-JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)) en
-Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+## Merken
+
+Namen van autofabrikanten, modellen, adapters, programma's en normen (bijvoorbeeld Volkswagen, Audi, BMW, Mercedes-Benz, Tesla, OBDLink, ELM327, VCDS of ISTA) zijn merken van hun respectieve eigenaars. Ze staan er alleen om te zeggen met welke auto's, adapters en interfaces Caruspex werkt. Caruspex is een onafhankelijk project en is niet verbonden aan, goedgekeurd door of gesponsord door een autofabrikant, adapterfabrikant of softwareleverancier. De app en deze repository gebruiken geen logo's van deze bedrijven.
+
+## Licentie en bronnen
+
+De code valt onder de MIT-licentie, zie [LICENSE](LICENSE). De bibliotheken in de programma's en hun licenties staan in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); de app toont ze bij de instellingen. Gegevens die in de programma's zijn ingebouwd:
+
+- Fabrikantwaarden voor ongeveer 550 voertuigen, omgezet uit [OBDb](https://github.com/OBDb), onder CC BY-SA 4.0 zoals OBDb: los van de code in [data/obdb](data/obdb) met de licentie en de lijst van bronnen ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
+- CAN-signaaldefinities uit [opendbc](https://github.com/commaai/opendbc) (comma.ai) en [model3dbc](https://github.com/joshwardell/model3dbc), MIT-licentie ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Accuwaarden voor de Hyundai Ioniq en Kona, de Kia e-Niro, de Nissan Leaf en de Renault Zoe volgens OBDb (CC BY-SA 4.0, net als deze pakketten), het [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) en [evDash](https://github.com/nickn17/evDash) (beide MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
+- Motorcodes uit Wikipedia-artikelen, CC BY-SA 4.0 ([data/engines](data/engines), met artikel en versie in elke regel).
+- Fabrikantcodes van het VIN, gecontroleerd met [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (publiek domein) en [Wikidata](https://www.wikidata.org) (CC0); de codes die alleen de [WMI-lijst op Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) kent, vallen onder CC BY-SA 4.0 en staan apart in [data/wmi](data/wmi).
+- Afmetingen van voertuigen uit [Wikidata](https://www.wikidata.org), CC0.
+- Lettertypen onder de SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
+<!-- /legal -->

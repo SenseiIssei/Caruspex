@@ -314,6 +314,7 @@ function SetupDialog() {
                 <li>{tu("Den Adapter fest in die Buchse stecken, bis er nicht mehr wackelt.")}</li>
                 <li>{tu("Zündung einschalten, bis die Lampen im Kombiinstrument leuchten. Bei einem Startknopf: drücken, ohne auf die Bremse zu treten.")}</li>
                 <li>{tu("Den Motor nicht starten. Für Live-Werte darf er laufen, aber nur im Freien.")}</li>
+                <li>{tu("Caruspex nie während der Fahrt bedienen. Die Nutzung geschieht auf eigene Gefahr, mehr dazu in den Einstellungen.")}</li>
               </ul>
             </div>
           </div>

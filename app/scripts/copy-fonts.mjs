@@ -15,3 +15,13 @@ for (const name of readdirSync(from)) {
   n++;
 }
 console.log(`fonts: ${n} files`);
+
+// The licence of Caruspex and the notices of every component the programs
+// contain (tools/gen_notices.py) go into public/legal, so every package of
+// the app ships them and Settings can show them without a network.
+const root = join(here, "..", "..");
+const legal = join(here, "..", "public", "legal");
+mkdirSync(legal, { recursive: true });
+copyFileSync(join(root, "LICENSE"), join(legal, "LICENSE.txt"));
+copyFileSync(join(root, "THIRD_PARTY_NOTICES.md"), join(legal, "THIRD_PARTY_NOTICES.txt"));
+console.log("legal: 2 files");

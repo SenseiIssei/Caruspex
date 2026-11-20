@@ -1,16 +1,27 @@
 # Renault and Dacia with CAN, roughly from 2005 on. Outside the OBD addresses
 # the response is mostly the request plus 0x20 (alliance scheme). 7E4, 79B
 # and 792 exist on the electric models such as the Zoe.
-# Sources: DDT4all address tables, CanZE documentation for the Zoe.
+#
+# Sources (checked 2026-11-20), named per row in the note column:
+#   ISO     ISO 15765-4: physical OBD requests 7E0 to 7E7, answers plus 8
+#   OVMS    github.com/openvehicles/Open-Vehicle-Monitoring-System-3,
+#           vehicle_renaultzoe/src/vehicle_renaultzoe.cpp at commit
+#           7470869a2db574ad1fab962a3cae4f22e6cf1385 (MIT): the poll list and
+#           IncomingPollReply (EPS 762, EVC 7EC, BCB 793, LBC 7BB)
+#   evDash  github.com/nickn17/evDash, src/CarRenaultZoe.cpp at commit
+#           0f4ca249ff10b539558fa158b4b52b1f8e5f3e1f (MIT)
+#   OBDb    the Renault and Dacia signal sets of github.com/OBDb (Renault-Clio,
+#           Renault-Captur, Renault-ZOE, Dacia-Duster and more, main branch),
+#           CC BY-SA 4.0. Only the address is taken, as a fact.
 family,kind,request,response,bits,name_de,name_en,note
-RENAULT,engine,7E0,7E8,11,Motorsteuerung,Engine control,injection
-RENAULT,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,automatic only
-RENAULT,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,ABS/ESP
-RENAULT,airbag,752,772,11,Airbag,Airbag,
-RENAULT,steering,742,762,11,Lenkhilfe,Power steering,DAE
-RENAULT,instruments,743,763,11,Kombiinstrument,Instrument cluster,TDB
-RENAULT,body,745,765,11,Zentralelektronik (UCH),Central electronics (UCH),UCH
-RENAULT,climate,744,764,11,Klimaanlage,Climate control,
-RENAULT,hybrid,7E4,7EC,11,Fahrzeugsteuerung (EVC),Vehicle control (EVC),electric only
-RENAULT,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),electric only
-RENAULT,charger,792,793,11,Ladegerät,Charger,electric only
+RENAULT,engine,7E0,7E8,11,Motorsteuerung,Engine control,injection; ISO; OBDb
+RENAULT,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,automatic only; ISO; OBDb
+RENAULT,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,ABS/ESP; OBDb
+RENAULT,airbag,752,772,11,Airbag,Airbag,OBDb
+RENAULT,steering,742,762,11,Lenkhilfe,Power steering,DAE; OVMS; OBDb
+RENAULT,instruments,743,763,11,Kombiinstrument,Instrument cluster,TDB; evDash; OBDb
+RENAULT,body,745,765,11,Zentralelektronik (UCH),Central electronics (UCH),UCH; evDash; OBDb
+RENAULT,climate,744,764,11,Klimaanlage,Climate control,evDash; OBDb
+RENAULT,hybrid,7E4,7EC,11,Fahrzeugsteuerung (EVC),Vehicle control (EVC),electric only; OVMS; evDash; OBDb
+RENAULT,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),electric only; OVMS; evDash; OBDb
+RENAULT,charger,792,793,11,Ladegerät,Charger,electric only; OVMS; OBDb

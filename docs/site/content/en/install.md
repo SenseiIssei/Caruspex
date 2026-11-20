@@ -45,7 +45,7 @@ The report can be written in German, English, Spanish, French, Portuguese, Itali
 
 ## Updates
 
-At start Caruspex asks GitHub whether there is a newer version, and nothing else. A new version is only installed if its signature matches the key built into the app. Both the check and the automatic installation can be switched off in the settings.
+On every installation Caruspex asks once whether it should look for updates. Only after a yes does it ask GitHub whether there is a newer version, and nothing else. A new version is only installed if its signature matches the key built into the app. The check and the automatic installation can be changed in the settings any time.
 
 ## Package managers
 

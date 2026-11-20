@@ -313,6 +313,14 @@ def handle_command(cmd: str) -> str:
     c = cmd.replace(" ", "").upper()
     if c.startswith("AT"):
         return handle_at(c[2:])
+    # A single digit after the request says how many answer lines to wait
+    # for (ELM327 v1.3 and later); the adapter stops after that many.
+    limit = 0
+    if len(c) % 2 == 1 and all(ch in "0123456789ABCDEF" for ch in c):
+        limit = int(c[-1], 16)
+        c = c[:-1]
+        if limit == 0:
+            return "?"
     # Without the right protocol selected nobody answers.
     if STATE["protocol"] not in ("0", ("6" if ARGS.can else "5")):
         return "NO DATA" if ARGS.can else "UNABLE TO CONNECT"
@@ -322,6 +330,8 @@ def handle_command(cmd: str) -> str:
     lines = []
     for sender, payload in answers:
         lines += format_can(sender, payload) if can_mode() else format_kline(sender, payload)
+    if limit:
+        lines = lines[:limit]
     return "\r".join(lines)
 
 

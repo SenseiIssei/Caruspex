@@ -41,6 +41,13 @@ const PUBLIC_KEY: &str = "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IE
 const TEST_URL_ENV: &str = "CARUSPEX_UPDATE_URL";
 const TEST_KEY_ENV: &str = "CARUSPEX_UPDATE_PUBKEY";
 
+/// Only the builds of the release workflow look for updates (it sets
+/// CARUSPEX_OFFICIAL_BUILD); a local or test build would otherwise offer
+/// the published version over itself.
+pub fn official_build() -> bool {
+    option_env!("CARUSPEX_OFFICIAL_BUILD").is_some()
+}
+
 /// What the silent Inno Setup run gets. /CARUSPEXRESTART=1 starts the new
 /// version afterwards (caruspex.iss): /RESTARTAPPLICATIONS only restarts
 /// programs that registered with the Restart Manager, and Caruspex has
@@ -110,6 +117,10 @@ pub struct Package {
     pub url: String,
     /// base64 of the minisign signature file, as `tauri signer sign` writes it.
     pub signature: String,
+    /// The version of the manifest this package belongs to (set by found_in,
+    /// not part of latest.json): the signed file name must carry it.
+    #[serde(skip)]
+    pub version: String,
 }
 
 pub fn parse_manifest(text: &str) -> Result<Manifest, String> {
@@ -190,7 +201,12 @@ pub fn found_in(manifest: &Manifest, current: &str, platform: Option<&str>) -> O
         version: segments_text(&newest),
         notes: manifest.notes.clone(),
         date: manifest.pub_date.clone(),
-        package: platform.and_then(|key| manifest.platforms.get(key).cloned()),
+        package: platform.and_then(|key| {
+            manifest.platforms.get(key).cloned().map(|mut package| {
+                package.version = segments_text(&newest);
+                package
+            })
+        }),
     })
 }
 
@@ -309,12 +325,43 @@ pub fn verify_file(path: &Path, signature: &str, public_key: &str) -> Result<(),
     verifier.finalize().map_err(|e| e.to_string())
 }
 
+/// The file name the release signed, from the trusted comment
+/// ("timestamp:<n>\tfile:<name>"), which the global signature covers.
+pub fn signed_file_name(signature: &str) -> Option<String> {
+    let text = decode_base64_text(signature).ok()?;
+    let comment = text
+        .lines()
+        .find_map(|line| line.strip_prefix("trusted comment: "))?;
+    comment
+        .split('\t')
+        .find_map(|part| part.strip_prefix("file:"))
+        .map(str::to_string)
+}
+
+/// A valid signature alone does not stop an old release from being offered
+/// as new (latest.json itself is not signed): the signed name must be the
+/// file that is downloaded, and that name must carry the offered version.
+pub fn check_signed_name(signature: &str, url: &str, version: &str) -> Result<(), String> {
+    let wanted = url.rsplit('/').next().unwrap_or_default();
+    match signed_file_name(signature) {
+        Some(name) if name == wanted && name.contains(&format!("-{version}-")) => Ok(()),
+        Some(name) => Err(format!(
+            "signed for {name}, offered as {wanted} ({version})"
+        )),
+        None => Err("signature without a file name".to_string()),
+    }
+}
+
 // --- How this copy updates itself --------------------------------------------------------
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Method {
     /// Windows, installed with the Inno Setup installer.
     Installer,
+    /// Windows, a copy that was never installed (the zip, a build): the
+    /// signed setup is fetched and started with its normal wizard, so the
+    /// next versions update themselves like an installed copy.
+    SetupFromCopy,
     /// Linux, started as this AppImage file.
     AppImage(PathBuf),
     /// macOS, this .app bundle.
@@ -339,10 +386,11 @@ pub fn bundle_of(exe: &Path) -> Option<PathBuf> {
 pub fn detect_method(os: &str, exe: &Path, appimage: Option<&Path>) -> Method {
     match os {
         // The installer leaves its uninstaller next to the program; a copy
-        // from the zip has none and would get a second installation.
+        // from the zip has none, so it is offered the real installation.
         "windows" => match exe.parent() {
             Some(dir) if dir.join("unins000.exe").is_file() => Method::Installer,
-            _ => Method::PageOnly,
+            Some(_) => Method::SetupFromCopy,
+            None => Method::PageOnly,
         },
         "linux" => match appimage {
             Some(path) if path.is_file() => Method::AppImage(path.to_path_buf()),
@@ -447,7 +495,9 @@ fn fetch_verified(
         let _ = std::fs::remove_file(target);
         return Err(error);
     }
-    if verify_file(target, &package.signature, &public_key_text()).is_err() {
+    let genuine = verify_file(target, &package.signature, &public_key_text())
+        .and_then(|()| check_signed_name(&package.signature, &package.url, &package.version));
+    if genuine.is_err() {
         let _ = std::fs::remove_file(target);
         return Err(l(
             "Die Signatur der Aktualisierung stimmt nicht. Sie wurde verworfen, nichts wurde installiert.",
@@ -503,6 +553,16 @@ pub fn install(found: &Found, progress: &mut dyn FnMut(u64, u64)) -> Result<Outc
             fetch_verified(package, &target, progress)?;
             std::process::Command::new(&target)
                 .args(INNO_ARGUMENTS)
+                .spawn()
+                .map_err(install_failed)?;
+            Ok(Outcome::Quit)
+        }
+        Method::SetupFromCopy => {
+            let target = work_dir()?.join(file_name(&package.url));
+            fetch_verified(package, &target, progress)?;
+            // The wizard on purpose: this copy was never installed, so the
+            // user picks the place and sees what happens.
+            std::process::Command::new(&target)
                 .spawn()
                 .map_err(install_failed)?;
             Ok(Outcome::Quit)
@@ -767,6 +827,32 @@ mod tests {
     }
 
     #[test]
+    fn the_signed_name_must_be_the_offered_version() {
+        // The real signature of the 0.17.0 Windows setup.
+        let real =
+            std::fs::read_to_string(Path::new(DATA).join("release-0.17.0-windows.sig")).unwrap();
+        let name = "Caruspex-0.17.0-windows-x64-setup.exe";
+        assert_eq!(signed_file_name(&real).as_deref(), Some(name));
+        let url = format!("{DOWNLOAD_PREFIX}v0.17.0/{name}");
+        assert_eq!(check_signed_name(&real, &url, "0.17.0"), Ok(()));
+        // The same old package offered as a newer version is refused.
+        assert!(check_signed_name(&real, &url, "0.18.0").is_err());
+        // Or under another file name.
+        let renamed = format!("{DOWNLOAD_PREFIX}v0.18.0/Caruspex-0.18.0-windows-x64-setup.exe");
+        assert!(check_signed_name(&real, &renamed, "0.18.0").is_err());
+        // The test fixture names no version at all.
+        let fixture_sig = fixture("payload.bin.sig");
+        assert_eq!(
+            signed_file_name(&fixture_sig).as_deref(),
+            Some("payload.bin")
+        );
+        assert!(
+            check_signed_name(&fixture_sig, "https://example.test/payload.bin", "1.0.0").is_err()
+        );
+        assert!(check_signed_name("not base64!", &url, "0.17.0").is_err());
+    }
+
+    #[test]
     fn accepts_the_signed_file() {
         let payload = Path::new(DATA).join("payload.bin");
         let signature = fixture("payload.bin.sig");
@@ -849,7 +935,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("caruspex-method-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let exe = dir.join("caruspex.exe");
-        assert_eq!(detect_method("windows", &exe, None), Method::PageOnly);
+        assert_eq!(detect_method("windows", &exe, None), Method::SetupFromCopy);
         std::fs::write(dir.join("unins000.exe"), b"").unwrap();
         assert_eq!(detect_method("windows", &exe, None), Method::Installer);
 

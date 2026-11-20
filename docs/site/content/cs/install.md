@@ -45,7 +45,7 @@ Zpráva může být německy, anglicky, španělsky, francouzsky, portugalsky, i
 
 ## Aktualizace
 
-Při spuštění se Caruspex zeptá GitHubu, jestli existuje novější verze, a nic dalšího. Nová verze se nainstaluje jen tehdy, když její podpis odpovídá klíči zabudovanému v aplikaci. Kontrolu i automatickou instalaci lze vypnout v nastavení.
+Při každé instalaci se Caruspex jednou zeptá, zda má hledat aktualizace. Teprve po odpovědi "ano" se zeptá GitHubu, zda existuje novější verze, a nic dalšího. Nová verze se nainstaluje jen tehdy, když její podpis odpovídá klíči zabudovanému v aplikaci. Kontrolu i automatickou instalaci lze kdykoli změnit v nastavení.
 
 ## Správci balíčků
 

@@ -13,12 +13,19 @@ Semuanya tetap di komputermu:
 | Rekaman dan file CSV | hanya kalau kamu memulainya | tempat kamu menyimpannya |
 | File log | hanya kalau kamu menyalakannya di pengaturan | jalur yang kamu pilih |
 | Laporan crash | hanya kalau Caruspex crash | folder `crash-reports` di sebelah garasi |
+| Laporan uji KKL pertama | hanya saat Anda menyimpannya | folder `test-reports` di folder pengaturan; VIN dan nomor imobilizer dipendekkan kecuali Anda mencentang kotaknya |
 
 Kamu bisa menghapus file-file ini kapan saja.
 
 ## Yang dikirim
 
-Saat dijalankan, Caruspex menanyakan ke GitHub apakah ada versi yang lebih baru. Tidak ada apa pun tentang kamu atau mobilmu yang ikut terkirim. Pemeriksaan ini bisa dimatikan di pengaturan. Selain itu Caruspex tidak terhubung ke internet. Komunikasi dengan adaptor Wi-Fi, kabel ENET, atau mobil DoIP tetap berada di jaringan lokalmu.
+Pada setiap pemasangan, termasuk setelah memperbarui dari versi lama, Caruspex bertanya satu kali apakah perlu mencari pembaruan. Hanya setelah dijawab ya, Caruspex bertanya ke GitHub apakah ada versi yang lebih baru, saat mulai dan setiap enam jam selama berjalan. Tidak ada apa pun tentang kamu atau mobilmu yang ikut terkirim. Tanpa jawaban ya, tidak ada permintaan yang dikirim ke GitHub. Ini bisa kamu ubah kapan saja di pengaturan, di bagian **Jendela dan bahasa**. Selain itu Caruspex tidak terhubung ke internet. Komunikasi dengan adaptor Wi-Fi, kabel ENET, atau mobil DoIP tetap berada di jaringan lokalmu.
+
+Hanya build rilis yang diterbitkan di GitHub yang mencari pembaruan; salinan yang Anda bangun sendiri tidak pernah melakukannya. Saat Caruspex mencari atau mengunduh pembaruan, GitHub melihat, seperti pada setiap unduhan, alamat IP komputer dan versi Caruspex; Caruspex sendiri tidak mengirim atau menyimpan hal lain, dan tidak ada pihak lain, termasuk proyek ini, yang melihatnya. Untuk itu berlaku pernyataan privasi GitHub. Pembaruan hanya diunduh dari rilis repositori Caruspex. Tombol seperti **Laporkan di GitHub** hanya membuka peramban Anda; apa yang Anda kirim di sana adalah keputusan Anda.
+
+## Android
+
+Hingga Android 11, sistem hanya membiarkan aplikasi menemukan adaptor Bluetooth LE dengan izin lokasi. Caruspex memintanya hanya karena alasan itu dan tidak pernah membaca lokasi Anda. Mulai Android 12, Caruspex meminta izin Bluetooth sebagai gantinya, yang dinyatakan tidak pernah dipakai untuk lokasi.
 
 ## Laporan crash hanya kalau kamu mau
 

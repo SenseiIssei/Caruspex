@@ -13,12 +13,19 @@ Tutto resta sul tuo computer:
 | Registrazioni e file CSV | solo quando le avvii tu | dove le salvi |
 | File di log | solo se lo attivi nelle impostazioni | il percorso che scegli |
 | Rapporti di crash | solo se Caruspex si blocca | la cartella `crash-reports` accanto al garage |
+| Rapporti del primo test KKL | solo quando ne salvi uno | la cartella `test-reports` nella cartella delle impostazioni; il VIN e il numero dell'immobilizzatore vengono accorciati, a meno che tu non spunti la casella |
 
 Puoi cancellare uno qualsiasi di questi file in qualsiasi momento.
 
 ## Cosa viene inviato
 
-All'avvio Caruspex chiede a GitHub se c'è una versione più recente. Non viene inviato niente su di te o sull'auto. Il controllo si può disattivare nelle impostazioni. A parte questo Caruspex non si collega a internet. La comunicazione con un adattatore Wi-Fi, un cavo ENET o un'auto DoIP resta nella tua rete locale.
+A ogni installazione, anche dopo l'aggiornamento da una versione più vecchia, Caruspex chiede una volta se deve cercare aggiornamenti. Solo dopo un sì chiede a GitHub se c'è una versione più recente, all'avvio e ogni sei ore finché è in esecuzione. Non viene inviato niente su di te o sull'auto. Senza un sì nessuna richiesta va a GitHub. Puoi cambiarlo in qualsiasi momento nelle impostazioni, sotto **Finestra e lingua**. A parte questo Caruspex non si collega a internet. La comunicazione con un adattatore Wi-Fi, un cavo ENET o un'auto DoIP resta nella tua rete locale.
+
+Solo le versioni pubblicate su GitHub cercano aggiornamenti; una copia che compili da te non lo fa mai. Quando Caruspex cerca o scarica un aggiornamento, GitHub vede, come per ogni download, l'indirizzo IP del computer e la versione di Caruspex; Caruspex stesso non invia né conserva altro, e nessun altro, nemmeno il progetto, lo vede. Vale l'informativa sulla privacy di GitHub. Gli aggiornamenti vengono scaricati solo dalle release del repository di Caruspex. Pulsanti come **Segnala su GitHub** aprono solo il browser; cosa pubblichi lì lo decidi tu.
+
+## Android
+
+Fino ad Android 11 il sistema permette a un'app di trovare adattatori Bluetooth LE solo con il permesso di posizione. Caruspex lo chiede solo per questo e non legge mai la tua posizione. Da Android 12 chiede invece il permesso Bluetooth, dichiarato come mai usato per la posizione.
 
 ## Rapporti di crash solo su richiesta
 

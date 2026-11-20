@@ -5,7 +5,9 @@
 // The recorded answers of the Kona, the Leaf and the Zoe are test cases of
 // OBDb (github.com/OBDb, tests/test_cases), taken from real cars; the
 // expected numbers are the ones OBDb lists for them. So the packs are checked
-// against an independent decoder, not against themselves.
+// against an independent decoder, not against themselves. Like all OBDb data
+// these test cases are under CC BY-SA 4.0 (data/obdb/LICENSE), not under the
+// MIT licence of the code around them.
 
 mod common;
 

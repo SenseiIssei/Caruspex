@@ -453,6 +453,24 @@ fn answer_lines(command: &[u8], answer: &[u8]) -> Vec<Vec<u8>> {
     lines
 }
 
+/// Whether a recorded command answers the one the replay is asked. Besides
+/// the same command: the answer count digit after a request (ELM327 v1.3 and
+/// later, "010C0D2"). Caruspex adds it on a real adapter once it knows how
+/// many answers come, never on a replay (`count_hint_allowed`), so a
+/// recording may hold the request with the digit where the replay asks
+/// without it; the answer is the same.
+fn same_request(recorded: &[u8], asked: &[u8]) -> bool {
+    if recorded == asked {
+        return true;
+    }
+    recorded.len() == asked.len() + 1
+        && asked.len() >= 4
+        && asked.len().is_multiple_of(2)
+        && recorded.starts_with(asked)
+        && recorded.iter().all(u8::is_ascii_hexdigit)
+        && recorded.last() != Some(&b'0')
+}
+
 fn is_at_or_st(command: &[u8]) -> bool {
     command.starts_with(b"AT") || command.starts_with(b"ST")
 }
@@ -1019,6 +1037,12 @@ impl Transport for RecordingTransport {
             .map(|t| t.name())
             .unwrap_or_default()
     }
+
+    fn count_hint_allowed(&self) -> bool {
+        lock(&self.shared.inner)
+            .as_ref()
+            .is_some_and(|t| t.count_hint_allowed())
+    }
 }
 
 /// The running recording of this session, if any.
@@ -1295,16 +1319,17 @@ impl ReplayTransport {
     fn find(&mut self, command: &[u8]) -> Option<usize> {
         let count = self.exchanges.len();
         let window_end = count.min(self.position + Self::SEARCH_WINDOW);
+        let fits = |recorded: &[u8]| same_request(recorded, command);
         // Forward from where the replay stands, a bounded distance.
         for i in self.position..window_end {
-            if self.exchanges[i].command == command {
+            if fits(&self.exchanges[i].command) {
                 self.position = i + 1;
                 return Some(i);
             }
         }
         // From the start: polls that run longer than the recording repeat.
         for i in 0..self.position.min(count) {
-            if self.exchanges[i].command == command {
+            if fits(&self.exchanges[i].command) {
                 self.wrapped += 1;
                 self.position = i + 1;
                 return Some(i);
@@ -1312,7 +1337,7 @@ impl ReplayTransport {
         }
         // Last resort: further ahead than the window reaches.
         for i in window_end..count {
-            if self.exchanges[i].command == command {
+            if fits(&self.exchanges[i].command) {
                 self.position = i + 1;
                 return Some(i);
             }
@@ -1436,5 +1461,9 @@ impl Transport for ReplayTransport {
 
     fn name(&self) -> String {
         format!("{}{}", l("Aufnahme: ", "Recording: "), self.display_name)
+    }
+
+    fn count_hint_allowed(&self) -> bool {
+        false
     }
 }
