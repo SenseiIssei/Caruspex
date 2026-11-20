@@ -5,7 +5,7 @@ Not part of the build or the CI. It needs Python Playwright with its Chromium
 whoever measures; the project itself does not depend on it. The interface
 runs with the demo backend in the browser preview:
 
-    npm --prefix app run build && npx --prefix app vite preview --port 5392   (release build)
+    npm --prefix app run build:demo && npx --prefix app vite preview --outDir dist-demo --port 5392   (release build)
     npm --prefix app run dev                                                   (port 5287, for "xray")
 
     py -I tools/ui_measure.py startup http://localhost:5392 [4]   first paint, ready, long tasks; 4 = CPU four times slower

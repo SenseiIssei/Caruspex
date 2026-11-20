@@ -41,6 +41,8 @@ Take "read the fault memory" on the faults page:
    event, with its argument and payload types, is declared in `app/src/api/contract.ts`.
 2. **Backend choice.** `app/src/api/index.ts` uses the Tauri backend (`api/tauri.ts`, `invoke` and `listen`) inside
    the app window, and the mock backend (`api/mock/`, a simulated worker with the demo car) in a plain browser.
+   Only the development server and `npm --prefix app run build:demo` contain the mock backend; the app build
+   leaves it out, together with the core catalogs it translates its texts with.
 3. **Tauri command.** `read_faults` in `app/src-tauri/src/commands.rs` puts `Job::ReadFaults` into the worker's
    channel and returns at once. Commands that only look something up (fault code texts, the catalog) answer
    directly instead. All commands are registered in `generate_handler!` in `app/src-tauri/src/lib.rs`.

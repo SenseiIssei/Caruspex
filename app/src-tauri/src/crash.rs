@@ -178,7 +178,11 @@ pub fn report_text(
 }
 
 /// Writes the report into `dir` as crash-<time>.txt.
-pub fn write_report(dir: &Path, text: &str, when: &jiff::ZonedDateTime) -> std::io::Result<PathBuf> {
+pub fn write_report(
+    dir: &Path,
+    text: &str,
+    when: &jiff::ZonedDateTime,
+) -> std::io::Result<PathBuf> {
     std::fs::create_dir_all(dir)?;
     let mut path = dir.join(format!("crash-{}.txt", when.strftime("%Y%m%d-%H%M%S")));
     let mut n = 2;

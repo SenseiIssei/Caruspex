@@ -72,6 +72,7 @@ The command-line tool on the same core: `cargo run -p caruspex-cli -- read --dem
 |---|---|
 | `npm --prefix app run dev:app` | The app with live reload: the Tauri window loads the Vite dev server (`localhost:5287`) instead of the built-in interface. Pick the demo car on the Connect page. |
 | `npm --prefix app run dev` | The interface alone in a normal browser, with a simulated backend (`app/src/api/mock/`) instead of Rust. Open `http://localhost:5287/?demo`. |
+| `npm --prefix app run build:demo` | The same as a release build in `app/dist-demo/` (`npx --prefix app vite preview --outDir dist-demo`). `npm --prefix app run build` leaves the simulated backend out, so its `app/dist/` only works inside the app. |
 | `cargo run -p caruspex-app -- --demo` | The app as users get it, connected to the built-in demo car. |
 | `python tools/mock_elm327.py --can` | A simulated ELM327 on `127.0.0.1:35000` (without `--can`: an Audi A2 engine on the K-line). Connect with `--tcp 127.0.0.1:35000`. |
 

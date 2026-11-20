@@ -30,19 +30,34 @@ function fill(phrase: string, args: string): string {
   return phrase.replace(/%([1-9])/g, (all, d: string) => values[Number(d) - 1] ?? all);
 }
 
-function compose(lang: 0 | 1, r: ComposedRecord): string {
-  const part = fill(data.phrases[r[1]]![lang], r[2]);
+function phrase(i: number): string {
+  const p = data.phrases[i]!;
+  return L(p[0], p[1]);
+}
+
+// Put together in the active language at lookup time, like Record::text()
+// in Rust: the core catalogs translate the phrases with their %1, not every
+// finished text, so a text composed once in English stayed English.
+function compose(r: ComposedRecord): string {
+  const part = fill(phrase(r[1]), r[2]);
   if (r[3] < 0) return part;
-  const how = data.phrases[r[3]]![lang];
+  const how = phrase(r[3]);
   return r[4] ? `${how}: ${part}` : `${part} - ${how}`;
 }
 
+const composedOf = new Map<string, ComposedRecord>(data.composed.map((r) => [r[0], r]));
+
 const allCodes: CodeRecord[] = [
   ...data.codes,
-  ...data.composed.map((r): CodeRecord => [r[0], compose(0, r), compose(1, r), r[6], r[7], r[8], false, r[5] === 1]),
+  ...data.composed.map((r): CodeRecord => [r[0], "", "", r[6], r[7], r[8], false, r[5] === 1]),
 ].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 
 const byCode = new Map<string, CodeRecord>(allCodes.map((c) => [c[0], c]));
+
+function textOf(r: CodeRecord): string {
+  const parts = composedOf.get(r[0]);
+  return parts ? compose(parts) : L(r[1], r[2]);
+}
 
 function sourceNote(r: CodeRecord | undefined): string {
   return r?.[7] ? L("Bedeutung aus einer Quelle", "Meaning from one source") : "";
@@ -103,7 +118,7 @@ export function systemName(system: number): string {
 
 export function describeDtc(code: string): string {
   const r = byCode.get(code.toUpperCase());
-  if (r) return L(r[1], r[2]);
+  if (r) return textOf(r);
   return L("Unbekannter Fehlercode", "Unknown trouble code");
 }
 
@@ -117,7 +132,7 @@ export function lookupDtc(codeText: string): DtcInfo {
   const manufacturer = /^[PCBU][13]/.test(code);
   return {
     code,
-    text: r ? L(r[1], r[2]) : L("Unbekannter Fehlercode", "Unknown trouble code"),
+    text: r ? textOf(r) : L("Unbekannter Fehlercode", "Unknown trouble code"),
     severity,
     severityLabel: severityLabel(severity),
     system,
@@ -195,7 +210,7 @@ export function lexicon(): DtcLexiconEntry[] {
     code: r[0],
     family: "",
     familyLabel: label,
-    text: L(r[1], r[2]),
+    text: textOf(r),
     severity: r[3] as Severity,
     system: r[4],
     sourceNote: sourceNote(r),
