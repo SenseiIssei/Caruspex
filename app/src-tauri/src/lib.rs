@@ -87,7 +87,10 @@ pub fn write_log_line(log_file: &Mutex<Option<(PathBuf, File)>>, line: &str) {
     if let Ok(mut file) = log_file.lock()
         && let Some((_, file)) = file.as_mut()
     {
-        let stamped = format!("{}  {line}\n", jiff::ZonedDateTime::now().strftime("%H:%M:%S"));
+        let stamped = format!(
+            "{}  {line}\n",
+            jiff::ZonedDateTime::now().strftime("%H:%M:%S")
+        );
         let _ = file.write_all(stamped.as_bytes());
         let _ = file.flush();
     }
