@@ -3,10 +3,11 @@
 //! times. It is what the first-test page and its tests run against.
 //!
 //! [`A2Line`] implements [`RawKLine`] with a clock of its own: waits of the
-//! tester (the 200 ms bits, read timeouts) are skipped instead of slept, the
-//! short sleeps inside the protocol code still pass for real. So a whole run
-//! takes a few seconds and the times the tester measures are the ones the
-//! simulated car sees.
+//! tester (the 200 ms bits, read timeouts) are skipped instead of slept, and
+//! the short pauses of the protocol code (`timing::sleep_ms`) move the same
+//! simulated clock. Real time does not count at all, so a slow machine gives
+//! the same result as a fast one and the times the tester measures are the
+//! ones the simulated car sees.
 //!
 //! The control units listen for their 5-baud address and check its edges
 //! against a 200 ms grid, send the sync byte 0x55 and the key bytes 01 8A,
@@ -19,7 +20,6 @@
 use std::collections::VecDeque;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::time::Instant;
 
 use caruspex_link::RawKLine;
 
@@ -219,7 +219,6 @@ struct Session {
 /// The simulated A2 behind its KKL cable.
 pub struct A2Line {
     fault: A2Fault,
-    epoch: Instant,
     skipped_us: u64,
     baud: u32,
     /// Break edges since the last address: time and the new level (true =
@@ -238,8 +237,11 @@ impl A2Line {
     pub fn new(fault: A2Fault) -> Self {
         Self {
             fault,
-            epoch: Instant::now(),
-            skipped_us: 0,
+            skipped_us: {
+                // The simulated clock of this thread starts with the line.
+                caruspex_link::timing::use_virtual_clock(true);
+                0
+            },
             baud: 9600,
             edges: Vec::new(),
             rx: VecDeque::new(),
@@ -479,9 +481,17 @@ impl A2Line {
     }
 }
 
+impl Drop for A2Line {
+    // The worker thread lives on after a simulated run and must be back in
+    // real time for a real cable.
+    fn drop(&mut self) {
+        caruspex_link::timing::use_virtual_clock(false);
+    }
+}
+
 impl RawKLine for A2Line {
     fn now_us(&self) -> u64 {
-        self.epoch.elapsed().as_micros() as u64 + self.skipped_us
+        caruspex_link::timing::virtual_now_us().unwrap_or(0) + self.skipped_us
     }
 
     fn sleep_until_us(&mut self, deadline_us: u64) {
