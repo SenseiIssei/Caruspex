@@ -117,6 +117,10 @@ pub struct Package {
     pub url: String,
     /// base64 of the minisign signature file, as `tauri signer sign` writes it.
     pub signature: String,
+    /// The version of the manifest this package belongs to (set by found_in,
+    /// not part of latest.json): the signed file name must carry it.
+    #[serde(skip)]
+    pub version: String,
 }
 
 pub fn parse_manifest(text: &str) -> Result<Manifest, String> {
@@ -197,7 +201,12 @@ pub fn found_in(manifest: &Manifest, current: &str, platform: Option<&str>) -> O
         version: segments_text(&newest),
         notes: manifest.notes.clone(),
         date: manifest.pub_date.clone(),
-        package: platform.and_then(|key| manifest.platforms.get(key).cloned()),
+        package: platform.and_then(|key| {
+            manifest.platforms.get(key).cloned().map(|mut package| {
+                package.version = segments_text(&newest);
+                package
+            })
+        }),
     })
 }
 
@@ -314,6 +323,33 @@ pub fn verify_file(path: &Path, signature: &str, public_key: &str) -> Result<(),
         verifier.update(&buffer[..n]);
     }
     verifier.finalize().map_err(|e| e.to_string())
+}
+
+/// The file name the release signed, from the trusted comment
+/// ("timestamp:<n>\tfile:<name>"), which the global signature covers.
+pub fn signed_file_name(signature: &str) -> Option<String> {
+    let text = decode_base64_text(signature).ok()?;
+    let comment = text
+        .lines()
+        .find_map(|line| line.strip_prefix("trusted comment: "))?;
+    comment
+        .split('\t')
+        .find_map(|part| part.strip_prefix("file:"))
+        .map(str::to_string)
+}
+
+/// A valid signature alone does not stop an old release from being offered
+/// as new (latest.json itself is not signed): the signed name must be the
+/// file that is downloaded, and that name must carry the offered version.
+pub fn check_signed_name(signature: &str, url: &str, version: &str) -> Result<(), String> {
+    let wanted = url.rsplit('/').next().unwrap_or_default();
+    match signed_file_name(signature) {
+        Some(name) if name == wanted && name.contains(&format!("-{version}-")) => Ok(()),
+        Some(name) => Err(format!(
+            "signed for {name}, offered as {wanted} ({version})"
+        )),
+        None => Err("signature without a file name".to_string()),
+    }
 }
 
 // --- How this copy updates itself --------------------------------------------------------
@@ -459,7 +495,9 @@ fn fetch_verified(
         let _ = std::fs::remove_file(target);
         return Err(error);
     }
-    if verify_file(target, &package.signature, &public_key_text()).is_err() {
+    let genuine = verify_file(target, &package.signature, &public_key_text())
+        .and_then(|()| check_signed_name(&package.signature, &package.url, &package.version));
+    if genuine.is_err() {
         let _ = std::fs::remove_file(target);
         return Err(l(
             "Die Signatur der Aktualisierung stimmt nicht. Sie wurde verworfen, nichts wurde installiert.",
@@ -786,6 +824,32 @@ mod tests {
         let changelog = include_str!("../../../changelog/0.10.0.md");
         assert!(notes_in(changelog, true).starts_with("Mehr Hilfe"));
         assert!(notes_in(changelog, false).starts_with("More help"));
+    }
+
+    #[test]
+    fn the_signed_name_must_be_the_offered_version() {
+        // The real signature of the 0.17.0 Windows setup.
+        let real =
+            std::fs::read_to_string(Path::new(DATA).join("release-0.17.0-windows.sig")).unwrap();
+        let name = "Caruspex-0.17.0-windows-x64-setup.exe";
+        assert_eq!(signed_file_name(&real).as_deref(), Some(name));
+        let url = format!("{DOWNLOAD_PREFIX}v0.17.0/{name}");
+        assert_eq!(check_signed_name(&real, &url, "0.17.0"), Ok(()));
+        // The same old package offered as a newer version is refused.
+        assert!(check_signed_name(&real, &url, "0.18.0").is_err());
+        // Or under another file name.
+        let renamed = format!("{DOWNLOAD_PREFIX}v0.18.0/Caruspex-0.18.0-windows-x64-setup.exe");
+        assert!(check_signed_name(&real, &renamed, "0.18.0").is_err());
+        // The test fixture names no version at all.
+        let fixture_sig = fixture("payload.bin.sig");
+        assert_eq!(
+            signed_file_name(&fixture_sig).as_deref(),
+            Some("payload.bin")
+        );
+        assert!(
+            check_signed_name(&fixture_sig, "https://example.test/payload.bin", "1.0.0").is_err()
+        );
+        assert!(check_signed_name("not base64!", &url, "0.17.0").is_err());
     }
 
     #[test]
