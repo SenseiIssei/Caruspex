@@ -137,7 +137,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 
 ## Phase 11: Am echten Auto prüfen
 
-- [ ] Testrunde mit dem A2 (K-Line und KKL), einem CAN-VAG, einem Japaner und einem E-Auto
+- [ ] Testrunde mit dem A2 (K-Line und KKL), einem CAN-VAG, einem Japaner und einem E-Auto. Für den A2 vorbereitet: Profiseite "Erster Test am Auto" mit Kabeltest ohne Auto (Chip nach USB-Kennung, FTDI-Latenz-Timer nur gelesen, Echo, Bitzeiten der Break-Leitung) und geführtem Nur-Lese-Test (Motor 01 mit gemessener 5-Baud-Weckadresse, Sync, Schlüsselbytes und Antwortzeit, zweiter Versuch mit vorgezogenen Break-Aufrufen oder 10400 Baud, Kennung, Fehlerspeicher, Messwertblöcke 001 bis 003, dann 17, 03, 15, 46 und 09), Urteil mit Ratschlag, Bericht als Text und JSON in test-reports und vorausgefülltes GitHub-Formular; gegen den nachgebauten A2 mit sechs Fehlerarten getestet, am echten Auto noch nicht gelaufen, deshalb offen
 - [ ] Die offenen Punkte von oben: seltene PIDs, Versionsgrenzen im Adaptertest
 - [ ] Herstellercodes für BMW, Opel, Renault, PSA, Fiat und Volvo ergänzen, nur mit Quelle
 - [ ] Genaue Lage der OBD-Buchse für die häufigsten 200 Modelle
