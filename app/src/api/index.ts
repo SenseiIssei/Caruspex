@@ -10,12 +10,18 @@ export type { Backend, Events, EventName, CommandName } from "./contract";
 export const insideTauri: boolean =
   typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
-// The demo backend carries the fault code table and the PID packs (about half
-// a megabyte); the app never uses it, so it is a chunk of its own that only a
-// plain browser loads.
-export const backend: Backend = insideTauri
-  ? createTauriBackend()
-  : createLazyBackend("mock", () => import("./mock").then((m) => m.createMockBackend()));
+// The demo backend carries the fault code table, the PID packs and a core
+// catalog per language (about 13 MB), and the app never uses it: inside the
+// window the Rust backend translates every core text itself. So only the
+// development server and `npm run build:demo` (mode "demo") contain it; the
+// app build (mode "production", what Tauri builds into the program file)
+// drops the branch and with it every demo chunk.
+const webDemo = import.meta.env.MODE !== "production";
+
+export const backend: Backend =
+  insideTauri || !webDemo
+    ? createTauriBackend()
+    : createLazyBackend("mock", () => import("./mock").then((m) => m.createMockBackend()));
 
 export function call<K extends CommandName>(
   command: K,
