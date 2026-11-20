@@ -131,7 +131,7 @@ def main() -> int:
         # download name with this version in it (update::check_signed_name),
         # so a mismatch here would strand every installation.
         trusted = minisign_lines(signature)[2]
-        if f"\tfile:{name}" not in trusted or f"-{version}-" not in name:
+        if f"file:{name}" not in trusted.split("\t") or f"-{version}-" not in name:
             fail(f"{name}: the signature names another file ({trusted}), the app would refuse it")
         platforms[platform] ={"url": DOWNLOAD.format(version=version, name=name), "signature": signature}
         print(f"{platform}: {name} signature ok")
