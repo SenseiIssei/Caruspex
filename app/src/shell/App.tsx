@@ -2,7 +2,7 @@
 // soft transition, the log drawer, toasts and the report preview. All pages
 // stay mounted, the way the Qt stack kept its widgets, so every page keeps
 // listening to the backend while another one is on screen.
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState, type ComponentType } from "react";
 import { call, on, type CrashReport, type UpdateInfo } from "../api";
 import { Toaster } from "../components/Toast";
 import { t, tn } from "../i18n";
@@ -24,17 +24,25 @@ import { CrashDialog } from "./CrashDialog";
 
 const MW = "caruspex::MainWindow";
 
+// One page in its slot. Memoised, so a change of page renders the two pages
+// whose visibility changed, not all of them.
+const PageSlot = memo(function PageSlot({ id, active, Component }: { id: PageId; active: boolean; Component: ComponentType }) {
+  return (
+    <div className={`page-slot${active ? " active" : ""}`} hidden={!active} data-page={id}>
+      <PageActiveContext.Provider value={active}>
+        <Component />
+      </PageActiveContext.Provider>
+    </div>
+  );
+});
+
 function PageHost() {
   const current = useCurrentPage();
   const scroller = useRef<HTMLDivElement>(null);
   return (
     <div className="pages" ref={scroller}>
-      {PAGES.map(({ id, component: Component }) => (
-        <div key={id} className={`page-slot${id === current ? " active" : ""}`} hidden={id !== current} data-page={id}>
-          <PageActiveContext.Provider value={id === current}>
-            <Component />
-          </PageActiveContext.Provider>
-        </div>
+      {PAGES.map(({ id, component }) => (
+        <PageSlot key={id} id={id} active={id === current} Component={component} />
       ))}
     </div>
   );

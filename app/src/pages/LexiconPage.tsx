@@ -10,6 +10,7 @@ import { Icon } from "../components/Icon";
 import { Button, Card, Page, PageHeader, Pill, Select, cx } from "../components/ui";
 import { VehicleDiagram } from "../components/VehicleDiagram";
 import { t, translator } from "../i18n";
+import { usePageActive } from "../lib/hooks";
 import { BodyStyles } from "../lib/vehicleIdentity";
 import "./LexiconPage.css";
 
@@ -36,6 +37,12 @@ export function severityTone(severity: number): string {
 type Entry = DtcLexiconEntry & { systemName: string; severityLabel: string };
 
 export default function LexiconPage() {
+  const active = usePageActive();
+  // The table of every code is fetched and drawn on the first visit: at
+  // start it was a large answer from the backend and ten thousand elements
+  // for a page most people never open.
+  const [visited, setVisited] = useState(active);
+  if (active && !visited) setVisited(true);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [families, setFamilies] = useState<BrandFamily[]>([]);
   const [query, setQuery] = useState("");
@@ -43,8 +50,9 @@ export default function LexiconPage() {
   const [selected, setSelected] = useState<Entry | null>(null);
   const [details, setDetails] = useState<{ info: DtcInfo; zone: ZoneInfo } | null>(null);
 
-  // Built once in the language that is active at startup, like the Qt page.
+  // Built once, in the language that is active on the first visit.
   useEffect(() => {
+    if (!visited) return;
     let cancelled = false;
     void (async () => {
       try {
@@ -59,7 +67,7 @@ export default function LexiconPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [visited]);
 
   const hits = useMemo(() => {
     const q = query.trim().toLocaleLowerCase();
