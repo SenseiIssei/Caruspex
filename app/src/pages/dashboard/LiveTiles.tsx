@@ -1,25 +1,16 @@
 // The four value tiles of the start page.
-import { useState } from "react";
 import { StatTile } from "../../components/Tiles";
 import { fixed, localeNumber, translator } from "../../i18n";
-import { useBackendEvent } from "../../lib/hooks";
+import { useLiveValues } from "../../state/liveView";
 
 const tr = translator("caruspex::DashboardPage");
 
 // Battery, coolant, odometer and tank. Kept in their own component so a live
 // value redraws four tiles, not the whole page.
-export function LiveTiles() {
-  const [values, setValues] = useState<Record<number, number>>({});
-  useBackendEvent("live_value", ({ row }) => {
-    if (row.pid !== 0x42 && row.pid !== 0x05 && row.pid !== 0xa6 && row.pid !== 0x2f) return;
-    setValues((v) => (v[row.pid] === row.value ? v : { ...v, [row.pid]: row.value }));
-  });
-  useBackendEvent("closed", () => setValues({}));
+const TILE_PIDS = [0x42, 0x05, 0xa6, 0x2f];
 
-  const battery = values[0x42];
-  const coolant = values[0x05];
-  const odometer = values[0xa6];
-  const fuel = values[0x2f];
+export function LiveTiles() {
+  const [battery, coolant, odometer, fuel] = useLiveValues(TILE_PIDS);
   return (
     <div className="dash-tiles">
       <StatTile

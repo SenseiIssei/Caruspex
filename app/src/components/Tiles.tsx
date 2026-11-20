@@ -1,10 +1,11 @@
 // StatTile and FindingRow of Widgets.cpp.
-import type { CSSProperties, ReactNode } from "react";
+import { memo, type CSSProperties, type ReactNode } from "react";
 import { Icon, type IconName } from "./Icon";
 import { Dot } from "./ui";
 
-// Icon, caption, a big value with unit and a coloured state dot.
-export function StatTile({
+// Icon, caption, a big value with unit and a coloured state dot. Memoised:
+// when one live value changes, only its tile is drawn again.
+export const StatTile = memo(function StatTile({
   icon,
   caption,
   value,
@@ -51,7 +52,7 @@ export function StatTile({
       {note ? <div className="hint">{note}</div> : null}
     </div>
   );
-}
+});
 
 // One line in a "what was found" list: tinted icon tile, title, explanation,
 // something small on the right.
