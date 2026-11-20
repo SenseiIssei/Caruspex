@@ -195,13 +195,14 @@ fn unknown_codes_fall_back_to_their_group() {
     assert!(gearbox.text.contains("Getriebe"));
 
     // An unknown airbag code still gets the airbag help.
-    let airbag = lookup_dtc("B0099", "");
+    let airbag = lookup_dtc("B00FE", "");
     assert!(!airbag.known);
     assert_eq!(airbag.system, DtcSystem::Airbag);
     assert!(airbag.has_details);
     assert_eq!(airbag.severity, Severity::High);
 
-    let lost_comm = lookup_dtc("U0177", "");
+    let lost_comm = lookup_dtc("U02FE", "");
+    assert!(!lost_comm.known);
     assert_eq!(lost_comm.system, DtcSystem::Network);
     assert!(lost_comm.has_details);
 
@@ -516,4 +517,63 @@ fn unknown_codes_take_the_area_of_their_neighbours() {
             }
         }
     }
+}
+
+#[test]
+fn single_source_codes_say_so_in_every_language() {
+    let lang = german();
+    // Two sources agree on P0ABC: no note.
+    let confirmed = lookup_dtc("P0ABC", "");
+    assert!(!confirmed.single_source);
+    assert_eq!(confirmed.source_note(), "");
+    // Only obdex defines U0177 (lost communication with restraints sensor H).
+    let single = lookup_dtc("U0177", "");
+    assert!(single.known && single.single_source);
+    assert_eq!(single.source_note(), "Bedeutung aus einer Quelle");
+    assert!(single.text.contains(" H"), "{}", single.text);
+    lang.set(Language::English);
+    assert_eq!(
+        lookup_dtc("U0177", "").source_note(),
+        "Meaning from one source"
+    );
+    for info in languages() {
+        if matches!(info.id, Language::English | Language::German) {
+            continue;
+        }
+        lang.set(info.id);
+        let note = lookup_dtc("U0177", "").source_note();
+        assert!(
+            !note.is_empty() && note != "Meaning from one source",
+            "{}",
+            info.code
+        );
+    }
+    // Written-out codes and unknown codes carry no note.
+    assert_eq!(lookup_dtc("P0300", "").source_note(), "");
+    assert_eq!(lookup_dtc("P09FE", "").source_note(), "");
+    // The lexicon carries the flag too.
+    let lexicon = dtc_lexicon();
+    assert!(lexicon.iter().any(|e| e.code == "U0177" && e.single_source));
+    assert!(
+        lexicon
+            .iter()
+            .any(|e| e.code == "P0ABC" && !e.single_source)
+    );
+}
+
+#[test]
+fn both_tiers_fill_every_sae_block() {
+    let (mut confirmed, mut single) = (0, 0);
+    for letter in SYSTEM_LETTERS {
+        for r in generic_for(letter) {
+            if r.single_source {
+                single += 1;
+            } else {
+                confirmed += 1;
+            }
+        }
+    }
+    assert!(confirmed > 3000, "{confirmed}");
+    assert!(single > 5000, "{single}");
+    assert!(dtc_count("") > 9000);
 }

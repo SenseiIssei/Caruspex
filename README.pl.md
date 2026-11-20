@@ -55,7 +55,7 @@ wymusić dla jednego uruchomienia przez `--language fr` i tak dalej. Jak powstaj
   generacji modeli od 1980 roku pokazują, który samochód jest podłączony i co z nim działa.
 - **Wbudowany samochód demo**: ELM327 w tym samym procesie z silnikiem i skrzynią biegów na CAN, dzięki czemu wszystko
   można wypróbować bez sprzętu.
-- **Dane generowane, nie pisane ręcznie**: około 3700 kodów usterek, wiele z nich wyliczanych z regularnych rodzin kodów
+- **Dane generowane, nie pisane ręcznie**: około 9700 kodów usterek, wiele z nich wyliczanych z regularnych rodzin kodów
   (na cylinder, na rząd cylindrów, na sondę lambda) przez `tools/gen_dtc.py`.
 
 ## Funkcje
@@ -79,7 +79,7 @@ wymusić dla jednego uruchomienia przez `--language fr` i tak dalej. Jak powstaj
 
 ### Pamięć usterek
 - Kody zapisane, oczekujące i trwałe; przy kilku sterownikach każdy kod pokazuje, kto go zgłosił (silnik, skrzynia biegów).
-- Około 3400 kodów standardowych (P, C, B, U) oraz kody producentów dla VAG, Forda, GM, Toyoty, Hondy, Nissana, Hyundaia/Kii, Subaru i innych. Kod P1 jest czytany tak, jak rozumie go rozpoznana marka.
+- Około 9400 kodów standardowych (P, C, B, U) oraz kody producentów dla VAG, Forda, GM, Toyoty, Hondy, Nissana, Hyundaia/Kii, Subaru i innych. Kod P1 jest czytany tak, jak rozumie go rozpoznana marka.
 - Sygnalizacja świetlna przy każdym kodzie i pytanie, które każdy zadaje najpierw: czy mogę jechać dalej?
 - Typowe przyczyny, rzeczy, które możesz sprawdzić sam, oraz orientacyjna klasa kosztów.
 - Samochód w widoku przezroczystym pokazuje, gdzie znajduje się dana część.

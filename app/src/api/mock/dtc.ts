@@ -1,24 +1,52 @@
 // Fault code knowledge for the demo backend: the generic SAE tables, the
 // plain-language help and the zone ranges of the core data (data/dtc.json is
-// extracted from the tables in crates/caruspex-data: dtc and
-// dtc_location). Manufacturer tables are left out; the real backend has
-// them.
+// written by tools/gen_dtc.py from the same tables as crates/caruspex-data).
+// Manufacturer tables are left out; the real backend has them. Most codes
+// come as phrase references, like in Rust, and are put together on load.
 import type { CostClass, DtcInfo, DtcLexiconEntry, Severity, ZoneInfo } from "../types";
 import { CarZone } from "../types";
 import { L, Llist } from "./core";
 import raw from "./data/dtc.json";
 
-type CodeRecord = [string, string, string, number, number, number, boolean];
+// code, German, English, severity, system, detail, throttle, single source
+type CodeRecord = [string, string, string, number, number, number, boolean, boolean?];
+// code, part, args, fault (-1 none), lead, single source, severity, system, detail
+type ComposedRecord = [string, number, string, number, number, number, number, number, number];
 type DetailRecord = [string, string, string[], string[], string[], string[], number];
 
 const data = raw as unknown as {
   codes: CodeRecord[];
+  composed: ComposedRecord[];
+  phrases: [string, string][];
   details: DetailRecord[];
   systemNames: [string, string][];
   zoneRanges: [number, number, number, string, string][];
 };
 
-const byCode = new Map<string, CodeRecord>(data.codes.map((c) => [c[0], c]));
+// Puts the letters and numbers of a code into %1 to %9 of a phrase.
+function fill(phrase: string, args: string): string {
+  if (!args) return phrase;
+  const values = args.split("|");
+  return phrase.replace(/%([1-9])/g, (all, d: string) => values[Number(d) - 1] ?? all);
+}
+
+function compose(lang: 0 | 1, r: ComposedRecord): string {
+  const part = fill(data.phrases[r[1]]![lang], r[2]);
+  if (r[3] < 0) return part;
+  const how = data.phrases[r[3]]![lang];
+  return r[4] ? `${how}: ${part}` : `${part} - ${how}`;
+}
+
+const allCodes: CodeRecord[] = [
+  ...data.codes,
+  ...data.composed.map((r): CodeRecord => [r[0], compose(0, r), compose(1, r), r[6], r[7], r[8], false, r[5] === 1]),
+].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+
+const byCode = new Map<string, CodeRecord>(allCodes.map((c) => [c[0], c]));
+
+function sourceNote(r: CodeRecord | undefined): string {
+  return r?.[7] ? L("Bedeutung aus einer Quelle", "Meaning from one source") : "";
+}
 
 export function severityLabel(s: Severity): string {
   switch (s) {
@@ -102,6 +130,7 @@ export function lookupDtc(codeText: string): DtcInfo {
     costHint: costHint(cost),
     manufacturerSpecific: manufacturer,
     known: !!r,
+    sourceNote: sourceNote(r),
     hasDetails: !!detail,
     throttleRelated: r ? r[6] : false,
     family: "",
@@ -162,16 +191,17 @@ export function locateDtc(codeText: string): ZoneInfo {
 
 export function lexicon(): DtcLexiconEntry[] {
   const label = L("SAE/ISO (alle Marken)", "SAE/ISO (all brands)");
-  return data.codes.map((r) => ({
+  return allCodes.map((r) => ({
     code: r[0],
     family: "",
     familyLabel: label,
     text: L(r[1], r[2]),
     severity: r[3] as Severity,
     system: r[4],
+    sourceNote: sourceNote(r),
   }));
 }
 
 export function genericCount(): number {
-  return data.codes.length;
+  return allCodes.length;
 }

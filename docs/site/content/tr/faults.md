@@ -7,7 +7,7 @@
 ## Ne görürsünüz
 
 - **Kayıtlı, beklemede olan ve kalıcı** kodlar. Birden fazla kontrol ünitesi varsa her kod, onu kimin bildirdiğini gösterir (motor, şanzıman).
-- Yaklaşık 3.400 standart kod (P, C, B, U) ve VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai ve Kia, Subaru ve diğerlerinin üretici kodları. Bir P1 kodu, tanınan markanın kastettiği şekilde okunur.
+- Yaklaşık 9.400 standart kod (P, C, B, U) ve VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai ve Kia, Subaru ve diğerlerinin üretici kodları. Bir P1 kodu, tanınan markanın kastettiği şekilde okunur.
 - Her kod için bir **trafik ışığı** ve herkesin ilk sorduğu soru: yola devam edebilir miyim?
 - Olası nedenler, kendiniz kontrol edebileceğiniz şeyler ve kabaca bir maliyet sınıfı.
 - Parçanın nerede olduğu: aracın şeffaf görünümü ya da [röntgen görünümü](xray.md).

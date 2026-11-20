@@ -104,6 +104,17 @@ macOS, Android). This is a technical review against the licence texts and source
    decide), are listed in `data/dtc/uncertain.md`; they show the group meaning of their range. Remaining
    risk: obdex names GM and NHTSA documents among its own sources, so for some codes the two sources are not
    fully independent; the C01xx to C04xx codes in the table follow GM's use.
+   **Second pass (2026-11-20): two tiers.** The generic table now holds 9415 codes: 1379 written out, 2027
+   "confirmed" (the 1989 above plus 38 found by a second, more careful check that reads abbreviations and
+   synonyms) and 6009 "single source", which only obdex defines; the app (fault page and lexicon) and both
+   reports (PDF/HTML of the app and of the command line) show "Meaning from one source" next to them, in all 18
+   languages. Codes whose obdex description itself says the title is absent from the public J2012 lists or
+   unverified (102) are left out, as are 13 whose composed text would read wrong; `data/dtc/uncertain.md` lists
+   the tiers per block and every code left out. obdex is CC0, so the single tier carries no licence risk; the
+   texts are still Caruspex's own phrases. Manufacturer codes: obdex holds none (it leaves P1, B1, C1 and U1 to
+   the makers), and no other freely licensed list was found; the GM OBD documents name GM's own codes, but only
+   in fragments of table cells, so no brand table was extended. Ford's OBD summaries refuse automated
+   downloads and were not fetched again.
 5. **Default-on update check** (low). Resolved: asks first since 0.18. On every installation Caruspex asks once
    "Look for updates?"; only after a yes do official builds ask GitHub (a US service) for `latest.json`, at start and
    every six hours, which shows the IP address. No request goes out without a yes. It is disclosed on the privacy

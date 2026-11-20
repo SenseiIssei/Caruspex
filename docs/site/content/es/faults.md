@@ -7,7 +7,7 @@ La página **Memoria de averías** lee lo que han guardado las unidades de contr
 ## Qué ves
 
 - Códigos **guardados, pendientes y permanentes**. Con varias unidades de control, cada código muestra quién lo ha registrado (motor, caja de cambios).
-- Unos 3.400 códigos estándar (P, C, B, U) y los códigos de fabricante de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai y Kia, Subaru y más. Un código P1 se interpreta como lo entiende la marca detectada.
+- Unos 9.400 códigos estándar (P, C, B, U) y los códigos de fabricante de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai y Kia, Subaru y más. Un código P1 se interpreta como lo entiende la marca detectada.
 - Un **semáforo** por código y la pregunta que todos se hacen primero: ¿puedo seguir conduciendo?
 - Las causas habituales, cosas que puedes comprobar tú mismo y una clase de coste aproximada.
 - Dónde está la pieza: el coche en vista transparente, o la [vista de rayos X](xray.md).

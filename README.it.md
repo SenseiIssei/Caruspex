@@ -55,7 +55,7 @@ forzare a ogni avvio con `--language fr` e simili. Come vengono fatte e controll
   generazioni di modelli dal 1980 dicono quale auto è collegata e che cosa funziona con essa.
 - **Auto demo integrata**: un ELM327 nello stesso processo con un motore e un cambio su CAN, per provare tutto
   senza hardware.
-- **Dati generati, non scritti a mano**: circa 3.700 codici errore, molti dei quali calcolati da famiglie di codici regolari
+- **Dati generati, non scritti a mano**: circa 9.700 codici errore, molti dei quali calcolati da famiglie di codici regolari
   (per cilindro, per bancata, per sonda lambda) con `tools/gen_dtc.py`.
 
 ## Funzioni
@@ -79,7 +79,7 @@ forzare a ogni avvio con `--language fr` e simili. Come vengono fatte e controll
 
 ### Memoria errori
 - Codici memorizzati, in sospeso e permanenti; con più centraline, ogni codice mostra chi lo ha segnalato (motore, cambio).
-- Circa 3.400 codici standard (P, C, B, U) più codici del costruttore per VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru e altri. Un codice P1 viene letto nel modo in cui lo intende la marca rilevata.
+- Circa 9.400 codici standard (P, C, B, U) più codici del costruttore per VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru e altri. Un codice P1 viene letto nel modo in cui lo intende la marca rilevata.
 - Un semaforo per ogni codice e la domanda che tutti fanno per prima: posso continuare a guidare?
 - Cause abituali, cose che puoi controllare da solo e una classe di costo approssimativa.
 - L'auto in vista trasparente mostra dove si trova il componente interessato.

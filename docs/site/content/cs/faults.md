@@ -7,7 +7,7 @@ Stránka **Paměť závad** přečte, co řídicí jednotky uložily, a srozumit
 ## Co uvidíte
 
 - **Uložené, čekající a trvalé** kódy. Při více řídicích jednotkách u každého kódu vidíte, kdo ho nahlásil (motor, převodovka).
-- Zhruba 3 400 standardních kódů (P, C, B, U) a kódy výrobců VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai a Kia, Subaru a dalších. Kód P1 se čte tak, jak ho myslí rozpoznaná značka.
+- Zhruba 9 400 standardních kódů (P, C, B, U) a kódy výrobců VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai a Kia, Subaru a dalších. Kód P1 se čte tak, jak ho myslí rozpoznaná značka.
 - **Semafor** u každého kódu a otázka, kterou si každý položí jako první: můžu jet dál?
 - Obvyklé příčiny, věci, které si můžete zkontrolovat sami, a hrubá cenová třída.
 - Kde díl sedí: auto v průhledném zobrazení, nebo [rentgenový pohled](xray.md).

@@ -55,7 +55,7 @@ vynutit pro jedno spuštění přes `--language fr` a podobně. Jak se překlady
   generací modelů od roku 1980 ukazují, které auto je připojeno a co s ním funguje.
 - **Vestavěné demo auto**: ELM327 ve stejném procesu s motorem a převodovkou na CAN, takže vše
   lze vyzkoušet bez hardwaru.
-- **Generovaná data, ne psaná ručně**: asi 3 700 chybových kódů, mnoho z nich vypočtených z pravidelných rodin kódů
+- **Generovaná data, ne psaná ručně**: asi 9 700 chybových kódů, mnoho z nich vypočtených z pravidelných rodin kódů
   (na válec, na řadu válců, na lambda sondu) skriptem `tools/gen_dtc.py`.
 
 ## Funkce
@@ -79,7 +79,7 @@ vynutit pro jedno spuštění přes `--language fr` a podobně. Jak se překlady
 
 ### Paměť závad
 - Uložené, čekající a trvalé kódy; u více řídicích jednotek každý kód ukazuje, kdo ho nahlásil (motor, převodovka).
-- Asi 3 400 standardních kódů (P, C, B, U) plus kódy výrobců pro VAG, Ford, GM, Toyotu, Hondu, Nissan, Hyundai/Kii, Subaru a další. Kód P1 se čte tak, jak ho chápe rozpoznaná značka.
+- Asi 9 400 standardních kódů (P, C, B, U) plus kódy výrobců pro VAG, Ford, GM, Toyotu, Hondu, Nissan, Hyundai/Kii, Subaru a další. Kód P1 se čte tak, jak ho chápe rozpoznaná značka.
 - Semafor u každého kódu a otázka, kterou si každý klade jako první: mohu jet dál?
 - Obvyklé příčiny, věci, které si můžete zkontrolovat sami, a hrubá cenová třída.
 - Auto v průhledném zobrazení ukazuje, kde postižená součást sedí.

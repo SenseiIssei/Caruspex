@@ -55,7 +55,7 @@ forzar en cada ejecución con `--language fr` y similares. Cómo se hacen y se r
   generaciones de modelos desde 1980 indican qué coche está conectado y qué funciona con él.
 - **Coche de demostración integrado**: un ELM327 en el propio proceso con un motor y una caja de cambios en CAN, para probarlo todo
   sin hardware.
-- **Datos generados, no escritos a mano**: unos 3700 códigos de avería, muchos de ellos calculados a partir de familias de códigos regulares
+- **Datos generados, no escritos a mano**: unos 9700 códigos de avería, muchos de ellos calculados a partir de familias de códigos regulares
   (por cilindro, por bancada, por sonda de oxígeno) con `tools/gen_dtc.py`.
 
 ## Funciones
@@ -79,7 +79,7 @@ forzar en cada ejecución con `--language fr` y similares. Cómo se hacen y se r
 
 ### Memoria de averías
 - Códigos almacenados, pendientes y permanentes; con varias unidades de control, cada código muestra quién lo notificó (motor, caja de cambios).
-- Unos 3400 códigos estándar (P, C, B, U) más códigos de fabricante para VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru y más. Un código P1 se lee como lo entiende la marca detectada.
+- Unos 9400 códigos estándar (P, C, B, U) más códigos de fabricante para VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru y más. Un código P1 se lee como lo entiende la marca detectada.
 - Un semáforo por código y la pregunta que todo el mundo hace primero: ¿puedo seguir conduciendo?
 - Causas habituales, cosas que puedes comprobar tú mismo y una clase de coste aproximada.
 - El coche en vista transparente muestra dónde está la pieza afectada.

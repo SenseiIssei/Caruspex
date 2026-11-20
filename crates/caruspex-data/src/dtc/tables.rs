@@ -40,6 +40,8 @@ pub struct Record {
     /// Index into `details()`, or `NO_DETAIL`.
     pub detail: u16,
     pub throttle: bool,
+    /// Only one source defines the meaning (see tools/dtc/extended.py).
+    pub single_source: bool,
 }
 
 /// Shorthand the generated tables use, one call per code.
@@ -59,6 +61,7 @@ pub const fn r(
         system,
         detail,
         throttle,
+        single_source: false,
     }
 }
 
@@ -70,6 +73,7 @@ pub const fn q(
     args: &'static str,
     how: u16,
     lead: bool,
+    single_source: bool,
     severity: Severity,
     system: DtcSystem,
     detail: u16,
@@ -86,6 +90,7 @@ pub const fn q(
         system,
         detail,
         throttle: false,
+        single_source,
     }
 }
 

@@ -55,7 +55,7 @@ forced per run with `--language fr` and so on. How translations are made and che
   model generations since 1980 tell which car is connected and what works with it.
 - **Built-in demo car**: an in-process ELM327 with an engine and a gearbox on CAN, so everything can be tried
   without hardware.
-- **Generated data, not hand-typed**: about 3,700 trouble codes, many of them computed from regular code families
+- **Generated data, not hand-typed**: about 9,700 trouble codes, many of them computed from regular code families
   (per cylinder, per bank, per oxygen sensor) by `tools/gen_dtc.py`.
 
 ## Features
@@ -79,7 +79,7 @@ forced per run with `--language fr` and so on. How translations are made and che
 
 ### Fault memory
 - Stored, pending and permanent codes; with several control units, each code shows who reported it (engine, gearbox).
-- About 3,400 standard codes (P, C, B, U) plus manufacturer codes for VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru and more. A P1 code is read the way the detected brand means it.
+- About 9,400 standard codes (P, C, B, U) plus manufacturer codes for VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru and more. A P1 code is read the way the detected brand means it.
 - A traffic light per code and the question everyone asks first: may I keep driving?
 - Usual causes, things you can check yourself, and a rough cost class.
 - The car in see-through view shows where the affected part sits.

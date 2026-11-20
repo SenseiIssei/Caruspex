@@ -282,10 +282,15 @@ pub fn collect(obd: &mut Obd2, seconds: i32, progress: &dyn Fn(&str)) -> ReportD
             .iter()
             .map(|f| {
                 let info = lookup_dtc(&f.code, &vin.brand);
+                // A meaning that only one source defines says so.
+                let text = match info.source_note() {
+                    "" => info.text.clone(),
+                    note => format!("{} ({note})", info.text),
+                };
                 ReportFault {
                     code: f.code.clone(),
                     kind: f.kind.clone(),
-                    text: info.text,
+                    text,
                     severity: info.severity,
                     zone: locate_dtc(&f.code).name,
                     ecu: f.ecu.clone(),

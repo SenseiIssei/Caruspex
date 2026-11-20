@@ -22,6 +22,7 @@ keeps compile times low and needs no runtime initialisation.
 from __future__ import annotations
 
 import io
+import json
 import os
 import re
 import sys
@@ -40,6 +41,7 @@ from dtc.ranges import RANGES, fine_rules  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUST_OUT = os.path.join(ROOT, "crates", "caruspex-data", "src", "generated")
+MOCK_OUT = os.path.join(ROOT, "app", "src", "api", "mock", "data", "dtc.json")
 DETAIL_INDEX = {key: i for i, key in enumerate(DETAILS)}
 
 
@@ -101,7 +103,8 @@ def rust_record_lines(table: Table, extended: dict | None = None) -> list[str]:
             e = extended[code]
             how = str(PHRASE_INDEX[e.fault]) if e.fault else "NO_PHRASE"
             lines.append(f"    q({quote(code)}, {PHRASE_INDEX[e.part]}, {quote(e.args)}, {how}, "
-                         f"{'true' if e.lead else 'false'}, Severity::{SEVERITIES[e.sev]}, "
+                         f"{'true' if e.lead else 'false'}, {'true' if e.single else 'false'}, "
+                         f"Severity::{SEVERITIES[e.sev]}, "
                          f"DtcSystem::{SYSTEMS[e.sys]}, {rust_detail(e.detail)}),")
             continue
         r = table.codes[code]
@@ -231,6 +234,34 @@ def write_all_rust(parts: dict[str, Table]) -> None:
     write_rust("dtc_details.rs", lines)
 
 
+def write_mock() -> None:
+    """The generic tables for the browser preview (app/src/api/mock/dtc.ts).
+
+    Written-out codes as before, composed codes as phrase references like in
+    Rust, so the lazy chunk stays small. System names and zone ranges come
+    from Rust code (dtc/mod.rs, dtc_location.rs) and are carried over from
+    the existing file unchanged.
+    """
+    old = json.load(io.open(MOCK_OUT, encoding="utf-8"))
+    sev = list(SEVERITIES)
+    sys_ = list(SYSTEMS)
+    cost = list(COSTS)
+    det = lambda key: DETAIL_INDEX[key] if key else -1  # noqa: E731
+    codes = [[code, r.de, r.en, sev.index(r.sev), sys_.index(r.sys), det(r.detail), r.throttle]
+             for code, r in sorted(GENERIC.codes.items())]
+    composed = [[code, PHRASE_INDEX[e.part], e.args, PHRASE_INDEX[e.fault] if e.fault else -1,
+                 1 if e.lead else 0, 1 if e.single else 0, sev.index(e.sev), sys_.index(e.sys), det(e.detail)]
+                for code, e in sorted(EXT.items())]
+    details = [[advice[0], advice[1], [c[0] for c in causes], [c[1] for c in causes],
+                [c[0] for c in checks], [c[1] for c in checks], cost.index(c_)]
+               for c_, advice, causes, checks in DETAILS.values()]
+    data = {"codes": codes, "composed": composed, "phrases": [list(p) for p in phrase_list()],
+            "details": details, "systemNames": old["systemNames"], "zoneRanges": old["zoneRanges"]}
+    with io.open(MOCK_OUT, "w", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    print(f"wrote {MOCK_OUT}")
+
+
 def known_generic() -> dict[str, tuple[str, str]]:
     """Severity and system of every generic code, written out or composed."""
     out = {code: (r.sev, r.sys) for code, r in GENERIC.codes.items()}
@@ -269,6 +300,7 @@ def main() -> None:
     check()
     parts = split_generic()
     write_all_rust(parts)
+    write_mock()
 
     brand_total = sum(len(f.table) for f in FAMILIES)
     with_detail = sum(1 for r in GENERIC.codes.values() if r.detail)
@@ -277,6 +309,8 @@ def main() -> None:
     print(f"generic: {len(GENERIC)} codes ({', '.join(f'{x} {len(parts[x])}' for x in 'PCBU')}), "
           f"{with_detail} with plain-language details")
     print(f"extended: {len(EXT)} codes ({', '.join(f'{x} {len(ext[x])}' for x in 'PCBU')}), "
+          f"{sum(1 for e in EXT.values() if not e.single)} confirmed, "
+          f"{sum(1 for e in EXT.values() if e.single)} from one source, "
           f"{sum(1 for e in EXT.values() if e.detail)} with details, {len(PHRASE_INDEX)} phrases")
     print("brands: " + ", ".join(f"{f.key} {len(f.table)}" for f in FAMILIES)
           + f" = {brand_total}, {brand_detail} with details")

@@ -7,7 +7,7 @@ La page **Mémoire de défauts** lit ce que les calculateurs ont enregistré et 
 ## Ce que vous voyez
 
 - Les codes **enregistrés, en attente et permanents**. Avec plusieurs calculateurs, chaque code indique qui l'a signalé (moteur, boîte de vitesses).
-- Environ 3 400 codes standard (P, C, B, U) et les codes constructeur de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai et Kia, Subaru et d'autres. Un code P1 est interprété comme l'entend la marque détectée.
+- Environ 9 400 codes standard (P, C, B, U) et les codes constructeur de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai et Kia, Subaru et d'autres. Un code P1 est interprété comme l'entend la marque détectée.
 - Un **feu tricolore** par code et la question que tout le monde se pose en premier : puis-je continuer à rouler ?
 - Les causes habituelles, ce que vous pouvez vérifier vous-même et une fourchette de coût approximative.
 - L'emplacement de la pièce : la voiture en transparence, ou la [vue radiographique](xray.md).

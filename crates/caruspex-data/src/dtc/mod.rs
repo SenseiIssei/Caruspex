@@ -215,6 +215,8 @@ pub struct DtcInfo {
     pub manufacturer_specific: bool,
     /// The exact code is in the database.
     pub known: bool,
+    /// Only one source defines the meaning; see `source_note()`.
+    pub single_source: bool,
     /// Causes and checks come from the database.
     pub has_details: bool,
     pub throttle_related: bool,
@@ -238,12 +240,30 @@ impl Default for DtcInfo {
             cost_class: CostClass::Unknown,
             manufacturer_specific: false,
             known: false,
+            single_source: false,
             has_details: false,
             throttle_related: false,
             family: String::new(),
             family_label: String::new(),
         }
     }
+}
+
+impl DtcInfo {
+    /// Short note for the meaning of a code that only one source defines,
+    /// shown next to the text in the app and in the reports. Empty otherwise.
+    pub fn source_note(&self) -> &'static str {
+        if self.single_source {
+            source_note_text()
+        } else {
+            ""
+        }
+    }
+}
+
+/// The note itself, in the active language.
+pub fn source_note_text() -> &'static str {
+    l("Bedeutung aus einer Quelle", "Meaning from one source")
 }
 
 /// One line of the offline lexicon.
@@ -257,6 +277,8 @@ pub struct DtcLexiconEntry {
     pub text: String,
     pub severity: Severity,
     pub system: DtcSystem,
+    /// Only one source defines the meaning.
+    pub single_source: bool,
 }
 
 const SYSTEM_LETTERS: [char; 4] = ['P', 'C', 'B', 'U'];
@@ -460,6 +482,7 @@ fn lookup(raw: &str, family: Option<&'static Family>, label_family: bool) -> Dtc
     let mut detail = NO_DETAIL;
     if let Some(record) = record {
         info.known = true;
+        info.single_source = record.single_source;
         info.text = record.text();
         info.severity = record.severity;
         info.system = record.system;
@@ -684,6 +707,7 @@ pub fn dtc_lexicon() -> Vec<DtcLexiconEntry> {
         text: r.text(),
         severity: r.severity,
         system: r.system,
+        single_source: r.single_source,
     };
     for letter in SYSTEM_LETTERS {
         for r in generic_for(letter) {

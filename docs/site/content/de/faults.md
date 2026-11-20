@@ -7,7 +7,7 @@ Die Seite **Fehlerspeicher** liest, was die Steuergeräte gespeichert haben, und
 ## Was man sieht
 
 - **Gespeicherte, sporadische und permanente** Codes. Bei mehreren Steuergeräten steht an jedem Code, wer ihn gemeldet hat (Motor, Getriebe).
-- Etwa 3.400 Standardcodes (P, C, B, U) und die Herstellercodes von VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai und Kia, Subaru und mehr. Ein P1-Code wird so gelesen, wie die erkannte Marke ihn meint.
+- Etwa 9.400 Standardcodes (P, C, B, U) und die Herstellercodes von VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai und Kia, Subaru und mehr. Ein P1-Code wird so gelesen, wie die erkannte Marke ihn meint.
 - Eine **Ampel** je Code und die Frage, die jeder zuerst stellt: Darf ich weiterfahren?
 - Die üblichen Ursachen, was man selbst prüfen kann, und eine grobe Kostenklasse.
 - Wo das Teil sitzt: das Auto in der Durchsicht oder die [Röntgenansicht](xray.md).

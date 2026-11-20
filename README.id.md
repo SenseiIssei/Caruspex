@@ -55,7 +55,7 @@ dipaksa untuk satu kali jalan dengan `--language fr` dan seterusnya. Cara terjem
   generasi model sejak 1980 memberi tahu mobil mana yang terhubung dan apa saja yang bisa dilakukan dengannya.
 - **Mobil demo bawaan**: ELM327 di dalam proses dengan mesin dan transmisi di CAN, sehingga semuanya bisa dicoba
   tanpa perangkat keras.
-- **Data dihasilkan, bukan diketik tangan**: sekitar 3.700 kode kesalahan, banyak di antaranya dihitung dari keluarga kode yang teratur
+- **Data dihasilkan, bukan diketik tangan**: sekitar 9.700 kode kesalahan, banyak di antaranya dihitung dari keluarga kode yang teratur
   (per silinder, per bank, per sensor oksigen) oleh `tools/gen_dtc.py`.
 
 ## Fitur
@@ -79,7 +79,7 @@ dipaksa untuk satu kali jalan dengan `--language fr` dan seterusnya. Cara terjem
 
 ### Memori kesalahan
 - Kode tersimpan, tertunda, dan permanen; dengan beberapa unit kontrol, setiap kode menunjukkan siapa yang melaporkannya (mesin, transmisi).
-- Sekitar 3.400 kode standar (P, C, B, U) ditambah kode pabrikan untuk VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru, dan lainnya. Kode P1 dibaca sesuai arti dari merek yang terdeteksi.
+- Sekitar 9.400 kode standar (P, C, B, U) ditambah kode pabrikan untuk VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru, dan lainnya. Kode P1 dibaca sesuai arti dari merek yang terdeteksi.
 - Lampu lalu lintas untuk setiap kode dan pertanyaan yang pertama kali ditanyakan semua orang: bolehkah saya terus mengemudi?
 - Penyebab yang umum, hal yang bisa Anda periksa sendiri, dan perkiraan kelas biaya.
 - Mobil dalam tampilan tembus pandang menunjukkan letak komponen yang bermasalah.
