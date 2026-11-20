@@ -218,7 +218,7 @@ pub fn collect(obd: &mut Obd2, seconds: i32, progress: &dyn Fn(&str)) -> ReportD
     let (frame, freeze_code) = obd.read_freeze_frame();
 
     let elm = obd.elm();
-    let now = chrono::Local::now();
+    let now = jiff::Zoned::now();
     let info = &vin.info;
     let vehicle_name = match vin.matched.generation {
         Some(g) => catalog::display_name(g),
@@ -241,8 +241,8 @@ pub fn collect(obd: &mut Obd2, seconds: i32, progress: &dyn Fn(&str)) -> ReportD
     .join(", ");
 
     ReportData {
-        created: now.format("%d.%m.%Y, %H:%M").to_string(),
-        creation_date: now.format("D:%Y%m%d%H%M%S").to_string(),
+        created: now.strftime("%d.%m.%Y, %H:%M").to_string(),
+        creation_date: now.strftime("D:%Y%m%d%H%M%S").to_string(),
         vehicle_name,
         description,
         vin: if vin.vin.is_empty() {

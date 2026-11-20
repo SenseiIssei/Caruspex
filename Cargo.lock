@@ -515,9 +515,9 @@ dependencies = [
  "caruspex-protocols",
  "caruspex-record",
  "caruspex-vehicles",
- "chrono",
  "dirs",
  "gtk",
+ "jiff",
  "minisign-verify",
  "objc2",
  "objc2-app-kit",
@@ -554,7 +554,7 @@ dependencies = [
  "caruspex-protocols",
  "caruspex-record",
  "caruspex-vehicles",
- "chrono",
+ "jiff",
  "serde_json",
 ]
 
