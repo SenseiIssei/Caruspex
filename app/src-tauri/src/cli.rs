@@ -47,7 +47,7 @@ impl Cli {
     /// No network request for screenshots, reports and other unattended
     /// runs (CARUSPEX_CHECK_UPDATES overrides that).
     pub fn allows_update_check(&self) -> bool {
-        (self.shot.is_none() && self.report.is_none())
+        (crate::update::official_build() && self.shot.is_none() && self.report.is_none())
             || std::env::var_os("CARUSPEX_CHECK_UPDATES").is_some()
     }
 }

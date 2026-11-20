@@ -29,6 +29,9 @@ defaults:
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: "0"
+  # Built here means published: only these builds look for updates
+  # (update::official_build), local and test builds stay quiet.
+  CARUSPEX_OFFICIAL_BUILD: "1"
 
 jobs:
   # Formatting, lints, generated tables and translations: once, on Linux.

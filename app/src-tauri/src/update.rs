@@ -41,6 +41,13 @@ const PUBLIC_KEY: &str = "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IE
 const TEST_URL_ENV: &str = "CARUSPEX_UPDATE_URL";
 const TEST_KEY_ENV: &str = "CARUSPEX_UPDATE_PUBKEY";
 
+/// Only the builds of the release workflow look for updates (it sets
+/// CARUSPEX_OFFICIAL_BUILD); a local or test build would otherwise offer
+/// the published version over itself.
+pub fn official_build() -> bool {
+    option_env!("CARUSPEX_OFFICIAL_BUILD").is_some()
+}
+
 /// What the silent Inno Setup run gets. /CARUSPEXRESTART=1 starts the new
 /// version afterwards (caruspex.iss): /RESTARTAPPLICATIONS only restarts
 /// programs that registered with the Restart Manager, and Caruspex has
@@ -315,6 +322,10 @@ pub fn verify_file(path: &Path, signature: &str, public_key: &str) -> Result<(),
 pub enum Method {
     /// Windows, installed with the Inno Setup installer.
     Installer,
+    /// Windows, a copy that was never installed (the zip, a build): the
+    /// signed setup is fetched and started with its normal wizard, so the
+    /// next versions update themselves like an installed copy.
+    SetupFromCopy,
     /// Linux, started as this AppImage file.
     AppImage(PathBuf),
     /// macOS, this .app bundle.
@@ -339,10 +350,11 @@ pub fn bundle_of(exe: &Path) -> Option<PathBuf> {
 pub fn detect_method(os: &str, exe: &Path, appimage: Option<&Path>) -> Method {
     match os {
         // The installer leaves its uninstaller next to the program; a copy
-        // from the zip has none and would get a second installation.
+        // from the zip has none, so it is offered the real installation.
         "windows" => match exe.parent() {
             Some(dir) if dir.join("unins000.exe").is_file() => Method::Installer,
-            _ => Method::PageOnly,
+            Some(_) => Method::SetupFromCopy,
+            None => Method::PageOnly,
         },
         "linux" => match appimage {
             Some(path) if path.is_file() => Method::AppImage(path.to_path_buf()),
@@ -503,6 +515,16 @@ pub fn install(found: &Found, progress: &mut dyn FnMut(u64, u64)) -> Result<Outc
             fetch_verified(package, &target, progress)?;
             std::process::Command::new(&target)
                 .args(INNO_ARGUMENTS)
+                .spawn()
+                .map_err(install_failed)?;
+            Ok(Outcome::Quit)
+        }
+        Method::SetupFromCopy => {
+            let target = work_dir()?.join(file_name(&package.url));
+            fetch_verified(package, &target, progress)?;
+            // The wizard on purpose: this copy was never installed, so the
+            // user picks the place and sees what happens.
+            std::process::Command::new(&target)
                 .spawn()
                 .map_err(install_failed)?;
             Ok(Outcome::Quit)
@@ -849,7 +871,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("caruspex-method-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let exe = dir.join("caruspex.exe");
-        assert_eq!(detect_method("windows", &exe, None), Method::PageOnly);
+        assert_eq!(detect_method("windows", &exe, None), Method::SetupFromCopy);
         std::fs::write(dir.join("unins000.exe"), b"").unwrap();
         assert_eq!(detect_method("windows", &exe, None), Method::Installer);
 
