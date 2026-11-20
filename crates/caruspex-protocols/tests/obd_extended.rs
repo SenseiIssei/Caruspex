@@ -437,3 +437,19 @@ fn misfire_counts_come_out_of_mode_06() {
     };
     assert!(misfire_counts(&[kline]).is_empty());
 }
+
+#[test]
+fn ecu_name_takes_only_the_first_twenty_bytes() {
+    // Two units answering 090A with headers off arrive as one payload.
+    let mut payload = b"ECM\0-EngineControl\0\0".to_vec();
+    payload.truncate(20);
+    payload.extend_from_slice(b"TCM\0-TransmissionCtl");
+    assert_eq!(
+        caruspex_protocols::obd2::ecu_name(&payload),
+        "ECM-EngineControl"
+    );
+    assert_eq!(
+        caruspex_protocols::obd2::ecu_name(b"ECM\0-EngineControl"),
+        "ECM-EngineControl"
+    );
+}
