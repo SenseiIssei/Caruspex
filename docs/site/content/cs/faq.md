@@ -34,7 +34,7 @@ Auta na K-Line (v Evropě zhruba 2001 až 2007) odpovídají z principu pomalu. 
 
 ## Posílá Caruspex moje data někam?
 
-Ne. Jen kontrola aktualizací se ptá GitHubu na nejnovější verzi a lze ji vypnout. Viz [soukromí](privacy.md).
+Ne. Jen kontrola aktualizací se ptá GitHubu na nejnovější verzi, a to až po vašem "ano"; lze to kdykoli změnit. Viz [soukromí](privacy.md).
 
 ## Jak můžu pomoct?
 

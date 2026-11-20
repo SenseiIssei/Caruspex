@@ -45,7 +45,7 @@ Il rapporto può essere in tedesco, inglese, spagnolo, francese, portoghese, ita
 
 ## Aggiornamenti
 
-All'avvio Caruspex chiede a GitHub se c'è una versione più recente, e nient'altro. Una nuova versione viene installata solo se la sua firma corrisponde alla chiave integrata nell'app. Sia il controllo sia l'installazione automatica si possono disattivare nelle impostazioni.
+A ogni installazione Caruspex chiede una volta se deve cercare aggiornamenti. Solo dopo un sì chiede a GitHub se c'è una versione più recente, e nient'altro. Una nuova versione viene installata solo se la sua firma corrisponde alla chiave integrata nell'app. Il controllo e l'installazione automatica si possono cambiare in qualsiasi momento nelle impostazioni.
 
 ## Gestori di pacchetti
 

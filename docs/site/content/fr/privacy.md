@@ -19,9 +19,9 @@ Vous pouvez supprimer n'importe lequel de ces fichiers à tout moment.
 
 ## Ce qui est envoyé
 
-Au démarrage, Caruspex demande à GitHub s'il existe une version plus récente. Rien sur vous ni sur la voiture n'est envoyé avec. La vérification peut être désactivée dans les réglages. En dehors de cela, Caruspex ne se connecte pas à internet. La communication avec un adaptateur Wi-Fi, un câble ENET ou une voiture DoIP reste dans votre réseau local.
+À chaque installation, y compris après une mise à jour depuis une version plus ancienne, Caruspex demande une fois s'il doit rechercher des mises à jour. Ce n'est qu'après un oui qu'il demande à GitHub s'il existe une version plus récente, au démarrage et toutes les six heures tant qu'il tourne. Rien sur vous ni sur la voiture n'est envoyé avec. Sans un oui, aucune requête n'est envoyée à GitHub. Vous pouvez le modifier à tout moment dans les réglages, sous **Fenêtre et langue**. En dehors de cela, Caruspex ne se connecte pas à internet. La communication avec un adaptateur Wi-Fi, un câble ENET ou une voiture DoIP reste dans votre réseau local.
 
-Seules les versions publiées sur GitHub cherchent des mises à jour ; une copie que vous compilez vous-même ne le fait jamais. Comme pour toute requête sur internet, la vérification et le téléchargement d'une mise à jour montrent à GitHub votre adresse IP et la version de Caruspex ; la déclaration de confidentialité de GitHub s'applique. Les mises à jour ne sont téléchargées que depuis les versions du dépôt Caruspex. Des boutons comme **Signaler sur GitHub** ouvrent seulement votre navigateur ; ce que vous y publiez dépend de vous.
+Seules les versions publiées sur GitHub cherchent des mises à jour ; une copie que vous compilez vous-même ne le fait jamais. Quand Caruspex cherche ou télécharge une mise à jour, GitHub voit, comme pour tout téléchargement, l'adresse IP de l'ordinateur et la version de Caruspex ; Caruspex n'envoie ni ne conserve rien d'autre, et personne d'autre, le projet compris, ne le voit. La déclaration de confidentialité de GitHub s'applique. Les mises à jour ne sont téléchargées que depuis les versions du dépôt Caruspex. Des boutons comme **Signaler sur GitHub** ouvrent seulement votre navigateur ; ce que vous y publiez dépend de vous.
 
 ## Android
 

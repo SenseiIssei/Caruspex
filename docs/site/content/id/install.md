@@ -45,7 +45,7 @@ Laporan bisa dibuat dalam bahasa Jerman, Inggris, Spanyol, Prancis, Portugis, It
 
 ## Pembaruan
 
-Saat dijalankan, Caruspex menanyakan ke GitHub apakah ada versi yang lebih baru, dan tidak lebih dari itu. Versi baru hanya dipasang kalau tanda tangannya cocok dengan kunci yang tertanam di aplikasi. Pemeriksaan dan pemasangan otomatis sama-sama bisa dimatikan di pengaturan.
+Pada setiap pemasangan, Caruspex bertanya satu kali apakah perlu mencari pembaruan. Hanya setelah dijawab ya, Caruspex bertanya ke GitHub apakah ada versi yang lebih baru, dan tidak lebih dari itu. Versi baru hanya dipasang kalau tanda tangannya cocok dengan kunci yang tertanam di aplikasi. Pemeriksaan dan pemasangan otomatis bisa diubah kapan saja di pengaturan.
 
 ## Pengelola paket
 

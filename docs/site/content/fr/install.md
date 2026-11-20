@@ -45,7 +45,7 @@ Le rapport peut être rédigé en allemand, anglais, espagnol, français, portug
 
 ## Mises à jour
 
-Au démarrage, Caruspex demande à GitHub s'il existe une version plus récente, et rien d'autre. Une nouvelle version n'est installée que si sa signature correspond à la clé intégrée à l'application. La vérification et l'installation automatique peuvent toutes deux être désactivées dans les réglages.
+À chaque installation, Caruspex demande une fois s'il doit rechercher des mises à jour. Ce n'est qu'après un oui qu'il demande à GitHub s'il existe une version plus récente, et rien d'autre. Une nouvelle version n'est installée que si sa signature correspond à la clé intégrée à l'application. La vérification et l'installation automatique peuvent être modifiées à tout moment dans les réglages.
 
 ## Gestionnaires de paquets
 

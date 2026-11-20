@@ -93,7 +93,9 @@ python tools/sbom.py --out target/sbom
 2. **Rollback protection in the updater**: bind the version and file name in the signed trusted comment
    (risk assessment, "Malicious update").
 3. **Pin all third-party actions by commit SHA** and pin `cryptography` in the release job.
-4. **Decide on a support period statement** with an end date ([support.md](support.md)).
+4. **Support period statement**: decided, there is no support period. Caruspex is maintained on a best effort basis by
+   one person in spare time, without any promise; if maintenance stops, the repository will be archived and say so
+   ([support.md](support.md)).
 5. **Replace or follow up the unmaintained crates** reported by RustSec (`chrono` and others).
 6. If Caruspex is ever monetised: automatic security updates on by default, a non-automated contact, the
    manufacturer's name and address, EU declaration of conformity and CE marking on the download page, an

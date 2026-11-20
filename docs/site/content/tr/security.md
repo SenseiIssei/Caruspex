@@ -39,15 +39,11 @@ olarak yayımlanır.
 
 ## Güncellemeler ve destek {#support}
 
-- Caruspex açılışta GitHub'a daha yeni bir sürüm olup olmadığını sorar ve gösterir. Kurulum tek tıktır ve uygulama
-  yalnızca imzası eşleşen paketi kurar. AppImage ve macOS uygulaması kendini günceller; .deb paketi ve Android
-  uygulaması indirme sayfasını alır.
-- Arama ve otomatik kurulum, ayarlarda **Pencere ve dil** altındaki anahtarlardır. Arama kapalıysa arada bir sürümler
-  sayfasına bakın.
+- Caruspex her kurulumda, daha eski bir sürümden güncelleme yapıldığında da, bir kez "Güncellemeler aransın mı?" diye sorar. Yalnızca evet yanıtından sonra GitHub'a daha yeni bir sürüm olup olmadığını sorar; açılışta ve çalıştığı sürece her altı saatte bir. Yeni bir sürüm yalnızca başlık çubuğundaki bir düğmeyi yakar, hiçbir zaman işinizi bölmez. Kurulum tek tıktır ve uygulama yalnızca imzası eşleşen paketi kurar. AppImage ve macOS uygulaması kendini günceller; .deb paketi ve Android uygulaması indirme sayfasını alır.
+- Arama ve otomatik kurulum, ayarlarda **Pencere ve dil** altındaki anahtarlardır ve istediğiniz zaman değiştirilebilir. Evet demezseniz GitHub'a hiçbir istek gitmez; o durumda arada bir sürümler sayfasına bakın.
 - Güvenlik düzeltmeleri yalnızca en yeni sürüme girer. Eski sürümler ayrı düzeltme almaz, bu yüzden Caruspex'i
   güncel tutun.
-- Caruspex boş zamanlarda geliştirilir ve sabit bir bitiş tarihi yoktur. Bakım biterse depo ve son bir sürüm bunu
-  önceden duyurur.
+- Caruspex tek bir kişi tarafından boş zamanlarda, zamanın elverdiği kadar ve hiçbir söz vermeden geliştirilir: destek süresi yok, yanıt süresi yok. Bakım biterse depo arşivlenir ve bunu belirtir.
 
 ## İndirilen dosyayı doğrulamak {#verify}
 

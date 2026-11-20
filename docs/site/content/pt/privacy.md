@@ -19,9 +19,9 @@ Você pode apagar qualquer um desses arquivos a qualquer momento.
 
 ## O que é enviado
 
-Ao iniciar, o Caruspex pergunta ao GitHub se existe uma versão mais nova. Nada sobre você ou o carro vai junto. A verificação pode ser desligada nas configurações. Fora isso, o Caruspex não se conecta à internet. A conversa com um adaptador Wi-Fi, um cabo ENET ou um carro DoIP fica na sua rede local.
+Em cada instalação, também depois de atualizar a partir de uma versão mais antiga, o Caruspex pergunta uma vez se deve procurar atualizações. Só depois de um sim pergunta ao GitHub se existe uma versão mais nova, ao iniciar e a cada seis horas enquanto está em execução. Nada sobre você ou o carro vai junto. Sem um sim, nenhum pedido vai para o GitHub. Você pode mudar isso a qualquer momento nas configurações, em **Janela e idioma**. Fora isso, o Caruspex não se conecta à internet. A conversa com um adaptador Wi-Fi, um cabo ENET ou um carro DoIP fica na sua rede local.
 
-Só as versões publicadas no GitHub procuram atualizações; uma cópia que compile sozinho nunca o faz. Como em qualquer pedido na internet, a procura e a transferência de uma atualização mostram ao GitHub o seu endereço IP e a versão do Caruspex, e aplica-se a declaração de privacidade do GitHub. As atualizações são transferidas apenas das versões do repositório do Caruspex. Botões como **Relatar no GitHub** apenas abrem o seu navegador; o que publica lá é decisão sua.
+Só as versões publicadas no GitHub procuram atualizações; uma cópia que compile sozinho nunca o faz. Quando o Caruspex procura ou transfere uma atualização, o GitHub vê, como em qualquer transferência, o endereço IP do computador e a versão do Caruspex; o próprio Caruspex não envia nem guarda mais nada, e ninguém mais, nem o projeto, vê isso. Aplica-se a declaração de privacidade do GitHub. As atualizações são transferidas apenas das versões do repositório do Caruspex. Botões como **Relatar no GitHub** apenas abrem o seu navegador; o que publica lá é decisão sua.
 
 ## Android
 

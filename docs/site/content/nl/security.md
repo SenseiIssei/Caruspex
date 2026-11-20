@@ -39,15 +39,11 @@ uit wat er daarna gebeurt. Opgeloste kwetsbaarheden worden gepubliceerd als
 
 ## Updates en ondersteuning {#support}
 
-- Bij het starten vraagt Caruspex aan GitHub of er een nieuwere versie is en toont die. Installeren is één klik, en de
-  app installeert alleen een pakket met een kloppende handtekening. De AppImage en de macOS-app werken zichzelf bij;
-  het .deb-pakket en de Android-app krijgen de downloadpagina.
-- Het zoeken en het automatisch installeren zijn schakelaars in de instellingen, onder **Venster en taal**. Kijk
-  zonder het zoeken af en toe op de releasepagina.
+- Bij elke installatie, ook na een update vanaf een oudere versie, vraagt Caruspex één keer "Zoeken naar updates?". Pas na een ja vraagt het aan GitHub of er een nieuwere versie is, bij het starten en daarna elke zes uur zolang het draait. Een nieuwe versie laat alleen een knop in de titelbalk oplichten en onderbreekt nooit. Installeren is één klik, en de app installeert alleen een pakket met een kloppende handtekening. De AppImage en de macOS-app werken zichzelf bij; het .deb-pakket en de Android-app krijgen de downloadpagina.
+- Het zoeken en het automatisch installeren zijn schakelaars in de instellingen, onder **Venster en taal**, en zijn altijd te wijzigen. Zonder ja gaat er geen verzoek naar GitHub; kijk dan af en toe op de releasepagina.
 - Beveiligingsoplossingen komen alleen in de nieuwste release. Oudere versies krijgen geen aparte oplossingen, dus
   houd Caruspex bijgewerkt.
-- Caruspex wordt in de vrije tijd onderhouden en heeft geen vaste einddatum. Stopt het onderhoud, dan kondigen de
-  repository en een laatste release dat vooraf aan.
+- Caruspex wordt door één persoon in de vrije tijd onderhouden, zo goed als de tijd het toelaat en zonder enige belofte: geen ondersteuningsperiode, geen reactietijden. Stopt het onderhoud, dan wordt de repository gearchiveerd en staat dat er te lezen.
 
 ## Een download controleren {#verify}
 

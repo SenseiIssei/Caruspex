@@ -34,7 +34,7 @@ Mobil dengan K-Line (di Eropa sekitar 2001 sampai 2007) memang menjawab lambat d
 
 ## Apakah Caruspex mengirim data saya ke mana-mana?
 
-Tidak. Hanya pemeriksaan pembaruan yang menanyakan versi terbaru ke GitHub, dan itu bisa dimatikan. Lihat [privasi](privacy.md).
+Tidak. Hanya pemeriksaan pembaruan yang menanyakan versi terbaru ke GitHub, dan itu hanya setelah kamu menjawab ya; ini bisa diubah kapan saja. Lihat [privasi](privacy.md).
 
 ## Bagaimana saya bisa membantu?
 
