@@ -52,7 +52,7 @@ miniz_oxide = "0.9"
 # Local time for reports, crash files and the log (chrono is unmaintained,
 # RUSTSEC-2026-0543). The default features read the system time zone; on
 # Windows they bundle the time zone database, which Windows does not have.
-jiff = "0.2.42"
+jiff = "1.0.0"
 # Property tests of the parsers (fuzz-style, on the stable toolchain).
 proptest = { version = "1.12", default-features = false, features = ["std"] }
 
