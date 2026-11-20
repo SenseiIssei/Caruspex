@@ -22,6 +22,12 @@ pub trait Transport: Send {
     fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
         None
     }
+    /// Whether the driver may put the answer count digit after a request
+    /// (`Elm327::answer_count_hint`). A replay says no: it can only answer
+    /// the requests the way they were recorded.
+    fn count_hint_allowed(&self) -> bool {
+        true
+    }
 }
 
 /// One physical ISO-TP request of a batch: to one control unit, as a
@@ -209,5 +215,8 @@ impl<T: Transport + ?Sized> Transport for Box<T> {
     }
     fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
         (**self).iso_tp_batch()
+    }
+    fn count_hint_allowed(&self) -> bool {
+        (**self).count_hint_allowed()
     }
 }

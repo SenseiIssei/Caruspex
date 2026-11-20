@@ -52,6 +52,7 @@ pub mod a2;
 mod adapter;
 pub mod bmw;
 mod codec;
+mod serial_sim;
 mod sim;
 pub mod truck;
 
@@ -64,6 +65,7 @@ use caruspex_i18n::l;
 use caruspex_link::Transport;
 
 use adapter::Impl;
+pub use serial_sim::{LineCounts, LineStats, LineTiming, SimulatedSerial};
 
 /// Which adapter the demo pretends to be. The default is the most common one
 /// in the wild: a clone that reports "v1.5", a version the original

@@ -365,9 +365,18 @@ fn make_value(spec: &PidSpec, reading: &PidReading<'_>, source: &str) -> LiveVal
 
 /// The mode 01 request for these PIDs: "010C", "010C0D05".
 fn pid_command(pids: &[i32]) -> String {
-    let mut command = String::from("01");
-    for pid in pids {
-        command.push_str(&format!("{pid:02X}"));
+    const HEX: &[u8; 16] = b"0123456789ABCDEF";
+    let mut command = String::with_capacity(2 + 2 * pids.len());
+    command.push_str("01");
+    for &pid in pids {
+        if !(0..=0xFF).contains(&pid) {
+            // Not a mode 01 PID; written as before.
+            command.push_str(&format!("{pid:02X}"));
+            continue;
+        }
+        let byte = pid as usize;
+        command.push(char::from(HEX[byte >> 4]));
+        command.push(char::from(HEX[byte & 0x0F]));
     }
     command
 }
@@ -1092,10 +1101,12 @@ impl<'a> Obd2<'a> {
                 .extend(pid_values(pid, result, every_ecu));
         }
 
+        // Every PID is once in `order`, so the values move out instead of
+        // being copied.
         let mut out = Vec::new();
         for pid in &order {
-            if let Some(list) = values.get(pid) {
-                out.extend(list.iter().cloned());
+            if let Some(list) = values.remove(pid) {
+                out.extend(list);
             }
         }
         out
@@ -1105,6 +1116,11 @@ impl<'a> Obd2<'a> {
     /// group request with them failed.
     pub fn batch_refused_pids(&self) -> &BTreeSet<i32> {
         &self.batch_refused
+    }
+
+    /// The batch memory, handed back for the next `with_batch_memory`.
+    pub fn into_batch_memory(self) -> BTreeSet<i32> {
+        self.batch_refused
     }
 
     pub fn reset_batch_memory(&mut self) {

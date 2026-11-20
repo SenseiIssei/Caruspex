@@ -28,6 +28,16 @@ mod webview_mac;
 mod webview_win;
 mod worker;
 
+/// The worker as tests/perf.rs measures it (docs/performance.md). Not an
+/// interface for anything else.
+#[doc(hidden)]
+pub mod bench {
+    pub use crate::knowledge::init_english_names;
+    pub use crate::rows::LiveRow;
+    pub use crate::settings::AppSettings;
+    pub use crate::worker::{Job, Sink, Worker};
+}
+
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;

@@ -164,12 +164,52 @@ fn strip_spaces(s: &str) -> String {
     s.chars().filter(|c| !is_c_space(*c)).collect()
 }
 
+/// `strip_spaces(to_upper(s))` in one go: one allocation instead of two.
+fn compact_upper(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    out.extend(
+        s.chars()
+            .filter(|c| !is_c_space(*c))
+            .map(|c| c.to_ascii_uppercase()),
+    );
+    out
+}
+
+/// `compact_upper(a) == compact_upper(b)` without building either. Every
+/// answer line is compared with the echo, so this runs once per line.
+fn same_compact(a: &str, b: &str) -> bool {
+    fn squeeze(s: &str) -> impl Iterator<Item = u8> + '_ {
+        s.bytes()
+            .filter(|c| !is_c_space(char::from(*c)))
+            .map(|c| c.to_ascii_uppercase())
+    }
+    squeeze(a).eq(squeeze(b))
+}
+
+/// `to_upper(s).starts_with(prefix)` for an upper-case ASCII prefix.
+fn starts_with_upper(s: &str, prefix: &str) -> bool {
+    s.len() >= prefix.len() && s.as_bytes()[..prefix.len()].eq_ignore_ascii_case(prefix.as_bytes())
+}
+
+/// The line (upper case) is the error `err` alone or followed by a space or
+/// a colon ("BUS INIT: ...ERROR", "CAN ERROR 1").
+fn is_error_line(line: &str, err: &str) -> bool {
+    starts_with_upper(line, err)
+        && matches!(
+            line.as_bytes().get(err.len()),
+            None | Some(b' ') | Some(b':')
+        )
+}
+
 /// True if the adapter confirmed a setting with a line that says "OK".
 fn answered_ok(result: &ElmResult) -> bool {
     if result.status == ElmStatus::AdapterError {
         return false;
     }
-    result.lines.iter().any(|line| to_upper(line) == "OK")
+    result
+        .lines
+        .iter()
+        .any(|line| line.eq_ignore_ascii_case("OK"))
 }
 
 fn is_hex_line(s: &str) -> bool {
@@ -220,17 +260,16 @@ pub fn protocol_name(id: char) -> &'static str {
 /// Every hex digit in the text, two at a time. Anything else is skipped; an
 /// odd last digit is dropped.
 pub fn hex_to_bytes(text: &str) -> Vec<u8> {
-    let digits: Vec<u8> = text
-        .chars()
-        .filter_map(|c| c.to_digit(16))
-        .map(|d| d as u8)
-        .collect();
-    digits
-        .as_chunks::<2>()
-        .0
-        .iter()
-        .map(|[high, low]| (high << 4) | low)
-        .collect()
+    // One pass and one allocation: this runs for every answer line.
+    let mut out = Vec::with_capacity(text.len() / 2);
+    let mut high: Option<u8> = None;
+    for d in text.chars().filter_map(|c| c.to_digit(16)) {
+        match high.take() {
+            Some(h) => out.push((h << 4) | d as u8),
+            None => high = Some(d as u8),
+        }
+    }
+    out
 }
 
 /// Header format the adapter uses for a protocol number ('1' to '9').
@@ -351,7 +390,7 @@ fn split_with_headers<S: AsRef<str>>(lines: &[S], format: HeaderFormat) -> Vec<E
         if !is_hex_line(line) {
             continue;
         }
-        let digits = strip_spaces(&to_upper(line));
+        let digits = compact_upper(line);
 
         if format == HeaderFormat::Can11 || format == HeaderFormat::Can29 {
             let id_length = if format == HeaderFormat::Can11 { 3 } else { 8 };
@@ -454,15 +493,23 @@ pub fn decode_messages<S: AsRef<str>>(
     expected_service: u8,
     headers: HeaderFormat,
 ) -> ElmResult {
+    decode_lines(
+        lines.iter().map(|s| s.as_ref().to_string()).collect(),
+        expected_service,
+        headers,
+    )
+}
+
+/// [`decode_messages`] on lines the caller hands over, so they are not
+/// copied once more for [`ElmResult::lines`].
+fn decode_lines(lines: Vec<String>, expected_service: u8, headers: HeaderFormat) -> ElmResult {
     let mut result = ElmResult {
-        lines: lines.iter().map(|s| s.as_ref().to_string()).collect(),
+        lines,
         ..ElmResult::default()
     };
 
-    for line in lines {
-        let line = line.as_ref();
-        let up = to_upper(line);
-        if up.starts_with("NO DATA") {
+    for line in &result.lines {
+        if starts_with_upper(line, "NO DATA") {
             result.status = ElmStatus::NoData;
             result.message = l(
                 "Steuergerät unterstützt diese Anfrage nicht (NO DATA).",
@@ -471,17 +518,14 @@ pub fn decode_messages<S: AsRef<str>>(
             .to_string();
             return result;
         }
-        for err in ERRORS {
-            if up == err || up.starts_with(&format!("{err} ")) || up.starts_with(&format!("{err}:"))
-            {
-                result.status = ElmStatus::BusError;
-                result.message = format!("{}{}", l("Adapter meldet: ", "Adapter reports: "), line);
-                return result;
-            }
+        if ERRORS.iter().any(|err| is_error_line(line, err)) {
+            result.status = ElmStatus::BusError;
+            result.message = format!("{}{}", l("Adapter meldet: ", "Adapter reports: "), line);
+            return result;
         }
     }
 
-    let raw = split_messages(lines, headers);
+    let raw = split_messages(&result.lines, headers);
 
     // With several control units on the bus one of them may refuse while
     // another answers. Only if nobody answers is the refusal the result.
@@ -498,7 +542,10 @@ pub fn decode_messages<S: AsRef<str>>(
         }
         let first = u32::from(bytes[0]);
         if first == expected + 0x40 || first == expected {
-            result.messages.push(bytes[1..].to_vec());
+            // The service byte goes, the rest stays where it is.
+            let mut payload = msg.bytes;
+            payload.remove(0);
+            result.messages.push(payload);
             result.sources.push(msg.source);
         }
     }
@@ -546,16 +593,12 @@ pub struct ConnectTrace {
 /// the bus. A lone "?" (unknown command) is not one.
 fn bus_error_line(result: &ElmResult) -> Option<String> {
     result.lines.iter().find_map(|line| {
-        let up = to_upper(line.trim());
+        let line = line.trim();
         ERRORS
             .iter()
             .filter(|err| **err != "?")
-            .any(|err| {
-                up == *err
-                    || up.starts_with(&format!("{err} "))
-                    || up.starts_with(&format!("{err}:"))
-            })
-            .then(|| line.trim().to_string())
+            .any(|err| is_error_line(line, err))
+            .then(|| line.to_string())
     })
 }
 
@@ -584,6 +627,52 @@ pub struct Elm327 {
     j1939_kbit: u32,
     /// The 29-bit id the adapter sends with right now (ATCP and ATSH).
     j1939_header: Option<u32>,
+    /// Requests may carry the answer count digit.
+    count_hint_enabled: bool,
+    /// Times the digit cost answers in this session.
+    count_hint_misses: u8,
+    /// Answer frames per request, learned from plain requests.
+    answer_counts: Vec<AnswerCount>,
+}
+
+/// Reads until a prompt came or `ms` passed; true if the prompt came.
+fn wait_for_prompt(t: &mut dyn Transport, ms: u64) -> bool {
+    let deadline = now_ms() + ms;
+    loop {
+        let now = now_ms();
+        if now >= deadline {
+            return false;
+        }
+        if t.read((deadline - now).min(50)).contains(&b'>') {
+            return true;
+        }
+    }
+}
+
+/// How many answer lines a request got last time.
+#[derive(Clone, Debug)]
+struct AnswerCount {
+    command: String,
+    frames: u8,
+    uses: u16,
+}
+
+/// Misses of the answer count digit before a session stops using it.
+const COUNT_HINT_MISSES: u8 = 2;
+/// Every this many uses a request goes out plain once.
+const COUNT_HINT_RELEARN: u16 = 32;
+/// Distinct requests remembered (the live page rotates through a few).
+const COUNT_HINT_MEMORY: usize = 64;
+
+/// The CAN frames among the answer lines of a request: with headers every
+/// hex line is one; without, the length line in front of a multi-frame
+/// answer (three hex digits) is the adapter's and not a frame.
+fn answer_frames(lines: &[String], headers: bool) -> usize {
+    lines
+        .iter()
+        .filter(|line| is_hex_line(line))
+        .filter(|line| headers || line.chars().filter(|c| !is_c_space(*c)).count() != 3)
+        .count()
 }
 
 impl Default for Elm327 {
@@ -617,6 +706,9 @@ impl Elm327 {
             connected: false,
             j1939_kbit: 0,
             j1939_header: None,
+            count_hint_enabled: true,
+            count_hint_misses: 0,
+            answer_counts: Vec::new(),
         }
     }
 
@@ -775,10 +867,14 @@ impl Elm327 {
         let Some(t) = self.transport.as_mut() else {
             return;
         };
-        sleep_ms(300);
+        // A greeting ends with the prompt, and nothing follows it until the
+        // next command: once the prompt is there, waiting longer gains
+        // nothing. The same for the answer to the lone carriage return.
+        // Without a prompt this waits as long as it always did.
+        wait_for_prompt(t.as_mut(), 300);
         t.flush_input();
         t.write(b"\r");
-        sleep_ms(200);
+        wait_for_prompt(t.as_mut(), 200);
         t.flush_input();
     }
 
@@ -806,7 +902,8 @@ impl Elm327 {
             let chunk = t.read(120);
             if !chunk.is_empty() {
                 buffer.extend_from_slice(&chunk);
-                if buffer.contains(&b'>') {
+                // Earlier chunks had no prompt, or the loop would have ended.
+                if chunk.contains(&b'>') {
                     break;
                 }
             }
@@ -828,18 +925,18 @@ impl Elm327 {
             return result;
         }
 
-        let cleaned: Vec<u8> = buffer.into_iter().filter(|&c| c != b'>').collect();
-        let text = String::from_utf8_lossy(&cleaned);
-        let echo = to_upper(&strip_spaces(command));
+        buffer.retain(|&c| c != b'>');
+        let text = String::from_utf8_lossy(&buffer);
         for raw in text.split(['\r', '\n']) {
             let line = trim(raw);
             if line.is_empty() {
                 continue;
             }
-            if to_upper(&strip_spaces(line)) == echo {
+            // The echo, in case echo is still on.
+            if same_compact(line, command) {
                 continue;
             }
-            if to_upper(line).starts_with("SEARCHING") {
+            if starts_with_upper(line, "SEARCHING") {
                 continue;
             }
             result.lines.push(line.to_string());
@@ -847,21 +944,31 @@ impl Elm327 {
         // Keep track of the header setting even when someone sends the AT
         // commands by hand (the raw console, the KKL reset). A reset switches
         // headers off again.
-        let sent = to_upper(&strip_spaces(command));
+        let sent = compact_upper(command);
         if sent == "ATH1" {
             self.headers = true;
         }
         if sent == "ATH0" || sent == "ATZ" || sent == "ATD" || sent == "ATWS" {
             self.headers = false;
         }
+        // Any setting may change who answers (headers, filters, the target
+        // address, the protocol): the answer counts learned so far no longer
+        // hold.
+        if sent.starts_with("AT") || sent.starts_with("ST") {
+            self.answer_counts.clear();
+        }
 
         if self.verbose && self.log.is_some() {
-            let mut joined = String::new();
+            let size: usize = result.lines.iter().map(|l| l.len() + 3).sum();
+            let mut line = String::with_capacity(command.len() + size + 12);
+            line.push_str("  > ");
+            line.push_str(command);
+            line.push_str("   ->   ");
             for l in &result.lines {
-                joined.push_str(l);
-                joined.push_str(" | ");
+                line.push_str(l);
+                line.push_str(" | ");
             }
-            self.log(&format!("  > {command}   ->   {joined}"));
+            self.log(&line);
         }
         result
     }
@@ -875,11 +982,152 @@ impl Elm327 {
         if self.obd_on_uds {
             return self.request_on_uds(command, expected_service, timeout_ms);
         }
+        if let Some(frames) = self.count_hint_for(command) {
+            let hinted = format!("{command}{frames:X}");
+            let raw = self.send(&hinted, timeout_ms);
+            if raw.status == ElmStatus::AdapterError {
+                return raw;
+            }
+            let refused = raw.lines.len() == 1 && raw.lines[0] == "?";
+            let seen = answer_frames(&raw.lines, self.headers);
+            let result = decode_lines(raw.lines, expected_service, self.header_format());
+            if result.ok() && !refused {
+                // Fewer lines than the digit cost the full wait already;
+                // the count only goes down after a plain request.
+                self.learn_answer_count(command, seen.max(usize::from(frames)));
+                return result;
+            }
+            // The digit was refused, or nothing usable came back with it:
+            // ask the plain way, as without the digit, and so find out whose
+            // fault it was.
+            let plain = self.plain_request(command, expected_service, timeout_ms);
+            if refused || plain.ok() {
+                self.count_hint_missed(refused);
+            }
+            return plain;
+        }
+        self.plain_request(command, expected_service, timeout_ms)
+    }
+
+    fn plain_request(&mut self, command: &str, expected_service: u8, timeout_ms: u64) -> ElmResult {
         let raw = self.send(command, timeout_ms);
         if raw.status == ElmStatus::AdapterError {
             return raw;
         }
-        decode_messages(&raw.lines, expected_service, self.header_format())
+        let seen = answer_frames(&raw.lines, self.headers);
+        let result = decode_lines(raw.lines, expected_service, self.header_format());
+        if result.ok() {
+            self.learn_answer_count(command, seen);
+        } else {
+            self.forget_answer_count(command);
+        }
+        result
+    }
+
+    // -----------------------------------------------------------------------
+    // The answer count digit (ELM327 v1.3 and later)
+    //
+    // After the last answer the adapter waits whether another control unit
+    // answers, up to its (adaptive) timeout, and that wait is a large part
+    // of every request. A single hex digit after the request tells it how
+    // many answer lines to expect, and it returns as soon as they are there
+    // (ELM327 data sheet, "Talking to the Vehicle" and "Setting Timeouts").
+    // The data sheet asks programs to find the count out first and only then
+    // use it: a request goes out plain, its answer frames are counted, and
+    // the next identical request carries that count. Fewer answers than the
+    // digit says only cost the usual timeout, and the count is never smaller
+    // than what came last time, so nothing is cut off. Only mode 01 on CAN,
+    // where the live values repeat the same requests and every answer line
+    // is one CAN frame. An adapter that answers "?" to the digit (older than
+    // v1.3, or a clone that only claims a version) or loses answers with it
+    // gets plain requests for the rest of the session.
+    // -----------------------------------------------------------------------
+
+    /// Whether requests may carry the answer count digit (on by default).
+    /// Takes effect at once; the counts are learned again.
+    pub fn set_answer_count_hint(&mut self, on: bool) {
+        self.count_hint_enabled = on;
+        self.answer_counts.clear();
+    }
+
+    /// The answer count digit is in use: allowed, and the adapter has not
+    /// turned it down in this session.
+    pub fn answer_count_hint(&self) -> bool {
+        self.count_hint_enabled && self.count_hint_misses < COUNT_HINT_MISSES
+    }
+
+    fn count_hint_for(&mut self, command: &str) -> Option<u8> {
+        if !self.answer_count_hint() || !self.connected || !self.is_can() || self.listen_only {
+            return None;
+        }
+        if !self
+            .transport
+            .as_ref()
+            .is_some_and(|t| t.count_hint_allowed())
+        {
+            return None;
+        }
+        let entry = self
+            .answer_counts
+            .iter_mut()
+            .find(|e| e.command == command)?;
+        entry.uses = entry.uses.wrapping_add(1);
+        // Now and then the plain way, so a control unit that starts to
+        // answer as well is not left out for long.
+        if entry.uses.is_multiple_of(COUNT_HINT_RELEARN) {
+            return None;
+        }
+        Some(entry.frames)
+    }
+
+    fn learn_answer_count(&mut self, command: &str, frames: usize) {
+        if !self.answer_count_hint() || !self.is_can() {
+            return;
+        }
+        let b = command.as_bytes();
+        let mode01 = b.len() >= 4
+            && b.len().is_multiple_of(2)
+            && b.starts_with(b"01")
+            && b.iter()
+                .all(|c| c.is_ascii_digit() || (b'A'..=b'F').contains(c));
+        if !mode01 || !(1..=15).contains(&frames) {
+            self.forget_answer_count(command);
+            return;
+        }
+        let frames = frames as u8;
+        if let Some(entry) = self.answer_counts.iter_mut().find(|e| e.command == command) {
+            entry.frames = frames;
+            return;
+        }
+        if self.answer_counts.len() >= COUNT_HINT_MEMORY {
+            self.answer_counts.clear();
+        }
+        self.answer_counts.push(AnswerCount {
+            command: command.to_string(),
+            frames,
+            uses: 0,
+        });
+    }
+
+    fn forget_answer_count(&mut self, command: &str) {
+        if let Some(i) = self.answer_counts.iter().position(|e| e.command == command) {
+            self.answer_counts.swap_remove(i);
+        }
+    }
+
+    fn count_hint_missed(&mut self, refused: bool) {
+        self.answer_counts.clear();
+        self.count_hint_misses = if refused {
+            COUNT_HINT_MISSES
+        } else {
+            self.count_hint_misses.saturating_add(1)
+        };
+        if self.count_hint_misses >= COUNT_HINT_MISSES {
+            self.log(l(
+                "  Der Adapter kommt mit der Antwortzahl hinter der Anfrage nicht zurecht, Anfragen gehen ohne sie.",
+                "  The adapter does not handle the answer count after a request, requests go without it.",
+            ));
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -1264,6 +1512,8 @@ impl Elm327 {
         self.timing_level = 0;
         self.obd_on_uds = false;
         self.listen_only = false;
+        self.count_hint_misses = 0;
+        self.answer_counts.clear();
         self.trace = ConnectTrace::default();
         self.drain_greeting();
 

@@ -86,6 +86,14 @@ OBDLink with its extra buses. `--replay <file.jsonl>` plays back a recorded sess
 somebody attached to a test report. All tests run against simulated control units, fake gateways, a fake J2534
 driver and the demo car; no test needs hardware.
 
+### Speed and memory
+
+Caruspex should answer quickly and stay small. [docs/performance.md](docs/performance.md) has the benchmark
+harness (the demo car behind a simulated serial line with the delays of a real ELM327), the numbers it gives,
+the guard tests that fail when the live loop gets clearly slower or hungrier, and the commands for the full
+report and the ten minute soak. Run the report before and after a change to the driver, the protocols or the
+worker.
+
 ## Developer switches
 
 The app's options are parsed in `app/src-tauri/src/cli.rs`; `caruspex --help` lists the ones meant for users.
