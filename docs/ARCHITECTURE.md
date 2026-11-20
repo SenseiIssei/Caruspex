@@ -26,6 +26,7 @@ that says more.
 | `caruspex-analysis` | Health check, battery test, readiness, drive cycles, trip computer, performance timer. |
 | `caruspex-advice` | "What should I do now?" from faults, readiness, health check and live values, and the checklist of the connection assistant. |
 | `caruspex-demo` | The built-in demo car and demo truck behind a simulated ELM327 or OBDLink. |
+| `caruspex-tune` | The tuning simulator: a full-load model of the BMW N55 with its limits and the comparison with a recording. Simulation only, it has no way to a car and writes no maps. |
 | `caruspex-cli` | `caruspex_cli`, the command-line tool on the same core, with golden-file tests. |
 | `app/src-tauri` (`caruspex-app`) | The app: window, Tauri commands, the worker thread, settings, garage, report, crash reports, the signed updater. A library (`lib.rs`) that `main.rs` starts on the desktop and the Android project loads. |
 
@@ -41,6 +42,8 @@ Take "read the fault memory" on the faults page:
    event, with its argument and payload types, is declared in `app/src/api/contract.ts`.
 2. **Backend choice.** `app/src/api/index.ts` uses the Tauri backend (`api/tauri.ts`, `invoke` and `listen`) inside
    the app window, and the mock backend (`api/mock/`, a simulated worker with the demo car) in a plain browser.
+   Only the development server and `npm --prefix app run build:demo` contain the mock backend; the app build
+   leaves it out, together with the core catalogs it translates its texts with.
 3. **Tauri command.** `read_faults` in `app/src-tauri/src/commands.rs` puts `Job::ReadFaults` into the worker's
    channel and returns at once. Commands that only look something up (fault code texts, the catalog) answer
    directly instead. All commands are registered in `generate_handler!` in `app/src-tauri/src/lib.rs`.

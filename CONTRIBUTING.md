@@ -72,6 +72,7 @@ The command-line tool on the same core: `cargo run -p caruspex-cli -- read --dem
 |---|---|
 | `npm --prefix app run dev:app` | The app with live reload: the Tauri window loads the Vite dev server (`localhost:5287`) instead of the built-in interface. Pick the demo car on the Connect page. |
 | `npm --prefix app run dev` | The interface alone in a normal browser, with a simulated backend (`app/src/api/mock/`) instead of Rust. Open `http://localhost:5287/?demo`. |
+| `npm --prefix app run build:demo` | The same as a release build in `app/dist-demo/` (`npx --prefix app vite preview --outDir dist-demo`). `npm --prefix app run build` leaves the simulated backend out, so its `app/dist/` only works inside the app. |
 | `cargo run -p caruspex-app -- --demo` | The app as users get it, connected to the built-in demo car. |
 | `python tools/mock_elm327.py --can` | A simulated ELM327 on `127.0.0.1:35000` (without `--can`: an Audi A2 engine on the K-line). Connect with `--tcp 127.0.0.1:35000`. |
 
@@ -105,7 +106,7 @@ These help most while developing:
 |---|---|
 | `--demo` | Connect to the demo car at start. |
 | `--replay <file.jsonl>` | Play back a recording instead of talking to an adapter. |
-| `--page <name>` | Start on this page. The names are the ids in `app/src/shell/pages.tsx` (`faults`, `live`, `xray`, `used-car`, `settings`, ...). A few extra views exist for screenshots and tests: `setup`, `setup-socket`, `setup-ignition`, `setup-connect`, `term-hint`, `contrast` (`app/src/shell/App.tsx`), `connect-bmw` (`ConnectPage.tsx`), `kkl-firsttest` and `kkl-cabletest` with an optional fault of the simulated A2 (`kkl-firsttest:slow-read`; the faults are in `crates/caruspex-demo/src/a2.rs`, `KklFirstTestPage.tsx`) and `xray-generation:<id or search>` with more parts behind it (`XrayPage.tsx`, see `tools/xray_shots.py`). |
+| `--page <name>` | Start on this page. The names are the ids in `app/src/shell/pages.tsx` (`faults`, `live`, `xray`, `used-car`, `settings`, ...). A few extra views exist for screenshots and tests: `setup`, `setup-socket`, `setup-ignition`, `setup-connect`, `term-hint`, `contrast` (`app/src/shell/App.tsx`), `connect-bmw` (`ConnectPage.tsx`), `kkl-firsttest` and `kkl-cabletest` with an optional fault of the simulated A2 (`kkl-firsttest:slow-read`; the faults are in `crates/caruspex-demo/src/a2.rs`, `KklFirstTestPage.tsx`) `xray-generation:<id or search>` with more parts behind it (`XrayPage.tsx`, see `tools/xray_shots.py`) and `tune-demo` or `tune-demo:compare`, the tuning simulator with a changed map and the example comparison (`TunePage.tsx`). |
 | `--mode <beginner\|pro>` | Beginner or pro mode for this run, without changing the setting. Most workshop pages are pro only. |
 | `--language <code>` | Language for this run: `de`, `en`, `fr`, `ar` and the other codes of `translations/`. (It is `--language`, not `--lang`.) |
 | `--theme <dark\|light>` | Appearance for this run. |

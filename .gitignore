@@ -2,6 +2,7 @@
 target/
 node_modules/
 app/dist/
+app/dist-demo/
 crates/caruspex-net/fake-j2534/Cargo.lock
 
 # Packages and checks from tools/package.sh and tools/smoke_test.sh

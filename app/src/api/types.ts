@@ -1245,3 +1245,96 @@ export interface KklSavedReport {
   json: string;
   text: string;
 }
+
+// caruspex-tune: the tuning simulator (simulation only, see tune.rs).
+export interface TuneBand {
+  fromRpm: number;
+  toRpm: number;
+  boostBar: number;
+  ignitionDeg: number;
+  lambda: number;
+}
+
+export interface TuneInput {
+  bands: TuneBand[];
+  ambientC: number;
+  ambientHpa: number;
+  octane: number;
+  gearbox: "automatic" | "manual";
+}
+
+export interface TunePoint {
+  rpm: number;
+  torqueNm: number;
+  powerKw: number;
+  powerPs: number;
+  boostTargetBar: number;
+  boostBar: number;
+  manifoldKpa: number;
+  boostCap: "none" | "spool" | "pressure" | "flow";
+  chargeAirC: number;
+  airKgH: number;
+  pressureRatio: number;
+  turboLoad: number;
+  lambda: number;
+  timingRequestedDeg: number;
+  timingDeg: number;
+  knockMarginDeg: number;
+  egtC: number;
+  fuelKgH: number;
+  pumpLoad: number;
+  injectorLoad: number;
+  bmepBar: number;
+  gearboxLoad: number;
+}
+
+export interface TuneWarning {
+  kind: string;
+  severity: "note" | "warning" | "limit";
+  title: string;
+  reason: string;
+  fromRpm: number;
+  toRpm: number;
+}
+
+export interface TuneCurve {
+  points: TunePoint[];
+  warnings: TuneWarning[];
+  peakTorque: { rpm: number; nm: number };
+  peakPower: { rpm: number; kw: number; ps: number };
+}
+
+export interface TuneResult {
+  stock: TuneCurve;
+  changed: TuneCurve;
+  // Time for both curves in the backend.
+  micros: number;
+  uncertainty: { torqueShare: number; boostBar: number; chargeAirK: number; knockDeg: number; egtK: number };
+}
+
+export interface TunePair {
+  measured: number | null;
+  simulated: number | null;
+  difference: number | null;
+  deviationPct: number | null;
+}
+
+export interface TuneCompareBand {
+  fromRpm: number;
+  toRpm: number;
+  samples: number;
+  manifoldKpa: TunePair;
+  chargeAirC: TunePair;
+  airGs: TunePair;
+  timingDeg: TunePair;
+  lambda: TunePair;
+}
+
+export interface TuneComparison {
+  file: string;
+  total: number;
+  used: number;
+  partLoad: number;
+  outOfRange: number;
+  bands: TuneCompareBand[];
+}

@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Écho de la K-Line",
  "c-kkltest34-22": "FTDI est la puce avec laquelle KWP1281 fonctionne de la façon la plus fiable.",
  "c-kkltest34-23": "Premier octet %1 après %2 ms, octets de clé %3",
- "c-kkltest34-24": "Premier test terminé : %1 calculateurs sur %2 ont répondu. Enregistrer le rapport et nous l'envoyer aide à vérifier la K-Line sur d'autres voitures.",
+ "c-kkltest34-24": "Premier test terminé : %1 calculateurs sur %2 ont répondu. Enregistrer le rapport et me l'envoyer aide à vérifier la K-Line sur d'autres voitures.",
  "c-kkltest34-25": "Délai de latence du pilote : %1 ms",
  "c-kkltest34-26": "Beaucoup de câbles PL2303 ont des puces clonées que les pilotes récents refusent (code 10 dans le Gestionnaire de périphériques). Si le port fonctionne, le test ci-dessous mesure les temps.",
  "c-kkltest34-27": "Blocs de mesure 001 à 003",

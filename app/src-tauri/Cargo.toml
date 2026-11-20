@@ -49,6 +49,7 @@ caruspex-record.workspace = true
 caruspex-analysis.workspace = true
 caruspex-advice.workspace = true
 caruspex-demo.workspace = true
+caruspex-tune.workspace = true
 minisign-verify = "0.3.0"
 base64 = "0.23.1"
 

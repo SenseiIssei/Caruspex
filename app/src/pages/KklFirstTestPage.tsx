@@ -431,7 +431,7 @@ export default function KklFirstTestPage() {
         <Card title={tr("Bericht")} icon="file">
           <p className="subtle wrap">
             {tr(
-              "Der Bericht kommt als Text und als JSON in den Einstellungsordner von Caruspex. Schick ihn uns über das Formular auf GitHub, das hilft am meisten. Ohne Haken sind FIN und Wegfahrsperren-Nummer gekürzt.",
+              "Der Bericht kommt als Text und als JSON in den Einstellungsordner von Caruspex. Schick ihn mir über das Formular auf GitHub, das hilft am meisten. Ohne Haken sind FIN und Wegfahrsperren-Nummer gekürzt.",
             )}
           </p>
           <Check checked={includeVin} onChange={setIncludeVin}>

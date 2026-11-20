@@ -472,7 +472,7 @@ impl Worker {
             kind: kind.into(),
             version: env!("CARGO_PKG_VERSION").into(),
             platform: std::env::consts::OS.into(),
-            date: jiff::Zoned::now().strftime("%Y-%m-%d").to_string(),
+            date: jiff::ZonedDateTime::now().strftime("%Y-%m-%d").to_string(),
             device: device.into(),
             cable: cable_row(device),
             ..KklTestReport::default()
@@ -997,8 +997,8 @@ impl Worker {
             .into();
             verdict.advice = fill(
                 l(
-                    "Erster Test fertig: %1 von %2 Steuergeräten haben geantwortet. Den Bericht zu speichern und uns zu schicken hilft, die K-Line auf weiteren Autos zu prüfen.",
-                    "First test done: %1 of %2 control units answered. Saving the report and sending it to us helps to check the K-line on more cars.",
+                    "Erster Test fertig: %1 von %2 Steuergeräten haben geantwortet. Den Bericht zu speichern und mir zu schicken hilft, die K-Line auf weiteren Autos zu prüfen.",
+                    "First test done: %1 of %2 control units answered. Saving the report and sending it to me helps to check the K-line on more cars.",
                 ),
                 &[&answered, &total],
             );

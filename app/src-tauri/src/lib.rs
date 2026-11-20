@@ -19,6 +19,7 @@ mod pdf;
 mod rows;
 mod settings;
 mod texts;
+mod tune;
 mod update;
 #[cfg(target_os = "linux")]
 mod webview_gtk;
@@ -87,7 +88,10 @@ pub fn write_log_line(log_file: &Mutex<Option<(PathBuf, File)>>, line: &str) {
     if let Ok(mut file) = log_file.lock()
         && let Some((_, file)) = file.as_mut()
     {
-        let stamped = format!("{}  {line}\n", jiff::Zoned::now().strftime("%H:%M:%S"));
+        let stamped = format!(
+            "{}  {line}\n",
+            jiff::ZonedDateTime::now().strftime("%H:%M:%S")
+        );
         let _ = file.write_all(stamped.as_bytes());
         let _ = file.flush();
     }
@@ -369,6 +373,9 @@ pub fn run() {
             commands::analyze_performance,
             commands::evaluate_battery,
             commands::battery_test_steps,
+            commands::tune_simulate,
+            commands::tune_compare_log,
+            commands::tune_compare_example,
             commands::ecu_families,
             commands::scan_uds,
             commands::clear_uds_ecu,

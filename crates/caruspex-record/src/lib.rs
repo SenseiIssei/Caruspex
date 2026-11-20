@@ -7,6 +7,7 @@ pub mod custom_pids;
 #[rustfmt::skip]
 mod generated;
 pub mod json_writer;
+pub mod live_log;
 pub mod obdb;
 pub mod pid_packs;
 pub mod recording;
@@ -17,6 +18,7 @@ pub use custom_pids::{
     is_custom_key, parse_request_hex, parse_torque_csv, read_custom, write_torque_csv,
 };
 pub use json_writer::{JsonWriter, ToJson};
+pub use live_log::{LiveFrame, VALUE_MAX_AGE_S, live_frames};
 pub use obdb::{
     OBDB_KEY_BASE, OBDB_PREFIX, ObdbPack, ObdbStats, obdb_pack, obdb_pack_pids, obdb_packs,
     obdb_packs_for, obdb_pid, obdb_search, obdb_stats,

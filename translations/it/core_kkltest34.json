@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Eco della K-Line",
  "c-kkltest34-22": "FTDI è il chip con cui KWP1281 funziona in modo più affidabile.",
  "c-kkltest34-23": "Primo byte %1 dopo %2 ms, byte chiave %3",
- "c-kkltest34-24": "Primo test finito: %1 centraline su %2 hanno risposto. Salvare il rapporto e mandarcelo aiuta a verificare la K-Line su altre auto.",
+ "c-kkltest34-24": "Primo test finito: %1 centraline su %2 hanno risposto. Salvare il rapporto e mandarmelo aiuta a verificare la K-Line su altre auto.",
  "c-kkltest34-25": "Timer di latenza del driver: %1 ms",
  "c-kkltest34-26": "Molti cavi PL2303 montano chip clonati che i driver più recenti rifiutano (codice 10 in Gestione dispositivi). Se la porta funziona, il test qui sotto misura i tempi.",
  "c-kkltest34-27": "Blocchi di misura da 001 a 003",

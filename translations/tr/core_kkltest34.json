@@ -22,7 +22,7 @@
  "c-kkltest34-21": "K-Line yankısı",
  "c-kkltest34-22": "FTDI, KWP1281'in en güvenilir çalıştığı çiptir.",
  "c-kkltest34-23": "İlk bayt %1, %2 ms sonra, anahtar baytları %3",
- "c-kkltest34-24": "İlk test bitti: %2 kontrol ünitesinden %1 tanesi yanıt verdi. Raporu kaydedip bize göndermeniz, K-Line'ı daha fazla araçta kontrol etmemize yardımcı olur.",
+ "c-kkltest34-24": "İlk test bitti: %2 kontrol ünitesinden %1 tanesi yanıt verdi. Raporu kaydedip bana göndermeniz, K-Line'ı daha fazla araçta kontrol etmeme yardımcı olur.",
  "c-kkltest34-25": "Sürücünün gecikme zamanlayıcısı: %1 ms",
  "c-kkltest34-26": "Birçok PL2303 kabloda, yeni sürücülerin reddettiği taklit çipler bulunur (Aygıt Yöneticisi'nde kod 10). Port çalışıyorsa aşağıdaki test zamanlamayı ölçer.",
  "c-kkltest34-27": "001 ile 003 arası ölçüm blokları",

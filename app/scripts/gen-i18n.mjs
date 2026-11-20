@@ -3,7 +3,7 @@
 // translations/source/ui_*.json lists every interface text with its Qt
 // context and the German source; translations/<code>/ui_*.json maps the id to
 // the text in that language (a list of forms for plural texts). The output is
-// one JSON object per language in src/i18n/generated/, keyed by
+// one JSON object per language in src/i18n/generated/, keyed by a hash of
 // "context|german source", so the frontend looks texts up exactly the way
 // Qt's tr() did. English comes from the source files themselves. Texts that
 // are new in this interface live in src/i18n/new-texts.json and are merged in
@@ -32,7 +32,33 @@ const languages = readdirSync(root, { withFileTypes: true })
   .map((d) => d.name)
   .sort();
 
-const key = (entry) => `${entry.context}|${entry.de}`;
+// A catalog holds "context|german source" as a short hash, not as text: the
+// full keys were about 100 kB of every catalog, and the interface already
+// knows them, it writes both in the code. Same function as textKey() in
+// src/i18n/index.ts: FNV-1a over the UTF-16 units, in base 36.
+const textKey = (context, de) => {
+  let h = 0x811c9dc5;
+  const s = `${context}|${de}`;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(36);
+};
+const fullKey = (entry) => `${entry.context}|${entry.de}`;
+const hashes = new Map();
+const key = (entry) => {
+  const k = textKey(entry.context, entry.de);
+  const full = fullKey(entry);
+  const seen = hashes.get(k);
+  if (seen !== undefined && seen !== full) {
+    // Two texts with the same hash would show each other's translation.
+    console.error(`i18n: "${seen}" and "${full}" share the key ${k}; make textKey() longer.`);
+    process.exit(1);
+  }
+  hashes.set(k, full);
+  return k;
+};
 
 mkdirSync(out, { recursive: true });
 

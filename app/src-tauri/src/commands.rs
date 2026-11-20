@@ -22,8 +22,9 @@ use crate::measure::{BatteryInputArg, SpeedSampleArg, TripConfigArg};
 use crate::rows::ConnectRoute;
 use crate::settings::{self, AppSettings};
 use crate::texts::{args, mw};
+use crate::tune::TuneInputArg;
 use crate::worker::Job;
-use crate::{knowledge, measure, pdf, update};
+use crate::{knowledge, measure, pdf, tune, update};
 
 type Result<T> = std::result::Result<T, String>;
 
@@ -312,7 +313,7 @@ pub fn open_log_file(app: &AppHandle, values: &AppSettings) {
             Ok(mut file) => {
                 let header = format!(
                     "\n=== Caruspex, {} ===\n",
-                    jiff::Zoned::now().strftime("%d.%m.%Y %H:%M")
+                    jiff::ZonedDateTime::now().strftime("%d.%m.%Y %H:%M")
                 );
                 let _ = file.write_all(header.as_bytes());
                 *slot = Some((path, file));
@@ -1089,6 +1090,25 @@ pub fn evaluate_battery(input: BatteryInputArg) -> Value {
 #[tauri::command]
 pub fn battery_test_steps() -> Value {
     measure::battery_test_steps()
+}
+
+// --- Tuning simulator (computes only, never reaches the car) ----------------------------
+
+#[tauri::command]
+pub fn tune_simulate(input: TuneInputArg) -> Value {
+    tune::simulate_json(&input)
+}
+
+// Async: a long recording takes a moment to read, and a plain command would
+// hold the window while it does.
+#[tauri::command]
+pub async fn tune_compare_log(path: String, input: TuneInputArg) -> Result<Value> {
+    tune::compare_json(&path, &input)
+}
+
+#[tauri::command]
+pub fn tune_compare_example(input: TuneInputArg) -> Value {
+    tune::compare_example_json(&input)
 }
 
 // --- UDS ---------------------------------------------------------------------------------------

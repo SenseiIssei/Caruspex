@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Echo z K-Line",
  "c-kkltest34-22": "FTDI to układ, z którym KWP1281 działa najpewniej.",
  "c-kkltest34-23": "Pierwszy bajt %1 po %2 ms, bajty klucza %3",
- "c-kkltest34-24": "Pierwszy test zakończony, odpowiedzi od sterowników: %1 z %2. Zapisanie raportu i wysłanie go do nas pomoże sprawdzić K-Line w kolejnych autach.",
+ "c-kkltest34-24": "Pierwszy test zakończony, odpowiedzi od sterowników: %1 z %2. Zapisanie raportu i wysłanie go do mnie pomoże sprawdzić K-Line w kolejnych autach.",
  "c-kkltest34-25": "Timer opóźnienia w sterowniku USB: %1 ms",
  "c-kkltest34-26": "W wielu kablach PL2303 są podrobione układy, które nowsze sterowniki odrzucają (kod 10 w Menedżerze urządzeń). Jeśli port działa, test poniżej zmierzy czasy.",
  "c-kkltest34-27": "Bloki pomiarowe 001 do 003",

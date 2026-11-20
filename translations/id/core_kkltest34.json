@@ -22,7 +22,7 @@
  "c-kkltest34-21": "Echo K-Line",
  "c-kkltest34-22": "FTDI adalah chip yang paling andal untuk KWP1281.",
  "c-kkltest34-23": "Byte pertama %1 setelah %2 ms, byte kunci %3",
- "c-kkltest34-24": "Tes pertama selesai: %1 dari %2 unit kontrol menjawab. Menyimpan laporan dan mengirimkannya ke kami membantu menguji K-Line di lebih banyak mobil.",
+ "c-kkltest34-24": "Tes pertama selesai: %1 dari %2 unit kontrol menjawab. Menyimpan laporan dan mengirimkannya ke saya membantu menguji K-Line di lebih banyak mobil.",
  "c-kkltest34-25": "Timer latensi driver: %1 ms",
  "c-kkltest34-26": "Banyak kabel PL2303 memakai chip tiruan yang ditolak driver baru (kode 10 di Device Manager). Kalau port-nya jalan, tes di bawah mengukur timing-nya.",
  "c-kkltest34-27": "Blok pengukuran 001 sampai 003",

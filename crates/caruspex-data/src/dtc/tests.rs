@@ -577,3 +577,21 @@ fn both_tiers_fill_every_sae_block() {
     assert!(single > 5000, "{single}");
     assert!(dtc_count("") > 9000);
 }
+
+#[test]
+fn generic_codes_from_phrases_read_in_the_chosen_language() {
+    // The interface of the app carries no fault code texts; this table is
+    // their only source, so a code put together from phrases (B0003) and a
+    // written out one (P0420) must come translated from here.
+    let lang = english();
+    let composed_en = lookup_dtc("B0003", "").text;
+    let written_en = lookup_dtc("P0420", "").text;
+    assert!(!composed_en.contains('%'), "{composed_en}");
+    for code in ["fr", "hi", "ja"] {
+        lang.set(caruspex_i18n::language_from_code(code));
+        let composed = lookup_dtc("B0003", "").text;
+        assert_ne!(composed, composed_en, "{code}");
+        assert!(!composed.contains('%'), "{code}: {composed}");
+        assert_ne!(lookup_dtc("P0420", "").text, written_en, "{code}");
+    }
+}

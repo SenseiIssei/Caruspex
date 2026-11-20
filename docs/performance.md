@@ -186,16 +186,25 @@ The interface is React 19 in a WebView (WebView2 on Windows). Two facts shape ev
 - **three.js resources are freed or shared.** Anything removed from the X-ray scene goes through
   `disposeTree` (`app/src/xray/dispose.ts`); the packets share one geometry and one pair of materials per bus.
   The render loop stops while the page is hidden and while the window is minimised (`visibilitychange`).
-- **The demo backend is not part of the app's start.** `app/src/api/index.ts` loads it with a dynamic import
-  only in a plain browser; `tools/bundle_budget.py` fails the build if it, three.js or a catalog ends up in the
-  entry chunk.
+- **The demo backend is not part of the app.** `app/src/api/index.ts` loads it with a dynamic import only in a
+  plain browser, and only the development server and `npm --prefix app run build:demo` contain it; the app
+  build (`npm --prefix app run build`, which Tauri builds into the program file) leaves it out together with
+  the core catalogs it translates its fault codes with. `tools/bundle_budget.py` fails the build if a demo
+  chunk ends up in the app build, or three.js or a catalog in the entry chunk.
+- **Core texts come from the backend.** Fault code descriptions, value names and messages are translated by
+  the Rust core (`caruspex-i18n`); the interface catalogs hold only the interface texts. They are keyed by a
+  short hash of context and German source (`textKey()` in `app/src/i18n/index.ts`), since the interface
+  writes both in the code anyway, and German loads no catalog at all.
 
 ### Budget in the CI
 
-`python tools/bundle_budget.py` runs after `npm --prefix app run build` in the Checks job. The budgets are
-generous on purpose (entry chunk 900 KB / 300 KB gzip, its style sheet 140 KB, any later chunk 1200 KB, the
-whole build 20 MB) and catch a large dependency or data file that slipped into the start, not a few
-kilobytes. If a change needs more, raise the number in the script and say why in the pull request.
+`python tools/bundle_budget.py` runs after `npm --prefix app run build` in the Checks job. The budgets leave
+room on purpose (entry chunk 900 KB / 300 KB gzip, its style sheet 140 KB, a language catalog 250 KB / 70 KB
+gzip, any other later chunk 900 KB / 260 KB gzip, the whole build 7 MB, no chunk of the demo backend at all)
+and catch a large dependency or data file that slipped into the start or into the app, not a few kilobytes.
+`python tools/bundle_budget.py --demo --dist app/dist-demo` checks the demo build (`npm --prefix app run
+build:demo`, whole build 20 MB, a chunk 1200 KB). If a change needs more, raise the number in the script and say why in
+the pull request.
 
 To see what a chunk contains, build with source maps into a scratch folder
 (`npx --prefix app vite build --sourcemap --outDir <scratch>`) and attribute the bytes of
@@ -207,8 +216,8 @@ To see what a chunk contains, build with source maps into a scratch folder
 dependency of the project) against the browser preview with the demo car, 1440x920:
 
 ```bash
-npm --prefix app run build
-npx --prefix app vite preview --port 5392            # the release build
+npm --prefix app run build:demo                      # the release build with the demo backend, in app/dist-demo
+npx --prefix app vite preview --outDir dist-demo --port 5392
 npm --prefix app run dev                             # the development server, port 5287
 py -I tools/ui_measure.py startup http://localhost:5392 4   # median of 5 starts, CPU four times slower
 py -I tools/ui_measure.py live http://localhost:5392 live-run
@@ -262,12 +271,42 @@ mostly layout and paint of the six needles, which move sixty times a second as b
 Screenshots of the live page, the start page with its gauges and the X-ray view (with packets in flight) look
 the same before and after.
 
+### Texts and the size of the build (20 November 2026)
+
+Version 0.19 added about 9400 generic fault codes in 18 languages. In the app they are translated by the Rust
+core (`translations/<code>/core_dtc38.json`, built into `caruspex-i18n`); the interface build carried a second
+copy of every core text, fault codes included, as one core catalog per language for the demo backend of the
+browser preview, keyed by the full English text. The app never loaded those catalogs, but Tauri builds the
+whole interface build into the program file. The fault code texts (`dtc38`) were 27 to 30 % of each of these
+catalogs, the English keys about 300 kB of each. The interface catalogs themselves held no fault code text,
+but half of each was its keys ("context|German source").
+
+Now the app build leaves the demo backend out (`npm --prefix app run build:demo` builds it for a plain
+browser), the interface catalogs are keyed by a short hash, and German, the source language, loads no catalog.
+The demo backend also puts generic fault codes together in the chosen language now, the way the Rust core
+does (before, the 8000 codes made of phrases showed in English in every language but German).
+
+| What | Before | After |
+|---|---|---|
+| Interface build (`app/dist`, what the program file carries) | 19041 KB | 5082 KB |
+| Demo build (`build:demo`, browser only) | (the same build) | 17747 KB |
+| Largest chunks of the app build | `core-hi` 990 KB, `mock` 927 KB, `core-ru`/`core-uk` 919 KB, ... | `index` (entry) 729 KB, `scene` 651 KB, `hi` 174 KB |
+| Entry chunk | 730 KB (232 KB gzip) | 729 KB (232 KB gzip) |
+| Interface catalog per language | 166 KB (`en`) to 250 KB (`hi`) | 90 KB (`en`) to 174 KB (`hi`) |
+| Loaded at start for texts, German / French | 166 KB / 345 KB | none / 192 KB |
+| Release program file `caruspex.exe` (Windows, `cargo build --release -p caruspex-app`) | 28 570 624 bytes | 25 944 576 bytes (-2.5 MB) |
+| App, JS heap after GC 8 s after start with the demo car (de / fr / hi) | 7.6 / 7.8 / 7.9 MB | 7.4 / 7.9 / 8.0 MB |
+| Browser preview, JS heap after GC after start (de / fr / hi) | 12.2 / 13.2 / 13.4 MB | 11.0 / 12.3 / 12.5 MB |
+
+The heap of the app barely changes: it never held the core catalogs, and a catalog of 1600 texts is small
+once parsed. What changed for the app is what it carries and what it parses at start and on a language switch.
+The browser preview still loads the demo backend (927 KB) and the core catalog of its language (580 to 990 KB).
+
 ### Still open
 
 - `ThrottlePage.tsx` should show its readings with `useLiveValues` like the other pages.
-- The demo backend, its fault code table and the core catalogs it uses (about 9 MB of the 14 MB build) are
-  never loaded by the app but are still built into its program file; a separate build of the interface for
-  the app would leave them out.
+- The core catalogs of the demo build repeat every English text as the key; a shared list of the English
+  texts and one array per language would cut about 300 KB from each, for the browser preview only.
 - `XrayPage` keeps the layout code of the 3D view (about 110 kB) in the entry chunk, because the page
   collects scan results while hidden; moving the layout into the lazy chunk needs the page split in two.
 - Every Tauri event reaches the WebView as a script of its own. A batched live event from the backend would
