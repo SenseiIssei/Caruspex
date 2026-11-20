@@ -48,3 +48,16 @@ updates:
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+
+  # The Android project that tauri generated (app/src-tauri/gen/android):
+  # the Android Gradle plugin, Kotlin and the AndroidX libraries of the APK.
+  # Their versions follow tauri's template, so no monthly version updates
+  # (open-pull-requests-limit 0); security updates still come when they are
+  # switched on in the repository settings (SECURITY.md, "Dependencies").
+  - package-ecosystem: gradle
+    directory: /app/src-tauri/gen/android
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: Gradle
