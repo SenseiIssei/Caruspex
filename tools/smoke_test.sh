@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs or opens the packages from tools/package.sh the way a user would
 # and checks that both programs start: the command line tool reads the demo
-# car, the app reports its version, opens the demo car and writes a
+# car and writes its PDF report, the app reports its version, opens the demo car and writes a
 # screenshot (on macOS and Linux also a PDF report), and a picture of the
 # 3D X-ray view of a catalog car.
 #
@@ -27,6 +27,12 @@ check_cli() {
     [ "$out" = "caruspex_cli $VERSION" ] || { echo "unexpected version: $out" >&2; exit 1; }
     "$1" read --demo >/dev/null || { echo "caruspex_cli read --demo failed" >&2; exit 1; }
     echo "caruspex_cli reads the demo car"
+    # The PDF report without a web view, next to the screenshots.
+    local pdf="$SHOTS/cli-report.pdf"
+    "$1" report --demo --seconds 1 "$pdf" >/dev/null || { echo "caruspex_cli report failed" >&2; exit 1; }
+    [ "$(head -c 5 "$pdf")" = "%PDF-" ] && tail -c 6 "$pdf" | grep -q '%%EOF' \
+        || { echo "caruspex_cli report wrote no PDF" >&2; exit 1; }
+    echo "caruspex_cli writes the PDF report ($(wc -c < "$pdf" | tr -d ' ') bytes)"
 }
 
 check_app() {

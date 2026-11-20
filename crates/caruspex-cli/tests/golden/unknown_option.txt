@@ -1,6 +1,7 @@
 Unknown option: --bogus
 
 Usage: caruspex_cli <command> [options]
+       caruspex_cli report [options] FILE.pdf
 
 Commands:
   ports       list the serial ports
@@ -16,6 +17,8 @@ Commands:
   ecus        everything per control unit (headers on)
   uds         UDS on CAN: identification and fault memory of every control unit
   custom      maker and custom values (mode 22 / 21) of a pack or a Torque CSV, once
+  report      the diagnostic report as a PDF file: vehicle, health check, faults,
+              readiness, freeze frame and component tests
   j1939       trucks and buses (SAE J1939): control units, VIN, active and previous
               faults with the lamps, the common values
   enet        look for cars on the network (ENET cable for BMW and Mini, DoIP)
@@ -36,8 +39,12 @@ Connection (one of them):
 
 Options:
   --json              machine-readable output for read, vin, health, probe, freeze, uds,
-                      custom
-  --seconds N         length of the live series of health, 15 if left out
+                      custom, report
+  --seconds N         length of the live series of health (15 if left out) and of
+                      report (5 if left out)
+  --lang CODE         language of the report: de, en, es, fr, pt, it, nl, id; the
+                      other languages need letters the PDF fonts do not have, the
+                      report is then in English (English if left out)
   --ids A,B,...       request ids for uds in hex (response = request + 8; 29-bit
                       ids like 18DA28F1 answer on 18DAF128; b12 is the BMW unit
                       with diagnostic address 12); if left out, the address list

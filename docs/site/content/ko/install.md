@@ -34,6 +34,15 @@ sudo usermod -aG dialout $USER
 
 스크립트와 서버용으로 화면이 없는 `caruspex_cli`가 Windows, Linux, macOS용으로 있어요. `caruspex_cli help`로 명령 목록을 볼 수 있어요.
 
+`caruspex_cli report`는 앱 없이 진단 보고서를 PDF 파일로 저장해요. 다른 명령이 아는 모든 연결 방식을 쓸 수 있어요(`--demo`, `--port`, `--tcp`, `--enet`, `--can`, `--replay`).
+
+```
+caruspex_cli report --demo report.pdf
+caruspex_cli report --port COM5 --lang de report.pdf
+```
+
+보고서는 독일어, 영어, 스페인어, 프랑스어, 포르투갈어, 이탈리아어, 네덜란드어, 인도네시아어로 만들 수 있어요(`--lang`). 한국어를 포함한 다른 언어에서는 영어로 나와요. 모든 PDF 뷰어에 내장된 글꼴에 그 글자가 없기 때문이에요.
+
 ## 업데이트
 
 실행할 때 Caruspex는 GitHub에 새 버전이 있는지 묻고, 그 외에는 아무것도 하지 않아요. 새 버전은 서명이 앱에 내장된 키와 일치할 때만 설치돼요. 확인과 자동 설치 모두 설정에서 끌 수 있어요.

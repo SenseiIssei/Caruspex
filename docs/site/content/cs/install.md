@@ -34,6 +34,15 @@ sudo usermod -aG dialout $USER
 
 Pro skripty a servery je tu `caruspex_cli` bez rozhraní, pro Windows, Linux i macOS. `caruspex_cli help` vypíše příkazy.
 
+`caruspex_cli report` zapíše diagnostickou zprávu do souboru PDF, bez aplikace a přes každé připojení, které znají ostatní příkazy (`--demo`, `--port`, `--tcp`, `--enet`, `--can`, `--replay`):
+
+```
+caruspex_cli report --demo report.pdf
+caruspex_cli report --port COM5 --lang de report.pdf
+```
+
+Zpráva může být německy, anglicky, španělsky, francouzsky, portugalsky, italsky, nizozemsky a indonésky (`--lang`). V ostatních jazycích, i v češtině, vyjde anglicky, protože písmům, která má každý prohlížeč PDF zabudovaná, chybějí jejich písmena.
+
 ## Aktualizace
 
 Při spuštění se Caruspex zeptá GitHubu, jestli existuje novější verze, a nic dalšího. Nová verze se nainstaluje jen tehdy, když její podpis odpovídá klíči zabudovanému v aplikaci. Kontrolu i automatickou instalaci lze vypnout v nastavení.

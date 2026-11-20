@@ -20,6 +20,7 @@ mod args;
 mod commands;
 mod j1939;
 mod out;
+mod report;
 
 use std::sync::Arc;
 use std::time::Instant;
@@ -203,6 +204,11 @@ fn run(argv: &[String]) -> i32 {
         }
     };
     let as_json = opt.json;
+    // Only `report` takes a file name; elsewhere it stays an unknown option.
+    if command != "report" && !opt.output.is_empty() {
+        say(&format!("Unknown option: {}\n\n{USAGE}", opt.output));
+        return 1;
+    }
 
     match command.as_str() {
         "help" | "--help" | "-h" => {
@@ -226,13 +232,36 @@ fn run(argv: &[String]) -> i32 {
         "j1939" => return j1939::command(&opt),
         _ => {}
     }
-    const KNOWN: [&str; 11] = [
+    const KNOWN: [&str; 12] = [
         "read", "clear", "live", "info", "vin", "freeze", "health", "probe", "ecus", "uds",
-        "custom",
+        "custom", "report",
     ];
     if !KNOWN.contains(&command.as_str()) {
         say(&format!("Unknown command: {command}\n\n{USAGE}"));
         return 1;
+    }
+
+    let mut report_language = Language::English;
+    if command == "report" {
+        if opt.output.is_empty() {
+            return commands::fail(
+                as_json,
+                "report needs the name of the PDF file, for example: caruspex_cli report --demo report.pdf",
+                1,
+            );
+        }
+        match report::report_language(&opt.lang) {
+            Ok((language, note)) => {
+                if let Some(note) = note {
+                    say_err(&format!("{note}\n"));
+                }
+                report_language = language;
+            }
+            Err(error) => return commands::fail(as_json, &error, 1),
+        }
+        // Before connecting: fault kinds, readiness names and the texts of
+        // the health check come from the core in this language.
+        set_language(report_language);
     }
 
     let mut uds_list = Vec::new();
@@ -389,6 +418,12 @@ fn run(argv: &[String]) -> i32 {
             commands::custom(&mut elm, &pids, &title, &warnings, as_json)
         }
         "ecus" => commands::ecus(&mut elm),
+        "report" => {
+            // A short live series by default: the report is about the
+            // stored state, the series only feeds the health check.
+            let seconds = if opt.seconds_given { opt.seconds } else { 5 };
+            report::run(&mut elm, &opt.output, seconds, as_json, report_language)
+        }
         _ => 0,
     };
 

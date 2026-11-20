@@ -550,9 +550,11 @@ dependencies = [
  "caruspex-i18n",
  "caruspex-link",
  "caruspex-net",
+ "caruspex-pdf",
  "caruspex-protocols",
  "caruspex-record",
  "caruspex-vehicles",
+ "chrono",
  "serde_json",
 ]
 
@@ -617,6 +619,10 @@ dependencies = [
  "proptest",
  "winreg",
 ]
+
+[[package]]
+name = "caruspex-pdf"
+version = "0.15.0"
 
 [[package]]
 name = "caruspex-protocols"

@@ -1,0 +1,172 @@
+[
+ {
+  "id": "c-pdf29-1",
+  "de": "Adapter",
+  "en": "Adapter"
+ },
+ {
+  "id": "c-pdf29-2",
+  "de": "Kalibrierung",
+  "en": "Calibration"
+ },
+ {
+  "id": "c-pdf29-3",
+  "de": "Prüfung",
+  "en": "Check"
+ },
+ {
+  "id": "c-pdf29-4",
+  "de": "Motorkontrollleuchte",
+  "en": "Check engine light"
+ },
+ {
+  "id": "c-pdf29-5",
+  "de": "Code",
+  "en": "Code"
+ },
+ {
+  "id": "c-pdf29-6",
+  "de": "Bauteilprüfung",
+  "en": "Component monitoring"
+ },
+ {
+  "id": "c-pdf29-7",
+  "de": "Verbindung",
+  "en": "Connection"
+ },
+ {
+  "id": "c-pdf29-8",
+  "de": "Erstellt mit Caruspex, freie Fahrzeugdiagnose. Der Bericht gibt wieder, was die Steuergeräte gemeldet haben. Er ersetzt keine Prüfung in der Werkstatt.",
+  "en": "Created with Caruspex, free vehicle diagnostics. The report shows what the control units reported. It does not replace an inspection at a workshop."
+ },
+ {
+  "id": "c-pdf29-9",
+  "de": "Beschreibung",
+  "en": "Description"
+ },
+ {
+  "id": "c-pdf29-10",
+  "de": "Prüfbericht",
+  "en": "Diagnostic report"
+ },
+ {
+  "id": "c-pdf29-11",
+  "de": "Befund",
+  "en": "Finding"
+ },
+ {
+  "id": "c-pdf29-12",
+  "de": "Befunde",
+  "en": "Findings"
+ },
+ {
+  "id": "c-pdf29-13",
+  "de": "Umgebungsdaten zum Fehler",
+  "en": "Freeze frame data"
+ },
+ {
+  "id": "c-pdf29-14",
+  "de": "Gesundheitscheck",
+  "en": "Health check"
+ },
+ {
+  "id": "c-pdf29-15",
+  "de": "Stufe",
+  "en": "Level"
+ },
+ {
+  "id": "c-pdf29-16",
+  "de": "Grenzen",
+  "en": "Limits"
+ },
+ {
+  "id": "c-pdf29-17",
+  "de": "Bedeutung",
+  "en": "Meaning"
+ },
+ {
+  "id": "c-pdf29-18",
+  "de": "Kilometerstand",
+  "en": "Mileage"
+ },
+ {
+  "id": "c-pdf29-19",
+  "de": "Bezeichnung",
+  "en": "Name"
+ },
+ {
+  "id": "c-pdf29-20",
+  "de": "Kein Fehler gespeichert.",
+  "en": "No faults stored."
+ },
+ {
+  "id": "c-pdf29-21",
+  "de": "Nicht ausgelesen.",
+  "en": "Not read."
+ },
+ {
+  "id": "c-pdf29-22",
+  "de": "In Ordnung",
+  "en": "OK"
+ },
+ {
+  "id": "c-pdf29-23",
+  "de": "Seite %1 von %2",
+  "en": "Page %1 of %2"
+ },
+ {
+  "id": "c-pdf29-24",
+  "de": "Ergebnis",
+  "en": "Result"
+ },
+ {
+  "id": "c-pdf29-25",
+  "de": "Stand",
+  "en": "Status"
+ },
+ {
+  "id": "c-pdf29-26",
+  "de": "Test",
+  "en": "Test"
+ },
+ {
+  "id": "c-pdf29-27",
+  "de": "Ausgelöst durch",
+  "en": "Triggered by"
+ },
+ {
+  "id": "c-pdf29-28",
+  "de": "Art",
+  "en": "Type"
+ },
+ {
+  "id": "c-pdf29-29",
+  "de": "Fahrgestellnummer",
+  "en": "VIN"
+ },
+ {
+  "id": "c-pdf29-30",
+  "de": "Wo",
+  "en": "Where"
+ },
+ {
+  "id": "c-pdf29-31",
+  "de": "abgeschlossen",
+  "en": "complete"
+ },
+ {
+  "id": "c-pdf29-32",
+  "de": "nicht bestanden",
+  "en": "failed"
+ },
+ {
+  "id": "c-pdf29-33",
+  "de": "offen",
+  "en": "incomplete"
+ },
+ {
+  "id": "c-pdf29-34",
+  "de": "bestanden",
+  "en": "passed"
+ }
+]

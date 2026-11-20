@@ -58,6 +58,8 @@ pub struct Options {
     /// --baud was given; otherwise the usual rates are tried.
     pub baud_given: bool,
     pub seconds: i32,
+    /// --seconds was given; `report` has a shorter default.
+    pub seconds_given: bool,
     pub verbose: bool,
     pub demo: bool,
     pub json: bool,
@@ -73,6 +75,10 @@ pub struct Options {
     pub rate: i32,
     /// j1939: clear the faults after reading them.
     pub clear: bool,
+    /// report: language code of the report.
+    pub lang: String,
+    /// report: the PDF file, the one argument without a dash.
+    pub output: String,
 }
 
 impl Options {
@@ -85,6 +91,7 @@ impl Options {
             baud: 38400,
             baud_given: false,
             seconds: 15,
+            seconds_given: false,
             verbose: false,
             demo: false,
             json: false,
@@ -98,6 +105,8 @@ impl Options {
             csv_path: String::new(),
             rate: 0,
             clear: false,
+            lang: String::new(),
+            output: String::new(),
         };
         let mut i = 2;
         while i < argv.len() {
@@ -131,6 +140,7 @@ impl Options {
                 "--seconds" if has_value => {
                     i += 1;
                     o.seconds = number(&argv[i])?;
+                    o.seconds_given = true;
                 }
                 "--ids" if has_value => {
                     i += 1;
@@ -157,10 +167,19 @@ impl Options {
                     i += 1;
                     o.rate = number(&argv[i])?;
                 }
+                "--lang" if has_value => {
+                    i += 1;
+                    o.lang = argv[i].clone();
+                }
                 "--clear" => o.clear = true,
                 "--demo" => o.demo = true,
                 "--json" => o.json = true,
                 "-v" => o.verbose = true,
+                // The output file of `report`; main refuses it for the
+                // other commands with the usual message.
+                _ if o.output.is_empty() && !arg.is_empty() && !arg.starts_with('-') => {
+                    o.output = arg.to_string();
+                }
                 _ => return Err(format!("Unknown option: {arg}\n\n{USAGE}")),
             }
             i += 1;
@@ -222,5 +241,19 @@ mod tests {
         assert!(e.starts_with("Unknown option: --tcp\n"));
         let e = Options::parse(&args(&["cli", "read", "--baud", "x"])).unwrap_err();
         assert_eq!(e, "Not a number after --baud\n");
+    }
+
+    #[test]
+    fn report_takes_a_file_and_a_language() {
+        let o = Options::parse(&args(&[
+            "cli", "report", "--demo", "out.pdf", "--lang", "de",
+        ]))
+        .unwrap();
+        assert_eq!(o.output, "out.pdf");
+        assert_eq!(o.lang, "de");
+        assert!(!o.seconds_given);
+        // A second file name is an unknown option, as before.
+        let e = Options::parse(&args(&["cli", "report", "a.pdf", "b.pdf"])).unwrap_err();
+        assert!(e.starts_with("Unknown option: b.pdf\n"));
     }
 }

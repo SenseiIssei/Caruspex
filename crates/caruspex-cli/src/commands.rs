@@ -6,7 +6,7 @@ use std::time::Instant;
 
 use caruspex_analysis::common::{FuelType, Level, TrafficLight, level_key};
 use caruspex_analysis::health_check::{
-    Area, HealthInput, fuel_type_from_obd, health_live_pids, run_health_check,
+    Area, HealthInput, HealthReport, fuel_type_from_obd, health_live_pids, run_health_check,
 };
 use caruspex_analysis::inputs;
 use caruspex_data::dtc::{brand_family, brand_family_label, lookup_dtc};
@@ -168,14 +168,14 @@ fn json_adapter(json: &mut JsonWriter, elm: &Elm327) {
 /// The brand behind the VIN, for manufacturer-specific code texts. Empty if
 /// the car gives no VIN or the VIN names no single brand.
 #[derive(Default)]
-struct VinContext {
-    vin: String,
-    info: VinInfo,
-    matched: CatalogMatch,
-    brand: String,
+pub(crate) struct VinContext {
+    pub vin: String,
+    pub info: VinInfo,
+    pub matched: CatalogMatch,
+    pub brand: String,
 }
 
-fn read_vin_context(obd: &mut Obd2) -> VinContext {
+pub(crate) fn read_vin_context(obd: &mut Obd2) -> VinContext {
     let mut c = VinContext {
         vin: obd.read_vin(),
         ..VinContext::default()
@@ -574,15 +574,24 @@ fn fuel_key(fuel: FuelType) -> &'static str {
     }
 }
 
-pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
-    let progress = |text: &str| {
-        if !as_json {
-            say(&format!("{text}\n"));
-            flush();
-        }
-    };
+/// What the health check reads and finds, shared by `health` and `report`
+/// so both ask the car the same questions in the same order.
+pub(crate) struct HealthRun {
+    pub status: VehicleStatus,
+    pub faults: Vec<Fault>,
+    /// Why the fault memory could not be read; empty if it was.
+    pub faults_error: String,
+    pub vin: VinContext,
+    pub monitors: Vec<caruspex_protocols::MonitorResult>,
+    pub input: HealthInput,
+    pub pids: Vec<i32>,
+    pub snapshots: i32,
+    pub report: HealthReport,
+}
 
-    let mut obd = Obd2::new(elm);
+/// Status, faults, VIN, mode 06 and a live series of `seconds`, then the
+/// health check. `progress` gets the texts of the steps.
+pub(crate) fn run_health(obd: &mut Obd2, seconds: i32, progress: &dyn Fn(&str)) -> HealthRun {
     let mut input = HealthInput::default();
     progress("Reading readiness and warning lamp ...");
     let status = obd.read_status();
@@ -606,6 +615,7 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
     // "Not read" and "no faults" are different findings (faultsRead =
     // error.empty() in the C++ version).
     input.faults_read = read.is_ok();
+    let faults_error = read.as_ref().err().cloned().unwrap_or_default();
     let faults = read.unwrap_or_default();
     input.faults = faults
         .iter()
@@ -616,9 +626,8 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
             throttle_related: f.throttle_related,
         })
         .collect();
-    let vin = read_vin_context(&mut obd);
-    let brand = vin.brand.clone();
-    let level_brand = brand.clone();
+    let vin = read_vin_context(obd);
+    let level_brand = vin.brand.clone();
     input.fault_level = Some(Arc::new(move |f: &inputs::Fault| {
         // As in the application: the database knows how urgent a code is,
         // pending codes count one step lower since they may still go away.
@@ -636,9 +645,8 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
     }));
 
     progress("Reading component monitoring (mode 06) ...");
-    input.monitor_results = obd
-        .read_monitor_results()
-        .unwrap_or_default()
+    let monitors = obd.read_monitor_results().unwrap_or_default();
+    input.monitor_results = monitors
         .iter()
         .map(|m| inputs::MonitorResult {
             test_id: m.test_id,
@@ -667,14 +675,11 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
         .copied()
         .filter(|pid| supported.is_empty() || supported.contains(pid))
         .collect();
-    if !as_json {
-        say(&format!(
-            "Collecting {} live values for {} s ...\n",
-            pids.len(),
-            seconds
-        ));
-        flush();
-    }
+    progress(&format!(
+        "Collecting {} live values for {} s ...",
+        pids.len(),
+        seconds
+    ));
     let mut snapshots = 0;
     let start = now_ms();
     while !pids.is_empty() && now_ms() - start < (seconds as u64) * 1000 {
@@ -694,6 +699,38 @@ pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
     }
 
     let report = run_health_check(&input);
+    HealthRun {
+        status,
+        faults,
+        faults_error,
+        vin,
+        monitors,
+        input,
+        pids,
+        snapshots,
+        report,
+    }
+}
+
+pub fn health(elm: &mut Elm327, as_json: bool, seconds: i32) -> i32 {
+    let progress = |text: &str| {
+        if !as_json {
+            say(&format!("{text}\n"));
+            flush();
+        }
+    };
+    let mut obd = Obd2::new(elm);
+    let HealthRun {
+        status,
+        faults,
+        vin,
+        input,
+        pids,
+        snapshots,
+        report,
+        ..
+    } = run_health(&mut obd, seconds, &progress);
+    let brand = vin.brand.clone();
 
     if as_json {
         let mut json = JsonWriter::new();
