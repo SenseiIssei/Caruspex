@@ -147,9 +147,15 @@ impl ScriptCar {
 
 impl Transport for ScriptCar {
     fn write(&mut self, data: &[u8]) -> bool {
-        let cmd = normalize(data);
+        let mut cmd = normalize(data);
         let mut s = self.state.lock().unwrap();
         s.sent.push(cmd.clone());
+        // The answer count digit after a request (ELM327 v1.3 and later)
+        // only tells the adapter when to stop waiting; the script answers
+        // the request itself, and obd_sent lists it without the digit.
+        if cmd.len() > 4 && cmd.len() % 2 == 1 && cmd.chars().all(|c| c.is_ascii_hexdigit()) {
+            cmd.pop();
+        }
         let lines: Vec<String> = if s.refused.contains(&cmd) {
             vec!["?".into()]
         } else if cmd == "ATZ" {

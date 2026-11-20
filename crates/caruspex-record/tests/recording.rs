@@ -317,6 +317,33 @@ fn commands_that_were_never_recorded_get_elm327_answers() {
 }
 
 #[test]
+fn a_request_recorded_with_the_answer_count_answers_the_plain_one() {
+    // A session on a real adapter: after the first round the live requests
+    // carry the answer count digit (ELM327 v1.3).
+    let mut replay = ReplayTransport::from_recording(
+        small_recording(
+            "{\"t\":1.0,\"dir\":\"tx\",\"data\":\"010C0D\\r\"}\n\
+             {\"t\":1.1,\"dir\":\"rx\",\"data\":\"7E8 04 41 0C 0F A0\\r\\r>\"}\n\
+             {\"t\":2.0,\"dir\":\"tx\",\"data\":\"010C0D1\\r\"}\n\
+             {\"t\":2.1,\"dir\":\"rx\",\"data\":\"7E8 04 41 0C 1F 40\\r\\r>\"}\n",
+        ),
+        "hinted",
+        ReplayPacing::Fast,
+    );
+    // A replay only knows the requests as recorded: no digit from the driver.
+    assert!(!replay.count_hint_allowed());
+    assert_eq!(
+        text_of(&replay_answer(&mut replay, "010C0D")),
+        "7E8 04 41 0C 0F A0\r\r>"
+    );
+    assert_eq!(
+        text_of(&replay_answer(&mut replay, "010C0D")),
+        "7E8 04 41 0C 1F 40\r\r>"
+    );
+    assert_eq!(replay.unmatched(), 0);
+}
+
+#[test]
 fn repeating_live_polls_wrap_around_to_the_start() {
     let mut replay = ReplayTransport::from_recording(
         small_recording(

@@ -1,0 +1,7 @@
+[
+ {
+  "id": "c-perf31-1",
+  "de": "  Der Adapter kommt mit der Antwortzahl hinter der Anfrage nicht zurecht, Anfragen gehen ohne sie.",
+  "en": "  The adapter does not handle the answer count after a request, requests go without it."
+ }
+]
