@@ -293,23 +293,27 @@ fn the_live_loop_keeps_to_the_poll_interval_and_allocates_little() {
 #[test]
 fn an_answer_reaches_the_sink_quickly() {
     let _one = SERIAL.lock().unwrap_or_else(|e| e.into_inner());
-    let (transport, stats) = serial(LineTiming::elm327_115200());
-    let r = run(
-        transport,
-        Some(stats),
-        six(),
-        Duration::from_secs(2),
-        settings(),
-    );
-    // Under 1 ms on a desktop; the virtual macOS runners of the CI wake
-    // threads much later (15 ms seen), so the guard only catches real
-    // regressions such as a sleep in the path.
-    assert!(
-        r.latency_median < Duration::from_millis(50),
-        "median {:?}",
-        r.latency_median
-    );
-    assert!(r.values_per_s > 20.0, "{} values/s", r.values_per_s);
+    // Under 1 ms on a desktop. The shared macOS runners of the CI wake
+    // threads much later when a neighbour is busy (15 ms and once 50 ms
+    // seen), so the best of three runs counts: a real regression such as a
+    // sleep in the path is slow in every run, a noisy neighbour is not.
+    let mut medians = Vec::new();
+    for _ in 0..3 {
+        let (transport, stats) = serial(LineTiming::elm327_115200());
+        let r = run(
+            transport,
+            Some(stats),
+            six(),
+            Duration::from_secs(2),
+            settings(),
+        );
+        assert!(r.values_per_s > 20.0, "{} values/s", r.values_per_s);
+        medians.push(r.latency_median);
+        if r.latency_median < Duration::from_millis(50) {
+            return;
+        }
+    }
+    panic!("median latency in every run at least 50 ms: {medians:?}");
 }
 
 // --- Report and soak ----------------------------------------------------------
