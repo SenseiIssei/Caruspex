@@ -1,9 +1,10 @@
 // "Was soll ich jetzt tun?": what the session knows about the car goes to
 // the backend (crate caruspex-advice), the list in three steps comes back.
 // Used by the page of its own and by the card on the start page.
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { call } from "../api";
 import type { AdviceInput, AdviceReport } from "../api";
+import { usePageActive } from "../lib/hooks";
 import { live, readiness, session, useSession } from "./session";
 
 // What the driver sees on the dashboard; OBD cannot tell.
@@ -32,8 +33,9 @@ export function adviceInput(observations: Observations): AdviceInput {
 }
 
 // The list for the car, recomputed when something about it changes and,
-// while connected, every few seconds for the live values.
+// while connected and on screen, every few seconds for the live values.
 export function useAdvice(observations: Observations = NO_OBSERVATIONS): AdviceReport | null {
+  const active = usePageActive();
   const connected = useSession((s) => s.connected);
   const faults = useSession((s) => s.faults);
   const haveFaults = useSession((s) => s.haveFaults);
@@ -43,18 +45,30 @@ export function useAdvice(observations: Observations = NO_OBSERVATIONS): AdviceR
   const [report, setReport] = useState<AdviceReport | null>(null);
   const [tick, setTick] = useState(0);
 
+  // A hidden page does not ask; it asks again when it is shown, as the live
+  // values may have moved meanwhile.
+  const shownBefore = useRef(active);
   useEffect(() => {
-    if (!connected) return;
+    if (!active) shownBefore.current = false;
+    if (!connected || !active) return;
+    if (!shownBefore.current) setTick((n) => n + 1);
+    shownBefore.current = true;
     const timer = setInterval(() => setTick((n) => n + 1), 4000);
     return () => clearInterval(timer);
-  }, [connected]);
+  }, [connected, active]);
+  // The same answer again does not draw the page again.
+  const lastJson = useRef("");
 
   const { milFlashing, redWarningLamp } = observations;
   useEffect(() => {
     let cancelled = false;
     void call("what_to_do", { input: adviceInput({ milFlashing, redWarningLamp }) })
       .then((r) => {
-        if (!cancelled && r) setReport(r);
+        if (cancelled || !r) return;
+        const json = JSON.stringify(r);
+        if (json === lastJson.current) return;
+        lastJson.current = json;
+        setReport(r);
       })
       .catch(() => undefined);
     return () => {

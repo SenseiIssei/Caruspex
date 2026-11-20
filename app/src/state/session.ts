@@ -20,6 +20,7 @@ import type {
 import { DEFAULT_SETTINGS } from "../api";
 import { toast } from "../components/Toast";
 import { t, tn } from "../i18n";
+import { FrameNotifier } from "../lib/frames";
 import { createStore, emitApp, useStore } from "../lib/store";
 import { identifyVin, type IdentifiedVehicle } from "../lib/vehicleIdentity";
 import { addCheck, findCar, garageStore, isoNow, latestOdometer, rememberConnection, serviceStatus, touchCar } from "./garage";
@@ -143,6 +144,10 @@ export function useSession<S>(selector: (s: SessionState) => S): S {
 // Latest reading per live key, kept outside the store: it changes many times
 // a second and only a few places read it directly.
 export const live = new Map<number, LiveRow>();
+
+// Which keys of `live` changed, for the pages that show them (useLiveRows in
+// state/liveView.ts): told once per animation frame, not once per reading.
+export const liveFrames = new FrameNotifier<number>();
 
 export function liveValue(pid: number, fallback = 0): number {
   return live.get(pid)?.value ?? fallback;
@@ -289,6 +294,7 @@ export function reportFindings(): ReportFinding[] {
 
 function resetVehicle(): Partial<SessionState> {
   live.clear();
+  liveFrames.markAll();
   return {
     connected: false,
     adapter: "",
@@ -425,6 +431,7 @@ export function startSession(): void {
 
   on("live_value", ({ row }) => {
     live.set(row.pid, row);
+    liveFrames.mark(row.pid);
     if (row.pid !== 0xa6) return;
     // The odometer often arrives after the faults: store it with the check
     // of this session (it replaces the one from a minute ago).

@@ -55,6 +55,9 @@ export function useXrayScene({
             onStats: (s) => setStats(s),
           });
           setMode("3d");
+          // The development server lends the scene to the measurements in
+          // docs/performance.md (renderer counts); a release has no such hook.
+          if (import.meta.env.DEV) (window as { __caruspexXray?: XrayScene }).__caruspexXray = sceneRef.current;
         } catch {
           setMode("2d");
         }

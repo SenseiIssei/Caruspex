@@ -3,7 +3,7 @@
 // that fit the detected car and the user's own Torque CSV values below. Tick values on the left, start at the top;
 // the chart shows every curve as a share of its own range, the table the
 // current readings, and the recording can be saved as CSV.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { call } from "../api";
 import type { CustomRow, LiveRow, PidInfo, PidPackInfo } from "../api";
 import { SeriesStore, TimeSeriesChart } from "../components/charts/TimeSeriesChart";
@@ -14,6 +14,7 @@ import { Button, Card, Check, Page, PageHeader, TextInput, cx } from "../compone
 import { translator } from "../i18n";
 import type { TermId } from "../lib/glossary";
 import { useAppEvent, useBackendEvent, usePageActive } from "../lib/hooks";
+import { SampleLog } from "../lib/sampleLog";
 import { navigate } from "../shell/nav";
 import { useSession, useSettings } from "../state/session";
 import { J1939LivePage } from "../components/J1939";
@@ -37,13 +38,71 @@ interface ListItem {
   tooltip?: string;
 }
 
-interface Sample {
-  seconds: number;
-  pid: number;
-  name: string;
-  value: number;
-  unit: string;
+// The newest reading per value for the table, filled by the page and drawn
+// by LiveTable a few times a second.
+interface TableSource {
+  rows: Map<number, LiveRow>;
+  dirty: boolean;
+  // Set by the table while it is on screen: draw now (after clearing).
+  redraw: (() => void) | null;
 }
+
+// One row of the table: only rows with a new reading are drawn again.
+const LiveTableRow = memo(function LiveTableRow({ row }: { row: LiveRow }) {
+  const term = trimTerm(row.pid);
+  return (
+    <tr className="fade-in">
+      <td>{term ? <Term id={term}>{row.name}</Term> : row.name}</td>
+      <td className={cx("num", row.warn && "warn")} title={row.text || undefined}>
+        <span className="ltr live-value">{row.text ? row.text : row.value.toFixed(2)}</span>
+      </td>
+      <td className="muted">{row.unit}</td>
+    </tr>
+  );
+});
+
+// The current readings. Its own component, so the long list of values beside
+// it is not drawn again with every update.
+const LiveTable = memo(function LiveTable({ source }: { source: TableSource }) {
+  const active = usePageActive();
+  const [, setVersion] = useState(0);
+  // The table follows the values a few times a second while on screen.
+  useEffect(() => {
+    if (!active) return;
+    const redraw = () => setVersion((v) => v + 1);
+    source.redraw = redraw;
+    redraw();
+    const id = setInterval(() => {
+      if (!source.dirty) return;
+      source.dirty = false;
+      redraw();
+    }, 250);
+    return () => {
+      clearInterval(id);
+      source.redraw = null;
+    };
+  }, [active, source]);
+  // The map keeps arrival order.
+  const rows = [...source.rows.values()];
+  return (
+    <div className="table-wrap live-table">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>{tr("Messwert")}</th>
+            <th className="num">{tr("Wert")}</th>
+            <th>{tr("Einheit")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <LiveTableRow key={row.pid} row={row} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+});
 
 // A truck sends its values by itself: its own page that listens.
 export default function LivePage() {
@@ -54,7 +113,6 @@ export default function LivePage() {
 function CarLivePage() {
   const connected = useSession((s) => s.connected);
   const settings = useSettings();
-  const active = usePageActive();
 
   const [table, setTable] = useState<PidInfo[]>([]);
   const [packs, setPacks] = useState<PidPackInfo[]>([]);
@@ -73,10 +131,8 @@ function CarLivePage() {
   const [nothingChosen, setNothingChosen] = useState(false);
 
   const store = useRef(new SeriesStore()).current;
-  const rows = useRef(new Map<number, LiveRow>());
-  const [rowsVersion, setRowsVersion] = useState(0);
-  const rowsDirty = useRef(false);
-  const recorded = useRef<Sample[]>([]);
+  const readings = useRef<TableSource>({ rows: new Map(), dirty: false, redraw: null }).current;
+  const recorded = useRef(new SampleLog()).current;
   const clockStart = useRef<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const runningRef = useRef(false);
@@ -129,9 +185,10 @@ function CarLivePage() {
   useEffect(() => {
     if (connected) return;
     setRunning(false);
-    rows.current.clear();
-    setRowsVersion((v) => v + 1);
-  }, [connected]);
+    readings.rows.clear();
+    readings.dirty = true;
+    readings.redraw?.();
+  }, [connected, readings]);
 
   // One entry per PID, grouped by category; then one section per pack and
   // one per imported file.
@@ -208,29 +265,17 @@ function CarLivePage() {
   });
 
   useBackendEvent("live_value", ({ row }) => {
-    rows.current.set(row.pid, row);
-    rowsDirty.current = true;
+    readings.rows.set(row.pid, row);
+    readings.dirty = true;
     if (row.text) return; // status values do not belong in the chart
     if (clockStart.current === null) return;
     const seconds = (performance.now() - clockStart.current) / 1000;
     if (recordRef.current) {
-      recorded.current.push({ seconds, pid: row.pid, name: row.name, value: row.value, unit: row.unit });
-      if (recorded.current.length === 1) setCanExport(true);
+      recorded.push(seconds, row.pid, row.name, row.value, row.unit);
+      if (recorded.length === 1) setCanExport(true);
     }
     store.add(row.pid, seconds, row.value, row);
   });
-
-  // The table follows the values a few times a second while on screen.
-  useEffect(() => {
-    if (!active) return;
-    setRowsVersion((v) => v + 1);
-    const id = setInterval(() => {
-      if (!rowsDirty.current) return;
-      rowsDirty.current = false;
-      setRowsVersion((v) => v + 1);
-    }, 250);
-    return () => clearInterval(id);
-  }, [active]);
 
   const selected = (kind: "pid" | "custom") =>
     items.filter((i) => i.kind === kind && checked.has(i.key) && !unsupported(i)).map((i) => i.key);
@@ -250,7 +295,7 @@ function CarLivePage() {
     store.clear();
     store.setWindow(settings.chartWindowSeconds);
     clockStart.current = performance.now();
-    recorded.current = [];
+    recorded.clear();
     setCanExport(false);
     void (async () => {
       await call("start_live", { pids });
@@ -277,9 +322,10 @@ function CarLivePage() {
   };
 
   const exportCsv = async () => {
-    if (recorded.current.length === 0) return;
+    if (recorded.length === 0) return;
     const lines = [tr("Sekunde;PID;Messwert;Wert;Einheit")];
-    for (const s of recorded.current) {
+    for (let i = 0; i < recorded.length; i++) {
+      const s = recorded.at(i);
       const pid = `0x${s.pid.toString(16).padStart(2, "0")}`.toUpperCase();
       lines.push(`${s.seconds.toFixed(2)};${pid};${s.name};${s.value.toFixed(3)};${s.unit}`);
     }
@@ -296,9 +342,56 @@ function CarLivePage() {
   };
 
   const needle = search.trim().toLowerCase();
-  // rowsVersion changes when the readings did; the map keeps arrival order.
-  void rowsVersion;
-  const tableRows = [...rows.current.values()];
+
+  // The list of values only changes with a tick, a search or the table of
+  // the car, so it is built once for each of those.
+  const list = useMemo(
+    () =>
+      items.map((item, i) => {
+        if (item.kind === "head") {
+          if (needle) return null;
+          return (
+            <div className="live-list-head" key={`h${i}`}>
+              {item.label}
+            </div>
+          );
+        }
+        if (item.kind === "note") {
+          if (needle) return null;
+          return (
+            <div className="live-list-note" key={`n${i}`}>
+              {item.label}
+            </div>
+          );
+        }
+        if (needle && !item.label.toLowerCase().includes(needle)) return null;
+        const off = item.kind === "pid" && supported.size > 0 && !supported.has(item.key);
+        return (
+          <label
+            key={`${item.kind}${item.key}`}
+            className={cx("live-list-item", off && "off")}
+            title={off ? tr("Dieses Fahrzeug liefert den Wert nicht.") : item.tooltip}
+            role="listitem"
+          >
+            <input
+              type="checkbox"
+              checked={checked.has(item.key) && !off}
+              disabled={off}
+              onChange={(e) =>
+                setChecked((prev) => {
+                  const next = new Set(prev);
+                  if (e.target.checked) next.add(item.key);
+                  else next.delete(item.key);
+                  return next;
+                })
+              }
+            />
+            <span>{item.label}</span>
+          </label>
+        );
+      }),
+    [items, needle, supported, checked],
+  );
 
   return (
     <Page className="live-page">
@@ -342,74 +435,11 @@ function CarLivePage() {
             aria-label={tr("Messwert suchen, z.B. Öl oder Lambda")}
           />
           <div className="live-list card flat" ref={listRef} role="list">
-            {items.map((item, i) => {
-              if (item.kind === "head") {
-                if (needle) return null;
-                return (
-                  <div className="live-list-head" key={`h${i}`}>
-                    {item.label}
-                  </div>
-                );
-              }
-              if (item.kind === "note") {
-                if (needle) return null;
-                return (
-                  <div className="live-list-note" key={`n${i}`}>
-                    {item.label}
-                  </div>
-                );
-              }
-              if (needle && !item.label.toLowerCase().includes(needle)) return null;
-              const off = unsupported(item);
-              return (
-                <label
-                  key={`${item.kind}${item.key}`}
-                  className={cx("live-list-item", off && "off")}
-                  title={off ? tr("Dieses Fahrzeug liefert den Wert nicht.") : item.tooltip}
-                  role="listitem"
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked.has(item.key) && !off}
-                    disabled={off}
-                    onChange={(e) =>
-                      setChecked((prev) => {
-                        const next = new Set(prev);
-                        if (e.target.checked) next.add(item.key);
-                        else next.delete(item.key);
-                        return next;
-                      })
-                    }
-                  />
-                  <span>{item.label}</span>
-                </label>
-              );
-            })}
+            {list}
           </div>
         </div>
 
-        <div className="table-wrap live-table">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>{tr("Messwert")}</th>
-                <th className="num">{tr("Wert")}</th>
-                <th>{tr("Einheit")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableRows.map((row) => (
-                <tr key={row.pid} className="fade-in">
-                  <td>{trimTerm(row.pid) ? <Term id={trimTerm(row.pid)!}>{row.name}</Term> : row.name}</td>
-                  <td className={cx("num", row.warn && "warn")} title={row.text || undefined}>
-                    <span className="ltr live-value">{row.text ? row.text : row.value.toFixed(2)}</span>
-                  </td>
-                  <td className="muted">{row.unit}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <LiveTable source={readings} />
       </div>
 
       {nothingChosen ? (

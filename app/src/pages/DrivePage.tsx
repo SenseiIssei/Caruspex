@@ -3,14 +3,15 @@
 // warnings that matter while driving. Nothing to press while the car moves;
 // the page says so at the top. It reads the values only while it is on
 // screen and stops again when left.
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { call } from "../api";
 import { Icon, type IconName } from "../components/Icon";
 import { Button, EmptyState, Page } from "../components/ui";
 import { localeNumber, t, translator } from "../i18n";
-import { useBackendEvent, usePageActive } from "../lib/hooks";
+import { usePageActive } from "../lib/hooks";
 import { navigate } from "../shell/nav";
-import { live, useSession } from "../state/session";
+import { useLiveRows } from "../state/liveView";
+import { useSession } from "../state/session";
 import "./DrivePage.css";
 
 const tu = translator("caruspex::Usability");
@@ -60,14 +61,16 @@ export default function DrivePage() {
   const connected = useSession((s) => s.connected);
   const mil = useSession((s) => s.status?.mil ?? false);
   const faults = useSession((s) => s.faults.filter((f) => f.stored).length);
-  const [values, setValues] = useState<Map<number, Reading>>(() => {
+  // The newest reading of each of the four, while the page is on screen.
+  const rows = useLiveRows(DRIVE_PIDS);
+  const values = useMemo(() => {
     const m = new Map<number, Reading>();
-    for (const pid of DRIVE_PIDS) {
-      const row = live.get(pid);
+    DRIVE_PIDS.forEach((pid, i) => {
+      const row = rows[i];
       if (row) m.set(pid, { value: row.value, unit: row.unit, warn: row.warn });
-    }
+    });
     return m;
-  });
+  }, [rows]);
   const started = useRef(false);
 
   // Reads the four values while the page is on screen.
@@ -80,12 +83,6 @@ export default function DrivePage() {
       started.current = false;
     };
   }, [active, connected]);
-
-  useBackendEvent("live_value", ({ row }) => {
-    if (!(DRIVE_PIDS as readonly number[]).includes(row.pid)) return;
-    setValues((before) => new Map(before).set(row.pid, { value: row.value, unit: row.unit, warn: row.warn }));
-  });
-  useBackendEvent("closed", () => setValues(new Map()));
 
   const warnings = driveWarnings(values, mil, faults);
 
