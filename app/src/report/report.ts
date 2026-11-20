@@ -27,6 +27,8 @@ export interface ReportState {
   faults: FaultRow[];
   // Where on the car each code points (locateDtc), by code.
   faultZones: Record<string, string>;
+  // "Meaning from one source" for codes that only one source defines, by code.
+  faultNotes: Record<string, string>;
   haveStatus: boolean;
   mil: boolean;
   readiness: ReadinessRow[];
@@ -40,12 +42,18 @@ export interface ReportState {
 export async function collectReportState(): Promise<ReportState> {
   const s = session.get();
   const zones: Record<string, string> = {};
+  const notes: Record<string, string> = {};
   await Promise.all(
     s.faults.map(async (f) => {
       try {
         zones[f.code] = (await call("locate_dtc", { code: f.code })).name;
       } catch {
         zones[f.code] = "";
+      }
+      try {
+        notes[f.code] = (await call("lookup_dtc", { code: f.code, brand: "" })).sourceNote ?? "";
+      } catch {
+        notes[f.code] = "";
       }
     }),
   );
@@ -62,6 +70,7 @@ export async function collectReportState(): Promise<ReportState> {
     haveFaults: s.haveFaults,
     faults: s.faults,
     faultZones: zones,
+    faultNotes: notes,
     haveStatus: s.status !== null,
     mil: s.status?.mil ?? false,
     readiness: readiness(s.status),
@@ -168,8 +177,10 @@ export function reportHtml(state: ReportState, extras: ReportExtras): string {
   } else {
     h += `<table><tr><th>${esc(tr("Code"))}</th><th>${esc(tr("Art"))}</th><th>${esc(tr("Bedeutung"))}</th><th>${esc(tr("Wo"))}</th></tr>`;
     for (const f of state.faults) {
+      const note = state.faultNotes[f.code] ?? "";
       h +=
-        `<tr><td class='code'>${esc(f.code)}</td><td>${esc(f.kind)}</td><td>${esc(f.text)}</td>` +
+        `<tr><td class='code'>${esc(f.code)}</td><td>${esc(f.kind)}</td>` +
+        `<td>${esc(f.text)}${note ? ` <span class='muted'>(${esc(note)})</span>` : ""}</td>` +
         `<td class='muted'>${esc(state.faultZones[f.code] ?? "")}</td></tr>`;
     }
     h += "</table>";

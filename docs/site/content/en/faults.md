@@ -7,7 +7,7 @@ The **Fault memory** page reads what the control units have stored and explains 
 ## What you see
 
 - **Stored, pending and permanent** codes. With several control units, every code shows who reported it (engine, gearbox).
-- About 1,400 standard codes (P, C, B, U) and the manufacturer codes of VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai and Kia, Subaru and more. A P1 code is read the way the detected brand means it.
+- About 9,400 standard codes (P, C, B, U) and the manufacturer codes of VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai and Kia, Subaru and more. A P1 code is read the way the detected brand means it.
 - A **traffic light** per code and the question everyone asks first: may I keep driving?
 - The usual causes, things you can check yourself and a rough cost class.
 - Where the part sits: the car in see-through view, or the [X-ray view](xray.md).

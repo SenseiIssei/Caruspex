@@ -11,12 +11,12 @@ Legend: **met**, **partly**, **open**, **n/a** (not applicable, with the reason 
 | Point | Requirement (short) | Status | How, where |
 |---|---|---|---|
 | 1 | Appropriate level of cybersecurity based on the risks | partly | Risk assessment in [risk-assessment.md](risk-assessment.md); its gaps are listed there. |
-| 2(a) | No known exploitable vulnerabilities when made available | met | `tools/audit.py` (RustSec, npm audit) in `.github/workflows/audit.yml` on dependency changes and weekly; a release is cut from a green main. Accepted findings need a reason and an expiry (`tools/audit_exceptions.toml`). |
+| 2(a) | No known exploitable vulnerabilities when made available | met | `tools/audit.py` (RustSec, npm audit) in `.github/workflows/audit.yml` on dependency changes and weekly; a release is cut from a green main. Accepted findings need a reason and an expiry (`tools/audit_exceptions.toml`); so do unmaintained or unsound crates that cannot be replaced yet (since 0.18). |
 | 2(b) | Secure by default configuration, reset to the original state | met | Read only by default, every action on the car behind a confirmation (`CONTRIBUTING.md`, safety rules); no network service is opened; the update check runs only after the user said yes once (since 0.18), the signature check always. Reset: delete the settings file (the button **Open storage location** in the settings shows it). |
 | 2(c) | Security updates, automatic by default with opt-out, notification, postponing | partly | Signed updater (`app/src-tauri/src/update.rs`): the check asks once and only runs after a yes (since 0.18), then at start and every six hours, and shows the new version; installing is one click, "Install updates automatically" is **off** by default (`app/src-tauri/src/settings.rs`); both can be switched off; the user can postpone by not installing. A manufacturer would have to switch automatic installation of security updates on by default. No updater on Android and for .deb installs (they get the release page). |
 | 2(d) | Protection from unauthorised access | n/a | No users, no remote access, no listening service; runs in the user's account. |
 | 2(e) | Confidentiality of stored and transmitted data | partly | Internet traffic (update) only over HTTPS; personal data minimised and removed from shared files (`crates/caruspex-record/src/share.rs`, `app/src-tauri/src/crash.rs`). Data at rest relies on the operating system. |
-| 2(f) | Integrity of data, commands, programs, configuration; report corruption | partly | Updates checked (signature, HTTPS, fixed download prefix). Settings and garage are written atomically (`write_atomically` in `app/src-tauri/src/settings.rs`); a garage file that cannot be read is kept as `garage.json.damaged` before the next save could overwrite it (`app/src-tauri/src/garage.rs`), but the user is not told yet, and a damaged settings file silently falls back to the defaults. The update manifest itself is not signed (rollback gap, see risk assessment). |
+| 2(f) | Integrity of data, commands, programs, configuration; report corruption | partly | Updates checked (signature, HTTPS, fixed download prefix). Settings and garage are written atomically (`write_atomically` in `app/src-tauri/src/settings.rs`); a garage file that cannot be read is kept as `garage.json.damaged` before the next save could overwrite it (`app/src-tauri/src/garage.rs`), but the user is not told yet, and a damaged settings file silently falls back to the defaults. The update manifest itself is not signed, but since 0.18 the app only accepts a package whose signed file name is the download and carries the offered version, so an old signed package cannot be offered as new (`check_signed_name` in `app/src-tauri/src/update.rs`, the same check in `tools/release_assets.py`). |
 | 2(g) | Data minimisation | met | No telemetry; the update request carries only the version in the user agent; recordings only when started by the user ([privacy page](../site/content/en/privacy.md)). |
 | 2(h) | Availability of essential functions, resilience | met | Parsers must not panic (property tests in `crates/*/tests/fuzz.rs`); one worker thread owns the connection and runs the jobs one after another, so a stop request always gets through (`docs/ARCHITECTURE.md`); crash reports on panic (`app/src-tauri/src/crash.rs`). |
 | 2(i) | Minimise impact on other devices and networks | met | Timeouts and pauses that real control units need (`caruspex_link::timing`); no bus flooding; the ENET discovery is one broadcast. |
@@ -50,7 +50,9 @@ Every release on GitHub carries, next to the packages, `latest.json` and the `.s
 | `Caruspex-<version>-provenance.sigstore.json` | Sigstore bundle of the GitHub build provenance for every file in SHA256SUMS | `actions/attest-build-provenance` (pinned by commit SHA) |
 
 The new steps add files with new names only, run after the signing and after `latest.json` is written, and run
-before `gh release create`, so a failure leaves no release instead of one without `latest.json`. How users check
+before `gh release create`, so a failure leaves no release instead of one without `latest.json`. Every action of
+the workflows is pinned by commit SHA and the Python packages of the release job by version and hash
+(`tools/requirements-release.txt`), so a moved tag cannot change what runs next to the signing key. How users check
 a download is in [SECURITY.md](../../SECURITY.md#checking-a-download).
 
 **What the SBOMs cover**: the Rust crates of the workspace and of `Cargo.lock` that are compiled for that
@@ -90,13 +92,17 @@ python tools/sbom.py --out target/sbom
 
 1. **Turn on GitHub private vulnerability reporting and Dependabot security updates** (repository settings, see
    [SECURITY.md](../../SECURITY.md)). Without the first, the reporting link leads nowhere.
-2. **Rollback protection in the updater**: bind the version and file name in the signed trusted comment
-   (risk assessment, "Malicious update").
-3. **Pin all third-party actions by commit SHA** and pin `cryptography` in the release job.
+2. **Rollback protection in the updater**: done in 0.18 (the signed file name must be the download and carry the offered version).
+3. **Done in 0.18: actions pinned by commit SHA**, `cryptography` and its dependencies pinned by version and hash
+   in the release job (`tools/requirements-release.txt`), the Inno Setup fallback by version; Dependabot keeps them
+   current (CONTRIBUTING.md, "Dependency updates").
 4. **Support period statement**: decided, there is no support period. Caruspex is maintained on a best effort basis by
    one person in spare time, without any promise; if maintenance stops, the repository will be archived and say so
    ([support.md](support.md)).
-5. **Replace or follow up the unmaintained crates** reported by RustSec (`chrono` and others).
+5. **Done in 0.18: unmaintained crates followed up.** `chrono` replaced by `jiff`; `glib` 0.18 (unsound),
+   `proc-macro-error`, `zvariant`, `zvariant_derive` and `zbus_names` come with tauri's Linux stack and cannot be
+   replaced yet; each has a dated entry with its reason in `tools/audit_exceptions.toml` (risk assessment, "Known
+   vulnerabilities in dependencies").
 6. If Caruspex is ever monetised: automatic security updates on by default, a non-automated contact, the
    manufacturer's name and address, EU declaration of conformity and CE marking on the download page, an
    end-of-support notice in the app (Article 13(19)), keeping security updates available for 10 years

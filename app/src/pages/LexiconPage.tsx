@@ -194,7 +194,7 @@ export default function LexiconPage() {
             </div>
             <h2 className="section-title selectable">{ownText ? selected.text : (info?.text ?? selected.text)}</h2>
             <div className="subtle">
-              {[selected.systemName, selected.familyLabel].filter(Boolean).join("  ·  ")}
+              {[selected.systemName, selected.familyLabel, selected.sourceNote].filter(Boolean).join("  ·  ")}
             </div>
             {info && !ownText ? (
               <div className="lexicon-advice" style={{ ["--tone" as string]: tone }}>

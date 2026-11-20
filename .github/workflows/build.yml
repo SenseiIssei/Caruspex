@@ -41,19 +41,22 @@ jobs:
     # A hanging package mirror should fail fast, not block for six hours.
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      # A tag instead of the branches stable and nightly, which only set
+      # the default of `toolchain`; the channel is named below.
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
+          toolchain: stable
           components: rustfmt, clippy
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
           cache: npm
@@ -70,7 +73,7 @@ jobs:
           sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
           sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
 
       - name: Formatting
         run: cargo fmt --all --check
@@ -129,9 +132,30 @@ jobs:
       - name: Interface size budget
         run: python tools/bundle_budget.py
       # The licences of every crate, npm package and Android library the
-      # programs ship; needs app/node_modules from the step above.
+      # programs ship; needs app/node_modules from the step above. A
+      # dependency update (Dependabot) changes Cargo.lock or package-lock.json
+      # and with them this file: the step then writes the new file and the
+      # next one hands it over as an artifact. Nothing is pushed from here,
+      # the run has a read-only token (CONTRIBUTING.md, "Dependency updates").
       - name: Third party notices are current
-        run: python tools/gen_notices.py --check
+        id: notices
+        run: |
+          if python tools/gen_notices.py --check; then exit 0; fi
+          python tools/gen_notices.py
+          mkdir -p notices-update
+          cp THIRD_PARTY_NOTICES.md notices-update/
+          git diff --stat -- THIRD_PARTY_NOTICES.md
+          echo "::error file=THIRD_PARTY_NOTICES.md::THIRD_PARTY_NOTICES.md is out of date. On the branch of this pull request run 'npm --prefix app ci' and 'python tools/gen_notices.py', or take the new file from this run with 'gh run download $GITHUB_RUN_ID -n third-party-notices --repo $GITHUB_REPOSITORY', then check the diff and commit it."
+          exit 1
+
+      - name: Upload the new notices
+        if: failure() && steps.notices.outcome == 'failure'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: third-party-notices
+          path: notices-update/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings
@@ -153,12 +177,13 @@ jobs:
       TARGET: x86_64-unknown-linux-gnu
       CARUSPEX_TEST_VCAN: vcan0
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
+          toolchain: nightly
           components: rust-src
 
       - name: System packages
@@ -219,13 +244,15 @@ jobs:
             artifact: caruspex-macos
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
           cache: npm
@@ -249,7 +276,7 @@ jobs:
         if: runner.os == 'Windows'
         run: rustup target add i686-pc-windows-msvc
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
 
       # Built before the tests: the app has the interface built in.
       - name: Interface
@@ -263,8 +290,10 @@ jobs:
       - name: Inno Setup (Windows only)
         if: runner.os == 'Windows'
         run: |
+          # Only when the runner image lacks it; then the version the image has
+          # (windows-2025 lists Inno Setup 6.7.1), not whatever is newest.
           if ! command -v iscc >/dev/null && [ ! -f "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" ]; then
-            choco install innosetup -y --no-progress
+            choco install innosetup --version 6.7.1 -y --no-progress
           fi
 
       - name: Package
@@ -277,7 +306,7 @@ jobs:
         run: bash tools/smoke_test.sh smoke
 
       - name: Upload packages
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ matrix.artifact }}
           path: dist/
@@ -285,7 +314,7 @@ jobs:
 
       - name: Upload smoke test screenshot
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ matrix.artifact }}-smoke
           path: smoke/
@@ -301,13 +330,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
 
@@ -326,14 +357,14 @@ jobs:
 
       # Not named caruspex-*: the release job collects those as packages.
       - name: Upload SBOMs
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sbom
           path: sbom/
           if-no-files-found: error
 
       - name: Upload Android SBOM
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sbom-android
           path: sbom-android/
@@ -351,26 +382,27 @@ jobs:
     outputs:
       signed: ${{ steps.apk.outputs.signed }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
+          toolchain: stable
           targets: aarch64-linux-android
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
           java-version: "21"
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: app/package-lock.json
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
 
       - name: Interface packages
         run: npm --prefix app ci
@@ -417,7 +449,7 @@ jobs:
           ls -l dist-android
 
       - name: Upload APK
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-apk
           path: dist-android/
@@ -436,14 +468,14 @@ jobs:
       attestations: write
     steps:
       - name: Download APK
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: android-apk
           path: apk
 
       # --- Supply chain: SBOM, provenance and checksum of the APK. ---------
       - name: Download Android SBOM
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sbom-android
           path: apk
@@ -486,7 +518,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -502,7 +534,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Download packages
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: caruspex-*
           path: artifacts
@@ -512,13 +544,13 @@ jobs:
           mkdir -p upload
           find artifacts -path '*-smoke*' -prune -o -type f -print -exec cp {} upload/ \;
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: app/package-lock.json
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
 
@@ -545,10 +577,11 @@ jobs:
           done
 
       # Checks every signature against the key in update.rs, writes
-      # latest.json and the copies without version in the name.
+      # latest.json and the copies without version in the name. cryptography
+      # comes in exact versions with their hashes (tools/requirements-release.txt).
       - name: Update manifest and stable names
         run: |
-          pip install --quiet cryptography
+          pip install --quiet --require-hashes --only-binary :all: -r tools/requirements-release.txt
           python tools/release_assets.py "${{ steps.version.outputs.version }}" upload
 
       # --- Supply chain (docs/cra/requirements.md) -------------------------
@@ -558,7 +591,7 @@ jobs:
       # latest.json, and run before the release exists: if one fails there is
       # no release at all, never one without latest.json.
       - name: Download SBOMs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sbom
           path: upload

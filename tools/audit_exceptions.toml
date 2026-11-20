@@ -10,3 +10,45 @@
 # package = "name-of-the-crate"
 # reason = "Why Caruspex is not affected, with the file or function that shows it."
 # expires = 2027-03-31
+#
+# Entries for RustSec warnings (unmaintained, unsound) record a decision: the
+# warning does not fail the run either way, but with an entry it is printed
+# as accepted until the entry expires and has to be looked at again.
+
+# Checked on 20 November 2026 for Caruspex 0.18.
+
+[[exception]]
+id = "RUSTSEC-2026-0543"
+package = "chrono"
+reason = "Not compiled into any Caruspex program since 0.18: the app and the CLI use jiff for local time. chrono is only left in Cargo.lock as an optional dependency of serde_with (through tauri-utils) that no feature switches on; Cargo keeps such entries (rust-lang/cargo#10801). `cargo tree -i chrono -e all --target all` prints nothing."
+expires = 2027-05-20
+
+[[exception]]
+id = "RUSTSEC-2024-0370"
+package = "proc-macro-error"
+reason = "Build time only and only on Linux: a proc macro used by glib-macros 0.18, which comes with gtk 0.18 of tauri, wry and tao (no newer gtk 3 bindings exist). Nothing of it is in the programs. Goes away when tauri moves off gtk 0.18."
+expires = 2027-05-20
+
+[[exception]]
+id = "RUSTSEC-2026-0370"
+package = "zvariant"
+reason = "Linux only, through zbus 5 of tauri-plugin-opener 2.7.3 and tauri-plugin-single-instance 2.5.5 (the newest 2.x, and their 3.0 alphas still need zbus 5). Unmaintained as a separate crate because it moved into zbus 6, no known vulnerability; used for the D-Bus calls of 'show in folder' and the single instance check on the user's own session bus."
+expires = 2027-05-20
+
+[[exception]]
+id = "RUSTSEC-2026-0371"
+package = "zbus_names"
+reason = "Linux only, through zbus 5 of tauri-plugin-opener 2.7.3 and tauri-plugin-single-instance 2.5.5 (the newest 2.x, and their 3.0 alphas still need zbus 5). Unmaintained as a separate crate because it moved into zbus 6, no known vulnerability."
+expires = 2027-05-20
+
+[[exception]]
+id = "RUSTSEC-2026-0372"
+package = "zvariant_derive"
+reason = "Build time only (proc macro), Linux only, through zbus 5 of tauri-plugin-opener 2.7.3 and tauri-plugin-single-instance 2.5.5. Unmaintained as a separate crate because it moved into zbus 6, no known vulnerability."
+expires = 2027-05-20
+
+[[exception]]
+id = "RUSTSEC-2024-0429"
+package = "glib"
+reason = "Linux only. glib 0.18.5 is the last 0.18 release; the fix is in 0.20, but gtk 0.18 of tauri 2.12, wry 0.57 and tao 0.37 needs glib 0.18 (dependabot.yml keeps gtk at wry's version). The unsound code is VariantStrIter (Variant::array_iter_str); neither app/src-tauri/src/webview_gtk.rs nor any of the 332 Linux dependencies of caruspex-app calls it (searched on 20 November 2026)."
+expires = 2027-05-20

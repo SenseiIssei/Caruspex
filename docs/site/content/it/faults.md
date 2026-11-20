@@ -7,7 +7,7 @@ La pagina **Memoria errori** legge quello che le centraline hanno memorizzato e 
 ## Cosa vedi
 
 - Codici **memorizzati, in sospeso e permanenti**. Con più centraline, ogni codice mostra chi l'ha segnalato (motore, cambio).
-- Circa 1.400 codici standard (P, C, B, U) e i codici costruttore di VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai e Kia, Subaru e altri. Un codice P1 viene letto nel senso che gli dà la marca riconosciuta.
+- Circa 9.400 codici standard (P, C, B, U) e i codici costruttore di VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai e Kia, Subaru e altri. Un codice P1 viene letto nel senso che gli dà la marca riconosciuta.
 - Un **semaforo** per ogni codice e la domanda che tutti fanno per prima: posso continuare a guidare?
 - Le cause tipiche, i controlli che puoi fare da solo e una fascia di costo indicativa.
 - Dove si trova il pezzo: l'auto in vista trasparente, oppure la [vista a raggi X](xray.md).

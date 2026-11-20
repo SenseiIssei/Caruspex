@@ -55,7 +55,7 @@ per sessie worden afgedwongen met `--language fr` enzovoort. Hoe vertalingen wor
   modelgeneraties sinds 1980 laten zien welke auto is aangesloten en wat ermee werkt.
 - **Ingebouwde demo-auto**: een ELM327 in hetzelfde proces met een motor en een versnellingsbak op CAN, zodat alles
   zonder hardware kan worden uitgeprobeerd.
-- **Gegenereerde gegevens, niet met de hand getypt**: ongeveer 1.700 foutcodes, veel ervan berekend uit regelmatige codefamilies
+- **Gegenereerde gegevens, niet met de hand getypt**: ongeveer 9.700 foutcodes, veel ervan berekend uit regelmatige codefamilies
   (per cilinder, per bank, per zuurstofsensor) door `tools/gen_dtc.py`.
 
 ## Functies
@@ -79,7 +79,7 @@ per sessie worden afgedwongen met `--language fr` enzovoort. Hoe vertalingen wor
 
 ### Foutgeheugen
 - Opgeslagen, in afwachting zijnde en permanente codes; bij meerdere regeleenheden toont elke code wie hem heeft gemeld (motor, versnellingsbak).
-- Ongeveer 1.400 standaardcodes (P, C, B, U) plus fabrikantcodes voor VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru en meer. Een P1-code wordt gelezen zoals het herkende merk hem bedoelt.
+- Ongeveer 9.400 standaardcodes (P, C, B, U) plus fabrikantcodes voor VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru en meer. Een P1-code wordt gelezen zoals het herkende merk hem bedoelt.
 - Een stoplicht per code en de vraag die iedereen als eerste stelt: mag ik doorrijden?
 - Gebruikelijke oorzaken, dingen die je zelf kunt controleren en een grove kostenklasse.
 - De auto in doorzichtige weergave laat zien waar het betreffende onderdeel zit.

@@ -10,6 +10,9 @@ them. The tables are Caruspex's own compilation: the German texts are our
 own, the English ones name the fault in the short form the standard uses for
 it, and severity, system and advice are our own. Nothing is taken from the
 code lists of open source scan tools (python-OBD and others are under the GPL).
+
+The long tail of the standard (hybrid and electric, network, chassis and
+body codes and more) is in extended.csv, with its sources in extended.py.
 """
 
 from __future__ import annotations
@@ -1196,8 +1199,12 @@ for code, de, en in [
 # ==========================================================================
 # C0xxx and B0xxx: only the codes whose SAE meaning is settled
 # ==========================================================================
-for code, where_de, where_en in [("C0035", "vorne links", "left front"), ("C0040", "vorne rechts", "right front"),
-                                 ("C0045", "hinten links", "left rear"), ("C0050", "hinten rechts", "right rear")]:
+# C0040 and C0045 used to be listed as wheel speed sensors (right front, left
+# rear), as GM uses them; newer documents give them other meanings (brake
+# pedal switch, brake pressure sensor), so they are left out
+# (data/dtc/uncertain.md). C0035 is disputed too (left front at GM, right
+# front supply in obdex) and stays only until the owner decides.
+for code, where_de, where_en in [("C0035", "vorne links", "left front"), ("C0050", "hinten rechts", "right rear")]:
     put(code, f"Raddrehzahlsensor {where_de} - Stromkreis oder Signal",
         f"{where_en.capitalize()} wheel speed sensor - circuit or signal", "high", "brakes", "wheel_speed")
 put("C0110", "ABS-Pumpenmotor - Stromkreis", "ABS pump motor circuit", "high", "brakes", "abs_unit")

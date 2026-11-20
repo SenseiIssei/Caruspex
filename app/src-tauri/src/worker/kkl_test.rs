@@ -472,7 +472,7 @@ impl Worker {
             kind: kind.into(),
             version: env!("CARGO_PKG_VERSION").into(),
             platform: std::env::consts::OS.into(),
-            date: chrono::Local::now().format("%Y-%m-%d").to_string(),
+            date: jiff::Zoned::now().strftime("%Y-%m-%d").to_string(),
             device: device.into(),
             cable: cable_row(device),
             ..KklTestReport::default()

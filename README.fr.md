@@ -55,7 +55,7 @@ forcée à chaque lancement avec `--language fr` et ainsi de suite. La façon do
   générations de modèles depuis 1980 indiquent quelle voiture est connectée et ce qui fonctionne avec elle.
 - **Voiture de démo intégrée** : un ELM327 dans le même processus avec un moteur et une boîte de vitesses sur CAN, pour tout essayer
   sans matériel.
-- **Données générées, pas saisies à la main** : environ 1 700 codes défaut, dont beaucoup calculés à partir de familles de codes régulières
+- **Données générées, pas saisies à la main** : environ 9 700 codes défaut, dont beaucoup calculés à partir de familles de codes régulières
   (par cylindre, par rangée, par sonde lambda) par `tools/gen_dtc.py`.
 
 ## Fonctions
@@ -79,7 +79,7 @@ forcée à chaque lancement avec `--language fr` et ainsi de suite. La façon do
 
 ### Mémoire de défauts
 - Codes enregistrés, en attente et permanents ; avec plusieurs calculateurs, chaque code indique qui l'a signalé (moteur, boîte de vitesses).
-- Environ 1 400 codes standard (P, C, B, U) plus des codes constructeur pour VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru et d'autres. Un code P1 est lu comme l'entend la marque détectée.
+- Environ 9 400 codes standard (P, C, B, U) plus des codes constructeur pour VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru et d'autres. Un code P1 est lu comme l'entend la marque détectée.
 - Un feu tricolore par code et la question que tout le monde pose d'abord : puis-je continuer à rouler ?
 - Causes habituelles, points que vous pouvez vérifier vous-même et une classe de coût approximative.
 - La voiture en vue transparente montre où se trouve la pièce concernée.

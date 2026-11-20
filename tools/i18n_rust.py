@@ -30,6 +30,8 @@ PATTERNS = [
     re.compile(r"Text::new\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
     re.compile(r"\bde:\s*" + STR + r"\s*,\s*en:\s*" + STR, re.S),
     re.compile(r"\bt\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
+    # Fault code records of the generated tables: r("P0301", "German", "English", ...).
+    re.compile(r"\br\(\s*\"[PCBU][0-3][0-9A-F]{3}\"\s*,\s*" + STR + r"\s*,\s*" + STR + r"\s*,", re.S),
     # Small local helpers that take the German and the English text.
     re.compile(r"\b(?:bi|tr|text|txt|both|de_en|bilingual)\(\s*" + STR + r"\s*,\s*" + STR + r"\s*,?\s*\)", re.S),
 ]
