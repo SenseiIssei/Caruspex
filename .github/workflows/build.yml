@@ -82,6 +82,7 @@ jobs:
           python tools/gen_ecus.py
           python tools/gen_pids.py
           python tools/gen_engines.py
+          python tools/gen_wmi.py
           # The opendbc packs in data/opendbc are written from a download
           # cache by tools/gen_opendbc.py and refreshed by hand; gen_pids.py
           # above turns them into Rust like data/pids.

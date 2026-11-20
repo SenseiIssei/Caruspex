@@ -12,6 +12,8 @@ explicitly marked as shared. Opel and Vauxhall get their own family for the
 same reason: the GM codes below are North American GM definitions and are
 not reliable on European Opel engines. Opel models built on PSA platforms
 (from about 2018) should be looked up with the family key "PSA".
+
+Sources: see SOURCES below; it is also written into the generated file.
 """
 
 from __future__ import annotations
@@ -60,6 +62,20 @@ FAMILIES: list[Family] = [
     Family("MITSUBISHI", ("Mitsubishi", "Mitsubishi"), ["Mitsubishi"]),
 ]
 BY_KEY = {f.key: f for f in FAMILIES}
+
+# Where the codes come from. Written into the head of the generated
+# dtc_brands.rs as well, so the statement travels with the data.
+SOURCES = [
+    "Source: Caruspex's own compilation. A manufacturer code is a fact: the number a",
+    "control unit stores and the fault it stands for. The makers publish these in their",
+    "service information and in recall and service bulletins; they are discussed in",
+    "public. No list, database, scan tool or book was copied: the German and English",
+    "texts were written for Caruspex, only meanings that hold across the models of a",
+    "family are listed, and severity, system and advice are Caruspex's own assessment.",
+    "No freely licensed data set of manufacturer codes was found (OBDb and Wikidata",
+    "hold none, the open source scan tools that have lists are under the GPL), so no",
+    "code here is taken from one. Families without entries only get their label.",
+]
 
 # Codes the Mazda family takes over from Ford.
 FORD_SHARED_WITH_MAZDA = {"P1000"}

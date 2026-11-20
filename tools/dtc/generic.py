@@ -3,6 +3,13 @@
 Families (per cylinder, per bank, per sensor) are computed; everything else is
 listed by hand. Only meanings we are sure about go in; a missing code still
 gets its group meaning at runtime.
+
+Sources: the code numbers and what they stand for are fixed by SAE J2012 and
+ISO 15031-6 and are public facts, also in the emission rules that require
+them. The tables are Caruspex's own compilation: the German texts are our
+own, the English ones name the fault in the short form the standard uses for
+it, and severity, system and advice are our own. Nothing is taken from the
+code lists of open source scan tools (python-OBD and others are under the GPL).
 """
 
 from __future__ import annotations

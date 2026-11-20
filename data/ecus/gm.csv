@@ -3,10 +3,20 @@
 # transmission at 7E2, not 7E1. Body modules use their own range: request
 # 0x24x, response 0x64x. Only entries that hold across models are listed;
 # the other 0x24x modules differ too much between platforms.
-# Sources: GMLAN documentation as quoted in the open source car hacking
-# community, Chevrolet Volt and Bolt owner tools.
+#
+# Sources (checked 2026-11-20), named per row in the note column:
+#   ISO     ISO 15765-4: physical OBD requests 7E0 to 7E7, answers plus 8
+#   opendbc github.com/commaai/opendbc, opendbc/car/gm/values.py at commit
+#           c81a2155976b27d73f2fc72026f8bd4b083ce280 (MIT): GM_RX_OFFSET 0x400
+#           for the answers of the 0x24x range
+#   OVMS    github.com/openvehicles/Open-Vehicle-Monitoring-System-3,
+#           vehicle_boltev/src/vehicle_boltev.cpp at commit
+#           7470869a2db574ad1fab962a3cae4f22e6cf1385 (MIT): battery values on 7E4/7EC
+#   OBDb    the GM signal sets of github.com/OBDb (Chevrolet-Silverado,
+#           Chevrolet-Bolt-EV and more, main branch), CC BY-SA 4.0: the hdr
+#           of the commands. Only the address is taken, as a fact.
 family,kind,request,response,bits,name_de,name_en,note
-GM,engine,7E0,7E8,11,Motorsteuerung (ECM),Engine control (ECM),
-GM,gearbox,7E2,7EA,11,Getriebesteuerung (TCM),Transmission control (TCM),
-GM,body,241,641,11,Bordnetzsteuergerät (BCM),Body control (BCM),
-GM,battery,7E4,7EC,11,Hochvoltbatterie (BECM),High voltage battery (BECM),Volt and Bolt
+GM,engine,7E0,7E8,11,Motorsteuerung (ECM),Engine control (ECM),ISO; OBDb
+GM,gearbox,7E2,7EA,11,Getriebesteuerung (TCM),Transmission control (TCM),OBDb
+GM,body,241,641,11,Bordnetzsteuergerät (BCM),Body control (BCM),opendbc offset; OBDb
+GM,battery,7E4,7EC,11,Hochvoltbatterie (BECM),High voltage battery (BECM),Volt and Bolt; OVMS

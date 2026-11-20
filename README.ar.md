@@ -526,8 +526,9 @@ Caruspex مشروع هواية حر ويُقدَّم بلا أي ضمان، كم
 
 - قيم الشركات المصنّعة لنحو 550 مركبة، محوّلة من [OBDb](https://github.com/OBDb)، ومرخّصة مثل OBDb بموجب CC BY-SA 4.0: منفصلة عن الشيفرة في [data/obdb](data/obdb) مع الترخيص وقائمة المصادر ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - تعريفات إشارات CAN من [opendbc](https://github.com/commaai/opendbc) (comma.ai) و[model3dbc](https://github.com/joshwardell/model3dbc)، بترخيص MIT ([data/opendbc](data/opendbc)، [data/tesla](data/tesla)).
+- قيم البطارية لسيارات Hyundai Ioniq وKona وKia e-Niro وNissan Leaf وRenault Zoe وفق OBDb (بترخيص CC BY-SA 4.0 مثل هذه الحزم) و[Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) و[evDash](https://github.com/nickn17/evDash) (كلاهما بترخيص MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - رموز المحركات من مقالات ويكيبيديا، CC BY-SA 4.0 ([data/engines](data/engines)، مع المقالة والمراجعة في كل سطر).
-- جزء من رموز الشركات المصنّعة في رقم VIN وفق [قائمة WMI في ويكي الكتب](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29)، CC BY-SA 4.0.
+- رموز الشركات المصنّعة في رقم VIN مُتحقَّق منها في [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (ملكية عامة) و[Wikidata](https://www.wikidata.org) (CC0)؛ أما الرموز التي لا توجد إلا في [قائمة WMI في ويكي الكتب](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) فهي بترخيص CC BY-SA 4.0 ومحفوظة على حدة في [data/wmi](data/wmi).
 - أبعاد المركبات من [ويكي بيانات](https://www.wikidata.org)، CC0.
 - خطوط مرخّصة بموجب SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

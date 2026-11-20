@@ -69,6 +69,7 @@ The tests of the worker use a `Sink` that collects events in a list (`app/src-ta
 | Control unit addresses | `data/ecus/*.csv` | `tools/gen_ecus.py` | `crates/caruspex-data/src/generated/` |
 | PID packs | `data/pids/*.csv`, `data/obdb/`, `data/opendbc/` | `tools/gen_pids.py` | `crates/caruspex-record/src/generated/` |
 | Engine codes (Wikipedia, CC BY-SA) | `data/engines/` | `tools/gen_engines.py` | `crates/caruspex-vehicles/src/generated/` |
+| VIN maker codes only Wikibooks has (CC BY-SA); the rest is in `vin.rs` (NHTSA vPIC, Wikidata) | `data/wmi/` | `tools/gen_wmi.py` | `crates/caruspex-vehicles/src/generated/` |
 | Dimensions (Wikidata CC0, makers' data sheets) | `data/wikidata/`, `data/dimensions_manual.csv` | `tools/gen_dimensions.py` | `crates/caruspex-vehicles/src/generated/` |
 | Catalog copy for the browser preview and UI tests | (from the Rust catalog) | `app/scripts/extract-catalog.py` | `app/src/api/mock/data/` |
 | Interface text catalogs | `translations/`, `app/src/i18n/new-texts*.json` | `app/scripts/gen-i18n.mjs` (on every UI build) | `app/src/i18n/generated/` (not in git) |

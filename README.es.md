@@ -524,8 +524,9 @@ El código está bajo la licencia MIT, ver [LICENSE](LICENSE). Las bibliotecas d
 
 - Valores de fabricante para unos 550 vehículos, convertidos de [OBDb](https://github.com/OBDb), bajo CC BY-SA 4.0 como OBDb: separados del código en [data/obdb](data/obdb) con la licencia y la lista de fuentes ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - Definiciones de señales CAN de [opendbc](https://github.com/commaai/opendbc) (comma.ai) y [model3dbc](https://github.com/joshwardell/model3dbc), licencia MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Valores de batería del Hyundai Ioniq y Kona, el Kia e-Niro, el Nissan Leaf y el Renault Zoe según OBDb (CC BY-SA 4.0, como estos paquetes), el [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) y [evDash](https://github.com/nickn17/evDash) (ambos MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Códigos de motor de artículos de Wikipedia, CC BY-SA 4.0 ([data/engines](data/engines), con artículo y revisión en cada fila).
-- Parte de los códigos de fabricante del VIN según la [lista WMI de Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Códigos de fabricante del VIN comprobados con [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (dominio público) y [Wikidata](https://www.wikidata.org) (CC0); los códigos que solo tiene la [lista WMI de Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) están bajo CC BY-SA 4.0 y se guardan aparte en [data/wmi](data/wmi).
 - Dimensiones de los vehículos de [Wikidata](https://www.wikidata.org), CC0.
 - Fuentes bajo la SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

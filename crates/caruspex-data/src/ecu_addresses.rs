@@ -386,7 +386,7 @@ mod tests {
         assert_eq!(vag_abs.kind, EcuKind::Brakes);
         assert_eq!(find("VAG", 0x710).kind, EcuKind::Gateway);
         assert_eq!(find("FORD", 0x760).response, 0x768);
-        assert_eq!(find("FORD", 0x737).kind, EcuKind::Airbag);
+        assert_eq!(find("MAZDA", 0x737).kind, EcuKind::Airbag);
         assert_eq!(find("GM", 0x7E2).kind, EcuKind::Gearbox);
         assert_eq!(find("PSA", 0x752).response, 0x652);
     }
@@ -483,7 +483,8 @@ mod tests {
     fn bmw_address_list_and_full_sweep() {
         let _lang = german();
         let list = ecu_definitions("BMW");
-        assert!(list.len() >= 20);
+        // Only the units a freely licensed source confirms have a name.
+        assert!(list.len() >= 9);
         assert_eq!(list[0].kind, EcuKind::Engine);
         assert_eq!(list[0].extended_address, 0x12);
         for d in &list {

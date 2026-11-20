@@ -524,8 +524,9 @@ Caruspex는 자유로운 취미 프로젝트이며 [MIT 라이선스](LICENSE)�
 
 - 약 550개 차량의 제조사 값. [OBDb](https://github.com/OBDb)에서 변환했으며 OBDb와 마찬가지로 CC BY-SA 4.0입니다. 코드와 분리되어 [data/obdb](data/obdb)에 라이선스와 출처 목록([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md))과 함께 있습니다.
 - CAN 신호 정의는 [opendbc](https://github.com/commaai/opendbc)(comma.ai)와 [model3dbc](https://github.com/joshwardell/model3dbc)에서, MIT 라이선스([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- 현대 아이오닉과 코나, 기아 e-니로, 닛산 리프, 르노 조에의 배터리 값은 OBDb(CC BY-SA 4.0, 이 팩들도 같음), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3), [evDash](https://github.com/nickn17/evDash)(둘 다 MIT)를 따릅니다: [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - 엔진 코드는 위키백과 문서에서, CC BY-SA 4.0([data/engines](data/engines), 각 행에 문서와 판 표시).
-- VIN 제조사 코드 일부는 [위키책의 WMI 목록](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29)에 따름, CC BY-SA 4.0.
+- VIN 제조사 코드는 [NHTSA vPIC](https://vpic.nhtsa.dot.gov)(퍼블릭 도메인)와 [Wikidata](https://www.wikidata.org)(CC0)에서 확인했습니다. [위키책의 WMI 목록](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29)에만 있는 코드는 CC BY-SA 4.0이며 [data/wmi](data/wmi)에 따로 둡니다.
 - 차량 치수는 [위키데이터](https://www.wikidata.org)에서, CC0.
 - SIL Open Font License 1.1 글꼴: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

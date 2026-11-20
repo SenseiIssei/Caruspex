@@ -524,8 +524,9 @@ Le code est sous licence MIT, voir [LICENSE](LICENSE). Les bibliothèques conten
 
 - Valeurs constructeur pour environ 550 véhicules, converties à partir d'[OBDb](https://github.com/OBDb), sous CC BY-SA 4.0 comme OBDb : séparées du code dans [data/obdb](data/obdb) avec la licence et la liste des sources ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - Définitions de signaux CAN issues d'[opendbc](https://github.com/commaai/opendbc) (comma.ai) et de [model3dbc](https://github.com/joshwardell/model3dbc), licence MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Valeurs de batterie des Hyundai Ioniq et Kona, de la Kia e-Niro, de la Nissan Leaf et de la Renault Zoe d'après OBDb (CC BY-SA 4.0, comme ces paquets), l'[Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) et [evDash](https://github.com/nickn17/evDash) (tous deux MIT) : [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Codes moteur issus d'articles de Wikipédia, CC BY-SA 4.0 ([data/engines](data/engines), avec l'article et la révision sur chaque ligne).
-- Une partie des codes constructeur du VIN d'après la [liste WMI de Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Codes constructeur du VIN vérifiés auprès de [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (domaine public) et de [Wikidata](https://www.wikidata.org) (CC0) ; les codes que seule la [liste WMI de Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) contient sont sous CC BY-SA 4.0 et rangés à part dans [data/wmi](data/wmi).
 - Dimensions des véhicules issues de [Wikidata](https://www.wikidata.org), CC0.
 - Polices sous SIL Open Font License 1.1 : JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

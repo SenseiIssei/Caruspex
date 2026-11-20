@@ -1,13 +1,22 @@
 # Nissan and Infiniti with CAN, roughly from 2007 on. Outside the OBD
 # addresses the response is mostly the request plus 0x20, the scheme of the
 # Renault-Nissan alliance. 797 and 79B exist on the Leaf.
-# Sources: Nissan Consult scan logs, LeafSpy and Open Vehicle Monitoring
-# System documentation for the Leaf.
+#
+# Sources (checked 2026-11-20), named per row in the note column:
+#   opendbc github.com/commaai/opendbc, opendbc/car/nissan/values.py and
+#           fingerprints.py at commit c81a2155976b27d73f2fc72026f8bd4b083ce280
+#           (MIT): NISSAN_RX_OFFSET 0x20
+#   OVMS    github.com/openvehicles/Open-Vehicle-Monitoring-System-3,
+#           vehicle_nissanleaf/src/vehicle_nissanleaf.cpp at commit
+#           7470869a2db574ad1fab962a3cae4f22e6cf1385 (MIT)
+#   OBDb    the Nissan signal sets of github.com/OBDb (Nissan-Leaf and more,
+#           main branch), CC BY-SA 4.0. Only the address is taken, as a fact.
+# Removed in 2026-11: the body control unit (745), which only scan logs of
+# the maker's tool backed.
 family,kind,request,response,bits,name_de,name_en,note
-NISSAN,engine,7E0,7E8,11,Motorsteuerung,Engine control,
-NISSAN,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,
-NISSAN,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,
-NISSAN,instruments,743,763,11,Kombiinstrument,Instrument cluster,
-NISSAN,body,745,765,11,Bordnetzsteuergerät (BCM),Body control (BCM),
-NISSAN,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),Leaf
-NISSAN,hybrid,797,79A,11,Fahrzeugsteuerung (VCM),Vehicle control (VCM),Leaf
+NISSAN,engine,7E0,7E8,11,Motorsteuerung,Engine control,opendbc; OBDb
+NISSAN,gearbox,7E1,7E9,11,Getriebesteuerung,Transmission control,OBDb
+NISSAN,brakes,740,760,11,Bremsen und ABS,Brakes and ABS,opendbc; OBDb
+NISSAN,instruments,743,763,11,Kombiinstrument,Instrument cluster,opendbc; OBDb
+NISSAN,battery,79B,7BB,11,Batteriesteuerung (LBC),Battery controller (LBC),Leaf; OVMS; OBDb
+NISSAN,hybrid,797,79A,11,Fahrzeugsteuerung (VCM),Vehicle control (VCM),Leaf; OVMS; OBDb

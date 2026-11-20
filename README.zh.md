@@ -524,8 +524,9 @@ Caruspex 是一个自由的业余项目，正如 [MIT 许可证](LICENSE) 所述
 
 - 约 550 款车辆的制造商数据，转换自 [OBDb](https://github.com/OBDb)，与 OBDb 一样采用 CC BY-SA 4.0：与代码分开存放在 [data/obdb](data/obdb)，附有许可证和来源列表（[ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)）。
 - CAN 信号定义来自 [opendbc](https://github.com/commaai/opendbc)（comma.ai）和 [model3dbc](https://github.com/joshwardell/model3dbc)，MIT 许可证（[data/opendbc](data/opendbc)、[data/tesla](data/tesla)）。
+- 现代 Ioniq 和 Kona、起亚 e-Niro、日产 Leaf 及雷诺 Zoe 的电池数值依据 OBDb（CC BY-SA 4.0，这些数据包也采用此许可）、[Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) 和 [evDash](https://github.com/nickn17/evDash)（均为 MIT）：[data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md))。
 - 发动机代码来自维基百科条目，CC BY-SA 4.0（[data/engines](data/engines)，每行都注明条目和版本）。
-- 部分 VIN 制造商代码依据 [维基教科书上的 WMI 列表](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29)，CC BY-SA 4.0。
+- VIN 制造商代码已对照 [NHTSA vPIC](https://vpic.nhtsa.dot.gov)（公有领域）和 [Wikidata](https://www.wikidata.org)（CC0）核实；只有 [维基教科书上的 WMI 列表](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29) 才有的代码采用 CC BY-SA 4.0，单独存放在 [data/wmi](data/wmi)。
 - 车辆尺寸来自 [维基数据](https://www.wikidata.org)，CC0。
 - 采用 SIL Open Font License 1.1 的字体：JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt))。
 <!-- /legal -->

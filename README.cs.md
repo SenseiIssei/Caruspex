@@ -524,8 +524,9 @@ Kód je pod licencí MIT, viz [LICENSE](LICENSE). Knihovny obsažené v programe
 
 - Hodnoty výrobců pro asi 550 vozidel, převedené z [OBDb](https://github.com/OBDb), stejně jako OBDb pod CC BY-SA 4.0: odděleně od kódu v [data/obdb](data/obdb) s licencí a seznamem zdrojů ([ATTRIBUTION.md](data/obdb/ATTRIBUTION.md)).
 - Definice signálů CAN z [opendbc](https://github.com/commaai/opendbc) (comma.ai) a [model3dbc](https://github.com/joshwardell/model3dbc), licence MIT ([data/opendbc](data/opendbc), [data/tesla](data/tesla)).
+- Hodnoty baterie pro Hyundai Ioniq a Kona, Kia e-Niro, Nissan Leaf a Renault Zoe podle OBDb (CC BY-SA 4.0, stejně jako tyto balíčky), [Open Vehicle Monitoring System](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3) a [evDash](https://github.com/nickn17/evDash) (oba MIT): [data/pids](data/pids) ([ATTRIBUTION.md](data/pids/ATTRIBUTION.md)).
 - Kódy motorů z článků Wikipedie, CC BY-SA 4.0 ([data/engines](data/engines), s článkem a verzí v každém řádku).
-- Část kódů výrobců z VIN podle [seznamu WMI na Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), CC BY-SA 4.0.
+- Kódy výrobců z VIN ověřené v [NHTSA vPIC](https://vpic.nhtsa.dot.gov) (volné dílo) a [Wikidata](https://www.wikidata.org) (CC0); kódy, které má jen [seznam WMI na Wikibooks](https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_%28VIN_codes%29/World_Manufacturer_Identifier_%28WMI%29), jsou pod CC BY-SA 4.0 a leží zvlášť v [data/wmi](data/wmi).
 - Rozměry vozidel z [Wikidat](https://www.wikidata.org), CC0.
 - Písma pod licencí SIL Open Font License 1.1: JetBrains Mono ([OFL.txt](resources/fonts/OFL.txt)), Inter ([OFL-Inter.txt](resources/fonts/OFL-Inter.txt)), Plus Jakarta Sans ([OFL-PlusJakartaSans.txt](resources/fonts/OFL-PlusJakartaSans.txt)).
 <!-- /legal -->

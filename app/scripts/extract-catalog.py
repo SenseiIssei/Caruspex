@@ -3,6 +3,7 @@
 # (src/api/mock/data/catalog.json and dtc-brands.json). The real backend reads
 # the same tables; the preview only needs a faithful copy. Sources:
 # crates/caruspex-vehicles/src/generated/catalog.rs, crates/caruspex-vehicles/src/vin.rs
+# with generated/wmi_cc_by_sa.rs
 # and crates/caruspex-data/src/generated/dtc_brands.rs.
 #
 # Run from anywhere:  py -I app/scripts/extract-catalog.py
@@ -86,7 +87,10 @@ def vin_tables():
     wmi_re = re.compile(r"^\s*w\(" + STR + r", " + STR + r", " + STR + r", (\w+), (\w+), (\w+)\),")
     country_re = re.compile(r"^\s*cr\('(.)', '(.)', '(.)', " + STR + r", " + STR + r"\),")
     wmi, countries = [], []
-    for line in text.splitlines():
+    # The codes after the Wikibooks list (CC BY-SA, data/wmi) are included by
+    # vin.rs from a generated file; the browser preview needs both parts.
+    extra = (VEHICLES / "generated" / "wmi_cc_by_sa.rs").read_text(encoding="utf-8")
+    for line in text.splitlines() + extra.splitlines():
         m = wmi_re.match(line)
         if m:
             g = m.groups()
