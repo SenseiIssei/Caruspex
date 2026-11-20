@@ -40,6 +40,16 @@ check_app() {
     out=$("$1" --version | tr -d '\r')
     echo "$out"
     [ "$out" = "Caruspex $VERSION" ] || { echo "unexpected app version: $out" >&2; exit 1; }
+    # A published build that does not look for updates would strand every
+    # installation on it, so the CI build must say "updates: on".
+    if [ -n "${GITHUB_ACTIONS:-}" ]; then
+        out=$("$1" --build-info | tr -d '\r')
+        echo "$out"
+        case "$out" in
+        *"updates: on"*) ;;
+        *) echo "this build does not look for updates (CARUSPEX_OFFICIAL_BUILD missing)" >&2; exit 1 ;;
+        esac
+    fi
 }
 
 check_shot() {

@@ -145,7 +145,7 @@ pub fn run() {
 
     // Answers that need no window come first: on a machine without a display
     // (a server, the CI) the window system cannot even start.
-    if cli.help || cli.version || (cli.report.is_some() && !cli.connects()) {
+    if cli.help || cli.version || cli.build_info || (cli.report.is_some() && !cli.connects()) {
         // The same folder Tauri uses for app_config_dir: <config>/<identifier>.
         let config_dir = dirs::config_dir()
             .unwrap_or_default()
@@ -161,6 +161,17 @@ pub fn run() {
         }
         if cli.version {
             print_and_exit(&format!("Caruspex {}", env!("CARGO_PKG_VERSION")), 0);
+        }
+        if cli.build_info {
+            let updates = if update::official_build() {
+                "on"
+            } else {
+                "off"
+            };
+            print_and_exit(
+                &format!("Caruspex {}\nupdates: {updates}", env!("CARGO_PKG_VERSION")),
+                0,
+            );
         }
         print_and_exit(
             &texts::main_text(

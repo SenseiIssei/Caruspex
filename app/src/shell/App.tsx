@@ -101,6 +101,21 @@ export function App({ startPage }: { startPage: string | null }) {
     [],
   );
 
+  // A window that stays open for days still hears about a new release: the
+  // check repeats every six hours and only lights the title bar button; it
+  // never opens the dialog in the middle of a diagnosis.
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (!settingsStore.get().values.checkUpdates) return;
+      void call("check_for_update")
+        .then((found) => {
+          if (found) setUpdate((current) => (current?.version === found.version ? current : found));
+        })
+        .catch(() => undefined);
+    }, 6 * 60 * 60 * 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   // Start-up of MainWindow: ports, settings, the ready line, auto-connect
   // and the update check.
   useEffect(() => {

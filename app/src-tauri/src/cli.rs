@@ -30,6 +30,9 @@ pub struct Cli {
     pub mode: Option<String>,
     pub help: bool,
     pub version: bool,
+    /// --build-info: version and whether this build looks for updates,
+    /// for the release checks (not in the help text).
+    pub build_info: bool,
 }
 
 impl Cli {
@@ -128,6 +131,7 @@ pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Cli, String
             "mode" => cli.mode = value,
             "help" => cli.help = true,
             "version" => cli.version = true,
+            "build-info" => cli.build_info = true,
             _ => {}
         }
     }
