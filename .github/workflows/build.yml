@@ -127,6 +127,10 @@ jobs:
       # docs/performance.md).
       - name: Interface size budget
         run: python tools/bundle_budget.py
+      # The licences of every crate, npm package and Android library the
+      # programs ship; needs app/node_modules from the step above.
+      - name: Third party notices are current
+        run: python tools/gen_notices.py --check
 
       - name: Lints
         run: cargo clippy --workspace --all-targets -- -D warnings

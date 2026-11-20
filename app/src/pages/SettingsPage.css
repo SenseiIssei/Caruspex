@@ -13,6 +13,19 @@
 .settings-note { margin-top: -4px; max-width: 760px; }
 .settings-path { display: flex; gap: 8px; width: 100%; max-width: 640px; align-items: center; }
 .settings-path .input { flex: 1 1 auto; min-width: 0; }
+/* The licence texts: long, so they scroll inside the dialog. */
+.settings-licences {
+  margin: 0;
+  max-height: 70vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  direction: ltr;
+  text-align: left;
+}
 
 @media (max-width: 720px) {
   .settings-form { grid-template-columns: minmax(0, 1fr); gap: 6px 0; }

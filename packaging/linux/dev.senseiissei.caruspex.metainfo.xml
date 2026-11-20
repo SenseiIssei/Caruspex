@@ -4,7 +4,7 @@
 <component type="desktop-application">
   <id>dev.senseiissei.caruspex</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>MIT</project_license>
+  <project_license>MIT AND CC-BY-SA-4.0</project_license>
   <name>Caruspex</name>
   <summary>Read fault codes and live values of your car</summary>
   <summary xml:lang="de">Fehlercodes und Live-Werte des Autos lesen</summary>
@@ -35,12 +35,26 @@
       <li xml:lang="de">SocketCAN- und SLCAN-Schnittstellen</li>
     </ul>
     <p>
-      Caruspex only reads: clearing fault codes is the only thing it writes to the car. It
-      speaks 18 languages and sends nothing anywhere.
+      Caruspex mostly reads. It writes to the car only after asking: clearing fault codes and,
+      over a VAG KKL cable, output tests and the throttle basic setting. It speaks 18 languages,
+      needs no account and only asks GitHub for updates, which can be switched off.
     </p>
     <p xml:lang="de">
-      Caruspex liest nur: Fehlercodes löschen ist das Einzige, was es ins Auto schreibt. Es
-      spricht 18 Sprachen und schickt nichts weg.
+      Caruspex liest vor allem. Ins Auto schreibt es nur nach Rückfrage: Fehlercodes löschen und
+      über ein VAG-KKL-Kabel Stellglieddiagnose und die Grundeinstellung der Drosselklappe. Es
+      spricht 18 Sprachen, braucht kein Konto und fragt nur bei GitHub nach Updates, was sich
+      abschalten lässt.
+    </p>
+    <p>
+      Caruspex is an independent project and not affiliated with any vehicle or adapter maker.
+      Use it at your own risk and never while driving. The code is under the MIT licence, the
+      bundled manufacturer values and engine codes under CC BY-SA 4.0.
+    </p>
+    <p xml:lang="de">
+      Caruspex ist ein unabhängiges Projekt und mit keinem Fahrzeug- oder Adapterhersteller
+      verbunden. Die Nutzung geschieht auf eigene Gefahr und nie während der Fahrt. Der Code steht
+      unter der MIT-Lizenz, die mitgelieferten Herstellerwerte und Motorkennbuchstaben unter
+      CC BY-SA 4.0.
     </p>
   </description>
   <launchable type="desktop-id">dev.senseiissei.caruspex.desktop</launchable>

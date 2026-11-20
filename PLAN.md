@@ -120,7 +120,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 ## Phase 10: Verteilen
 
 - [x] Installer aus der CI: Windows (Inno Setup, dazu ein Zip), macOS dmg, Linux AppImage. `tools/package.sh` baut sie, `tools/smoke_test.sh` installiert, startet und entfernt sie in jedem CI-Lauf. Eigenes Programmsymbol (`src/app/AppIcon.cpp`, `tools/gen_icons.py`), Versionsangaben in der exe
-- [x] Releases per Tag mit Änderungsliste auf Deutsch und Englisch (`changelog/<version>.md`, Job `release` in der CI). Getaggt und gepusht wird erst nach Jakobs Ja
+- [x] Releases per Tag mit Änderungsliste auf Deutsch und Englisch (`changelog/<version>.md`, Job `release` in der CI). Getaggt und gepusht wird erst nach dem Ja des Maintainers
 - [ ] Windows-Programm signieren. Mittel, hängt an einem Zertifikat
 - [x] Mehr Sprachen: 18 Sprachen für Oberfläche und Kern. Deutsch und Englisch bleiben im Code, alle anderen kommen aus Katalogen (`translations/<code>/`, Schlüssel ist der englische Text, Rückfall Englisch). `tools/i18n_extract.py` sammelt, `tools/gen_i18n.py` prüft Platzhalter, Zeilenumbrüche und Gedankenstriche und baut Katalog und Qt-Dateien. Arabisch von rechts nach links, feste Schrift je Schriftsystem. Neue Texte: extrahieren, nachübersetzen, einbauen (`translations/TRANSLATING.md`)
 
@@ -159,7 +159,7 @@ Erledigt im November 2026: die ganze Anwendung neu, mit gleichem Verhalten.
 
 # Großer Ausbauplan ab 0.8.0
 
-Stand 10.11.2026, nach Version 0.8.0. Aufwand: Klein (Tage), Mittel (eine bis zwei Wochen), Groß (mehrere Wochen). Nutzen: wie viele Leute es merken. Jede Phase bekommt ihren eigenen Zweig, Push und PR nur nach Jakobs Ja.
+Stand 10.11.2026, nach Version 0.8.0. Aufwand: Klein (Tage), Mittel (eine bis zwei Wochen), Groß (mehrere Wochen). Nutzen: wie viele Leute es merken. Jede Phase bekommt ihren eigenen Zweig, Push und PR nur nach dem Ja des Maintainers.
 
 Datenquellen, die wir nutzen dürfen:
 - opendbc (comma.ai, MIT): DBC-Dateien für viele Marken, Rundfunkwerte zum Mithören
@@ -270,6 +270,7 @@ Das größte Hindernis ist nicht die Technik, sondern der erste Schritt.
 - [x] Dokumentation als Website (GitHub Pages) in allen Sprachen, mit Bildern und einer Seite je Schnittstelle. Mittel
   Stand: `docs/site/build.py` (nur Python-Standardbibliothek) baut aus `docs/site/content/<sprache>/*.md` 24 Seiten je Sprache in allen 18 Sprachen: Start, Installieren, erste Schritte, Verbindungsassistent und OBD-Buchse, eine Seite je Schnittstelle (ELM327 über USB, Bluetooth, WLAN, OBDLink und STN, KKL, K+DCAN, ENET, J2534, SLCAN, SocketCAN, PCAN, Kvaser, DoIP), Fehler, Live-Werte, Röntgenansicht, Gebrauchtwagen-Check, Datenschutz, häufige Fragen; Bilder aus `docs/` und `docs/de/`, Arabisch von rechts nach links. `--check` prüft fehlende Seiten, Links, Bilder und lange Striche, die CI ruft es im Job Checks auf. `.github/workflows/pages.yml` baut bei Änderungen unter `docs/` und von Hand und veröffentlicht nur, wenn die Variable `PAGES_ENABLED` auf `true` steht. Die READMEs verlinken die Seite in ihrer Sprache. Offen: Pages einschalten (Quelle "GitHub Actions") und `PAGES_ENABLED` setzen
 - [x] Leichter mitmachen nach dem ersten Fork: `CONTRIBUTING.md` (Bauen, Demo-Auto, Entwicklerschalter, die Prüfungen der CI, Texte, Hausregeln und Sicherheitsregeln), `docs/ARCHITECTURE.md`, Issue-Formulare für Fehler und Wünsche, Vorlage für Pull Requests, `SECURITY.md` und `CODE_OF_CONDUCT.md`, die CI läuft für Forks ohne Secrets und veröffentlicht nur aus dem Hauptrepository. Klein
+- [x] Rechtliche Durchsicht (21.11.2026, `docs/legal-review.md`): `THIRD_PARTY_NOTICES.md` aus Cargo.lock, package-lock.json und den Android-Bibliotheken mit allen Lizenztexten (`tools/gen_notices.py`, CI prüft), in jedem Paket und in der App unter Einstellungen; Sicherheit und Haftung, Marken sowie Lizenz und Datenquellen in allen 18 READMEs, als Doku-Seite und in der App; Datenschutzseite um KKL-Testberichte, IP-Adresse bei GitHub und Android-Standortrecht ergänzt; Paketangaben ohne "liest nur, schickt nichts". Offen (Entscheidung nötig): Quellen der Hand-PID-Pakete (CanZE GPL, EVNotify CC BY-NC, JejuSoul ohne Lizenz), WMI-Liste von Wikibooks, Herkunft der Herstellercodes in `tools/dtc/brands.py`; nicht geprüft: Lizenztext des WebView2-Bootstrappers, Impressumspflicht der Doku-Seite, die Pakete selbst (package.sh nicht laufen gelassen)
 
 ## Phase 19: Mehr Plattformen
 

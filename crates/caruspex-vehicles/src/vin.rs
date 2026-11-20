@@ -152,7 +152,10 @@ const fn w(
 //
 // Sources are the public WMI lists (SAE, NHTSA, ISO 3780 ranges). Where a
 // code is shared by several brands of one group, all of them are listed and
-// the catalog decides by the model code or leaves it open.
+// the catalog decides by the model code or leaves it open. Part of the codes
+// (motorcycles, trucks, newer brands) follows the WMI list on Wikibooks,
+// whose text is under CC BY-SA 4.0; credited in README and
+// THIRD_PARTY_NOTICES.md.
 #[rustfmt::skip]
 static WMI: &[WmiEntry] = &[
     // --- Germany ---------------------------------------------------------

@@ -143,6 +143,7 @@ python docs/site/build.py --check
 python tools/dist_manifests.py --check-templates
 
 npm --prefix app ci
+python tools/gen_notices.py --check
 I18N_STRICT=1 npm --prefix app run build
 I18N_STRICT=1 npm --prefix app test
 
@@ -206,7 +207,13 @@ The full guide is [translations/TRANSLATING.md](translations/TRANSLATING.md); th
 - **Only freely licensed data, with its source.** Every data file says where its rows come from (look at the
   comment lines at the top of `data/ecus/*.csv` or `data/pids/*.csv`). Data under another licence keeps its
   licence file next to it (`data/engines/LICENSE`, `data/obdb/LICENSE`, `data/opendbc/LICENSE`). Data from
-  manufacturer software, paid databases or leaked documents is not accepted.
+  manufacturer software, paid databases or leaked documents is not accepted, and neither are tables taken
+  from projects under the GPL, under a non-commercial licence (such as CC BY-NC) or without any licence.
+  New data that ends up in the programs also needs a line in the data table of `tools/gen_notices.py`.
+- **New dependencies** must have a licence that allows shipping them in an MIT program (MIT, BSD, ISC,
+  Apache-2.0, Zlib, MPL-2.0 and similar; no GPL, AGPL or non-commercial licences). After changing
+  `Cargo.lock`, `app/package-lock.json` or the Android libraries run `python tools/gen_notices.py`, which
+  rewrites `THIRD_PARTY_NOTICES.md` and fails on a licence it does not know.
 - **Generated files are never edited by hand.** `crates/*/src/generated/`, `app/src/api/mock/data/` and
   `app/src/i18n/generated/` are written by the generators; change their input and run the generator.
 - **Errors are `Result<T, String>`** with a message the user can read; `unsafe` only where the operating system
@@ -222,7 +229,11 @@ A diagnostics program can do damage. These rules are not up for discussion in a 
   output test or a basic setting is started by the user, never by itself, and a new action of that kind asks
   first in plain words what will happen.
 - **Never coding, writing adaptation values, flashing or memory writes**, and never anything about the
-  immobiliser, keys or the mileage. Pull requests that add them are closed. Where a protocol module can send
+  immobiliser, keys or the mileage. Pull requests that add them are closed.
+- **Nothing that helps to break the law.** No odometer changes, no switching off or bypassing emissions
+  control (EGR, particulate filter, AdBlue/SCR, lambda or catalyst monitoring), no immobiliser or key bypass,
+  no tachograph manipulation, also not "for testing" or behind a hidden switch. Such changes are illegal in
+  many countries; issues and pull requests that ask for them are closed. Where a protocol module can send
   arbitrary requests, keep them behind an allow list like `request_allowed` in `bmw_kline.rs`.
 - **Respect the timing.** Keep the timeouts and pauses that real control units need; `caruspex_link::timing`
   has the helpers.
@@ -317,4 +328,5 @@ Die Regeln in Kürze: Texte auf Deutsch und Englisch im Code, die anderen 16 Spr
 (`tools/i18n_rust.py --write --area NAME`); keine langen Gedankenstriche; Kommentare erklären das Warum; kleine
 Pull Requests; kein Code aus GPL-Projekten; nur frei lizenzierte Daten mit Quelle; nur lesen, alles, was das
 Auto etwas tun lässt, nur nach Rückfrage, und nie Codierung, Anpassung, Flashen, Wegfahrsperre oder
-Kilometerstand.
+Kilometerstand. Nichts, was beim Gesetzesbruch hilft: kein Verstellen des Kilometerstands, kein Abschalten
+der Abgasreinigung, kein Umgehen der Wegfahrsperre, keine Eingriffe in den Tachographen.

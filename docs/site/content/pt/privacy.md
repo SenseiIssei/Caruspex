@@ -13,12 +13,19 @@ Tudo fica no seu computador:
 | Gravações e arquivos CSV | só quando você inicia | onde você salvar |
 | Arquivo de log | só se você ativar nas configurações | o caminho que você escolher |
 | Relatórios de travamento | só se o Caruspex travar | a pasta `crash-reports` ao lado da garagem |
+| Relatórios do primeiro teste KKL | só quando guarda um | a pasta `test-reports` dentro da pasta das definições; o VIN e o número do imobilizador são encurtados, a menos que marque a caixa |
 
 Você pode apagar qualquer um desses arquivos a qualquer momento.
 
 ## O que é enviado
 
 Ao iniciar, o Caruspex pergunta ao GitHub se existe uma versão mais nova. Nada sobre você ou o carro vai junto. A verificação pode ser desligada nas configurações. Fora isso, o Caruspex não se conecta à internet. A conversa com um adaptador Wi-Fi, um cabo ENET ou um carro DoIP fica na sua rede local.
+
+Só as versões publicadas no GitHub procuram atualizações; uma cópia que compile sozinho nunca o faz. Como em qualquer pedido na internet, a procura e a transferência de uma atualização mostram ao GitHub o seu endereço IP e a versão do Caruspex, e aplica-se a declaração de privacidade do GitHub. As atualizações são transferidas apenas das versões do repositório do Caruspex. Botões como **Relatar no GitHub** apenas abrem o seu navegador; o que publica lá é decisão sua.
+
+## Android
+
+Até ao Android 11, o sistema só deixa uma aplicação encontrar adaptadores Bluetooth LE com a permissão de localização. O Caruspex pede-a só por isso e nunca lê a sua localização. A partir do Android 12 pede em vez disso a permissão de Bluetooth, marcada como nunca usada para a localização.
 
 ## Relatórios de travamento só a pedido
 
