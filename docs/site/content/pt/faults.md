@@ -7,7 +7,7 @@ A página **Memória de falhas** lê o que as centrais guardaram e explica com p
 ## O que você vê
 
 - Códigos **armazenados, pendentes e permanentes**. Com várias centrais, cada código mostra quem informou (motor, câmbio).
-- Cerca de 1.400 códigos padrão (P, C, B, U) e os códigos de fabricante de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai e Kia, Subaru e outros. Um código P1 é lido do jeito que a marca detectada quer dizer.
+- Cerca de 3.400 códigos padrão (P, C, B, U) e os códigos de fabricante de VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai e Kia, Subaru e outros. Um código P1 é lido do jeito que a marca detectada quer dizer.
 - Um **semáforo** por código e a pergunta que todo mundo faz primeiro: posso continuar dirigindo?
 - As causas mais comuns, coisas que você mesmo pode verificar e uma faixa aproximada de custo.
 - Onde a peça fica: o carro em vista transparente, ou a [Vista de raio X](xray.md).

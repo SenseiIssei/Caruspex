@@ -14,7 +14,7 @@ pub mod tables;
 use std::collections::{HashMap, HashSet};
 use std::sync::OnceLock;
 
-use caruspex_i18n::{Language, Text, l, language};
+use caruspex_i18n::{Language, Text, l, language, with_language};
 
 use crate::severity::Severity;
 use tables::{Detail, Family, NO_DETAIL, RangeRule, Record};
@@ -460,7 +460,7 @@ fn lookup(raw: &str, family: Option<&'static Family>, label_family: bool) -> Dtc
     let mut detail = NO_DETAIL;
     if let Some(record) = record {
         info.known = true;
-        info.text = record.text.get().to_string();
+        info.text = record.text();
         info.severity = record.severity;
         info.system = record.system;
         info.throttle_related = record.throttle;
@@ -602,16 +602,32 @@ pub fn is_throttle_dtc(code: &str) -> bool {
     dtc_throttle_codes().contains(code)
 }
 
-/// All generic and VAG codes with their description in both languages.
+/// All generic and VAG codes with their description in German and English.
 pub fn dtc_texts() -> &'static HashMap<&'static str, Text> {
     static TEXTS: OnceLock<HashMap<&'static str, Text>> = OnceLock::new();
     TEXTS.get_or_init(|| {
         let mut map = HashMap::new();
         for_each_legacy_record(|r| {
-            map.entry(r.code).or_insert(r.text);
+            map.entry(r.code).or_insert_with(|| both_languages(r));
         });
         map
     })
+}
+
+/// A record's text in German and English. Composed texts are built once and
+/// kept for the life of the program, like the tables themselves.
+fn both_languages(r: &'static Record) -> Text {
+    match r.desc {
+        tables::Desc::Plain(text) => text,
+        tables::Desc::Parts { .. } => {
+            let de = with_language(Language::German, || r.text());
+            let en = with_language(Language::English, || r.text());
+            Text::new(
+                Box::leak(de.into_boxed_str()),
+                Box::leak(en.into_boxed_str()),
+            )
+        }
+    }
 }
 
 pub fn dtc_throttle_codes() -> &'static HashSet<&'static str> {
@@ -665,7 +681,7 @@ pub fn dtc_lexicon() -> Vec<DtcLexiconEntry> {
         code: r.code.to_string(),
         family: family.to_string(),
         family_label: label.to_string(),
-        text: r.text.get().to_string(),
+        text: r.text(),
         severity: r.severity,
         system: r.system,
     };

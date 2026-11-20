@@ -1,0 +1,4022 @@
+[
+ {
+  "id": "c-dtc38-1",
+  "de": "Nockenwelle %1 Bank %2 - Verriegelungsposition nicht erreicht",
+  "en": "%1 camshaft position - unable to achieve locked position bank %2"
+ },
+ {
+  "id": "c-dtc38-2",
+  "de": "Nockenwelle %1 Profilumschaltung Steller %2 Bank %3",
+  "en": "%1 camshaft profile actuator %2 control bank %3"
+ },
+ {
+  "id": "c-dtc38-3",
+  "de": "Kipphebelsteller %1 Bank %2",
+  "en": "%1 rocker arm actuator bank %2"
+ },
+ {
+  "id": "c-dtc38-4",
+  "de": "Kipphebelsteller %1 Positionssensor Bank %2",
+  "en": "%1 rocker arm actuator position sensor bank %2"
+ },
+ {
+  "id": "c-dtc38-5",
+  "de": "Kipphebelumschaltung %1 Bank %2",
+  "en": "%1 rocker arm actuator system bank %2"
+ },
+ {
+  "id": "c-dtc38-6",
+  "de": "%1-Volt-Leistungsmodul Stromsensor %2",
+  "en": "%1 volt power module current sensor %2"
+ },
+ {
+  "id": "c-dtc38-7",
+  "de": "%1-Volt-Leistungsmodul Stromsensoren %2 passen nicht zusammen",
+  "en": "%1 volt power module current sensor %2 correlation"
+ },
+ {
+  "id": "c-dtc38-8",
+  "de": "Allrad Hinterachsdifferenzial Temperatursensor",
+  "en": "4WD/AWD rear differential unit temperature sensor"
+ },
+ {
+  "id": "c-dtc38-9",
+  "de": "Allrad Verteilergetriebe Stellmotor Positionssensor %1",
+  "en": "4WD/AWD transfer case unit actuator position sensor %1"
+ },
+ {
+  "id": "c-dtc38-10",
+  "de": "Klimakompressor-Kupplung",
+  "en": "A/C clutch"
+ },
+ {
+  "id": "c-dtc38-11",
+  "de": "Klimakompressor-Steuergerät",
+  "en": "A/C compressor control module"
+ },
+ {
+  "id": "c-dtc38-12",
+  "de": "Klimakompressor-Steuergerät Innentemperatursensor %1",
+  "en": "A/C compressor control module internal temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-13",
+  "de": "Klimakompressor-Steuergerät Endstufen-Temperatursensor",
+  "en": "A/C compressor control module output driver temperature sensor"
+ },
+ {
+  "id": "c-dtc38-14",
+  "de": "Klimakompressor-Motor",
+  "en": "A/C compressor motor"
+ },
+ {
+  "id": "c-dtc38-15",
+  "de": "Klimakompressor-Motor Phase %1",
+  "en": "A/C compressor motor phase %1"
+ },
+ {
+  "id": "c-dtc38-16",
+  "de": "Klimakompressor-Motor Spannung %1",
+  "en": "A/C compressor motor voltage %1"
+ },
+ {
+  "id": "c-dtc38-17",
+  "de": "Klimakompressor-Motor Spannungssensor %1",
+  "en": "A/C compressor motor voltage sensor %1"
+ },
+ {
+  "id": "c-dtc38-18",
+  "de": "Kältemittel-Drucksensor %1",
+  "en": "A/C refrigerant pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-19",
+  "de": "ABS-Steuergerät",
+  "en": "ABS control module"
+ },
+ {
+  "id": "c-dtc38-20",
+  "de": "ABS-Pumpenmotor",
+  "en": "ABS pump motor"
+ },
+ {
+  "id": "c-dtc38-21",
+  "de": "ABS-Pumpenmotor Kalibrierung",
+  "en": "ABS pump motor calibration"
+ },
+ {
+  "id": "c-dtc38-22",
+  "de": "ABS-Pumpenmotor Ansteuerung",
+  "en": "ABS pump motor control"
+ },
+ {
+  "id": "c-dtc38-23",
+  "de": "ABS-Pumpenmotor Versorgungsspannung %1",
+  "en": "ABS pump motor supply voltage circuit %1"
+ },
+ {
+  "id": "c-dtc38-24",
+  "de": "ABS-Ventile",
+  "en": "ABS valves"
+ },
+ {
+  "id": "c-dtc38-25",
+  "de": "Sekundärluftsystem - Durchfluss zu hoch, Bank %1",
+  "en": "AIR system high air flow bank %1"
+ },
+ {
+  "id": "c-dtc38-26",
+  "de": "Aktiver Frontspoiler Steuerkreis",
+  "en": "Active air dam control circuit"
+ },
+ {
+  "id": "c-dtc38-27",
+  "de": "Aktiver Frontspoiler",
+  "en": "Active air dam module"
+ },
+ {
+  "id": "c-dtc38-28",
+  "de": "Kühlerjalousie %1",
+  "en": "Active grille air shutter %1"
+ },
+ {
+  "id": "c-dtc38-29",
+  "de": "Kühlerjalousie-Modul %1",
+  "en": "Active grille air shutter module %1"
+ },
+ {
+  "id": "c-dtc38-30",
+  "de": "Stellglied-Versorgungsspannung %1",
+  "en": "Actuator supply voltage %1"
+ },
+ {
+  "id": "c-dtc38-31",
+  "de": "Ansaugluft gedrosselt oder Falschluft zwischen Luftfilter und Luftmassenmesser, Bank %1",
+  "en": "Air flow restriction/air leak between air filter and MAF bank %1"
+ },
+ {
+  "id": "c-dtc38-32",
+  "de": "Allrad-Steuergerät",
+  "en": "All wheel drive control module"
+ },
+ {
+  "id": "c-dtc38-33",
+  "de": "Außenlufttemperatursensor",
+  "en": "Ambient air temperature sensor"
+ },
+ {
+  "id": "c-dtc38-34",
+  "de": "Audioverstärker %1",
+  "en": "Audio amplifier %1"
+ },
+ {
+  "id": "c-dtc38-35",
+  "de": "Steuergerät automatisiertes Fahren %1",
+  "en": "Automated driving system control module %1"
+ },
+ {
+  "id": "c-dtc38-36",
+  "de": "Zusatzheizungs-Steuergerät",
+  "en": "Auxiliary heater control module"
+ },
+ {
+  "id": "c-dtc38-37",
+  "de": "Hydraulikeinheit Bremssystem (BSCM/EBBC)",
+  "en": "BSCM/EBBC hydraulic unit"
+ },
+ {
+  "id": "c-dtc38-38",
+  "de": "Gemisch zwischen den Zylindern ungleich, Bank %1",
+  "en": "Bank %1 air-fuel ratio imbalance"
+ },
+ {
+  "id": "c-dtc38-39",
+  "de": "Luftdruck und Verdichtereingangsdruck passen nicht zusammen, Bank %1",
+  "en": "Barometric pressure - turbocharger/supercharger inlet pressure correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-40",
+  "de": "Luftdrucksensor %1",
+  "en": "Barometric pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-41",
+  "de": "Batterie %1 Ladezustand",
+  "en": "Battery %1 state of charge"
+ },
+ {
+  "id": "c-dtc38-42",
+  "de": "Ladegerät",
+  "en": "Battery charger"
+ },
+ {
+  "id": "c-dtc38-43",
+  "de": "Ladegerät %1 Freigabe",
+  "en": "Battery charger %1 enable"
+ },
+ {
+  "id": "c-dtc38-44",
+  "de": "Ladegerät %1 Eingangsstrom",
+  "en": "Battery charger %1 input current"
+ },
+ {
+  "id": "c-dtc38-45",
+  "de": "Ladegerät %1 Eingangsstromsensor",
+  "en": "Battery charger %1 input current sensor"
+ },
+ {
+  "id": "c-dtc38-46",
+  "de": "Ladegerät %1 Eingangsspannungssensor %2",
+  "en": "Battery charger %1 input voltage sensor %2"
+ },
+ {
+  "id": "c-dtc38-47",
+  "de": "Ladegerät %1 Ausgang",
+  "en": "Battery charger %1 output"
+ },
+ {
+  "id": "c-dtc38-48",
+  "de": "Ladegerät %1 Ausgangsstrom",
+  "en": "Battery charger %1 output current"
+ },
+ {
+  "id": "c-dtc38-49",
+  "de": "Ladegerät %1 Ausgangsspannung",
+  "en": "Battery charger %1 output voltage"
+ },
+ {
+  "id": "c-dtc38-50",
+  "de": "Ladegerät %1-Volt-Ausgang Stromsensor",
+  "en": "Battery charger %1 volt output current sensor"
+ },
+ {
+  "id": "c-dtc38-51",
+  "de": "Ladegerät %1-Volt-Ausgang Leistung",
+  "en": "Battery charger %1 volt output power"
+ },
+ {
+  "id": "c-dtc38-52",
+  "de": "Ladegerät %1-Volt-Ausgang Spannungssensor",
+  "en": "Battery charger %1 volt output voltage sensor"
+ },
+ {
+  "id": "c-dtc38-53",
+  "de": "Ladegerät Ausgang Hybridbatterie Stromsensor",
+  "en": "Battery charger hybrid/EV battery output current sensor"
+ },
+ {
+  "id": "c-dtc38-54",
+  "de": "Ladegerät Ausgang Hybridbatterie Leistung",
+  "en": "Battery charger hybrid/EV battery output power"
+ },
+ {
+  "id": "c-dtc38-55",
+  "de": "Ladegerät Ausgang Hybridbatterie Spannungssensor",
+  "en": "Battery charger hybrid/EV battery output voltage sensor"
+ },
+ {
+  "id": "c-dtc38-56",
+  "de": "Ladegerät - Entladezeit des Hybridsystems zu lang",
+  "en": "Battery charger hybrid/EV system discharge time too long"
+ },
+ {
+  "id": "c-dtc38-57",
+  "de": "Ladegerät Eingangsstrom",
+  "en": "Battery charger input current"
+ },
+ {
+  "id": "c-dtc38-58",
+  "de": "Ladegerät Eingangsspannung",
+  "en": "Battery charger input voltage"
+ },
+ {
+  "id": "c-dtc38-59",
+  "de": "Ladegerät - Vorladezeit zu lang",
+  "en": "Battery charger system precharge time too long"
+ },
+ {
+  "id": "c-dtc38-60",
+  "de": "Ladesystem %1 Hochvolt-Sicherheitsschleife (Interlock)",
+  "en": "Battery charging system %1 high voltage interlock"
+ },
+ {
+  "id": "c-dtc38-61",
+  "de": "Ladesystem - Isolationsfehler",
+  "en": "Battery charging system isolation fault"
+ },
+ {
+  "id": "c-dtc38-62",
+  "de": "Ladesystem Minus-Schütz %1",
+  "en": "Battery charging system negative contactor %1"
+ },
+ {
+  "id": "c-dtc38-63",
+  "de": "Ladesystem Plus-Schütz %1",
+  "en": "Battery charging system positive contactor %1"
+ },
+ {
+  "id": "c-dtc38-64",
+  "de": "Batteriesteuergerät %1",
+  "en": "Battery energy control module %1"
+ },
+ {
+  "id": "c-dtc38-65",
+  "de": "Batterieüberwachungsmodul",
+  "en": "Battery monitor module"
+ },
+ {
+  "id": "c-dtc38-66",
+  "de": "Batterieüberwachungsmodul Strommessung",
+  "en": "Battery monitor module current monitoring"
+ },
+ {
+  "id": "c-dtc38-67",
+  "de": "Batterieüberwachungsmodul Temperatur",
+  "en": "Battery monitor module temperature"
+ },
+ {
+  "id": "c-dtc38-68",
+  "de": "Batterieüberwachungsmodul Temperaturmessung",
+  "en": "Battery monitor module temperature monitoring"
+ },
+ {
+  "id": "c-dtc38-69",
+  "de": "Batterieüberwachungsmodul Spannungsmessung",
+  "en": "Battery monitor module voltage monitoring"
+ },
+ {
+  "id": "c-dtc38-70",
+  "de": "Bordnetzsteuergerät %1",
+  "en": "Body control module %1"
+ },
+ {
+  "id": "c-dtc38-71",
+  "de": "Bordnetzsteuergerät fordert Motorkontrollleuchte an",
+  "en": "Body control module requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-72",
+  "de": "Unterdruck Bremskraftverstärker",
+  "en": "Brake assist vacuum"
+ },
+ {
+  "id": "c-dtc38-73",
+  "de": "Bremsüberblendung (Rekuperation und Reibbremse)",
+  "en": "Brake blending system"
+ },
+ {
+  "id": "c-dtc38-74",
+  "de": "Bremskraftverstärker",
+  "en": "Brake booster"
+ },
+ {
+  "id": "c-dtc38-75",
+  "de": "Bremskraftverstärker interne Leistungsendstufe",
+  "en": "Brake booster internal power driver"
+ },
+ {
+  "id": "c-dtc38-76",
+  "de": "Bremskraftverstärker-Motor %1",
+  "en": "Brake booster motor %1"
+ },
+ {
+  "id": "c-dtc38-77",
+  "de": "Bremskraftverstärker-Motor %1 Stromsensor",
+  "en": "Brake booster motor %1 current sensor"
+ },
+ {
+  "id": "c-dtc38-78",
+  "de": "Bremskraftverstärker-Motor %1 Phase U-V-W",
+  "en": "Brake booster motor %1 phase U-V-W"
+ },
+ {
+  "id": "c-dtc38-79",
+  "de": "Bremskraftverstärker-Motor %1 Positionssensor",
+  "en": "Brake booster motor %1 position sensor"
+ },
+ {
+  "id": "c-dtc38-80",
+  "de": "Bremskraftverstärker-Temperatursensor %1",
+  "en": "Brake booster temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-81",
+  "de": "Bremsflüssigkeitsstand",
+  "en": "Brake fluid level"
+ },
+ {
+  "id": "c-dtc38-82",
+  "de": "Bremskreis %1 undicht",
+  "en": "Brake hydraulic circuit %1 leak"
+ },
+ {
+  "id": "c-dtc38-83",
+  "de": "Trennventil Hauptbremszylinder",
+  "en": "Brake master cylinder cut off valve"
+ },
+ {
+  "id": "c-dtc38-84",
+  "de": "Hauptbremszylinder-Kolbenwegsensor %1",
+  "en": "Brake master cylinder piston position sensor %1"
+ },
+ {
+  "id": "c-dtc38-85",
+  "de": "Hauptbremszylinder-Kolbenwegsensor %1 Stromkreis",
+  "en": "Brake master cylinder piston position sensor %1 circuit"
+ },
+ {
+  "id": "c-dtc38-86",
+  "de": "Hauptbremszylinder-Kolbenwegsensoren %1 passen nicht zusammen",
+  "en": "Brake master cylinder piston position sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-87",
+  "de": "Magnetventil Pedalgegendruck",
+  "en": "Brake pedal feedback pressure solenoid"
+ },
+ {
+  "id": "c-dtc38-88",
+  "de": "Bremspedalstellungssensor",
+  "en": "Brake pedal position sensor"
+ },
+ {
+  "id": "c-dtc38-89",
+  "de": "Bremspedalstellungssensor %1",
+  "en": "Brake pedal position sensor %1"
+ },
+ {
+  "id": "c-dtc38-90",
+  "de": "Bremspedalstellungssensoren %1 passen nicht zusammen",
+  "en": "Brake pedal position sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-91",
+  "de": "Bremspedalstellungssensor Stromkreis %1",
+  "en": "Brake pedal position sensor circuit %1"
+ },
+ {
+  "id": "c-dtc38-92",
+  "de": "Bremspedalschalter %1",
+  "en": "Brake pedal switch %1"
+ },
+ {
+  "id": "c-dtc38-93",
+  "de": "Bremsdrucksensor %1",
+  "en": "Brake pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-94",
+  "de": "Bremsdrucksensor und Bremspedalstellungssensor passen nicht zusammen",
+  "en": "Brake pressure sensor/brake pedal position sensor correlation"
+ },
+ {
+  "id": "c-dtc38-95",
+  "de": "Bremssystem-Steuergerät %1",
+  "en": "Brake system control module %1"
+ },
+ {
+  "id": "c-dtc38-96",
+  "de": "Bremssystem-Steuergerät %1 fordert Motorkontrollleuchte an",
+  "en": "Brake system control module %1 requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-97",
+  "de": "Rückfahrkamera",
+  "en": "Camera module - rear"
+ },
+ {
+  "id": "c-dtc38-98",
+  "de": "Nockenwellensignal-Ausgang %1 Bank %2",
+  "en": "Camshaft %1 position signal output bank %2"
+ },
+ {
+  "id": "c-dtc38-99",
+  "de": "Katalysator Bank %1",
+  "en": "Catalyst system bank %1"
+ },
+ {
+  "id": "c-dtc38-100",
+  "de": "Ladeluftkühler-Bypassregelung %1",
+  "en": "Charge air cooler bypass control %1"
+ },
+ {
+  "id": "c-dtc38-101",
+  "de": "Ladeluftkühler-Kühlmittelpumpe %1",
+  "en": "Charge air cooler coolant pump %1"
+ },
+ {
+  "id": "c-dtc38-102",
+  "de": "Ladeluftkühler-Kühlmittelpumpe %1 Drehzahl zu hoch oder Luft im System",
+  "en": "Charge air cooler coolant pump %1 overspeed/air in system"
+ },
+ {
+  "id": "c-dtc38-103",
+  "de": "Ladeluftkühler-Kühlmitteltemperatursensor %1",
+  "en": "Charge air cooler coolant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-104",
+  "de": "Ladeluftkühler - Wirkungsgrad zu gering",
+  "en": "Charge air cooler efficiency below threshold"
+ },
+ {
+  "id": "c-dtc38-105",
+  "de": "Ladeluftkühler-Temperatursensor Bank %1",
+  "en": "Charge air cooler temperature sensor bank %1"
+ },
+ {
+  "id": "c-dtc38-106",
+  "de": "Ladeklappe %1 Öffnungstaster",
+  "en": "Charge port door %1 open request switch"
+ },
+ {
+  "id": "c-dtc38-107",
+  "de": "Ladeklappe %1 Öffnungstaster Weckleitung",
+  "en": "Charge port door %1 open request switch wake-up"
+ },
+ {
+  "id": "c-dtc38-108",
+  "de": "Ladeklappe %1 Positionssensor",
+  "en": "Charge port door %1 position sensor"
+ },
+ {
+  "id": "c-dtc38-109",
+  "de": "Ladeklappe %1 Entriegelung",
+  "en": "Charge port door %1 unlock"
+ },
+ {
+  "id": "c-dtc38-110",
+  "de": "Ladeklappe %1 Entriegelung Steuerkreis",
+  "en": "Charge port door %1 unlock control circuit"
+ },
+ {
+  "id": "c-dtc38-111",
+  "de": "Ladezustandsanzeige %1",
+  "en": "Charge status indicator %1"
+ },
+ {
+  "id": "c-dtc38-112",
+  "de": "Fahrwerk-Steuergerät %1",
+  "en": "Chassis control module %1"
+ },
+ {
+  "id": "c-dtc38-113",
+  "de": "Fahrwerk-Steuergerät %1 fordert Motorkontrollleuchte an",
+  "en": "Chassis control module %1 requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-114",
+  "de": "Kraftstoffdruckregelung am Anschlag, Druck",
+  "en": "Closed loop fuel pressure control at limit - pressure"
+ },
+ {
+  "id": "c-dtc38-115",
+  "de": "Partikelfilter-Regenerationsregelung am Anschlag, Temperatur",
+  "en": "Closed loop particulate filter regeneration control at limit - temperature"
+ },
+ {
+  "id": "c-dtc38-116",
+  "de": "AdBlue-Dosierregelung am Anschlag, Durchfluss",
+  "en": "Closed loop reductant injection control at limit - flow"
+ },
+ {
+  "id": "c-dtc38-117",
+  "de": "Kupplungssteller %1",
+  "en": "Clutch %1 actuator"
+ },
+ {
+  "id": "c-dtc38-118",
+  "de": "Kupplung %1 Adaption an der Grenze",
+  "en": "Clutch %1 adaptive learning at limit"
+ },
+ {
+  "id": "c-dtc38-119",
+  "de": "Kupplung %1 Motor Phase U-V-W",
+  "en": "Clutch %1 motor phase U-V-W"
+ },
+ {
+  "id": "c-dtc38-120",
+  "de": "Kupplung %1 Druckaufbau",
+  "en": "Clutch %1 pressure charge"
+ },
+ {
+  "id": "c-dtc38-121",
+  "de": "Kupplung %1 Druckabbau",
+  "en": "Clutch %1 pressure discharge"
+ },
+ {
+  "id": "c-dtc38-122",
+  "de": "Kupplung %1 Temperatur",
+  "en": "Clutch %1 temperature"
+ },
+ {
+  "id": "c-dtc38-123",
+  "de": "Kupplung %1 - Gang unerwartet mechanisch herausgesprungen",
+  "en": "Clutch %1 unexpected mechanical gear disengagement"
+ },
+ {
+  "id": "c-dtc38-124",
+  "de": "Kupplungspedalposition",
+  "en": "Clutch pedal position"
+ },
+ {
+  "id": "c-dtc38-125",
+  "de": "Kupplungspedal-Positionssensor %1",
+  "en": "Clutch pedal position sensor %1"
+ },
+ {
+  "id": "c-dtc38-126",
+  "de": "Kupplungspedalschalter %1 passen nicht zusammen",
+  "en": "Clutch pedal switch %1 correlation"
+ },
+ {
+  "id": "c-dtc38-127",
+  "de": "Kupplungsposition",
+  "en": "Clutch position"
+ },
+ {
+  "id": "c-dtc38-128",
+  "de": "Kaltstart Nockenwelle %1 Steuerzeit Bank %2",
+  "en": "Cold start %1 camshaft position timing bank %2"
+ },
+ {
+  "id": "c-dtc38-129",
+  "de": "Kaltstart Nockenwelle %1 Bank %2 - Steuerzeit zu früh",
+  "en": "Cold start %1 camshaft position timing over-advanced bank %2"
+ },
+ {
+  "id": "c-dtc38-130",
+  "de": "Kaltstart AGR %1 Durchfluss zu hoch",
+  "en": "Cold start EGR %1 flow excessive detected"
+ },
+ {
+  "id": "c-dtc38-131",
+  "de": "Kaltstart AGR %1 Durchfluss zu gering",
+  "en": "Cold start EGR %1 flow insufficient detected"
+ },
+ {
+  "id": "c-dtc38-132",
+  "de": "Kaltstart Nockenwellen-Profilumschaltung",
+  "en": "Cold start camshaft profile system"
+ },
+ {
+  "id": "c-dtc38-133",
+  "de": "Kaltstart Zylinder %1 Einspritzimpuls",
+  "en": "Cold start cylinder %1 injection pulse"
+ },
+ {
+  "id": "c-dtc38-134",
+  "de": "Kaltstart Kühlmittelpumpe",
+  "en": "Cold start engine coolant pump"
+ },
+ {
+  "id": "c-dtc38-135",
+  "de": "Kaltstart Abgastemperatur",
+  "en": "Cold start engine exhaust temperature"
+ },
+ {
+  "id": "c-dtc38-136",
+  "de": "Kaltstart Kraftstoffdruck Bank %1",
+  "en": "Cold start fuel pressure bank %1"
+ },
+ {
+  "id": "c-dtc38-137",
+  "de": "Kaltstart Leerlaufregelung",
+  "en": "Cold start idle control system"
+ },
+ {
+  "id": "c-dtc38-138",
+  "de": "Kaltstart Zündzeitpunkt",
+  "en": "Cold start ignition timing"
+ },
+ {
+  "id": "c-dtc38-139",
+  "de": "Kaltstart Einspritzimpuls",
+  "en": "Cold start injection pulse"
+ },
+ {
+  "id": "c-dtc38-140",
+  "de": "Kaltstart Einspritzzeitpunkt",
+  "en": "Cold start injection timing"
+ },
+ {
+  "id": "c-dtc38-141",
+  "de": "Kaltstart Saugrohrklappen Bank %1",
+  "en": "Cold start intake manifold runner bank %1"
+ },
+ {
+  "id": "c-dtc38-142",
+  "de": "Kaltstart Antriebsmoment",
+  "en": "Cold start propulsion torque"
+ },
+ {
+  "id": "c-dtc38-143",
+  "de": "Unruhiger Leerlauf beim Kaltstart",
+  "en": "Cold start rough idle"
+ },
+ {
+  "id": "c-dtc38-144",
+  "de": "Kaltstart Turbolader %1 Ladedruck zu niedrig",
+  "en": "Cold start turbocharger/supercharger %1 underboost"
+ },
+ {
+  "id": "c-dtc38-145",
+  "de": "Kaltstart Ladedruckregelung %1",
+  "en": "Cold start turbocharger/supercharger boost control %1"
+ },
+ {
+  "id": "c-dtc38-146",
+  "de": "Kaltstart Wastegate-Steller %1",
+  "en": "Cold start turbocharger/supercharger wastegate actuator %1"
+ },
+ {
+  "id": "c-dtc38-147",
+  "de": "Zündkreis Crash-Lenksäule",
+  "en": "Collapsible steering column deployment control"
+ },
+ {
+  "id": "c-dtc38-148",
+  "de": "Verbrennungsmotor liefert zu wenig Drehmoment",
+  "en": "Combustion engine producing insufficient torque"
+ },
+ {
+  "id": "c-dtc38-149",
+  "de": "Authentifizierungssignal der Kommunikation",
+  "en": "Communication authentication signal"
+ },
+ {
+  "id": "c-dtc38-150",
+  "de": "Steuergerät",
+  "en": "Control module"
+ },
+ {
+  "id": "c-dtc38-151",
+  "de": "Steuergeräte-Datenbus %1 abgeschaltet",
+  "en": "Control module communication bus %1 off"
+ },
+ {
+  "id": "c-dtc38-152",
+  "de": "Steuergerät wacht unerwartet auf",
+  "en": "Control module improper wake-up"
+ },
+ {
+  "id": "c-dtc38-153",
+  "de": "Steuergerät Spannungsversorgung %1",
+  "en": "Control module input power %1"
+ },
+ {
+  "id": "c-dtc38-154",
+  "de": "Steuergerät Spannungsversorgungen %1 passen nicht zusammen",
+  "en": "Control module input power circuit %1 correlation"
+ },
+ {
+  "id": "c-dtc38-155",
+  "de": "Steuergerät-Innentemperatursensor %1",
+  "en": "Control module internal temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-156",
+  "de": "Steuergerät Nachlauf-Zeitgeber",
+  "en": "Control module power off timer"
+ },
+ {
+  "id": "c-dtc38-157",
+  "de": "Steuergerät - Sicherheitszertifikat fehlt oder ungültig",
+  "en": "Control module security certificate missing/invalid"
+ },
+ {
+  "id": "c-dtc38-158",
+  "de": "Steuergerät Zeitgeber/Uhr",
+  "en": "Control module timer/clock"
+ },
+ {
+  "id": "c-dtc38-159",
+  "de": "Steuergerät Referenzspannungsausgang",
+  "en": "Control module voltage reference output"
+ },
+ {
+  "id": "c-dtc38-160",
+  "de": "Steuergerät Wecksignal",
+  "en": "Control module wake-up"
+ },
+ {
+  "id": "c-dtc38-161",
+  "de": "Steuergerät Weckleitung",
+  "en": "Control module wake-up circuit"
+ },
+ {
+  "id": "c-dtc38-162",
+  "de": "Steuergerät: Versorgung, Masse, Aufwecken oder Freigabe",
+  "en": "Control module: power supply, ground, wake-up or authentication"
+ },
+ {
+  "id": "c-dtc38-163",
+  "de": "Control-Pilot-Leitung (Ladekabel)",
+  "en": "Control pilot"
+ },
+ {
+  "id": "c-dtc38-164",
+  "de": "Control-Pilot Ladeschalter %1",
+  "en": "Control pilot charging switch %1"
+ },
+ {
+  "id": "c-dtc38-165",
+  "de": "Control-Pilot Schalter Ladebelüftung",
+  "en": "Control pilot charging ventilation switch"
+ },
+ {
+  "id": "c-dtc38-166",
+  "de": "Control-Pilot-Anzeige",
+  "en": "Control pilot indicator"
+ },
+ {
+  "id": "c-dtc38-167",
+  "de": "Kühlmittel-Bypassventil %1",
+  "en": "Coolant bypass valve %1"
+ },
+ {
+  "id": "c-dtc38-168",
+  "de": "Kühlmittel-Bypassventil %1 Ansteuerung",
+  "en": "Coolant bypass valve %1 control"
+ },
+ {
+  "id": "c-dtc38-169",
+  "de": "Kühlmittel-Bypassventil %1 hängt offen",
+  "en": "Coolant bypass valve %1 control stuck/open"
+ },
+ {
+  "id": "c-dtc38-170",
+  "de": "Kühlmittel-Bypassventil-Steller %1",
+  "en": "Coolant bypass valve actuator %1"
+ },
+ {
+  "id": "c-dtc38-171",
+  "de": "Kühlmittelpumpe %1",
+  "en": "Coolant pump %1"
+ },
+ {
+  "id": "c-dtc38-172",
+  "de": "Kühlmittelpumpe %1 Steuerkreis",
+  "en": "Coolant pump %1 control circuit"
+ },
+ {
+  "id": "c-dtc38-173",
+  "de": "Kühlmittelpumpe %1 Drehzahl zu hoch oder Luft im System",
+  "en": "Coolant pump %1 overspeed/air in system"
+ },
+ {
+  "id": "c-dtc38-174",
+  "de": "Kühlmitteltemperatur wieder unter die Diagnose-Mindesttemperatur gefallen",
+  "en": "Coolant temperature relapsed below diagnostic monitoring temperature"
+ },
+ {
+  "id": "c-dtc38-175",
+  "de": "Kurbelgehäuse-Drucksensor %1",
+  "en": "Crankcase pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-176",
+  "de": "Kurbelgehäuseentlüftung Schlauchanschluss-Sensor",
+  "en": "Crankcase ventilation hose connection sensor"
+ },
+ {
+  "id": "c-dtc38-177",
+  "de": "Kurbelgehäuseentlüftung",
+  "en": "Crankcase ventilation system"
+ },
+ {
+  "id": "c-dtc38-178",
+  "de": "Kurbelgehäuseentlüftung - Schlauch %1 getrennt",
+  "en": "Crankcase ventilation system - hose %1 disconnected"
+ },
+ {
+  "id": "c-dtc38-179",
+  "de": "Kurbelgehäuseentlüftung getrennt",
+  "en": "Crankcase ventilation system disconnected"
+ },
+ {
+  "id": "c-dtc38-180",
+  "de": "Kurbelwellengeber - Drehrichtung der Kurbelwelle falsch",
+  "en": "Crankshaft position sensor - crankshaft direction incorrect"
+ },
+ {
+  "id": "c-dtc38-181",
+  "de": "Kurbelwellengeber - Startposition der Kurbelwelle falsch",
+  "en": "Crankshaft position sensor - crankshaft start position incorrect"
+ },
+ {
+  "id": "c-dtc38-182",
+  "de": "Kurbelwellensignal-Ausgang",
+  "en": "Crankshaft position signal output"
+ },
+ {
+  "id": "c-dtc38-183",
+  "de": "Tempomat Signal Abbrechen",
+  "en": "Cruise control cancel signal"
+ },
+ {
+  "id": "c-dtc38-184",
+  "de": "Tempomat-Steuergerät",
+  "en": "Cruise control module"
+ },
+ {
+  "id": "c-dtc38-185",
+  "de": "Tempomat-Bedienhebel %1",
+  "en": "Cruise control multi-function input %1"
+ },
+ {
+  "id": "c-dtc38-186",
+  "de": "Zylinder %1 - Einspritzventil undicht",
+  "en": "Cylinder %1 - injector leaking"
+ },
+ {
+  "id": "c-dtc38-187",
+  "de": "Gemisch Zylinder %1 weicht von den anderen ab",
+  "en": "Cylinder %1 air-fuel ratio imbalance"
+ },
+ {
+  "id": "c-dtc38-188",
+  "de": "Zylinder %1 Einspritzventil %2 Mengenabgleich an der oberen Lerngrenze",
+  "en": "Cylinder %1 fuel injector %2 offset learning at max limit"
+ },
+ {
+  "id": "c-dtc38-189",
+  "de": "Zylinder %1 Einspritzventil %2 Mengenabgleich an der unteren Lerngrenze",
+  "en": "Cylinder %1 fuel injector %2 offset learning at min limit"
+ },
+ {
+  "id": "c-dtc38-190",
+  "de": "Glühkerze Zylinder %1",
+  "en": "Cylinder %1 glow plug"
+ },
+ {
+  "id": "c-dtc38-191",
+  "de": "Falsche Glühkerze in Zylinder %1",
+  "en": "Cylinder %1 glow plug incorrect"
+ },
+ {
+  "id": "c-dtc38-192",
+  "de": "Zylinder %1 Einspritzimpuls",
+  "en": "Cylinder %1 injection pulse"
+ },
+ {
+  "id": "c-dtc38-193",
+  "de": "Zylinder %1 Einspritzzeitpunkt",
+  "en": "Cylinder %1 injection timing"
+ },
+ {
+  "id": "c-dtc38-194",
+  "de": "Zylinder %1 Einspritzzeitpunkt zu früh",
+  "en": "Cylinder %1 injection timing performance - over advanced"
+ },
+ {
+  "id": "c-dtc38-195",
+  "de": "Zylinder %1 Einspritzzeitpunkt zu spät",
+  "en": "Cylinder %1 injection timing performance - over retarded"
+ },
+ {
+  "id": "c-dtc38-196",
+  "de": "Einspritzventil Zylinder %1",
+  "en": "Cylinder %1 injector"
+ },
+ {
+  "id": "c-dtc38-197",
+  "de": "Zylinder %1 Einspritzventil %2",
+  "en": "Cylinder %1 injector %2"
+ },
+ {
+  "id": "c-dtc38-198",
+  "de": "Einspritzventil Zylinder %1 - Daten passen nicht",
+  "en": "Cylinder %1 injector data incompatible"
+ },
+ {
+  "id": "c-dtc38-199",
+  "de": "Zylinderkopftemperatursensor %1",
+  "en": "Cylinder head temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-200",
+  "de": "DC/AC-Wandler-Steuergerät %1",
+  "en": "DC/AC converter control module %1"
+ },
+ {
+  "id": "c-dtc38-201",
+  "de": "Gleichspannungswandler %1",
+  "en": "DC/DC converter %1"
+ },
+ {
+  "id": "c-dtc38-202",
+  "de": "Gleichspannungswandler-Steuergerät %1",
+  "en": "DC/DC converter control module %1"
+ },
+ {
+  "id": "c-dtc38-203",
+  "de": "Gleichspannungswandler Stromsensor %1",
+  "en": "DC/DC converter current sensor %1"
+ },
+ {
+  "id": "c-dtc38-204",
+  "de": "Gleichspannungswandler Freigabe",
+  "en": "DC/DC converter enable"
+ },
+ {
+  "id": "c-dtc38-205",
+  "de": "Gleichspannungswandler Status",
+  "en": "DC/DC converter status"
+ },
+ {
+  "id": "c-dtc38-206",
+  "de": "Gleichspannungswandler Spannungsabsenkung",
+  "en": "DC/DC converter step down voltage"
+ },
+ {
+  "id": "c-dtc38-207",
+  "de": "Gleichspannungswandler Temperatursensor %1",
+  "en": "DC/DC converter temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-208",
+  "de": "Gleichspannungswandler Spannungssensor %1",
+  "en": "DC/DC converter voltage sensor %1"
+ },
+ {
+  "id": "c-dtc38-209",
+  "de": "Geräteversorgung %1",
+  "en": "Device power %1"
+ },
+ {
+  "id": "c-dtc38-210",
+  "de": "Diesel-Ansaugluftsteller %1",
+  "en": "Diesel intake air flow %1"
+ },
+ {
+  "id": "c-dtc38-211",
+  "de": "Diesel-Ansaugluftsteller %1 Regelung",
+  "en": "Diesel intake air flow %1 control"
+ },
+ {
+  "id": "c-dtc38-212",
+  "de": "Diesel-Ansaugluftsteller %1 Motorstrom",
+  "en": "Diesel intake air flow %1 control motor current"
+ },
+ {
+  "id": "c-dtc38-213",
+  "de": "Diesel-Ansaugluftsteller %1 Positionssensor",
+  "en": "Diesel intake air flow %1 position sensor"
+ },
+ {
+  "id": "c-dtc38-214",
+  "de": "Digitales Audio-Steuergerät %1",
+  "en": "Digital audio control module %1"
+ },
+ {
+  "id": "c-dtc38-215",
+  "de": "Ozonkatalysator-Temperatursensor",
+  "en": "Direct ozone reduction catalyst temperature sensor"
+ },
+ {
+  "id": "c-dtc38-216",
+  "de": "Türsteuergerät %1",
+  "en": "Door control module %1"
+ },
+ {
+  "id": "c-dtc38-217",
+  "de": "Türschalter %1",
+  "en": "Door switch %1"
+ },
+ {
+  "id": "c-dtc38-218",
+  "de": "Herunterschaltschalter",
+  "en": "Downshift switch"
+ },
+ {
+  "id": "c-dtc38-219",
+  "de": "Fahrmotor %1",
+  "en": "Drive motor %1"
+ },
+ {
+  "id": "c-dtc38-220",
+  "de": "Fahrmotor %1 Kupplungssteller",
+  "en": "Drive motor %1 clutch actuator"
+ },
+ {
+  "id": "c-dtc38-221",
+  "de": "Fahrmotor %1 Kupplungsklinke Position",
+  "en": "Drive motor %1 clutch pawl position"
+ },
+ {
+  "id": "c-dtc38-222",
+  "de": "Fahrmotor-Steuergerät %1",
+  "en": "Drive motor %1 control module"
+ },
+ {
+  "id": "c-dtc38-223",
+  "de": "Fahrmotor %1 Kühlmittelpumpe",
+  "en": "Drive motor %1 coolant pump"
+ },
+ {
+  "id": "c-dtc38-224",
+  "de": "Fahrmotor %1 Kühlmitteltemperatursensor",
+  "en": "Drive motor %1 coolant temperature sensor"
+ },
+ {
+  "id": "c-dtc38-225",
+  "de": "Fahrmotor %1 Stromsensor",
+  "en": "Drive motor %1 current sensor"
+ },
+ {
+  "id": "c-dtc38-226",
+  "de": "Fahrmotor %1 Wechselrichter",
+  "en": "Drive motor %1 inverter"
+ },
+ {
+  "id": "c-dtc38-227",
+  "de": "Fahrmotor %1 Wechselrichter Phase %2",
+  "en": "Drive motor %1 inverter phase %2"
+ },
+ {
+  "id": "c-dtc38-228",
+  "de": "Fahrmotor %1 Wechselrichter Spannungsversorgung",
+  "en": "Drive motor %1 inverter power supply"
+ },
+ {
+  "id": "c-dtc38-229",
+  "de": "Fahrmotor %1 Wechselrichter Spannung",
+  "en": "Drive motor %1 inverter voltage"
+ },
+ {
+  "id": "c-dtc38-230",
+  "de": "Fahrmotor %1 Phase %2",
+  "en": "Drive motor %1 phase %2"
+ },
+ {
+  "id": "c-dtc38-231",
+  "de": "Fahrmotor %1 Phase %2 Strom",
+  "en": "Drive motor %1 phase %2 current"
+ },
+ {
+  "id": "c-dtc38-232",
+  "de": "Fahrmotor %1 Phase %2 Stromsensor",
+  "en": "Drive motor %1 phase %2 current sensor"
+ },
+ {
+  "id": "c-dtc38-233",
+  "de": "Fahrmotor %1 Phase U-V-W",
+  "en": "Drive motor %1 phase U-V-W"
+ },
+ {
+  "id": "c-dtc38-234",
+  "de": "Fahrmotor %1 Stromsensoren Phase U-V-W passen nicht zusammen",
+  "en": "Drive motor %1 phase U-V-W current sensor correlation"
+ },
+ {
+  "id": "c-dtc38-235",
+  "de": "Fahrmotor %1 Position",
+  "en": "Drive motor %1 position"
+ },
+ {
+  "id": "c-dtc38-236",
+  "de": "Fahrmotor %1 Positionssensor",
+  "en": "Drive motor %1 position sensor"
+ },
+ {
+  "id": "c-dtc38-237",
+  "de": "Fahrmotor %1 Positionssensor Stromkreis",
+  "en": "Drive motor %1 position sensor circuit"
+ },
+ {
+  "id": "c-dtc38-238",
+  "de": "Fahrmotor %1 Positionssensor Stromkreis %2",
+  "en": "Drive motor %1 position sensor circuit %2"
+ },
+ {
+  "id": "c-dtc38-239",
+  "de": "Fahrmotor %1 Temperatursensor",
+  "en": "Drive motor %1 temperature sensor"
+ },
+ {
+  "id": "c-dtc38-240",
+  "de": "Fahrmotor %1 Temperatursensor %2",
+  "en": "Drive motor %1 temperature sensor %2"
+ },
+ {
+  "id": "c-dtc38-241",
+  "de": "Fahrmotor %1 abgegebenes Drehmoment",
+  "en": "Drive motor %1 torque delivered"
+ },
+ {
+  "id": "c-dtc38-242",
+  "de": "Fahrmotor-Steuergerät",
+  "en": "Drive motor control module"
+ },
+ {
+  "id": "c-dtc38-243",
+  "de": "Fahrmotor-Steuergerät %1",
+  "en": "Drive motor control module %1"
+ },
+ {
+  "id": "c-dtc38-244",
+  "de": "Fahrmotor-Wechselrichter Temperatursensor %1",
+  "en": "Drive motor inverter temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-245",
+  "de": "Bremsdruck vom Fahrer höher als erwartet",
+  "en": "Driver applied pressure higher than expected"
+ },
+ {
+  "id": "c-dtc38-246",
+  "de": "Fahrprogrammschalter %1",
+  "en": "Driver mode select switch %1"
+ },
+ {
+  "id": "c-dtc38-247",
+  "de": "Gurtschlosssensor Fahrer",
+  "en": "Driver seat belt sensor"
+ },
+ {
+  "id": "c-dtc38-248",
+  "de": "Sitzschienen-Positionssensor Fahrer",
+  "en": "Driver seat track position restraints sensor"
+ },
+ {
+  "id": "c-dtc38-249",
+  "de": "Motorsteuergerät %1",
+  "en": "ECM/PCM %1"
+ },
+ {
+  "id": "c-dtc38-250",
+  "de": "Hauptrelais Motorsteuergerät fällt zu früh ab",
+  "en": "ECM/PCM power relay de-energized performance too early"
+ },
+ {
+  "id": "c-dtc38-251",
+  "de": "AGR-Ventil %1",
+  "en": "EGR %1"
+ },
+ {
+  "id": "c-dtc38-252",
+  "de": "AGR-Ventil %1 Ansteuerung",
+  "en": "EGR %1 control"
+ },
+ {
+  "id": "c-dtc38-253",
+  "de": "AGR-Ventil %1 Stellposition",
+  "en": "EGR %1 control position"
+ },
+ {
+  "id": "c-dtc38-254",
+  "de": "AGR-Ventil %1 Temperatur",
+  "en": "EGR %1 control temperature"
+ },
+ {
+  "id": "c-dtc38-255",
+  "de": "AGR %1 Durchfluss zu hoch",
+  "en": "EGR %1 flow excessive detected"
+ },
+ {
+  "id": "c-dtc38-256",
+  "de": "AGR %1 Durchfluss zu gering",
+  "en": "EGR %1 flow insufficient detected"
+ },
+ {
+  "id": "c-dtc38-257",
+  "de": "AGR-Kühler %1 - Wirkungsgrad zu gering",
+  "en": "EGR cooler %1 efficiency below threshold"
+ },
+ {
+  "id": "c-dtc38-258",
+  "de": "AGR-Kühler-Bypass Bank %1",
+  "en": "EGR cooler bypass bank %1"
+ },
+ {
+  "id": "c-dtc38-259",
+  "de": "AGR-Kühler-Bypass Ansteuerung Bank %1",
+  "en": "EGR cooler bypass control bank %1"
+ },
+ {
+  "id": "c-dtc38-260",
+  "de": "AGR-Kühler-Bypass hängt offen, Bank %1",
+  "en": "EGR cooler bypass control stuck/open bank %1"
+ },
+ {
+  "id": "c-dtc38-261",
+  "de": "AGR-Kühler-Bypass Positionssensor Bank %1",
+  "en": "EGR cooler bypass position sensor bank %1"
+ },
+ {
+  "id": "c-dtc38-262",
+  "de": "AGR-Sensor %1",
+  "en": "EGR sensor %1"
+ },
+ {
+  "id": "c-dtc38-263",
+  "de": "AGR-Temperatursensor %1",
+  "en": "EGR temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-264",
+  "de": "AGR-Temperatursensoren %1 passen nicht zusammen",
+  "en": "EGR temperature sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-265",
+  "de": "AGR-Temperatur und Ladeluftkühler-Temperatur passen nicht zusammen",
+  "en": "EGR temperature/charge air cooler temperature correlation"
+ },
+ {
+  "id": "c-dtc38-266",
+  "de": "Tankentlüftung Spülleitung Ladebetrieb %1",
+  "en": "EVAP system high load purge line %1"
+ },
+ {
+  "id": "c-dtc38-267",
+  "de": "Tankentlüftung - großes Leck auf der Tankseite",
+  "en": "EVAP system large leak detected - fuel tank side"
+ },
+ {
+  "id": "c-dtc38-268",
+  "de": "Leckdiagnosepumpe Tankentlüftung Heizung",
+  "en": "EVAP system leak detection pump heater"
+ },
+ {
+  "id": "c-dtc38-269",
+  "de": "Leckdiagnosepumpe Tankentlüftung Drucksensor",
+  "en": "EVAP system leak detection pump pressure sensor"
+ },
+ {
+  "id": "c-dtc38-270",
+  "de": "Tankentlüftung Leckdiagnose Referenzblende - Durchfluss zu hoch",
+  "en": "EVAP system leak detection reference orifice high flow"
+ },
+ {
+  "id": "c-dtc38-271",
+  "de": "Tankentlüftung Leckdiagnose Referenzblende - Durchfluss zu gering",
+  "en": "EVAP system leak detection reference orifice low flow"
+ },
+ {
+  "id": "c-dtc38-272",
+  "de": "Tankentlüftung Drucksensor/-schalter %1",
+  "en": "EVAP system pressure sensor/switch %1"
+ },
+ {
+  "id": "c-dtc38-273",
+  "de": "Tankentlüftungsventil %1",
+  "en": "EVAP system purge control valve %1"
+ },
+ {
+  "id": "c-dtc38-274",
+  "de": "Tankentlüftung Spülpumpe",
+  "en": "EVAP system purge pump"
+ },
+ {
+  "id": "c-dtc38-275",
+  "de": "Tankentlüftung Umschaltventil",
+  "en": "EVAP system switching valve"
+ },
+ {
+  "id": "c-dtc38-276",
+  "de": "Tankentlüftung Belüftungsventil",
+  "en": "EVAP system vent valve"
+ },
+ {
+  "id": "c-dtc38-277",
+  "de": "Tankentlüftung - sehr kleines Leck auf der Tankseite",
+  "en": "EVAP system very small leak detected - fuel tank side"
+ },
+ {
+  "id": "c-dtc38-278",
+  "de": "Elektrische Getriebeölpumpe %1",
+  "en": "Electric/auxiliary transmission fluid pump %1"
+ },
+ {
+  "id": "c-dtc38-279",
+  "de": "Elektrische Getriebeölpumpe %1 Motor",
+  "en": "Electric/auxiliary transmission fluid pump %1 motor"
+ },
+ {
+  "id": "c-dtc38-280",
+  "de": "Elektrische Getriebeölpumpe Steuergerät",
+  "en": "Electric/auxiliary transmission fluid pump motor control module"
+ },
+ {
+  "id": "c-dtc38-281",
+  "de": "Elektrische Getriebeölpumpe Motor Phase %1",
+  "en": "Electric/auxiliary transmission fluid pump motor phase %1"
+ },
+ {
+  "id": "c-dtc38-282",
+  "de": "Elektrische Getriebeölpumpe Phase U-V-W",
+  "en": "Electric/auxiliary transmission fluid pump phase U-V-W"
+ },
+ {
+  "id": "c-dtc38-283",
+  "de": "Kühlmittel-Bypassventil %1",
+  "en": "Engine coolant bypass valve %1"
+ },
+ {
+  "id": "c-dtc38-284",
+  "de": "Kühlmittel-Bypassventil %1 Positionssensor",
+  "en": "Engine coolant bypass valve %1 position sensor"
+ },
+ {
+  "id": "c-dtc38-285",
+  "de": "Kühlmittel-Bypassventil %1 Positionssensor Anschlag",
+  "en": "Engine coolant bypass valve %1 position sensor stop/minimum stop"
+ },
+ {
+  "id": "c-dtc38-286",
+  "de": "Kühlmittel-Bypassventil %1 hängt offen",
+  "en": "Engine coolant bypass valve %1 stuck/open"
+ },
+ {
+  "id": "c-dtc38-287",
+  "de": "Kühlmittelregelventil",
+  "en": "Engine coolant flow control valve"
+ },
+ {
+  "id": "c-dtc38-288",
+  "de": "Kühlmittelregelventil Motor",
+  "en": "Engine coolant flow control valve motor"
+ },
+ {
+  "id": "c-dtc38-289",
+  "de": "Kühlmittelregelventil Positionssensor",
+  "en": "Engine coolant flow control valve position sensor"
+ },
+ {
+  "id": "c-dtc38-290",
+  "de": "Kühlmittelregelventil Versorgung",
+  "en": "Engine coolant flow control valve supply"
+ },
+ {
+  "id": "c-dtc38-291",
+  "de": "Kühlmitteldurchfluss zu gering oder Funktion",
+  "en": "Engine coolant flow low/performance"
+ },
+ {
+  "id": "c-dtc38-292",
+  "de": "Kühlmittelpumpe",
+  "en": "Engine coolant pump"
+ },
+ {
+  "id": "c-dtc38-293",
+  "de": "Kühlmittelpumpe blockiert",
+  "en": "Engine coolant pump stuck/stalled"
+ },
+ {
+  "id": "c-dtc38-294",
+  "de": "Kühlmitteltemperatur %1 und Außenlufttemperatur passen nicht zusammen",
+  "en": "Engine coolant temperature %1 / ambient air temperature correlation"
+ },
+ {
+  "id": "c-dtc38-295",
+  "de": "Kühlmitteltemperatur und Motoröltemperatur passen nicht zusammen",
+  "en": "Engine coolant temperature / engine oil temperature correlation"
+ },
+ {
+  "id": "c-dtc38-296",
+  "de": "Kühlmitteltemperatursensor %1",
+  "en": "Engine coolant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-297",
+  "de": "Kühlmitteltemperatur und Kraftstofftemperatur passen nicht zusammen",
+  "en": "Engine coolant temperature/fuel temperature correlation"
+ },
+ {
+  "id": "c-dtc38-298",
+  "de": "Kühlmitteltemperatur und Ansauglufttemperatur passen nicht zusammen",
+  "en": "Engine coolant temperature/intake air temperature correlation"
+ },
+ {
+  "id": "c-dtc38-299",
+  "de": "Motor-Trennkupplung - Fehler beim Schließen",
+  "en": "Engine disconnect clutch engagement fault"
+ },
+ {
+  "id": "c-dtc38-300",
+  "de": "Motorhaubenschalter",
+  "en": "Engine hood switch"
+ },
+ {
+  "id": "c-dtc38-301",
+  "de": "Motorölstand",
+  "en": "Engine oil level"
+ },
+ {
+  "id": "c-dtc38-302",
+  "de": "Ölstandsensor",
+  "en": "Engine oil level sensor"
+ },
+ {
+  "id": "c-dtc38-303",
+  "de": "Öldruckregelung",
+  "en": "Engine oil pressure"
+ },
+ {
+  "id": "c-dtc38-304",
+  "de": "Öldruckregelung Steuerkreis",
+  "en": "Engine oil pressure control circuit"
+ },
+ {
+  "id": "c-dtc38-305",
+  "de": "Motoröltemperatursensor %1",
+  "en": "Engine oil temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-306",
+  "de": "Motoröltemperatursensoren %1 passen nicht zusammen",
+  "en": "Engine oil temperature sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-307",
+  "de": "Vorentflammung über dem Grenzwert - Leistung zwangsweise begrenzt",
+  "en": "Engine pre-ignition above threshold - forced limited power"
+ },
+ {
+  "id": "c-dtc38-308",
+  "de": "Motor-Wiederstart",
+  "en": "Engine restart"
+ },
+ {
+  "id": "c-dtc38-309",
+  "de": "Motornummer nicht programmiert oder falsch",
+  "en": "Engine serial number not programmed or incompatible"
+ },
+ {
+  "id": "c-dtc38-310",
+  "de": "Motorsound-Steuerung %1 Stromkreis",
+  "en": "Engine sound control %1 circuit"
+ },
+ {
+  "id": "c-dtc38-311",
+  "de": "Anlasser",
+  "en": "Engine starter"
+ },
+ {
+  "id": "c-dtc38-312",
+  "de": "Lambdaregelung startet zu spät",
+  "en": "Excessive time to enter closed loop air/fuel ratio control"
+ },
+ {
+  "id": "c-dtc38-313",
+  "de": "Regelung des Einspritzzeitpunkts startet zu spät",
+  "en": "Excessive time to enter closed loop fuel timing control"
+ },
+ {
+  "id": "c-dtc38-314",
+  "de": "Partikelfilter-Regenerationsregelung startet zu spät",
+  "en": "Excessive time to enter closed loop particulate filter regeneration control"
+ },
+ {
+  "id": "c-dtc38-315",
+  "de": "AdBlue-Dosierregelung startet zu spät",
+  "en": "Excessive time to enter closed loop reductant injection control"
+ },
+ {
+  "id": "c-dtc38-316",
+  "de": "Abgasnachbehandlung Kraftstoff-Spülluftventil",
+  "en": "Exhaust aftertreatment fuel air purge valve"
+ },
+ {
+  "id": "c-dtc38-317",
+  "de": "Abgasnachbehandlung Kraftstoff-Einspritzventil %1",
+  "en": "Exhaust aftertreatment fuel injector %1"
+ },
+ {
+  "id": "c-dtc38-318",
+  "de": "Abgasnachbehandlung Kraftstoff-Einspritzventil %1 Ansteuerung",
+  "en": "Exhaust aftertreatment fuel injector %1 control"
+ },
+ {
+  "id": "c-dtc38-319",
+  "de": "Abgasnachbehandlung Kraftstoffzufuhr Ansteuerung",
+  "en": "Exhaust aftertreatment fuel supply control"
+ },
+ {
+  "id": "c-dtc38-320",
+  "de": "Leistungsrelais Abgasnachbehandlung",
+  "en": "Exhaust aftertreatment power relay"
+ },
+ {
+  "id": "c-dtc38-321",
+  "de": "Abgasklappe %1 Position",
+  "en": "Exhaust flow control valve %1 position"
+ },
+ {
+  "id": "c-dtc38-322",
+  "de": "Abgassensor-Modul %1",
+  "en": "Exhaust gas sensor module %1"
+ },
+ {
+  "id": "c-dtc38-323",
+  "de": "Abgastemperaturmessung - mehrere Sensoren passen nicht zusammen, Bank %1",
+  "en": "Exhaust gas temperature measurement system - multiple sensor correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-324",
+  "de": "Abgastemperatur außerhalb des Bereichs, Bank %1, Sensor %2",
+  "en": "Exhaust gas temperature out of range bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-325",
+  "de": "Abgastemperatursensoren 1 und 2 passen nicht zusammen, Bank %1",
+  "en": "Exhaust gas temperature sensor 1/2 correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-326",
+  "de": "Abgastemperatursensoren 1 und 3 passen nicht zusammen, Bank %1",
+  "en": "Exhaust gas temperature sensor 1/3 correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-327",
+  "de": "Abgastemperatursensoren 2 und 3 passen nicht zusammen, Bank %1",
+  "en": "Exhaust gas temperature sensor 2/3 correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-328",
+  "de": "Abgastemperatursensor Bank %1, Sensor %2",
+  "en": "Exhaust gas temperature sensor bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-329",
+  "de": "Abgaswärmetauscher Bypassventil %1",
+  "en": "Exhaust heat exchanger exhaust bypass valve %1"
+ },
+ {
+  "id": "c-dtc38-330",
+  "de": "Abgaswärmetauscher Bypassventil %1 Ansteuerung",
+  "en": "Exhaust heat exchanger exhaust bypass valve %1 control"
+ },
+ {
+  "id": "c-dtc38-331",
+  "de": "Abgasdruck Bank %1",
+  "en": "Exhaust pressure bank %1"
+ },
+ {
+  "id": "c-dtc38-332",
+  "de": "Abgasdruckregelventil %1",
+  "en": "Exhaust pressure control valve %1"
+ },
+ {
+  "id": "c-dtc38-333",
+  "de": "Abgasdruckregelventil %1 Positionssensor/-schalter",
+  "en": "Exhaust pressure control valve %1 position sensor/switch"
+ },
+ {
+  "id": "c-dtc38-334",
+  "de": "Abgasdruckregelventil %1 Sensor/Schalter",
+  "en": "Exhaust pressure control valve %1 sensor/switch"
+ },
+ {
+  "id": "c-dtc38-335",
+  "de": "Abgasdruckregelventil %1 Versorgung",
+  "en": "Exhaust pressure control valve %1 supply"
+ },
+ {
+  "id": "c-dtc38-336",
+  "de": "Abgasdruckregler Entlüftungs-Magnetventil",
+  "en": "Exhaust pressure regulator vent solenoid"
+ },
+ {
+  "id": "c-dtc38-337",
+  "de": "Kühlerlüfter %1",
+  "en": "Fan %1"
+ },
+ {
+  "id": "c-dtc38-338",
+  "de": "Hybridsystem zwangsweise abgeschaltet",
+  "en": "Forced hybrid/EV system shutdown"
+ },
+ {
+  "id": "c-dtc38-339",
+  "de": "Allrad-Geländeuntersetzung Schalter",
+  "en": "Four wheel drive (4WD) low switch"
+ },
+ {
+  "id": "c-dtc38-340",
+  "de": "Vorderachs-Abkoppelsteller",
+  "en": "Front axle disconnect actuator"
+ },
+ {
+  "id": "c-dtc38-341",
+  "de": "Frontradar %1",
+  "en": "Front radar module %1"
+ },
+ {
+  "id": "c-dtc38-342",
+  "de": "Tankklappe",
+  "en": "Fuel fill door"
+ },
+ {
+  "id": "c-dtc38-343",
+  "de": "Tankklappenverriegelung",
+  "en": "Fuel fill door lock"
+ },
+ {
+  "id": "c-dtc38-344",
+  "de": "Tankklappenverriegelung Ansteuerung",
+  "en": "Fuel fill door lock control"
+ },
+ {
+  "id": "c-dtc38-345",
+  "de": "Tankklappenverriegelung Positionssensor/-schalter",
+  "en": "Fuel fill door lock position sensor/switch"
+ },
+ {
+  "id": "c-dtc38-346",
+  "de": "Tankklappe Öffnungstaster",
+  "en": "Fuel fill door open request sensor/switch"
+ },
+ {
+  "id": "c-dtc38-347",
+  "de": "Tankklappe Positionssensor/-schalter",
+  "en": "Fuel fill door position sensor/switch"
+ },
+ {
+  "id": "c-dtc38-348",
+  "de": "Tankklappenentriegelung",
+  "en": "Fuel fill door unlock"
+ },
+ {
+  "id": "c-dtc38-349",
+  "de": "Tankklappenentriegelung Ansteuerung",
+  "en": "Fuel fill door unlock control"
+ },
+ {
+  "id": "c-dtc38-350",
+  "de": "Einspritzmenge %1 höher als erwartet",
+  "en": "Fuel injection quantity %1 higher than expected"
+ },
+ {
+  "id": "c-dtc38-351",
+  "de": "Einspritzmenge %1 geringer als erwartet",
+  "en": "Fuel injection quantity %1 lower than expected"
+ },
+ {
+  "id": "c-dtc38-352",
+  "de": "Einspritzventil-Kalibrierung nicht angelernt oder programmiert",
+  "en": "Fuel injector calibration not learned/programmed"
+ },
+ {
+  "id": "c-dtc38-353",
+  "de": "Einspritz-Steuergerät",
+  "en": "Fuel injector control module"
+ },
+ {
+  "id": "c-dtc38-354",
+  "de": "Einspritzventil-Endstufe Bank %1",
+  "en": "Fuel injector driver circuit bank %1"
+ },
+ {
+  "id": "c-dtc38-355",
+  "de": "Tankfüllstandsgeber %1",
+  "en": "Fuel level sensor %1"
+ },
+ {
+  "id": "c-dtc38-356",
+  "de": "Kraftstoffdruckregler %1",
+  "en": "Fuel pressure regulator %1"
+ },
+ {
+  "id": "c-dtc38-357",
+  "de": "Kraftstoffdruckregler %1 - Motor zwangsweise abgestellt",
+  "en": "Fuel pressure regulator %1 - forced engine shutdown"
+ },
+ {
+  "id": "c-dtc38-358",
+  "de": "Kraftstoffdruckregler %1 am Regelanschlag, Druck",
+  "en": "Fuel pressure regulator %1 exceeded control limits - pressure"
+ },
+ {
+  "id": "c-dtc38-359",
+  "de": "Kraftstoffdruckregler %1 Lerngrenze überschritten",
+  "en": "Fuel pressure regulator %1 exceeded learning limits"
+ },
+ {
+  "id": "c-dtc38-360",
+  "de": "Kraftstoffdruckregler %1 Magnetventil Versorgungsspannung",
+  "en": "Fuel pressure regulator %1 solenoid supply voltage"
+ },
+ {
+  "id": "c-dtc38-361",
+  "de": "Kraftstoffdruck-Entlastung",
+  "en": "Fuel pressure relief"
+ },
+ {
+  "id": "c-dtc38-362",
+  "de": "Kraftstoffdruck-Entlastung Ansteuerung",
+  "en": "Fuel pressure relief control"
+ },
+ {
+  "id": "c-dtc38-363",
+  "de": "Kraftstoffdrucksensor %1",
+  "en": "Fuel pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-364",
+  "de": "Kraftstoffpumpe %1",
+  "en": "Fuel pump %1"
+ },
+ {
+  "id": "c-dtc38-365",
+  "de": "Kraftstoffpumpe %1 - Fördermenge zu gering oder Funktion",
+  "en": "Fuel pump %1 low flow/performance"
+ },
+ {
+  "id": "c-dtc38-366",
+  "de": "Kraftstoffpumpen-Steuergerät %1",
+  "en": "Fuel pump control module %1"
+ },
+ {
+  "id": "c-dtc38-367",
+  "de": "Kraftstoffpumpen-Steuergerät fordert Motorkontrollleuchte an",
+  "en": "Fuel pump control module requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-368",
+  "de": "Kraftstoffpumpenmodul %1",
+  "en": "Fuel pump module %1"
+ },
+ {
+  "id": "c-dtc38-369",
+  "de": "Kraftstoffpumpe Sekundärkreis",
+  "en": "Fuel pump secondary"
+ },
+ {
+  "id": "c-dtc38-370",
+  "de": "Kraftstoffpumpe Sekundärkreis",
+  "en": "Fuel pump secondary circuit"
+ },
+ {
+  "id": "c-dtc38-371",
+  "de": "Kraftstoffdrucksensor (Rail) Bank %1",
+  "en": "Fuel rail pressure sensor bank %1"
+ },
+ {
+  "id": "c-dtc38-372",
+  "de": "Kraftstoffdruck im Rail beim Starten zu niedrig",
+  "en": "Fuel rail pressure too low - engine cranking"
+ },
+ {
+  "id": "c-dtc38-373",
+  "de": "Kraftstoffdruck im Rail beim Starten zu niedrig, Bank %1",
+  "en": "Fuel rail pressure too low - engine cranking bank %1"
+ },
+ {
+  "id": "c-dtc38-374",
+  "de": "Kraftstoffdruck im Rail oder System Bank %1",
+  "en": "Fuel rail/system pressure bank %1"
+ },
+ {
+  "id": "c-dtc38-375",
+  "de": "Kraftstoffvorwärmung",
+  "en": "Fuel supply heater"
+ },
+ {
+  "id": "c-dtc38-376",
+  "de": "Kraftstofftemperatursensor %1",
+  "en": "Fuel temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-377",
+  "de": "Gateway %1",
+  "en": "Gateway %1"
+ },
+ {
+  "id": "c-dtc38-378",
+  "de": "%1. Gang - falsche Übersetzung",
+  "en": "Gear %1 incorrect ratio"
+ },
+ {
+  "id": "c-dtc38-379",
+  "de": "Wählhebel-Positionssensor %2 (%1-Richtung)",
+  "en": "Gear lever %1 position sensor %2"
+ },
+ {
+  "id": "c-dtc38-380",
+  "de": "Wählhebel-Positionssensor %1",
+  "en": "Gear lever position sensor %1"
+ },
+ {
+  "id": "c-dtc38-381",
+  "de": "Wählhebel-Positionssensoren passen nicht zusammen",
+  "en": "Gear lever position sensor system - multiple sensor correlation"
+ },
+ {
+  "id": "c-dtc38-382",
+  "de": "Schaltmodul %1",
+  "en": "Gear shift control module %1"
+ },
+ {
+  "id": "c-dtc38-383",
+  "de": "Schaltsperre Magnetventil/Steller Steuerkreis %1",
+  "en": "Gear shift lock solenoid/actuator control circuit %1"
+ },
+ {
+  "id": "c-dtc38-384",
+  "de": "Fehler bei der Schaltpositionsregelung",
+  "en": "Gear shift position control error"
+ },
+ {
+  "id": "c-dtc38-385",
+  "de": "Lichtmaschine %1",
+  "en": "Generator %1"
+ },
+ {
+  "id": "c-dtc38-386",
+  "de": "Generator-Steuergerät",
+  "en": "Generator control module"
+ },
+ {
+  "id": "c-dtc38-387",
+  "de": "Generator-Wechselrichter",
+  "en": "Generator inverter"
+ },
+ {
+  "id": "c-dtc38-388",
+  "de": "Ladesystem (Lichtmaschine)",
+  "en": "Generator system"
+ },
+ {
+  "id": "c-dtc38-389",
+  "de": "Generator-Drehmomentsensor",
+  "en": "Generator torque sensor"
+ },
+ {
+  "id": "c-dtc38-390",
+  "de": "Glühkerze",
+  "en": "Glow plug"
+ },
+ {
+  "id": "c-dtc38-391",
+  "de": "Glühzeitsteuergerät",
+  "en": "Glow plug control module"
+ },
+ {
+  "id": "c-dtc38-392",
+  "de": "Glühzeitsteuergerät %1",
+  "en": "Glow plug control module %1"
+ },
+ {
+  "id": "c-dtc38-393",
+  "de": "Glühzeitsteuergerät %1 Systemspannung",
+  "en": "Glow plug control module %1 system voltage"
+ },
+ {
+  "id": "c-dtc38-394",
+  "de": "Glühkontrollleuchte",
+  "en": "Glow plug/heater indicator"
+ },
+ {
+  "id": "c-dtc38-395",
+  "de": "Lambdasondenheizung Bank %1, Sonde %2",
+  "en": "HO2S heater bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-396",
+  "de": "Klimasteuergerät",
+  "en": "HVAC control module"
+ },
+ {
+  "id": "c-dtc38-397",
+  "de": "Head-up-Display",
+  "en": "Head up display"
+ },
+ {
+  "id": "c-dtc38-398",
+  "de": "Hochvoltsicherung %1",
+  "en": "High voltage fuse %1"
+ },
+ {
+  "id": "c-dtc38-399",
+  "de": "Hochvoltsystem und Brennstoffzelle",
+  "en": "High voltage system and fuel cell"
+ },
+ {
+  "id": "c-dtc38-400",
+  "de": "Hochvolt-Sicherheitsschleife (Interlock) %1",
+  "en": "High voltage system interlock circuit %1"
+ },
+ {
+  "id": "c-dtc38-401",
+  "de": "Luftfeuchtesensor",
+  "en": "Humidity sensor"
+ },
+ {
+  "id": "c-dtc38-402",
+  "de": "Hybrid-Generator",
+  "en": "Hybrid generator"
+ },
+ {
+  "id": "c-dtc38-403",
+  "de": "Hybridbatterie %1",
+  "en": "Hybrid/EV battery %1"
+ },
+ {
+  "id": "c-dtc38-404",
+  "de": "Hybridbatterie %1 Spannung instabil",
+  "en": "Hybrid/EV battery %1 voltage unstable"
+ },
+ {
+  "id": "c-dtc38-405",
+  "de": "Hybridbatterie Zellausgleich",
+  "en": "Hybrid/EV battery cell balancing"
+ },
+ {
+  "id": "c-dtc38-406",
+  "de": "Hybridbatterie Zellausgleich Stromkreis %1",
+  "en": "Hybrid/EV battery cell balancing circuit %1"
+ },
+ {
+  "id": "c-dtc38-407",
+  "de": "Hybridbatterie beim Laden",
+  "en": "Hybrid/EV battery charging"
+ },
+ {
+  "id": "c-dtc38-408",
+  "de": "Hybridbatterie-Kühlsystem %1",
+  "en": "Hybrid/EV battery cooling system %1"
+ },
+ {
+  "id": "c-dtc38-409",
+  "de": "Hybridbatterie beim Entladen",
+  "en": "Hybrid/EV battery discharging"
+ },
+ {
+  "id": "c-dtc38-410",
+  "de": "Hybridbatterie Minus-Schütz",
+  "en": "Hybrid/EV battery negative contactor"
+ },
+ {
+  "id": "c-dtc38-411",
+  "de": "Hybridbatterie Minus-Schütz Stromkreis",
+  "en": "Hybrid/EV battery negative contactor circuit"
+ },
+ {
+  "id": "c-dtc38-412",
+  "de": "Hybridbatterie %1 - Alterung",
+  "en": "Hybrid/EV battery pack %1 deterioration"
+ },
+ {
+  "id": "c-dtc38-413",
+  "de": "Hybridbatterie-Belüftung - Luftdurchsatz zu gering",
+  "en": "Hybrid/EV battery pack air flow system insufficient air flow"
+ },
+ {
+  "id": "c-dtc38-414",
+  "de": "Hybridbatterie Lufttemperatursensor %1",
+  "en": "Hybrid/EV battery pack air temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-415",
+  "de": "Hybridbatterie-Zelle",
+  "en": "Hybrid/EV battery pack cell"
+ },
+ {
+  "id": "c-dtc38-416",
+  "de": "Hybridbatterie Kühlmittel-Regelventil %1",
+  "en": "Hybrid/EV battery pack coolant control valve %1"
+ },
+ {
+  "id": "c-dtc38-417",
+  "de": "Hybridbatterie Kühlmittel-Regelventil Positionssensor",
+  "en": "Hybrid/EV battery pack coolant control valve position sensor"
+ },
+ {
+  "id": "c-dtc38-418",
+  "de": "Hybridbatterie Kühlmittelheizung %1 Ansteuerung",
+  "en": "Hybrid/EV battery pack coolant heater %1 control"
+ },
+ {
+  "id": "c-dtc38-419",
+  "de": "Hybridbatterie-Kühlmittelpumpe %1",
+  "en": "Hybrid/EV battery pack coolant pump %1"
+ },
+ {
+  "id": "c-dtc38-420",
+  "de": "Hybridbatterie-Kühlmittelpumpe %1 Ansteuerung",
+  "en": "Hybrid/EV battery pack coolant pump %1 control"
+ },
+ {
+  "id": "c-dtc38-421",
+  "de": "Hybridbatterie-Kühlmittelpumpe %1 Drehzahl zu hoch - Trockenlauf",
+  "en": "Hybrid/EV battery pack coolant pump %1 overspeed - dry run"
+ },
+ {
+  "id": "c-dtc38-422",
+  "de": "Hybridbatterie Kühlmitteltemperatursensor %1",
+  "en": "Hybrid/EV battery pack coolant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-423",
+  "de": "Hybridbatterie-Kühlgebläse %1",
+  "en": "Hybrid/EV battery pack cooling fan %1"
+ },
+ {
+  "id": "c-dtc38-424",
+  "de": "Hybridbatterie-Kühlgebläse %1 Rückmeldung",
+  "en": "Hybrid/EV battery pack cooling fan %1 sense"
+ },
+ {
+  "id": "c-dtc38-425",
+  "de": "Hybridbatterie-Kühlgebläse Freigabe",
+  "en": "Hybrid/EV battery pack cooling fan enable"
+ },
+ {
+  "id": "c-dtc38-426",
+  "de": "Hybridbatterie Stromsensor %1",
+  "en": "Hybrid/EV battery pack current sensor %1"
+ },
+ {
+  "id": "c-dtc38-427",
+  "de": "Hybridbatterie Stromsensoren %1 passen nicht zusammen",
+  "en": "Hybrid/EV battery pack current sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-428",
+  "de": "Hybridbatterie Sensormodul",
+  "en": "Hybrid/EV battery pack sensor module"
+ },
+ {
+  "id": "c-dtc38-429",
+  "de": "Hybridbatterie Ladezustand",
+  "en": "Hybrid/EV battery pack state of charge"
+ },
+ {
+  "id": "c-dtc38-430",
+  "de": "Hybridbatterie Spannungsmessung %1",
+  "en": "Hybrid/EV battery pack voltage sense %1"
+ },
+ {
+  "id": "c-dtc38-431",
+  "de": "Hybridbatterie Spannungsschwankung",
+  "en": "Hybrid/EV battery pack voltage variation"
+ },
+ {
+  "id": "c-dtc38-432",
+  "de": "Hybridbatterie Spannungsschwankung über dem Grenzwert",
+  "en": "Hybrid/EV battery pack voltage variation exceeded limit"
+ },
+ {
+  "id": "c-dtc38-433",
+  "de": "Hybridbatterie Plus-Schütz",
+  "en": "Hybrid/EV battery positive contactor"
+ },
+ {
+  "id": "c-dtc38-434",
+  "de": "Hybridbatterie Plus-Schütz Stromkreis",
+  "en": "Hybrid/EV battery positive contactor circuit"
+ },
+ {
+  "id": "c-dtc38-435",
+  "de": "Hybridbatterie Vorladeschütz %1",
+  "en": "Hybrid/EV battery precharge contactor %1"
+ },
+ {
+  "id": "c-dtc38-436",
+  "de": "Hybridbatterie Vorladeschütz Stromkreis",
+  "en": "Hybrid/EV battery precharge contactor circuit"
+ },
+ {
+  "id": "c-dtc38-437",
+  "de": "Hybridbatteriesystem",
+  "en": "Hybrid/EV battery system"
+ },
+ {
+  "id": "c-dtc38-438",
+  "de": "Hybridbatteriesystem Entladekreis",
+  "en": "Hybrid/EV battery system discharge circuit"
+ },
+ {
+  "id": "c-dtc38-439",
+  "de": "Hybridbatteriesystem - Entladezeit zu lang",
+  "en": "Hybrid/EV battery system discharge time too long"
+ },
+ {
+  "id": "c-dtc38-440",
+  "de": "Hybridbatteriesystem - Vorladezeit zu lang",
+  "en": "Hybrid/EV battery system precharge time too long"
+ },
+ {
+  "id": "c-dtc38-441",
+  "de": "Hybridbatteriesystem - Vorladezeit zu kurz",
+  "en": "Hybrid/EV battery system precharge time too short"
+ },
+ {
+  "id": "c-dtc38-442",
+  "de": "Hybridbatterie Systemspannung",
+  "en": "Hybrid/EV battery system voltage"
+ },
+ {
+  "id": "c-dtc38-443",
+  "de": "Hybridbatterie-Temperatursensor %1",
+  "en": "Hybrid/EV battery temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-444",
+  "de": "Hybridbatterie Isolationswächter",
+  "en": "Hybrid/EV battery voltage isolation sensor"
+ },
+ {
+  "id": "c-dtc38-445",
+  "de": "Hybridbatterie Spannungserfassung %1",
+  "en": "Hybrid/EV battery voltage sense %1"
+ },
+ {
+  "id": "c-dtc38-446",
+  "de": "Hybridelektronik-Kühlmittelpumpe %1",
+  "en": "Hybrid/EV electronics coolant pump %1"
+ },
+ {
+  "id": "c-dtc38-447",
+  "de": "Hybridelektronik-Kühlmittelpumpe %1 Freigabe",
+  "en": "Hybrid/EV electronics coolant pump %1 enable"
+ },
+ {
+  "id": "c-dtc38-448",
+  "de": "Hybridelektronik-Kühlmitteltemperatursensor %1",
+  "en": "Hybrid/EV electronics coolant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-449",
+  "de": "Hybrid-Steuergerät",
+  "en": "Hybrid/EV powertrain control module"
+ },
+ {
+  "id": "c-dtc38-450",
+  "de": "Hybrid-Steuergerät %1",
+  "en": "Hybrid/EV powertrain control module %1"
+ },
+ {
+  "id": "c-dtc38-451",
+  "de": "Hybrid-Steuergerät fordert Motorkontrollleuchte an",
+  "en": "Hybrid/EV powertrain control module requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-452",
+  "de": "Hybridsystem",
+  "en": "Hybrid/EV system"
+ },
+ {
+  "id": "c-dtc38-453",
+  "de": "Hydrauliköl-Temperatursensor",
+  "en": "Hydraulic oil temperature sensor"
+ },
+ {
+  "id": "c-dtc38-454",
+  "de": "Hydraulikdrucksensor",
+  "en": "Hydraulic pressure sensor"
+ },
+ {
+  "id": "c-dtc38-455",
+  "de": "Hydraulikeinheit - Druckverlust",
+  "en": "Hydraulic pressure unit loss of pressure"
+ },
+ {
+  "id": "c-dtc38-456",
+  "de": "Leerlaufregelung - Einspritzmenge höher als erwartet",
+  "en": "Idle control system fuel quantity higher than expected"
+ },
+ {
+  "id": "c-dtc38-457",
+  "de": "Leerlaufregelung - Einspritzmenge geringer als erwartet",
+  "en": "Idle control system fuel quantity lower than expected"
+ },
+ {
+  "id": "c-dtc38-458",
+  "de": "Zündung %1 Ansteuersignal",
+  "en": "Ignition %1 control signal"
+ },
+ {
+  "id": "c-dtc38-459",
+  "de": "Zündspulen-Primärkreis Sicherung %1",
+  "en": "Ignition coil primary circuit fuse %1"
+ },
+ {
+  "id": "c-dtc38-460",
+  "de": "Zündschalter",
+  "en": "Ignition switch"
+ },
+ {
+  "id": "c-dtc38-461",
+  "de": "Zündschalter Stellung Zubehör",
+  "en": "Ignition switch accessory position"
+ },
+ {
+  "id": "c-dtc38-462",
+  "de": "Zündschalter Stellung Ein/Start",
+  "en": "Ignition switch on/start position"
+ },
+ {
+  "id": "c-dtc38-463",
+  "de": "Zündschalter Stellung Fahrt",
+  "en": "Ignition switch run position"
+ },
+ {
+  "id": "c-dtc38-464",
+  "de": "Bildverarbeitungs-Steuergerät %1",
+  "en": "Image processing module %1"
+ },
+ {
+  "id": "c-dtc38-465",
+  "de": "Einspritzimpuls",
+  "en": "Injection pulse"
+ },
+ {
+  "id": "c-dtc38-466",
+  "de": "Einspritzpumpe Mengenregelung %1 unplausibel (Nocken/Rotor/Einspritzventil)",
+  "en": "Injection pump fuel metering control %1 range/performance (cam/rotor/injector)"
+ },
+ {
+  "id": "c-dtc38-467",
+  "de": "Einspritzzeitpunkt",
+  "en": "Injection timing"
+ },
+ {
+  "id": "c-dtc38-468",
+  "de": "Einspritz-Steuerdruck",
+  "en": "Injector control pressure"
+ },
+ {
+  "id": "c-dtc38-469",
+  "de": "Einspritz-Steuerdruckregler",
+  "en": "Injector control pressure regulator"
+ },
+ {
+  "id": "c-dtc38-470",
+  "de": "Einspritz-Steuerdrucksensor",
+  "en": "Injector control pressure sensor"
+ },
+ {
+  "id": "c-dtc38-471",
+  "de": "Einspritz-Steuerdruck beim Starten zu niedrig",
+  "en": "Injector control pressure too low - engine cranking"
+ },
+ {
+  "id": "c-dtc38-472",
+  "de": "Turbinen-/Eingangsdrehzahlsensor %1",
+  "en": "Input/turbine shaft speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-473",
+  "de": "Kombiinstrument",
+  "en": "Instrument panel control module"
+ },
+ {
+  "id": "c-dtc38-474",
+  "de": "Lambdasonde Ansaugluft Spannung zu niedrig, Bank %1",
+  "en": "Intake air O2 sensor circuit low voltage bank %1"
+ },
+ {
+  "id": "c-dtc38-475",
+  "de": "Lambdasonde Ansaugluft Referenzspannung Bank %1",
+  "en": "Intake air O2 sensor reference voltage bank %1"
+ },
+ {
+  "id": "c-dtc38-476",
+  "de": "Ansaugluftheizung %1",
+  "en": "Intake air heater %1"
+ },
+ {
+  "id": "c-dtc38-477",
+  "de": "Ansaugluftheizung",
+  "en": "Intake air heater system"
+ },
+ {
+  "id": "c-dtc38-478",
+  "de": "Ansaugdruckmessung - mehrere Sensoren passen nicht zusammen, Bank %1",
+  "en": "Intake air pressure measurement system - multiple sensor correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-479",
+  "de": "Ansauglufttemperatursensor %1 Bank %2",
+  "en": "Intake air temperature sensor %1 bank %2"
+ },
+ {
+  "id": "c-dtc38-480",
+  "de": "Ansauglufttemperatur und Außenlufttemperatur passen nicht zusammen",
+  "en": "Intake air temperature/ambient air temperature correlation"
+ },
+ {
+  "id": "c-dtc38-481",
+  "de": "Einlassnockenwellenversteller Verriegelung Bank %1",
+  "en": "Intake camshaft actuator park lock bank %1"
+ },
+ {
+  "id": "c-dtc38-482",
+  "de": "Saugrohrklappen Bank %1",
+  "en": "Intake manifold runner bank %1"
+ },
+ {
+  "id": "c-dtc38-483",
+  "de": "Saugrohrklappen-Steller Versorgung Bank %1",
+  "en": "Intake manifold runner control actuator supply bank %1"
+ },
+ {
+  "id": "c-dtc38-484",
+  "de": "Saugrohrklappen Steuerkreis Bank %1",
+  "en": "Intake manifold runner control circuit bank %1"
+ },
+ {
+  "id": "c-dtc38-485",
+  "de": "Saugrohrumschaltventil Bank %1",
+  "en": "Intake manifold tuning (IMT) valve bank %1"
+ },
+ {
+  "id": "c-dtc38-486",
+  "de": "Saugrohrumschaltventil Positionssensor/-schalter Bank %1",
+  "en": "Intake manifold tuning (IMT) valve position sensor/switch bank %1"
+ },
+ {
+  "id": "c-dtc38-487",
+  "de": "Zwischenwellen-Drehzahlsensor %1",
+  "en": "Intermediate shaft speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-488",
+  "de": "Steuergerät - EEPROM fehlerhaft",
+  "en": "Internal control module EEPROM error"
+ },
+ {
+  "id": "c-dtc38-489",
+  "de": "Steuergerät Lambdasonden-Prozessor Bank %1",
+  "en": "Internal control module O2 sensor processor bank %1"
+ },
+ {
+  "id": "c-dtc38-490",
+  "de": "Steuergerät Bremssignalauswertung",
+  "en": "Internal control module brake signal"
+ },
+ {
+  "id": "c-dtc38-491",
+  "de": "Steuergerät Auswertung Fahrmotor/Generator und Motordrehzahl",
+  "en": "Internal control module drive motor/generator - engine speed sensor"
+ },
+ {
+  "id": "c-dtc38-492",
+  "de": "Steuergerät Einspritzventil-Ansteuerung",
+  "en": "Internal control module fuel injector control"
+ },
+ {
+  "id": "c-dtc38-493",
+  "de": "Steuergerät Zündspulen-Ansteuerung",
+  "en": "Internal control module ignition coil control"
+ },
+ {
+  "id": "c-dtc38-494",
+  "de": "Steuergerät - nichtflüchtiger Speicher (NVRAM) fehlerhaft",
+  "en": "Internal control module non-volatile random access memory (NVRAM) error"
+ },
+ {
+  "id": "c-dtc38-495",
+  "de": "Steuergerät Drosselklappenauswertung",
+  "en": "Internal control module throttle position"
+ },
+ {
+  "id": "c-dtc38-496",
+  "de": "Steuergerät Drehmomentberechnung",
+  "en": "Internal control module torque"
+ },
+ {
+  "id": "c-dtc38-497",
+  "de": "Steuergerät Fahrtrichtungsregelung",
+  "en": "Internal control module transmission gear direction control"
+ },
+ {
+  "id": "c-dtc38-498",
+  "de": "Steuergerät Fahrstufenregelung",
+  "en": "Internal control module transmission range control"
+ },
+ {
+  "id": "c-dtc38-499",
+  "de": "Steuergerät Getriebedrehzahlauswertung",
+  "en": "Internal control module transmission speed sensor"
+ },
+ {
+  "id": "c-dtc38-500",
+  "de": "Unplausible Daten empfangen",
+  "en": "Invalid data received"
+ },
+ {
+  "id": "c-dtc38-501",
+  "de": "Ionenstrom-Modul",
+  "en": "Ion sense module"
+ },
+ {
+  "id": "c-dtc38-502",
+  "de": "Ionenstrommessung",
+  "en": "Ion sense system"
+ },
+ {
+  "id": "c-dtc38-503",
+  "de": "Klopf-/Verbrennungsschwingungssensor %1",
+  "en": "Knock/combustion vibration sensor %1"
+ },
+ {
+  "id": "c-dtc38-504",
+  "de": "Querbeschleunigungssensor",
+  "en": "Lateral acceleration sensor"
+ },
+ {
+  "id": "c-dtc38-505",
+  "de": "Einlassventil vorne links",
+  "en": "Left front inlet control"
+ },
+ {
+  "id": "c-dtc38-506",
+  "de": "Auslassventil vorne links",
+  "en": "Left front outlet control"
+ },
+ {
+  "id": "c-dtc38-507",
+  "de": "Temperaturklappen-Stellmotor vorne links",
+  "en": "Left front temperature actuator"
+ },
+ {
+  "id": "c-dtc38-508",
+  "de": "Raddrehzahlsensor vorne links",
+  "en": "Left front wheel speed sensor"
+ },
+ {
+  "id": "c-dtc38-509",
+  "de": "Raddrehzahlsensor vorne links %1",
+  "en": "Left front wheel speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-510",
+  "de": "Raddrehzahlsensor vorne links %1 - Signalvergleich unplausibel",
+  "en": "Left front wheel speed sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-511",
+  "de": "Raddrehzahlsensor vorne links %1 - falsches Bauteil verbaut",
+  "en": "Left front wheel speed sensor %1 incorrect component installed"
+ },
+ {
+  "id": "c-dtc38-512",
+  "de": "Frontcrashsensor links",
+  "en": "Left frontal restraints sensor"
+ },
+ {
+  "id": "c-dtc38-513",
+  "de": "Einlassventil hinten links",
+  "en": "Left rear inlet control"
+ },
+ {
+  "id": "c-dtc38-514",
+  "de": "Auslassventil hinten links",
+  "en": "Left rear outlet control"
+ },
+ {
+  "id": "c-dtc38-515",
+  "de": "Temperaturklappen-Stellmotor hinten links %1",
+  "en": "Left rear temperature actuator %1"
+ },
+ {
+  "id": "c-dtc38-516",
+  "de": "Raddrehzahlsensor hinten links",
+  "en": "Left rear wheel speed sensor"
+ },
+ {
+  "id": "c-dtc38-517",
+  "de": "Raddrehzahlsensor hinten links %1",
+  "en": "Left rear wheel speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-518",
+  "de": "Raddrehzahlsensor hinten links %1 - Signalvergleich unplausibel",
+  "en": "Left rear wheel speed sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-519",
+  "de": "Raddrehzahlsensor hinten links %1 - falsches Bauteil verbaut",
+  "en": "Left rear wheel speed sensor %1 incorrect component installed"
+ },
+ {
+  "id": "c-dtc38-520",
+  "de": "Seitencrashsensor links %1",
+  "en": "Left side restraints sensor %1"
+ },
+ {
+  "id": "c-dtc38-521",
+  "de": "Lichtsteuergerät vorne",
+  "en": "Lighting control module front"
+ },
+ {
+  "id": "c-dtc38-522",
+  "de": "Lokalisierungs- und Kartenmodul",
+  "en": "Localization and mapping module"
+ },
+ {
+  "id": "c-dtc38-523",
+  "de": "Längsbeschleunigungssensor",
+  "en": "Longitudinal acceleration sensor"
+ },
+ {
+  "id": "c-dtc38-524",
+  "de": "Keine Verbindung",
+  "en": "Lost communication"
+ },
+ {
+  "id": "c-dtc38-525",
+  "de": "Keine Verbindung zu einem Sensor oder Steller",
+  "en": "Lost communication with a sensor or actuator"
+ },
+ {
+  "id": "c-dtc38-526",
+  "de": "Kraftstoffdruck im Niederdrucksystem",
+  "en": "Low pressure fuel system pressure"
+ },
+ {
+  "id": "c-dtc38-527",
+  "de": "Kraftstoffdrucksensor Niederdrucksystem",
+  "en": "Low pressure fuel system sensor"
+ },
+ {
+  "id": "c-dtc38-528",
+  "de": "Saugrohrdruck und Abgasdruck passen nicht zusammen",
+  "en": "MAP - exhaust pressure correlation"
+ },
+ {
+  "id": "c-dtc38-529",
+  "de": "Saugrohrdruck und Luftmasse passen nicht zusammen, Bank %1",
+  "en": "MAP - mass or volume air flow correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-530",
+  "de": "Motorkontrollleuchte",
+  "en": "MIL"
+ },
+ {
+  "id": "c-dtc38-531",
+  "de": "Saugrohrdrucksensor %1",
+  "en": "Manifold absolute pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-532",
+  "de": "Saugrohrdruck oder Luftmasse passt bei höherer Last nicht zur Drosselklappenstellung",
+  "en": "Manifold absolute pressure/mass air flow - throttle position correlation at higher load"
+ },
+ {
+  "id": "c-dtc38-533",
+  "de": "Luftmassenmesser %1 Signal unplausibel, Luftmasse",
+  "en": "Mass or volume air flow %1 circuit range/performance - air flow"
+ },
+ {
+  "id": "c-dtc38-534",
+  "de": "Luftmassenmesser %1",
+  "en": "Mass or volume air flow sensor %1"
+ },
+ {
+  "id": "c-dtc38-535",
+  "de": "Kolbenweg im Hauptbremszylinder größer als erwartet",
+  "en": "Master cylinder piston position higher than expected"
+ },
+ {
+  "id": "c-dtc38-536",
+  "de": "Spiegel-Steuergerät %1",
+  "en": "Mirror control module %1"
+ },
+ {
+  "id": "c-dtc38-537",
+  "de": "Verbrennungsaussetzer - Einspritzung abgeschaltet",
+  "en": "Misfire detected - fueling disabled"
+ },
+ {
+  "id": "c-dtc38-538",
+  "de": "Leistungselektronik-Kühlmittelpumpe %1 Ansteuerung",
+  "en": "Motor electronics coolant pump %1 control"
+ },
+ {
+  "id": "c-dtc38-539",
+  "de": "Leistungselektronik-Kühlmittelpumpe %1 Drehzahl zu hoch oder Luft im System",
+  "en": "Motor electronics coolant pump %1 overspeed/air in system"
+ },
+ {
+  "id": "c-dtc38-540",
+  "de": "Leistungselektronik-Kühlmitteltemperatursensor %1",
+  "en": "Motor electronics coolant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-541",
+  "de": "Beschleunigungssensor (mehrachsig)",
+  "en": "Multi-axis acceleration sensor"
+ },
+ {
+  "id": "c-dtc38-542",
+  "de": "Mehrachsen-Beschleunigungssensor %1",
+  "en": "Multi-axis acceleration sensor module %1"
+ },
+ {
+  "id": "c-dtc38-543",
+  "de": "Mehrere Gänge gleichzeitig eingelegt",
+  "en": "Multiple gears engaged"
+ },
+ {
+  "id": "c-dtc38-544",
+  "de": "Ammoniaksensor (NH3)",
+  "en": "NH3 sensor"
+ },
+ {
+  "id": "c-dtc38-545",
+  "de": "NOx-Grenzwert überschritten - AdBlue-Verbrauch zu gering",
+  "en": "NOx exceedence - low reagent consumption"
+ },
+ {
+  "id": "c-dtc38-546",
+  "de": "NOx-Sensor %1",
+  "en": "NOx sensor %1"
+ },
+ {
+  "id": "c-dtc38-547",
+  "de": "NOx-Sensoren 1 und 2 passen nicht zusammen, Bank %1",
+  "en": "NOx sensor 1/2 correlation bank %1"
+ },
+ {
+  "id": "c-dtc38-548",
+  "de": "NOx-Sensor Bank %1, Sensor %2",
+  "en": "NOx sensor bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-549",
+  "de": "NOx-Sensor-Heizung Bank %1, Sensor %2",
+  "en": "NOx sensor heater bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-550",
+  "de": "NOx-Sensor Bank %1, Sensor %2 - Messelement",
+  "en": "NOx sensor performance - sensing element bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-551",
+  "de": "NOx-Sensor Bank %1, Sensor %2 - Signal verschoben oder hängt",
+  "en": "NOx sensor performance - signal biased/stuck bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-552",
+  "de": "NOx-System - Fahreraufforderung aktiv",
+  "en": "NOx system driver inducement active"
+ },
+ {
+  "id": "c-dtc38-553",
+  "de": "Navigationsdisplay",
+  "en": "Navigation display module"
+ },
+ {
+  "id": "c-dtc38-554",
+  "de": "Nachtsicht-Steuergerät",
+  "en": "Night vision control module"
+ },
+ {
+  "id": "c-dtc38-555",
+  "de": "Lambdasonde Bank %1, Sonde %2",
+  "en": "O2 sensor bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-556",
+  "de": "Lambdasonde Bank %1, Sonde %2 negativer Strom",
+  "en": "O2 sensor negative current bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-557",
+  "de": "Lambdasonde Bank %1, Sonde %2 - Signal im Schubbetrieb außerhalb des Bereichs",
+  "en": "O2 sensor out of range during deceleration bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-558",
+  "de": "Lambdasonde Bank %1, Sonde %2 positiver Strom",
+  "en": "O2 sensor positive current bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-559",
+  "de": "Lambdasonde Pumpstrom Bank %1",
+  "en": "O2 sensor pumping current bank %1"
+ },
+ {
+  "id": "c-dtc38-560",
+  "de": "Lambdasonde Bank %1, Sonde %2 Pumpstrom-Abgleich",
+  "en": "O2 sensor pumping current trim bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-561",
+  "de": "Lambdasonde Referenzwiderstand außerhalb des Bereichs, Bank %1",
+  "en": "O2 sensor reference resistance out of range bank %1"
+ },
+ {
+  "id": "c-dtc38-562",
+  "de": "Lambdasonde Bank %1, Sonde %2 Referenzspannung",
+  "en": "O2 sensor reference voltage bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-563",
+  "de": "Lambdasonde Bank %1, Sonde %2 - Signal hängt auf mager",
+  "en": "O2 sensor signal biased/stuck lean bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-564",
+  "de": "Lambdasonde Bank %1, Sonde %2 - Signal hängt auf fett",
+  "en": "O2 sensor signal biased/stuck rich bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-565",
+  "de": "Lambdasonde Bank %1, Sonde %2 - Signalkreis hat Kurzschluss zum Heizkreis",
+  "en": "O2 sensor signal circuit shorted to heater bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtc38-566",
+  "de": "Abtriebsdrehzahl und Raddrehzahl passen nicht zusammen",
+  "en": "Output shaft speed - wheel speed correlation"
+ },
+ {
+  "id": "c-dtc38-567",
+  "de": "Abtriebsdrehzahlsensor",
+  "en": "Output shaft speed sensor"
+ },
+ {
+  "id": "c-dtc38-568",
+  "de": "Abtriebsdrehzahlsensor - Drehrichtung falsch",
+  "en": "Output shaft speed sensor circuit direction error"
+ },
+ {
+  "id": "c-dtc38-569",
+  "de": "Außentemperatursensor",
+  "en": "Outside temperature sensor"
+ },
+ {
+  "id": "c-dtc38-570",
+  "de": "Kurbelgehäuseentlüftung Regelventil",
+  "en": "PCV regulator valve"
+ },
+ {
+  "id": "c-dtc38-571",
+  "de": "Nebenabtrieb",
+  "en": "PTO"
+ },
+ {
+  "id": "c-dtc38-572",
+  "de": "Nebenabtrieb-Steuergerät",
+  "en": "PTO control module"
+ },
+ {
+  "id": "c-dtc38-573",
+  "de": "Feststellbremsen-Steuergerät Steuerkreis",
+  "en": "Park brake control module control circuit"
+ },
+ {
+  "id": "c-dtc38-574",
+  "de": "Eingang Parkstellung",
+  "en": "Park input"
+ },
+ {
+  "id": "c-dtc38-575",
+  "de": "Parksperren-Steller Stromkreis",
+  "en": "Park lock/pawl actuator circuit"
+ },
+ {
+  "id": "c-dtc38-576",
+  "de": "Parksperrenklinke Positionssensor %1",
+  "en": "Park pawl position sensor %1"
+ },
+ {
+  "id": "c-dtc38-577",
+  "de": "Park-/Neutralschalter Eingang",
+  "en": "Park/neutral switch input"
+ },
+ {
+  "id": "c-dtc38-578",
+  "de": "Park-/Neutralschalter Ausgang",
+  "en": "Park/neutral switch output"
+ },
+ {
+  "id": "c-dtc38-579",
+  "de": "Einparkhilfe-Steuergerät %1",
+  "en": "Parking assist control module %1"
+ },
+ {
+  "id": "c-dtc38-580",
+  "de": "Partikelfilter Bank %1",
+  "en": "Particulate filter bank %1"
+ },
+ {
+  "id": "c-dtc38-581",
+  "de": "Partikelfilter beschädigt oder Filtereinsatz fehlt, Bank %1",
+  "en": "Particulate filter deteriorated/missing substrate bank %1"
+ },
+ {
+  "id": "c-dtc38-582",
+  "de": "Differenzdrucksensor Partikelfilter %1",
+  "en": "Particulate filter pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-583",
+  "de": "Partikelfilter zugesetzt - Aschebeladung, Bank %1",
+  "en": "Particulate filter restriction - ash accumulation bank %1"
+ },
+ {
+  "id": "c-dtc38-584",
+  "de": "Partikelfilter zugesetzt - Leistung zwangsweise begrenzt, Bank %1",
+  "en": "Particulate filter restriction - forced limited power bank %1"
+ },
+ {
+  "id": "c-dtc38-585",
+  "de": "Partikelfilter zugesetzt - Rußbeladung, Bank %1",
+  "en": "Particulate filter restriction - soot accumulation bank %1"
+ },
+ {
+  "id": "c-dtc38-586",
+  "de": "Partikelsensor %1",
+  "en": "Particulate matter sensor %1"
+ },
+ {
+  "id": "c-dtc38-587",
+  "de": "Partikelsensor - Abgasprobe fehlerhaft, Bank %1",
+  "en": "Particulate matter sensor exhaust sample error bank %1"
+ },
+ {
+  "id": "c-dtc38-588",
+  "de": "Partikelsensor-Heizung",
+  "en": "Particulate matter sensor heater"
+ },
+ {
+  "id": "c-dtc38-589",
+  "de": "Partikelsensor-Heizung Widerstand",
+  "en": "Particulate matter sensor heater resistance"
+ },
+ {
+  "id": "c-dtc38-590",
+  "de": "Partikelsensor Prozessor",
+  "en": "Particulate matter sensor processor"
+ },
+ {
+  "id": "c-dtc38-591",
+  "de": "Partikelsensor hat unplausible Daten vom Motorsteuergerät empfangen",
+  "en": "Particulate matter sensor received invalid data from ECM/PCM"
+ },
+ {
+  "id": "c-dtc38-592",
+  "de": "Partikelsensor - Regeneration unvollständig",
+  "en": "Particulate matter sensor regeneration incomplete"
+ },
+ {
+  "id": "c-dtc38-593",
+  "de": "Partikelsensor Temperatur",
+  "en": "Particulate matter sensor temperature"
+ },
+ {
+  "id": "c-dtc38-594",
+  "de": "Airbag-Abschalter Beifahrer",
+  "en": "Passenger restraints disable switch"
+ },
+ {
+  "id": "c-dtc38-595",
+  "de": "Zündkreis Gurtstraffer Beifahrer %1",
+  "en": "Passenger seat belt pretensioner %1 deployment control"
+ },
+ {
+  "id": "c-dtc38-596",
+  "de": "Gurtschlosssensor Beifahrer",
+  "en": "Passenger seat belt sensor"
+ },
+ {
+  "id": "c-dtc38-597",
+  "de": "Sitzschienen-Positionssensor Beifahrer",
+  "en": "Passenger seat track position restraints sensor"
+ },
+ {
+  "id": "c-dtc38-598",
+  "de": "Kolbenkühlung",
+  "en": "Piston cooling oil"
+ },
+ {
+  "id": "c-dtc38-599",
+  "de": "Kolbenkühlung Steuerkreis",
+  "en": "Piston cooling oil control circuit"
+ },
+ {
+  "id": "c-dtc38-600",
+  "de": "Servolenkungs-Steuergerät %1",
+  "en": "Power steering control module %1"
+ },
+ {
+  "id": "c-dtc38-601",
+  "de": "Druckregelventil %1",
+  "en": "Pressure control solenoid %1"
+ },
+ {
+  "id": "c-dtc38-602",
+  "de": "Druckregelventil %1 - Daten passen nicht",
+  "en": "Pressure control solenoid %1 data incompatible"
+ },
+ {
+  "id": "c-dtc38-603",
+  "de": "Druckregelventil %1 - elektrischer Fehler",
+  "en": "Pressure control solenoid %1 electrical"
+ },
+ {
+  "id": "c-dtc38-604",
+  "de": "Steckererkennung (Proximity) %1",
+  "en": "Proximity detection circuit %1"
+ },
+ {
+  "id": "c-dtc38-605",
+  "de": "Kühlmitteltemperatursensor Kühlerausgang",
+  "en": "Radiator coolant temperature sensor"
+ },
+ {
+  "id": "c-dtc38-606",
+  "de": "Kühlmitteltemperatur am Kühler und am Motor passen nicht zusammen",
+  "en": "Radiator coolant temperature/engine coolant temperature correlation"
+ },
+ {
+  "id": "c-dtc38-607",
+  "de": "Radio",
+  "en": "Radio"
+ },
+ {
+  "id": "c-dtc38-608",
+  "de": "Regensensor",
+  "en": "Rain sensing module"
+ },
+ {
+  "id": "c-dtc38-609",
+  "de": "Heckklappen-Steuergerät",
+  "en": "Rear gate module"
+ },
+ {
+  "id": "c-dtc38-610",
+  "de": "Luftverteilungs-Stellmotor hinten",
+  "en": "Rear mode actuator"
+ },
+ {
+  "id": "c-dtc38-611",
+  "de": "Raddrehzahlsensor hinten",
+  "en": "Rear wheel speed sensor"
+ },
+ {
+  "id": "c-dtc38-612",
+  "de": "AdBlue-Verbrauch",
+  "en": "Reductant consumption"
+ },
+ {
+  "id": "c-dtc38-613",
+  "de": "AdBlue-Steuergerät",
+  "en": "Reductant control module"
+ },
+ {
+  "id": "c-dtc38-614",
+  "de": "AdBlue-Steuergerät fordert Motorkontrollleuchte an",
+  "en": "Reductant control module requested MIL illumination"
+ },
+ {
+  "id": "c-dtc38-615",
+  "de": "AdBlue-Steuergerät Versorgung",
+  "en": "Reductant control module supply"
+ },
+ {
+  "id": "c-dtc38-616",
+  "de": "AdBlue-Heizung %1",
+  "en": "Reductant heater %1"
+ },
+ {
+  "id": "c-dtc38-617",
+  "de": "AdBlue-Heizung %1 Steuerkreis",
+  "en": "Reductant heater %1 control circuit"
+ },
+ {
+  "id": "c-dtc38-618",
+  "de": "AdBlue-Heizung %1 Strom",
+  "en": "Reductant heater %1 current"
+ },
+ {
+  "id": "c-dtc38-619",
+  "de": "AdBlue-Heizungssteuergerät",
+  "en": "Reductant heater control module"
+ },
+ {
+  "id": "c-dtc38-620",
+  "de": "AdBlue-Heizungssteuergerät Versorgungsspannung",
+  "en": "Reductant heater control module supply voltage"
+ },
+ {
+  "id": "c-dtc38-621",
+  "de": "AdBlue-Heizungsrelais",
+  "en": "Reductant heater relay"
+ },
+ {
+  "id": "c-dtc38-622",
+  "de": "AdBlue-Dosierventil Bank %1 Einheit %2",
+  "en": "Reductant injection valve bank %1 unit %2"
+ },
+ {
+  "id": "c-dtc38-623",
+  "de": "AdBlue-Leck",
+  "en": "Reductant leakage"
+ },
+ {
+  "id": "c-dtc38-624",
+  "de": "AdBlue-Füllstandssensor %1",
+  "en": "Reductant level sensor %1"
+ },
+ {
+  "id": "c-dtc38-625",
+  "de": "AdBlue-Füllstandssensor %1 hängt",
+  "en": "Reductant level sensor %1 stuck"
+ },
+ {
+  "id": "c-dtc38-626",
+  "de": "AdBlue - kein Durchfluss erkannt",
+  "en": "Reductant no flow detected"
+ },
+ {
+  "id": "c-dtc38-627",
+  "de": "AdBlue-Drucksensor",
+  "en": "Reductant pressure sensor"
+ },
+ {
+  "id": "c-dtc38-628",
+  "de": "AdBlue-Pumpe",
+  "en": "Reductant pump"
+ },
+ {
+  "id": "c-dtc38-629",
+  "de": "AdBlue-Pumpe %1",
+  "en": "Reductant pump %1"
+ },
+ {
+  "id": "c-dtc38-630",
+  "de": "AdBlue-Pumpe %1 Ansteuerung",
+  "en": "Reductant pump %1 control"
+ },
+ {
+  "id": "c-dtc38-631",
+  "de": "AdBlue-Pumpe %1 Strom",
+  "en": "Reductant pump %1 current"
+ },
+ {
+  "id": "c-dtc38-632",
+  "de": "AdBlue-Pumpenmotor Positionssensor",
+  "en": "Reductant pump motor position sensor"
+ },
+ {
+  "id": "c-dtc38-633",
+  "de": "AdBlue-Pumpe Versorgungsspannung",
+  "en": "Reductant pump supply voltage circuit"
+ },
+ {
+  "id": "c-dtc38-634",
+  "de": "AdBlue-Rückspülventil %1",
+  "en": "Reductant purge control valve %1"
+ },
+ {
+  "id": "c-dtc38-635",
+  "de": "AdBlue-Qualität",
+  "en": "Reductant quality"
+ },
+ {
+  "id": "c-dtc38-636",
+  "de": "AdBlue-Qualitätsmodul",
+  "en": "Reductant quality module"
+ },
+ {
+  "id": "c-dtc38-637",
+  "de": "AdBlue-Qualitätssensor",
+  "en": "Reductant quality sensor"
+ },
+ {
+  "id": "c-dtc38-638",
+  "de": "AdBlue-Tankheizung",
+  "en": "Reductant tank heater"
+ },
+ {
+  "id": "c-dtc38-639",
+  "de": "AdBlue-Tankheizung Steuerkreis",
+  "en": "Reductant tank heater control circuit"
+ },
+ {
+  "id": "c-dtc38-640",
+  "de": "AdBlue-Tanktemperatursensor %1",
+  "en": "Reductant tank temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-641",
+  "de": "AdBlue-Temperatur",
+  "en": "Reductant temperature"
+ },
+ {
+  "id": "c-dtc38-642",
+  "de": "AdBlue-Temperatursensor %1",
+  "en": "Reductant temperature sensor %1"
+ },
+ {
+  "id": "c-dtc38-643",
+  "de": "Fernstart-Steuergerät",
+  "en": "Remote start module"
+ },
+ {
+  "id": "c-dtc38-644",
+  "de": "Airbag-Steuergerät",
+  "en": "Restraints control module"
+ },
+ {
+  "id": "c-dtc38-645",
+  "de": "Airbag-Sensor %1",
+  "en": "Restraints system sensor %1"
+ },
+ {
+  "id": "c-dtc38-646",
+  "de": "Rückwärtsgangsperre",
+  "en": "Reverse inhibit"
+ },
+ {
+  "id": "c-dtc38-647",
+  "de": "Zündkreis Kopfairbag rechts %1",
+  "en": "Right curtain deployment control %1"
+ },
+ {
+  "id": "c-dtc38-648",
+  "de": "Einlassventil vorne rechts",
+  "en": "Right front inlet control"
+ },
+ {
+  "id": "c-dtc38-649",
+  "de": "Auslassventil vorne rechts",
+  "en": "Right front outlet control"
+ },
+ {
+  "id": "c-dtc38-650",
+  "de": "Temperaturklappen-Stellmotor vorne rechts",
+  "en": "Right front temperature actuator"
+ },
+ {
+  "id": "c-dtc38-651",
+  "de": "Raddrehzahlsensor vorne rechts %1",
+  "en": "Right front wheel speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-652",
+  "de": "Raddrehzahlsensor vorne rechts %1 - Signalvergleich unplausibel",
+  "en": "Right front wheel speed sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-653",
+  "de": "Raddrehzahlsensor vorne rechts %1 - falsches Bauteil verbaut",
+  "en": "Right front wheel speed sensor %1 incorrect component installed"
+ },
+ {
+  "id": "c-dtc38-654",
+  "de": "Frontcrashsensor rechts",
+  "en": "Right frontal restraints sensor"
+ },
+ {
+  "id": "c-dtc38-655",
+  "de": "Einlassventil hinten rechts",
+  "en": "Right rear inlet control"
+ },
+ {
+  "id": "c-dtc38-656",
+  "de": "Auslassventil hinten rechts",
+  "en": "Right rear outlet control"
+ },
+ {
+  "id": "c-dtc38-657",
+  "de": "Raddrehzahlsensor hinten rechts %1",
+  "en": "Right rear wheel speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-658",
+  "de": "Raddrehzahlsensor hinten rechts %1 - Signalvergleich unplausibel",
+  "en": "Right rear wheel speed sensor %1 correlation"
+ },
+ {
+  "id": "c-dtc38-659",
+  "de": "Raddrehzahlsensor hinten rechts %1 - falsches Bauteil verbaut",
+  "en": "Right rear wheel speed sensor %1 incorrect component installed"
+ },
+ {
+  "id": "c-dtc38-660",
+  "de": "Seitencrashsensor rechts %1",
+  "en": "Right side restraints sensor %1"
+ },
+ {
+  "id": "c-dtc38-661",
+  "de": "SCR-Katalysator %2 Bank %1 - Wirkungsgrad zu gering",
+  "en": "SCR NOx catalyst efficiency below threshold bank %1 catalyst %2"
+ },
+ {
+  "id": "c-dtc38-662",
+  "de": "SCR-Katalysator Austrittstemperatur bei Partikelfilter-Regeneration zu hoch",
+  "en": "SCR NOx catalyst outlet temperature too high during particulate filter regeneration"
+ },
+ {
+  "id": "c-dtc38-663",
+  "de": "SCR-Warnsystem - Motor zwangsweise abgestellt",
+  "en": "SCR inducement - forced engine shutdown"
+ },
+ {
+  "id": "c-dtc38-664",
+  "de": "Sitzsteuergerät %1",
+  "en": "Seat control module %1"
+ },
+ {
+  "id": "c-dtc38-665",
+  "de": "Sensor-Spannungsversorgung %1",
+  "en": "Sensor power supply %1"
+ },
+ {
+  "id": "c-dtc38-666",
+  "de": "Sensor-Referenzspannung %1",
+  "en": "Sensor reference voltage %1"
+ },
+ {
+  "id": "c-dtc38-667",
+  "de": "Datenbus-Gateway %1",
+  "en": "Serial data gateway module %1"
+ },
+ {
+  "id": "c-dtc38-668",
+  "de": "Schaltgabel %1 bewegt sich ungewollt",
+  "en": "Shift fork %1 unrequested movement"
+ },
+ {
+  "id": "c-dtc38-669",
+  "de": "Schaltmagnetventil %1",
+  "en": "Shift solenoid %1"
+ },
+ {
+  "id": "c-dtc38-670",
+  "de": "Schaltmagnetventil %1 - elektrischer Fehler",
+  "en": "Shift solenoid %1 electrical"
+ },
+ {
+  "id": "c-dtc38-671",
+  "de": "Schaltzeit-Magnetventil %1",
+  "en": "Shift timing solenoid %1"
+ },
+ {
+  "id": "c-dtc38-672",
+  "de": "Software nicht kompatibel",
+  "en": "Software incompatibility"
+ },
+ {
+  "id": "c-dtc38-673",
+  "de": "Stabilitätsregelung (ESP) zu lange aktiv",
+  "en": "Stability system active too long"
+ },
+ {
+  "id": "c-dtc38-674",
+  "de": "Anlasserrelais %1",
+  "en": "Starter relay %1"
+ },
+ {
+  "id": "c-dtc38-675",
+  "de": "Startergenerator-Steuergerät",
+  "en": "Starter/generator control module"
+ },
+ {
+  "id": "c-dtc38-676",
+  "de": "Startergenerator mechanisch",
+  "en": "Starter/generator mechanical"
+ },
+ {
+  "id": "c-dtc38-677",
+  "de": "Lenkwinkelsensor-Modul",
+  "en": "Steering angle sensor module"
+ },
+ {
+  "id": "c-dtc38-678",
+  "de": "Lenksäulen-Steuergerät",
+  "en": "Steering column control module"
+ },
+ {
+  "id": "c-dtc38-679",
+  "de": "Lenkpositionssignal fehlerhaft",
+  "en": "Steering position signal malfunction"
+ },
+ {
+  "id": "c-dtc38-680",
+  "de": "Lenkradstellungssensor",
+  "en": "Steering wheel position sensor"
+ },
+ {
+  "id": "c-dtc38-681",
+  "de": "Start-Stopp-Taster",
+  "en": "Stop-start mode switch"
+ },
+ {
+  "id": "c-dtc38-682",
+  "de": "Getriebe hängt im %1. Gang",
+  "en": "Stuck in gear %1"
+ },
+ {
+  "id": "c-dtc38-683",
+  "de": "Getriebe hängt in Parkstellung",
+  "en": "Stuck in park"
+ },
+ {
+  "id": "c-dtc38-684",
+  "de": "Getriebe hängt im Rückwärtsgang",
+  "en": "Stuck in reverse"
+ },
+ {
+  "id": "c-dtc38-685",
+  "de": "Federungs-Steuergerät %1",
+  "en": "Suspension control module %1"
+ },
+ {
+  "id": "c-dtc38-686",
+  "de": "Gemisch bei Zylinderabschaltung zu mager, Bank %1",
+  "en": "System too lean during cylinder deactivation bank %1"
+ },
+ {
+  "id": "c-dtc38-687",
+  "de": "Gemisch bei Zylinderabschaltung zu fett, Bank %1",
+  "en": "System too rich during cylinder deactivation bank %1"
+ },
+ {
+  "id": "c-dtc38-688",
+  "de": "Hauptrelais Getriebesteuergerät",
+  "en": "TCM power relay"
+ },
+ {
+  "id": "c-dtc38-689",
+  "de": "ASR-Regelkanal %1 Ventil %2",
+  "en": "TCS control channel %1 valve %2"
+ },
+ {
+  "id": "c-dtc38-690",
+  "de": "Telematik-Steuergerät",
+  "en": "Telematic control module"
+ },
+ {
+  "id": "c-dtc38-691",
+  "de": "Telefon-Steuergerät",
+  "en": "Telephone control module"
+ },
+ {
+  "id": "c-dtc38-692",
+  "de": "Drosselklappensteller %1 Leerlaufposition",
+  "en": "Throttle actuator %1 control system - idle position"
+ },
+ {
+  "id": "c-dtc38-693",
+  "de": "Drosselklappensteuerung - Drosselklappe vereist, Bank %1",
+  "en": "Throttle actuator control system - ice blockage bank %1"
+ },
+ {
+  "id": "c-dtc38-694",
+  "de": "Drosselklappensteuerung - plötzlich hoher Luftdurchsatz erkannt",
+  "en": "Throttle actuator control system - sudden high air flow detected"
+ },
+ {
+  "id": "c-dtc38-695",
+  "de": "Drosselklappengeber/-schalter %1",
+  "en": "Throttle position sensor/switch %1"
+ },
+ {
+  "id": "c-dtc38-696",
+  "de": "Reifendurchmesser unplausibel",
+  "en": "Tire diameter"
+ },
+ {
+  "id": "c-dtc38-697",
+  "de": "Wandlerüberbrückungskupplung",
+  "en": "Torque converter clutch"
+ },
+ {
+  "id": "c-dtc38-698",
+  "de": "Wandlerüberbrückungskupplung Druckregelventil",
+  "en": "Torque converter clutch pressure control solenoid"
+ },
+ {
+  "id": "c-dtc38-699",
+  "de": "Wandlerüberbrückungskupplung Druckregelventil Steuerkreis",
+  "en": "Torque converter clutch pressure control solenoid control circuit"
+ },
+ {
+  "id": "c-dtc38-700",
+  "de": "Drehmomentwandler-Temperatur",
+  "en": "Torque converter temperature"
+ },
+ {
+  "id": "c-dtc38-701",
+  "de": "Drehmoment-Rückmeldesignal %1",
+  "en": "Torque management feedback signal %1"
+ },
+ {
+  "id": "c-dtc38-702",
+  "de": "Drehmomentanforderung Eingangssignal %1",
+  "en": "Torque management request input signal %1"
+ },
+ {
+  "id": "c-dtc38-703",
+  "de": "Drehmomentüberwachung - Motor zwangsweise abgestellt",
+  "en": "Torque management system forced engine shutdown"
+ },
+ {
+  "id": "c-dtc38-704",
+  "de": "Anhängerbremsen-Steuergerät",
+  "en": "Trailer brake control module"
+ },
+ {
+  "id": "c-dtc38-705",
+  "de": "Verteilergetriebe-Steuergerät",
+  "en": "Transfer case control module"
+ },
+ {
+  "id": "c-dtc38-706",
+  "de": "Verteilergetriebe Straßengang - falsche Übersetzung",
+  "en": "Transfer case gear high incorrect ratio"
+ },
+ {
+  "id": "c-dtc38-707",
+  "de": "Verteilergetriebe Geländegang - falsche Übersetzung",
+  "en": "Transfer case gear low incorrect ratio"
+ },
+ {
+  "id": "c-dtc38-708",
+  "de": "Verteilergetriebe Neutralstellung - falsche Übersetzung",
+  "en": "Transfer case gear neutral incorrect ratio"
+ },
+ {
+  "id": "c-dtc38-709",
+  "de": "Verteilergetriebe-Stellmotor %1 oder %2",
+  "en": "Transfer case motor %1 or %2"
+ },
+ {
+  "id": "c-dtc38-710",
+  "de": "Verteilergetriebe kann Schaltvorgang nicht abschließen",
+  "en": "Transfer case unable to complete shift"
+ },
+ {
+  "id": "c-dtc38-711",
+  "de": "Getriebe-Adaptionswerte",
+  "en": "Transmission adaptive values"
+ },
+ {
+  "id": "c-dtc38-712",
+  "de": "Getriebesteuerung Anforderung Motorkontrollleuchte",
+  "en": "Transmission control system MIL request"
+ },
+ {
+  "id": "c-dtc38-713",
+  "de": "Getriebeöldruck",
+  "en": "Transmission fluid pressure"
+ },
+ {
+  "id": "c-dtc38-714",
+  "de": "Getriebeöldrucksensor/-schalter %1",
+  "en": "Transmission fluid pressure sensor/switch %1"
+ },
+ {
+  "id": "c-dtc38-715",
+  "de": "Getriebeölpumpen-Modul %1",
+  "en": "Transmission fluid pump module %1"
+ },
+ {
+  "id": "c-dtc38-716",
+  "de": "Getriebe-Schaltelement %1",
+  "en": "Transmission friction element %1"
+ },
+ {
+  "id": "c-dtc38-717",
+  "de": "Getriebe-Schaltelement %1 Schließzeit",
+  "en": "Transmission friction element %1 apply time"
+ },
+ {
+  "id": "c-dtc38-718",
+  "de": "Getriebe-Schaltelement %1 rutscht",
+  "en": "Transmission friction element %1 slip detected"
+ },
+ {
+  "id": "c-dtc38-719",
+  "de": "Getriebe-Modusschalter %1",
+  "en": "Transmission mode switch %1"
+ },
+ {
+  "id": "c-dtc38-720",
+  "de": "Getriebe Parkstellungssensor/-schalter %1",
+  "en": "Transmission park position sensor/switch %1"
+ },
+ {
+  "id": "c-dtc38-721",
+  "de": "Getriebe Parkstellungssensor/-schalter %1 - Signal unplausibel oder zu niedrig",
+  "en": "Transmission park position sensor/switch %1 circuit performance/low"
+ },
+ {
+  "id": "c-dtc38-722",
+  "de": "Getriebe Parkstellungssensoren/-schalter %1 passen nicht zusammen",
+  "en": "Transmission park position sensor/switch %1 correlation"
+ },
+ {
+  "id": "c-dtc38-723",
+  "de": "Getriebebereichssensor %1",
+  "en": "Transmission range sensor %1"
+ },
+ {
+  "id": "c-dtc38-724",
+  "de": "Getriebebereichssensor %1 Stromkreis (Wählhebel PRNDL)",
+  "en": "Transmission range sensor %1 circuit (PRNDL input)"
+ },
+ {
+  "id": "c-dtc38-725",
+  "de": "Ladedruckregelung %1 reagiert zu langsam",
+  "en": "Turbocharger boost control %1 slow response"
+ },
+ {
+  "id": "c-dtc38-726",
+  "de": "Ladedrucksteller Positionssensor %1",
+  "en": "Turbocharger boost control position sensor %1"
+ },
+ {
+  "id": "c-dtc38-727",
+  "de": "Ladedrucksteller Positionssensor %1 - Signal hängt",
+  "en": "Turbocharger boost control position sensor %1 performance - stuck"
+ },
+ {
+  "id": "c-dtc38-728",
+  "de": "Turbolader Umschaltventil Verdichteraustritt",
+  "en": "Turbocharger compressor outlet switching valve"
+ },
+ {
+  "id": "c-dtc38-729",
+  "de": "Turbolader-Ausgangsdrucksensor %1",
+  "en": "Turbocharger outlet pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-730",
+  "de": "Turbolader Turbineneinlassventil",
+  "en": "Turbocharger turbine inlet valve"
+ },
+ {
+  "id": "c-dtc38-731",
+  "de": "Turbolader %1 Ladedruck zu hoch - mechanischer Fehler",
+  "en": "Turbocharger/supercharger %1 boost pressure too high - mechanical"
+ },
+ {
+  "id": "c-dtc38-732",
+  "de": "Ladedruckregelung %1 Modul",
+  "en": "Turbocharger/supercharger boost control %1 module"
+ },
+ {
+  "id": "c-dtc38-733",
+  "de": "Ladedruckregelung %1 Position",
+  "en": "Turbocharger/supercharger boost control %1 position"
+ },
+ {
+  "id": "c-dtc38-734",
+  "de": "Ladedruck %1 nicht erkannt - mechanischer Fehler",
+  "en": "Turbocharger/supercharger boost pressure %1 not detected - mechanical"
+ },
+ {
+  "id": "c-dtc38-735",
+  "de": "Schubumluftventil %1",
+  "en": "Turbocharger/supercharger bypass valve %1"
+ },
+ {
+  "id": "c-dtc38-736",
+  "de": "Schubumluftventil %1 - mechanischer Fehler",
+  "en": "Turbocharger/supercharger bypass valve %1 - mechanical"
+ },
+ {
+  "id": "c-dtc38-737",
+  "de": "Turbolader-Steuergerät %1",
+  "en": "Turbocharger/supercharger control module %1"
+ },
+ {
+  "id": "c-dtc38-738",
+  "de": "Turbolader-Eingangsdrucksensor %1",
+  "en": "Turbocharger/supercharger inlet pressure sensor %1"
+ },
+ {
+  "id": "c-dtc38-739",
+  "de": "Turbolader-Drehzahlsensor %1",
+  "en": "Turbocharger/supercharger speed sensor %1"
+ },
+ {
+  "id": "c-dtc38-740",
+  "de": "Ladedruckregelventil %1 (Wastegate)",
+  "en": "Turbocharger/supercharger wastegate %1"
+ },
+ {
+  "id": "c-dtc38-741",
+  "de": "Wastegate-Steller %1 Endstufe Strom/Temperatur",
+  "en": "Turbocharger/supercharger wastegate actuator %1 driver current/temperature"
+ },
+ {
+  "id": "c-dtc38-742",
+  "de": "Fahrstufe D lässt sich nicht einlegen",
+  "en": "Unable to engage drive"
+ },
+ {
+  "id": "c-dtc38-743",
+  "de": "%1. Gang lässt sich nicht einlegen",
+  "en": "Unable to engage gear %1"
+ },
+ {
+  "id": "c-dtc38-744",
+  "de": "Neutralstellung lässt sich nicht einlegen",
+  "en": "Unable to engage neutral"
+ },
+ {
+  "id": "c-dtc38-745",
+  "de": "Parkstellung lässt sich nicht einlegen",
+  "en": "Unable to engage park"
+ },
+ {
+  "id": "c-dtc38-746",
+  "de": "Rückwärtsgang lässt sich nicht einlegen",
+  "en": "Unable to engage reverse"
+ },
+ {
+  "id": "c-dtc38-747",
+  "de": "Nicht zugelassene Software oder Kalibrierung erkannt",
+  "en": "Unauthorized software/calibration detected"
+ },
+ {
+  "id": "c-dtc38-748",
+  "de": "Gang unerwartet mechanisch herausgesprungen",
+  "en": "Unexpected mechanical gear disengagement"
+ },
+ {
+  "id": "c-dtc38-749",
+  "de": "Ungeregelte Kraftstoffzufuhr - Motor zwangsweise abgestellt",
+  "en": "Unmetered fuel - forced engine shutdown"
+ },
+ {
+  "id": "c-dtc38-750",
+  "de": "Schalter Hoch-/Herunterschalten",
+  "en": "Up and down shift switch"
+ },
+ {
+  "id": "c-dtc38-751",
+  "de": "Magnetventil Hochschalten/Gangsprung",
+  "en": "Upshift/skip shift solenoid"
+ },
+ {
+  "id": "c-dtc38-752",
+  "de": "Unterdruckpumpe Steuerkreis %1",
+  "en": "Vacuum pump control circuit %1"
+ },
+ {
+  "id": "c-dtc38-753",
+  "de": "Fahrzeug-Datenbus %1",
+  "en": "Vehicle communication bus %1"
+ },
+ {
+  "id": "c-dtc38-754",
+  "de": "Fahrzeuggeschwindigkeit und Abtriebsdrehzahl passen nicht zusammen",
+  "en": "Vehicle speed - output shaft speed correlation"
+ },
+ {
+  "id": "c-dtc38-755",
+  "de": "Fahrzeuggeschwindigkeit und Raddrehzahl passen nicht zusammen",
+  "en": "Vehicle speed - wheel speed correlation"
+ },
+ {
+  "id": "c-dtc38-756",
+  "de": "Wastegate-Positionssensor %1",
+  "en": "Wastegate position sensor %1"
+ },
+ {
+  "id": "c-dtc38-757",
+  "de": "Wastegate-Positionssensor %1 Stromkreis",
+  "en": "Wastegate position sensor %1 circuit"
+ },
+ {
+  "id": "c-dtc38-758",
+  "de": "Wasser im Kraftstoff erkannt - Sensor %1",
+  "en": "Water in fuel condition - sensor %1"
+ },
+ {
+  "id": "c-dtc38-759",
+  "de": "Wasser-im-Kraftstoff-Sensor %1",
+  "en": "Water in fuel sensor %1"
+ },
+ {
+  "id": "c-dtc38-760",
+  "de": "Raddrehzahlsensoren mit abweichender Frequenz",
+  "en": "Wheel speed sensor frequency mismatch"
+ },
+ {
+  "id": "c-dtc38-761",
+  "de": "Raddrehzahlsensoren melden unterschiedliche Drehrichtung",
+  "en": "Wheel speed sensors rotation direction correlation"
+ },
+ {
+  "id": "c-dtc38-762",
+  "de": "Raddrehzahlsensoren Versorgung",
+  "en": "Wheel speed sensors supply"
+ },
+ {
+  "id": "c-dtc38-763",
+  "de": "Gierratensensor",
+  "en": "Yaw rate sensor"
+ },
+ {
+  "id": "c-dtc38-764",
+  "de": "Stromkreis",
+  "en": "circuit"
+ },
+ {
+  "id": "c-dtc38-765",
+  "de": "Stromkreis Spannung zu hoch",
+  "en": "circuit high"
+ },
+ {
+  "id": "c-dtc38-766",
+  "de": "Signal setzt aus oder springt",
+  "en": "circuit intermittent or erratic"
+ },
+ {
+  "id": "c-dtc38-767",
+  "de": "Stromkreis Spannung zu niedrig",
+  "en": "circuit low"
+ },
+ {
+  "id": "c-dtc38-768",
+  "de": "Signal unplausibel",
+  "en": "circuit range/performance"
+ },
+ {
+  "id": "c-dtc38-769",
+  "de": "Stromkreis oder Unterbrechung",
+  "en": "circuit/open"
+ },
+ {
+  "id": "c-dtc38-770",
+  "de": "Steuerkreis",
+  "en": "control circuit"
+ },
+ {
+  "id": "c-dtc38-771",
+  "de": "Steuerkreis Spannung zu hoch",
+  "en": "control circuit high"
+ },
+ {
+  "id": "c-dtc38-772",
+  "de": "Steuerkreis Spannung zu niedrig",
+  "en": "control circuit low"
+ },
+ {
+  "id": "c-dtc38-773",
+  "de": "Steuerkreis Funktion",
+  "en": "control circuit range/performance"
+ },
+ {
+  "id": "c-dtc38-774",
+  "de": "Steuerkreis oder Unterbrechung",
+  "en": "control circuit/open"
+ },
+ {
+  "id": "c-dtc38-775",
+  "de": "Strom zu hoch",
+  "en": "current high"
+ },
+ {
+  "id": "c-dtc38-776",
+  "de": "Strom zu niedrig",
+  "en": "current low"
+ },
+ {
+  "id": "c-dtc38-777",
+  "de": "Lerngrenze überschritten",
+  "en": "exceeded learning limit"
+ },
+ {
+  "id": "c-dtc38-778",
+  "de": "Fehler",
+  "en": "fault"
+ },
+ {
+  "id": "c-dtc38-779",
+  "de": "zu hoch",
+  "en": "high"
+ },
+ {
+  "id": "c-dtc38-780",
+  "de": "setzt aus oder springt",
+  "en": "intermittent or erratic"
+ },
+ {
+  "id": "c-dtc38-781",
+  "de": "zu niedrig",
+  "en": "low"
+ },
+ {
+  "id": "c-dtc38-782",
+  "de": "nicht angelernt",
+  "en": "not learned"
+ },
+ {
+  "id": "c-dtc38-783",
+  "de": "Drehzahl zu hoch",
+  "en": "overspeed"
+ },
+ {
+  "id": "c-dtc38-784",
+  "de": "Funktion",
+  "en": "performance"
+ },
+ {
+  "id": "c-dtc38-785",
+  "de": "Funktion oder bleibt ausgeschaltet",
+  "en": "performance or stuck off"
+ },
+ {
+  "id": "c-dtc38-786",
+  "de": "Funktion oder hängt offen",
+  "en": "performance or stuck open"
+ },
+ {
+  "id": "c-dtc38-787",
+  "de": "Messbereich oder Funktion",
+  "en": "range/performance"
+ },
+ {
+  "id": "c-dtc38-788",
+  "de": "Messleitung",
+  "en": "sense circuit"
+ },
+ {
+  "id": "c-dtc38-789",
+  "de": "Messleitung Spannung zu hoch",
+  "en": "sense circuit high"
+ },
+ {
+  "id": "c-dtc38-790",
+  "de": "Messleitung Spannung zu niedrig",
+  "en": "sense circuit low"
+ },
+ {
+  "id": "c-dtc38-791",
+  "de": "Messleitung Signal unplausibel",
+  "en": "sense circuit range/performance"
+ },
+ {
+  "id": "c-dtc38-792",
+  "de": "Kurzschluss",
+  "en": "shorted"
+ },
+ {
+  "id": "c-dtc38-793",
+  "de": "hängt geschlossen",
+  "en": "stuck closed"
+ },
+ {
+  "id": "c-dtc38-794",
+  "de": "bleibt ausgeschaltet",
+  "en": "stuck off"
+ },
+ {
+  "id": "c-dtc38-795",
+  "de": "bleibt eingeschaltet",
+  "en": "stuck on"
+ },
+ {
+  "id": "c-dtc38-796",
+  "de": "hängt offen",
+  "en": "stuck open"
+ },
+ {
+  "id": "c-dtc38-797",
+  "de": "Versorgungsspannung",
+  "en": "supply voltage circuit"
+ },
+ {
+  "id": "c-dtc38-798",
+  "de": "Versorgungsspannung zu niedrig",
+  "en": "supply voltage circuit low"
+ },
+ {
+  "id": "c-dtc38-799",
+  "de": "Versorgungsspannung oder Unterbrechung",
+  "en": "supply voltage circuit/open"
+ },
+ {
+  "id": "c-dtc38-800",
+  "de": "zu hoch",
+  "en": "too high"
+ },
+ {
+  "id": "c-dtc38-801",
+  "de": "zu niedrig",
+  "en": "too low"
+ },
+ {
+  "id": "c-dtc38-802",
+  "de": "Drehzahl zu niedrig",
+  "en": "underspeed"
+ },
+ {
+  "id": "c-dtc38-803",
+  "de": "Spannung zu hoch",
+  "en": "voltage high"
+ },
+ {
+  "id": "c-dtc38-804",
+  "de": "Spannung zu niedrig",
+  "en": "voltage low"
+ }
+]

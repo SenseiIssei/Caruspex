@@ -23,7 +23,8 @@ Ehrlich bleibt es trotzdem. Was ein Auto oder ein Adapter technisch nicht hergib
 ## Phase 2: Viel mehr OBD-II
 
 - [x] Alle Modus-01-Messwerte bis PID C4: 145 PIDs, 317 Einzelwerte, nach Bereichen
-- [x] Fehlercodes: 1381 Normcodes und 298 Herstellercodes, je Code Dringlichkeit, Weiterfahren, Ursachen, Selbsthilfe, Kosten
+- [x] Fehlercodes: 3368 Normcodes und 298 Herstellercodes, je Code Dringlichkeit, Weiterfahren, Ursachen, Selbsthilfe, Kosten
+- [x] Normcodes erweitert (20.11.2026): 1989 neue Codes in `tools/dtc/extended.csv`, vor allem Hybrid/Elektro (P0A00 bis P0FFF: 10 auf 517), Netzwerk (U0 86 auf 219, U3 0 auf 18), Fahrwerk und Karosserie (C0 7 auf 143, B0 6 auf 23); nur Codes, bei denen obdex (CC0) und ein GM- oder NHTSA-Dokument dieselbe Bedeutung nennen, Texte aus 810 eigenen Bausteinen in 18 Sprachen (Bereich dtc38). Unbekannte Codes nennen jetzt das System ihrer Nachbarn (267 Blockregeln je vierter Stelle, U06, U30 bis U34 und U35 bis U3F mit eigener Gruppe). C0040 und C0045 gestrichen (Quellen widersprechen sich), 6160 Codes ohne zweite Quelle in `data/dtc/uncertain.md`. Offen: C0035 klären, Codes aus uncertain.md mit weiteren Quellen füllen
 - [x] Alte Fehler im Fehlercode-Generator behoben (zählte hexadezimal statt dezimal)
 - [x] Mehrere Steuergeräte über CAN, Absender je Fehler, Modus 06 und 09 je Steuergerät
 - [x] Gesundheitscheck mit Punktzahl und Erklärung

@@ -37,7 +37,7 @@ Der Name kommt vom Haruspex, dem antiken Deuter, der aus den Innereien las. Hier
 
 **Fehlerspeicher**
 - Gespeicherte, sporadische und dauerhafte Fehlercodes, bei mehreren Steuergeräten mit Absender (Motor, Getriebe)
-- Rund 1.400 Normcodes (P, C, B, U) plus Herstellercodes für VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru und weitere; die Bedeutung eines P1-Codes richtet sich nach der erkannten Marke
+- Rund 3.400 Normcodes (P, C, B, U) plus Herstellercodes für VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru und weitere; die Bedeutung eines P1-Codes richtet sich nach der erkannten Marke
 - Je Code eine Ampel und die Frage, die alle zuerst haben: darf ich weiterfahren?
 - Typische Ursachen, was man selbst prüfen kann, grobe Kostenklasse
 - Das Auto in Durchsicht zeigt, wo das betroffene Bauteil sitzt

@@ -55,7 +55,7 @@ Japonca, Korece, Hintçe ve Endonezce. Sistem dilini izler, ayarlardan değişti
   model neslinin kataloğu, hangi aracın bağlı olduğunu ve onunla neyin çalıştığını söyler.
 - **Yerleşik demo araç**: CAN üzerinde motoru ve şanzımanı olan, aynı süreç içinde çalışan bir ELM327; böylece her şey
   donanım olmadan denenebilir.
-- **Elle yazılmış değil, üretilmiş veri**: yaklaşık 1.700 arıza kodu, bunların çoğu düzenli kod ailelerinden
+- **Elle yazılmış değil, üretilmiş veri**: yaklaşık 3.700 arıza kodu, bunların çoğu düzenli kod ailelerinden
   (silindir başına, sıra başına, oksijen sensörü başına) `tools/gen_dtc.py` ile hesaplanıyor.
 
 ## Özellikler
@@ -79,7 +79,7 @@ Japonca, Korece, Hintçe ve Endonezce. Sistem dilini izler, ayarlardan değişti
 
 ### Arıza belleği
 - Kayıtlı, bekleyen ve kalıcı kodlar; birden çok kontrol ünitesi varsa her kod onu kimin bildirdiğini gösterir (motor, şanzıman).
-- Yaklaşık 1.400 standart kod (P, C, B, U) ile VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru ve daha fazlası için üretici kodları. Bir P1 kodu, algılanan markanın anladığı şekilde okunur.
+- Yaklaşık 3.400 standart kod (P, C, B, U) ile VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai/Kia, Subaru ve daha fazlası için üretici kodları. Bir P1 kodu, algılanan markanın anladığı şekilde okunur.
 - Her kod için bir trafik ışığı ve herkesin ilk sorduğu soru: sürmeye devam edebilir miyim?
 - Olağan nedenler, kendiniz kontrol edebileceğiniz şeyler ve kabaca bir maliyet sınıfı.
 - Şeffaf görünümdeki araba, etkilenen parçanın nerede durduğunu gösterir.

@@ -7,7 +7,7 @@ De pagina **Foutgeheugen** leest wat de regeleenheden hebben opgeslagen en legt 
 ## Wat je ziet
 
 - **Opgeslagen, wachtende en permanente** codes. Bij meerdere regeleenheden toont elke code wie hem gemeld heeft (motor, versnellingsbak).
-- Ongeveer 1.400 standaardcodes (P, C, B, U) en de fabriekscodes van VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai en Kia, Subaru en meer. Een P1-code wordt gelezen zoals het herkende merk hem bedoelt.
+- Ongeveer 3.400 standaardcodes (P, C, B, U) en de fabriekscodes van VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai en Kia, Subaru en meer. Een P1-code wordt gelezen zoals het herkende merk hem bedoelt.
 - Een **stoplicht** per code en de vraag die iedereen als eerste stelt: mag ik doorrijden?
 - De gebruikelijke oorzaken, dingen die je zelf kunt controleren en een grove kostenklasse.
 - Waar het onderdeel zit: de auto in doorkijkweergave, of de [röntgenweergave](xray.md).

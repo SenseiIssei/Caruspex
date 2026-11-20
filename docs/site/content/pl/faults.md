@@ -7,7 +7,7 @@ Strona **Pamięć usterek** odczytuje, co zapisały sterowniki, i wyjaśnia to p
 ## Co widzisz
 
 - Kody **zapisane, oczekujące i stałe**. Przy kilku sterownikach każdy kod pokazuje, kto go zgłosił (silnik, skrzynia biegów).
-- Około 1400 kodów standardowych (P, C, B, U) oraz kody producentów VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai i Kia, Subaru i innych. Kod P1 jest odczytywany tak, jak rozumie go rozpoznana marka.
+- Około 3400 kodów standardowych (P, C, B, U) oraz kody producentów VAG, Ford, GM, Toyota, Honda, Nissan, Hyundai i Kia, Subaru i innych. Kod P1 jest odczytywany tak, jak rozumie go rozpoznana marka.
 - **Sygnalizator** przy każdym kodzie i pytanie, które każdy zadaje najpierw: czy mogę jechać dalej?
 - Typowe przyczyny, rzeczy, które możesz sprawdzić sam, i przybliżona klasa kosztów.
 - Gdzie jest dana część: auto w widoku przezroczystym albo [widok rentgenowski](xray.md).

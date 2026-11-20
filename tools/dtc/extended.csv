@@ -1,0 +1,1991 @@
+# Extended generic fault codes, see tools/dtc/extended.py for the format and SOURCES.
+# code;part;args;fault;form;severity;system;detail
+B0005;Collapsible steering column deployment control;;fault;-;high;airbag;airbag
+B0029;Right curtain deployment control %1;1;fault;-;high;airbag;airbag
+B0050;Driver seat belt sensor;;fault;-;high;airbag;airbag
+B0052;Passenger seat belt sensor;;fault;-;high;airbag;airbag
+B007F;Passenger seat belt pretensioner %1 deployment control;C;fault;-;high;airbag;airbag
+B0090;Left frontal restraints sensor;;fault;-;high;airbag;airbag
+B0091;Left side restraints sensor %1;1;fault;-;high;airbag;airbag
+B0092;Left side restraints sensor %1;2;fault;-;high;airbag;airbag
+B0095;Right frontal restraints sensor;;fault;-;high;airbag;airbag
+B0096;Right side restraints sensor %1;1;fault;-;high;airbag;airbag
+B0097;Right side restraints sensor %1;2;fault;-;high;airbag;airbag
+B00B5;Driver seat track position restraints sensor;;fault;-;high;airbag;airbag
+B00C5;Passenger seat track position restraints sensor;;fault;-;high;airbag;airbag
+B00DF;Passenger restraints disable switch;;fault;-;high;airbag;airbag
+B0125;Night vision control module;;fault;-;low;body;
+B0158;Ambient air temperature sensor;;circuit;-;low;body;
+B0159;Outside temperature sensor;;range/performance;-;low;body;
+C0001;TCS control channel %1 valve %2;A|1;fault;-;medium;chassis;
+C0002;TCS control channel %1 valve %2;A|2;fault;-;medium;chassis;
+C0003;TCS control channel %1 valve %2;B|1;fault;-;medium;chassis;
+C0004;TCS control channel %1 valve %2;B|2;fault;-;medium;chassis;
+C0010;Left front inlet control;;fault;-;medium;chassis;
+C0011;Left front outlet control;;fault;-;medium;chassis;
+C0014;Right front inlet control;;fault;-;medium;chassis;
+C0015;Right front outlet control;;fault;-;medium;chassis;
+C0018;Left rear inlet control;;fault;-;medium;chassis;
+C0019;Left rear outlet control;;fault;-;medium;chassis;
+C001C;Right rear inlet control;;fault;-;medium;chassis;
+C001D;Right rear outlet control;;fault;-;medium;chassis;
+C0020;ABS pump motor;;circuit;-;high;brakes;abs_unit
+C0021;Brake booster;;performance;-;medium;chassis;
+C0024;Brake pedal feedback pressure solenoid;;circuit;-;medium;brakes;brake_switch
+C0031;Left front wheel speed sensor;;fault;-;high;brakes;wheel_speed
+C003D;Rear wheel speed sensor;;fault;-;high;brakes;wheel_speed
+C003F;Wheel speed sensors rotation direction correlation;;;-;high;brakes;wheel_speed
+C0041;Brake pedal switch %1;B;fault;-;medium;brakes;brake_switch
+C0042;Brake pedal position sensor circuit %1;A;fault;-;medium;brakes;brake_switch
+C0044;Brake pressure sensor %1;A;fault;-;high;brakes;
+C0049;Brake fluid level;;;-;high;brakes;
+C0051;Steering wheel position sensor;;fault;-;medium;steering;
+C0056;Left rear wheel speed sensor;;circuit intermittent;-;high;brakes;wheel_speed
+C0061;Lateral acceleration sensor;;fault;-;medium;chassis;
+C0062;Longitudinal acceleration sensor;;fault;-;medium;chassis;
+C0063;Yaw rate sensor;;fault;-;medium;chassis;
+C006A;Multi-axis acceleration sensor;;fault;-;medium;chassis;
+C006B;Stability system active too long;;;-;medium;chassis;
+C0075;Brake pedal position;;performance;-;medium;brakes;brake_switch
+C0078;Tire diameter;;;-;medium;chassis;
+C0094;4WD/AWD rear differential unit temperature sensor;;fault;-;medium;transmission;
+C00A7;4WD/AWD transfer case unit actuator position sensor %1;A;fault;-;medium;transmission;
+C00A8;4WD/AWD transfer case unit actuator position sensor %1;B;fault;-;medium;transmission;
+C0186;Lateral acceleration sensor;;circuit;-;medium;chassis;
+C0196;Yaw rate sensor;;circuit;-;medium;chassis;
+C0242;PCM indicated traction control malfunction;;;-;medium;chassis;
+C0245;Wheel speed sensor frequency mismatch;;;-;high;brakes;wheel_speed
+C0277;Brake pedal position sensor;;circuit;-;medium;brakes;brake_switch
+C0287;Longitudinal acceleration sensor;;circuit;-;medium;chassis;
+C0306;Transfer case motor %1 or %2;A|B;circuit;-;medium;transmission;
+C0387;Transfer case unable to complete shift;;;-;medium;transmission;
+C0455;Steering wheel position sensor;;circuit;-;medium;steering;
+C0500;Left front wheel speed sensor %1;A;circuit/open;-;high;brakes;wheel_speed
+C0501;Left front wheel speed sensor %1;A;range/performance;-;high;brakes;wheel_speed
+C0502;Left front wheel speed sensor %1;A;circuit low;-;high;brakes;wheel_speed
+C0503;Left front wheel speed sensor %1;A;circuit high;-;high;brakes;wheel_speed
+C0504;Left front wheel speed sensor %1;A;intermittent or erratic;-;high;brakes;wheel_speed
+C0505;Left front wheel speed sensor %1 correlation;A;;-;high;brakes;wheel_speed
+C0506;Right front wheel speed sensor %1;A;circuit/open;-;high;brakes;wheel_speed
+C0507;Right front wheel speed sensor %1;A;range/performance;-;high;brakes;wheel_speed
+C0508;Right front wheel speed sensor %1;A;circuit low;-;high;brakes;wheel_speed
+C0509;Right front wheel speed sensor %1;A;circuit high;-;high;brakes;wheel_speed
+C050A;Right front wheel speed sensor %1;A;intermittent or erratic;-;high;brakes;wheel_speed
+C050B;Right front wheel speed sensor %1 correlation;A;;-;high;brakes;wheel_speed
+C050C;Left rear wheel speed sensor %1;A;circuit/open;-;high;brakes;wheel_speed
+C050D;Left rear wheel speed sensor %1;A;range/performance;-;high;brakes;wheel_speed
+C050E;Left rear wheel speed sensor %1;A;circuit low;-;high;brakes;wheel_speed
+C050F;Left rear wheel speed sensor %1;A;circuit high;-;high;brakes;wheel_speed
+C0510;Left rear wheel speed sensor %1;A;intermittent or erratic;-;high;brakes;wheel_speed
+C0511;Left rear wheel speed sensor %1 correlation;A;;-;high;brakes;wheel_speed
+C0512;Right rear wheel speed sensor %1;A;circuit/open;-;high;brakes;wheel_speed
+C0513;Right rear wheel speed sensor %1;A;range/performance;-;high;brakes;wheel_speed
+C0514;Right rear wheel speed sensor %1;A;circuit low;-;high;brakes;wheel_speed
+C0515;Right rear wheel speed sensor %1;A;circuit high;-;high;brakes;wheel_speed
+C0516;Right rear wheel speed sensor %1;A;intermittent or erratic;-;high;brakes;wheel_speed
+C0517;Right rear wheel speed sensor %1 correlation;A;;-;high;brakes;wheel_speed
+C0526;Steering angle sensor module;;fault;-;medium;steering;
+C0529;Steering angle sensor module;;missing calibration;-;medium;chassis;
+C052B;ABS pump motor control;;range/performance;-;high;brakes;abs_unit
+C052C;ABS pump motor;;control circuit/open;-;high;brakes;abs_unit
+C052D;ABS pump motor;;control circuit high;-;high;brakes;abs_unit
+C052F;ABS pump motor;;supply voltage circuit/open;-;high;brakes;abs_unit
+C053B;ABS valves;;supply voltage circuit/open;-;high;brakes;abs_unit
+C053D;Brake pressure sensor %1;A;range/performance;-;high;brakes;
+C053E;Brake pressure sensor %1;A;circuit low;-;high;brakes;
+C053F;Brake pressure sensor %1;A;circuit high;-;high;brakes;
+C0542;Brake pressure sensor %1;B;circuit low;-;high;brakes;
+C0543;Brake pressure sensor %1;B;circuit high;-;high;brakes;
+C0551;Longitudinal acceleration sensor;;circuit/open;-;medium;chassis;
+C0552;Longitudinal acceleration sensor;;range/performance;-;medium;chassis;
+C0553;Longitudinal acceleration sensor;;circuit low;-;medium;chassis;
+C0554;Longitudinal acceleration sensor;;circuit high;-;medium;chassis;
+C0555;Left front wheel speed sensor %1 incorrect component installed;A;;-;high;brakes;wheel_speed
+C0556;Right front wheel speed sensor %1 incorrect component installed;A;;-;high;brakes;wheel_speed
+C0557;Left rear wheel speed sensor %1 incorrect component installed;A;;-;high;brakes;wheel_speed
+C0558;Right rear wheel speed sensor %1 incorrect component installed;A;;-;high;brakes;wheel_speed
+C055B;ABS pump motor supply voltage circuit %1;A;low;-;high;brakes;abs_unit
+C055D;Brake hydraulic circuit %1 leak;B;;-;high;brakes;
+C055E;Brake hydraulic circuit %1 leak;A;;-;high;brakes;
+C055F;BSCM/EBBC hydraulic unit;;performance;-;high;brakes;
+C0560;Brake pressure sensor %1;A;missing calibration;-;medium;chassis;
+C0563;ABS control module;;performance;-;high;brakes;abs_unit
+C0571;Brake pressure sensor %1;C;circuit low;-;high;brakes;
+C0572;Brake pressure sensor %1;C;circuit high;-;high;brakes;
+C0574;Brake pressure sensor %1;C;circuit range/performance;-;high;brakes;
+C0575;Brake pressure sensor %1;D;circuit low;-;high;brakes;
+C0576;Brake pressure sensor %1;D;circuit high;-;high;brakes;
+C0578;Brake pressure sensor %1;D;circuit range/performance;-;high;brakes;
+C0579;Brake booster temperature sensor %1;B;circuit low;-;medium;chassis;
+C057A;Brake booster temperature sensor %1;B;circuit high;-;medium;chassis;
+C057F;Brake booster motor %1 phase U-V-W;A;circuit/open;-;medium;chassis;
+C0580;Brake booster motor %1 phase U-V-W;A;circuit low;-;medium;chassis;
+C0582;Brake booster motor %1 phase U-V-W;A;circuit range/performance;-;medium;chassis;
+C0588;Brake booster motor %1 position sensor;A;circuit low;-;medium;chassis;
+C0589;Brake booster motor %1 position sensor;A;circuit high;-;medium;chassis;
+C058A;Brake booster motor %1 position sensor;A;circuit range/performance;-;medium;chassis;
+C058E;Brake booster motor %1 position sensor;B;circuit range/performance;-;medium;chassis;
+C0590;Brake booster motor %1 phase U-V-W;A;current high;-;medium;chassis;
+C0591;Brake booster motor %1 phase U-V-W;A;current low;-;medium;chassis;
+C0594;Brake booster motor %1;A;performance;-;medium;chassis;
+C0595;Brake booster internal power driver;;range/performance;-;medium;chassis;
+C0596;Brake booster motor %1 current sensor;A;circuit range/performance;-;medium;chassis;
+C0597;Brake system control module %1;A;performance;-;high;brakes;
+C059B;Brake pressure sensor %1;B;missing calibration;-;medium;chassis;
+C05A3;Wheel speed sensors supply;;circuit high;-;high;brakes;wheel_speed
+C05A4;Wheel speed sensors supply;;circuit low;-;high;brakes;wheel_speed
+C05AD;Brake blending system;;performance;-;high;brakes;
+C05AE;ABS pump motor calibration;;not learned;-;medium;chassis;
+C05B0;Brake hydraulic circuit %1 leak;C;;-;high;brakes;
+C05B1;Brake hydraulic circuit %1 leak;D;;-;high;brakes;
+C05C2;Brake booster motor %1;A;over temperature;-;high;chassis;
+C05CA;Brake master cylinder piston position sensor %1 circuit;A;voltage high;-;high;brakes;
+C05CB;Brake master cylinder piston position sensor %1 circuit;A;voltage low;-;high;brakes;
+C05CC;Brake master cylinder piston position sensor %1;A;circuit range/performance;-;high;brakes;
+C05CD;Brake master cylinder piston position sensor %1 circuit;B;voltage high;-;high;brakes;
+C05CE;Brake master cylinder piston position sensor %1 circuit;B;voltage low;-;high;brakes;
+C05CF;Brake master cylinder piston position sensor %1;B;circuit range/performance;-;high;brakes;
+C05D0;Brake master cylinder piston position sensor %1 correlation;A/B;;-;high;brakes;
+C05D2;Master cylinder piston position higher than expected;;;-;high;brakes;
+C05D3;Driver applied pressure higher than expected;;;-;high;brakes;
+C05D5;Brake master cylinder cut off valve;;fault;-;high;brakes;
+C0604;Active air dam control circuit;;performance;-;medium;chassis;
+C0616;Park brake control module control circuit;;performance;-;high;brakes;
+C0631;Front axle disconnect actuator;;fault;-;medium;transmission;
+C0710;Steering position signal malfunction;;;-;medium;steering;
+C0800;Device power %1;1;circuit;-;medium;chassis;
+C0870;Control module voltage reference output;;circuit;-;medium;chassis;
+P003A;Turbocharger/supercharger boost control %1 position;A;exceeded learning limit;-;medium;turbo;boost_actuator
+P003D;%1 camshaft profile actuator %2 control bank %3;A|A|1;stuck on;-;medium;timing;vvt
+P006A;MAP - mass or volume air flow correlation bank %1;1;;-;medium;intake;map
+P006B;MAP - exhaust pressure correlation;;;-;medium;exhaust;
+P006D;Barometric pressure - turbocharger/supercharger inlet pressure correlation bank %1;1;;-;medium;turbo;boost_actuator
+P007B;Charge air cooler temperature sensor bank %1;1;circuit range/performance;-;medium;turbo;boost_actuator
+P007C;Charge air cooler temperature sensor bank %1;1;circuit low;-;medium;turbo;boost_actuator
+P007D;Charge air cooler temperature sensor bank %1;1;circuit high;-;medium;turbo;boost_actuator
+P008A;Low pressure fuel system pressure;;too low;-;medium;fuel;
+P008B;Low pressure fuel system pressure;;too high;-;medium;fuel;
+P008F;Engine coolant temperature/fuel temperature correlation;;;-;medium;fuel;
+P009A;Intake air temperature/ambient air temperature correlation;;;-;low;intake;iat
+P009B;Fuel pressure relief;;control circuit/open;-;high;fuel;fuel_pressure
+P009E;Fuel pressure relief control;;performance or stuck off;-;high;fuel;fuel_pressure
+P00A2;Charge air cooler temperature sensor bank %1;2;circuit low;-;medium;turbo;boost_actuator
+P00A3;Charge air cooler temperature sensor bank %1;2;circuit high;-;medium;turbo;boost_actuator
+P00A6;Intake air temperature sensor %1 bank %2;2|2;circuit range/performance;-;low;intake;iat
+P00A7;Intake air temperature sensor %1 bank %2;2|2;circuit low;-;low;intake;iat
+P00A8;Intake air temperature sensor %1 bank %2;2|2;circuit high;-;low;intake;iat
+P00A9;Intake air temperature sensor %1 bank %2;2|2;circuit intermittent or erratic;-;low;intake;iat
+P00AB;Intake air temperature sensor %1 bank %2;1|2;circuit range/performance;-;low;intake;iat
+P00AC;Intake air temperature sensor %1 bank %2;1|2;circuit low;-;low;intake;iat
+P00AD;Intake air temperature sensor %1 bank %2;1|2;circuit high;-;low;intake;iat
+P00AE;Intake air temperature sensor %1 bank %2;1|2;circuit intermittent;-;low;intake;iat
+P00AF;Turbocharger/supercharger boost control %1 module;A;performance;-;medium;turbo;boost_actuator
+P00B2;Radiator coolant temperature sensor;;circuit range/performance;-;medium;cooling;ect_sensor
+P00B3;Radiator coolant temperature sensor;;circuit low;-;medium;cooling;ect_sensor
+P00B4;Radiator coolant temperature sensor;;circuit high;-;medium;cooling;ect_sensor
+P00B5;Radiator coolant temperature sensor;;circuit intermittent or erratic;-;medium;cooling;ect_sensor
+P00B6;Radiator coolant temperature/engine coolant temperature correlation;;;-;medium;cooling;fan
+P00B7;Engine coolant flow low/performance;;;-;medium;cooling;
+P00BD;Mass or volume air flow %1 circuit range/performance - air flow;A;too high;-;medium;intake;
+P00C0;Turbocharger/supercharger bypass valve %1;B;control circuit;-;medium;turbo;boost_actuator
+P00C1;Turbocharger/supercharger bypass valve %1;B;control circuit low;-;medium;turbo;boost_actuator
+P00C2;Turbocharger/supercharger bypass valve %1;B;control circuit high;-;medium;turbo;boost_actuator
+P00C4;Turbocharger/supercharger bypass valve %1 - mechanical;B;;-;medium;turbo;boost_actuator
+P00C6;Fuel rail pressure too low - engine cranking;;;-;high;fuel;fuel_pressure
+P00C7;Intake air pressure measurement system - multiple sensor correlation bank %1;1;;-;medium;intake;
+P00C8;Fuel pressure regulator %1 solenoid supply voltage;A;control circuit/open;-;high;fuel;fuel_pressure
+P00C9;Fuel pressure regulator %1 solenoid supply voltage;A;control circuit low;-;high;fuel;fuel_pressure
+P00CA;Fuel pressure regulator %1 solenoid supply voltage;A;control circuit high;-;high;fuel;fuel_pressure
+P00D2;HO2S heater bank %1 sensor %2;1|2;control circuit range/performance;-;medium;engine;
+P00DF;Charge air cooler coolant temperature sensor %1;A;circuit range/performance;-;medium;turbo;boost_actuator
+P00E0;Charge air cooler coolant temperature sensor %1;A;circuit low;-;medium;turbo;boost_actuator
+P00E1;Charge air cooler coolant temperature sensor %1;A;circuit high;-;medium;turbo;boost_actuator
+P00E2;Charge air cooler coolant temperature sensor %1;A;intermittent or erratic;-;medium;turbo;boost_actuator
+P00E9;Intake air temperature sensor %1 bank %2;3|1;circuit range/performance;-;low;intake;iat
+P00EA;Intake air temperature sensor %1 bank %2;3|1;circuit low;-;low;intake;iat
+P00EB;Intake air temperature sensor %1 bank %2;3|1;circuit high;-;low;intake;iat
+P00EC;Intake air temperature sensor %1 bank %2;3|1;circuit intermittent or erratic;-;low;intake;iat
+P00F3;Humidity sensor;;circuit range/performance;-;medium;intake;
+P00F4;Humidity sensor;;circuit low;-;medium;intake;
+P00F5;Humidity sensor;;circuit high;-;medium;intake;
+P00F6;Humidity sensor;;circuit intermittent or erratic;-;medium;intake;
+P00F9;Turbocharger outlet pressure sensor %1;A;range/performance;-;medium;turbo;boost_actuator
+P00FD;Battery %1 state of charge;B;performance;-;medium;charging;alternator
+P00FF;Body control module requested MIL illumination;;;-;medium;engine;
+P010B;Mass or volume air flow sensor %1;B;circuit range/performance;-;medium;intake;
+P010C;Mass or volume air flow sensor %1;B;circuit low;-;medium;intake;
+P010D;Mass or volume air flow sensor %1;B;circuit high;-;medium;intake;
+P011B;Engine coolant temperature/intake air temperature correlation;;;-;medium;cooling;
+P011F;Engine coolant temperature %1 / ambient air temperature correlation;2;;-;medium;cooling;
+P012A;Turbocharger/supercharger inlet pressure sensor %1;A;circuit;-;medium;turbo;boost_actuator
+P012B;Turbocharger/supercharger inlet pressure sensor %1;A;circuit range/performance;-;medium;turbo;boost_actuator
+P012C;Turbocharger/supercharger inlet pressure sensor %1;A;circuit low;-;medium;turbo;boost_actuator
+P012D;Turbocharger/supercharger inlet pressure sensor %1;A;circuit high;-;medium;turbo;boost_actuator
+P012F;Engine coolant temperature / engine oil temperature correlation;;;-;medium;lubrication;
+P015E;Excessive time to enter closed loop fuel timing control;;fault;-;medium;fuel;
+P016A;Excessive time to enter closed loop air/fuel ratio control;;fault;-;medium;fuel;
+P016E;Closed loop fuel pressure control at limit - pressure;;too high;-;high;fuel;fuel_pressure
+P016F;Closed loop fuel pressure control at limit - pressure;;too low;-;high;fuel;fuel_pressure
+P017B;Cylinder head temperature sensor %1;A;range/performance;-;medium;cooling;ect_sensor
+P017C;Cylinder head temperature sensor %1;A;circuit low;-;medium;cooling;ect_sensor
+P017D;Cylinder head temperature sensor %1;A;circuit high;-;medium;cooling;ect_sensor
+P017E;Cylinder head temperature sensor %1;A;circuit intermittent or erratic;-;medium;cooling;ect_sensor
+P018B;Fuel pressure sensor %1;B;circuit range/performance;-;high;fuel;fuel_pressure
+P018C;Fuel pressure sensor %1;B;circuit low;-;high;fuel;fuel_pressure
+P018D;Fuel pressure sensor %1;B;circuit high;-;high;fuel;fuel_pressure
+P01BA;Engine oil temperature sensor %1;B;range/performance;-;medium;lubrication;
+P01BB;Engine oil temperature sensor %1;B;circuit low;-;medium;lubrication;
+P01BC;Engine oil temperature sensor %1;B;circuit high;-;medium;lubrication;
+P01BD;Engine oil temperature sensor %1;B;circuit intermittent or erratic;-;medium;lubrication;
+P01BF;Fuel rail pressure sensor bank %1;2;circuit range/performance;-;high;fuel;fuel_pressure
+P01C6;Fuel pressure sensor %1;A;circuit high;-;high;fuel;fuel_pressure
+P01C8;Fuel rail/system pressure bank %1;2;too low;-;high;fuel;fuel_pressure
+P01CA;Fuel rail pressure too low - engine cranking bank %1;2;;-;high;fuel;fuel_pressure
+P01CB;Cylinder %1 injection timing performance - over retarded;1;;-;medium;injection;
+P01CC;Cylinder %1 injection timing performance - over advanced;1;;-;medium;injection;
+P01CD;Cylinder %1 injection timing performance - over retarded;2;;-;medium;injection;
+P01CE;Cylinder %1 injection timing performance - over advanced;2;;-;medium;injection;
+P01CF;Cylinder %1 injection timing performance - over retarded;3;;-;medium;injection;
+P01D0;Cylinder %1 injection timing performance - over advanced;3;;-;medium;injection;
+P01D1;Cylinder %1 injection timing performance - over retarded;4;;-;medium;injection;
+P01D2;Cylinder %1 injection timing performance - over advanced;4;;-;medium;injection;
+P01D3;Cylinder %1 injection timing performance - over retarded;5;;-;medium;injection;
+P01D4;Cylinder %1 injection timing performance - over advanced;5;;-;medium;injection;
+P01D5;Cylinder %1 injection timing performance - over retarded;6;;-;medium;injection;
+P01D6;Cylinder %1 injection timing performance - over advanced;6;;-;medium;injection;
+P01D7;Cylinder %1 injection timing performance - over retarded;7;;-;medium;injection;
+P01D8;Cylinder %1 injection timing performance - over advanced;7;;-;medium;injection;
+P01D9;Cylinder %1 injection timing performance - over retarded;8;;-;medium;injection;
+P01DA;Cylinder %1 injection timing performance - over advanced;8;;-;medium;injection;
+P01E3;Engine coolant temperature sensor %1;3;circuit;-;medium;cooling;ect_sensor
+P01E4;Engine coolant temperature sensor %1;3;circuit range/performance;-;medium;cooling;ect_sensor
+P01E5;Engine coolant temperature sensor %1;3;circuit low;-;medium;cooling;ect_sensor
+P01E6;Engine coolant temperature sensor %1;3;circuit high;-;medium;cooling;ect_sensor
+P01F0;Coolant temperature relapsed below diagnostic monitoring temperature;;;-;medium;cooling;
+P020A;Cylinder %1 injection timing;1;;-;medium;injection;
+P020B;Cylinder %1 injection timing;2;;-;medium;injection;
+P020C;Cylinder %1 injection timing;3;;-;medium;injection;
+P020D;Cylinder %1 injection timing;4;;-;medium;injection;
+P020E;Cylinder %1 injection timing;5;;-;medium;injection;
+P020F;Cylinder %1 injection timing;6;;-;medium;injection;
+P021A;Cylinder %1 injection timing;7;;-;medium;injection;
+P021B;Cylinder %1 injection timing;8;;-;medium;injection;
+P023A;Charge air cooler coolant pump %1;A;control circuit/open;-;medium;turbo;boost_actuator
+P023B;Charge air cooler coolant pump %1;A;control circuit low;-;medium;turbo;boost_actuator
+P023C;Charge air cooler coolant pump %1;A;control circuit high;-;medium;turbo;boost_actuator
+P023F;Fuel pump secondary;;circuit/open;-;high;fuel;fuel_pump
+P024A;Charge air cooler bypass control %1;A;range/performance;-;medium;turbo;boost_actuator
+P025A;Fuel pump module %1;A;control circuit/open;-;high;fuel;fuel_pump
+P025B;Fuel pump module %1;A;control circuit range/performance;-;high;fuel;fuel_pump
+P025C;Fuel pump module %1;A;control circuit low;-;high;fuel;fuel_pump
+P025D;Fuel pump module %1;A;control circuit high;-;high;fuel;fuel_pump
+P026A;Charge air cooler efficiency below threshold;;;-;medium;turbo;boost_actuator
+P026B;Injection timing;;performance;-;medium;injection;
+P026C;Fuel injection quantity %1 lower than expected;A;;-;medium;injection;
+P026D;Fuel injection quantity %1 higher than expected;A;;-;medium;injection;
+P026E;Charge air cooler coolant pump %1;A;performance;-;medium;turbo;boost_actuator
+P029D;Cylinder %1 - injector leaking;1;;-;high;injection;injector_balance
+P02A1;Cylinder %1 - injector leaking;2;;-;high;injection;injector_balance
+P02A5;Cylinder %1 - injector leaking;3;;-;high;injection;injector_balance
+P02A9;Cylinder %1 - injector leaking;4;;-;high;injection;injector_balance
+P02AD;Cylinder %1 - injector leaking;5;;-;high;injection;injector_balance
+P02B1;Cylinder %1 - injector leaking;6;;-;high;injection;injector_balance
+P02B5;Cylinder %1 - injector leaking;7;;-;high;injection;injector_balance
+P02B9;Cylinder %1 - injector leaking;8;;-;high;injection;injector_balance
+P02CC;Cylinder %1 fuel injector %2 offset learning at min limit;1|A;;-;medium;injection;
+P02CD;Cylinder %1 fuel injector %2 offset learning at max limit;1|A;;-;medium;injection;
+P02CE;Cylinder %1 fuel injector %2 offset learning at min limit;2|A;;-;medium;injection;
+P02CF;Cylinder %1 fuel injector %2 offset learning at max limit;2|A;;-;medium;injection;
+P02D0;Cylinder %1 fuel injector %2 offset learning at min limit;3|A;;-;medium;injection;
+P02D1;Cylinder %1 fuel injector %2 offset learning at max limit;3|A;;-;medium;injection;
+P02D2;Cylinder %1 fuel injector %2 offset learning at min limit;4|A;;-;medium;injection;
+P02D3;Cylinder %1 fuel injector %2 offset learning at max limit;4|A;;-;medium;injection;
+P02D4;Cylinder %1 fuel injector %2 offset learning at min limit;5|A;;-;medium;injection;
+P02D5;Cylinder %1 fuel injector %2 offset learning at max limit;5|A;;-;medium;injection;
+P02D6;Cylinder %1 fuel injector %2 offset learning at min limit;6|A;;-;medium;injection;
+P02D7;Cylinder %1 fuel injector %2 offset learning at max limit;6|A;;-;medium;injection;
+P02D8;Cylinder %1 fuel injector %2 offset learning at min limit;7|A;;-;medium;injection;
+P02D9;Cylinder %1 fuel injector %2 offset learning at max limit;7|A;;-;medium;injection;
+P02DA;Cylinder %1 fuel injector %2 offset learning at min limit;8|A;;-;medium;injection;
+P02DB;Cylinder %1 fuel injector %2 offset learning at max limit;8|A;;-;medium;injection;
+P02E0;Diesel intake air flow %1;A;control circuit/open;-;medium;intake;
+P02E1;Diesel intake air flow %1 control;A;performance;-;medium;intake;
+P02E2;Diesel intake air flow %1;A;control circuit low;-;medium;intake;
+P02E3;Diesel intake air flow %1;A;control circuit high;-;medium;intake;
+P02E4;Diesel intake air flow %1 control;A;stuck open;-;medium;intake;
+P02E5;Diesel intake air flow %1 control;A;stuck closed;-;medium;intake;
+P02E7;Diesel intake air flow %1 position sensor;A;circuit range/performance;-;medium;intake;
+P02E8;Diesel intake air flow %1 position sensor;A;circuit low;-;medium;intake;
+P02E9;Diesel intake air flow %1 position sensor;A;circuit high;-;medium;intake;
+P02EB;Diesel intake air flow %1 control motor current;A;range/performance;-;medium;intake;
+P02EE;Cylinder %1 injector;1;circuit range/performance;-;medium;injection;injector_circuit
+P02EF;Cylinder %1 injector;2;circuit range/performance;-;medium;injection;injector_circuit
+P02F0;Cylinder %1 injector;3;circuit range/performance;-;medium;injection;injector_circuit
+P02F1;Cylinder %1 injector;4;circuit range/performance;-;medium;injection;injector_circuit
+P02F2;Cylinder %1 injector;5;circuit range/performance;-;medium;injection;injector_circuit
+P02F3;Cylinder %1 injector;6;circuit range/performance;-;medium;injection;injector_circuit
+P02F4;Cylinder %1 injector;7;circuit range/performance;-;medium;injection;injector_circuit
+P02F5;Cylinder %1 injector;8;circuit range/performance;-;medium;injection;injector_circuit
+P030A;Ignition %1 control signal;A;circuit/open;-;high;ignition;coil
+P030D;Ignition %1 control signal;B;circuit/open;-;high;ignition;coil
+P031A;Ignition %1 control signal;C;circuit/open;-;high;ignition;coil
+P031D;Ignition %1 control signal;D;circuit/open;-;high;ignition;coil
+P032A;Knock/combustion vibration sensor %1;C;circuit;-;high;ignition;knock
+P032F;Combustion engine producing insufficient torque;;;-;medium;engine;
+P034A;Crankshaft position sensor - crankshaft start position incorrect;;;-;high;ignition;crank
+P034B;Crankshaft position sensor - crankshaft direction incorrect;;;-;high;ignition;crank
+P034C;Ion sense system;;performance;-;medium;engine;
+P035A;Ignition %1 control signal;E;circuit/open;-;high;ignition;coil
+P035D;Ignition %1 control signal;F;circuit/open;-;high;ignition;coil
+P0363;Misfire detected - fueling disabled;;;-;high;ignition;misfire
+P037A;Glow plug/heater indicator;;control circuit low;-;low;diesel;glow_plug
+P037B;Glow plug/heater indicator;;control circuit high;-;low;diesel;glow_plug
+P037C;Cold start camshaft profile system;;performance;-;medium;timing;vvt
+P037E;Glow plug;;sense circuit low;-;low;diesel;glow_plug
+P037F;Glow plug;;sense circuit high;-;low;diesel;glow_plug
+P03F0;%1 camshaft profile actuator %2 control bank %3;A|C|1;stuck on;-;medium;timing;vvt
+P040A;EGR temperature sensor %1;A;circuit;-;medium;egr;egr
+P040B;EGR temperature sensor %1;A;circuit range/performance;-;medium;egr;egr
+P040C;EGR temperature sensor %1;A;circuit low;-;medium;egr;egr
+P040D;EGR temperature sensor %1;A;circuit high;-;medium;egr;egr
+P040E;EGR temperature sensor %1;A;circuit intermittent or erratic;-;medium;egr;egr
+P040F;EGR temperature sensor %1 correlation;A/B;;-;medium;egr;egr
+P041B;EGR temperature sensor %1;B;circuit range/performance;-;medium;egr;egr
+P041C;EGR temperature sensor %1;B;circuit low;-;medium;egr;egr
+P041D;EGR temperature sensor %1;B;circuit high;-;medium;egr;egr
+P041E;EGR temperature sensor %1;B;circuit intermittent or erratic;-;medium;egr;egr
+P042E;EGR %1 control;A;stuck open;-;medium;egr;egr
+P042F;EGR %1 control;A;stuck closed;-;medium;egr;egr
+P043E;EVAP system leak detection reference orifice low flow;;;-;low;evap;evap_valve
+P043F;EVAP system leak detection reference orifice high flow;;;-;low;evap;evap_valve
+P044A;EGR sensor %1;C;circuit;-;medium;egr;egr
+P044C;EGR sensor %1;C;circuit low;-;medium;egr;egr
+P044D;EGR sensor %1;C;circuit high;-;medium;egr;egr
+P045A;EGR %1;B;control circuit;-;medium;egr;egr
+P045C;EGR %1;B;control circuit low;-;medium;egr;egr
+P045D;EGR %1;B;control circuit high;-;medium;egr;egr
+P045E;EGR %1 control;B;stuck open;-;medium;egr;egr
+P045F;EGR %1 control;B;stuck closed;-;medium;egr;egr
+P046E;EGR sensor %1;B;circuit range/performance;-;medium;egr;egr
+P046F;EGR sensor %1;B;circuit intermittent or erratic;-;medium;egr;egr
+P047F;Exhaust pressure control valve %1;A;stuck open;-;medium;exhaust;
+P048A;Exhaust pressure control valve %1;A;stuck closed;-;medium;exhaust;
+P048B;Exhaust pressure control valve %1 position sensor/switch;A;circuit;-;medium;exhaust;
+P048C;Exhaust pressure control valve %1 position sensor/switch;A;circuit range/performance;-;medium;exhaust;
+P048D;Exhaust pressure control valve %1 position sensor/switch;A;circuit low;-;medium;exhaust;
+P048E;Exhaust pressure control valve %1 position sensor/switch;A;circuit high;-;medium;exhaust;
+P049B;EGR %1 flow insufficient detected;B;;-;medium;egr;egr
+P049C;EGR %1 flow excessive detected;B;;-;medium;egr;egr
+P049D;EGR %1 control position;A;exceeded learning limit;-;medium;egr;egr
+P04A0;Exhaust pressure control valve %1;B;range/performance;-;medium;exhaust;
+P04A8;Exhaust pressure control valve %1 position sensor/switch;B;circuit low;-;medium;exhaust;
+P04AB;EVAP system purge control valve %1;B;circuit/open;-;low;evap;evap_valve
+P04AC;EVAP system purge control valve %1;B;circuit low;-;low;evap;evap_valve
+P04AD;EVAP system purge control valve %1;B;circuit high;-;low;evap;evap_valve
+P04AE;EVAP system purge control valve %1;B;performance or stuck open;-;low;evap;evap_valve
+P04B5;Fuel fill door;;stuck open;-;low;evap;evap_valve
+P04B6;Fuel fill door;;stuck closed;-;low;evap;evap_valve
+P04B8;Fuel fill door position sensor/switch;;circuit;-;low;evap;evap_valve
+P04B9;Fuel fill door position sensor/switch;;circuit low;-;low;evap;evap_valve
+P04BA;Fuel fill door position sensor/switch;;circuit high;-;low;evap;evap_valve
+P04BB;Fuel fill door lock;;control circuit/open;-;low;evap;evap_valve
+P04BC;Fuel fill door lock control;;range/performance;-;low;evap;evap_valve
+P04BD;Fuel fill door lock;;control circuit low;-;low;evap;evap_valve
+P04BE;Fuel fill door lock;;control circuit high;-;low;evap;evap_valve
+P04BF;Fuel fill door unlock;;control circuit/open;-;low;evap;evap_valve
+P04C0;Fuel fill door unlock control;;range/performance;-;low;evap;evap_valve
+P04C1;Fuel fill door unlock;;control circuit low;-;low;evap;evap_valve
+P04C2;Fuel fill door unlock;;control circuit high;-;low;evap;evap_valve
+P04C3;Fuel fill door lock position sensor/switch;;circuit;-;low;evap;evap_valve
+P04C4;Fuel fill door lock position sensor/switch;;circuit range/performance;-;low;evap;evap_valve
+P04C5;Fuel fill door lock position sensor/switch;;circuit low;-;low;evap;evap_valve
+P04C6;Fuel fill door lock position sensor/switch;;circuit high;-;low;evap;evap_valve
+P04C8;Fuel fill door open request sensor/switch;;circuit;-;low;evap;evap_valve
+P04CA;Fuel fill door open request sensor/switch;;circuit low;-;low;evap;evap_valve
+P04CB;Fuel fill door open request sensor/switch;;circuit high;-;low;evap;evap_valve
+P04CE;EGR temperature sensor %1;C;circuit;-;medium;egr;egr
+P04CF;EGR temperature sensor %1;C;circuit range/performance;-;medium;egr;egr
+P04D0;EGR temperature sensor %1;C;circuit low;-;medium;egr;egr
+P04D1;EGR temperature sensor %1;C;circuit high;-;medium;egr;egr
+P04D2;EGR temperature sensor %1;C;circuit intermittent or erratic;-;medium;egr;egr
+P04DB;Crankcase ventilation system disconnected;;;-;medium;intake;
+P04DD;Cold start EGR %1 flow insufficient detected;A;;-;medium;egr;egr
+P04DE;Cold start EGR %1 flow excessive detected;A;;-;medium;egr;egr
+P04E2;Crankcase ventilation hose connection sensor;;circuit low;-;medium;intake;
+P04E3;Crankcase ventilation hose connection sensor;;circuit high;-;medium;intake;
+P04EC;EVAP system large leak detected - fuel tank side;;;-;low;evap;evap_valve
+P04EE;EVAP system very small leak detected - fuel tank side;;;-;low;evap;evap_valve
+P04F0;EVAP system high load purge line %1;A;performance;-;low;evap;evap_valve
+P04FA;EGR %1 control temperature;A;too high;-;medium;egr;egr
+P04FB;Crankcase ventilation hose connection sensor;;range/performance;-;medium;intake;
+P04FC;Crankcase ventilation system;;performance;-;medium;intake;
+P050A;Cold start idle control system;;performance;-;low;engine;idle
+P050B;Cold start ignition timing;;performance;-;medium;engine;
+P050D;Cold start rough idle;;;-;low;engine;idle
+P050E;Cold start engine exhaust temperature;;too low;-;medium;engine;
+P050F;Brake assist vacuum;;too low;-;high;brakes;
+P051B;Crankcase pressure sensor %1;A;circuit range/performance;-;medium;intake;
+P051C;Crankcase pressure sensor %1;A;circuit low;-;medium;intake;
+P051D;Crankcase pressure sensor %1;A;circuit high;-;medium;intake;
+P052A;Cold start %1 camshaft position timing over-advanced bank %2;A|1;;-;medium;timing;vvt
+P052F;Glow plug control module %1 system voltage;1;fault;-;medium;diesel;glow_module
+P053F;Cold start fuel pressure bank %1;1;performance;-;high;fuel;fuel_pressure
+P054A;Cold start %1 camshaft position timing over-advanced bank %2;B|1;;-;medium;timing;vvt
+P054C;Cold start %1 camshaft position timing over-advanced bank %2;B|2;;-;medium;timing;vvt
+P054E;Idle control system fuel quantity lower than expected;;;-;medium;fuel;
+P054F;Idle control system fuel quantity higher than expected;;;-;medium;fuel;
+P056C;Cruise control cancel signal;;fault;-;low;engine;cruise
+P056E;Cold start turbocharger/supercharger boost control %1;A;performance;-;medium;turbo;boost_actuator
+P057B;Brake pedal position sensor %1;A;circuit range/performance;-;medium;brakes;brake_switch
+P057C;Brake pedal position sensor %1;A;circuit low;-;medium;brakes;brake_switch
+P057D;Brake pedal position sensor %1;A;circuit high;-;medium;brakes;brake_switch
+P057E;Brake pedal position sensor %1;A;circuit intermittent or erratic;-;medium;brakes;brake_switch
+P0589;Cruise control multi-function input %1;B;circuit;-;low;engine;cruise
+P058A;Battery monitor module;;performance;-;medium;charging;alternator
+P058B;Battery monitor module current monitoring;;performance;-;medium;charging;alternator
+P058C;Battery monitor module temperature monitoring;;performance;-;medium;charging;alternator
+P058D;Battery monitor module voltage monitoring;;performance;-;medium;charging;alternator
+P058E;Battery monitor module temperature;;too high;-;medium;charging;alternator
+P058F;Battery monitor module temperature;;too low;-;medium;charging;alternator
+P0592;Cruise control multi-function input %1;B;circuit low;-;low;engine;cruise
+P0593;Cruise control multi-function input %1;B;circuit high;-;low;engine;cruise
+P05A0;Active grille air shutter %1;A;stuck on;-;medium;engine;
+P05A3;Active grille air shutter %1;A;control circuit range/performance;-;medium;engine;
+P05AE;Active grille air shutter %1;B;performance or stuck off;-;medium;engine;
+P05BD;Stop-start mode switch;;circuit range/performance;-;medium;engine;
+P05CC;Cold start %1 camshaft position timing bank %2;A|1;performance;-;medium;timing;vvt
+P05CD;Cold start %1 camshaft position timing bank %2;A|2;performance;-;medium;timing;vvt
+P05CE;Cold start %1 camshaft position timing bank %2;B|1;performance;-;medium;timing;vvt
+P05CF;Cold start %1 camshaft position timing bank %2;B|2;performance;-;medium;timing;vvt
+P05D1;Driver mode select switch %1;A;circuit low;-;medium;engine;
+P05D2;Driver mode select switch %1;A;circuit high;-;medium;engine;
+P05D3;Driver mode select switch %1;A;range/performance;-;medium;engine;
+P05D8;PCV regulator valve;;control circuit/open;-;medium;engine;
+P05D9;PCV regulator valve;;control circuit low;-;medium;engine;
+P05DC;Brake pedal position sensor %1;B;circuit range/performance;-;medium;brakes;brake_switch
+P05DD;Brake pedal position sensor %1;B;circuit low;-;medium;brakes;brake_switch
+P05DE;Brake pedal position sensor %1;B;circuit high;-;medium;brakes;brake_switch
+P05DF;Brake pedal position sensor %1;B;circuit intermittent or erratic;-;medium;brakes;brake_switch
+P05E0;Brake pedal position sensor %1 correlation;A/B;;-;medium;brakes;brake_switch
+P05EC;Cold start injection timing;;performance;-;medium;injection;
+P05ED;Reductant heater control module supply voltage;;fault;-;medium;diesel;adblue_dosing
+P05EE;Reductant pump;;supply voltage circuit/open;-;medium;diesel;adblue_dosing
+P05F1;Reductant pump supply voltage circuit;;stuck on;-;medium;diesel;adblue_dosing
+P05F2;Reductant pump supply voltage circuit;;stuck off;-;medium;diesel;adblue_dosing
+P05F3;Exhaust aftertreatment power relay;;control circuit/open;-;medium;diesel;
+P05F8;Reductant heater control module;;performance;-;medium;diesel;adblue_dosing
+P05FF;Brake pressure sensor/brake pedal position sensor correlation;;;-;medium;brakes;brake_switch
+P060E;Internal control module throttle position;;performance;-;high;throttle;throttle
+P061A;Internal control module torque;;performance;-;medium;engine;ecu_internal
+P061E;Internal control module brake signal;;performance;-;high;brakes;
+P062A;Fuel pump %1;A;control circuit range/performance;-;high;fuel;fuel_pump
+P062B;Internal control module fuel injector control;;performance;-;medium;injection;injector_circuit
+P062D;Fuel injector driver circuit bank %1;1;performance;-;medium;injection;injector_circuit
+P062F;Internal control module EEPROM error;;;-;medium;engine;ecu_internal
+P064A;Fuel pump control module %1;A;fault;-;high;fuel;fuel_pump
+P064B;PTO control module;;fault;-;medium;engine;ecu_internal
+P064C;Glow plug control module %1;1;fault;-;medium;diesel;glow_module
+P064D;Internal control module O2 sensor processor bank %1;1;performance;-;medium;exhaust;o2_up
+P064E;Internal control module O2 sensor processor bank %1;2;performance;-;medium;exhaust;o2_up
+P064F;Unauthorized software/calibration detected;;;-;medium;injection;
+P065A;Generator system;;performance;-;medium;charging;alternator
+P065B;Generator %1;A;control circuit range/performance;-;medium;charging;alternator
+P066A;Cylinder %1 glow plug;1;control circuit low;-;low;diesel;glow_plug
+P066B;Cylinder %1 glow plug;1;control circuit high;-;low;diesel;glow_plug
+P066C;Cylinder %1 glow plug;2;control circuit low;-;low;diesel;glow_plug
+P066D;Cylinder %1 glow plug;2;control circuit high;-;low;diesel;glow_plug
+P066E;Cylinder %1 glow plug;3;control circuit low;-;low;diesel;glow_plug
+P066F;Cylinder %1 glow plug;3;control circuit high;-;low;diesel;glow_plug
+P067A;Cylinder %1 glow plug;4;control circuit low;-;low;diesel;glow_plug
+P067B;Cylinder %1 glow plug;4;control circuit high;-;low;diesel;glow_plug
+P067C;Cylinder %1 glow plug;5;control circuit low;-;low;diesel;glow_plug
+P067D;Cylinder %1 glow plug;5;control circuit high;-;low;diesel;glow_plug
+P067E;Cylinder %1 glow plug;6;control circuit low;-;low;diesel;glow_plug
+P067F;Cylinder %1 glow plug;6;control circuit high;-;low;diesel;glow_plug
+P068A;ECM/PCM power relay de-energized performance too early;;;-;medium;engine;ecu_power
+P068C;Cylinder %1 glow plug;7;control circuit low;-;low;diesel;glow_plug
+P068D;Cylinder %1 glow plug;7;control circuit high;-;low;diesel;glow_plug
+P068E;Cylinder %1 glow plug;8;control circuit low;-;low;diesel;glow_plug
+P068F;Cylinder %1 glow plug;8;control circuit high;-;low;diesel;glow_plug
+P069E;Fuel pump control module requested MIL illumination;;;-;high;fuel;fuel_pump
+P06A3;Sensor reference voltage %1;D;circuit/open;-;medium;engine;ref_voltage
+P06A4;Sensor reference voltage %1;D;circuit low;-;medium;engine;ref_voltage
+P06A5;Sensor reference voltage %1;D;circuit high;-;medium;engine;ref_voltage
+P06A6;Sensor reference voltage %1;A;circuit range/performance;-;medium;engine;ref_voltage
+P06A7;Sensor reference voltage %1;B;circuit range/performance;-;medium;engine;ref_voltage
+P06AC;Control module internal temperature sensor %1;B;range/performance;-;medium;engine;ecu_internal
+P06AD;Control module internal temperature sensor %1;B;circuit low;-;medium;engine;ecu_internal
+P06AE;Control module internal temperature sensor %1;B;circuit high;-;medium;engine;ecu_internal
+P06AF;Torque management system forced engine shutdown;;;-;medium;engine;
+P06B0;Sensor power supply %1;A;circuit/open;-;medium;engine;ref_voltage
+P06B1;Sensor power supply %1;A;circuit low;-;medium;engine;ref_voltage
+P06B2;Sensor power supply %1;A;circuit high;-;medium;engine;ref_voltage
+P06B3;Sensor power supply %1;B;circuit/open;-;medium;engine;ref_voltage
+P06B4;Sensor power supply %1;B;circuit low;-;medium;engine;ref_voltage
+P06B5;Sensor power supply %1;B;circuit high;-;medium;engine;ref_voltage
+P06B8;Internal control module non-volatile random access memory (NVRAM) error;;;-;medium;engine;ecu_internal
+P06B9;Cylinder %1 glow plug;1;circuit range/performance;-;low;diesel;glow_plug
+P06BA;Cylinder %1 glow plug;2;circuit range/performance;-;low;diesel;glow_plug
+P06BB;Cylinder %1 glow plug;3;circuit range/performance;-;low;diesel;glow_plug
+P06BC;Cylinder %1 glow plug;4;circuit range/performance;-;low;diesel;glow_plug
+P06BD;Cylinder %1 glow plug;5;circuit range/performance;-;low;diesel;glow_plug
+P06BE;Cylinder %1 glow plug;6;circuit range/performance;-;low;diesel;glow_plug
+P06C5;Cylinder %1 glow plug incorrect;1;;-;low;diesel;glow_plug
+P06C6;Cylinder %1 glow plug incorrect;2;;-;low;diesel;glow_plug
+P06C7;Cylinder %1 glow plug incorrect;3;;-;low;diesel;glow_plug
+P06C8;Cylinder %1 glow plug incorrect;4;;-;low;diesel;glow_plug
+P06C9;Cylinder %1 glow plug incorrect;5;;-;low;diesel;glow_plug
+P06CA;Cylinder %1 glow plug incorrect;6;;-;low;diesel;glow_plug
+P06CB;Cylinder %1 glow plug incorrect;7;;-;low;diesel;glow_plug
+P06CC;Cylinder %1 glow plug incorrect;8;;-;low;diesel;glow_plug
+P06D1;Internal control module ignition coil control;;performance;-;high;ignition;coil
+P06D2;Sensor reference voltage %1;E;circuit/open;-;medium;engine;ref_voltage
+P06D3;Sensor reference voltage %1;E;circuit low;-;medium;engine;ref_voltage
+P06D4;Sensor reference voltage %1;E;circuit high;-;medium;engine;ref_voltage
+P06DA;Engine oil pressure;;control circuit/open;-;high;lubrication;oil_pressure
+P06DB;Engine oil pressure;;control circuit low;-;high;lubrication;oil_pressure
+P06DC;Engine oil pressure;;control circuit high;-;high;lubrication;oil_pressure
+P06DD;Engine oil pressure control circuit;;performance or stuck off;-;high;lubrication;oil_pressure
+P06DE;Engine oil pressure control circuit;;stuck on;-;high;lubrication;oil_pressure
+P06E4;Control module wake-up circuit;;performance;-;medium;engine;ecu_power
+P06E5;Glow plug control module %1;1;performance;-;medium;diesel;glow_module
+P06E6;Sensor power supply %1;C;circuit/open;-;medium;engine;ref_voltage
+P06E7;Sensor power supply %1;C;circuit low;-;medium;engine;ref_voltage
+P06E8;Sensor power supply %1;C;circuit high;-;medium;engine;ref_voltage
+P06E9;Engine starter;;performance;-;medium;engine;
+P06EF;Engine restart;;performance;-;medium;engine;
+P071A;Transmission mode switch %1;A;circuit;-;medium;transmission;trans_sensor
+P071D;Transmission mode switch %1;B;circuit;-;medium;transmission;trans_sensor
+P072B;Stuck in reverse;;;-;medium;transmission;trans_sensor
+P072C;Stuck in gear %1;1;;-;medium;transmission;trans_sensor
+P072D;Stuck in gear %1;2;;-;medium;transmission;trans_sensor
+P072E;Stuck in gear %1;3;;-;medium;transmission;trans_sensor
+P072F;Stuck in gear %1;4;;-;medium;transmission;trans_sensor
+P073A;Stuck in gear %1;5;;-;medium;transmission;trans_sensor
+P073B;Stuck in gear %1;6;;-;medium;transmission;trans_sensor
+P073C;Stuck in gear %1;7;;-;medium;transmission;trans_sensor
+P073D;Unable to engage neutral;;;-;medium;transmission;
+P073E;Unable to engage reverse;;;-;medium;transmission;trans_sensor
+P073F;Unable to engage gear %1;1;;-;medium;transmission;trans_sensor
+P074A;Unable to engage gear %1;2;;-;medium;transmission;trans_sensor
+P074B;Unable to engage gear %1;3;;-;medium;transmission;trans_sensor
+P074C;Unable to engage gear %1;4;;-;medium;transmission;trans_sensor
+P074D;Unable to engage gear %1;5;;-;medium;transmission;trans_sensor
+P074E;Unable to engage gear %1;6;;-;medium;transmission;trans_sensor
+P074F;Unable to engage gear %1;7;;-;medium;transmission;trans_sensor
+P075A;Shift solenoid %1;G;fault;-;medium;transmission;trans_solenoid
+P075D;Shift solenoid %1 electrical;G;;-;medium;transmission;trans_solenoid
+P076A;Shift solenoid %1;H;fault;-;medium;transmission;trans_solenoid
+P076D;Shift solenoid %1 electrical;H;;-;medium;transmission;trans_solenoid
+P076F;Gear %1 incorrect ratio;7;;-;medium;transmission;trans_ratio
+P077B;Output shaft speed sensor circuit direction error;;;-;medium;transmission;trans_sensor
+P077C;Output shaft speed sensor;;circuit low;-;medium;transmission;trans_sensor
+P077D;Output shaft speed sensor;;circuit high;-;medium;transmission;trans_sensor
+P078A;Shift timing solenoid %1;B;fault;-;medium;transmission;trans_solenoid
+P078F;Transmission mode switch %1;C;circuit;-;medium;transmission;trans_sensor
+P079A;Transmission friction element %1 slip detected;A;;-;medium;transmission;trans_sensor
+P079B;Transmission friction element %1 slip detected;B;;-;medium;transmission;trans_sensor
+P07A3;Transmission friction element %1;A;stuck on;-;medium;transmission;trans_sensor
+P07A5;Transmission friction element %1;B;stuck on;-;medium;transmission;trans_sensor
+P07A7;Transmission friction element %1;C;stuck on;-;medium;transmission;trans_sensor
+P07A8;Transmission friction element %1;D;performance or stuck off;-;medium;transmission;trans_sensor
+P07A9;Transmission friction element %1;D;stuck on;-;medium;transmission;trans_sensor
+P07AA;Transmission friction element %1;E;performance or stuck off;-;medium;transmission;trans_sensor
+P07B3;Transmission park position sensor/switch %1;A;circuit low;-;medium;transmission;trans_sensor
+P07B4;Transmission park position sensor/switch %1;A;circuit high;-;medium;transmission;trans_sensor
+P07B5;Transmission park position sensor/switch %1 circuit performance/low;A;;-;medium;transmission;trans_sensor
+P07B9;Transmission park position sensor/switch %1;B;circuit low;-;medium;transmission;trans_sensor
+P07BA;Transmission park position sensor/switch %1;B;circuit high;-;medium;transmission;trans_sensor
+P07BB;Transmission park position sensor/switch %1 circuit performance/low;B;;-;medium;transmission;trans_sensor
+P07BE;Transmission park position sensor/switch %1 correlation;A/B;;-;medium;transmission;trans_sensor
+P07BF;Input/turbine shaft speed sensor %1;A;circuit low;-;medium;transmission;trans_sensor
+P07C0;Input/turbine shaft speed sensor %1;A;circuit high;-;medium;transmission;trans_sensor
+P07CE;Transmission mode switch %1;D;circuit;-;medium;transmission;trans_sensor
+P07D1;Transmission mode switch %1;E;circuit;-;medium;transmission;trans_sensor
+P07D4;Transmission mode switch %1;F;circuit;-;medium;transmission;trans_sensor
+P07D7;Stuck in gear %1;8;;-;medium;transmission;trans_sensor
+P07D8;Unable to engage gear %1;8;;-;medium;transmission;trans_sensor
+P07D9;Gear %1 incorrect ratio;8;;-;medium;transmission;trans_ratio
+P07E4;Unable to engage park;;;-;medium;transmission;trans_sensor
+P07E5;Unable to engage drive;;;-;medium;transmission;
+P07E6;Stuck in park;;;-;medium;transmission;trans_sensor
+P0802;Transmission control system MIL request;;circuit/open;-;medium;transmission;trans_sensor
+P080A;Clutch position;;not learned;-;medium;transmission;trans_sensor
+P080C;Upshift/skip shift solenoid;;control circuit low;-;medium;transmission;trans_solenoid
+P080D;Upshift/skip shift solenoid;;control circuit high;-;medium;transmission;trans_solenoid
+P081C;Park input;;circuit;-;medium;transmission;trans_sensor
+P082A;Gear lever %1 position sensor %2;X|1;circuit range/performance;-;medium;transmission;trans_sensor
+P082B;Gear lever %1 position sensor %2;X|1;circuit low;-;medium;transmission;trans_sensor
+P082C;Gear lever %1 position sensor %2;X|1;circuit high;-;medium;transmission;trans_sensor
+P082D;Gear lever %1 position sensor %2;Y|1;circuit range/performance;-;medium;transmission;trans_sensor
+P082E;Gear lever %1 position sensor %2;Y|1;circuit low;-;medium;transmission;trans_sensor
+P082F;Gear lever %1 position sensor %2;Y|1;circuit high;-;medium;transmission;trans_sensor
+P083F;Clutch pedal switch %1 correlation;A/B;;-;medium;transmission;trans_sensor
+P084F;Park/neutral switch output;;circuit;-;medium;transmission;trans_sensor
+P0851;Park/neutral switch input;;circuit low;-;medium;transmission;trans_sensor
+P0852;Park/neutral switch input;;circuit high;-;medium;transmission;trans_sensor
+P085D;Gear shift control module %1;A;performance;-;medium;transmission;trans_sensor
+P085E;Gear shift control module %1;B;performance;-;medium;transmission;trans_sensor
+P085F;Up and down shift switch;;circuit range/performance;-;medium;transmission;trans_sensor
+P0867;Transmission fluid pressure;;;-;medium;transmission;trans_sensor
+P0868;Transmission fluid pressure;;low;-;medium;transmission;trans_sensor
+P0869;Transmission fluid pressure;;high;-;medium;transmission;trans_sensor
+P0871;Transmission fluid pressure sensor/switch %1;C;circuit range/performance;-;medium;transmission;trans_sensor
+P0872;Transmission fluid pressure sensor/switch %1;C;circuit low;-;medium;transmission;trans_sensor
+P0873;Transmission fluid pressure sensor/switch %1;C;circuit high;-;medium;transmission;trans_sensor
+P0875;Transmission fluid pressure sensor/switch %1;D;circuit;-;medium;transmission;trans_sensor
+P0876;Transmission fluid pressure sensor/switch %1;D;circuit range/performance;-;medium;transmission;trans_sensor
+P0877;Transmission fluid pressure sensor/switch %1;D;circuit low;-;medium;transmission;trans_sensor
+P0878;Transmission fluid pressure sensor/switch %1;D;circuit high;-;medium;transmission;trans_sensor
+P088C;Reverse inhibit;;control circuit low;-;medium;transmission;trans_sensor
+P088D;Reverse inhibit;;control circuit high;-;medium;transmission;trans_sensor
+P0890;TCM power relay;;sense circuit low;-;medium;engine;ecu_power
+P0893;Multiple gears engaged;;;-;medium;transmission;trans_sensor
+P089B;Gear lever %1 position sensor %2;X|2;circuit range/performance;-;medium;transmission;trans_sensor
+P089C;Gear lever %1 position sensor %2;X|2;circuit low;-;medium;transmission;trans_sensor
+P089D;Gear lever %1 position sensor %2;X|2;circuit high;-;medium;transmission;trans_sensor
+P08A0;Gear lever %1 position sensor %2;Y|2;circuit range/performance;-;medium;transmission;trans_sensor
+P08A1;Gear lever %1 position sensor %2;Y|2;circuit low;-;medium;transmission;trans_sensor
+P08A2;Gear lever %1 position sensor %2;Y|2;circuit high;-;medium;transmission;trans_sensor
+P08A6;Gear lever position sensor system - multiple sensor correlation;;;-;medium;transmission;trans_sensor
+P08A8;Clutch pedal position sensor %1;A;circuit range/performance;-;medium;transmission;trans_sensor
+P08A9;Clutch pedal position sensor %1;A;circuit low;-;medium;transmission;trans_sensor
+P08AA;Clutch pedal position sensor %1;A;circuit high;-;medium;transmission;trans_sensor
+P08AC;Clutch pedal position;;not learned;-;medium;transmission;trans_sensor
+P08C4;Pressure control solenoid %1;M;performance or stuck off;-;medium;transmission;trans_solenoid
+P08C5;Pressure control solenoid %1;M;stuck on;-;medium;transmission;trans_solenoid
+P08ED;Drive motor %1 clutch pawl position;A;performance;-;high;hybrid;hybrid_system
+P090D;Clutch %1 actuator;B;control circuit high;-;medium;transmission;trans_sensor
+P0919;Gear shift position control error;;;-;medium;transmission;trans_sensor
+P0931;Gear shift lock solenoid/actuator control circuit %1;A;high;-;medium;transmission;trans_solenoid
+P0933;Hydraulic pressure sensor;;range/performance;-;medium;transmission;trans_sensor
+P0934;Hydraulic pressure sensor;;circuit low;-;medium;transmission;trans_sensor
+P0935;Hydraulic pressure sensor;;circuit high;-;medium;transmission;trans_sensor
+P0940;Hydraulic oil temperature sensor;;circuit high;-;medium;lubrication;
+P0944;Hydraulic pressure unit loss of pressure;;;-;medium;transmission;trans_sensor
+P097A;Shift solenoid %1;A;control circuit/open;-;medium;transmission;trans_solenoid
+P097B;Shift solenoid %1;B;control circuit/open;-;medium;transmission;trans_solenoid
+P097C;Shift solenoid %1;C;control circuit/open;-;medium;transmission;trans_solenoid
+P0989;Transmission fluid pressure sensor/switch %1;E;circuit low;-;medium;transmission;trans_sensor
+P0990;Transmission fluid pressure sensor/switch %1;E;circuit high;-;medium;transmission;trans_sensor
+P0998;Shift solenoid %1;F;control circuit low;-;medium;transmission;trans_solenoid
+P0999;Shift solenoid %1;F;control circuit high;-;medium;transmission;trans_solenoid
+P099B;Shift solenoid %1;G;control circuit low;-;medium;transmission;trans_solenoid
+P099C;Shift solenoid %1;G;control circuit high;-;medium;transmission;trans_solenoid
+P0A00;Motor electronics coolant temperature sensor %1;A;circuit;-;high;hybrid;hybrid_system
+P0A01;Motor electronics coolant temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0A02;Motor electronics coolant temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_system
+P0A03;Motor electronics coolant temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_system
+P0A08;DC/DC converter status;;circuit;-;high;hybrid;hybrid_system
+P0A0C;High voltage system interlock circuit %1;A;low;-;high;hybrid;hybrid_system
+P0A10;DC/DC converter status;;circuit high;-;high;hybrid;hybrid_system
+P0A11;DC/DC converter enable;;circuit/open;-;high;hybrid;hybrid_system
+P0A1A;Generator control module;;fault;-;high;hybrid;hybrid_system
+P0A1B;Drive motor %1 control module;A;performance;-;high;hybrid;hybrid_system
+P0A1C;Drive motor %1 control module;B;performance;-;high;hybrid;hybrid_system
+P0A1D;Hybrid/EV powertrain control module %1;A;fault;-;high;hybrid;hybrid_system
+P0A1E;Starter/generator control module;;fault;-;high;hybrid;hybrid_system
+P0A1F;Battery energy control module %1;A;performance;-;high;hybrid;hybrid_battery
+P0A23;Generator torque sensor;;circuit range/performance;-;high;hybrid;hybrid_system
+P0A2B;Drive motor %1 temperature sensor %2;A|A;circuit range/performance;-;high;hybrid;hybrid_system
+P0A2C;Drive motor %1 temperature sensor %2;A|A;circuit low;-;high;hybrid;hybrid_system
+P0A2D;Drive motor %1 temperature sensor %2;A|A;circuit high;-;high;hybrid;hybrid_system
+P0A2F;Drive motor %1;A;over temperature;-;high;hybrid;hybrid_system
+P0A31;Drive motor %1 temperature sensor;B;circuit range/performance;-;high;hybrid;hybrid_system
+P0A32;Drive motor %1 temperature sensor;B;circuit low;-;high;hybrid;hybrid_system
+P0A33;Drive motor %1 temperature sensor;B;circuit high;-;high;hybrid;hybrid_system
+P0A35;Drive motor %1;B;over temperature;-;high;hybrid;hybrid_system
+P0A3C;Drive motor %1 inverter;A;over temperature;-;high;hybrid;hybrid_system
+P0A3F;Drive motor %1 position sensor;A;circuit;-;high;hybrid;hybrid_system
+P0A40;Drive motor %1 position sensor;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0A41;Drive motor %1 position sensor;A;circuit low;-;high;hybrid;hybrid_system
+P0A42;Drive motor %1 position sensor;A;circuit high;-;high;hybrid;hybrid_system
+P0A43;Drive motor %1 position sensor;A;circuit intermittent;-;high;hybrid;hybrid_system
+P0A44;Drive motor %1 position sensor circuit;A;overspeed;-;high;hybrid;hybrid_system
+P0A45;Drive motor %1 position sensor;B;circuit;-;high;hybrid;hybrid_system
+P0A46;Drive motor %1 position sensor;B;circuit range/performance;-;high;hybrid;hybrid_system
+P0A47;Drive motor %1 position sensor;B;circuit low;-;high;hybrid;hybrid_system
+P0A52;Drive motor %1 current sensor;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0A53;Drive motor %1 current sensor;A;circuit low;-;high;hybrid;hybrid_system
+P0A54;Drive motor %1 current sensor;A;circuit high;-;high;hybrid;hybrid_system
+P0A5E;Drive motor %1 phase %2;A|U;current low;-;high;hybrid;hybrid_system
+P0A5F;Drive motor %1 phase %2;A|U;current high;-;high;hybrid;hybrid_system
+P0A60;Drive motor %1 phase %2 current;A|V;;-;high;hybrid;hybrid_system
+P0A61;Drive motor %1 phase %2;A|V;current low;-;high;hybrid;hybrid_system
+P0A62;Drive motor %1 phase %2;A|V;current high;-;high;hybrid;hybrid_system
+P0A64;Drive motor %1 phase %2;A|W;current low;-;high;hybrid;hybrid_system
+P0A65;Drive motor %1 phase %2;A|W;current high;-;high;hybrid;hybrid_system
+P0A67;Drive motor %1 phase %2;B|U;current low;-;high;hybrid;hybrid_system
+P0A6A;Drive motor %1 phase %2;B|V;current low;-;high;hybrid;hybrid_system
+P0A6D;Drive motor %1 phase %2;B|W;current low;-;high;hybrid;hybrid_system
+P0A79;Drive motor %1 inverter;B;performance;-;high;hybrid;hybrid_system
+P0A7A;Generator inverter;;performance;-;high;hybrid;hybrid_system
+P0A7D;Hybrid/EV battery pack state of charge;;low;-;high;hybrid;hybrid_battery
+P0A81;Hybrid/EV battery pack cooling fan %1;1;control circuit/open;-;high;hybrid;hybrid_battery
+P0A84;Hybrid/EV battery pack cooling fan %1;1;control circuit low;-;high;hybrid;hybrid_battery
+P0A85;Hybrid/EV battery pack cooling fan %1;1;control circuit high;-;high;hybrid;hybrid_battery
+P0A88;%1 volt power module current sensor %2;14|A;circuit low;-;medium;charging;alternator
+P0A89;%1 volt power module current sensor %2;14|A;circuit high;-;medium;charging;alternator
+P0A90;Drive motor %1;A;performance;-;high;hybrid;hybrid_system
+P0A91;Drive motor %1;B;performance;-;high;hybrid;hybrid_system
+P0A92;Hybrid generator;;performance;-;high;hybrid;hybrid_system
+P0A95;High voltage fuse %1;A;fault;-;high;hybrid;hybrid_system
+P0A96;Hybrid/EV battery pack cooling fan %1;2;control circuit/open;-;high;hybrid;hybrid_battery
+P0A9C;Hybrid/EV battery temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0A9D;Hybrid/EV battery temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0A9E;Hybrid/EV battery temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0A9F;Hybrid/EV battery temperature sensor %1;A;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0AA1;Hybrid/EV battery positive contactor circuit;;stuck closed;-;high;hybrid;hybrid_battery
+P0AA2;Hybrid/EV battery positive contactor circuit;;stuck open;-;high;hybrid;hybrid_battery
+P0AA4;Hybrid/EV battery negative contactor circuit;;stuck closed;-;high;hybrid;hybrid_battery
+P0AA5;Hybrid/EV battery negative contactor circuit;;stuck open;-;high;hybrid;hybrid_battery
+P0AA7;Hybrid/EV battery voltage isolation sensor;;circuit;-;critical;hybrid;hv_isolation
+P0AA8;Hybrid/EV battery voltage isolation sensor;;circuit range/performance;-;critical;hybrid;hv_isolation
+P0AA9;Hybrid/EV battery voltage isolation sensor;;circuit low;-;critical;hybrid;hv_isolation
+P0AAA;Hybrid/EV battery voltage isolation sensor;;circuit high;-;critical;hybrid;hv_isolation
+P0AAD;Hybrid/EV battery pack air temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0AAE;Hybrid/EV battery pack air temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0AAF;Hybrid/EV battery pack air temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0AB2;Hybrid/EV battery pack air temperature sensor %1;B;circuit range/performance;-;high;hybrid;hybrid_battery
+P0AB3;Hybrid/EV battery pack air temperature sensor %1;B;circuit low;-;high;hybrid;hybrid_battery
+P0AB4;Hybrid/EV battery pack air temperature sensor %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0AB9;Hybrid/EV system;;performance;-;high;hybrid;hybrid_system
+P0ABA;Hybrid/EV battery pack voltage sense %1;A;circuit;-;high;hybrid;hybrid_battery
+P0ABB;Hybrid/EV battery pack voltage sense %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0ABC;Hybrid/EV battery pack voltage sense %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0ABD;Hybrid/EV battery pack voltage sense %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0ABF;Hybrid/EV battery pack current sensor %1;A;circuit;-;high;hybrid;hybrid_battery
+P0AC0;Hybrid/EV battery pack current sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0AC1;Hybrid/EV battery pack current sensor %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0AC2;Hybrid/EV battery pack current sensor %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0AC4;Hybrid/EV powertrain control module requested MIL illumination;;;-;high;hybrid;hybrid_system
+P0AC5;Hybrid/EV battery temperature sensor %1;B;circuit;-;high;hybrid;hybrid_battery
+P0AC6;Hybrid/EV battery temperature sensor %1;B;circuit range/performance;-;high;hybrid;hybrid_battery
+P0AC7;Hybrid/EV battery temperature sensor %1;B;circuit low;-;high;hybrid;hybrid_battery
+P0AC8;Hybrid/EV battery temperature sensor %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0AC9;Hybrid/EV battery temperature sensor %1;B;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0ACB;Hybrid/EV battery temperature sensor %1;C;circuit range/performance;-;high;hybrid;hybrid_battery
+P0ACC;Hybrid/EV battery temperature sensor %1;C;circuit low;-;high;hybrid;hybrid_battery
+P0ACD;Hybrid/EV battery temperature sensor %1;C;circuit high;-;high;hybrid;hybrid_battery
+P0ACE;Hybrid/EV battery temperature sensor %1;C;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0AD4;Hybrid/EV battery pack air flow system insufficient air flow;;;-;high;hybrid;hybrid_battery
+P0AD9;Hybrid/EV battery positive contactor;;control circuit/open;-;high;hybrid;hybrid_battery
+P0ADB;Hybrid/EV battery positive contactor;;control circuit low;-;high;hybrid;hybrid_battery
+P0ADC;Hybrid/EV battery positive contactor;;control circuit high;-;high;hybrid;hybrid_battery
+P0ADD;Hybrid/EV battery negative contactor;;control circuit/open;-;high;hybrid;hybrid_battery
+P0ADF;Hybrid/EV battery negative contactor;;control circuit low;-;high;hybrid;hybrid_battery
+P0AE0;Hybrid/EV battery negative contactor;;control circuit high;-;high;hybrid;hybrid_battery
+P0AE2;Hybrid/EV battery precharge contactor circuit;;stuck closed;-;high;hybrid;hybrid_battery
+P0AE3;Hybrid/EV battery precharge contactor circuit;;stuck open;-;high;hybrid;hybrid_battery
+P0AE4;Hybrid/EV battery precharge contactor %1;A;control circuit/open;-;high;hybrid;hybrid_battery
+P0AE6;Hybrid/EV battery precharge contactor %1;A;control circuit low;-;high;hybrid;hybrid_battery
+P0AE7;Hybrid/EV battery precharge contactor %1;A;control circuit high;-;high;hybrid;hybrid_battery
+P0AE9;Hybrid/EV battery temperature sensor %1;D;circuit range/performance;-;high;hybrid;hybrid_battery
+P0AEA;Hybrid/EV battery temperature sensor %1;D;circuit low;-;high;hybrid;hybrid_battery
+P0AEB;Hybrid/EV battery temperature sensor %1;D;circuit high;-;high;hybrid;hybrid_battery
+P0AEC;Hybrid/EV battery temperature sensor %1;D;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0AED;Drive motor inverter temperature sensor %1;A;circuit;-;high;hybrid;hybrid_system
+P0AEE;Drive motor inverter temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0AEF;Drive motor inverter temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_system
+P0AF0;Drive motor inverter temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_system
+P0AF2;Drive motor inverter temperature sensor %1;B;circuit;-;high;hybrid;hybrid_system
+P0AF3;Drive motor inverter temperature sensor %1;B;circuit range/performance;-;high;hybrid;hybrid_system
+P0AF4;Drive motor inverter temperature sensor %1;B;circuit low;-;high;hybrid;hybrid_system
+P0AF5;Drive motor inverter temperature sensor %1;B;circuit high;-;high;hybrid;hybrid_system
+P0AF8;Hybrid/EV battery system voltage;;fault;-;high;hybrid;hybrid_battery
+P0AFA;Hybrid/EV battery system;;voltage low;-;high;hybrid;hybrid_battery
+P0AFB;Hybrid/EV battery system;;voltage high;-;high;hybrid;hybrid_battery
+P0AFC;Hybrid/EV battery pack sensor module;;fault;-;high;hybrid;hybrid_battery
+P0B01;Electric/auxiliary transmission fluid pump motor phase %1;U;current low;-;medium;transmission;trans_sensor
+P0B04;Electric/auxiliary transmission fluid pump motor phase %1;V;current low;-;medium;transmission;trans_sensor
+P0B07;Electric/auxiliary transmission fluid pump motor phase %1;W;current low;-;medium;transmission;trans_sensor
+P0B0D;Electric/auxiliary transmission fluid pump motor control module;;fault;-;medium;transmission;trans_sensor
+P0B10;Hybrid/EV battery pack current sensor %1;B;circuit low;-;high;hybrid;hybrid_battery
+P0B11;Hybrid/EV battery pack current sensor %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0B13;Hybrid/EV battery pack current sensor %1 correlation;A/B;;-;high;hybrid;hybrid_battery
+P0B17;Hybrid/EV battery pack voltage sense %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0B1A;Hybrid/EV battery pack voltage sense %1;C;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B1B;Hybrid/EV battery pack voltage sense %1;C;circuit low;-;high;hybrid;hybrid_battery
+P0B1C;Hybrid/EV battery pack voltage sense %1;C;circuit high;-;high;hybrid;hybrid_battery
+P0B1F;Hybrid/EV battery pack voltage sense %1;D;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B20;Hybrid/EV battery pack voltage sense %1;D;circuit low;-;high;hybrid;hybrid_battery
+P0B21;Hybrid/EV battery pack voltage sense %1;D;circuit high;-;high;hybrid;hybrid_battery
+P0B24;Hybrid/EV battery %1 voltage unstable;A;;-;high;hybrid;hybrid_battery
+P0B25;Hybrid/EV battery %1;A;voltage low;-;high;hybrid;hybrid_battery
+P0B28;Hybrid/EV battery %1 voltage unstable;B;;-;high;hybrid;hybrid_battery
+P0B3B;Hybrid/EV battery voltage sense %1;A;circuit;-;high;hybrid;hybrid_battery
+P0B3C;Hybrid/EV battery voltage sense %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B3D;Hybrid/EV battery voltage sense %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0B3E;Hybrid/EV battery voltage sense %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0B40;Hybrid/EV battery voltage sense %1;B;circuit;-;high;hybrid;hybrid_battery
+P0B41;Hybrid/EV battery voltage sense %1;B;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B42;Hybrid/EV battery voltage sense %1;B;circuit low;-;high;hybrid;hybrid_battery
+P0B43;Hybrid/EV battery voltage sense %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0B45;Hybrid/EV battery voltage sense %1;C;circuit;-;high;hybrid;hybrid_battery
+P0B46;Hybrid/EV battery voltage sense %1;C;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B47;Hybrid/EV battery voltage sense %1;C;circuit low;-;high;hybrid;hybrid_battery
+P0B48;Hybrid/EV battery voltage sense %1;C;circuit high;-;high;hybrid;hybrid_battery
+P0B4A;Hybrid/EV battery voltage sense %1;D;circuit;-;high;hybrid;hybrid_battery
+P0B4B;Hybrid/EV battery voltage sense %1;D;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B4C;Hybrid/EV battery voltage sense %1;D;circuit low;-;high;hybrid;hybrid_battery
+P0B4D;Hybrid/EV battery voltage sense %1;D;circuit high;-;high;hybrid;hybrid_battery
+P0B4F;Hybrid/EV battery voltage sense %1;E;circuit;-;high;hybrid;hybrid_battery
+P0B50;Hybrid/EV battery voltage sense %1;E;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B51;Hybrid/EV battery voltage sense %1;E;circuit low;-;high;hybrid;hybrid_battery
+P0B52;Hybrid/EV battery voltage sense %1;E;circuit high;-;high;hybrid;hybrid_battery
+P0B54;Hybrid/EV battery voltage sense %1;F;circuit;-;high;hybrid;hybrid_battery
+P0B55;Hybrid/EV battery voltage sense %1;F;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B56;Hybrid/EV battery voltage sense %1;F;circuit low;-;high;hybrid;hybrid_battery
+P0B57;Hybrid/EV battery voltage sense %1;F;circuit high;-;high;hybrid;hybrid_battery
+P0B59;Hybrid/EV battery voltage sense %1;G;circuit;-;high;hybrid;hybrid_battery
+P0B5A;Hybrid/EV battery voltage sense %1;G;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B5B;Hybrid/EV battery voltage sense %1;G;circuit low;-;high;hybrid;hybrid_battery
+P0B5C;Hybrid/EV battery voltage sense %1;G;circuit high;-;high;hybrid;hybrid_battery
+P0B5E;Hybrid/EV battery voltage sense %1;H;circuit;-;high;hybrid;hybrid_battery
+P0B5F;Hybrid/EV battery voltage sense %1;H;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B60;Hybrid/EV battery voltage sense %1;H;circuit low;-;high;hybrid;hybrid_battery
+P0B61;Hybrid/EV battery voltage sense %1;H;circuit high;-;high;hybrid;hybrid_battery
+P0B63;Hybrid/EV battery voltage sense %1;I;circuit;-;high;hybrid;hybrid_battery
+P0B64;Hybrid/EV battery voltage sense %1;I;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B65;Hybrid/EV battery voltage sense %1;I;circuit low;-;high;hybrid;hybrid_battery
+P0B66;Hybrid/EV battery voltage sense %1;I;circuit high;-;high;hybrid;hybrid_battery
+P0B68;Hybrid/EV battery voltage sense %1;J;circuit;-;high;hybrid;hybrid_battery
+P0B69;Hybrid/EV battery voltage sense %1;J;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B6A;Hybrid/EV battery voltage sense %1;J;circuit low;-;high;hybrid;hybrid_battery
+P0B6B;Hybrid/EV battery voltage sense %1;J;circuit high;-;high;hybrid;hybrid_battery
+P0B6D;Hybrid/EV battery voltage sense %1;K;circuit;-;high;hybrid;hybrid_battery
+P0B6E;Hybrid/EV battery voltage sense %1;K;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B6F;Hybrid/EV battery voltage sense %1;K;circuit low;-;high;hybrid;hybrid_battery
+P0B70;Hybrid/EV battery voltage sense %1;K;circuit high;-;high;hybrid;hybrid_battery
+P0B72;Hybrid/EV battery voltage sense %1;L;circuit;-;high;hybrid;hybrid_battery
+P0B73;Hybrid/EV battery voltage sense %1;L;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B74;Hybrid/EV battery voltage sense %1;L;circuit low;-;high;hybrid;hybrid_battery
+P0B75;Hybrid/EV battery voltage sense %1;L;circuit high;-;high;hybrid;hybrid_battery
+P0B77;Hybrid/EV battery voltage sense %1;M;circuit;-;high;hybrid;hybrid_battery
+P0B78;Hybrid/EV battery voltage sense %1;M;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B79;Hybrid/EV battery voltage sense %1;M;circuit low;-;high;hybrid;hybrid_battery
+P0B7A;Hybrid/EV battery voltage sense %1;M;circuit high;-;high;hybrid;hybrid_battery
+P0B7C;Hybrid/EV battery voltage sense %1;N;circuit;-;high;hybrid;hybrid_battery
+P0B7D;Hybrid/EV battery voltage sense %1;N;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B7E;Hybrid/EV battery voltage sense %1;N;circuit low;-;high;hybrid;hybrid_battery
+P0B7F;Hybrid/EV battery voltage sense %1;N;circuit high;-;high;hybrid;hybrid_battery
+P0B81;Hybrid/EV battery voltage sense %1;O;circuit;-;high;hybrid;hybrid_battery
+P0B82;Hybrid/EV battery voltage sense %1;O;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B83;Hybrid/EV battery voltage sense %1;O;circuit low;-;high;hybrid;hybrid_battery
+P0B84;Hybrid/EV battery voltage sense %1;O;circuit high;-;high;hybrid;hybrid_battery
+P0B86;Hybrid/EV battery voltage sense %1;P;circuit;-;high;hybrid;hybrid_battery
+P0B87;Hybrid/EV battery voltage sense %1;P;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B88;Hybrid/EV battery voltage sense %1;P;circuit low;-;high;hybrid;hybrid_battery
+P0B89;Hybrid/EV battery voltage sense %1;P;circuit high;-;high;hybrid;hybrid_battery
+P0B8B;Hybrid/EV battery voltage sense %1;Q;circuit;-;high;hybrid;hybrid_battery
+P0B8C;Hybrid/EV battery voltage sense %1;Q;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B8D;Hybrid/EV battery voltage sense %1;Q;circuit low;-;high;hybrid;hybrid_battery
+P0B8E;Hybrid/EV battery voltage sense %1;Q;circuit high;-;high;hybrid;hybrid_battery
+P0B90;Hybrid/EV battery voltage sense %1;R;circuit;-;high;hybrid;hybrid_battery
+P0B91;Hybrid/EV battery voltage sense %1;R;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B92;Hybrid/EV battery voltage sense %1;R;circuit low;-;high;hybrid;hybrid_battery
+P0B93;Hybrid/EV battery voltage sense %1;R;circuit high;-;high;hybrid;hybrid_battery
+P0B95;Hybrid/EV battery voltage sense %1;S;circuit;-;high;hybrid;hybrid_battery
+P0B96;Hybrid/EV battery voltage sense %1;S;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B97;Hybrid/EV battery voltage sense %1;S;circuit low;-;high;hybrid;hybrid_battery
+P0B98;Hybrid/EV battery voltage sense %1;S;circuit high;-;high;hybrid;hybrid_battery
+P0B9A;Hybrid/EV battery voltage sense %1;T;circuit;-;high;hybrid;hybrid_battery
+P0B9B;Hybrid/EV battery voltage sense %1;T;circuit range/performance;-;high;hybrid;hybrid_battery
+P0B9C;Hybrid/EV battery voltage sense %1;T;circuit low;-;high;hybrid;hybrid_battery
+P0B9D;Hybrid/EV battery voltage sense %1;T;circuit high;-;high;hybrid;hybrid_battery
+P0B9F;Hybrid/EV battery voltage sense %1;U;circuit;-;high;hybrid;hybrid_battery
+P0BA0;Hybrid/EV battery voltage sense %1;U;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BA1;Hybrid/EV battery voltage sense %1;U;circuit low;-;high;hybrid;hybrid_battery
+P0BA2;Hybrid/EV battery voltage sense %1;U;circuit high;-;high;hybrid;hybrid_battery
+P0BA4;Hybrid/EV battery voltage sense %1;V;circuit;-;high;hybrid;hybrid_battery
+P0BA5;Hybrid/EV battery voltage sense %1;V;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BA6;Hybrid/EV battery voltage sense %1;V;circuit low;-;high;hybrid;hybrid_battery
+P0BA7;Hybrid/EV battery voltage sense %1;V;circuit high;-;high;hybrid;hybrid_battery
+P0BA9;Hybrid/EV battery voltage sense %1;W;circuit;-;high;hybrid;hybrid_battery
+P0BAA;Hybrid/EV battery voltage sense %1;W;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BAB;Hybrid/EV battery voltage sense %1;W;circuit low;-;high;hybrid;hybrid_battery
+P0BAC;Hybrid/EV battery voltage sense %1;W;circuit high;-;high;hybrid;hybrid_battery
+P0BAE;Hybrid/EV battery voltage sense %1;X;circuit;-;high;hybrid;hybrid_battery
+P0BAF;Hybrid/EV battery voltage sense %1;X;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BB0;Hybrid/EV battery voltage sense %1;X;circuit low;-;high;hybrid;hybrid_battery
+P0BB1;Hybrid/EV battery voltage sense %1;X;circuit high;-;high;hybrid;hybrid_battery
+P0BB3;Hybrid/EV battery voltage sense %1;Y;circuit;-;high;hybrid;hybrid_battery
+P0BB4;Hybrid/EV battery voltage sense %1;Y;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BB5;Hybrid/EV battery voltage sense %1;Y;circuit low;-;high;hybrid;hybrid_battery
+P0BB6;Hybrid/EV battery voltage sense %1;Y;circuit high;-;high;hybrid;hybrid_battery
+P0BB8;Hybrid/EV battery voltage sense %1;Z;circuit;-;high;hybrid;hybrid_battery
+P0BB9;Hybrid/EV battery voltage sense %1;Z;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BBA;Hybrid/EV battery voltage sense %1;Z;circuit low;-;high;hybrid;hybrid_battery
+P0BBB;Hybrid/EV battery voltage sense %1;Z;circuit high;-;high;hybrid;hybrid_battery
+P0BBD;Hybrid/EV battery pack voltage variation exceeded limit;;;-;high;hybrid;hybrid_battery
+P0BBE;Hybrid/EV battery pack voltage variation;;;-;high;hybrid;hybrid_battery
+P0BC3;Hybrid/EV battery temperature sensor %1;E;circuit range/performance;-;high;hybrid;hybrid_battery
+P0BC4;Hybrid/EV battery temperature sensor %1;E;circuit low;-;high;hybrid;hybrid_battery
+P0BC5;Hybrid/EV battery temperature sensor %1;E;circuit high;-;high;hybrid;hybrid_battery
+P0BC6;Hybrid/EV battery temperature sensor %1;E;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0BC8;Hybrid/EV battery pack cooling fan %1 sense;1;range/performance;-;high;hybrid;hybrid_battery
+P0BC9;Hybrid/EV battery pack cooling fan %1;1;sense circuit low;-;high;hybrid;hybrid_battery
+P0BCA;Hybrid/EV battery pack cooling fan %1;1;sense circuit high;-;high;hybrid;hybrid_battery
+P0BD1;Drive motor inverter temperature sensor %1;C;circuit;-;high;hybrid;hybrid_system
+P0BD2;Drive motor inverter temperature sensor %1;C;circuit range/performance;-;high;hybrid;hybrid_system
+P0BD3;Drive motor inverter temperature sensor %1;C;circuit low;-;high;hybrid;hybrid_system
+P0BD4;Drive motor inverter temperature sensor %1;C;circuit high;-;high;hybrid;hybrid_system
+P0BD7;Drive motor inverter temperature sensor %1;D;circuit range/performance;-;high;hybrid;hybrid_system
+P0BD8;Drive motor inverter temperature sensor %1;D;circuit low;-;high;hybrid;hybrid_system
+P0BD9;Drive motor inverter temperature sensor %1;D;circuit high;-;high;hybrid;hybrid_system
+P0BDC;Drive motor inverter temperature sensor %1;E;circuit range/performance;-;high;hybrid;hybrid_system
+P0BDD;Drive motor inverter temperature sensor %1;E;circuit low;-;high;hybrid;hybrid_system
+P0BDE;Drive motor inverter temperature sensor %1;E;circuit high;-;high;hybrid;hybrid_system
+P0BE1;Drive motor inverter temperature sensor %1;F;circuit range/performance;-;high;hybrid;hybrid_system
+P0BE2;Drive motor inverter temperature sensor %1;F;circuit low;-;high;hybrid;hybrid_system
+P0BE3;Drive motor inverter temperature sensor %1;F;circuit high;-;high;hybrid;hybrid_system
+P0BE6;Drive motor %1 phase %2 current sensor;A|U;circuit range/performance;-;high;hybrid;hybrid_system
+P0BE7;Drive motor %1 phase %2 current sensor;A|U;circuit low;-;high;hybrid;hybrid_system
+P0BE8;Drive motor %1 phase %2 current sensor;A|U;circuit high;-;high;hybrid;hybrid_system
+P0BEA;Drive motor %1 phase %2 current sensor;A|V;circuit range/performance;-;high;hybrid;hybrid_system
+P0BEB;Drive motor %1 phase %2 current sensor;A|V;circuit low;-;high;hybrid;hybrid_system
+P0BEC;Drive motor %1 phase %2 current sensor;A|V;circuit high;-;high;hybrid;hybrid_system
+P0BEE;Drive motor %1 phase %2 current sensor;A|W;circuit range/performance;-;high;hybrid;hybrid_system
+P0BEF;Drive motor %1 phase %2 current sensor;A|W;circuit low;-;high;hybrid;hybrid_system
+P0BF0;Drive motor %1 phase %2 current sensor;A|W;circuit high;-;high;hybrid;hybrid_system
+P0BF2;Drive motor %1 phase %2 current sensor;B|U;circuit range/performance;-;high;hybrid;hybrid_system
+P0BF3;Drive motor %1 phase %2 current sensor;B|U;circuit low;-;high;hybrid;hybrid_system
+P0BF4;Drive motor %1 phase %2 current sensor;B|U;circuit high;-;high;hybrid;hybrid_system
+P0BF6;Drive motor %1 phase %2 current sensor;B|V;circuit range/performance;-;high;hybrid;hybrid_system
+P0BF7;Drive motor %1 phase %2 current sensor;B|V;circuit low;-;high;hybrid;hybrid_system
+P0BF8;Drive motor %1 phase %2 current sensor;B|V;circuit high;-;high;hybrid;hybrid_system
+P0BFA;Drive motor %1 phase %2 current sensor;B|W;circuit range/performance;-;high;hybrid;hybrid_system
+P0BFB;Drive motor %1 phase %2 current sensor;B|W;circuit low;-;high;hybrid;hybrid_system
+P0BFC;Drive motor %1 phase %2 current sensor;B|W;circuit high;-;high;hybrid;hybrid_system
+P0BFD;Drive motor %1 phase U-V-W current sensor correlation;A;;-;high;hybrid;hybrid_system
+P0BFE;Drive motor %1 phase U-V-W current sensor correlation;B;;-;high;hybrid;hybrid_system
+P0C01;Drive motor %1;A;current high;-;high;hybrid;hybrid_system
+P0C04;Drive motor %1;B;current high;-;high;hybrid;hybrid_system
+P0C05;Drive motor %1 phase U-V-W;A;circuit/open;-;high;hybrid;hybrid_system
+P0C08;Drive motor %1 phase U-V-W;B;circuit/open;-;high;hybrid;hybrid_system
+P0C0B;Drive motor %1 inverter power supply;A;circuit/open;-;high;hybrid;hybrid_system
+P0C0E;Drive motor %1 inverter power supply;B;circuit/open;-;high;hybrid;hybrid_system
+P0C11;Drive motor %1 inverter phase %2;A|U;over temperature;-;high;hybrid;hybrid_system
+P0C12;Drive motor %1 inverter phase %2;A|V;over temperature;-;high;hybrid;hybrid_system
+P0C13;Drive motor %1 inverter phase %2;A|W;over temperature;-;high;hybrid;hybrid_system
+P0C14;Drive motor %1 inverter phase %2;B|U;over temperature;-;high;hybrid;hybrid_system
+P0C15;Drive motor %1 inverter phase %2;B|V;over temperature;-;high;hybrid;hybrid_system
+P0C16;Drive motor %1 inverter phase %2;B|W;over temperature;-;high;hybrid;hybrid_system
+P0C17;Drive motor %1 position sensor;A;not learned;-;high;hybrid;hybrid_system
+P0C18;Drive motor %1 position sensor;B;not learned;-;high;hybrid;hybrid_system
+P0C19;Drive motor %1 torque delivered;A;performance;-;high;hybrid;hybrid_system
+P0C1A;Drive motor %1 torque delivered;B;performance;-;high;hybrid;hybrid_system
+P0C20;Electric/auxiliary transmission fluid pump phase U-V-W;;circuit/open;-;medium;transmission;trans_sensor
+P0C28;Electric/auxiliary transmission fluid pump %1 motor;A;current high;-;medium;transmission;trans_sensor
+P0C2F;Internal control module drive motor/generator - engine speed sensor;;performance;-;high;hybrid;hybrid_system
+P0C30;Hybrid/EV battery pack state of charge;;high;-;high;hybrid;hybrid_battery
+P0C32;Hybrid/EV battery cooling system %1;A;performance;-;high;hybrid;hybrid_battery
+P0C34;Hybrid/EV battery temperature sensor %1;F;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C35;Hybrid/EV battery temperature sensor %1;F;circuit low;-;high;hybrid;hybrid_battery
+P0C36;Hybrid/EV battery temperature sensor %1;F;circuit high;-;high;hybrid;hybrid_battery
+P0C37;Hybrid/EV battery temperature sensor %1;F;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C39;DC/DC converter temperature sensor %1;A;range/performance;-;high;hybrid;hybrid_system
+P0C3E;DC/DC converter temperature sensor %1;B;range/performance;-;high;hybrid;hybrid_system
+P0C43;Hybrid/EV battery pack coolant temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C44;Hybrid/EV battery pack coolant temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_battery
+P0C45;Hybrid/EV battery pack coolant temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_battery
+P0C46;Hybrid/EV battery pack coolant temperature sensor %1;A;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C47;Hybrid/EV battery pack coolant pump %1;A;control circuit/open;-;high;hybrid;hybrid_battery
+P0C4A;Hybrid/EV battery pack coolant pump %1 control;A;performance;-;high;hybrid;hybrid_battery
+P0C4E;Drive motor %1 position;A;exceeded learning limit;-;high;hybrid;hybrid_system
+P0C4F;Drive motor %1 position;B;exceeded learning limit;-;high;hybrid;hybrid_system
+P0C52;Drive motor %1 position sensor circuit %2;A|A;low;-;high;hybrid;hybrid_system
+P0C53;Drive motor %1 position sensor circuit %2;A|A;high;-;high;hybrid;hybrid_system
+P0C57;Drive motor %1 position sensor circuit %2;B|A;low;-;high;hybrid;hybrid_system
+P0C58;Drive motor %1 position sensor circuit %2;B|A;high;-;high;hybrid;hybrid_system
+P0C5C;Drive motor %1 position sensor circuit %2;A|B;low;-;high;hybrid;hybrid_system
+P0C5D;Drive motor %1 position sensor circuit %2;A|B;high;-;high;hybrid;hybrid_system
+P0C61;Drive motor %1 position sensor circuit %2;B|B;low;-;high;hybrid;hybrid_system
+P0C62;Drive motor %1 position sensor circuit %2;B|B;high;-;high;hybrid;hybrid_system
+P0C73;Motor electronics coolant pump %1 control;A;performance;-;high;hybrid;hybrid_system
+P0C74;Motor electronics coolant pump %1 control;B;performance;-;high;hybrid;hybrid_system
+P0C76;Hybrid/EV battery system discharge time too long;;;-;high;hybrid;hybrid_battery
+P0C77;Hybrid/EV battery system precharge time too short;;;-;high;hybrid;hybrid_battery
+P0C78;Hybrid/EV battery system precharge time too long;;;-;high;hybrid;hybrid_battery
+P0C79;Drive motor %1 inverter voltage;A;too high;-;high;hybrid;hybrid_system
+P0C7D;Hybrid/EV battery temperature sensor %1;G;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C7E;Hybrid/EV battery temperature sensor %1;G;circuit low;-;high;hybrid;hybrid_battery
+P0C7F;Hybrid/EV battery temperature sensor %1;G;circuit high;-;high;hybrid;hybrid_battery
+P0C80;Hybrid/EV battery temperature sensor %1;G;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C82;Hybrid/EV battery temperature sensor %1;H;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C83;Hybrid/EV battery temperature sensor %1;H;circuit low;-;high;hybrid;hybrid_battery
+P0C84;Hybrid/EV battery temperature sensor %1;H;circuit high;-;high;hybrid;hybrid_battery
+P0C85;Hybrid/EV battery temperature sensor %1;H;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C89;Hybrid/EV battery temperature sensor %1;I;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C8A;Hybrid/EV battery temperature sensor %1;I;circuit low;-;high;hybrid;hybrid_battery
+P0C8B;Hybrid/EV battery temperature sensor %1;I;circuit high;-;high;hybrid;hybrid_battery
+P0C8C;Hybrid/EV battery temperature sensor %1;I;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C8E;Hybrid/EV battery temperature sensor %1;J;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C8F;Hybrid/EV battery temperature sensor %1;J;circuit low;-;high;hybrid;hybrid_battery
+P0C90;Hybrid/EV battery temperature sensor %1;J;circuit high;-;high;hybrid;hybrid_battery
+P0C91;Hybrid/EV battery temperature sensor %1;J;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C93;Hybrid/EV battery temperature sensor %1;K;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C94;Hybrid/EV battery temperature sensor %1;K;circuit low;-;high;hybrid;hybrid_battery
+P0C95;Hybrid/EV battery temperature sensor %1;K;circuit high;-;high;hybrid;hybrid_battery
+P0C96;Hybrid/EV battery temperature sensor %1;K;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C98;Hybrid/EV battery temperature sensor %1;L;circuit range/performance;-;high;hybrid;hybrid_battery
+P0C99;Hybrid/EV battery temperature sensor %1;L;circuit low;-;high;hybrid;hybrid_battery
+P0C9A;Hybrid/EV battery temperature sensor %1;L;circuit high;-;high;hybrid;hybrid_battery
+P0C9B;Hybrid/EV battery temperature sensor %1;L;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0C9E;%1 volt power module current sensor %2;14|B;circuit low;-;medium;charging;alternator
+P0C9F;%1 volt power module current sensor %2;14|B;circuit high;-;medium;charging;alternator
+P0CA2;DC/DC converter step down voltage;;performance;-;high;hybrid;hybrid_system
+P0CA6;Hybrid/EV battery charging;;current high;-;high;hybrid;hybrid_battery
+P0CA7;Hybrid/EV battery discharging;;current high;-;high;hybrid;hybrid_battery
+P0CA9;Hybrid/EV battery temperature sensor %1;M;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CAA;Hybrid/EV battery temperature sensor %1;M;circuit low;-;high;hybrid;hybrid_battery
+P0CAB;Hybrid/EV battery temperature sensor %1;M;circuit high;-;high;hybrid;hybrid_battery
+P0CAC;Hybrid/EV battery temperature sensor %1;M;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0CAE;Hybrid/EV battery temperature sensor %1;N;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CAF;Hybrid/EV battery temperature sensor %1;N;circuit low;-;high;hybrid;hybrid_battery
+P0CB0;Hybrid/EV battery temperature sensor %1;N;circuit high;-;high;hybrid;hybrid_battery
+P0CB1;Hybrid/EV battery temperature sensor %1;N;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0CB3;Hybrid/EV battery temperature sensor %1;O;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CB4;Hybrid/EV battery temperature sensor %1;O;circuit low;-;high;hybrid;hybrid_battery
+P0CB5;Hybrid/EV battery temperature sensor %1;O;circuit high;-;high;hybrid;hybrid_battery
+P0CB6;Hybrid/EV battery temperature sensor %1;O;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0CB8;Hybrid/EV battery temperature sensor %1;P;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CB9;Hybrid/EV battery temperature sensor %1;P;circuit low;-;high;hybrid;hybrid_battery
+P0CBA;Hybrid/EV battery temperature sensor %1;P;circuit high;-;high;hybrid;hybrid_battery
+P0CBB;Hybrid/EV battery temperature sensor %1;P;circuit intermittent or erratic;-;high;hybrid;hybrid_battery
+P0CBD;Drive motor %1 coolant temperature sensor;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0CBE;Drive motor %1 coolant temperature sensor;A;circuit low;-;high;hybrid;hybrid_system
+P0CBF;Drive motor %1 coolant temperature sensor;A;circuit high;-;high;hybrid;hybrid_system
+P0CC1;Drive motor %1 coolant pump;A;control circuit/open;-;high;hybrid;hybrid_system
+P0CC2;Drive motor %1 coolant pump;A;control circuit range/performance;-;high;hybrid;hybrid_system
+P0CC3;Drive motor %1 coolant pump;A;control circuit low;-;high;hybrid;hybrid_system
+P0CC4;Drive motor %1 coolant pump;A;control circuit high;-;high;hybrid;hybrid_system
+P0CC5;%1 volt power module current sensor %2 correlation;14|A/B;;-;medium;charging;alternator
+P0CC6;Charge port door %1 open request switch wake-up;A;circuit;-;medium;hybrid;hybrid_system
+P0CC7;Charge port door %1 open request switch;A;circuit;-;medium;hybrid;hybrid_system
+P0CC9;Charge port door %1 open request switch;A;circuit low;-;medium;hybrid;hybrid_system
+P0CCA;Charge port door %1 open request switch;A;circuit high;-;medium;hybrid;hybrid_system
+P0CCC;Charge port door %1 position sensor;A;circuit;-;medium;hybrid;hybrid_system
+P0CCE;Charge port door %1 position sensor;A;circuit low;-;medium;hybrid;hybrid_system
+P0CCF;Charge port door %1 position sensor;A;circuit high;-;medium;hybrid;hybrid_system
+P0CD1;Charge port door %1 unlock;A;control circuit;-;medium;hybrid;hybrid_system
+P0CD2;Charge port door %1 unlock control circuit;A;performance;-;medium;hybrid;hybrid_system
+P0CD6;Hybrid/EV battery pack coolant temperature sensor %1;B;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CD7;Hybrid/EV battery pack coolant temperature sensor %1;B;circuit low;-;high;hybrid;hybrid_battery
+P0CD8;Hybrid/EV battery pack coolant temperature sensor %1;B;circuit high;-;high;hybrid;hybrid_battery
+P0CE0;Hybrid/EV battery pack coolant control valve %1;A;performance or stuck off;-;high;hybrid;hybrid_battery
+P0CE2;Hybrid/EV battery pack coolant control valve %1;A;control circuit low;-;high;hybrid;hybrid_battery
+P0CE3;Hybrid/EV battery pack coolant control valve %1;A;control circuit high;-;high;hybrid;hybrid_battery
+P0CE5;Hybrid/EV battery pack coolant control valve position sensor;;circuit range/performance;-;high;hybrid;hybrid_battery
+P0CE6;Hybrid/EV battery pack coolant control valve position sensor;;circuit low;-;high;hybrid;hybrid_battery
+P0CE7;Hybrid/EV battery pack coolant control valve position sensor;;circuit high;-;high;hybrid;hybrid_battery
+P0CE9;Hybrid/EV electronics coolant pump %1;A;control circuit/open;-;high;hybrid;hybrid_system
+P0CEA;Hybrid/EV electronics coolant pump %1;A;performance;-;high;hybrid;hybrid_system
+P0CEB;Hybrid/EV electronics coolant pump %1;A;control circuit low;-;high;hybrid;hybrid_system
+P0CEC;Hybrid/EV electronics coolant pump %1;A;control circuit high;-;high;hybrid;hybrid_system
+P0CED;Hybrid/EV electronics coolant pump %1 enable;A;circuit;-;high;hybrid;hybrid_system
+P0CEF;Hybrid/EV electronics coolant temperature sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0CF0;Hybrid/EV electronics coolant temperature sensor %1;A;circuit low;-;high;hybrid;hybrid_system
+P0CF1;Hybrid/EV electronics coolant temperature sensor %1;A;circuit high;-;high;hybrid;hybrid_system
+P0CF2;Hybrid/EV electronics coolant temperature sensor %1;A;circuit intermittent or erratic;-;high;hybrid;hybrid_system
+P0CF4;Control pilot;;circuit range/performance;-;medium;hybrid;hybrid_system
+P0CF5;Control pilot;;circuit low;-;medium;hybrid;hybrid_system
+P0CF6;Control pilot;;circuit high;-;medium;hybrid;hybrid_system
+P0CF9;Control pilot charging switch %1;A;range/performance;-;medium;hybrid;hybrid_system
+P0D01;Control pilot charging ventilation switch;;range/performance;-;medium;hybrid;hybrid_system
+P0D09;Battery charging system positive contactor %1;A;stuck open;-;high;hybrid;hybrid_battery
+P0D0A;Battery charging system positive contactor %1;A;control circuit/open;-;high;hybrid;hybrid_battery
+P0D0F;Battery charging system negative contactor %1;A;stuck closed;-;high;hybrid;hybrid_battery
+P0D10;Battery charging system negative contactor %1;A;stuck open;-;high;hybrid;hybrid_battery
+P0D11;Battery charging system negative contactor %1;A;control circuit/open;-;high;hybrid;hybrid_battery
+P0D17;Battery charging system %1 high voltage interlock;A;circuit low;-;high;hybrid;hybrid_system
+P0D18;Battery charging system %1 high voltage interlock;A;circuit high;-;high;hybrid;hybrid_system
+P0D20;Battery charger %1 output voltage;A;performance;-;medium;hybrid;hybrid_system
+P0D21;Battery charger %1 output voltage;A;too low;-;medium;hybrid;hybrid_system
+P0D22;Battery charger %1 output current;A;performance;-;medium;hybrid;hybrid_system
+P0D23;Battery charger %1 output;A;shorted;-;medium;hybrid;hybrid_system
+P0D26;Battery charger system precharge time too long;;;-;medium;hybrid;hybrid_system
+P0D27;Battery charger input voltage;;too low;-;medium;hybrid;hybrid_system
+P0D2A;Battery charger input current;;too high;-;medium;hybrid;hybrid_system
+P0D2B;Control pilot indicator;;control circuit/open;-;medium;hybrid;hybrid_system
+P0D2C;Charge status indicator %1;A;control circuit/open;-;medium;hybrid;hybrid_system
+P0D39;Battery charger %1 input current sensor;A;circuit range/performance;-;medium;hybrid;hybrid_system
+P0D3A;Battery charger %1 input current sensor;A;circuit low;-;medium;hybrid;hybrid_system
+P0D3B;Battery charger %1 input current sensor;A;circuit high;-;medium;hybrid;hybrid_system
+P0D3E;Battery charger %1 input voltage sensor %2;A|A;circuit range/performance;-;medium;hybrid;hybrid_system
+P0D3F;Battery charger %1 input voltage sensor %2;A|A;circuit low;-;medium;hybrid;hybrid_system
+P0D40;Battery charger %1 input voltage sensor %2;A|A;circuit high;-;medium;hybrid;hybrid_system
+P0D43;Battery charger %1 volt output voltage sensor;14;circuit range/performance;-;medium;hybrid;hybrid_system
+P0D44;Battery charger %1 volt output voltage sensor;14;circuit low;-;medium;hybrid;hybrid_system
+P0D45;Battery charger %1 volt output voltage sensor;14;circuit high;-;medium;hybrid;hybrid_system
+P0D49;Battery charger %1 volt output current sensor;14;circuit low;-;medium;hybrid;hybrid_system
+P0D4A;Battery charger %1 volt output current sensor;14;circuit high;-;medium;hybrid;hybrid_system
+P0D4D;Battery charger hybrid/EV battery output voltage sensor;;circuit range/performance;-;high;hybrid;hybrid_battery
+P0D4E;Battery charger hybrid/EV battery output voltage sensor;;circuit low;-;high;hybrid;hybrid_battery
+P0D4F;Battery charger hybrid/EV battery output voltage sensor;;circuit high;-;high;hybrid;hybrid_battery
+P0D53;Battery charger hybrid/EV battery output current sensor;;circuit low;-;high;hybrid;hybrid_battery
+P0D54;Battery charger hybrid/EV battery output current sensor;;circuit high;-;high;hybrid;hybrid_battery
+P0D57;Proximity detection circuit %1;A;range/performance;-;high;hybrid;hybrid_system
+P0D58;Proximity detection circuit %1;A;low;-;high;hybrid;hybrid_system
+P0D59;Proximity detection circuit %1;A;high;-;high;hybrid;hybrid_system
+P0D5B;Battery charger %1 volt output power;14;performance;-;medium;hybrid;hybrid_system
+P0D5C;Battery charger hybrid/EV battery output power;;performance;-;high;hybrid;hybrid_battery
+P0D5E;Battery charger hybrid/EV system discharge time too long;;;-;medium;hybrid;hybrid_system
+P0D64;Hybrid/EV battery pack cooling fan enable;;circuit/open;-;high;hybrid;hybrid_battery
+P0D65;Hybrid/EV battery pack cooling fan enable;;circuit low;-;high;hybrid;hybrid_battery
+P0D66;Hybrid/EV battery pack cooling fan enable;;circuit high;-;high;hybrid;hybrid_battery
+P0D69;A/C compressor motor voltage sensor %1;A;performance;-;low;climate;ac
+P0D6A;A/C compressor motor voltage sensor %1;A;circuit high;-;low;climate;ac
+P0D6B;A/C compressor motor voltage sensor %1;A;circuit low;-;low;climate;ac
+P0D6D;A/C compressor motor voltage %1;A;low;-;low;climate;ac
+P0D6F;A/C compressor motor;;current high;-;low;climate;ac
+P0D71;A/C compressor control module internal temperature sensor %1;A;performance;-;low;climate;ac
+P0D72;A/C compressor control module internal temperature sensor %1;A;circuit high;-;low;climate;ac
+P0D73;A/C compressor control module internal temperature sensor %1;A;circuit low;-;low;climate;ac
+P0D76;A/C compressor control module output driver temperature sensor;;performance;-;low;climate;ac
+P0D77;A/C compressor control module output driver temperature sensor;;circuit high;-;low;climate;ac
+P0D78;A/C compressor control module output driver temperature sensor;;circuit low;-;low;climate;ac
+P0D7A;A/C compressor motor phase %1;U;current low;-;low;climate;ac
+P0D7B;A/C compressor motor phase %1;U;current high;-;low;climate;ac
+P0D7C;A/C compressor motor phase %1;V;current low;-;low;climate;ac
+P0D7D;A/C compressor motor phase %1;V;current high;-;low;climate;ac
+P0D7E;A/C compressor motor phase %1;W;current low;-;low;climate;ac
+P0D7F;A/C compressor motor phase %1;W;current high;-;low;climate;ac
+P0DAA;Battery charging system isolation fault;;;-;critical;hybrid;hv_isolation
+P0DAB;Hybrid/EV battery cell balancing;;performance;-;high;hybrid;hybrid_battery
+P0DAF;Hybrid/EV battery cell balancing circuit %1;A;range/performance;-;high;hybrid;hybrid_battery
+P0DE6;Hybrid/EV battery pack cell;;voltage low;-;high;hybrid;hybrid_battery
+P0DE7;Hybrid/EV battery pack cell;;voltage high;-;high;hybrid;hybrid_battery
+P0E15;Hybrid/EV battery pack coolant heater %1 control;A;performance;-;high;hybrid;hybrid_battery
+P0E32;DC/DC converter voltage sensor %1;A;range/performance;-;high;hybrid;hybrid_system
+P0E33;DC/DC converter voltage sensor %1;A;low;-;high;hybrid;hybrid_system
+P0E34;DC/DC converter voltage sensor %1;A;high;-;high;hybrid;hybrid_system
+P0E37;DC/DC converter voltage sensor %1;B;range/performance;-;high;hybrid;hybrid_system
+P0E38;DC/DC converter voltage sensor %1;B;low;-;high;hybrid;hybrid_system
+P0E39;DC/DC converter voltage sensor %1;B;high;-;high;hybrid;hybrid_system
+P0E52;DC/DC converter current sensor %1;A;circuit range/performance;-;high;hybrid;hybrid_system
+P0E55;DC/DC converter current sensor %1;A;circuit intermittent or erratic;-;high;hybrid;hybrid_system
+P0E59;DC/DC converter temperature sensor %1;C;circuit range/performance;-;high;hybrid;hybrid_system
+P0E61;Battery charger %1 enable;A;circuit/open;-;medium;hybrid;hybrid_system
+P0E65;Battery charger;;control circuit/open;-;medium;hybrid;hybrid_system
+P0E7C;Coolant bypass valve %1;B;control circuit low;-;medium;cooling;
+P0E7D;Coolant bypass valve %1;B;control circuit high;-;medium;cooling;
+P0E7E;Coolant bypass valve %1;B;control circuit range/performance;-;medium;cooling;
+P0E7F;Coolant bypass valve %1 control stuck/open;B;;-;medium;cooling;
+P0E80;Coolant bypass valve %1 control;B;stuck closed;-;medium;cooling;
+P0E89;Battery charger %1 input current;B;too high;-;medium;hybrid;hybrid_system
+P0EA5;DC/DC converter %1;B;performance;-;high;hybrid;hybrid_system
+P0EA6;DC/DC converter %1;B;over temperature;-;high;hybrid;hybrid_system
+P0EDD;Hybrid/EV battery pack %1 deterioration;B;;-;high;hybrid;hybrid_battery
+P0EED;Hybrid/EV battery system discharge circuit;;performance;-;high;hybrid;hybrid_battery
+P0EF1;Drive motor %1 temperature sensor;C;circuit;-;high;hybrid;hybrid_system
+P200A;Intake manifold runner bank %1;1;performance;-;low;intake;imrc
+P200B;Intake manifold runner bank %1;2;performance;-;low;intake;imrc
+P200C;Particulate filter bank %1;1;over temperature;-;high;diesel;dpf_sensor
+P200E;Catalyst system bank %1;1;over temperature;-;high;exhaust;catalyst
+P201B;Intake manifold runner control actuator supply bank %1;1;voltage low;-;low;intake;imrc
+P202C;Reductant tank heater;;control circuit high;-;medium;diesel;adblue_dosing
+P202D;Reductant leakage;;;-;medium;diesel;adblue_dosing
+P202E;Reductant injection valve bank %1 unit %2;1|1;circuit range/performance;-;medium;diesel;adblue_dosing
+P203B;Reductant level sensor %1;A;circuit range/performance;-;medium;diesel;adblue_dosing
+P203C;Reductant level sensor %1;A;circuit low;-;medium;diesel;adblue_dosing
+P203D;Reductant level sensor %1;A;circuit high;-;medium;diesel;adblue_dosing
+P203E;Reductant level sensor %1;A;circuit intermittent or erratic;-;medium;diesel;adblue_dosing
+P2043;Reductant temperature sensor %1;A;circuit range/performance;-;medium;diesel;adblue_dosing
+P204A;Reductant pressure sensor;;circuit;-;medium;diesel;adblue_dosing
+P204B;Reductant pressure sensor;;circuit range/performance;-;medium;diesel;adblue_dosing
+P204C;Reductant pressure sensor;;circuit low;-;medium;diesel;adblue_dosing
+P204D;Reductant pressure sensor;;circuit high;-;medium;diesel;adblue_dosing
+P204E;Reductant pressure sensor;;circuit intermittent or erratic;-;medium;diesel;adblue_dosing
+P2054;Reductant injection valve bank %1 unit %2;1|2;circuit low;-;medium;diesel;adblue_dosing
+P205A;Reductant tank temperature sensor %1;A;circuit;-;medium;diesel;adblue_dosing
+P205B;Reductant tank temperature sensor %1;A;circuit range/performance;-;medium;diesel;adblue_dosing
+P205C;Reductant tank temperature sensor %1;A;circuit low;-;medium;diesel;adblue_dosing
+P205D;Reductant tank temperature sensor %1;A;circuit high;-;medium;diesel;adblue_dosing
+P205E;Reductant tank temperature sensor %1;A;circuit intermittent or erratic;-;medium;diesel;adblue_dosing
+P2066;Fuel level sensor %1;B;performance;-;low;fuel;fuel_level
+P2067;Fuel level sensor %1;B;circuit low;-;low;fuel;fuel_level
+P2068;Fuel level sensor %1;B;circuit high;-;low;fuel;fuel_level
+P206A;Reductant quality sensor;;circuit;-;medium;diesel;adblue_dosing
+P206B;Reductant quality sensor;;circuit range/performance;-;medium;diesel;adblue_dosing
+P206C;Reductant quality sensor;;circuit low;-;medium;diesel;adblue_dosing
+P206D;Reductant quality sensor;;circuit high;-;medium;diesel;adblue_dosing
+P2070;Intake manifold tuning (IMT) valve bank %1;1;stuck open;-;medium;intake;
+P2071;Intake manifold tuning (IMT) valve bank %1;1;stuck closed;-;medium;intake;
+P2072;Throttle actuator control system - ice blockage bank %1;1;;-;high;throttle;throttle
+P2074;Manifold absolute pressure/mass air flow - throttle position correlation at higher load;;;-;high;throttle;throttle
+P2077;Intake manifold tuning (IMT) valve position sensor/switch bank %1;1;circuit low;-;medium;intake;
+P2078;Intake manifold tuning (IMT) valve position sensor/switch bank %1;1;circuit high;-;medium;intake;
+P207F;Reductant quality;;performance;-;medium;diesel;adblue_dosing
+P2082;Exhaust gas temperature sensor bank %1 sensor %2;2|1;circuit range/performance;-;medium;exhaust;egt_sensor
+P2083;Exhaust gas temperature sensor bank %1 sensor %2;2|1;circuit intermittent;-;medium;exhaust;egt_sensor
+P2085;Exhaust gas temperature sensor bank %1 sensor %2;1|2;circuit intermittent;-;medium;exhaust;egt_sensor
+P208A;Reductant pump %1;A;control circuit/open;-;medium;diesel;adblue_dosing
+P208B;Reductant pump %1 control;A;performance or stuck off;-;medium;diesel;adblue_dosing
+P208C;Reductant pump %1;A;control circuit low;-;medium;diesel;adblue_dosing
+P208D;Reductant pump %1;A;control circuit high;-;medium;diesel;adblue_dosing
+P208E;Reductant injection valve bank %1 unit %2;1|1;stuck closed;-;medium;diesel;adblue_dosing
+P209F;Reductant tank heater control circuit;;performance;-;medium;diesel;adblue_dosing
+P20A0;Reductant purge control valve %1;A;circuit/open;-;medium;diesel;adblue_dosing
+P20A1;Reductant purge control valve %1;A;performance;-;medium;diesel;adblue_dosing
+P20A2;Reductant purge control valve %1;A;circuit low;-;medium;diesel;adblue_dosing
+P20A3;Reductant purge control valve %1;A;circuit high;-;medium;diesel;adblue_dosing
+P20A5;Reductant purge control valve %1;A;stuck closed;-;medium;diesel;adblue_dosing
+P20B9;Reductant heater %1;A;control circuit/open;-;medium;diesel;adblue_dosing
+P20BA;Reductant heater %1 control circuit;A;performance;-;medium;diesel;adblue_dosing
+P20BB;Reductant heater %1;A;control circuit low;-;medium;diesel;adblue_dosing
+P20BC;Reductant heater %1;A;control circuit high;-;medium;diesel;adblue_dosing
+P20BD;Reductant heater %1;B;control circuit/open;-;medium;diesel;adblue_dosing
+P20BE;Reductant heater %1 control circuit;B;performance;-;medium;diesel;adblue_dosing
+P20BF;Reductant heater %1;B;control circuit low;-;medium;diesel;adblue_dosing
+P20C0;Reductant heater %1;B;control circuit high;-;medium;diesel;adblue_dosing
+P20C1;Reductant heater %1;C;control circuit/open;-;medium;diesel;adblue_dosing
+P20C2;Reductant heater %1 control circuit;C;performance;-;medium;diesel;adblue_dosing
+P20C3;Reductant heater %1;C;control circuit low;-;medium;diesel;adblue_dosing
+P20C4;Reductant heater %1;C;control circuit high;-;medium;diesel;adblue_dosing
+P20C6;Reductant heater %1 control circuit;D;performance;-;medium;diesel;adblue_dosing
+P20C9;Reductant control module requested MIL illumination;;;-;medium;diesel;adblue_dosing
+P20CB;Exhaust aftertreatment fuel injector %1;A;control circuit/open;-;medium;diesel;
+P20CC;Exhaust aftertreatment fuel injector %1 control;A;performance;-;medium;diesel;
+P20CD;Exhaust aftertreatment fuel injector %1;A;control circuit low;-;medium;diesel;
+P20CE;Exhaust aftertreatment fuel injector %1;A;control circuit high;-;medium;diesel;
+P20CF;Exhaust aftertreatment fuel injector %1;A;stuck open;-;medium;diesel;
+P20DB;Exhaust aftertreatment fuel supply control;;stuck open;-;medium;diesel;
+P20E2;Exhaust gas temperature sensor 1/2 correlation bank %1;1;;-;medium;exhaust;egt_sensor
+P20E3;Exhaust gas temperature sensor 1/3 correlation bank %1;1;;-;medium;exhaust;egt_sensor
+P20E4;Exhaust gas temperature sensor 2/3 correlation bank %1;1;;-;medium;exhaust;egt_sensor
+P20F4;Reductant consumption;;too low;-;medium;diesel;adblue_dosing
+P20F5;Reductant consumption;;too high;-;medium;diesel;adblue_dosing
+P20F6;Reductant injection valve bank %1 unit %2;1|1;stuck open;-;medium;diesel;adblue_dosing
+P20F8;Intake manifold runner control circuit bank %1;1;performance;-;low;intake;imrc
+P20FA;Reductant pump %1;B;control circuit/open;-;medium;diesel;adblue_dosing
+P20FF;Reductant control module;;performance;-;medium;diesel;adblue_dosing
+P212B;Throttle position sensor/switch %1;G;circuit range/performance;-;high;throttle;throttle
+P214D;SCR NOx catalyst outlet temperature too high during particulate filter regeneration;;;-;medium;diesel;adblue_dosing
+P214E;Reductant pump %1 current;A;too high;-;medium;diesel;adblue_dosing
+P214F;Reductant heater %1 current;A;too high;-;medium;diesel;adblue_dosing
+P215A;Vehicle speed - wheel speed correlation;;;-;high;brakes;wheel_speed
+P215B;Vehicle speed - output shaft speed correlation;;;-;medium;transmission;trans_sensor
+P215C;Output shaft speed - wheel speed correlation;;;-;high;brakes;wheel_speed
+P2170;Exhaust pressure regulator vent solenoid;;control circuit low;-;medium;exhaust;
+P2172;Throttle actuator control system - sudden high air flow detected;;;-;high;throttle;throttle
+P2176;Throttle actuator %1 control system - idle position;A;not learned;-;high;throttle;throttle
+P218F;Reductant no flow detected;;;-;medium;diesel;adblue_dosing
+P219A;Bank %1 air-fuel ratio imbalance;1;;-;medium;exhaust;o2_up
+P219B;Bank %1 air-fuel ratio imbalance;2;;-;medium;exhaust;o2_up
+P219C;Cylinder %1 air-fuel ratio imbalance;1;;-;medium;exhaust;o2_up
+P219D;Cylinder %1 air-fuel ratio imbalance;2;;-;medium;exhaust;o2_up
+P219E;Cylinder %1 air-fuel ratio imbalance;3;;-;medium;exhaust;o2_up
+P219F;Cylinder %1 air-fuel ratio imbalance;4;;-;medium;exhaust;o2_up
+P21A0;Cylinder %1 air-fuel ratio imbalance;5;;-;medium;exhaust;o2_up
+P21A1;Cylinder %1 air-fuel ratio imbalance;6;;-;medium;exhaust;o2_up
+P21A9;Reductant level sensor %1;B;circuit range/performance;-;medium;diesel;adblue_dosing
+P21AA;Reductant level sensor %1;B;circuit low;-;medium;diesel;adblue_dosing
+P21AB;Reductant level sensor %1;B;circuit high;-;medium;diesel;adblue_dosing
+P21AF;Reductant level sensor %1;C;circuit low;-;medium;diesel;adblue_dosing
+P21B0;Reductant level sensor %1;C;circuit high;-;medium;diesel;adblue_dosing
+P21C4;Reductant heater relay;;control circuit high;-;medium;diesel;adblue_dosing
+P21C5;Reductant level sensor %1 stuck;A;;-;medium;diesel;adblue_dosing
+P21C6;Reductant level sensor %1 stuck;B;;-;medium;diesel;adblue_dosing
+P21CB;Reductant control module supply;;voltage low;-;medium;diesel;adblue_dosing
+P21CC;Reductant control module supply;;voltage high;-;medium;diesel;adblue_dosing
+P21CE;Reductant quality module;;performance;-;medium;diesel;adblue_dosing
+P21DB;Cylinder %1 injector %2;1|B;circuit low;-;medium;injection;injector_circuit
+P21DC;Cylinder %1 injector %2;1|B;circuit high;-;medium;injection;injector_circuit
+P21DD;Reductant heater %1 current;A;too low;-;medium;diesel;adblue_dosing
+P21DE;Cylinder %1 injector %2;2|B;circuit low;-;medium;injection;injector_circuit
+P21DF;Cylinder %1 injector %2;2|B;circuit high;-;medium;injection;injector_circuit
+P21E0;Cylinder %1 injector %2;3|B;circuit low;-;medium;injection;injector_circuit
+P21E1;Cylinder %1 injector %2;3|B;circuit high;-;medium;injection;injector_circuit
+P21E2;Cylinder %1 injector %2;4|B;circuit low;-;medium;injection;injector_circuit
+P21E3;Cylinder %1 injector %2;4|B;circuit high;-;medium;injection;injector_circuit
+P21E4;Cylinder %1 injector %2;5|B;circuit low;-;medium;injection;injector_circuit
+P21E5;Cylinder %1 injector %2;5|B;circuit high;-;medium;injection;injector_circuit
+P21E6;Cylinder %1 injector %2;6|B;circuit low;-;medium;injection;injector_circuit
+P21E7;Cylinder %1 injector %2;6|B;circuit high;-;medium;injection;injector_circuit
+P21E8;Cylinder %1 injector %2;7|B;circuit low;-;medium;injection;injector_circuit
+P21E9;Cylinder %1 injector %2;7|B;circuit high;-;medium;injection;injector_circuit
+P21EA;Cylinder %1 injector %2;8|B;circuit low;-;medium;injection;injector_circuit
+P21EB;Cylinder %1 injector %2;8|B;circuit high;-;medium;injection;injector_circuit
+P2208;NOx sensor heater bank %1 sensor %2;1|1;sense circuit;-;medium;diesel;nox_sensor
+P2209;NOx sensor heater bank %1 sensor %2;1|1;sense circuit range/performance;-;medium;diesel;nox_sensor
+P220A;NOx sensor bank %1 sensor %2;1|1;supply voltage circuit;-;medium;diesel;nox_sensor
+P220B;NOx sensor bank %1 sensor %2;1|2;supply voltage circuit;-;medium;diesel;nox_sensor
+P220E;NOx sensor heater bank %1 sensor %2;1|1;control circuit range/performance;-;medium;diesel;nox_sensor
+P220F;NOx sensor heater bank %1 sensor %2;1|2;control circuit range/performance;-;medium;diesel;nox_sensor
+P2210;NOx sensor heater bank %1 sensor %2;1|1;sense circuit low;-;medium;diesel;nox_sensor
+P2211;NOx sensor heater bank %1 sensor %2;1|1;sense circuit high;-;medium;diesel;nox_sensor
+P221A;NOx sensor 1/2 correlation bank %1;1;;-;medium;diesel;nox_sensor
+P221C;Reductant heater %1 current;B;too low;-;medium;diesel;adblue_dosing
+P221D;Reductant heater %1 current;B;too high;-;medium;diesel;adblue_dosing
+P221E;Reductant heater %1 current;C;too low;-;medium;diesel;adblue_dosing
+P221F;Reductant heater %1 current;C;too high;-;medium;diesel;adblue_dosing
+P222B;Barometric pressure sensor %1;B;circuit range/performance;-;medium;intake;map
+P222C;Barometric pressure sensor %1;B;circuit low;-;medium;intake;map
+P222D;Barometric pressure sensor %1;B;circuit high;-;medium;intake;map
+P222E;Barometric pressure sensor %1;B;circuit intermittent or erratic;-;medium;intake;map
+P2232;O2 sensor signal circuit shorted to heater bank %1 sensor %2;1|2;circuit;-;medium;exhaust;o2_up
+P2235;O2 sensor signal circuit shorted to heater bank %1 sensor %2;2|2;circuit;-;medium;exhaust;o2_up
+P223C;O2 sensor pumping current bank %1;1;range/performance;-;medium;exhaust;o2_up
+P223D;O2 sensor pumping current bank %1;2;range/performance;-;medium;exhaust;o2_up
+P223E;O2 sensor reference resistance out of range bank %1;1;;-;medium;exhaust;o2_up
+P223F;O2 sensor reference resistance out of range bank %1;2;;-;medium;exhaust;o2_up
+P225C;NOx sensor performance - signal biased/stuck bank %1 sensor %2;1|1;high;-;medium;diesel;nox_sensor
+P225D;NOx sensor performance - signal biased/stuck bank %1 sensor %2;1|1;low;-;medium;diesel;nox_sensor
+P225E;NOx sensor performance - signal biased/stuck bank %1 sensor %2;1|2;high;-;medium;diesel;nox_sensor
+P225F;NOx sensor performance - signal biased/stuck bank %1 sensor %2;1|2;low;-;medium;diesel;nox_sensor
+P2262;Turbocharger/supercharger boost pressure %1 not detected - mechanical;A;;-;medium;turbo;boost_actuator
+P226B;Turbocharger/supercharger %1 boost pressure too high - mechanical;A;;-;medium;turbo;boost_actuator
+P226C;Turbocharger boost control %1 slow response;A;;-;medium;turbo;boost_actuator
+P226D;Particulate filter deteriorated/missing substrate bank %1;1;;-;medium;diesel;dpf_sensor
+P2274;O2 sensor signal biased/stuck lean bank %1 sensor %2;1|3;fault;-;medium;exhaust;o2_up
+P2275;O2 sensor signal biased/stuck rich bank %1 sensor %2;1|3;fault;-;medium;exhaust;o2_up
+P227B;Barometric pressure sensor %1;C;circuit range/performance;-;medium;intake;map
+P227C;Barometric pressure sensor %1;C;circuit low;-;medium;intake;map
+P227D;Barometric pressure sensor %1;C;circuit high;-;medium;intake;map
+P227E;Barometric pressure sensor %1;C;circuit intermittent or erratic;-;medium;intake;map
+P227F;Air flow restriction/air leak between air filter and MAF bank %1;2;;-;medium;intake;maf
+P2286;Injector control pressure sensor;;circuit high;-;medium;injection;injector_circuit
+P2287;Injector control pressure sensor;;circuit intermittent;-;medium;injection;injector_circuit
+P228A;Fuel pressure regulator %1 - forced engine shutdown;A;;-;high;fuel;fuel_pressure
+P228B;Fuel pressure regulator %1 - forced engine shutdown;B;;-;high;fuel;fuel_pressure
+P228C;Fuel pressure regulator %1 exceeded control limits - pressure;A;too low;-;high;fuel;fuel_pressure
+P228D;Fuel pressure regulator %1 exceeded control limits - pressure;A;too high;-;high;fuel;fuel_pressure
+P228F;Fuel pressure regulator %1 exceeded learning limits;A;too high;-;high;fuel;fuel_pressure
+P2290;Injector control pressure;;too low;-;medium;injection;injector_circuit
+P2291;Injector control pressure too low - engine cranking;;;-;medium;injection;injector_circuit
+P2297;O2 sensor out of range during deceleration bank %1 sensor %2;1|1;fault;-;medium;exhaust;o2_up
+P2298;O2 sensor out of range during deceleration bank %1 sensor %2;2|1;fault;-;medium;exhaust;o2_up
+P229E;NOx sensor bank %1 sensor %2;1|2;circuit;-;medium;diesel;nox_sensor
+P229F;NOx sensor bank %1 sensor %2;1|2;circuit range/performance;-;medium;diesel;nox_sensor
+P22A0;NOx sensor bank %1 sensor %2;1|2;circuit low;-;medium;diesel;nox_sensor
+P22A1;NOx sensor bank %1 sensor %2;1|2;circuit high;-;medium;diesel;nox_sensor
+P22A3;NOx sensor heater bank %1 sensor %2;1|2;control circuit/open;-;medium;diesel;nox_sensor
+P22A4;NOx sensor heater bank %1 sensor %2;1|2;control circuit low;-;medium;diesel;nox_sensor
+P22A5;NOx sensor heater bank %1 sensor %2;1|2;control circuit high;-;medium;diesel;nox_sensor
+P22A6;NOx sensor heater bank %1 sensor %2;1|2;sense circuit;-;medium;diesel;nox_sensor
+P22A7;NOx sensor heater bank %1 sensor %2;1|2;sense circuit range/performance;-;medium;diesel;nox_sensor
+P22A8;NOx sensor heater bank %1 sensor %2;1|2;sense circuit low;-;medium;diesel;nox_sensor
+P22A9;NOx sensor heater bank %1 sensor %2;1|2;sense circuit high;-;medium;diesel;nox_sensor
+P22AB;O2 sensor positive current bank %1 sensor %2;1|2;control circuit/open;-;medium;exhaust;o2_up
+P22AE;O2 sensor reference voltage bank %1 sensor %2;1|2;circuit/open;-;medium;exhaust;o2_up
+P22B2;O2 sensor negative current bank %1 sensor %2;1|2;control circuit/open;-;medium;exhaust;o2_up
+P22B5;O2 sensor pumping current trim bank %1 sensor %2;1|2;circuit/open;-;medium;exhaust;o2_up
+P22B6;O2 sensor pumping current trim bank %1 sensor %2;1|2;circuit low;-;medium;exhaust;o2_up
+P22B7;O2 sensor pumping current trim bank %1 sensor %2;1|2;circuit high;-;medium;exhaust;o2_up
+P22CE;Turbocharger compressor outlet switching valve;;stuck closed;-;medium;turbo;boost_actuator
+P22D3;Turbocharger turbine inlet valve;;stuck closed;-;medium;turbo;boost_actuator
+P22FB;NOx sensor performance - sensing element bank %1 sensor %2;1|1;fault;-;medium;diesel;nox_sensor
+P22FE;NOx sensor performance - sensing element bank %1 sensor %2;1|2;fault;-;medium;diesel;nox_sensor
+P233A;Fuel pressure regulator %1;C;control circuit/open;-;high;fuel;fuel_pressure
+P233B;Fuel pressure regulator %1;C;control circuit low;-;high;fuel;fuel_pressure
+P233C;Fuel pressure regulator %1;C;control circuit high;-;high;fuel;fuel_pressure
+P237C;Exhaust heat exchanger exhaust bypass valve %1;A;control circuit/open;-;medium;exhaust;
+P237D;Exhaust heat exchanger exhaust bypass valve %1;A;control circuit low;-;medium;exhaust;
+P237F;Exhaust heat exchanger exhaust bypass valve %1 control;A;performance;-;medium;exhaust;
+P2381;EGR sensor %1;D;circuit high;-;medium;egr;egr
+P2382;EGR sensor %1;D;circuit low;-;medium;egr;egr
+P2383;EGR sensor %1;D;circuit range/performance;-;medium;egr;egr
+P2384;EGR sensor %1;D;circuit intermittent;-;medium;egr;egr
+P238D;Water in fuel sensor %1;B;circuit high;-;medium;fuel;
+P238F;Water in fuel condition - sensor %1;B;fault;-;medium;fuel;
+P23AE;NOx sensor bank %1 sensor %2;1|3;circuit low;-;medium;diesel;nox_sensor
+P23AF;NOx sensor bank %1 sensor %2;1|3;circuit high;-;medium;diesel;nox_sensor
+P23B1;NOx sensor heater bank %1 sensor %2;1|3;control circuit/open;-;medium;diesel;nox_sensor
+P23B2;NOx sensor heater bank %1 sensor %2;1|3;control circuit low;-;medium;diesel;nox_sensor
+P23B3;NOx sensor heater bank %1 sensor %2;1|3;control circuit high;-;medium;diesel;nox_sensor
+P23B4;NOx sensor heater bank %1 sensor %2;1|3;sense circuit;-;medium;diesel;nox_sensor
+P23B5;NOx sensor heater bank %1 sensor %2;1|3;sense circuit range/performance;-;medium;diesel;nox_sensor
+P23B6;NOx sensor bank %1 sensor %2;1|3;supply voltage circuit;-;medium;diesel;nox_sensor
+P23B8;NOx sensor heater bank %1 sensor %2;1|3;sense circuit low;-;medium;diesel;nox_sensor
+P23B9;NOx sensor heater bank %1 sensor %2;1|3;sense circuit high;-;medium;diesel;nox_sensor
+P23C1;NOx sensor performance - sensing element bank %1 sensor %2;1|3;fault;-;medium;diesel;nox_sensor
+P23C4;Engine coolant bypass valve %1 position sensor;C;circuit low;-;medium;cooling;
+P23C5;Engine coolant bypass valve %1 position sensor;C;circuit high;-;medium;cooling;
+P240A;EVAP system leak detection pump heater;;control circuit/open;-;low;evap;evap_valve
+P240B;EVAP system leak detection pump heater;;control circuit low;-;low;evap;evap_valve
+P240C;EVAP system leak detection pump heater;;control circuit high;-;low;evap;evap_valve
+P2418;EVAP system switching valve;;control circuit/open;-;low;evap;evap_valve
+P2419;EVAP system switching valve;;control circuit low;-;low;evap;evap_valve
+P241D;SCR inducement - forced engine shutdown;;;-;medium;diesel;adblue_dosing
+P241F;EGR cooler %1 efficiency below threshold;B;;-;medium;egr;egr
+P2420;EVAP system switching valve;;control circuit high;-;low;evap;evap_valve
+P2421;EVAP system vent valve;;stuck open;-;low;evap;evap_valve
+P242A;Exhaust gas temperature sensor bank %1 sensor %2;1|3;circuit;-;medium;exhaust;egt_sensor
+P242B;Exhaust gas temperature sensor bank %1 sensor %2;1|3;circuit range/performance;-;medium;exhaust;egt_sensor
+P242C;Exhaust gas temperature sensor bank %1 sensor %2;1|3;circuit low;-;medium;exhaust;egt_sensor
+P242D;Exhaust gas temperature sensor bank %1 sensor %2;1|3;circuit high;-;medium;exhaust;egt_sensor
+P242E;Exhaust gas temperature sensor bank %1 sensor %2;1|3;circuit intermittent or erratic;-;medium;exhaust;egt_sensor
+P242F;Particulate filter restriction - ash accumulation bank %1;1;;-;medium;diesel;dpf_sensor
+P2448;AIR system high air flow bank %1;1;;-;low;egr;secondary_air
+P2450;EVAP system switching valve;;performance or stuck open;-;low;evap;evap_valve
+P245A;EGR cooler bypass bank %1;1;control circuit/open;-;medium;egr;egr
+P245B;EGR cooler bypass bank %1;1;control circuit range/performance;-;medium;egr;egr
+P245C;EGR cooler bypass bank %1;1;control circuit low;-;medium;egr;egr
+P245D;EGR cooler bypass bank %1;1;control circuit high;-;medium;egr;egr
+P245F;Particulate filter pressure sensor %1;B;circuit range/performance;-;medium;diesel;dpf_sensor
+P2461;Particulate filter pressure sensor %1;B;circuit high;-;medium;diesel;dpf_sensor
+P246C;Particulate filter restriction - forced limited power bank %1;1;;-;medium;diesel;dpf_sensor
+P246F;Exhaust gas temperature sensor bank %1 sensor %2;1|4;circuit range/performance;-;medium;exhaust;egt_sensor
+P2470;Exhaust gas temperature sensor bank %1 sensor %2;1|4;circuit low;-;medium;exhaust;egt_sensor
+P2471;Exhaust gas temperature sensor bank %1 sensor %2;1|4;circuit high;-;medium;exhaust;egt_sensor
+P2472;Exhaust gas temperature sensor bank %1 sensor %2;1|4;circuit intermittent or erratic;-;medium;exhaust;egt_sensor
+P2478;Exhaust gas temperature out of range bank %1 sensor %2;1|1;fault;-;medium;exhaust;egt_sensor
+P247A;Exhaust gas temperature out of range bank %1 sensor %2;1|3;fault;-;medium;exhaust;egt_sensor
+P2481;Exhaust gas temperature sensor bank %1 sensor %2;1|5;circuit low;-;medium;exhaust;egt_sensor
+P2482;Exhaust gas temperature sensor bank %1 sensor %2;1|5;circuit high;-;medium;exhaust;egt_sensor
+P2483;Exhaust gas temperature sensor bank %1 sensor %2;1|5;circuit range/performance;-;medium;exhaust;egt_sensor
+P2484;Exhaust gas temperature sensor bank %1 sensor %2;1|5;circuit intermittent or erratic;-;medium;exhaust;egt_sensor
+P2494;EGR cooler bypass position sensor bank %1;1;circuit low;-;medium;egr;egr
+P2495;EGR cooler bypass position sensor bank %1;1;circuit high;-;medium;egr;egr
+P249C;Excessive time to enter closed loop reductant injection control;;fault;-;medium;diesel;adblue_dosing
+P249D;Closed loop reductant injection control at limit - flow;;too low;-;medium;diesel;adblue_dosing
+P249E;Closed loop reductant injection control at limit - flow;;too high;-;medium;diesel;adblue_dosing
+P249F;Excessive time to enter closed loop particulate filter regeneration control;;fault;-;medium;diesel;dpf_sensor
+P24A0;Closed loop particulate filter regeneration control at limit - temperature;;too low;-;medium;diesel;dpf_sensor
+P24A1;Closed loop particulate filter regeneration control at limit - temperature;;too high;-;medium;diesel;dpf_sensor
+P24A4;Particulate filter restriction - soot accumulation bank %1;1;too high;-;medium;diesel;dpf_sensor
+P24A5;EGR cooler bypass control stuck/open bank %1;1;;-;medium;egr;egr
+P24AE;Particulate matter sensor;;circuit;-;medium;diesel;dpf_sensor
+P24AF;Particulate matter sensor;;circuit range/performance;-;medium;diesel;dpf_sensor
+P24B0;Particulate matter sensor;;circuit low;-;medium;diesel;dpf_sensor
+P24B1;Particulate matter sensor;;circuit high;-;medium;diesel;dpf_sensor
+P24B2;Particulate matter sensor;;circuit intermittent;-;medium;diesel;dpf_sensor
+P24B3;Particulate matter sensor heater;;control circuit/open;-;medium;diesel;dpf_sensor
+P24B4;Particulate matter sensor heater;;control circuit range/performance;-;medium;diesel;dpf_sensor
+P24B5;Particulate matter sensor heater;;control circuit low;-;medium;diesel;dpf_sensor
+P24B6;Particulate matter sensor heater;;control circuit high;-;medium;diesel;dpf_sensor
+P24B7;Particulate matter sensor heater resistance;;;-;medium;diesel;dpf_sensor
+P24B9;EVAP system leak detection pump pressure sensor;;circuit range/performance;-;low;evap;evap_valve
+P24BA;EVAP system leak detection pump pressure sensor;;circuit low;-;low;evap;evap_valve
+P24BB;EVAP system leak detection pump pressure sensor;;circuit high;-;low;evap;evap_valve
+P24C2;Exhaust gas temperature measurement system - multiple sensor correlation bank %1;1;;-;medium;exhaust;egt_sensor
+P24C6;Particulate matter sensor temperature;;circuit;-;medium;diesel;dpf_sensor
+P24C7;Particulate matter sensor temperature;;circuit range/performance;-;medium;diesel;dpf_sensor
+P24C9;Particulate matter sensor temperature;;circuit high;-;medium;diesel;dpf_sensor
+P24D0;Particulate matter sensor;;supply voltage circuit low;-;medium;diesel;dpf_sensor
+P24D1;Particulate matter sensor regeneration incomplete;;;-;medium;diesel;dpf_sensor
+P24D6;EVAP system pressure sensor/switch %1;B;circuit range/performance;-;low;evap;evap_valve
+P24D7;EVAP system pressure sensor/switch %1;B;circuit low;-;low;evap;evap_valve
+P24D8;EVAP system pressure sensor/switch %1;B;circuit high;-;low;evap;evap_valve
+P24DA;Particulate matter sensor exhaust sample error bank %1;1;;-;medium;diesel;dpf_sensor
+P24EF;Control module wake-up;;circuit/open;-;medium;engine;ecu_power
+P24F0;Control module wake-up;;circuit low;-;medium;engine;ecu_power
+P24F1;Control module wake-up;;circuit high;-;medium;engine;ecu_power
+P24F2;EGR temperature/charge air cooler temperature correlation;;;-;medium;egr;egr
+P24F6;Exhaust aftertreatment fuel air purge valve;;stuck open;-;medium;diesel;
+P24F7;Exhaust aftertreatment fuel air purge valve;;stuck closed;-;medium;diesel;
+P24FF;Reductant temperature;;too high;-;medium;diesel;adblue_dosing
+P250B;Engine oil level sensor;;circuit range/performance;-;medium;lubrication;
+P250C;Engine oil level sensor;;circuit low;-;medium;lubrication;
+P250F;Engine oil level;;too low;-;medium;lubrication;
+P2516;A/C refrigerant pressure sensor %1;B;circuit range/performance;-;low;climate;ac
+P2517;A/C refrigerant pressure sensor %1;B;circuit low;-;low;climate;ac
+P2518;A/C refrigerant pressure sensor %1;B;circuit high;-;low;climate;ac
+P2531;Ignition switch run position;;circuit low;-;medium;engine;ecu_power
+P2532;Ignition switch run position;;circuit high;-;medium;engine;ecu_power
+P2534;Ignition switch on/start position;;circuit low;-;medium;engine;ecu_power
+P2535;Ignition switch on/start position;;circuit high;-;medium;engine;ecu_power
+P2537;Ignition switch accessory position;;circuit low;-;medium;engine;ecu_power
+P2538;Ignition switch accessory position;;circuit high;-;medium;engine;ecu_power
+P2539;Low pressure fuel system sensor;;circuit;-;medium;fuel;
+P253D;PTO;;sense circuit high;-;medium;engine;
+P2540;Low pressure fuel system sensor;;circuit range/performance;-;medium;fuel;
+P2541;Low pressure fuel system sensor;;circuit low;-;medium;fuel;
+P2543;Low pressure fuel system sensor;;circuit intermittent;-;medium;fuel;
+P2544;Torque management request input signal %1;A;fault;-;medium;engine;
+P2548;Torque management request input signal %1;B;fault;-;medium;engine;
+P254F;Engine hood switch;;circuit;-;medium;engine;
+P2566;Turbocharger boost control position sensor %1;A;circuit intermittent;-;medium;turbo;boost_actuator
+P2568;Direct ozone reduction catalyst temperature sensor;;circuit range/performance;-;medium;exhaust;catalyst
+P2570;Direct ozone reduction catalyst temperature sensor;;circuit high;-;medium;exhaust;catalyst
+P2579;Turbocharger/supercharger speed sensor %1;A;circuit range/performance;-;medium;turbo;boost_actuator
+P257D;Engine hood switch;;circuit range/performance;-;medium;engine;
+P257E;Engine hood switch;;circuit low;-;medium;engine;
+P257F;Engine hood switch;;circuit high;-;medium;engine;
+P2580;Turbocharger/supercharger speed sensor %1;A;circuit low;-;medium;turbo;boost_actuator
+P258B;Vacuum pump control circuit %1;A;range/performance;-;medium;engine;
+P2598;Turbocharger boost control position sensor %1 performance - stuck;A;low;-;medium;turbo;boost_actuator
+P2599;Turbocharger boost control position sensor %1 performance - stuck;A;high;-;medium;turbo;boost_actuator
+P25A2;Brake system control module %1 requested MIL illumination;A;;-;high;brakes;
+P25A9;Piston cooling oil;;control circuit/open;-;medium;lubrication;
+P25AA;Piston cooling oil;;control circuit low;-;medium;lubrication;
+P25AB;Piston cooling oil;;control circuit high;-;medium;lubrication;
+P25AC;Piston cooling oil control circuit;;performance or stuck off;-;medium;lubrication;
+P25AD;Piston cooling oil control circuit;;stuck on;-;medium;lubrication;
+P25B3;Turbocharger/supercharger wastegate %1;A;stuck open;-;medium;turbo;boost_actuator
+P25B4;Turbocharger/supercharger wastegate %1;A;stuck closed;-;medium;turbo;boost_actuator
+P25B5;Turbocharger/supercharger wastegate %1;B;stuck open;-;medium;turbo;boost_actuator
+P25B6;Turbocharger/supercharger wastegate %1;B;stuck closed;-;medium;turbo;boost_actuator
+P25BD;Unmetered fuel - forced engine shutdown;;;-;medium;fuel;
+P25C6;Brake booster temperature sensor %1;A;circuit low;-;medium;turbo;boost_actuator
+P25C7;Brake booster temperature sensor %1;A;circuit high;-;medium;turbo;boost_actuator
+P25C9;Brake system control module %1 requested MIL illumination;B;;-;high;brakes;
+P25CC;Intake camshaft actuator park lock bank %1;1;control circuit high;-;medium;timing;vvt
+P25CD;Intake camshaft actuator park lock bank %1;2;control circuit/open;-;medium;timing;vvt
+P25CE;Intake camshaft actuator park lock bank %1;2;control circuit low;-;medium;timing;vvt
+P25CF;Intake camshaft actuator park lock bank %1;2;control circuit high;-;medium;timing;vvt
+P25E4;%1 camshaft position - unable to achieve locked position bank %2;B|1;;-;medium;timing;vvt
+P2604;Intake air heater %1;A;circuit range/performance;-;low;diesel;glow_plug
+P2605;Intake air heater %1;B;circuit/open;-;low;diesel;glow_plug
+P2606;Intake air heater %1;B;circuit range/performance;-;low;diesel;glow_plug
+P2608;Intake air heater %1;B;circuit high;-;low;diesel;glow_plug
+P2609;Intake air heater system;;performance;-;low;diesel;glow_plug
+P2615;Camshaft %1 position signal output bank %2;A|1;circuit low;-;medium;timing;vvt
+P2616;Camshaft %1 position signal output bank %2;A|1;circuit high;-;medium;timing;vvt
+P2618;Crankshaft position signal output;;circuit low;-;high;ignition;crank
+P2619;Crankshaft position signal output;;circuit high;-;high;ignition;crank
+P261A;Coolant pump %1;B;control circuit/open;-;medium;cooling;
+P261C;Coolant pump %1;B;control circuit low;-;medium;cooling;
+P261D;Coolant pump %1;B;control circuit high;-;medium;cooling;
+P261F;Coolant pump %1 control circuit;A;stuck on;-;medium;cooling;
+P2623;Injector control pressure regulator;;circuit/open;-;medium;injection;injector_circuit
+P2626;O2 sensor pumping current trim bank %1 sensor %2;1|1;circuit/open;-;medium;exhaust;o2_up
+P2627;O2 sensor pumping current trim bank %1 sensor %2;1|1;circuit low;-;medium;exhaust;o2_up
+P2628;O2 sensor pumping current trim bank %1 sensor %2;1|1;circuit high;-;medium;exhaust;o2_up
+P2629;O2 sensor pumping current trim bank %1 sensor %2;2|1;circuit/open;-;medium;exhaust;o2_up
+P262B;Control module power off timer;;performance;-;medium;engine;ecu_internal
+P2630;O2 sensor pumping current trim bank %1 sensor %2;2|1;circuit low;-;medium;exhaust;o2_up
+P2632;Fuel pump %1;B;control circuit/open;-;high;fuel;fuel_pump
+P2633;Fuel pump %1;B;control circuit low;-;high;fuel;fuel_pump
+P2634;Fuel pump %1;B;control circuit high;-;high;fuel;fuel_pump
+P2635;Fuel pump %1 low flow/performance;A;;-;high;fuel;fuel_pump
+P2636;Fuel pump %1 low flow/performance;B;;-;high;fuel;fuel_pump
+P2637;Torque management feedback signal %1;A;fault;-;medium;engine;
+P2638;Torque management feedback signal %1;A;range/performance;-;medium;engine;
+P263A;MIL;;control circuit low;-;medium;engine;
+P263B;MIL;;control circuit high;-;medium;engine;
+P263E;Glow plug control module %1;1;over temperature;-;high;diesel;glow_module
+P2641;Torque management feedback signal %1;B;fault;-;medium;engine;
+P2646;%1 rocker arm actuator system bank %2;A|1;performance or stuck off;-;medium;timing;vvt
+P2647;%1 rocker arm actuator system bank %2;A|1;stuck on;-;medium;timing;vvt
+P2648;%1 rocker arm actuator bank %2;A|1;control circuit low;-;medium;timing;vvt
+P2649;%1 rocker arm actuator bank %2;A|1;control circuit high;-;medium;timing;vvt
+P264F;Engine serial number not programmed or incompatible;;;-;medium;engine;
+P2652;%1 rocker arm actuator system bank %2;B|1;stuck on;-;medium;timing;vvt
+P265B;%1 rocker arm actuator position sensor bank %2;B|1;circuit range/performance;-;medium;timing;vvt
+P2669;Actuator supply voltage %1;B;circuit/open;-;medium;engine;ref_voltage
+P2670;Actuator supply voltage %1;B;circuit low;-;medium;engine;ref_voltage
+P2671;Actuator supply voltage %1;B;circuit high;-;medium;engine;ref_voltage
+P2681;Engine coolant bypass valve %1;A;control circuit/open;-;medium;cooling;
+P2682;Engine coolant bypass valve %1;A;control circuit low;-;medium;cooling;
+P2683;Engine coolant bypass valve %1;A;control circuit high;-;medium;cooling;
+P2685;Actuator supply voltage %1;C;circuit low;-;medium;engine;ref_voltage
+P2687;Fuel supply heater;;control circuit/open;-;medium;fuel;
+P2688;Fuel supply heater;;control circuit low;-;medium;fuel;
+P2689;Fuel supply heater;;control circuit high;-;medium;fuel;
+P268A;Fuel injector calibration not learned/programmed;;;-;medium;injection;
+P268C;Cylinder %1 injector data incompatible;1;;-;medium;injection;
+P268D;Cylinder %1 injector data incompatible;2;;-;medium;injection;
+P268E;Cylinder %1 injector data incompatible;3;;-;medium;injection;
+P268F;Cylinder %1 injector data incompatible;4;;-;medium;injection;
+P2690;Cylinder %1 injector data incompatible;5;;-;medium;injection;
+P2691;Cylinder %1 injector data incompatible;6;;-;medium;injection;
+P2692;Cylinder %1 injector data incompatible;7;;-;medium;injection;
+P2693;Cylinder %1 injector data incompatible;8;;-;medium;injection;
+P2698;Exhaust aftertreatment fuel injector %1;A;performance;-;medium;diesel;
+P26A3;Engine coolant bypass valve %1;A;range/performance;-;medium;cooling;
+P26A5;Engine coolant bypass valve %1 position sensor;A;circuit range/performance;-;medium;cooling;
+P26A6;Engine coolant bypass valve %1 position sensor;A;circuit low;-;medium;cooling;
+P26A7;Engine coolant bypass valve %1 position sensor;A;circuit high;-;medium;cooling;
+P26A9;Engine coolant bypass valve %1 position sensor stop/minimum stop;A;performance;-;medium;cooling;
+P26AB;Engine coolant bypass valve %1 stuck/open;A;;-;medium;cooling;
+P26AD;Engine coolant bypass valve %1;B;control circuit low;-;medium;cooling;
+P26AE;Engine coolant bypass valve %1;B;control circuit high;-;medium;cooling;
+P26B7;Engine coolant bypass valve %1;C;control circuit/open;-;medium;cooling;
+P26B8;Engine coolant bypass valve %1;C;control circuit low;-;medium;cooling;
+P26B9;Engine coolant bypass valve %1;C;control circuit high;-;medium;cooling;
+P26BB;Engine coolant bypass valve %1;C;range/performance;-;medium;cooling;
+P26C8;Chassis control module %1 requested MIL illumination;1;;-;medium;engine;
+P26CC;Engine coolant pump;;control circuit low;-;medium;cooling;
+P26DE;Engine sound control %1 circuit;A;performance;-;medium;engine;
+P26E4;Starter relay %1;B;circuit;-;medium;engine;
+P26E5;Starter relay %1;B;circuit low;-;medium;engine;
+P26E6;Starter relay %1;B;circuit high;-;medium;engine;
+P26E8;Actuator supply voltage %1;D;circuit low;-;medium;engine;ref_voltage
+P26FB;EGR cooler bypass control bank %1;1;stuck closed;-;medium;egr;egr
+P2700;Transmission friction element %1 apply time;A;range/performance;-;medium;transmission;trans_sensor
+P2701;Transmission friction element %1 apply time;B;range/performance;-;medium;transmission;trans_sensor
+P2702;Transmission friction element %1 apply time;C;range/performance;-;medium;transmission;trans_sensor
+P2703;Transmission friction element %1 apply time;D;range/performance;-;medium;transmission;trans_sensor
+P2709;Shift solenoid %1 electrical;F;;-;medium;transmission;trans_solenoid
+P2711;Unexpected mechanical gear disengagement;;;-;medium;transmission;trans_sensor
+P2714;Pressure control solenoid %1;D;performance or stuck off;-;medium;transmission;trans_solenoid
+P2715;Pressure control solenoid %1;D;stuck on;-;medium;transmission;trans_solenoid
+P2718;Pressure control solenoid %1;D;control circuit/open;-;medium;transmission;trans_solenoid
+P2719;Pressure control solenoid %1;D;control circuit range/performance;-;medium;transmission;trans_solenoid
+P271A;Park pawl position sensor %1;A;circuit low;-;medium;transmission;trans_sensor
+P271E;Transmission;;performance;-;medium;transmission;trans_sensor
+P2720;Pressure control solenoid %1;D;control circuit low;-;medium;transmission;trans_solenoid
+P2721;Pressure control solenoid %1;D;control circuit high;-;medium;transmission;trans_solenoid
+P2723;Pressure control solenoid %1;E;performance or stuck off;-;medium;transmission;trans_solenoid
+P2724;Pressure control solenoid %1;E;stuck on;-;medium;transmission;trans_solenoid
+P2725;Pressure control solenoid %1 electrical;E;;-;medium;transmission;trans_solenoid
+P2727;Pressure control solenoid %1;E;control circuit/open;-;medium;transmission;trans_solenoid
+P2728;Pressure control solenoid %1;E;control circuit range/performance;-;medium;transmission;trans_solenoid
+P2729;Pressure control solenoid %1;E;control circuit low;-;medium;transmission;trans_solenoid
+P2730;Pressure control solenoid %1;E;control circuit high;-;medium;transmission;trans_solenoid
+P2731;Pressure control solenoid %1;F;fault;-;medium;transmission;trans_solenoid
+P2732;Pressure control solenoid %1;F;performance or stuck off;-;medium;transmission;trans_solenoid
+P2733;Pressure control solenoid %1;F;stuck on;-;medium;transmission;trans_solenoid
+P2736;Pressure control solenoid %1;F;control circuit/open;-;medium;transmission;trans_solenoid
+P2737;Pressure control solenoid %1;F;control circuit range/performance;-;medium;transmission;trans_solenoid
+P2738;Pressure control solenoid %1;F;control circuit low;-;medium;transmission;trans_solenoid
+P2739;Pressure control solenoid %1;F;control circuit high;-;medium;transmission;trans_solenoid
+P2745;Intermediate shaft speed sensor %1;B;circuit;-;medium;transmission;trans_sensor
+P2748;Intermediate shaft speed sensor %1;B;circuit intermittent;-;medium;transmission;trans_sensor
+P2757;Torque converter clutch pressure control solenoid control circuit;;performance or stuck off;-;medium;transmission;trans_solenoid
+P2761;Torque converter clutch pressure control solenoid;;control circuit/open;-;medium;transmission;trans_solenoid
+P2762;Torque converter clutch pressure control solenoid;;control circuit range/performance;-;medium;transmission;trans_solenoid
+P2763;Torque converter clutch pressure control solenoid;;control circuit high;-;medium;transmission;trans_solenoid
+P2764;Torque converter clutch pressure control solenoid;;control circuit low;-;medium;transmission;trans_solenoid
+P2769;Torque converter clutch;;circuit low;-;medium;transmission;trans_sensor
+P2770;Torque converter clutch;;circuit high;-;medium;transmission;trans_sensor
+P2771;Four wheel drive (4WD) low switch;;circuit;-;medium;transmission;
+P277E;Clutch %1 unexpected mechanical gear disengagement;A;;-;medium;transmission;trans_sensor
+P277F;Clutch %1 unexpected mechanical gear disengagement;B;;-;medium;transmission;trans_sensor
+P2781;Downshift switch;;circuit high;-;medium;transmission;trans_sensor
+P2783;Torque converter temperature;;too high;-;medium;transmission;trans_sensor
+P2787;Clutch %1 temperature;A;too high;-;medium;transmission;trans_sensor
+P2789;Clutch %1 adaptive learning at limit;A;;-;medium;transmission;trans_sensor
+P2797;Electric/auxiliary transmission fluid pump %1;A;performance or stuck off;-;medium;transmission;trans_sensor
+P2798;Electric/auxiliary transmission fluid pump %1;A;control circuit low;-;medium;transmission;trans_sensor
+P2799;Electric/auxiliary transmission fluid pump %1;A;control circuit high;-;medium;transmission;trans_sensor
+P279A;Transfer case gear high incorrect ratio;;;-;medium;transmission;
+P279B;Transfer case gear low incorrect ratio;;;-;medium;transmission;
+P279C;Transfer case gear neutral incorrect ratio;;;-;medium;transmission;
+P27A7;Pressure control solenoid %1 data incompatible;A;;-;medium;injection;
+P27A8;Pressure control solenoid %1 data incompatible;B;;-;medium;injection;
+P27A9;Pressure control solenoid %1 data incompatible;C;;-;medium;injection;
+P27AA;Pressure control solenoid %1 data incompatible;D;;-;medium;injection;
+P27AB;Pressure control solenoid %1 data incompatible;E;;-;medium;injection;
+P27AC;Pressure control solenoid %1 data incompatible;F;;-;medium;injection;
+P27AD;Pressure control solenoid %1 data incompatible;G;;-;medium;injection;
+P27AE;Pressure control solenoid %1 data incompatible;H;;-;medium;injection;
+P27B2;Internal control module transmission range control;;performance;-;medium;transmission;trans_sensor
+P27B4;Internal control module transmission gear direction control;;performance;-;medium;transmission;trans_sensor
+P27B6;Internal control module transmission speed sensor;;performance;-;medium;transmission;trans_sensor
+P27B9;Pressure control solenoid %1;N;performance or stuck off;-;medium;transmission;trans_solenoid
+P27BA;Pressure control solenoid %1;N;stuck on;-;medium;transmission;trans_solenoid
+P27C1;Pressure control solenoid %1;P;performance or stuck off;-;medium;transmission;trans_solenoid
+P27C2;Pressure control solenoid %1;P;stuck on;-;medium;transmission;trans_solenoid
+P27C9;Pressure control solenoid %1;R;performance or stuck off;-;medium;transmission;trans_solenoid
+P27CA;Pressure control solenoid %1;R;stuck on;-;medium;transmission;trans_solenoid
+P27D1;Pressure control solenoid %1;S;performance or stuck off;-;medium;transmission;trans_solenoid
+P27D2;Pressure control solenoid %1;S;stuck on;-;medium;transmission;trans_solenoid
+P27F3;Clutch %1 temperature;B;too high;-;medium;transmission;trans_sensor
+P2800;Transmission range sensor %1 circuit (PRNDL input);B;;-;medium;transmission;trans_sensor
+P2802;Transmission range sensor %1;B;circuit low;-;medium;transmission;trans_sensor
+P2803;Transmission range sensor %1;B;circuit high;-;medium;transmission;trans_sensor
+P2808;Pressure control solenoid %1;G;performance or stuck off;-;medium;transmission;trans_solenoid
+P2809;Pressure control solenoid %1;G;stuck on;-;medium;transmission;trans_solenoid
+P2810;Pressure control solenoid %1 electrical;G;;-;medium;transmission;trans_solenoid
+P2812;Pressure control solenoid %1;G;control circuit/open;-;medium;transmission;trans_solenoid
+P2814;Pressure control solenoid %1;G;control circuit low;-;medium;transmission;trans_solenoid
+P2815;Pressure control solenoid %1;G;control circuit high;-;medium;transmission;trans_solenoid
+P2817;Pressure control solenoid %1;H;performance or stuck off;-;medium;transmission;trans_solenoid
+P2818;Pressure control solenoid %1;H;stuck on;-;medium;transmission;trans_solenoid
+P281B;Pressure control solenoid %1;H;control circuit/open;-;medium;transmission;trans_solenoid
+P281D;Pressure control solenoid %1;H;control circuit low;-;medium;transmission;trans_solenoid
+P281E;Pressure control solenoid %1;H;control circuit high;-;medium;transmission;trans_solenoid
+P2820;Pressure control solenoid %1;J;performance or stuck off;-;medium;transmission;trans_solenoid
+P2821;Pressure control solenoid %1;J;stuck on;-;medium;transmission;trans_solenoid
+P2824;Pressure control solenoid %1;J;control circuit/open;-;medium;transmission;trans_solenoid
+P2826;Pressure control solenoid %1;J;control circuit low;-;medium;transmission;trans_solenoid
+P2827;Pressure control solenoid %1;J;control circuit high;-;medium;transmission;trans_solenoid
+P2829;Pressure control solenoid %1;K;performance or stuck off;-;medium;transmission;trans_solenoid
+P282A;Pressure control solenoid %1;K;stuck on;-;medium;transmission;trans_solenoid
+P284D;Shift fork %1 unrequested movement;A;;-;medium;transmission;trans_sensor
+P284E;Shift fork %1 unrequested movement;B;;-;medium;transmission;trans_sensor
+P284F;Shift fork %1 unrequested movement;C;;-;medium;transmission;trans_sensor
+P2850;Shift fork %1 unrequested movement;D;;-;medium;transmission;trans_sensor
+P2853;Clutch %1 pressure discharge;A;performance;-;medium;transmission;trans_sensor
+P2854;Clutch %1 pressure discharge;B;performance;-;medium;transmission;trans_sensor
+P2855;Clutch %1 pressure charge;A;performance;-;medium;transmission;trans_sensor
+P2856;Clutch %1 pressure charge;B;performance;-;medium;transmission;trans_sensor
+P286A;Shift fork %1 unrequested movement;E;;-;medium;transmission;trans_sensor
+P287C;Transmission adaptive values;;not learned;-;medium;transmission;trans_sensor
+P2885;Engine disconnect clutch engagement fault;;;-;medium;transmission;trans_sensor
+P288B;Park lock/pawl actuator circuit;;performance;-;medium;transmission;trans_sensor
+P28C7;Clutch %1 motor phase U-V-W;A;performance;-;medium;transmission;trans_sensor
+P28D5;Clutch %1 motor phase U-V-W;B;performance;-;medium;transmission;trans_sensor
+P28F7;Exhaust pressure bank %1;1;too high;-;medium;exhaust;
+P2A00;O2 sensor bank %1 sensor %2;1|1;circuit range/performance;-;medium;exhaust;o2_up
+P2A01;O2 sensor bank %1 sensor %2;1|2;circuit range/performance;-;medium;exhaust;o2_up
+P2A03;O2 sensor bank %1 sensor %2;2|1;circuit range/performance;-;medium;exhaust;o2_up
+P2A04;O2 sensor bank %1 sensor %2;2|2;circuit range/performance;-;medium;exhaust;o2_up
+P2A0B;Manifold absolute pressure sensor %1;B;circuit range/performance;-;medium;intake;map
+P2A0C;Manifold absolute pressure sensor %1;B;circuit low;-;medium;intake;map
+P2A0D;Manifold absolute pressure sensor %1;B;circuit high;-;medium;intake;map
+P2A17;Injection pump fuel metering control %1 range/performance (cam/rotor/injector);D;;-;medium;injection;injector_circuit
+P2A1F;Injection pump fuel metering control %1 range/performance (cam/rotor/injector);F;;-;medium;injection;injector_circuit
+P2AB0;Particulate matter sensor processor;;performance;-;medium;diesel;dpf_sensor
+P2AB8;Wastegate position sensor %1;A;circuit low;-;medium;turbo;boost_actuator
+P2AB9;Wastegate position sensor %1;A;circuit high;-;medium;turbo;boost_actuator
+P2ABB;Wastegate position sensor %1;B;circuit low;-;medium;turbo;boost_actuator
+P2ABC;Wastegate position sensor %1;B;circuit high;-;medium;turbo;boost_actuator
+P2ABD;Turbocharger/supercharger wastegate actuator %1 driver current/temperature;A;too high;-;medium;turbo;boost_actuator
+P2ABE;Turbocharger/supercharger wastegate actuator %1 driver current/temperature;B;too high;-;medium;turbo;boost_actuator
+P2AC0;Intake air O2 sensor reference voltage bank %1;1;circuit range/performance;-;medium;exhaust;o2_up
+P2AD7;Reductant pump motor position sensor;;circuit range/performance;-;medium;diesel;adblue_dosing
+P2ADA;Reductant tank temperature sensor %1;B;circuit range/performance;-;medium;diesel;adblue_dosing
+P2ADB;Reductant tank temperature sensor %1;B;circuit low;-;medium;diesel;adblue_dosing
+P2ADC;Reductant tank temperature sensor %1;B;circuit high;-;medium;diesel;adblue_dosing
+P2ADD;Reductant tank temperature sensor %1;B;circuit intermittent or erratic;-;medium;diesel;adblue_dosing
+P2AF5;Starter relay %1;C;stuck on;-;medium;engine;
+P2AF6;Starter relay %1;C;stuck off;-;medium;engine;
+P2AFE;Engine coolant temperature sensor %1;4;circuit low;-;medium;cooling;ect_sensor
+P2AFF;Engine coolant temperature sensor %1;4;circuit high;-;medium;cooling;ect_sensor
+P2B00;Cylinder %1 injection pulse;1;performance;-;medium;injection;
+P2B01;Cylinder %1 injection pulse;2;performance;-;medium;injection;
+P2B02;Cylinder %1 injection pulse;3;performance;-;medium;injection;
+P2B03;Cylinder %1 injection pulse;4;performance;-;medium;injection;
+P2B04;Cylinder %1 injection pulse;5;performance;-;medium;injection;
+P2B05;Cylinder %1 injection pulse;6;performance;-;medium;injection;
+P2B06;Cylinder %1 injection pulse;7;performance;-;medium;injection;
+P2B07;Cylinder %1 injection pulse;8;performance;-;medium;injection;
+P2B08;Cold start cylinder %1 injection pulse;1;performance;-;medium;injection;
+P2B09;Cold start cylinder %1 injection pulse;2;performance;-;medium;injection;
+P2B0A;Cold start cylinder %1 injection pulse;3;performance;-;medium;injection;
+P2B0B;Cold start cylinder %1 injection pulse;4;performance;-;medium;injection;
+P2B0C;Cold start cylinder %1 injection pulse;5;performance;-;medium;injection;
+P2B0D;Cold start cylinder %1 injection pulse;6;performance;-;medium;injection;
+P2B0E;Cold start cylinder %1 injection pulse;7;performance;-;medium;injection;
+P2B0F;Cold start cylinder %1 injection pulse;8;performance;-;medium;injection;
+P2B28;Hybrid/EV battery pack coolant pump %1;A;performance;-;high;hybrid;hybrid_battery
+P2B29;Hybrid/EV battery pack coolant pump %1 overspeed - dry run;A;;-;high;hybrid;hybrid_battery
+P2B2D;Engine coolant temperature sensor %1;5;circuit low;-;medium;cooling;ect_sensor
+P2B2E;Engine coolant temperature sensor %1;5;circuit high;-;medium;cooling;ect_sensor
+P2B2F;Fan %1;1;performance or stuck off;-;medium;cooling;fan
+P2B53;%1 camshaft profile actuator %2 control bank %3;A|B|1;stuck on;-;medium;timing;vvt
+P2B58;Engine coolant flow control valve motor;;current high;-;medium;cooling;
+P2B5A;Engine coolant flow control valve;;control circuit low;-;medium;cooling;
+P2B5B;Engine coolant flow control valve;;control circuit high;-;medium;cooling;
+P2B5C;Engine coolant flow control valve supply;;circuit low;-;medium;cooling;
+P2B5F;Engine coolant flow control valve position sensor;;circuit high;-;medium;cooling;
+P2B60;Engine coolant flow control valve position sensor;;circuit range/performance;-;medium;cooling;
+P2B61;Engine coolant flow control valve;;stuck closed;-;medium;cooling;
+P2B7A;EVAP system pressure sensor/switch %1;C;circuit;-;low;evap;evap_valve
+P2B7B;EVAP system pressure sensor/switch %1;C;circuit range/performance;-;low;evap;evap_valve
+P2B7C;EVAP system pressure sensor/switch %1;C;circuit low;-;low;evap;evap_valve
+P2B7D;EVAP system pressure sensor/switch %1;C;circuit high;-;low;evap;evap_valve
+P2B81;Wastegate position sensor %1 circuit;A;performance;-;medium;turbo;boost_actuator
+P2B82;Wastegate position sensor %1 circuit;B;performance;-;medium;turbo;boost_actuator
+P2B83;Charge air cooler coolant pump %1 overspeed/air in system;A;fault;-;medium;turbo;boost_actuator
+P2B84;Charge air cooler coolant pump %1;A;underspeed;-;medium;turbo;boost_actuator
+P2B85;Engine coolant pump;;underspeed;-;medium;cooling;
+P2B86;Coolant pump %1 overspeed/air in system;A;fault;-;medium;cooling;
+P2B87;Coolant pump %1;A;underspeed;-;medium;cooling;
+P2B89;Intake air O2 sensor circuit low voltage bank %1;1;;-;medium;exhaust;o2_up
+P2B93;Wastegate position sensor %1;A;exceeded learning limit;-;medium;turbo;boost_actuator
+P2B94;Wastegate position sensor %1;B;exceeded learning limit;-;medium;turbo;boost_actuator
+P2B95;Cold start injection pulse;;performance;-;medium;injection;
+P2B96;Injection pulse;;performance;-;medium;injection;
+P2B98;Exhaust pressure control valve %1 supply;A;low;-;medium;exhaust;
+P2B9A;Reductant quality sensor;;circuit intermittent or erratic;-;medium;diesel;adblue_dosing
+P2BA0;Coolant pump %1;C;underspeed;-;medium;cooling;
+P2BA2;Engine coolant pump stuck/stalled;;;-;medium;cooling;
+P2BA3;Starter/generator mechanical;;performance;-;medium;charging;alternator
+P2BAA;NOx exceedence - low reagent consumption;;;-;medium;engine;
+P2BAF;NOx system driver inducement active;;;-;medium;engine;
+P2BB3;Fuel pump secondary circuit;;performance;-;high;fuel;fuel_pump
+P2BB5;Engine coolant temperature sensor %1;5;circuit intermittent or erratic;-;medium;cooling;ect_sensor
+P2BB8;Engine coolant temperature sensor %1;6;circuit low;-;medium;cooling;ect_sensor
+P2BB9;Engine coolant temperature sensor %1;6;circuit high;-;medium;cooling;ect_sensor
+P2BBA;Engine coolant temperature sensor %1;6;circuit intermittent or erratic;-;medium;cooling;ect_sensor
+P2BE5;Hybrid/EV battery pack current sensor %1;C;circuit range/performance;-;high;hybrid;hybrid_battery
+P2BF6;Exhaust flow control valve %1 position;A;circuit low;-;medium;exhaust;
+P2C01;Fuel pressure regulator %1;D;performance;-;high;fuel;fuel_pressure
+P2C02;Fuel pressure regulator %1;D;control circuit/open;-;high;fuel;fuel_pressure
+P2C03;Fuel pressure regulator %1;D;control circuit low;-;high;fuel;fuel_pressure
+P2C04;Fuel pressure regulator %1;D;control circuit high;-;high;fuel;fuel_pressure
+P2C11;Reductant pump %1 current;A;too low;-;medium;diesel;adblue_dosing
+P2C21;Engine oil temperature sensor %1 correlation;A/B;;-;medium;lubrication;
+P2C30;Ignition coil primary circuit fuse %1;A;fault;-;high;ignition;coil
+P2C31;Ignition coil primary circuit fuse %1;B;fault;-;high;ignition;coil
+P2C33;Crankcase pressure sensor %1;B;circuit range/performance;-;medium;intake;
+P2C34;Crankcase pressure sensor %1;B;circuit low;-;medium;intake;
+P2C35;Crankcase pressure sensor %1;B;circuit high;-;medium;intake;
+P2C63;O2 sensor pumping current trim bank %1 sensor %2;1|3;circuit low;-;medium;exhaust;o2_up
+P2C64;O2 sensor pumping current trim bank %1 sensor %2;1|3;circuit high;-;medium;exhaust;o2_up
+P2C7A;SCR NOx catalyst efficiency below threshold bank %1 catalyst %2;1|2;;-;medium;diesel;adblue_dosing
+P2C8D;DC/DC converter temperature sensor %1;D;circuit range/performance;-;high;hybrid;hybrid_system
+P2C90;Crankcase ventilation system - hose %1 disconnected;A;;-;medium;intake;
+P2C91;Crankcase ventilation system - hose %1 disconnected;B;;-;medium;intake;
+P2C9B;Cold start turbocharger/supercharger wastegate actuator %1;A;range/performance;-;medium;turbo;boost_actuator
+P2CA0;Fuel pressure regulator %1 exceeded control limits - pressure;D;too low;-;high;fuel;fuel_pressure
+P2CB9;Fan %1;2;underspeed;-;medium;cooling;fan
+P2CBB;Fan %1;3;underspeed;-;medium;cooling;fan
+P2CE1;Intake air heater %1;C;circuit/open;-;low;diesel;glow_plug
+P2CE3;Intake air heater %1;C;circuit low;-;low;diesel;glow_plug
+P2CE4;Intake air heater %1;C;circuit high;-;low;diesel;glow_plug
+P2CFC;A/C clutch;;control circuit;-;medium;transmission;trans_sensor
+P2D06;Motor electronics coolant pump %1 overspeed/air in system;B;fault;-;high;hybrid;hybrid_system
+P2D10;Engine pre-ignition above threshold - forced limited power;;;-;high;ignition;knock
+P2D28;Cold start propulsion torque;;performance;-;medium;engine;
+P2D2D;Cold start intake manifold runner bank %1;1;performance;-;low;intake;imrc
+P2D2E;Cold start intake manifold runner bank %1;2;performance;-;low;intake;imrc
+P2D2F;Cold start turbocharger/supercharger %1 underboost;A;;-;medium;turbo;boost_actuator
+P2D3A;Forced hybrid/EV system shutdown;;;-;high;hybrid;hybrid_system
+P2D40;Hybrid/EV battery cooling system %1;C;performance;-;high;hybrid;hybrid_battery
+P2D45;Reductant temperature;;too low;-;medium;diesel;adblue_dosing
+P2DE9;Cold start engine coolant pump;;underspeed;-;medium;cooling;
+P2DFD;EVAP system purge pump;;performance;-;low;evap;evap_valve
+P2E01;Gear lever position sensor %1;A;range/performance;-;medium;transmission;trans_sensor
+P2E05;Gear lever position sensor %1;B;range/performance;-;medium;transmission;trans_sensor
+P2E68;System too lean during cylinder deactivation bank %1;1;;-;medium;timing;cyl_deactivation
+P2E69;System too rich during cylinder deactivation bank %1;1;;-;medium;timing;cyl_deactivation
+P2E6A;System too lean during cylinder deactivation bank %1;2;;-;medium;timing;cyl_deactivation
+P2E6B;System too rich during cylinder deactivation bank %1;2;;-;medium;timing;cyl_deactivation
+P2E82;Cold start engine coolant pump;;overspeed;-;medium;cooling;
+U0028;Vehicle communication bus %1;A;;-;high;network;can_bus
+U0029;Vehicle communication bus %1;A;performance;-;high;network;can_bus
+U0037;Vehicle communication bus %1;B;;-;high;network;can_bus
+U0038;Vehicle communication bus %1;B;performance;-;high;network;can_bus
+U0046;Vehicle communication bus %1;C;;-;high;network;can_bus
+U0064;Vehicle communication bus %1;E;;-;high;network;can_bus
+U0065;Vehicle communication bus %1;E;performance;-;high;network;can_bus
+U0076;Control module communication bus %1 off;D;;-;high;network;can_bus
+U0077;Control module communication bus %1 off;E;;-;high;network;can_bus
+U0078;Control module communication bus %1 off;F;;-;high;network;can_bus
+U007A;Control module communication bus %1 off;H;;-;high;network;can_bus
+U007E;Control module communication bus %1 off;L;;-;high;network;can_bus
+U007F;Control module communication bus %1 off;M;;-;high;network;can_bus
+U0080;Vehicle communication bus %1;F;;-;high;network;can_bus
+U010C;Turbocharger/supercharger control module %1;A;Lost communication;:;medium;network;lost_comm
+U010E;Reductant control module;;Lost communication;:;medium;network;lost_comm
+U011A;Exhaust gas sensor module %1;A;Lost communication;:;medium;network;lost_comm
+U012A;Chassis control module %1;A;Lost communication;:;medium;network;lost_comm
+U0137;Trailer brake control module;;Lost communication;:;high;network;lost_comm
+U0139;Suspension control module %1;B;Lost communication;:;medium;network;lost_comm
+U0145;Body control module %1;E;Lost communication;:;medium;network;lost_comm
+U0146;Serial data gateway module %1;A;Lost communication;:;medium;network;lost_comm
+U0149;Gateway %1;D;Lost communication;:;medium;network;lost_comm
+U0158;Head up display;;Lost communication;:;medium;network;lost_comm
+U015C;Automated driving system control module %1;A;Lost communication;:;medium;network;lost_comm
+U015D;Automated driving system control module %1;B;Lost communication;:;medium;network;lost_comm
+U0162;Navigation display module;;Lost communication;:;medium;network;lost_comm
+U0166;Auxiliary heater control module;;Lost communication;:;medium;network;lost_comm
+U016B;A/C compressor control module;;Lost communication;:;medium;network;lost_comm
+U016C;Fuel pump control module %1;B;Lost communication;:;medium;network;lost_comm
+U0175;Restraints system sensor %1;F;Lost communication;:;high;network;lost_comm
+U0182;Lighting control module front;;Lost communication;:;medium;network;lost_comm
+U0186;Audio amplifier %1;A;Lost communication;:;medium;network;lost_comm
+U0193;Digital audio control module %1;A;Lost communication;:;medium;network;lost_comm
+U0197;Telephone control module;;Lost communication;:;medium;network;lost_comm
+U01B0;Battery monitor module;;Lost communication;:;medium;network;lost_comm
+U01BE;Drive motor %1 clutch actuator;A;Lost communication;:;high;network;lost_comm
+U0201;Door control module %1;C;Lost communication;:;medium;network;lost_comm
+U0202;Door control module %1;D;Lost communication;:;medium;network;lost_comm
+U0209;Seat control module %1;B;Lost communication;:;medium;network;lost_comm
+U0210;Seat control module %1;C;Lost communication;:;medium;network;lost_comm
+U0211;Seat control module %1;D;Lost communication;:;medium;network;lost_comm
+U0212;Steering column control module;;Lost communication;:;high;network;lost_comm
+U0213;Mirror control module %1;A;Lost communication;:;medium;network;lost_comm
+U0216;Door switch %1;B;Lost communication;:;medium;network;lost_comm
+U0230;Rear gate module;;Lost communication;:;medium;network;lost_comm
+U0231;Rain sensing module;;Lost communication;:;medium;network;lost_comm
+U0237;Digital audio control module %1;C;Lost communication;:;medium;network;lost_comm
+U0238;Digital audio control module %1;D;Lost communication;:;medium;network;lost_comm
+U0243;Parking assist control module %1;B;Lost communication;:;medium;network;lost_comm
+U0254;Remote start module;;Lost communication;:;medium;network;lost_comm
+U0264;Camera module - rear;;Lost communication;:;medium;network;lost_comm
+U0284;Active grille air shutter module %1;A;Lost communication;:;medium;network;lost_comm
+U0285;Active grille air shutter module %1;B;Lost communication;:;medium;network;lost_comm
+U0287;Transmission fluid pump module %1;A;Lost communication;:;high;network;lost_comm
+U0288;DC/AC converter control module %1;A;Lost communication;:;medium;network;lost_comm
+U0291;Gear shift control module %1;B;Lost communication;:;medium;network;lost_comm
+U029A;Hybrid/EV battery pack sensor module;;Lost communication;:;high;network;lost_comm
+U029D;NOx sensor %1;A;Lost communication;:;medium;network;lost_comm
+U029E;NOx sensor %1;B;Lost communication;:;medium;network;lost_comm
+U02A2;Reductant quality module;;Lost communication;:;medium;network;lost_comm
+U02A3;Particulate matter sensor;;Lost communication;:;medium;network;lost_comm
+U02A9;Charge air cooler coolant pump %1;A;Lost communication;:;medium;network;lost_comm
+U02B5;Front radar module %1;B;Lost communication;:;medium;network;lost_comm
+U02BC;Localization and mapping module;;Lost communication;:;medium;network;lost_comm
+U02BD;Night vision control module;;Lost communication;:;medium;network;lost_comm
+U0306;Fuel injector control module;;Software incompatibility;:;medium;network;
+U0307;Glow plug control module %1;1;Software incompatibility;:;medium;network;
+U031C;Brake system control module %1;B;Software incompatibility;:;medium;network;
+U0323;Instrument panel control module;;Software incompatibility;:;medium;network;
+U0403;Transfer case control module;;Invalid data received;:;medium;network;invalid_data
+U0404;Gear shift control module %1;A;Invalid data received;:;medium;network;invalid_data
+U0405;Cruise control module;;Invalid data received;:;medium;network;invalid_data
+U0407;Glow plug control module;;Invalid data received;:;medium;network;invalid_data
+U040F;Reductant control module;;Invalid data received;:;medium;network;invalid_data
+U0411;Drive motor control module;;Invalid data received;:;medium;network;invalid_data
+U0412;Battery energy control module %1;A;Invalid data received;:;medium;network;invalid_data
+U041E;All wheel drive control module;;Invalid data received;:;medium;network;invalid_data
+U0420;Power steering control module %1;A;Invalid data received;:;medium;network;invalid_data
+U0421;Suspension control module %1;A;Invalid data received;:;medium;network;invalid_data
+U0424;HVAC control module;;Invalid data received;:;medium;network;invalid_data
+U0429;Steering column control module;;Invalid data received;:;medium;network;invalid_data
+U042B;Chassis control module %1;A;Invalid data received;:;medium;network;invalid_data
+U0432;Multi-axis acceleration sensor module %1;A;Invalid data received;:;medium;network;invalid_data
+U043A;Suspension control module %1;B;Invalid data received;:;medium;network;invalid_data
+U0442;ECM/PCM %1;B;Invalid data received;:;medium;network;invalid_data
+U0447;Serial data gateway module %1;A;Invalid data received;:;medium;network;invalid_data
+U0452;Restraints control module;;Invalid data received;:;medium;network;invalid_data
+U045A;Parking assist control module %1;A;Invalid data received;:;medium;network;invalid_data
+U045D;Automated driving system control module %1;A;Invalid data received;:;medium;network;invalid_data
+U045E;Automated driving system control module %1;B;Invalid data received;:;medium;network;invalid_data
+U0485;Radio;;Invalid data received;:;medium;network;invalid_data
+U0499;Telematic control module;;Invalid data received;:;medium;network;invalid_data
+U04A4;Particulate matter sensor %1;A;Invalid data received;:;medium;network;invalid_data
+U04B1;Battery monitor module;;Invalid data received;:;medium;network;invalid_data
+U0512;Seat control module %1;D;Invalid data received;:;medium;network;invalid_data
+U053B;Image processing module %1;A;Invalid data received;:;medium;network;invalid_data
+U053C;Image processing module %1;B;Invalid data received;:;medium;network;invalid_data
+U0585;Active grille air shutter module %1;A;Invalid data received;:;medium;network;invalid_data
+U0586;Active grille air shutter module %1;B;Invalid data received;:;medium;network;invalid_data
+U0592;Gear shift control module %1;B;Invalid data received;:;medium;network;invalid_data
+U0593;Drive motor control module %1;B;Invalid data received;:;medium;network;invalid_data
+U0594;Hybrid/EV powertrain control module;;Invalid data received;:;medium;network;invalid_data
+U0599;DC/DC converter control module %1;A;Invalid data received;:;medium;network;invalid_data
+U059A;DC/DC converter control module %1;B;Invalid data received;:;medium;network;invalid_data
+U059E;NOx sensor %1;A;Invalid data received;:;medium;network;invalid_data
+U059F;NOx sensor %1;B;Invalid data received;:;medium;network;invalid_data
+U05A3;Reductant quality module;;Invalid data received;:;medium;network;invalid_data
+U05A4;Particulate matter sensor received invalid data from ECM/PCM;;;-;medium;network;
+U05A5;NH3 sensor;;Invalid data received;:;medium;network;invalid_data
+U05A8;NOx sensor %1;C;Invalid data received;:;medium;network;invalid_data
+U0612;Intake air temperature sensor %1 bank %2;1|2;Lost communication;:;medium;network;lost_comm
+U0615;Engine coolant bypass valve %1;A;Lost communication;:;medium;network;lost_comm
+U0623;Coolant pump %1;A;Lost communication;:;medium;network;lost_comm
+U0632;Fan %1;1;Lost communication;:;medium;network;lost_comm
+U0633;Fan %1;2;Lost communication;:;medium;network;lost_comm
+U063C;Coolant bypass valve actuator %1;B;Lost communication;:;medium;network;lost_comm
+U0644;Wastegate position sensor %1;A;Lost communication;:;medium;network;lost_comm
+U0645;Active air dam module;;Lost communication;:;medium;network;lost_comm
+U0650;Exhaust pressure control valve %1 sensor/switch;A;Lost communication;:;medium;network;lost_comm
+U0651;EGR sensor %1;A;Lost communication;:;medium;network;lost_comm
+U0653;EGR sensor %1;C;Lost communication;:;medium;network;lost_comm
+U0659;Left front temperature actuator;;Lost communication;:;medium;network;lost_comm
+U065A;Right front temperature actuator;;Lost communication;:;medium;network;lost_comm
+U065F;Left rear temperature actuator %1;A;Lost communication;:;medium;network;lost_comm
+U0663;Rear mode actuator;;Lost communication;:;medium;network;lost_comm
+U0669;EGR sensor %1;D;Lost communication;:;medium;network;lost_comm
+U0670;Fuel temperature sensor %1;A;Lost communication;:;medium;network;lost_comm
+U0671;Fuel temperature sensor %1;B;Lost communication;:;medium;network;lost_comm
+U0673;Ion sense module;;Lost communication;:;medium;network;lost_comm
+U0674;Wastegate position sensor %1;B;Lost communication;:;medium;network;lost_comm
+U0680;Barometric pressure sensor %1;B;Lost communication;:;medium;network;lost_comm
+U068A;Barometric pressure sensor %1;C;Lost communication;:;medium;network;lost_comm
+U3000;Control module;;fault;-;medium;engine;ecu_power
+U3002;Vehicle identification number;;fault;-;medium;engine;ecu_power
+U3003;Battery voltage;;fault;-;medium;engine;ecu_power
+U3006;Control module input power %1;A;circuit/open;-;medium;engine;ecu_power
+U3007;Control module input power %1;B;circuit/open;-;medium;engine;ecu_power
+U300A;Ignition switch;;fault;-;medium;engine;ecu_power
+U3012;Control module improper wake-up;;performance;-;medium;engine;ecu_power
+U3017;Control module timer/clock;;performance;-;medium;engine;ecu_power
+U3018;Control module input power circuit %1 correlation;A/B;;-;medium;engine;ecu_power
+U3019;Control module input power circuit %1 correlation;B/C;;-;medium;engine;ecu_power
+U3033;Control module security certificate missing/invalid;;;-;medium;engine;ecu_power
+U3036;Communication authentication signal;;performance;-;medium;engine;ecu_power
+U3501;Control module input power %1;A;circuit low;-;medium;engine;ecu_power
+U3502;Control module input power %1;A;circuit high;-;medium;engine;ecu_power
+U3505;Control module input power %1;B;circuit low;-;medium;engine;ecu_power
+U3506;Control module input power %1;B;circuit high;-;medium;engine;ecu_power
+U3509;Control module input power %1;C;circuit low;-;medium;engine;ecu_power
+U350A;Control module input power %1;C;circuit high;-;medium;engine;ecu_power

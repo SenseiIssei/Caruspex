@@ -88,6 +88,22 @@ macOS, Android). This is a technical review against the licence texts and source
    and that nothing is taken from GPL scan tools. Owner to confirm: that the brand texts were indeed written
    without copying a list (this review could not check the history before 2026-11-09), and whether the English
    generic texts, which use the standard's short fault names, are acceptable as they are.
+   **Generic expansion done (2026-11-20).** The generic table grew from 1381 to 3368 codes: 1989 new codes in
+   `tools/dtc/extended.csv` (P0A00 to P0FFF 10 to 517, P2A00 to P2FFF 3 to 131, U0 86 to 219, U3 0 to 18,
+   C0 7 to 143, B0 6 to 23, P0000 to P09FF 887 to 1404, P2000 to P29FF 316 to 847). A code is listed only
+   when two independent sources agree on its meaning: the obdex data set (https://github.com/foerbsnavi/OBDex,
+   data CC0-1.0, data of 2026-11-07, checked 2026-11-20) and a manufacturer document, either the GM OBD
+   descriptions (https://gsi.ext.gm.com/gmspo/mode6/pdf/, 117 documents, published by GM for the emission
+   rules) or a bulletin or investigation document in the public NHTSA archive (https://static.nhtsa.gov/odi/,
+   2171 documents). From the manufacturer documents only the fact (code and meaning) is taken, no wording.
+   The texts are Caruspex's own, composed from 810 phrases (`tools/dtc/phrases.py`, German and English, the
+   other 16 languages in `translations/*/core_dtc38.json`). `tools/dtc/extended.py` holds the source
+   statement, which `tools/gen_dtc.py` writes into the head of the generated tables. Not used: SAE J2012 and
+   ISO 15031-6 themselves, GPL lists, unlicensed lists; Ford's OBD summaries refused the download. 6160 obdex
+   codes without a second source, and the disputed C0040 and C0045 (removed) and C0035 (kept, owner to
+   decide), are listed in `data/dtc/uncertain.md`; they show the group meaning of their range. Remaining
+   risk: obdex names GM and NHTSA documents among its own sources, so for some codes the two sources are not
+   fully independent; the C01xx to C04xx codes in the table follow GM's use.
 5. **Default-on update check** (low). Resolved: asks first since 0.18. On every installation Caruspex asks once
    "Look for updates?"; only after a yes do official builds ask GitHub (a US service) for `latest.json`, at start and
    every six hours, which shows the IP address. No request goes out without a yes. It is disclosed on the privacy
