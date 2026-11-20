@@ -79,7 +79,7 @@ const canFdPossible = (spec: string) => spec.startsWith("socketcan:") || spec.st
 const tc = translator("caruspex::ConnectHelp");
 // Texts of the truck option (SAE J1939).
 const tk = translator("caruspex::Truck");
-const tb = translator("caruspex::BmwPage");
+const tbmw = translator("caruspex::BmwPage");
 const MW = "caruspex::MainWindow";
 
 // The values of core/Elm327.cpp: kProtocolOrderKLineFirst, kProtocolOrderCanFirst.
@@ -882,7 +882,7 @@ export default function ConnectPage() {
             <ModeChip mode="demo" current={mode} icon="sparkles" label={tr("Demo-Auto")} onPick={setMode} />
             <ModeChip mode="replay" current={mode} icon="play" label={tr("Aufnahme")} onPick={setMode} />
             {/* The K-line cables need a COM port, which a phone does not have. */}
-            {isAndroid ? null : <ModeChip mode="bmw" current={mode} icon="car" label={tb("BMW E-Reihe")} onPick={setMode} />}
+            {isAndroid ? null : <ModeChip mode="bmw" current={mode} icon="car" label={tbmw("BMW E-Reihe")} onPick={setMode} />}
           </div>
 
           <div className="connect-mode fade-in" key={mode}>
@@ -999,12 +999,12 @@ export default function ConnectPage() {
             {mode === "bmw" ? (
               <>
                 <div className="hint">
-                  {tb(
+                  {tbmw(
                     "Für BMW der E-Reihe von etwa 1995 bis 2007 (E36, E38, E39, E46, E53, E83, E85, dazu E60, E87 und E90 bis 03/2007): ein K+DCAN-Kabel mit dem Schalter auf K-Line oder ein KKL-Kabel. Caruspex fragt damit jedes Steuergerät über DS2 oder KWP2000.",
                   )}
                 </div>
                 <div className="hint">
-                  {tb(
+                  {tbmw(
                     "Den Schalter vor dem Einstecken umlegen; K-Line ist bei den meisten Kabeln die linke Stellung und verbindet Pin 7 und 8. BMW ab 03/2007 und die F- und G-Reihe sprechen D-CAN oder Ethernet: dafür USB, WLAN oder Netzwerkkabel wählen.",
                   )}
                 </div>
@@ -1119,7 +1119,7 @@ export default function ConnectPage() {
           <div className="hint">{profileNote}</div>
           {bmwKline && mode !== "bmw" ? (
             <Button variant="ghost" icon="car" className="connect-bmw" onClick={() => setMode("bmw")}>
-              {tb("Alle Steuergeräte über K+DCAN oder KKL")}
+              {tbmw("Alle Steuergeräte über K+DCAN oder KKL")}
             </Button>
           ) : null}
 
@@ -1132,7 +1132,7 @@ export default function ConnectPage() {
             disabled={connecting}
             onClick={() => startConnect()}
           >
-            {connected ? tr("Trennen") : mode === "bmw" ? tb("Zur BMW-Seite") : tr("Verbinden")}
+            {connected ? tr("Trennen") : mode === "bmw" ? tbmw("Zur BMW-Seite") : tr("Verbinden")}
           </Button>
 
           <div className="connect-state">

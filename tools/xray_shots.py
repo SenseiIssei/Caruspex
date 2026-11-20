@@ -90,7 +90,7 @@ README_SET = [
     "Ford|F-150|XIV",
     "MAN|TGX|II",
     "Freightliner|Cascadia|II",
-    "Mercedes-Benz|Actros|MP5|citybus=City bus (kind picked on the Actros)",
+    "Mercedes-Benz|Actros|MP5|citybus=City bus (generic shape)",
     "Yamaha|MT-07|II",
     "BMW|R 1250 GS|I",
 ]
