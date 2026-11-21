@@ -66,6 +66,7 @@ machine, before and after a change.
 | `caruspex-protocols` `a_round_on_a_slow_line_costs_one_request_per_six_pids` | one request per round, the answer count on all but the first, under 150 ms per round at 38400 baud | 15 requests, 14 with the count, about 35 ms |
 | `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 70 allocations per live value (85 before), heap growth under 256 KiB in 2 s | about 192 values per second, 37 allocations per value |
 | `caruspex-app` `an_answer_reaches_the_sink_quickly` | median under 50 ms from the prompt to the event at 115200 baud, best of three runs (shared CI macOS runners reach 15 ms, once 50 ms) | under 1 ms |
+| `caruspex-record` `a_thirty_minute_recording_is_read_quickly` | `live_frames` reads 30 minutes of CAN 29 bit with headers (36 000 rounds, 144 006 events, 11 MB) in under 20 s in a debug build | about 1.3 s debug, 0.2 s release |
 | `caruspex-link` `count_hint.rs` | the answer count digit: learned, used, dropped when refused or when it loses answers, relearned every 32nd request | |
 
 The budgets are generous on purpose. They catch a return of per-line copies, a request per PID instead of

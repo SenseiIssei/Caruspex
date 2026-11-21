@@ -180,12 +180,11 @@ fn six_pids_in_one_request_headers_on_frames_of_two_control_units_interleaved() 
     let values = obd.read_live_batch(&SIX, false);
     assert_eq!(obd_sent(&script).len(), 1);
     // The single frame of 7E9 is complete before the multi-frame answer of
-    // 7E8 is. As in read_live_all the first complete answer keeps the PID, so
-    // the speed comes from the transmission here.
+    // 7E8 is. The engine still keeps the speed it answered.
     assert_eq!(values.len(), 6);
     let speed = values.iter().find(|v| v.pid == 0x0D).expect("speed");
-    assert_eq!(speed.ecu_source, "7E9");
-    assert!(approx(speed.value, 51.0));
+    assert_eq!(speed.ecu_source, "7E8");
+    assert!(approx(speed.value, 50.0));
     let rpm = values.iter().find(|v| v.pid == 0x0C).expect("rpm");
     assert_eq!(rpm.ecu_source, "7E8");
     assert!(approx(rpm.value, 1726.0));
@@ -196,6 +195,52 @@ fn six_pids_in_one_request_headers_on_frames_of_two_control_units_interleaved() 
     let from_gearbox = values.iter().filter(|v| v.ecu_source == "7E9").count();
     assert_eq!(from_engine, 6);
     assert_eq!(from_gearbox, 1);
+}
+
+#[test]
+fn the_engine_keeps_a_pid_it_answers_and_another_unit_one_it_does_not() {
+    let _lang = german();
+    let (mut elm, _script) = script_rig_with("6", |s| {
+        // Speed from both, the transmission first; PID A4 (gear) only from
+        // the transmission.
+        s.set(
+            "010D",
+            reply(
+                &["410D33", "410D32"],
+                &["7E9 03 41 0D 33 AA AA AA AA", "7E8 03 41 0D 32 AA AA AA AA"],
+            ),
+        );
+        s.set(
+            "01A4",
+            reply(&["41A402600334"], &["7E9 06 41 A4 02 60 03 34 AA"]),
+        );
+        s.set(
+            "010C0D",
+            reply(
+                &["410D33", "410C1AF80D32"],
+                &["7E9 03 41 0D 33 AA AA AA AA", "7E8 06 41 0C 1A F8 0D 32 AA"],
+            ),
+        );
+    });
+    assert!(elm.set_headers(true));
+    let mut obd = Obd2::new(&mut elm);
+    let speed = obd.read_live(0x0D).expect("speed");
+    assert_eq!(speed.ecu_source, "7E8");
+    assert!(approx(speed.value, 50.0));
+    let gear = obd.read_live(0xA4).expect("gear");
+    assert_eq!(gear.ecu_source, "7E9");
+    let values = obd.read_live_batch(&[0x0C, 0x0D], false);
+    let speed = values.iter().find(|v| v.pid == 0x0D).expect("speed");
+    assert_eq!(speed.ecu_source, "7E8");
+    assert!(approx(speed.value, 50.0));
+    // Every control unit, in the order they answered.
+    let all = obd.read_live_batch(&[0x0C, 0x0D], true);
+    let sources: Vec<&str> = all
+        .iter()
+        .filter(|v| v.pid == 0x0D)
+        .map(|v| v.ecu_source.as_str())
+        .collect();
+    assert_eq!(sources, ["7E9", "7E8"]);
 }
 
 #[test]
