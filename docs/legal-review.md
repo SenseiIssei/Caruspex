@@ -137,3 +137,46 @@ macOS, Android). This is a technical review against the licence texts and source
    (`tools/package.sh` was not run, so the files in the packages were checked in the script only).
 10. **Workflow note**: dependency update pull requests (Dependabot) will fail the new notices check until
     `python tools/gen_notices.py` is run on their branch.
+11. **Own signals for Tesla Model S and X, BYD, Xpeng, NIO and VAG diesels (2026-11-21).** Searched: every
+    repository of OBDb (github.com/OBDb, 897 on 2026-11-21, CC BY-SA 4.0), opendbc (commaai/opendbc, MIT, at the
+    pinned commit c81a2155976b and on master 79ddcc7bb72d), the vehicle modules of OVMS 3 (MIT, commit
+    7470869a2db5) and the car modules of evDash (MIT). Taken:
+    - **BYD Atto 3**: 68 values (battery state of charge, pack and cell voltages, current, temperatures, wheel
+      speeds, 12 V battery). OBDb's own Atto 3 set is empty; the values come from OBDb's merged BYD set (commit
+      c154169b7527, made from the Sealion 6), and only for the commands and signals that the Atto 3's recorded
+      answers in its OBDb repository (commit 2019ba775df9) confirm with the same value. Such a make fallback is
+      used only for models listed in `FALLBACK` in `tools/gen_obdb.py` after a check by hand (the merged sets of
+      large makes read one identifier in different ways; for the Skoda Octavia it would have shown a high
+      voltage battery). For the Atto 3 the recorded values agree with each other and with the car, and OVMS's
+      `vehicle_byd_atto3.cpp` (MIT, (C) 2023 Alan Harper, added to `data/pids/LICENSE-OVMS`) reads the same
+      addresses with the same layout; only the sign of its current was taken from there, as a fact. One signal
+      without a matching recorded value was left out. Listening (opendbc `byd_atto3.dbc`, MIT, pinned commit): 7
+      values, new pack `opendbc-byd-atto3`.
+    - **BYD Seal U**: OBDb's Sealion 6 set (174 values, already imported) now reaches the Seal U through
+      `data/obdb_aliases.csv`; OBDb's own `generations.yaml` of the Sealion 6 says it is sold in Europe as the
+      Seal U.
+    - **Tesla Model X with HW4 (2024)**: 6 listening values from opendbc `tesla_model3_party.dbc` (its
+      `values.py` puts this car on that bus), new pack `opendbc-tesla-model-x-hw4`. **Model S and X up to 2020**:
+      one more value (outside temperature, `tesla_can.dbc` BODY_R1) in `opendbc-tesla-s-x`, now 8.
+    - **VAG diesels**: no new source was needed. The OBDb packs already hold, from each model's own set, soot
+      mass (27 VAG models), regeneration values (45) and the oil level (62), 1672 values on 63 VAG models in
+      all; recorded answers of the Audi Q7, VW Transporter and VW Passat are now test fixtures.
+    - OBDb's attribution (`data/obdb/ATTRIBUTION.md`) now names the commit of every repository read, as
+      `tools/gen_notices.py` already claimed.
+
+    Left open, and why:
+    - **Tesla Model S and X battery values**: OBDb's Tesla-Model-S and Tesla-Model-X repositories and its Tesla
+      make set are empty, opendbc has no battery messages for these cars. OVMS's `vehicle_teslamodels` (MIT) reads
+      voltage (0x102) and state of charge (0x302) on the powertrain bus, but its documentation calls that support
+      experimental, and no second source confirms it. Not taken; it can come with a recording of a real car.
+    - **Xpeng and NIO**: no repository in OBDb, no DBC or platform in opendbc, no module in OVMS or evDash.
+      Nothing freely licensed was found; forum posts and scan tool lists are not acceptable.
+    - **Other BYD models (Dolphin, Seal, Han, Dolphin Surf)**: OBDb has only an empty BYD-Dolphin-Mini without
+      recorded answers; nothing else.
+    - **VAG diesel: measured soot mass, distance and time since the last regeneration, regeneration duration**:
+      OBDb has them for many models, but only behind the extended diagnostic session (10 03, `din` in OBDb):
+      340 such signals on 50 VAG models. Caruspex does not switch sessions for custom values, so the converter
+      leaves them out ("session"). Whether the live values may change the control unit's session is a decision
+      for the owner, not a data question.
+    - The make fallback for the 16 other OBDb models with empty sets and recorded answers (among them Skoda
+      Octavia and Enyaq, Mitsubishi Lancer, Mazda CX-7, Volvo V70) stays off until each is checked by hand.

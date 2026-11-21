@@ -33,7 +33,10 @@ sources below were added.
   https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3 at commit
   7470869a2db574ad1fab962a3cae4f22e6cf1385: the decoding code of
   vehicle_renaultzoe, vehicle_hyundai_ioniqvfl, vehicle_kianiroev and
-  vehicle_nissanleaf. Licence and copyright lines: `LICENSE-OVMS`.
+  vehicle_nissanleaf; vehicle_byd_atto3 only to confirm the BYD Atto 3 values
+  in data/obdb and the sign of its battery current (see FALLBACK and
+  METRIC_BY_ID in tools/gen_obdb.py). Licence and copyright lines:
+  `LICENSE-OVMS`.
 - evDash, https://github.com/nickn17/evDash at commit
   0f4ca249ff10b539558fa158b4b52b1f8e5f3e1f: src/CarRenaultZoe.cpp. Licence:
   `LICENSE-evDash`.

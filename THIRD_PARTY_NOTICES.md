@@ -10923,7 +10923,9 @@ vehicle_hyundai_ioniqvfl.cpp: (c) 2021 Michael Balzer;
 kn_can_poll.cpp: (C) 2019 Geir Øyvind Vælidalo;
 vehicle_nissanleaf.cpp: (C) 2011 Michael Stegen / Stegen Electronics,
 (C) 2011-2017 Mark Webb-Johnson, (C) 2011 Sonny Chen @ EPRO/DX,
-(C) 2017 Tom Parker.
+(C) 2017 Tom Parker;
+vehicle_byd_atto3.cpp (only to confirm the BYD Atto 3 values of data/obdb
+and the sign of its battery current): (C) 2023 Alan Harper.
 Source: https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3
 ```
 
