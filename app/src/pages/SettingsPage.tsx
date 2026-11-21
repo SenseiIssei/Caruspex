@@ -345,7 +345,7 @@ export default function SettingsPage() {
           </Full>
           <Hint>
             {tr(
-              "Manche Werte gibt das Motorsteuergerät nur in der erweiterten Diagnosesitzung heraus, etwa die gemessene Rußmasse und die Strecke seit der letzten Regeneration bei Dieseln aus dem VW-Konzern. Ist das an, schalte ich das Steuergerät dafür in diese Sitzung, solange solche Werte abgefragt werden, und danach zurück. Dabei wird nur gelesen, nie etwas geändert. Lehnt das Steuergerät ab, etwa während der Fahrt, steht der Grund am Wert.",
+              "Manche Werte gibt das Motorsteuergerät nur in der erweiterten Diagnosesitzung heraus, etwa die gemessene Rußmasse und die Strecke seit der letzten Regeneration bei Dieseln aus dem VW-Konzern. Ist das an, schaltet Caruspex das Steuergerät dafür in diese Sitzung, solange solche Werte abgefragt werden, und danach zurück. Dabei wird nur gelesen, nie etwas geändert. Lehnt das Steuergerät ab, etwa während der Fahrt, steht der Grund am Wert.",
             )}
           </Hint>
         </Group>

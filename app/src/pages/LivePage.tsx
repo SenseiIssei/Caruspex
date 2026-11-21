@@ -57,7 +57,7 @@ const LiveTableRow = memo(function LiveTableRow({ row }: { row: LiveRow }) {
         {row.session ? (
           <span
             className="live-session"
-            title={tr("Das Motorsteuergerät ist zum Lesen dieses Werts in der erweiterten Diagnosesitzung. Es wird nur gelesen; ich schalte es zurück, sobald der Wert nicht mehr abgefragt wird.")}
+            title={tr("Das Motorsteuergerät ist zum Lesen dieses Werts in der erweiterten Diagnosesitzung. Es wird nur gelesen; Caruspex schaltet es zurück, sobald der Wert nicht mehr abgefragt wird.")}
           >
             {tr("Sitzung 03")}
           </span>
