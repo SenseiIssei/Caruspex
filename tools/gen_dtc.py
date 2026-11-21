@@ -6,6 +6,8 @@ The data lives in tools/dtc/:
     extended.py the long tail of the standard (extended.csv), composed from
                 the shared phrases in phrases.py
     brands.py   manufacturer-specific codes per brand family
+    brand_ext.py more manufacturer codes from public NHTSA documents
+                (brand_codes.csv), composed from the shared phrases
     details.py  plain-language advice, causes, checks and a cost class
     ranges.py   group meanings for codes that are in no table
 
@@ -31,6 +33,7 @@ import unicodedata
 # -I does not put the script directory on sys.path, so add it by hand.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from dtc.brand_ext import BRAND_EXT, SOURCES as BRAND_EXT_SOURCES  # noqa: E402
 from dtc.brands import FAMILIES, SOURCES  # noqa: E402
 from dtc.details import DETAILS  # noqa: E402
 from dtc.extended import EXT, SOURCES as EXT_SOURCES  # noqa: E402
@@ -78,10 +81,18 @@ def split_extended() -> dict[str, dict]:
 
 
 def phrase_list() -> list[tuple[str, str]]:
-    """(de, en) of every phrase that a record uses, in a fixed order."""
+    """(de, en) of every phrase that a record uses, in a fixed order.
+
+    The phrases of the generic codes come first, those only the brand codes
+    use after them, so a new brand code does not move every index.
+    """
     used_parts = sorted({e.part for e in EXT.values()})
     used_faults = sorted({e.fault for e in EXT.values() if e.fault})
-    return [(PARTS[en], en) for en in used_parts] + [(FAULTS[en], en) for en in used_faults]
+    brand = [e for table in BRAND_EXT.values() for e in table.values()]
+    brand_parts = sorted({e.part for e in brand} - set(used_parts))
+    brand_faults = sorted({e.fault for e in brand if e.fault} - set(used_faults))
+    return ([(PARTS[en], en) for en in used_parts] + [(FAULTS[en], en) for en in used_faults]
+            + [(PARTS[en], en) for en in brand_parts] + [(FAULTS[en], en) for en in brand_faults])
 
 
 PHRASE_INDEX = {en: i for i, (_, en) in enumerate(phrase_list())}
@@ -185,23 +196,27 @@ def write_all_rust(parts: dict[str, Table]) -> None:
     write_rust("dtc_phrases.rs", lines)
 
     brand_total = sum(len(f.table) for f in FAMILIES)
-    # The source statement of brands.py goes into the head of the file.
-    lines = rust_header(f"{brand_total} manufacturer-specific codes in {len(FAMILIES)} brand families.\n// "
-                        + "\n// ".join(SOURCES),
-                        ["use crate::dtc::DtcSystem;",
-                         "use crate::dtc::tables::{Family, NO_DETAIL, Record, r};",
-                         "use crate::severity::Severity;",
-                         "use caruspex_i18n::Text;"])
+    brand_ext = sum(len(t) for t in BRAND_EXT.values())
+    body = []
     for fam in FAMILIES:
-        if not fam.table.codes:
+        if not fam.table.codes and not BRAND_EXT.get(fam.key):
             continue
-        lines += [f"static {rust_family_const(fam.key)}: &[Record] = &["]
-        lines += rust_record_lines(fam.table)
-        lines += ["];", ""]
+        body += [f"static {rust_family_const(fam.key)}: &[Record] = &["]
+        body += rust_record_lines(fam.table, BRAND_EXT.get(fam.key))
+        body += ["];", ""]
+    uses = record_uses(body)
+    uses[1] = uses[1].replace("{", "{Family, ", 1)
+    # The source statements of brands.py and brand_ext.py go into the head of the file.
+    lines = rust_header(f"{brand_total + brand_ext} manufacturer-specific codes in {len(FAMILIES)} brand families "
+                        f"({brand_total} written out, {brand_ext} composed).\n// "
+                        + "\n// ".join(SOURCES) + "\n//\n// " + "\n// ".join(BRAND_EXT_SOURCES),
+                        uses + ["use caruspex_i18n::Text;"])
+    lines += body
     lines += ["pub static FAMILIES: &[Family] = &["]
     for fam in FAMILIES:
         brands = "|".join(dict.fromkeys(normalize_brand(b) for b in fam.brands))
-        records = rust_family_const(fam.key) if fam.table.codes else "&[]"
+        has = fam.table.codes or BRAND_EXT.get(fam.key)
+        records = rust_family_const(fam.key) if has else "&[]"
         lines.append(f"    Family {{ key: {quote(fam.key)}, label: {rtext(*fam.label)}, "
                      f"brands: {quote(brands)}, records: {records} }},")
     lines += ["];"]
@@ -290,7 +305,11 @@ def check() -> None:
             # not given them a meaning we list, otherwise it would hide it.
             assert is_manufacturer(code) or code not in GENERIC.codes, \
                 f"{fam.key} {code} would shadow the generic meaning"
-    for rec in [*GENERIC.codes.values(), *EXT.values(), *(r for f in FAMILIES for r in f.table.codes.values())]:
+    for key in BRAND_EXT:
+        assert any(f.key == key for f in FAMILIES), f"brand_codes.csv names an unknown family {key}"
+    brand_ext = [e for table in BRAND_EXT.values() for e in table.values()]
+    for rec in [*GENERIC.codes.values(), *EXT.values(), *brand_ext,
+                *(r for f in FAMILIES for r in f.table.codes.values())]:
         detail_ref(rec.detail)
     for r in all_rules():
         detail_ref(r[7])
@@ -314,6 +333,9 @@ def main() -> None:
           f"{sum(1 for e in EXT.values() if e.detail)} with details, {len(PHRASE_INDEX)} phrases")
     print("brands: " + ", ".join(f"{f.key} {len(f.table)}" for f in FAMILIES)
           + f" = {brand_total}, {brand_detail} with details")
+    print("brands composed: " + ", ".join(
+        f"{key} {len(t)} ({sum(1 for e in t.values() if not e.single)} confirmed)" for key, t in BRAND_EXT.items())
+          + f" = {sum(len(t) for t in BRAND_EXT.values())}")
     print(f"details: {len(DETAILS)} blocks, ranges: {len(RANGES)} rules and {len(all_rules()) - len(RANGES)} finer ones")
 
 

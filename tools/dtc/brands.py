@@ -14,6 +14,8 @@ not reliable on European Opel engines. Opel models built on PSA platforms
 (from about 2018) should be looked up with the family key "PSA".
 
 Sources: see SOURCES below; it is also written into the generated file.
+More codes, composed from shared phrases and taken from public NHTSA
+documents, are in brand_codes.csv (brand_ext.py).
 """
 
 from __future__ import annotations
@@ -57,6 +59,11 @@ FAMILIES: list[Family] = [
            ["Peugeot", "Citroen", "Citroën", "DS", "DS Automobiles", "Stellantis"]),
     Family("FIAT", ("Fiat/Alfa Romeo/Lancia", "Fiat/Alfa Romeo/Lancia"),
            ["Fiat", "Alfa Romeo", "Alfa", "Lancia", "Abarth"]),
+    # The US brands of the former FCA. Their codes follow the Chrysler
+    # definitions, which the Fiat family only shares where a bulletin names
+    # a Fiat or Alfa Romeo model.
+    Family("CHRYSLER", ("Chrysler/Dodge/Jeep/Ram", "Chrysler/Dodge/Jeep/Ram"),
+           ["Chrysler", "Dodge", "Jeep", "Ram", "SRT"]),
     Family("VOLVO", ("Volvo", "Volvo"), ["Volvo"]),
     Family("SUBARU", ("Subaru", "Subaru"), ["Subaru"]),
     Family("MITSUBISHI", ("Mitsubishi", "Mitsubishi"), ["Mitsubishi"]),
@@ -75,6 +82,7 @@ SOURCES = [
     "No freely licensed data set of manufacturer codes was found (OBDb and Wikidata",
     "hold none, the open source scan tools that have lists are under the GPL), so no",
     "code here is taken from one. Families without entries only get their label.",
+    "More codes per family come from public NHTSA documents, see brand_ext.py below.",
 ]
 
 # Codes the Mazda family takes over from Ford.

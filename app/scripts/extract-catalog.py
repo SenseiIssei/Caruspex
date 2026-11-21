@@ -108,6 +108,11 @@ def vin_tables():
 def brand_dtcs():
     text = (DTC_BRANDS).read_text(encoding="utf-8")
     rec_re = re.compile(r"^\s*r\(" + STR + r", " + STR + r", " + STR + r", Severity::(\w+), DtcSystem::(\w+), (\w+), (true|false)\),")
+    # Composed records keep their phrase references (the indices of
+    # dtc_phrases.rs, which gen_dtc.py also writes into data/dtc.json), so the
+    # preview puts them together in the active language like Rust does.
+    comp_re = re.compile(r"^\s*q\(" + STR + r", (\d+), " + STR + r", (\d+|NO_PHRASE), (true|false), (true|false), "
+                         r"Severity::(\w+), DtcSystem::(\w+), (\w+)\),")
     fam_re = re.compile(r"^\s*Family \{ key: " + STR + r", label: Text::new\(" + STR + r", " + STR + r"\), brands: " + STR + r", records: (\w+|&\[\]) \},")
     tables, current = {}, None
     families = []
@@ -126,12 +131,23 @@ def brand_dtcs():
             detail = -1 if g[5] == "NO_DETAIL" else int(g[5])
             tables[current].append([g[0], unescape(g[1]), unescape(g[2]), SEVERITY.index(g[3]), SYSTEM.index(g[4]), detail, g[6] == "true"])
             continue
+        m = comp_re.match(line)
+        if m and current:
+            g = m.groups()
+            detail = -1 if g[8] == "NO_DETAIL" else int(g[8])
+            how = -1 if g[3] == "NO_PHRASE" else int(g[3])
+            # [code, "", "", severity, system, detail, throttle, single source, part, args, fault, lead]
+            tables[current].append([g[0], "", "", SEVERITY.index(g[6]), SYSTEM.index(g[7]), detail, False, g[5] == "true",
+                                    int(g[1]), unescape(g[2]), how, g[4] == "true"])
+            continue
         m = fam_re.match(line)
         if m:
             g = m.groups()
             families.append([g[0], unescape(g[1]), unescape(g[2]), g[3], tables.get(g[4], []) if g[4] != "&[]" else []])
     total = sum(len(f[4]) for f in families)
     header = re.search(r"(\d+) manufacturer-specific codes in (\d+) brand families", text)
+    if len(re.findall(r"^\s*[rq]\(", text, re.M)) != total:
+        sys.exit(f"dtc parse mismatch: read {total} records, the file has more")
     if not header or int(header.group(1)) != total or int(header.group(2)) != len(families):
         sys.exit(f"dtc parse mismatch: {total} codes in {len(families)} families")
     return families

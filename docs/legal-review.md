@@ -115,6 +115,38 @@ macOS, Android). This is a technical review against the licence texts and source
    the makers), and no other freely licensed list was found; the GM OBD documents name GM's own codes, but only
    in fragments of table cells, so no brand table was extended. Ford's OBD summaries refuse automated
    downloads and were not fetched again.
+   **Manufacturer codes from NHTSA bulletins (2026-11-21).** 424 manufacturer codes in 12 families, in
+   `tools/dtc/brand_codes.csv` (loader and source statement in `tools/dtc/brand_ext.py`, written into the head
+   of `dtc_brands.rs`). Source: the manufacturer communications (technical service bulletins) that NHTSA
+   publishes as a data set, https://static.nhtsa.gov/odi/ffdd/tsbs/ (TSBS_RECEIVED_1995-1999 to
+   TSBS_RECEIVED_2020-2024, retrieved 2026-11-21; data.gov labels the data set as public domain, US government
+   data). From the summary of a bulletin only the fact is taken: which code it names and which part and fault
+   the code stands for. The texts are composed from Caruspex's own phrases (293 new parts and 6 fault types,
+   German and English in `tools/dtc/phrases.py`, the other 16 languages in `translations/*/core_dtcmfr.json`).
+   Every row names up to four NHTSA ids of its bulletins. Tier "confirmed" (274 codes): at least two bulletins
+   with their own number, issued in different months, give the same meaning; the same text filed once per
+   brand or model line counts once. Tier "single" (150): one bulletin; the app and the reports say "Meaning
+   from one source". Per family: Chrysler/Dodge/Jeep/Ram 239 (a new family), Fiat/Alfa Romeo 47, Nissan 37,
+   Honda 30, Ford 29, Hyundai/Kia 10, Toyota 10, Subaru 8, VAG 7, Mazda 3, Mercedes 2, Mitsubishi 2.
+   Remaining risks: the bulletins are written by the makers for the US market, so a code may mean something
+   else on a car for another market (said in the source statement); the bulletin summaries themselves are
+   the makers' text, of which nothing is copied. Still open, because no acceptable source exists: BMW and
+   Mini (their bulletins name BMW's own fault memory numbers such as 20A508, not P, B, C or U codes), Volvo
+   cars (the Volvo entries with such codes are Volvo trucks; the car bulletins use Volvo's module codes such
+   as ECM-130A), Opel (only the Ampera, whose GM Voltec codes do not hold for other Opel models), Renault and
+   PSA (not sold in the USA, no bulletins). Searched without a usable result: obdex (CC0, generic codes only),
+   OBDb (no fault codes in its signal sets), Wikidata (no property for fault codes), the EU type approval
+   rules (Regulation (EU) 2017/1151, Annex XI, refers to ISO 15031-6 and SAE J2012 and lists no manufacturer
+   codes), the full bulletin PDFs (the data set has no links to them and the API addresses tried did not answer, so
+   only the summaries were used).
+   Not used: GPL lists, unlicensed lists, forums, paid databases.
+   **OBD socket spots (2026-11-21).** The 209 car rows of `data/obd_sockets.csv` from before stay an own
+   compilation; no free source was found to check them (Wikidata has no property for it, OBDb no location
+   data). Eight Ford and Lincoln generations were added with a source: Ford's special service messages SSM
+   46022, 46118, 47070, 47489 and 47635 in the same NHTSA data set say the data link connector sits on the
+   driver side under the steering column. The file names the messages above these rows. Mondeo Mk5 and
+   Transit Mk8 keep their old spot (left of the column) although the messages say under the column for the
+   US Fusion and Transit; to be checked at a real car.
 5. **Default-on update check** (low). Resolved: asks first since 0.18. On every installation Caruspex asks once
    "Look for updates?"; only after a yes do official builds ask GitHub (a US service) for `latest.json`, at start and
    every six hours, which shows the IP address. No request goes out without a yes. It is disclosed on the privacy
