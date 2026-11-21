@@ -409,6 +409,26 @@ fn pid_values(pid: i32, result: &ElmResult, every_ecu: bool) -> Vec<LiveValue> {
     out
 }
 
+/// The values in one answer to a mode 01 request for `pids`, decoded the
+/// way [`Obd2::read_live_batch`] decodes it: one PID like `read_live_all`,
+/// several like one group, where an answer that does not add up gives
+/// nothing. With several control units the first one that answers a PID
+/// keeps it. Reading a recording goes through here, so it shows the numbers
+/// the live view showed.
+pub fn mode01_answer_values(pids: &[i32], result: &ElmResult) -> Vec<LiveValue> {
+    if let [pid] = pids {
+        return pid_values(*pid, result, false);
+    }
+    let mut values: BTreeMap<i32, Vec<LiveValue>> = BTreeMap::new();
+    if Obd2::take_group(pids, result, false, &mut values).is_none() {
+        return Vec::new();
+    }
+    pids.iter()
+        .filter_map(|pid| values.remove(pid))
+        .flatten()
+        .collect()
+}
+
 // ---------------------------------------------------------------------------
 // Several PIDs per request (CAN only)
 // ---------------------------------------------------------------------------

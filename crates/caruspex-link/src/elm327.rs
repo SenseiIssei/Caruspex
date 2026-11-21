@@ -473,6 +473,38 @@ fn split_with_headers<S: AsRef<str>>(lines: &[S], format: HeaderFormat) -> Vec<E
     out
 }
 
+/// The lines of one adapter reply to `command`, as [`Elm327::send`] keeps
+/// them: without the prompt, empty lines, the echo and "SEARCHING...".
+/// A recording holds the raw reply, so reading one back goes through here
+/// too.
+pub fn reply_lines(reply: &[u8], command: &str) -> Vec<String> {
+    let text = String::from_utf8_lossy(reply);
+    let mut lines = Vec::new();
+    for raw in text.split(['\r', '\n']) {
+        // The prompt may sit anywhere in a chunk; `send` drops it before.
+        let without_prompt;
+        let raw = if raw.contains('>') {
+            without_prompt = raw.replace('>', "");
+            without_prompt.as_str()
+        } else {
+            raw
+        };
+        let line = trim(raw);
+        if line.is_empty() {
+            continue;
+        }
+        // The echo, in case echo is still on.
+        if same_compact(line, command) {
+            continue;
+        }
+        if starts_with_upper(line, "SEARCHING") {
+            continue;
+        }
+        lines.push(line.to_string());
+    }
+    lines
+}
+
 /// The first half of [`decode_messages`]: the adapter lines put back together
 /// into whole messages (ISO-TP reassembly included), without filtering by
 /// service. UDS needs this to see negative responses such as 7F 22 78 next
@@ -926,21 +958,7 @@ impl Elm327 {
         }
 
         buffer.retain(|&c| c != b'>');
-        let text = String::from_utf8_lossy(&buffer);
-        for raw in text.split(['\r', '\n']) {
-            let line = trim(raw);
-            if line.is_empty() {
-                continue;
-            }
-            // The echo, in case echo is still on.
-            if same_compact(line, command) {
-                continue;
-            }
-            if starts_with_upper(line, "SEARCHING") {
-                continue;
-            }
-            result.lines.push(line.to_string());
-        }
+        result.lines = reply_lines(&buffer, command);
         // Keep track of the header setting even when someone sends the AT
         // commands by hand (the raw console, the KKL reset). A reset switches
         // headers off again.
