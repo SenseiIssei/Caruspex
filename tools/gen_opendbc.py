@@ -9,7 +9,8 @@ without asking anything, like the Tesla pack in data/pids does.
     py -I tools/gen_opendbc.py --fetch   download the needed files of the pinned commit into .cache/opendbc/
     py -I tools/gen_opendbc.py           write data/opendbc/opendbc-*.csv from the cache
 
-The cache (about 1.6 MB) is not committed. The CSV files are, and
+The cache (about 1.6 MB) is not committed; CARUSPEX_CACHE moves it from
+.cache/ to another folder (it gets an opendbc/ inside). The CSV files are, and
 tools/gen_pids.py turns them into Rust together with data/pids; the CI does
 that step offline. To refresh: set COMMIT, --fetch, convert, run the tests,
 commit data/opendbc/.
@@ -53,7 +54,7 @@ import unicodedata
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CACHE = os.path.join(ROOT, ".cache", "opendbc")
+CACHE = os.path.join(os.environ.get("CARUSPEX_CACHE") or os.path.join(ROOT, ".cache"), "opendbc")
 OUT = os.path.join(ROOT, "data", "opendbc")
 VEHICLES = os.path.join(ROOT, "data", "vehicles")
 COMMIT = "c81a2155976b27d73f2fc72026f8bd4b083ce280"
@@ -76,8 +77,9 @@ GENERATOR = {
     "subaru": ["_subaru_global.dbc", "subaru_global_2017.dbc", "_subaru_preglobal_2015.dbc",
                "subaru_outback_2015.dbc", "subaru_forester_2017.dbc"],
 }
-PLAIN = ["vw_mqb.dbc", "vw_pq.dbc", "tesla_can.dbc", "tesla_powertrain.dbc", "ford_lincoln_base_pt.dbc"]
-VALUES = ["toyota", "honda", "hyundai", "gm", "ford", "volkswagen", "nissan", "subaru", "tesla"]
+PLAIN = ["vw_mqb.dbc", "vw_pq.dbc", "tesla_can.dbc", "tesla_powertrain.dbc", "ford_lincoln_base_pt.dbc",
+         "byd_atto3.dbc", "tesla_model3_party.dbc"]
+VALUES = ["toyota", "honda", "hyundai", "gm", "ford", "volkswagen", "nissan", "subaru", "tesla", "byd"]
 
 # Value kinds: English name, German name, English and German short name,
 # unit, gauge range. The same kind has the same names in every pack.
@@ -282,7 +284,39 @@ PACKS = [
             ("speed", "ESP_B", "ESP_vehicleSpeed"), ("motor_rpm", "DI_torque1", "DI_motorRPM"),
             ("motor_torque", "DI_torque1", "DI_torqueMotor"), ("pedal", "DI_torque1", "DI_pedalPos"),
             ("brake", "DI_torque2", "DI_brakePedal"), ("steer_angle", "STW_ANGLHP_STAT", "StW_AnglHP"),
-            ("steer_rate", "STW_ANGLHP_STAT", "StW_AnglHP_Spd"),
+            ("steer_rate", "STW_ANGLHP_STAT", "StW_AnglHP_Spd"), ("outside", "BODY_R1", "AirTemp_Outsd"),
+        ],
+    },
+    {
+        "id": "opendbc-tesla-model-x-hw4", "dbc": "tesla_model3_party", "cars": ["tesla_model3_party"],
+        # values.py puts the Model X with HW4 on the party bus of the Model 3
+        # and Y. Those two have their own pack from model3dbc in data/pids,
+        # so this one is for the Model X only. Left out: the steering angle
+        # and rate (carstate.py turns their sign around) and the brake
+        # (ESP_driverBrakeApply is a two-bit state).
+        "only": [("Tesla", "Model X")],
+        "title_de": "Tesla Model X mit HW4 ab 2024 (opendbc, Mithören)",
+        "title_en": "Tesla Model X with HW4 from 2024 (opendbc, listening)",
+        "values": [
+            ("speed", "DI_speed", "DI_vehicleSpeed"), ("wheel_fl", "ESP_wheelSpeeds", "ESP_wheelSpeedFrL"),
+            ("wheel_fr", "ESP_wheelSpeeds", "ESP_wheelSpeedFrR"), ("wheel_rl", "ESP_wheelSpeeds", "ESP_wheelSpeedReL"),
+            ("wheel_rr", "ESP_wheelSpeeds", "ESP_wheelSpeedReR"), ("pedal", "DI_systemStatus", "DI_accelPedalPos"),
+        ],
+    },
+    {
+        "id": "opendbc-byd-atto3", "dbc": "byd_atto3", "cars": ["byd_atto3"],
+        "title_de": "BYD Atto 3 (opendbc, Mithören)",
+        "title_en": "BYD Atto 3 (opendbc, listening)",
+        # The signals opendbc/car/byd/carstate.py reads with a plain meaning.
+        # Left out: PEDAL.GAS_PEDAL (0 to 2.55 without a unit, carstate uses
+        # RAW_THROTTLE only as "pressed"), the doors (which one is the
+        # driver's depends on the market) and SEATBELT_DRIVER (1 is buckled,
+        # the opposite of the belt_driver kind).
+        "values": [
+            ("speed", "WHEELSPEED_CLEAN", "WHEELSPEED_CLEAN"), ("wheel_fl", "WHEEL_SPEED", "WHEELSPEED_FL"),
+            ("wheel_fr", "WHEEL_SPEED", "WHEELSPEED_FR"), ("wheel_rl", "WHEEL_SPEED", "WHEELSPEED_BL"),
+            ("wheel_rr", "WHEEL_SPEED", "WHEELSPEED_BR"), ("steer_angle", "STEER_MODULE_2", "STEER_ANGLE_2"),
+            ("brake", "DRIVE_STATE", "BRAKE_PRESSED"),
         ],
     },
 ]
@@ -313,7 +347,7 @@ TRIM = {"hybrid", "plug-in", "electric", "ev", "euv", "prime", "gt", "gti", "gtd
         "premier", "essence", "esv", "1500", "nms", "f", "cross", "sport", "gli", "x", "trim", "lightning"}
 MAKES = {"Lexus", "Toyota", "Honda", "Acura", "Hyundai", "Kia", "Genesis", "Chevrolet", "GMC", "Buick",
          "Cadillac", "Holden", "Ford", "Lincoln", "Volkswagen", "Audi", "SEAT", "CUPRA", "Škoda", "Nissan",
-         "Subaru", "MAN", "Porsche", "Tesla"}
+         "Subaru", "MAN", "Porsche", "Tesla", "BYD"}
 BRAND_NAMES = {"SEAT": "Seat", "CUPRA": "Cupra", "Škoda": "Škoda"}
 
 
@@ -450,7 +484,8 @@ def platform_cars(dbc_names: list[str]) -> list[str]:
         text = read(os.path.join(CACHE, "opendbc", "car", brand, "values.py"))
         defaults = {}
         for m in re.finditer(r"class (\w+)\((\w*PlatformConfig)\):(.*?)(?=\nclass |\n@dataclass|\Z)", text, re.S):
-            d = re.search(r"Bus\.pt:\s*['\"](\w+)['\"]", m.group(3))
+            # Bus.party: the Tesla platforms name their main bus so.
+            d = re.search(r"Bus\.(?:pt|party):\s*['\"](\w+)['\"]", m.group(3))
             if d:
                 defaults[m.group(1)] = d.group(1)
             elif m.group(2) in defaults:
@@ -459,11 +494,11 @@ def platform_cars(dbc_names: list[str]) -> list[str]:
             m = re.match(r"([A-Z][A-Z0-9_]+) = (\w+)\(", block)
             if not m:
                 continue
-            d = (re.search(r"Bus\.pt:\s*['\"](\w+)['\"]", block)
+            d = (re.search(r"Bus\.(?:pt|party):\s*['\"](\w+)['\"]", block)
                  or re.search(r"(?:radar_)?dbc_dict\(['\"](\w+)['\"]", block))
             dbc = d.group(1) if d else defaults.get(m.group(2), "")
             if dbc in dbc_names:
-                names += re.findall(r"CarDocs\(\s*[\"']([^\"']+)[\"']", block)
+                names += re.findall(r"CarDocs\w*\(\s*[\"']([^\"']+)[\"']", block)
     return names
 
 
@@ -569,6 +604,8 @@ def convert() -> int:
         names = platform_cars(pack["cars"]) if pack["cars"] else []
         unmatched: list[str] = []
         cars = match_cars(names, cat, unmatched)
+        if "only" in pack:
+            cars = [c for c in cars if (c[0], c[1]) in pack["only"]]
         for brand, model, a, z in pack.get("manual_cars", []):
             cars.append((brand, model, a, z))
         if not cars:

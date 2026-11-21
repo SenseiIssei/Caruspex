@@ -281,3 +281,56 @@ fn an_imported_pack_reads_through_a_scripted_adapter() {
     // Service 21 of a Toyota, bits inside bytes.
     read_through_adapter("Toyota-Prius", "2106");
 }
+
+// OBDb has no signal set of its own for the BYD Atto 3. The BYD make set
+// (merged from the Sealion 6) is used for it because its recorded answers
+// confirm it (FALLBACK in tools/gen_obdb.py). The Seal U is OBDb's Sealion 6.
+#[test]
+fn byd_atto_3_and_seal_u_get_their_battery_values() {
+    let _lang = german();
+    let atto = obdb_packs_for("BYD", "Atto 3", 2023);
+    assert_eq!(atto.len(), 1);
+    assert_eq!(atto[0].repo, "BYD-Atto-3");
+    assert_eq!(pack_category(&atto[0].id), PidCategory::HybridEv);
+    let shorts: BTreeSet<String> = obdb_pack_pids(&atto[0].id)
+        .into_iter()
+        .map(|p| p.short_name)
+        .collect();
+    assert!(
+        shorts.contains("SOC") && shorts.contains("Batt V"),
+        "{shorts:?}"
+    );
+    assert!(
+        obdb_packs_for("BYD", "Seal U", 2024)
+            .iter()
+            .any(|p| p.repo == "BYD-Sealion-6")
+    );
+    // Answers recorded on an Atto 3: state of charge, pack and cell voltage.
+    read_through_adapter("BYD-Atto-3", "220005");
+    read_through_adapter("BYD-Atto-3", "220008");
+    read_through_adapter("BYD-Atto-3", "22002B");
+}
+
+// Volkswagen group diesels: soot mass, regeneration and oil level come from
+// each model's own OBDb set, read here from answers recorded on those cars.
+#[test]
+fn vag_diesel_particulate_filter_and_oil_level_values() {
+    let _lang = german();
+    assert!(
+        obdb_packs_for("Audi", "Q7", 2018)
+            .iter()
+            .any(|p| p.repo == "Audi-Q7")
+    );
+    assert!(
+        obdb_packs_for("Volkswagen", "Transporter", 2013)
+            .iter()
+            .any(|p| p.repo == "Volkswagen-Transporter")
+    );
+    // Soot mass calculated (Q7) and measured (Transporter), service
+    // regeneration status, oil level, fuel used since the last regeneration.
+    read_through_adapter("Audi-Q7", "22114F");
+    read_through_adapter("Volkswagen-Transporter", "22114E");
+    read_through_adapter("Volkswagen-Transporter", "22115C");
+    read_through_adapter("Volkswagen-Transporter", "2211BC");
+    read_through_adapter("Volkswagen-Passat", "22115A");
+}

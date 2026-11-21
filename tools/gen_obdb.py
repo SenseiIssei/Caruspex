@@ -16,6 +16,25 @@ GITHUB_TOKEN or `gh auth token`); a repository whose last push did not change
 is not downloaded again. The cache (about 50 MB) is not committed, so the CI
 cannot rebuild the packs; it only checks the conversion on the fixtures. To
 refresh the packs: --fetch, then convert, run the tests, commit data/obdb/.
+CARUSPEX_CACHE moves the cache from .cache/ to another folder (it gets an
+obdb/ inside). The commit of every repository is recorded in the cache and
+named in ATTRIBUTION.md.
+
+Make fallback. OBDb keeps one repository per make too ("BYD", "Skoda"),
+merged by OBDb from that make's model repositories, and its tools use it
+for a model whose own signal sets are empty. Such a model may have recorded
+answers of a real car in tests/test_cases/<year>/commands/. Those answers
+show that the car answers a command and that its bytes decode, but the
+meaning still comes from other models of the make, and merged sets of
+large makes read the same identifier differently for different models.
+So the fallback is used only for the models in FALLBACK, whose recorded
+values were checked by hand for being consistent with each other and with
+the car (the reason is written next to each), and only as far as the
+answers confirm it: a command of the make set is taken when the model has
+answers for it and the make set reads its bytes in one way only, a signal
+of it when OBDb's test cases give its value and the port of OBDb's decoder
+below gives the same value on every recorded answer. Everything else of
+the make set stays out ("fallback unconfirmed", "fallback ambiguous").
 
 Conversion. Every OBDb signal becomes a Torque equation over the data bytes
 A, B, ... of the answer (A is the first byte after the echoed service and
@@ -86,7 +105,7 @@ import urllib.request
 import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CACHE = os.path.join(ROOT, ".cache", "obdb")
+CACHE = os.path.join(os.environ.get("CARUSPEX_CACHE") or os.path.join(ROOT, ".cache"), "obdb")
 DATA = os.path.join(ROOT, "data", "obdb")
 TARGET = os.path.join(DATA, "obdb-packs.z")
 ALIASES = os.path.join(ROOT, "data", "obdb_aliases.csv")
@@ -149,8 +168,39 @@ def is_vehicle_repo(name: str) -> bool:
     return bool(re.match(r"^[A-Za-z0-9]+(-[A-Za-z0-9.]+)+$", name)) and name not in ("vscode-obdb",)
 
 
+def is_make_repo(name: str) -> bool:
+    # "BYD", "Skoda", "Land-Rover": the merged make sets used as fallback.
+    return (bool(re.match(r"^[A-Za-z]+$", name)) or name in MULTI_WORD_MAKES) and name != "SAEJ1979"
+
+
 def safe_name(path: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]", "_", path)
+
+
+def has_commands(folder: str, signalsets: list[str]) -> bool:
+    for path in signalsets:
+        data = json.load(io.open(os.path.join(folder, safe_name(path)), encoding="utf-8"))
+        if data.get("commands"):
+            return True
+    return False
+
+
+# Models that take the make fallback, with the check that allows it.
+FALLBACK = {
+    # The BYD set is merged from the Sealion 6 alone. On the recorded
+    # answers of the Atto 3 (model years 2022 and 2025) the state of charge
+    # of 22 0005 (23 to 92 %) matches the separate nominal state of charge
+    # of 22 1FFC (22.9 to 92.2 %), the pack voltage (352 to 431 V) and the
+    # cell voltages (2.74 to 3.35 V) fit its LFP pack, the factory capacity
+    # (about 150 Ah) fits 60 kWh, and the four wheel speeds agree. OVMS reads
+    # the Atto 3 at the same address with the same layout for 22 0005
+    # (state of charge), 0008 (voltage), 0009 (current), 002F, 0031 and 0032
+    # (cell and pack temperatures) (vehicle_byd_atto3.cpp, MIT, commit
+    # 7470869a2db5).
+    "BYD-Atto-3": "BYD",
+}
+
+TEST_FILE = re.compile(r"^tests/test_cases/\d{4}/commands/[^/]+\.yaml$")
 
 
 def fetch_repo(repo: dict, auth: str) -> tuple[str, str]:
@@ -159,9 +209,12 @@ def fetch_repo(repo: dict, auth: str) -> tuple[str, str]:
     folder = os.path.join(CACHE, name)
     meta_path = os.path.join(folder, "meta.json")
     old = json.load(open(meta_path, encoding="utf-8")) if os.path.exists(meta_path) else {}
-    if old.get("pushed_at") == repo["pushed_at"] and old.get("complete"):
+    if old.get("pushed_at") == repo["pushed_at"] and old.get("complete") and old.get("commit"):
         return name, "unchanged"
-    tree = json.loads(fetch(f"{API}/repos/{ORG}/{name}/git/trees/{repo['branch']}?recursive=1", auth))
+    # The commit first and the tree of exactly that commit, so the files and
+    # the commit named in ATTRIBUTION.md belong together.
+    commit = json.loads(fetch(f"{API}/repos/{ORG}/{name}/commits/{repo['branch']}", auth))["sha"]
+    tree = json.loads(fetch(f"{API}/repos/{ORG}/{name}/git/trees/{commit}?recursive=1", auth))
     paths = {t["path"]: t["sha"] for t in tree.get("tree", []) if t["type"] == "blob"}
     signalsets = sorted(p for p in paths if re.match(r"^signalsets/v3/[^/]+\.json$", p))
     years = sorted({int(m.group(1)) for p in paths
@@ -169,15 +222,28 @@ def fetch_repo(repo: dict, auth: str) -> tuple[str, str]:
     wanted = signalsets + [p for p in ("generations.yaml",) if p in paths]
     os.makedirs(folder, exist_ok=True)
     blobs = {}
-    for path in wanted:
+
+    def get(path: str) -> None:
         local = os.path.join(folder, safe_name(path))
         if old.get("blobs", {}).get(path) != paths[path] or not os.path.exists(local):
-            data = fetch(f"{RAW}/{ORG}/{name}/{repo['branch']}/{urllib.parse.quote(path)}")
+            data = fetch(f"{RAW}/{ORG}/{name}/{commit}/{urllib.parse.quote(path)}")
             with open(local, "wb") as f:
                 f.write(data)
         blobs[path] = paths[path]
-    meta = {"name": name, "branch": repo["branch"], "pushed_at": repo["pushed_at"],
-            "signalsets": signalsets, "blobs": blobs, "test_years": years, "complete": True}
+
+    for path in wanted:
+        get(path)
+    # The recorded answers are only needed where the make fallback may apply;
+    # they are kept for every model without own signals, so a model added to
+    # FALLBACK later has them without a new download.
+    tests = []
+    if is_vehicle_repo(name) and not has_commands(folder, signalsets):
+        tests = sorted(p for p in paths if TEST_FILE.match(p))
+        for path in tests:
+            get(path)
+    meta = {"name": name, "branch": repo["branch"], "pushed_at": repo["pushed_at"], "commit": commit,
+            "signalsets": signalsets, "tests": tests, "blobs": blobs, "test_years": years,
+            "complete": True}
     with open(meta_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(meta, f, indent=1)
     return name, "downloaded"
@@ -189,7 +255,7 @@ def do_fetch() -> int:
         print("warning: no GitHub token (GH_TOKEN or gh auth token), the API allows 60 calls an hour",
               file=sys.stderr)
     os.makedirs(CACHE, exist_ok=True)
-    repos = [r for r in list_repos(auth) if is_vehicle_repo(r["name"])]
+    repos = [r for r in list_repos(auth) if is_vehicle_repo(r["name"]) or is_make_repo(r["name"])]
     with open(os.path.join(CACHE, "repos.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(repos, f, indent=1)
     def one(repo: dict) -> tuple[str, str]:
@@ -249,6 +315,19 @@ EV_METRICS = {
 }
 EV_PACK_METRICS = {"stateOfCharge", "stateOfHealth", "tractionBatteryVoltage",
                    "tractionBatteryCurrent", "tractionBatteryCapacity", "isCharging", "pluggedIn"}
+# OBDb signals without a suggestedMetric whose name and unit say plainly
+# which one it is ("High voltage battery state of charge", %; "Battery total
+# voltage", V). The current of the BYD set counts as discharging when
+# positive, as the EV page wants it: OVMS reads the same field of the Atto 3
+# into its battery current, which is positive on discharge
+# (vehicle/OVMS.V3/components/vehicle_byd_atto3/src/vehicle_byd_atto3.cpp,
+# MIT, commit 7470869a2db5). OBDb's own Sealion 6 set says nothing about the
+# sign, so its current stays without a short name.
+METRIC_BY_ID = {
+    "BYD_HVBAT_ST_CHG": "stateOfCharge", "SEALION_HVBAT_ST_CHG": "stateOfCharge",
+    "BYD_BAT_TOT_V": "tractionBatteryVoltage", "SEALION_BAT_TOT_V": "tractionBatteryVoltage",
+    "BYD_BAT_TOT_CURRENT": "tractionBatteryCurrent",
+}
 
 EPSILON = sys.float_info.epsilon
 
@@ -379,13 +458,13 @@ def convert_signal(signal: dict) -> dict:
     if "nullmax" in fmt and ends[1] >= fmt["nullmax"] - EPSILON:
         raise Skip("null bound")
     metric = ""
-    wanted = EV_METRICS.get(signal.get("suggestedMetric", ""))
+    suggested = signal.get("suggestedMetric") or METRIC_BY_ID.get(signal["id"], "")
+    wanted = EV_METRICS.get(suggested)
     if wanted and wanted[1] == unit:
         metric = wanted[0]
     name = clean_text(signal.get("name") or signal["id"])
     return {"name": name, "equation": value, "min": number_text(low), "max": number_text(high),
-            "unit": UNITS[unit], "metric": metric,
-            "ev": signal.get("suggestedMetric", "") in EV_PACK_METRICS}
+            "unit": UNITS[unit], "metric": metric, "ev": suggested in EV_PACK_METRICS}
 
 
 def clean_text(text: str) -> str:
@@ -786,7 +865,176 @@ def load_repo(name: str) -> dict | None:
         sets[path] = json.load(io.open(os.path.join(folder, safe_name(path)), encoding="utf-8"))
     gens_path = os.path.join(folder, "generations.yaml")
     gens = generations(io.open(gens_path, encoding="utf-8").read()) if os.path.exists(gens_path) else []
-    return {"name": name, "sets": sets, "generations": gens, "test_years": meta["test_years"]}
+    return {"name": name, "sets": sets, "generations": gens, "test_years": meta["test_years"],
+            "commit": meta.get("commit", ""),
+            # Read only where they are used, so an odd file elsewhere cannot stop the run.
+            "tests": load_tests(folder, meta.get("tests", [])) if name in FALLBACK else {}}
+
+
+# ---------------------------------------------------------------------------
+# Make fallback: recorded answers of the model confirm the make set
+# ---------------------------------------------------------------------------
+
+def yaml_scalar(text: str):
+    text = text.strip()
+    if text in ("[]", "{}"):
+        return [] if text == "[]" else {}
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in "'\"":
+        return text[1:-1]
+    return text
+
+
+def yaml_block(lines: list[tuple[int, str]], i: int, indent: int):
+    """The block style subset OBDb writes its test cases in: mappings,
+    sequences and plain or quoted scalars. Returns (value, next line)."""
+    if i < len(lines) and lines[i][0] == indent and (lines[i][1] == "-" or lines[i][1].startswith("- ")):
+        items = []
+        while i < len(lines) and lines[i][0] == indent and (lines[i][1] == "-" or lines[i][1].startswith("- ")):
+            rest = lines[i][1][1:].strip()
+            if not rest:
+                value, i = yaml_block(lines, i + 1, lines[i + 1][0]) if i + 1 < len(lines) else (None, i + 1)
+            elif re.match(r"^[^'\"\s][^:]*:(\s|$)", rest):
+                # "- key: value" opens a mapping two columns further in.
+                lines[i] = (indent + 2, rest)
+                value, i = yaml_block(lines, i, indent + 2)
+            else:
+                value, i = yaml_scalar(rest), i + 1
+            items.append(value)
+        return items, i
+    out: dict = {}
+    while i < len(lines) and lines[i][0] == indent:
+        m = re.match(r"^(\"[^\"]*\"|'[^']*'|[^:]+):(?:\s+(.*))?$", lines[i][1])
+        if not m:
+            raise ValueError(f"unexpected line {lines[i][1]!r}")
+        key, rest = yaml_scalar(m.group(1)), (m.group(2) or "").strip()
+        i += 1
+        if re.match(r"^[|>][+-]?$", rest):
+            # A block scalar: the CAN frames of an answer, one per line.
+            block = []
+            while i < len(lines) and lines[i][0] > indent:
+                block.append(lines[i][1])
+                i += 1
+            out[key] = ("\n" if rest[0] == "|" else " ").join(block)
+        elif rest:
+            out[key] = yaml_scalar(rest)
+        elif i < len(lines) and (lines[i][0] > indent or (lines[i][0] == indent and lines[i][1].startswith("- "))):
+            out[key], i = yaml_block(lines, i, lines[i][0])
+        else:
+            out[key] = None
+    return out, i
+
+
+def parse_yaml(text: str):
+    lines = []
+    for raw in text.splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        lines.append((len(raw) - len(raw.lstrip(" ")), raw.strip()))
+    if not lines:
+        return {}
+    value, end = yaml_block(lines, 0, lines[0][0])
+    if end != len(lines):
+        raise ValueError(f"unexpected line {lines[end][1]!r}")
+    return value
+
+
+def load_tests(folder: str, paths: list[str]) -> dict[str, list[tuple[int, list[str], dict]]]:
+    """Command id -> [(model year, CAN frames, expected values)] of the
+    recorded answers in tests/test_cases/<year>/commands/."""
+    out: dict[str, list] = collections.defaultdict(list)
+    for path in paths:
+        year = int(path.split("/")[2])
+        try:
+            data = parse_yaml(io.open(os.path.join(folder, safe_name(path)), encoding="utf-8").read())
+        except (ValueError, UnicodeDecodeError) as e:
+            raise SystemExit(f"error: {folder} {path}: {e}")
+        if not isinstance(data, dict):
+            continue
+        ident = str(data.get("command_id") or os.path.basename(path)[:-5])
+        for case in data.get("test_cases") or []:
+            if not isinstance(case, dict) or not isinstance(case.get("expected_values"), dict):
+                continue
+            response = case.get("response")
+            frames = response if isinstance(response, list) else str(response or "").split()
+            out[ident].append((year, [str(f) for f in frames], case["expected_values"]))
+    return out
+
+
+def obdb_command_id(cmd: dict) -> str:
+    """The id OBDb's Command.from_json gives a command (.schemas/python/can/signals.py)."""
+    service, = cmd["cmd"].keys()
+    value = int(cmd["cmd"][service], 16)
+    ident = cmd["hdr"] + ("." + cmd["rax"] if cmd.get("rax") else "")
+    ident += "." + service + (f"{value:04X}" if service == "22" else f"{value:02X}")
+    parts = []
+    for key, label in (("tmo", "t"), ("eax", "e"), ("tst", "ta")):
+        if cmd.get(key) and int(cmd[key], 16):
+            parts.append(f"{label}={int(cmd[key], 16):02X}")
+    if cmd.get("fcm1"):
+        parts.append("fc=1")
+    if cmd.get("proto") == "iso9141_2":
+        parts.append("p=9141-2")
+    if cmd.get("pri") and int(cmd["pri"], 16):
+        parts.append(f"c={int(cmd['pri'], 16):02X}")
+    f = cmd.get("filter")
+    if f:
+        text = []
+        lo, hi = f.get("from"), f.get("to")
+        if lo is not None and hi is not None and lo < hi:
+            text.append(f"{lo}-{hi}")
+        else:
+            if lo is not None:
+                text.append(f"{lo}-")
+            if hi is not None:
+                text.append(f"-{hi}")
+        text += [str(y) for y in sorted(f.get("years") or [])]
+        parts.append("f=" + ";".join(text))
+    for key, label in (("din", "din"), ("dout", "dout")):
+        if key in cmd:
+            parts.append(f"{label}={int(cmd[key], 16):02X}")
+    if "baud" in cmd:
+        parts.append(f"b={cmd['baud']}")
+    return ident + ("|" + ",".join(parts) if parts else "")
+
+
+def field_key(signal: dict) -> tuple:
+    fmt = signal.get("fmt", {})
+    return (fmt.get("bix", 0), fmt.get("len"), bool(fmt.get("blsb")), bool(fmt.get("sign")),
+            fmt.get("mul", 1), fmt.get("div", 1), fmt.get("add", 0), fmt.get("unit", ""),
+            json.dumps(fmt.get("map"), sort_keys=True))
+
+
+def fallback_ambiguous(signals: list[dict]) -> bool:
+    """True when the merged make set reads the same bits of an answer in two
+    ways (another scaling, unit or position), because the models it was
+    merged from disagree about this command. Recorded answers cannot say
+    which reading is right for the model, so the command stays out."""
+    for i, a in enumerate(signals):
+        for b in signals[i + 1:]:
+            fa, fb = a.get("fmt", {}), b.get("fmt", {})
+            a0, b0 = fa.get("bix", 0), fb.get("bix", 0)
+            if a0 < b0 + fb.get("len", 0) and b0 < a0 + fa.get("len", 0) and field_key(a) != field_key(b):
+                return True
+    return False
+
+
+def confirmed_by_tests(signal: dict, request: str, cases: list) -> bool:
+    """True when the recorded answers give this signal's value and OBDb's
+    decoder gives that value on every one of them."""
+    seen = False
+    for _, frames, expected in cases:
+        if signal["id"] not in expected:
+            continue
+        try:
+            want = float(expected[signal["id"]])
+            data = bytes.fromhex(reassemble(frames, request))
+            got = obdb_decode(signal["fmt"], data)
+        except (ValueError, TypeError, IndexError):
+            return False
+        if got is None or abs(got - want) >= 1e-5:
+            return False
+        seen = True
+    return seen
 
 
 def command_key(cmd: dict) -> tuple:
@@ -874,14 +1122,16 @@ def tsv(*cells) -> str:
     return "\t".join(str(c) for c in cells)
 
 
-def convert(stats: collections.Counter, unmatched: list, check: bool = True) -> list[str]:
+def convert(stats: collections.Counter, unmatched: list, check: bool = True,
+            sources: dict | None = None) -> list[str]:
     repos = json.load(open(os.path.join(CACHE, "repos.json"), encoding="utf-8"))
     catalog = load_catalog()
     aliases = load_aliases()
+    makes = {entry["name"].lower(): entry["name"] for entry in repos if is_make_repo(entry["name"])}
     lines: list[str] = []
     for entry in repos:
         name = entry["name"]
-        if name in MULTI_WORD_MAKES:
+        if name in MULTI_WORD_MAKES or not is_vehicle_repo(name):
             continue
         repo = load_repo(name)
         if repo is None or not repo["sets"]:
@@ -890,12 +1140,25 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True) -> 
         if not model:
             continue
         stats["repos"] += 1
+        fallback = None
+        if not any(d.get("commands") for d in repo["sets"].values()) and repo["tests"] and name in FALLBACK:
+            make_repo = load_repo(makes[FALLBACK[name].lower()]) if FALLBACK[name].lower() in makes else None
+            if make_repo and any(d.get("commands") for d in make_repo["sets"].values()):
+                repo["sets"] = make_repo["sets"]
+                fallback = (make_repo["name"], make_repo["commit"], repo["tests"])
         segments, used = year_segments(repo)
         # Every signal once: converted, or the reason it is not.
         converted: dict[tuple, tuple] = {}
         for path, data in repo["sets"].items():
             for index, cmd in enumerate(data.get("commands", [])):
                 signals = cmd.get("signals", [])
+                cases = None
+                if fallback:
+                    # Of the make set only what this model answered counts
+                    # as its own signals.
+                    cases = fallback[2].get(obdb_command_id(cmd))
+                    if not cases:
+                        continue
                 stats["signals"] += len(signals)
                 if (path, index) not in used:
                     stats["skip: no model year or replaced"] += len(signals)
@@ -905,12 +1168,26 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True) -> 
                 except Skip as s:
                     stats["skip: " + s.reason] += len(signals)
                     continue
+                if cases is not None and fallback_ambiguous(signals):
+                    stats["skip: fallback ambiguous"] += len(signals)
+                    continue
                 values = []
+                fields = set()
                 for signal in signals:
+                    if cases is not None:
+                        # The merged set repeats one field under the names
+                        # of several models; it is shown once.
+                        if field_key(signal) in fields:
+                            stats["skip: fallback duplicate"] += 1
+                            continue
+                        fields.add(field_key(signal))
                     try:
                         value = convert_signal(signal)
                     except Skip as s:
                         stats["skip: " + s.reason] += 1
+                        continue
+                    if cases is not None and not confirmed_by_tests(signal, address[0], cases):
+                        stats["skip: fallback unconfirmed"] += 1
                         continue
                     if check:
                         check_signal(signal["fmt"], value["equation"],
@@ -938,6 +1215,10 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True) -> 
         lines.append(tsv("R", name, shown_make, display_model(model), segment_text, match_text,
                          1 if ev else 0))
         stats["packs"] += len(packs)
+        if fallback:
+            stats["fallback repos"] += 1
+        if sources is not None:
+            sources[name] = (repo["commit"], fallback[0] if fallback else "", fallback[1] if fallback else "")
         # Commands in file order, each with the packs it belongs to.
         order = sorted({c for _, _, cs in packs for c in cs},
                        key=lambda pi: (list(repo["sets"]).index(pi[0]), pi[1]))
@@ -957,7 +1238,8 @@ def do_convert() -> int:
         return 1
     stats: collections.Counter = collections.Counter()
     unmatched: list[str] = []
-    lines = convert(stats, unmatched)
+    sources: dict = {}
+    lines = convert(stats, unmatched, sources=sources)
     skipped = sum(n for k, n in stats.items() if k.startswith("skip: "))
     vehicles = stats["repos"] - stats["repos without values"]
     head = tsv("O", vehicles, stats["repos"], stats["imported"], skipped, stats["packs"])
@@ -974,11 +1256,11 @@ def do_convert() -> int:
     print(f"{len(unmatched)} vehicles without a catalog model"
           + (": " + ", ".join(unmatched) if "--verbose" in sys.argv else " (--verbose lists them)"))
     repos = [line.split("\t")[1] for line in lines if line.startswith("R\t")]
-    write_attribution(repos, stats, vehicles, skipped)
+    write_attribution(repos, sources, stats, vehicles, skipped)
     return 0
 
 
-def write_attribution(repos: list[str], stats: collections.Counter, vehicles: int,
+def write_attribution(repos: list[str], sources: dict, stats: collections.Counter, vehicles: int,
                       skipped: int) -> None:
     pushed = json.load(open(os.path.join(CACHE, "repos.json"), encoding="utf-8"))
     state = max(r["pushed_at"] for r in pushed)[:10]
@@ -998,13 +1280,25 @@ equation that gives the same value as OBDb's own decoder; commands were split
 into packs by model year. Signals that cannot be expressed that way were left
 out ({reasons}).
 
+Models whose own signal sets are empty ({stats['fallback repos']} here) take OBDb's merged
+set of the make, as OBDb's tools do, but only where that was checked (FALLBACK
+in tools/gen_obdb.py) and only the commands and signals that the recorded
+answers of that model in its repository (tests/test_cases) confirm; such a
+line names the make repository and its commit after the model's own.
+
 Totals: {stats['repos']} repositories read, {vehicles} with values, {stats['packs']} packs,
 {stats['imported']} signals imported, {skipped} skipped.
 
-Repositories used, each at github.com/OBDb/<name>:
+Repositories used, each at github.com/OBDb/<name>, with the commit read:
 
 """
-    text += "\n".join(f"- {name}" for name in repos) + "\n"
+
+    def line(name: str) -> str:
+        commit, make, make_commit = sources.get(name, ("", "", ""))
+        text = f"- {name}" + (f" {commit}" if commit else "")
+        return text + (f" (signals from {make} {make_commit})" if make else "")
+
+    text += "\n".join(line(name) for name in repos) + "\n"
     with open(ATTRIBUTION, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
 

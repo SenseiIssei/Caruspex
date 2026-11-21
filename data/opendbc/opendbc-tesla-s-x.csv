@@ -17,3 +17,4 @@ Accelerator pedal,Pedal,CAN108,"DBC:48|8@1+(0.4,0)",0,100,%,,,Gaspedal,Pedal
 Brake pedal pressed,Brake,CAN118,"DBC:15|1@1+(1,0)",0,1,,,,Bremspedal getreten,Bremse
 Steering wheel angle,Steering,CAN00E,"DBC:5|14@0+(0.1,-819.2)",-600,600,°,,,Lenkradwinkel,Lenkung
 Steering wheel speed,Steer rate,CAN00E,"DBC:21|14@0+(0.5,-4096)",-1000,1000,°/s,,,Lenkgeschwindigkeit,Lenkrate
+Ambient air temperature,Outside,CAN283,"DBC:63|8@0+(0.5,-40)",-40,60,°C,,,Umgebungstemperatur,Außen

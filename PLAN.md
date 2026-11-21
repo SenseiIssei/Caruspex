@@ -98,7 +98,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 
 - [x] Eigene Messwerte importieren im verbreiteten Torque-CSV-Format, damit jeder seinem Auto Werte hinzufügen kann. Mittel
 - [x] Mitgelieferte Pakete nur mit belegter Quelle, zuerst E-Autos: Akkugesundheit (SOH), Zellspannungen und Temperaturen bei Hyundai/Kia, Renault Zoe, Nissan Leaf. Mittel je Paket
-- [ ] Danach VAG-Diesel: Rußbeladung und Regeneration des Partikelfilters, Ölstand. Offen, weil sich keine verlässliche Quelle fand und die Kennungen je Motor verschieden sind. Mittel
+- [~] Danach VAG-Diesel: Rußbeladung und Regeneration des Partikelfilters, Ölstand. Stand 21.11.: Rußmasse (27 Modelle), Werte zur Regeneration (45) und Ölstand (62) kommen aus den eigenen OBDb-Sätzen der Modelle, geprüft gegen Mitschnitte von Audi Q7, VW Transporter und VW Passat, am echten Auto noch nicht. Offen: gemessene Rußmasse, Strecke und Zeit seit der letzten Regeneration (340 Werte bei 50 Modellen), weil OBDb sie nur in der erweiterten Diagnosesitzung (10 03) liest und Caruspex für eigene Werte keine Sitzung wechselt; ob es das darf, entscheidet der Maintainer. Mittel
 - [x] Seite für E-Autos und Hybride: Akkugesundheit, Zellspreizung, Laden. Mittel
 - Stand: Pakete für Hyundai Kona und Kia e-Niro (33 Werte), Hyundai Ioniq 28 kWh (29), Renault Zoe Phase 1 (24) und Nissan Leaf ZE0/AZE0 (7), jeder Wert mit Quelle (OVMS, CanZE, OBDb, JejuSoul, EVNotify), geprüft gegen aufgezeichnete Antworten echter Autos
 
@@ -132,7 +132,7 @@ Heute sieht Caruspex bei CAN-Autos nur Motor und Getriebe über OBD-II. Fast all
 - [x] DoIP (ISO 13400-2): Fahrzeugsuche, Freigabe, Diagnose mit Bestätigung und Lebenszeichen; OBD über die funktionale Adresse 0xE400. Der Netzwerkanschluss probiert ENET und DoIP selbst
 - [x] Mithören am CAN-Bus mit DBC-Signalen (auch Multiplexer); Autos ohne OBD-Antwort, aber mit Verkehr, werden zum Mithören verbunden. Tesla Model 3 und Y aus dem MIT-lizenzierten DBC von joshwardell, VIN aus 0x405
 - [ ] Steuergerätelisten für DoIP-Autos (VW MEB, Volvo, Mercedes ab MBUX): keine belastbaren öffentlichen Adresslisten, kommt erst mit Mitschnitten
-- [ ] Tesla Model S und X, BYD, Xpeng, NIO: eigene Signale nur mit belastbarer, frei nutzbarer Quelle
+- [~] Tesla Model S und X, BYD, Xpeng, NIO: eigene Signale nur mit belastbarer, frei nutzbarer Quelle. Stand 21.11.: BYD Atto 3 mit 68 OBDb-Werten (BYD-Satz, nur soweit die aufgezeichneten Antworten des Atto 3 ihn bestätigen, OVMS liest dieselben Adressen) und 7 opendbc-Werten zum Mithören, Seal U über den OBDb-Satz des Sealion 6, Tesla Model X mit HW4 (2024) mit 6 opendbc-Werten, Model S und X bis 2020 zusätzlich mit der Außentemperatur; nur gegen aufgezeichnete Antworten und Beispielrahmen geprüft, am echten Auto nicht. Offen: Akkuwerte von Model S und X (nur OVMS, das sie selbst experimentell nennt), Xpeng und NIO (keine frei lizenzierte Quelle), die übrigen BYD-Modelle (Begründung in docs/legal-review.md, Punkt 11)
 - [ ] Mercedes-Adressliste (siehe Phase 6)
 - [x] Ältere BMW (E-Reihe vor 2007) über K-Line mit DS2/KWP2000 braucht ein K+DCAN-Kabel im K-Line-Modus und Tests am Auto (eigene Seite "BMW über K-Line" mit Suchlauf über DS2, KWP2000 und BMW-FAST, Kennung, Fehlerspeicher und Löschen nach Rückfrage; nur gegen den nachgebauten E46 und E60 getestet, am echten Auto noch nicht)
 
