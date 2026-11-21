@@ -920,6 +920,21 @@ fn opendbc_packs_listen_for_their_cars() {
         listen_packs_for("Tesla", "Model S", 2015),
         ["opendbc-tesla-s-x"]
     );
+    assert_eq!(
+        listen_packs_for("BYD", "Atto 3", 2023),
+        ["opendbc-byd-atto3"]
+    );
+    // The Model X: the early years from tesla_can, the HW4 cars from the
+    // party bus that opendbc shares with the Model 3 and Y.
+    assert_eq!(
+        listen_packs_for("Tesla", "Model X", 2016),
+        ["opendbc-tesla-s-x"]
+    );
+    assert_eq!(
+        listen_packs_for("Tesla", "Model X", 2024),
+        ["opendbc-tesla-model-x-hw4"]
+    );
+    assert!(listen_packs_for("Tesla", "Model 3", 2024).is_empty());
     assert_eq!(listen_packs_for("Kia", "K5", 0), ["opendbc-hyundai-kia"]);
     assert!(listen_packs_for("Volkswagen", "Golf", 2005).is_empty());
     assert!(listen_packs_for("Toyota", "Corolla", 2010).is_empty());
@@ -958,4 +973,24 @@ fn opendbc_packs_listen_for_their_cars() {
     let coolant = value("opendbc-vw-mqb", "Coolant");
     assert_eq!(coolant.request, "CAN640");
     assert!(approx(decode(&coolant, &[0, 0, 0, 0xB4, 0, 0, 0, 0]), 87.0));
+    // BYD Atto 3 WHEELSPEED_CLEAN (0x1F0): Intel, 16 bits from bit 0, 0.1 km/h.
+    let byd = value("opendbc-byd-atto3", "Speed");
+    assert_eq!(byd.request, "CAN1F0");
+    assert!(approx(decode(&byd, &[0xE8, 0x03, 0, 0, 0, 0, 0, 0]), 100.0));
+    // Its brake bit (DRIVE_STATE 0x242, bit 37) and steering angle (0x11F, signed).
+    let brake = value("opendbc-byd-atto3", "Brake");
+    assert_eq!(decode(&brake, &[0, 0, 0, 0, 0x20, 0, 0, 0]), 1.0);
+    let steer = value("opendbc-byd-atto3", "Steering");
+    assert!(approx(
+        decode(&steer, &[0x18, 0xFC, 0, 0, 0, 0, 0, 0]),
+        -100.0
+    ));
+    // Tesla Model S BODY_R1 (0x283): outside air in the last byte, 0.5 °C from -40.
+    let outside = value("opendbc-tesla-s-x", "Outside");
+    assert_eq!(outside.request, "CAN283");
+    assert!(approx(decode(&outside, &[0, 0, 0, 0, 0, 0, 0, 0x78]), 20.0));
+    // Model X HW4 DI_speed (0x257): 12 bits from bit 12, 0.08 km/h from -40.
+    let x = value("opendbc-tesla-model-x-hw4", "Speed");
+    assert_eq!(x.request, "CAN257");
+    assert!(approx(decode(&x, &[0, 0x60, 0x6D, 0, 0, 0, 0, 0]), 100.0));
 }

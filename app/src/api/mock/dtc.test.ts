@@ -3,6 +3,7 @@
 // codes put together from phrases read in that language too.
 import { afterAll, describe, expect, it } from "vitest";
 import { setCoreLanguage } from "./core";
+import { knowledgeHandlers } from "./areas/knowledge";
 import { describeDtc, lookupDtc } from "./dtc";
 
 describe("demo fault code texts", () => {
@@ -39,5 +40,19 @@ describe("demo fault code texts", () => {
     const note = lookupDtc("U0177").sourceNote;
     expect(note).not.toBe("");
     expect(note).not.toBe("Meaning from one source");
+  });
+
+  it("composed manufacturer codes read like in the app", async () => {
+    await setCoreLanguage("en");
+    const lexicon = await knowledgeHandlers.dtc_lexicon!(undefined as never);
+    const fiat = lexicon.find((e) => e.family === "FIAT" && e.code === "P1046");
+    expect(fiat?.text).toBe("Cylinder 1 oil supply solenoid valve (variable valve lift) - overcurrent");
+    expect(fiat?.sourceNote).toBe("");
+    const single = lexicon.find((e) => e.family === "MERCEDES" && e.code === "C1140");
+    expect(single?.sourceNote).toBe("Meaning from one source");
+    await setCoreLanguage("fr");
+    const french = (await knowledgeHandlers.dtc_lexicon!(undefined as never)).find((e) => e.family === "FIAT" && e.code === "P1046");
+    expect(french?.text).not.toBe(fiat?.text);
+    expect(french?.text).not.toMatch(/%\d/);
   });
 });

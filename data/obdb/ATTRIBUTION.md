@@ -7,559 +7,567 @@ contributors. OBDb and this adaptation are licensed under the
 licence, see `LICENSE` next to this file. This folder is not covered by the
 MIT licence of the Caruspex code.
 
-Changes made: `tools/gen_obdb.py` converted the signal sets as of 2026-11-11
+Changes made: `tools/gen_obdb.py` converted the signal sets as of 2026-11-21
 into packs of custom values for Caruspex. Every signal became a Torque
 equation that gives the same value as OBDb's own decoder; commands were split
 into packs by model year. Signals that cannot be expressed that way were left
-out (enumeration 832, extended 8224, functional 527, k-line 20, no model year or replaced 82, null bound 3510, session 6366, too long 26).
+out (enumeration 976, extended 8245, fallback unconfirmed 1, functional 527, k-line 20, no model year or replaced 82, null bound 4065, session 6366, too long 26).
 
-Totals: 810 repositories read, 545 with values, 968 packs,
-153794 signals imported, 19587 skipped.
+Models whose own signal sets are empty (1 here) take OBDb's merged
+set of the make, as OBDb's tools do, but only where that was checked (FALLBACK
+in tools/gen_obdb.py) and only the commands and signals that the recorded
+answers of that model in its repository (tests/test_cases) confirm; such a
+line names the make repository and its commit after the model's own.
 
-Repositories used, each at github.com/OBDb/<name>:
+Totals: 810 repositories read, 547 with values, 987 packs,
+153600 signals imported, 20308 skipped.
 
-- Acura-CSX
-- Acura-ILX
-- Acura-Integra
-- Acura-MDX
-- Acura-RDX
-- Acura-TL
-- Acura-TLX
-- Acura-TSX
-- Acura-ZDX
-- Aiways-U5
-- Audi-A1
-- Audi-A3
-- Audi-A3-e-tron
-- Audi-A4
-- Audi-A5
-- Audi-A6
-- Audi-A7
-- Audi-e-tron
-- Audi-e-tron-GT
-- Audi-Q2
-- Audi-Q3
-- Audi-Q4-e-tron
-- Audi-Q5
-- Audi-Q7
-- Audi-Q8
-- Audi-Q8-e-tron
-- Audi-RS-3
-- Audi-RS-5
-- Audi-RS-e-tron
-- Audi-S3
-- Audi-S4
-- Audi-S5
-- Audi-S6
-- Audi-SQ2
-- Audi-SQ5
-- Audi-SQ7
-- Audi-SQ8
-- Audi-TT
-- Audi-TTS
-- Bentley-Bentayga
-- Buick-Enclave
-- Buick-Encore
-- Buick-Envision
-- Buick-LaCrosse
-- BYD-Sealion-6
-- Cadillac-CT4
-- Cadillac-CT5
-- Cadillac-CT6
-- Cadillac-CTS
-- Cadillac-DTS
-- Cadillac-ELR
-- Cadillac-Escalade
-- Cadillac-LYRIQ
-- Cadillac-SRX
-- Cadillac-XT5
-- Chevrolet-Avalanche
-- Chevrolet-Aveo
-- Chevrolet-Blazer
-- Chevrolet-Bolt-EUV
-- Chevrolet-Bolt-EV
-- Chevrolet-Camaro
-- Chevrolet-Caprice
-- Chevrolet-Cobalt
-- Chevrolet-Colorado
-- Chevrolet-Corvette
-- Chevrolet-Cruze
-- Chevrolet-Cruze-Limited
-- Chevrolet-Equinox
-- Chevrolet-Equinox-EV
-- Chevrolet-Express
-- Chevrolet-Express-Cargo
-- Chevrolet-HHR
-- Chevrolet-Impala
-- Chevrolet-Impala-Limited
-- Chevrolet-Malibu
-- Chevrolet-Orlando
-- Chevrolet-S-10
-- Chevrolet-Sail
-- Chevrolet-Silverado
-- Chevrolet-Silverado-1500
-- Chevrolet-Silverado-2500
-- Chevrolet-Silverado-3500
-- Chevrolet-Sonic
-- Chevrolet-Spark
-- Chevrolet-Spin
-- Chevrolet-Tahoe
-- Chevrolet-Trailblazer
-- Chevrolet-Traverse
-- Chevrolet-Trax
-- Chevrolet-Volt
-- Chrysler-200
-- Chrysler-300
-- Chrysler-Pacifica
-- Citroen-eC4-X
-- Cupra-Born
-- Cupra-Formentor
-- Cupra-Leon
-- Cupra-Tavascan
-- Cupra-Terramar
-- Dacia-Dokker
-- Dacia-Duster
-- Dacia-Sandero
-- Dacia-Spring
-- Daihatsu-Hijet
-- Daihatsu-Terios
-- Dodge-Caliber
-- Dodge-Challenger
-- Dodge-Charger
-- Dodge-Dakota
-- Dodge-Dart
-- Dodge-Durango
-- Dodge-Grand-Caravan
-- Dodge-Hornet
-- Dodge-Journey
-- FIAT-500
-- FIAT-500e
-- FIAT-500X
-- FIAT-Bravo
-- FIAT-Fastback
-- FIAT-Panda
-- FIAT-Qubo
-- Ford-B-Max
-- Ford-Bronco
-- Ford-Bronco-Sport
-- Ford-C-Max
-- Ford-C-Max-Energi
-- Ford-C-Max-Hybrid
-- Ford-Crown-Victoria
-- Ford-E-Series
-- Ford-E-Series-Wagon
-- Ford-EcoSport
-- Ford-Edge
-- Ford-Escape
-- Ford-Everest
-- Ford-Expedition
-- Ford-Explorer
-- Ford-Explorer-Sport-Trac
-- Ford-F-150
-- Ford-F-150-Lightning
-- Ford-F-250
-- Ford-F-350
-- Ford-Fiesta
-- Ford-Flex
-- Ford-Focus
-- Ford-Focus-Electric
-- Ford-Focus-RS
-- Ford-Focus-ST
-- Ford-Fusion
-- Ford-Fusion-Energi
-- Ford-Fusion-Hybrid
-- Ford-Kuga
-- Ford-Maverick
-- Ford-Mondeo
-- Ford-Mustang
-- Ford-Mustang-Mach-E
-- Ford-Puma
-- Ford-Ranger
-- Ford-S-Max
-- Ford-Taurus
-- Ford-Taurus-X
-- Ford-Territory
-- Ford-Tourneo
-- Ford-Transit
-- Ford-Transit-Connect
-- Genesis-G70
-- Genesis-G80
-- Genesis-GV60
-- Genesis-GV80
-- GMC-Acadia
-- GMC-Canyon
-- GMC-Sierra-1500
-- GMC-Sierra-2500HD
-- GMC-Sierra-3500HD
-- GMC-Terrain
-- GMC-Yukon
-- GMC-Yukon-XL
-- Haval-H6-HEV
-- Haval-Jolion
-- Haval-Jolion-HEV
-- Holden-Colorado
-- Holden-Commodore
-- Holden-Cruze
-- Honda-Accord
-- Honda-Accord-Hybrid
-- Honda-City
-- Honda-Civic
-- Honda-Clarity
-- Honda-CR-V
-- Honda-CR-V-Hybrid
-- Honda-CR-Z
-- Honda-Crosstour
-- Honda-Element
-- Honda-Fit
-- Honda-HR-V
-- Honda-Insight
-- Honda-Jazz
-- Honda-Odyssey
-- Honda-Pilot
-- Honda-Prelude
-- Honda-Prologue
-- Honda-Ridgeline
-- Honda-S2000
-- Honda-Shuttle
-- Honda-ZR-V
-- Hyundai-Accent
-- Hyundai-Avante
-- Hyundai-Azera
-- Hyundai-Elantra
-- Hyundai-HB20
-- Hyundai-HB20S
-- Hyundai-i10
-- Hyundai-i20
-- Hyundai-i30
-- Hyundai-i40
-- Hyundai-IONIQ-5
-- Hyundai-IONIQ-6
-- Hyundai-IONIQ-9
-- Hyundai-IONIQ-Electric
-- Hyundai-IONIQ-PlugIn-Hybrid
-- Hyundai-Kona
-- Hyundai-Kona-Electric
-- Hyundai-Palisade
-- Hyundai-Santa-Cruz
-- Hyundai-Santa-Fe
-- Hyundai-Santa-Fe-Hybrid
-- Hyundai-Sonata
-- Hyundai-Tucson
-- Hyundai-Tucson-Hybrid
-- Hyundai-Veloster
-- Hyundai-Venue
-- Hyundai-Veracruz
-- Hyundai-Verna
-- INFINITI-Q50
-- INFINITI-Q60
-- INFINITI-QX50
-- INFINITI-QX55
-- INFINITI-QX60
-- INFINITI-QX70
-- INFINITI-QX80
-- Jaguar-E-PACE
-- Jaguar-F-PACE
-- Jaguar-F-TYPE
-- Jaguar-I-PACE
-- Jeep-Avenger
-- Jeep-Cherokee
-- Jeep-Compass
-- Jeep-Gladiator
-- Jeep-Grand-Cherokee
-- Jeep-Grand-Wagoneer
-- Jeep-Patriot
-- Jeep-Renegade
-- Jeep-Wagoneer-L
-- Jeep-Wrangler
-- Jeep-Wrangler-4xe
-- Jeep-Wrangler-JK
-- Kia-Cadenza
-- Kia-Carens
-- Kia-Carnival
-- Kia-Ceed
-- Kia-Cerato
-- Kia-EV3
-- Kia-EV6
-- Kia-EV9
-- Kia-Forte
-- Kia-K4
-- Kia-K5
-- Kia-Niro
-- Kia-Niro-EV
-- Kia-Optima
-- Kia-Picanto
-- Kia-Rio
-- Kia-Seltos
-- Kia-Sonet
-- Kia-Sorento
-- Kia-Soul
-- Kia-Soul-EV
-- Kia-Sportage
-- Kia-Sportage-HEV
-- Kia-Stinger
-- Kia-Stonic
-- Kia-Tasman
-- Kia-Telluride
-- Kia-XCeed
-- Land-Rover-Defender
-- Land-Rover-Discovery
-- Land-Rover-LR4
-- Land-Rover-Range-Rover
-- Land-Rover-Range-Rover-Evoque
-- Land-Rover-Range-Rover-Velar
-- Lexus-CT-200h
-- Lexus-ES
-- Lexus-ES-300h
-- Lexus-GX
-- Lexus-GX-460
-- Lexus-GX-470
-- Lexus-IS
-- Lexus-LS-600h-L
-- Lexus-NX
-- Lexus-NX-350h
-- Lexus-RC
-- Lexus-RX
-- Lexus-UX
-- Lincoln-MKC
-- Lincoln-MKZ
-- Lincoln-Nautilus
-- Lincoln-Navigator
-- Lincoln-Town-Car
-- Mazda-2
-- Mazda-3
-- Mazda-5
-- Mazda-6
-- Mazda-B-Series-Pickup
-- Mazda-BT50
-- Mazda-CX-3
-- Mazda-CX-30
-- Mazda-CX-5
-- Mazda-CX-50
-- Mazda-CX-60
-- Mazda-CX-9
-- Mazda-CX-90
-- Mazda-Mazdaspeed-3
-- Mazda-Mazdaspeed-MX-5
-- Mazda-MX-30
-- Mazda-MX-5
-- Mazda-Tribute
-- Mercedes-Benz-A-180
-- Mercedes-Benz-B-Class
-- Mercedes-Benz-C-Class
-- Mercedes-Benz-CL-Class
-- Mercedes-Benz-CLK-Class
-- Mercedes-Benz-E-Class
-- Mercedes-Benz-EQA
-- Mercedes-Benz-EQB
-- Mercedes-Benz-EQV
-- Mercedes-Benz-G-Class
-- Mercedes-Benz-GLA-Class
-- Mercedes-Benz-GLC-Class
-- Mercedes-Benz-GLK-Class
-- Mercedes-Benz-M-Class
-- Mercedes-Benz-ML-350
-- Mercedes-Benz-SL-Class
-- Mercedes-Benz-SLC-Class
-- Mercedes-Benz-SLK-Class
-- Mercedes-Benz-Viano
-- MG-EHS
-- MG-HS
-- MG-MG4
-- MG-MG5
-- MG-One
-- MG-RX9
-- MG-ZS
-- MG-ZS-EV
-- Mitsubishi-ASX
-- Mitsubishi-Eclipse-Cross
-- Mitsubishi-Outlander
-- Mitsubishi-Outlander-PHEV
-- Mitsubishi-Outlander-Sport
-- Mitsubishi-RVR
-- Mitsubishi-Triton
-- Nissan-350Z
-- Nissan-370Z
-- Nissan-Altima
-- Nissan-ARIYA
-- Nissan-Armada
-- Nissan-Frontier
-- Nissan-Juke
-- Nissan-Kicks
-- Nissan-Leaf
-- Nissan-Maxima
-- Nissan-Micra
-- Nissan-Murano
-- Nissan-NV-Passenger
-- Nissan-Pathfinder
-- Nissan-Patrol
-- Nissan-Pulsar
-- Nissan-Qashqai
-- Nissan-Rogue
-- Nissan-Rogue-Sport
-- Nissan-Sentra
-- Nissan-Titan
-- Nissan-Titan-XD
-- Nissan-Versa
-- Nissan-X-Trail
-- Nissan-Xterra
-- Nissan-Z
-- Peugeot-107
-- Peugeot-2008
-- Peugeot-207
-- Peugeot-208
-- Peugeot-3008
-- Peugeot-308
-- Peugeot-408
-- Peugeot-5008
-- Peugeot-508
-- Peugeot-e-208
-- Peugeot-Partner
-- Peugeot-RCZ
-- Polestar-2
-- Polestar-4
-- Porsche-718
-- Porsche-911
-- Porsche-Cayenne
-- Porsche-Cayman
-- Porsche-Macan
-- Porsche-Macan-Electric
-- Porsche-Panamera
-- Porsche-Taycan
-- Ram-1500
-- Ram-1500-Classic
-- Ram-2500
-- Ram-3500
-- Ram-ProMaster-Window-Van
-- Renault-Captur
-- Renault-Clio
-- Renault-Duster
-- Renault-Kadjar
-- Renault-Laguna
-- Renault-Megane
-- Renault-Megane-E-Tech
-- Renault-Scenic
-- Renault-Symbioz
-- Renault-Trafic
-- Renault-Twingo
-- Renault-ZOE
-- Scion-FR-S
-- Scion-iQ
-- Scion-tC
-- Scion-xB
-- Seat-Alhambra
-- Seat-Arona
-- Seat-Ateca
-- Seat-Ibiza
-- Seat-Leon
-- Seat-Mii
-- Seat-Mii-Electric
-- Seat-Tarraco
-- Skoda-Citigo-e-iV
-- smart-fortwo
-- Subaru-Ascent
-- Subaru-BRZ
-- Subaru-Crosstrek
-- Subaru-Forester
-- Subaru-Impreza
-- Subaru-Legacy
-- Subaru-Outback
-- Subaru-Solterra
-- Subaru-Tribeca
-- Subaru-WRX
-- Suzuki-Baleno
-- Suzuki-Jimny
-- Suzuki-Splash
-- Suzuki-Swift
-- Suzuki-Vitara
-- Suzuki-XL7
-- Toyota-4Runner
-- Toyota-Allion
-- Toyota-Aqua
-- Toyota-Auris
-- Toyota-Avalon
-- Toyota-Avalon-Hybrid
-- Toyota-Aygo
-- Toyota-bZ4X
-- Toyota-C-HR
-- Toyota-Camry
-- Toyota-Camry-Hybrid
-- Toyota-Corolla
-- Toyota-Corolla-Cross
-- Toyota-Corolla-Hybrid
-- Toyota-Crown
-- Toyota-FJ-Cruiser
-- Toyota-Fortuner
-- Toyota-GR-Corolla
-- Toyota-GR86
-- Toyota-Grand-Highlander
-- Toyota-Grand-Highlander-Hybrid
-- Toyota-GT86
-- Toyota-Hiace
-- Toyota-Highlander
-- Toyota-Hilux
-- Toyota-Land-Cruiser
-- Toyota-Land-Cruiser-Hybrid
-- Toyota-Matrix
-- Toyota-Mirai
-- Toyota-Prius
-- Toyota-Prius-Prime
-- Toyota-Prius-v
-- Toyota-RAV4
-- Toyota-RAV4-Hybrid
-- Toyota-RAV4-Prime
-- Toyota-Sequoia
-- Toyota-Sienna
-- Toyota-Sienna-Hybrid
-- Toyota-Tacoma
-- Toyota-Tundra
-- Toyota-Veloz
-- Toyota-Venza
-- Toyota-Venza-Hybrid
-- Toyota-Vios
-- Toyota-Yaris
-- Toyota-Yaris-Cross
-- Toyota-Yaris-iA
-- VauxhallOpel-Corsa-e
-- VauxhallOpel-Mokka
-- Volkswagen-Amarok
-- Volkswagen-Arteon
-- Volkswagen-Atlas
-- Volkswagen-Beetle
-- Volkswagen-Beetle-Convertible
-- Volkswagen-CC
-- Volkswagen-Crafter
-- Volkswagen-e-Golf
-- Volkswagen-e-Up
-- Volkswagen-Golf
-- Volkswagen-ID-Buzz
-- Volkswagen-ID.4
-- Volkswagen-ID3
-- Volkswagen-ID5
-- Volkswagen-ID7-Tourer
-- Volkswagen-Jetta
-- Volkswagen-Jetta-GLI
-- Volkswagen-Multivan
-- Volkswagen-Passat
-- Volkswagen-Polo
-- Volkswagen-Scirocco
-- Volkswagen-T-Cross
-- Volkswagen-T-Roc
-- Volkswagen-T6-Transporter
-- Volkswagen-Taigo
-- Volkswagen-Taos
-- Volkswagen-Tiguan
-- Volkswagen-Touareg
-- Volkswagen-Touran
-- Volkswagen-Transporter
-- Volkswagen-Up
-- Volkswagen-Virtus
-- Volvo-S40
-- Volvo-S60
-- Volvo-S80
-- Volvo-S90
-- Volvo-V40
-- Volvo-V60
-- Volvo-XC40
-- Volvo-XC40-Recharge
-- Volvo-XC60
-- Volvo-XC90
+Repositories used, each at github.com/OBDb/<name>, with the commit read:
+
+- Acura-CSX 7a935570188250fad299efde526f5b5128155fdc
+- Acura-ILX 699d5995257211f9211d034c8fe928c5a9708ccd
+- Acura-Integra 0f59c9331a69877b1413947d1a1d6328351ce24f
+- Acura-MDX 12167e098b97566272d274abe62c99d9b74a8c88
+- Acura-RDX 3bafc225442859f7dc1f1348101c7d8ce95355cb
+- Acura-TL 9d7452410fbb659f472a16f83df123a93730c819
+- Acura-TLX 4a4ae07e5a8c5485248184f1275269b131a51de3
+- Acura-TSX b34049bd47075655988a6cb5be7ce2ac10ab2287
+- Acura-ZDX ec03830f318c28e1e4e7285f290c3ee44fe2a108
+- Aiways-U5 c36d61dcb8382bd800d4c645d265cc4cbac164db
+- Audi-A1 4cc9227bcbddab303d36c8b799c0bbb51c65282d
+- Audi-A3 e1f031c7f2440f348779d129f9ca3a515e4c1fbc
+- Audi-A3-e-tron e31c08850e18abf7dbbe8e92a0dfba3e6f7c6293
+- Audi-A4 4465c39f561ce69079dff20eaeb1a4151b93b586
+- Audi-A5 111414a3d8205451434d43c3ff8e4efc3f8391fb
+- Audi-A6 aa8d32d6679cbd7860281d83d8a3c8ea8a2031d7
+- Audi-A7 96bb171f677fa7ddc5eecfb90ace2b31788a6d6f
+- Audi-e-tron 7f8fc996c6c1743a302210249d3d49399ca2eb75
+- Audi-e-tron-GT 3bab0660913d6d7bcbe1d0f8992008fb5c9efef1
+- Audi-Q2 29c100c9ab38c4888b59830644f9af16038d5d91
+- Audi-Q3 f4f3d718d13e9b535b8761eeb93ba55992ae2ed7
+- Audi-Q4-e-tron 1d04198ed4e0139b1be831a816650d72de12957e
+- Audi-Q5 a5e9ec247b42831654af1b2c0b43a39c009711c0
+- Audi-Q7 7cc36c3e7f17dbd1c8f49cf547ab8e2b64615bb9
+- Audi-Q8 9d88192cc703bd284d0a3abc042cdd90e877ec4a
+- Audi-Q8-e-tron ef1bd1f00720daf8b7908d46e4d6df03ae07ab2c
+- Audi-RS-3 50a4faf755f7070548af4e9cfd46cdc5e9a4a46d
+- Audi-RS-5 f28977c4c2fc539f2a897a2871c5213152508727
+- Audi-RS-e-tron 38bd948913bc3757266142b90007b8a05f5501d2
+- Audi-S3 e2274ed557b085a38a3d2b056eb132e7f8197512
+- Audi-S4 c40b8fab4750b3a935993da91d85eab4dd7a4c1d
+- Audi-S5 cef5878f0eaecbeac108cf94ea1d4676d2470bd6
+- Audi-S6 07eee2f59035adf397aed13f9b03d172a797a4b3
+- Audi-SQ2 6590e09a8e75f70c3cc4c23010f80d36a223a223
+- Audi-SQ5 9d5f699a13a096f729b7a53dbc0365e8c13e84f0
+- Audi-SQ7 8beddb61197b826cdef56a93a68053d702b58f0a
+- Audi-SQ8 806fcc96c0a794dc29cc5013bb0818a115d2097e
+- Audi-TT 2b3b89e8c37c6f8a0af6fb67fb100edee1017383
+- Audi-TTS 7597691d9e6890e703a12c6ad18314f1f6d371c6
+- Bentley-Bentayga 658d43f3e1c7bae47d7687c4f329570ffcefd8b8
+- Buick-Enclave 0e4be3209ad9ba7d7e243f4491df37c286530ff6
+- Buick-Encore 508e2831e04ac110c99148d522038d4be068b1a2
+- Buick-Envision a5047ac06f84a552ee663cd9e4463bfe97eeb596
+- Buick-LaCrosse 77b0d5d45c2564f8f53265387be83a15fb47a78c
+- BYD-Atto-3 2019ba775df917db9c5cdb024537929f8b8dbc34 (signals from BYD c154169b7527849a6d4d6493de7b0ebaf98739f2)
+- BYD-Sealion-6 5037f3b62c1bc34bcfc5f30435870db7feb55326
+- Cadillac-CT4 eb56f57f87fca4ea65b53bca6ad3ca7ba4a79e41
+- Cadillac-CT5 c2c697d8e8279653a6a023329205e278945d5bde
+- Cadillac-CT6 5c83fed7fef51badb7863585c44adb5dd917e8ee
+- Cadillac-CTS fc43c1c3488c5a538cabf00dcc04d6bd3913339d
+- Cadillac-DTS 27e6899a1da4687d7ee9ff118eb41432db6a332d
+- Cadillac-ELR 632445310f044b1029506a436cbb461fa40fcd8c
+- Cadillac-Escalade 63273ce7b27582b14d6bd50476ce64e1518821ab
+- Cadillac-LYRIQ 4e39c634a5c6eb20dc69755f0c6d91c1abc5940e
+- Cadillac-SRX 9daaf80feba4cc3e9dea21cc0d232dcb47c3000f
+- Cadillac-XT5 81020257be9306184cccd467de922d54feecaa31
+- Chevrolet-Avalanche cb4dfc00bf2e6001a9419e9352f541e23eb53ead
+- Chevrolet-Aveo e447edb88023102266ff70e17b5d78a844781ff8
+- Chevrolet-Blazer e0e3d4f208bc9c24ab37bbf92b674fd3bcd070f6
+- Chevrolet-Bolt-EUV 957bf52461383efb79e11ad56e3b9f57b1be1197
+- Chevrolet-Bolt-EV 8751d886de80798986f2a0bb59f46bb5a4c01d01
+- Chevrolet-Camaro 6771593698dff29cc0c6e8d6219ff360b2891883
+- Chevrolet-Caprice 7e3e446fb14101f46c0b5922b07107fe97e60b68
+- Chevrolet-Cobalt 95789e8da6795e60f9bb839b1b3e697e91f08d48
+- Chevrolet-Colorado e7830c6edfd408e84c091585b3376d2eb2f69283
+- Chevrolet-Corvette 600a42e77512e5e3f69224081a2e969164885b17
+- Chevrolet-Cruze bfc22e59508a5d61266d084800b75b07845ce52a
+- Chevrolet-Cruze-Limited fa1b4194ae8524ea7ba0f22afa06aef412f19af1
+- Chevrolet-Equinox 4f3c39d7a2ad0c01328cfdc02d27ef82276da838
+- Chevrolet-Equinox-EV 0706b11899bd0f799c65689a36caa2adc002bfc9
+- Chevrolet-Express 4ffa5a92e1cebfc28d9687b4bd9879ad0d09505c
+- Chevrolet-Express-Cargo 326e1003ffd0df8b9d69b89af4a3d8f790dcf9ff
+- Chevrolet-HHR 4849c33a6dfb65efa71cd4ea3928cd781dd85b02
+- Chevrolet-Impala 1934f8f265981f733288d56c3e23de6b36775a79
+- Chevrolet-Impala-Limited 04105d5979b0bc4a469dcd4197372e9f35695495
+- Chevrolet-Malibu 74324f9643f6055879ca6db07960e8aff2ab9ee5
+- Chevrolet-Orlando 1c384d8f1e14e9f3b9622fc935105c565821e6d0
+- Chevrolet-S-10 6abd84bb24656ab0d3cea7ea0b5fd2b5736f4885
+- Chevrolet-Sail 4554b2bb11d205d9518bd7ddcd648125d54a582e
+- Chevrolet-Silverado 4652e1fb7e0bb0408f16740b025e5496c605e591
+- Chevrolet-Silverado-1500 788b694027448ff6fa328296befed8d48f1d5967
+- Chevrolet-Silverado-2500 818bed6e63efa28331caebc530008265859fe806
+- Chevrolet-Silverado-3500 00fbddf45a7d97d795c8c1bfc063b0c5ae925de0
+- Chevrolet-Sonic 19e19c4b637a314a37f42b9c2f5b7043f75761c6
+- Chevrolet-Spark a2b49b87604a82fadaa998fc62d4c20e1219b28c
+- Chevrolet-Spin c0793d58218092cadd3deaa928a2c360f9952e9e
+- Chevrolet-Tahoe f4d210efd01d6b4c8d4604f592d84748f7d7a062
+- Chevrolet-Trailblazer 19e1a3e607ef1d277f379e055e0f88a4d34e9ad1
+- Chevrolet-Traverse 9e69a23962a57f824664566a42052a084561fa2c
+- Chevrolet-Trax e9914133405762235dbbdc71d71c99052eef20fe
+- Chevrolet-Volt ce7c7feaf847a6d3288305b1dd559d7474d70ff6
+- Chrysler-200 ea4433131a620678906012eecaa38f18623ebdd1
+- Chrysler-300 8fc1b4717a4f072df50dc7bf8aecfacddb51c4a0
+- Chrysler-Pacifica e7d3183924d43f2cb9e101b9d205fc850f779822
+- Citroen-eC4-X 553e9e01be2adff83c04b06cfc2041434787a036
+- Cupra-Born fca6091d9657997b1fa748ae1eaa54fb27ba55d0
+- Cupra-Formentor 9a9e09c3c9c979afe586a444b57f510a2bf39a29
+- Cupra-Leon e3c8dfdfd5e2b6f48a32413ca5bd3774ec328fc1
+- Cupra-Tavascan 4bf20b4dea69677e521cd3ba42a13d10f5bc7ed9
+- Cupra-Terramar 0b7c23a0be7bfb11ece986dc47f455d9d1994683
+- Dacia-Dokker 02b14d31232b5f2bcf89131b2bba704c4a1f919a
+- Dacia-Duster 50ec48ea7810f48e3a6ec52730d6a93e5808bc74
+- Dacia-Sandero c3ae02974aac2d52254411b19a37ea21dad9f39d
+- Dacia-Spring 21a3ae1a8b165aa06d9665a8d87417076ad2070d
+- Daihatsu-Hijet e41f319e4b4a7c055049c771a5b4a3b2e8f8ae12
+- Daihatsu-Terios b4737497b82d01e9f8282a2480de5135dc1eac39
+- Dodge-Caliber 2716bc417d5b9954437e2937bdef1aa201e9e7c1
+- Dodge-Challenger 9e6ec139ea212fd9a978096c6212074ae31ceab8
+- Dodge-Charger f3053864c13c0d811dcb05a7bb7f35085af3a927
+- Dodge-Dakota 2948ae0c6f0625dc1c41caf81eb0b57475764c73
+- Dodge-Dart 7647f6f26a1d64a9f00e52ed31905159856d2ffe
+- Dodge-Durango 5c108ee3c61c0b3d98ab050578d9691c78546075
+- Dodge-Grand-Caravan 209c66d0081841532c1016c7ead64ae1c44d42cf
+- Dodge-Hornet d2def1b939d99128cba3ac94146864b3e10050f8
+- Dodge-Journey e9c2e21f3aa9d0c2797205b3fadc46f4f4f53415
+- FIAT-500 4a2825f052a0d5860e6f9c5115809a8a4651d7fd
+- FIAT-500e ee1b9b2546c09fffbad5da47a07284ce6e47dbb8
+- FIAT-500X 76f175cbdee46bf30b1c239eb6b2bc9f9f7988c9
+- FIAT-Bravo dd6f996db7a1bbdbbc272c20f368635553ed40a8
+- FIAT-Fastback 2d05d3feab69e8b1bebb134e7111a3315f1d9462
+- FIAT-Panda 1b8d1cf9b3b4e9645920433a47790b62398eadcf
+- FIAT-Qubo 9683b45ff1ff9cbbda83b1354319b21e8323a28a
+- Ford-B-Max 4d6a3ec8170cc3f3772032fd77af222b65775e86
+- Ford-Bronco 4897c25852b3eb280421a8161362ae98f7611ef1
+- Ford-Bronco-Sport d9e9f00336420d4b592def24678b1e30c4e6707f
+- Ford-C-Max 3acf5af9b5251cd929b80e5572f60cfcd0ea3821
+- Ford-C-Max-Energi fcecdf8240a883223de0619f3cb2b1edf9d6daad
+- Ford-C-Max-Hybrid 1b35f26802b71469748d3141ed4513a8d597e266
+- Ford-Crown-Victoria f4ffbc4bfec485715f68dd42476085e057ee8fe8
+- Ford-E-Series 16326083f8b2dfc8d8e6800a3fad82381d243988
+- Ford-E-Series-Wagon 35dfb191c13db84e72458773bfab7e358a708df0
+- Ford-EcoSport 56781b7a2854546c1e928efeba64a5cb9c883dd8
+- Ford-Edge c58f8c8234a3aed9e692670f57b864796220138f
+- Ford-Escape c9c28b963d51bece323d64ae27049ef0abfa5baa
+- Ford-Everest 7d16f6c7490df5eff5f62ecbeeb98c99e9229dc5
+- Ford-Expedition 27cccb7243e06f3c1b4ac9aebe3285f4324312a4
+- Ford-Explorer 0f217c36959fb6304f91001dc97b212e35a2704b
+- Ford-Explorer-Sport-Trac 1f16244bc9d8c7378cbb19b79d2ce8f864f24457
+- Ford-F-150 bdf565ce7402399eab6e4205cff8670e2cf10254
+- Ford-F-150-Lightning 4cce162ca99e65db4c2ffcb6a843b8a9f07f4d18
+- Ford-F-250 f64e2e4707b2b7072dbf471905009ac7be9fd008
+- Ford-F-350 16078a25276d4540004db0c60eb2ab5e45cd25d3
+- Ford-Fiesta b25c6b6a06cc55a7547616e761eacea1517ec0ce
+- Ford-Flex 47a5776a8b9b52733488ffe4d28f19214412f847
+- Ford-Focus a94578aae9e9f3fa0c49277c6492c661fba919d7
+- Ford-Focus-Electric 19d65d6f651e58af78d8fc837d23f2e9be4740fe
+- Ford-Focus-RS 6f595329de56a4717a0c5040ef23744b57ad10ad
+- Ford-Focus-ST 3225128e521e35eeb3b1dce6cf6a5c701a66c8d6
+- Ford-Fusion 8b727f5aa21b130ec81845f03d677b804a556900
+- Ford-Fusion-Energi 0329e705f9ca00513b2f8a4662233e1b732cdeb7
+- Ford-Fusion-Hybrid 66e6d04372d72d50cdbd9263a32499bf1f044543
+- Ford-Kuga 03f2a22de3707b1385206db769f2729ee672175b
+- Ford-Maverick 3f48810ae43d8f118b82e89e5c54db1b02e294a3
+- Ford-Mondeo 909caab064db146d5a9d1979aa38e7a44f88bd46
+- Ford-Mustang 8de1188986fefc477f7dbaaecffc7ff585b0f65d
+- Ford-Mustang-Mach-E e03e9b55f40abd672666f1fd741cab2aabd992a7
+- Ford-Puma b291ee79c63ea1025e8573a92480e43d653ca571
+- Ford-Ranger e7b126c0628c392450ff601e64c174fdb0899d20
+- Ford-S-Max a2f09f35daf0d56100aaad7abe0ab70a488a3493
+- Ford-Taurus 40c24282030b42eb637bb30d15f2b46268c412b7
+- Ford-Taurus-X cb8d6fd5f5c577aadac5c8a2a980c7723a74c59e
+- Ford-Territory 67caa6d8814da7aa3b8482f1d426307eea5ce1f1
+- Ford-Tourneo ea5e7c8b65a539c25815f2e9ea5a4c0d5aae0c2b
+- Ford-Transit 4d0a20cfa15d1a6ae80c16f88be75d94d983181d
+- Ford-Transit-Connect 175b0277516165a75c7b7389c184f792f3103112
+- GAC-Aion-V 0dbe08650e2cf1f1985de9e4c47345272db3ba6f
+- Genesis-G70 c860c2dcf9dcfc6123f5d0c96d5b7c3c74e40618
+- Genesis-G80 a9e7d69c79ca1f461d6d27a9876225f83b58d477
+- Genesis-GV60 e5d9b204304822807398dae3387965960dad2904
+- Genesis-GV80 9b15f7551b9fe3da39135c5c33b66823fa50798c
+- GMC-Acadia 82855c55a41e9d1b2bf847227cafd9a43643709b
+- GMC-Canyon a666899514264bf9e4585876d474cdffabc112b2
+- GMC-Sierra-1500 b24ab85433f5030fdc0393b4d633767b75837c55
+- GMC-Sierra-2500HD e99722ca6fd2de40ba0dd2a4d5f41718587a01a8
+- GMC-Sierra-3500HD 2ba2b9b8508aa1ca264f47552f96ba6beca9d606
+- GMC-Terrain 535133273bb0b38311cbe215d90205a44120dcad
+- GMC-Yukon 1cf2a14b066a6eae14036759ef045acc1eb0df77
+- GMC-Yukon-XL b765c54475512c076117eaf9bfbc79f49c5d415e
+- Haval-H6-HEV 9615b9941b76d1861d57eb9dab153e11d3114755
+- Haval-Jolion f03ad615b0c98563a76ec702e0bf73d0c984407a
+- Haval-Jolion-HEV cb0371f0dd30d8cb77574465ec5b15a1fc46eb22
+- Holden-Colorado 6798ec231e8af31ff79e2c6ce8c40044b6c3de0c
+- Holden-Commodore 64d1b6208b8b2dc08403156384d968b078fa7c9e
+- Holden-Cruze f721843f2ea010c150b505196b06d24e0243dfc5
+- Honda-Accord 13f09e2d4006b3bd411e55efbf23ea784a868da0
+- Honda-Accord-Hybrid bec5ae01ef274c4902ca3c311e26b212a6c296da
+- Honda-City 23e09e2403f7f8f3e9a20f28853663669989f086
+- Honda-Civic d0420aa5bd6285d88596c20eea798e4f3b964ada
+- Honda-Clarity dedcb90f97972fa6e34a498492bfc6ba71bd065a
+- Honda-CR-V f82a2c4ae3dcac286737a0acd778b0e1747517e0
+- Honda-CR-V-Hybrid 0318a490ccdcf91411460391526f7b4bcacbe83a
+- Honda-CR-Z feef1200aabe81cd281f34c382c61735482ba218
+- Honda-Crosstour fd3c1e50990d3798a4584d58c5b5d566a77930ba
+- Honda-Element 3cce15ae58685d809c3f3f834139974cd1bce3cd
+- Honda-Fit 5d564f6da4077eaa8ad72884090303693b1cd6d6
+- Honda-HR-V adbbe74d919baba1057e81041976afd5c1e76250
+- Honda-Insight f6176a8f7b35aaa0b8e53ed7f05a190f4c755423
+- Honda-Jazz 35355f2fd5993ad0a74d2bef6e4c5b8318272cb4
+- Honda-Odyssey e43f739a21c22400a7a94bff4efedc73b14faeae
+- Honda-Pilot bdcbeb2aa6a6e98fca1a77f9a55de14892f1b173
+- Honda-Prelude fe10ef7b20e975bb5e0e9eb37714bc8cf8623635
+- Honda-Prologue 47344ad7df06436d9dc1ada8940486823ef694af
+- Honda-Ridgeline 8958b219baafab87cdb593aa9a587f6e5e20b0e8
+- Honda-S2000 3f1cf3385de2fa11a210e057197475f883ec7b11
+- Honda-Shuttle 22865c914fcacaa54782cff5b3122cf7dd63faae
+- Honda-ZR-V a235f6192036639dcd4b5c1f97b6712fa400e0bc
+- Hyundai-Accent 841e31708466547d0774fdb113cb17e633cf81bf
+- Hyundai-Avante 9a1356119062ac38f5e886458bb3104b7999beb8
+- Hyundai-Azera 78de02fc8e092c19da203b2b07987c59797e604e
+- Hyundai-Elantra 870d3865d90b6328d945e3c93a2f054ffa546931
+- Hyundai-HB20 a9eeb1523349eca5c87b291f3f47cb46e9891846
+- Hyundai-HB20S 1e0037e1df5ad568fd5aff3973bff47e42f054b7
+- Hyundai-i10 b8c65346e99b9e2eae0cd66a1a517ef44a10588d
+- Hyundai-i20 5bc44d95f12868a166168e71f3bbbfbca96f936d
+- Hyundai-i30 9a8d12fef73e76f7930f3647c619bff4b9b6bfe6
+- Hyundai-i40 8d37d9b772df8cdfb0629f2a5d549f904b410152
+- Hyundai-IONIQ-5 e83329c38ebbcfa42e5aeac999bd1d1b7d6fbd7b
+- Hyundai-IONIQ-6 db32e10a6065a104b1d411aafffc557c2c715058
+- Hyundai-IONIQ-9 6288bbd8354b8dbf87479660e8ef2d405ea90254
+- Hyundai-IONIQ-Electric e4a37169e7d049dcf95516b76465c94c1cf01743
+- Hyundai-IONIQ-PlugIn-Hybrid c72e327fe688e9b0ec91fec89c55aa2a739c4d44
+- Hyundai-Kona bc7be003ba4a30649f1f58fd4d3e3bea891d3a7d
+- Hyundai-Kona-Electric 80f5d90c04195723067220cbb9e02935d64a028b
+- Hyundai-Palisade efc8b8ae6e33aa6877ac04bf1d7d81df6a0e4167
+- Hyundai-Santa-Cruz 3b54bee458d8b05f9fafda70073b404078c612f3
+- Hyundai-Santa-Fe 8f9e9390f46b69597be0000878f69b6d0831e7d7
+- Hyundai-Santa-Fe-Hybrid 9913ba580d62506aa42f68d0036f1b328f4c6f21
+- Hyundai-Sonata ed802a155ab1151702a8d52e6e45086745010fa4
+- Hyundai-Tucson 7e705e0ae0827e09a7b12906fe32b5e5bbe67a99
+- Hyundai-Tucson-Hybrid 8f5a80dccffc59c2bea34b4021cea26823246b30
+- Hyundai-Veloster 4395e8bcfdef94cf90b1fa40bd465cd964131dea
+- Hyundai-Venue b515b3b8b4753cd13b6a88ee60d1cf199e2fc23f
+- Hyundai-Veracruz 3f7c44b3786a7bc1df986a97e46af291e8afa655
+- Hyundai-Verna 46e560a43e270346f4e47c6373dcf6cb1bb8f8a0
+- INFINITI-Q50 c64b0453bef4a8a33eec95d2f822c80c8f2d0666
+- INFINITI-Q60 d20fe78dc5751009ca5dda1e8b65d8f051ffac51
+- INFINITI-QX50 6c7850fed6e900d8de170c963e3e3da486607925
+- INFINITI-QX55 6945d4e73ed6f87b144d2dba6bfbd473200bb531
+- INFINITI-QX60 25ad3343a0c35a16279042dc4e5ba969b669c07f
+- INFINITI-QX70 2680873605747d5d2d85a7e814c06e5c0dfb8eba
+- INFINITI-QX80 9e6ae4a9691c20c67d63d4d37b6cb47b1a12f635
+- Jaguar-E-PACE 3cfe45be06bc28482f036e57bd757fe1f3ea6db7
+- Jaguar-F-PACE 3152b7f4c4bb83774eba860544ba3295384f9f2a
+- Jaguar-F-TYPE 4d957b78809a0127ac104af10f5f462dd3160cc2
+- Jaguar-I-PACE ebec7c81514fee05bd2eb6554c8f566d54562ef9
+- Jeep-Avenger 53a7a3715705aca38c3b4a9297d5966cdcc05296
+- Jeep-Cherokee beb08723f88fd24fe3e277500a86813665e59fec
+- Jeep-Compass cec886a83e63bc06a56051495ccdf7763b731452
+- Jeep-Gladiator 7d82e55096a7f85cebdc7747cc450085adf4d288
+- Jeep-Grand-Cherokee e156ecdae406a0e785b98f902f1f2fc2c67cf1f9
+- Jeep-Grand-Wagoneer 07bf558dbb9d9f2a59fd9e625b693470d96d4f07
+- Jeep-Patriot 27cde3bb0f22ddd0dab4ce7e5e234d8f8cd7fd75
+- Jeep-Renegade 9f6ed8983dfff0a3383d74ba5c231727a6c47fad
+- Jeep-Wagoneer-L 41151532db570a6749e0dc0cc9cef1b096ad425e
+- Jeep-Wrangler 18f92503a90f1762c595deda7700a94c1d990223
+- Jeep-Wrangler-4xe 3aa6cbaa1ae45fbd75251a7ab806af494bbba325
+- Jeep-Wrangler-JK 41e397e39c6ca955005bbda9d37b9ffa1d834cd8
+- Kia-Cadenza 16288913a7c8d6b8aa2215e757a3cb95e257ab64
+- Kia-Carens 7ded2bce5dc688e98aee115ee372dbbc3358f0bc
+- Kia-Carnival 15ebee2ac0674b6758e0b7062dc33c71712efe5c
+- Kia-Ceed ca2b48cd2fbfc7d1d6103e12fb67b9efb6a5e8c4
+- Kia-Cerato 11ad368d374aaaa18e1a86f9502ee5f2eff6a1de
+- Kia-EV3 1e2e93c7977a3c7e7a5bbba617e14d3bf4df0acd
+- Kia-EV6 19ca3ae249c7a149438b9843acc1a07c8049de64
+- Kia-EV9 77319926a35c2e37a3da0aa8b0eb78498a5e0492
+- Kia-Forte 14326fbb752b1f18b2ae558d065149b3490e6c1a
+- Kia-K4 145a0b7569773707fa14a9b6da1eb0c1a50ff273
+- Kia-K5 f0861ab229173663f89af9cd99340edbb6cf9d3b
+- Kia-Niro e349c6a5926bc81a65b2727593b0061a319f61ae
+- Kia-Niro-EV c3b53ffec3ee6f4612d695c5aa96df687946dd6f
+- Kia-Optima ccbeeeeee44fa6283c5680cbfa7ad7a8b06f846c
+- Kia-Picanto b5f09c2865a9c6d1c776e4c71cc407a60b1b39ae
+- Kia-Rio 8935a711c52ca4ec3ec8f9ca433e1bb400a38d6c
+- Kia-Seltos 134314bcdbaf362629676a0984263b94e35e2c65
+- Kia-Sonet 6825750cfb177534817797b54a1b5bd4efc59212
+- Kia-Sorento 5dba9faf1e8a73fd3a6e4a03a19e4edf95042ac1
+- Kia-Soul e75397b21601fc2fc7b4fb73ab22b16bb0c19137
+- Kia-Soul-EV 3ac65fea80b1f5700dff076c2abe9f495b39b16f
+- Kia-Sportage cd01beab521f05a7a437b727da4a0f0981f3c5f6
+- Kia-Sportage-HEV faa8ed1f5ce5d835421b674d4dd6a5759fbf1f86
+- Kia-Stinger 85cf94fdb6480a5a3f863e9814ffcbb49656f893
+- Kia-Stonic 5f5f4e76b72f25e62f0b44cf2f62a2a638f3815d
+- Kia-Tasman 2bb86645ab79f5b07b2c236be6c7f29461549aac
+- Kia-Telluride 6990a4253d2644772c3c9a10386adebc461e8326
+- Kia-XCeed b206bb9c6c71ad2f8d1538f29f00b3cc49193d3d
+- Land-Rover-Defender 5aeeb679400d81b05aa977c4fe786b66f815c74b
+- Land-Rover-Discovery 5db47ab843784432e652e27b816d34fd8119eb79
+- Land-Rover-LR4 b96412f7eb6c0f0005509ba7f730dc5d18e545d0
+- Land-Rover-Range-Rover e635a183438662d4b47762a2f6271a5304de20ea
+- Land-Rover-Range-Rover-Evoque 00f38936cc42aeb4f02a56fdc838d312ad4b0552
+- Land-Rover-Range-Rover-Velar 54da662b03b45199407c2471856ac40b04370ecf
+- Lexus-CT-200h a52a344deae454e07d7bff57e086dbc0fe581cc6
+- Lexus-ES da574a473d04bb659917dbd2ceb1e4e03af6676e
+- Lexus-ES-300h 56e235ef28ba208899ab2d6d37d1909f589b3e33
+- Lexus-GX 3220af8e689b31dba539d542fbae7883c1336f8e
+- Lexus-GX-460 da8010ea4ed29b157c33a97260724a93d5888412
+- Lexus-GX-470 d7a039ce2dbf993b885564033a9f641bb28c709d
+- Lexus-IS 7becc57bb695b4581794e1fd37a3a6c7e98d54d7
+- Lexus-LS-600h-L 45b2318ed904cfa9816b5bd0f1d5afbd25a08631
+- Lexus-NX 70de555ca6e7e5c0e01b5e70955495764ff01312
+- Lexus-NX-350h fb096dded6c4d0f8585d37f1ebdfb1983e49185a
+- Lexus-RC be3c5de407d13198d289a786f658c5d012569b62
+- Lexus-RX e6ec3aa45d3cf5cca088a47e9ad1343874503570
+- Lexus-UX 004e6ffa4c3084f49dfd27d462df0ac4eab70192
+- Lincoln-MKC 617e26fead065a1070ad253418294a0243beafcb
+- Lincoln-MKZ 14697f2c64f129cdef9901a34d9d0bd413db4316
+- Lincoln-Nautilus 6405790f347dd4396c99c7d82da51120c8b9ffcd
+- Lincoln-Navigator 4275f90901eb7668a43e441d4e344fa5c11c45c2
+- Lincoln-Town-Car 6f8a805cda554ddb44b32a838df1b67591d7e95b
+- Mazda-2 1ac54d23153e1925f7c3311e81e96442a1159fcf
+- Mazda-3 e53d312ac986c397c6d76c0581b509fc5b1a4fac
+- Mazda-5 b7fbdcb49e16a2f3d404698a8685978731343bad
+- Mazda-6 17ac4fadc4449f648c66410e39fcea3d6bff5c3a
+- Mazda-B-Series-Pickup 7c8096fe7fb9e940148ca96d0347aabc6a8b2f58
+- Mazda-BT50 876f298c5a64d012911d5dd02e36d43655184a9a
+- Mazda-CX-3 12362c0c9b9acc7692e34e9881e310d101ca6033
+- Mazda-CX-30 f776307300bc7e614f3631fceaf0cb15e14d38e2
+- Mazda-CX-5 bcfc5fc44f3e7535537ee45349e51c183c755750
+- Mazda-CX-50 84e04ee7e72810a3d72fbbd92d048732018ecdad
+- Mazda-CX-60 3773bdc484babdffe5f03b5569329c7c2f9f125d
+- Mazda-CX-9 7867dc4526f73ea710e5dbd0def55f8eb10c1131
+- Mazda-CX-90 d06ca61e9eaae1005b6c9582e40fba8e46aaae71
+- Mazda-Mazdaspeed-3 09a382580b28e5230985c5fcf5481c081fdbc277
+- Mazda-Mazdaspeed-MX-5 841468b9e3aa12a11a08b28ea380db90d8437b27
+- Mazda-MX-30 fcb7cd24f775d8e8b25d85ee49b3a52bfea02cab
+- Mazda-MX-5 ed34775752eec430d92102240e32d649a70db8d5
+- Mazda-Tribute ecd85b5a2e21e45a790030c00e95a391e2a7ee3f
+- Mercedes-Benz-A-180 8a59b1fb6cfb49549f11f6a2cad4d0792e24e227
+- Mercedes-Benz-B-Class f9714d6cc9c3590a559971432651ecbb852b9528
+- Mercedes-Benz-C-Class e2f098ac581fb30438f7e533657e6247d83efe90
+- Mercedes-Benz-CL-Class 6f2a9dcf9770bc1ca6bfb957d04951b1a9fe2496
+- Mercedes-Benz-CLK-Class a28b55a6106f10a2a8d50a27ff23c166aeaeb95a
+- Mercedes-Benz-E-Class b76d4c4979f259277b738951b8bacb71c1c3116e
+- Mercedes-Benz-EQA 5402edae3361cd4638a7fdc013152755fd7211ed
+- Mercedes-Benz-EQB cf248a0ea5173bacc3d3c1d3bb6415f152b6c4e5
+- Mercedes-Benz-EQV a2273dba7f48b93546d95a4320bf7f4641f78eea
+- Mercedes-Benz-G-Class 890828f29e6d81e8b9621336a3e604755234b3a6
+- Mercedes-Benz-GLA-Class ed6f5586115caad92a2855a0bbb95670de11f135
+- Mercedes-Benz-GLC-Class 0d6ad4933c6ffbbbff4667ef1ab86551d9a774b9
+- Mercedes-Benz-GLK-Class c5e6c6d3e35207da6d804869690d44f23180fe1e
+- Mercedes-Benz-M-Class 7062da293bf3dcf5220edddc8af6e21aeb723317
+- Mercedes-Benz-ML-350 9a9c6eff704ff3d12f2c5ec42ed701dd63d77773
+- Mercedes-Benz-SL-Class c4a500cb51e2893485c9569ee90466354df81bdd
+- Mercedes-Benz-SLC-Class 6a83e343b302614668da664fc1150e8d69c6ba88
+- Mercedes-Benz-SLK-Class a6a37ba633d4e599759a78f256e9cfe9b7c8a76a
+- Mercedes-Benz-Viano c8fe53854f40dbae5a1189e1cf71e4d1cdd6af4b
+- MG-EHS 945f88418250a4493296fc9220feff3a3493bd5d
+- MG-HS baf8e69ef1d7ad51389dfecae140ae21d79a3e5d
+- MG-MG4 a1bb5c09ff9bc6af705df5ba8361ea846f7d67a4
+- MG-MG5 20a18d14908b42d32c33481f62f579877b2f05ba
+- MG-One c3d72b4a3047f6556cf0b308bd0f69f1a73d4f34
+- MG-RX9 62af1718e1cef2b2fa7fd92f98da7d2e9fe59103
+- MG-ZS 407f75a6cfaf87faf74c6d523162d9f5fac47542
+- MG-ZS-EV 8cb3c223ee5b7172c65cafeca4eb7ddbe84b7fe4
+- Mitsubishi-ASX b8f754b0b1428a1d0ed0a3136b3dc1499ead93ab
+- Mitsubishi-Eclipse-Cross c2752cd3f8cbf1edb1a84ce982f33793ce1c4253
+- Mitsubishi-Outlander 4fb0c929fefab5061158cfbde7a62a73d6f46fb9
+- Mitsubishi-Outlander-PHEV 4f71506c0e86d8a502f45341dae3bfc1cf478b92
+- Mitsubishi-Outlander-Sport ed89b19094fc252808f2b770f3f92449383abd20
+- Mitsubishi-RVR b0608670ac205abc2d39e5ed4af8a1ded8372106
+- Mitsubishi-Triton 0d65a1e7aa9c7db407fad0873c63b5485bb16561
+- Nissan-350Z f88c694aeb35a8ee15f37cba9e473652b4e7f071
+- Nissan-370Z 9245f0090a1b4a2d440697474ab22facca18171c
+- Nissan-Altima ecd9e6d82491ab1f63ccea21779d1b5ef9412505
+- Nissan-ARIYA c68cddafa7aac16246951836dd3481dd4ecbde5c
+- Nissan-Armada 5db0a53615972313ab8d7b38645f31ee7384446d
+- Nissan-Frontier 62e929fd266bd56866067a9e2149d8706f46ce16
+- Nissan-Juke fc9059d851b6b0f2ccfc9abd954e67648eb9e997
+- Nissan-Kicks 3a2709deac0d90239707de700cc083cd9894a85a
+- Nissan-Leaf d3544df86fc7586ba027d60a8def31ee3cafc327
+- Nissan-Maxima f8c63c87cf584a145415f71be730ab6809bedef8
+- Nissan-Micra 6287ffad0edb93bfc5c75cab9c19a16f935b5ef2
+- Nissan-Murano 179ef0b4d26f536fd5026e5c52ff59766f17a9bf
+- Nissan-NV-Passenger 6a8c6c80be90ef45b82fd87a46e63878a1c897d6
+- Nissan-Pathfinder 46a722c7858f4217ceb09bb03a70f4c1340118dc
+- Nissan-Patrol d0add7c724053bed7d4b7de63639a4aacbe4370f
+- Nissan-Pulsar 4241de17f9234ab7266f25f0a0e80fc3b4fc49d7
+- Nissan-Qashqai d8a74f251ff42e45d880f955793b574be2d3895f
+- Nissan-Rogue f1f83d8200ac3757d77de3a172dcb9666799186d
+- Nissan-Rogue-Sport 4bfd43c2591956abc031acd479299117e3406196
+- Nissan-Sentra af2c21c6abc4780bc18d182784d1709fb1ce9339
+- Nissan-Titan 5a932479dff2ef1909e4629471fed27d45b09f5f
+- Nissan-Titan-XD e7de32fc4a40d2b419199f299315216006a3ae87
+- Nissan-Versa e35e25fbdbe2164c07a17c46b95636772cccacdc
+- Nissan-X-Trail 2f675690d79c261ccd9863a5b91295bd525a255d
+- Nissan-Xterra 3377bfca7f338bcdeabc987ad90bfd267b9447f0
+- Nissan-Z a24eae1c80de9350c5c08ef99d5976272a19d7bb
+- Peugeot-107 098992f206672e68fc0588c8f7bbefb56bc85485
+- Peugeot-2008 1b62068d88495f82945b2bed74a0a5407d18743f
+- Peugeot-207 dae36e2703850c6fa37a828b9b9bacde372ebcde
+- Peugeot-208 44fca26d9959373ca342a2132d4da07ae111fdd8
+- Peugeot-3008 b76c38cb09c0ca90e8e250f405c42451c5213241
+- Peugeot-308 dcd2725346b67312c31def82eeabd585faf39991
+- Peugeot-408 6dd823cfb0461bc49d960d5999ec52e223ad7d69
+- Peugeot-5008 7795a1d4dc3b9919b425492651eee3bb5296ce8a
+- Peugeot-508 1084b43d9d7038917220c2769d98ad3c4f837eaa
+- Peugeot-e-208 d8d879861505a91c29d299aaf4940394d2698d76
+- Peugeot-Partner 14e66588bba4f557d5f4c93a89d208e64809ae11
+- Peugeot-RCZ e2ebf46be9a3802e8f664e6c30f99db5bb33b626
+- Polestar-2 e7187d47420944aeb56f3037d7aa1186f6dc15d7
+- Polestar-4 2b7f63295d0ebfcd6068a9356eceac72482b18ab
+- Porsche-718 7d11d0ea55b226e85acf2344dacafae91206593a
+- Porsche-911 6b25414d0fbd3f5e8be093f275dc3a85012b3bf3
+- Porsche-Cayenne 81ce1cf4a0752f0833022135473c0e35001e83eb
+- Porsche-Cayman 938c4867bd015635fca4042549f32e14cee3c2bf
+- Porsche-Macan 09806da4f47e9c8c975f369cd4722d7da1ee88b4
+- Porsche-Macan-Electric 937172f896734a5088a19921ee5e8272c035c505
+- Porsche-Panamera 7aac37431de35f5912da9d1621fb471b68af8679
+- Porsche-Taycan e6773c17e8b061dd4df3eae6b5175439eb88dc0e
+- Ram-1500 0c4341e4bbcf3962f333b108706c12bc3feb96aa
+- Ram-1500-Classic 48d1b1d0d9683505c936cef0e378faf0bb19cca9
+- Ram-2500 628294d20df6f02f8c43184aa77078eec994ece5
+- Ram-3500 0c917d9883020a89e9acbd2080d069b474bc9d6c
+- Ram-ProMaster-Window-Van 2ebeeafe37ffb2858a0f5bccb5bf04991555d80f
+- Renault-Captur 1794ac8c520359aa75d22ead125a2b637b1bd9d9
+- Renault-Clio fab985568350e0a7e434f0797cfb0154ac148938
+- Renault-Duster aa7dc820ac338198de53ab15489a0c822600efd3
+- Renault-Kadjar e428494b38636526a040e45901ec0a43635301f8
+- Renault-Laguna f371864ffc6c1355b445819d5678aa2a7aed8b0d
+- Renault-Megane 5daba64dcc49a8b09763e13defe71c1ba79c7dfb
+- Renault-Megane-E-Tech b6ac255bdf259660fed1e84d524a439b5894b47a
+- Renault-Scenic ca84a9c1e9c1846b9553d338610e4b4a4d2d181f
+- Renault-Symbioz 9dadd4f0cdbf97aba3730747e6545676ff132ef0
+- Renault-Trafic 99d408ef8cabe30b89ca6bf6e0a0884282d1fe95
+- Renault-Twingo a6630f0801598c0dbaf48a5a4b802f4b7ffcce30
+- Renault-ZOE 790c689ac3d36f69485bee9821bc5cdd7456f955
+- Scion-FR-S b17f2635d29ff26768a4c9544f6436c979a1e1dc
+- Scion-iQ 3fba6c9c61dca3785c2186775da4b7410906f9a1
+- Scion-tC 0d25322a4e5f9b7fd114676e3695ea4cfd62028c
+- Scion-xB 8f2159caa0b48772fffe3187a548d3bac29e6b33
+- Seat-Alhambra 87de7c8174a54f8013288e2efa7d6872004fee62
+- Seat-Arona d9b334caf49b08fbfbb17489dcb6198dbfc0fea4
+- Seat-Ateca 3b8caf5bc4a4d761828e2b500295b06e2614363a
+- Seat-Ibiza baa3e9dfaaf179e09d6558264542742cd199db94
+- Seat-Leon e9cabaa63d27d9af5398309c673b34b0f400e491
+- Seat-Mii 85b12daf526c6eab41f6367746616462e4ec63c4
+- Seat-Mii-Electric dd5e4823f30392a96f2f11ea5ea6e31c8306ab6f
+- Seat-Tarraco 42f544db1e370048187e35b12cac159bd792a47b
+- Skoda-Citigo-e-iV 3a5f32f40b0c63d1327606db2f79dd79a1f521e5
+- smart-fortwo 7e1eb271fe75c6a7f4d027bdd61761e51a8a431f
+- Subaru-Ascent db27281803f3b484532881803ed9fab8033c8660
+- Subaru-BRZ 8116b9f853f1d893ba9ccca7d13cc3b1b5fa7fdf
+- Subaru-Crosstrek 3378608cfc2f6aa7bfd95fbb311746a23b77b856
+- Subaru-Forester 547f493590b18adc6f9cfe060e5db19ad71fceae
+- Subaru-Impreza c019eabe022bba8ceb6c6792008a9cc97d7ca0cf
+- Subaru-Legacy 922650392755228cae996ca3d7c1314a9b98dfcd
+- Subaru-Outback 1082d8526334e2b822d48650ed66fbbb495e4f40
+- Subaru-Solterra 9095e36f954d34b66dc3e8c65a7d939c29e48cae
+- Subaru-Tribeca d3000e1fd448b66eac8923f43e87bcc3eabfa408
+- Subaru-WRX 21c89ad951a28424942017a29845d9d6766b3a22
+- Suzuki-Baleno ffa86149bb71c73306c8d41471503dfc19746513
+- Suzuki-Jimny 2ece30b5a02339d161784895ee89b9b5b96eaa5d
+- Suzuki-Splash 4f2516fa1458facc8251ab5da87e352a7eeb604b
+- Suzuki-Swift 6ba8a05148bebd4113e79499388d3cb357b6c070
+- Suzuki-Vitara 1f3aa1fa858a6382221d00d3bdcd0d5e9f569642
+- Suzuki-XL7 7dac2125f43a38b02821914d064f5d096a5c5f55
+- Toyota-4Runner b092c3933779cfb5d2f0bca8c116b5ac631cefe3
+- Toyota-Allion ac707913beb470a6585f1b736305209c77788163
+- Toyota-Aqua 6897b9cffdab117c226ced480f66b39547ccb159
+- Toyota-Auris 483f60c9a3b54b381fcc3d4ec40ea74958ba5eed
+- Toyota-Avalon 7f1e27a36bc4877d2467f7d07a77d2c69f6b7512
+- Toyota-Avalon-Hybrid 62a482a32f34549726b07b79fe0a51fa5265d607
+- Toyota-Aygo 6cf012f6315e5acc382c42dd4397589b7a47b074
+- Toyota-bZ4X 95c2683a7e03e90bf292067155963c0013644233
+- Toyota-C-HR faf6111d3dde55cde05bc6ea6bdd506ab8ed29cf
+- Toyota-Camry 45d6020e5b02a587c1de79033b3557b1b77679a7
+- Toyota-Camry-Hybrid eccad013ace3dfb69c326f7cf9c0d8ad7f7989c1
+- Toyota-Corolla 3aec873b324fded9e2a3dd6b43525ff1e4b473c6
+- Toyota-Corolla-Cross 9fba494a95c3b5328e1871c3c0a3a973bd5bfedb
+- Toyota-Corolla-Hybrid dd99d0851cc9f044be7eaaf8a8fc1ab08de1bbe1
+- Toyota-Crown eb5f0ce67b10901cd1f090302faa7471eceb433f
+- Toyota-FJ-Cruiser 89b1f29e8e6f837ec65334478c445bb0c75f0478
+- Toyota-Fortuner 053bbc2af3e5ecdec7ee29bf77f02c7801ddb8b3
+- Toyota-GR-Corolla 7e41105adfab12715c74c73739434efab54b71b9
+- Toyota-GR86 edf693f4897a5a7b4124c039de485f481f608a2b
+- Toyota-Grand-Highlander 082536986f76487316709de9efc084ed0d3f5cbc
+- Toyota-Grand-Highlander-Hybrid dd9530aeb999161c03978244dd383068f8f96fd2
+- Toyota-GT86 888d608b6584680eb6a76fc68044fd4f3dcb6bae
+- Toyota-Hiace d80099864308822b8b84c93971692891a9d0c795
+- Toyota-Highlander 68667bfbaa0373ef4c4cf7e7269a95d2924dcd97
+- Toyota-Hilux 27b518e4cb0c83781bb46899125b66dc0b1dc08d
+- Toyota-Land-Cruiser c4bac4517a09a379e1b97234e02bb10aad643e32
+- Toyota-Land-Cruiser-Hybrid 75bd57c5f9f1f6fb1bcd928b33386c544348eea4
+- Toyota-Matrix fe6c043ba0ad70970e18ea28bfde947b98e1a981
+- Toyota-Mirai 022cdc9b24d6c3732f0ec8f3a890d5f15221e309
+- Toyota-Prius ef5fad3d35b4422300558fda2ebf66344d708070
+- Toyota-Prius-Prime cd6cac6be33fe0249d15f01a8cd15cdc27a9f3e0
+- Toyota-Prius-v d167327624ddffbfb98239889d1be0f0ef115e7a
+- Toyota-RAV4 6aecb6bc52fc8ff83edb13a6309ece38915ea497
+- Toyota-RAV4-Hybrid c01bf7441f756b1e7ecd319dfbfe9441e25892d0
+- Toyota-RAV4-Prime 861b582df9590a587651511c3f025be0c1d04f12
+- Toyota-Sequoia cd150f0224df3a3aaf31aba7e67ce88869ff36a7
+- Toyota-Sienna 678e2a65fce65ce906754561250b8b13e9cd54aa
+- Toyota-Sienna-Hybrid a70d62b1e15265f524c8ae91a74b3d7e7713bbf9
+- Toyota-Tacoma 8cb5f853340f7026ddfa51bb6ef4b078b728e34c
+- Toyota-Tundra 83d363f809f0d19b09eeb179efc3d254aa131fa7
+- Toyota-Veloz 916bcdcb74c4e02cd55ebadeb034c66dad76bca1
+- Toyota-Venza 57be7d6dbb129cb0eecddaecf5e964c35f1af047
+- Toyota-Venza-Hybrid 57d5b3a472063b6d56a5d1c91640752d3353b731
+- Toyota-Vios 7a2c90347cab83683139ecaf61385bc62e298965
+- Toyota-Yaris c792745e2ee282473d9da2f1c5809d7bcd6b7293
+- Toyota-Yaris-Cross 896f530003d6ea4856018ca1bbbb20163a47f258
+- Toyota-Yaris-iA 9708b027a027826b560eb83297149c182ae6e399
+- VauxhallOpel-Corsa-e dbde65c1992c33e733a26012221198da1f1c96df
+- VauxhallOpel-Mokka a7a3088bf03573d065de45bc37519f43abdeafa7
+- Volkswagen-Amarok 2eec4b6210619bcaa5b1eba85385488b191f408b
+- Volkswagen-Arteon 5a76eabb3034693482d8e898842538aaa30eab93
+- Volkswagen-Atlas e95a3809c806cefd993826d6ab04a7eca267df12
+- Volkswagen-Beetle eb4978c8617521f9bedb8a0213e8f87e4e6ae253
+- Volkswagen-Beetle-Convertible 4d47cb40003d9632150ccc2dc99b4abe88068abd
+- Volkswagen-CC 2ecb23c8ac7491f25d04727cbc0c26561b0ca36d
+- Volkswagen-Crafter 60faa46db77c15908d727438c5a24c3b6700bd4c
+- Volkswagen-e-Golf 94596a72e7088a98b20544403081c68072503fb1
+- Volkswagen-e-Up 6e755d7940f0644c1a09514ae38537bcc61a1e8c
+- Volkswagen-Golf df613e7d6223a1a17ffdb35ccdf6c6eb5270461f
+- Volkswagen-ID-Buzz e9288b025e92f6a581d3ca448bbd5dcd0d2360f3
+- Volkswagen-ID.4 61ea0638d7fbaf8295c387bc6fe3b4ef926bfaa7
+- Volkswagen-ID3 0e8d914dd4dca220c853c6c41df03f4b6c88292f
+- Volkswagen-ID5 867adb95720c8d0f1e63cf584f504bf55ba424ea
+- Volkswagen-ID7-Tourer 7f8cbbc1a501690cbff39d788783ae69c73ca0e4
+- Volkswagen-Jetta b3528985263e1c332729f7640cf010fea1117526
+- Volkswagen-Jetta-GLI 982a20cd6af3f059325b112d6f601f040300bd53
+- Volkswagen-Multivan 7420cf0de27a1d938d52037d5308c927566a71c4
+- Volkswagen-Passat 8da1a6d2122f27c094ffde873e56833b70954fce
+- Volkswagen-Polo c4ea1551a8488ea8da00fc6a22c720a60421610a
+- Volkswagen-Scirocco 172bb2e852f4990822adc1eaf1853f6a48bb9110
+- Volkswagen-T-Cross ca65fffbc4422a4bd5b0b960c62049ed1e357f25
+- Volkswagen-T-Roc 2cb65e3330e7d8b35ef7cdd3aa7790c4720e17fd
+- Volkswagen-T6-Transporter bc181d22062f23341a4309109b5106aa891bf518
+- Volkswagen-Taigo 033f1c9581258c83b5b7817d6e99fe733b8e8445
+- Volkswagen-Taos 147c274b6b5c0f0d61bd5e5411df38c11256e9f3
+- Volkswagen-Tiguan d238c7f057bb9288c85a14c895c6418ade6c3938
+- Volkswagen-Touareg ec5b9858cdd71d38b66d6fb727f17bdfa1299037
+- Volkswagen-Touran 174fdb612727fc172bbc2751bb0665ea3cd60b6e
+- Volkswagen-Transporter 78421505fe69a6108bb8c90d36faeb74af0c2333
+- Volkswagen-Up 86d4a04719a30129b98bd1be3dca14e75572cca4
+- Volkswagen-Virtus 9c6abde522b09c02d53172fe4cb14cc676a304ec
+- Volvo-S40 30f9fba7939c147021d15687c522052b5a3fc1f3
+- Volvo-S60 158e3598d9f3ea87d746f43a29834ae37630c55e
+- Volvo-S80 dbb6bf902e2effc6a80b02744a979eddd910ebd1
+- Volvo-S90 942d72204df8fa51b55afd101e35f3c35952ba16
+- Volvo-V40 dfbc253458734b27a171ec400dec14df0ad75e13
+- Volvo-V60 c8e64abb0d35d4465bdaec4864dff3e47e52cbc6
+- Volvo-XC40 f5f51f3adab572c72b59a9b31d75932f8d3beb8f
+- Volvo-XC40-Recharge bf9e37b58f7ef21e1c73d5324883ecd57a94167d
+- Volvo-XC60 8617f77b1ad53ff39a5da083903ad18567af6f79
+- Volvo-XC90 287287caa470ff26120e62848d38f26a9399064e

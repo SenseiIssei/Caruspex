@@ -30,8 +30,8 @@ pub mod transport;
 pub use adapter_probe::{AdapterReport, BilingualText, CommandCheck, probe_adapter};
 pub use elm327::{
     AdaptiveTiming, ConnectTrace, Elm327, ElmMessage, ElmResult, ElmStatus, HeaderFormat, StnBus,
-    decode_messages, header_format_for, hex_to_bytes, protocol_name, split_batch_answer,
-    split_messages, stn_buses,
+    decode_messages, header_format_for, hex_to_bytes, protocol_name, reply_lines,
+    split_batch_answer, split_messages, stn_buses,
 };
 pub use kkl_cable::{CableFacts, ChipFamily};
 pub use kline_stream::KLineStream;

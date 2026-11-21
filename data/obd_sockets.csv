@@ -118,6 +118,21 @@ Ford,Kuga,II,dash_left,no
 Ford,Kuga,III,dash_left,no
 Ford,Transit,Mk7,dash_left,no
 Ford,Transit,Mk8,dash_left,no
+# The next rows have a public source: Ford's special service messages SSM 46022,
+# 46118, 47070, 47489 and 47635 (NHTSA ids 10092562, 10090662, 10136592, 10144947,
+# 10152464 in the TSB data set https://static.nhtsa.gov/odi/ffdd/tsbs/, US
+# government data, public domain) say for the models they list that the data link
+# connector sits on the driver side under the steering column, at the gateway
+# module. Only generations whose first model years the messages cover are listed
+# (they cover 2013 to 2019 at most); cover is no because they mention none.
+Ford,Edge,II,below_column,no
+Ford,F-150,XIII,below_column,no
+Ford,F-250 Super Duty,III,below_column,no
+Ford,Fusion,II,below_column,no
+Ford,Mustang,S550,below_column,no
+Lincoln,Continental,X,below_column,no
+Lincoln,MKZ,II,below_column,no
+Lincoln,Nautilus,I,below_column,no
 Peugeot,206,I,fusebox_lower,yes
 Peugeot,207,I,fusebox_lower,yes
 Peugeot,308,I,fusebox_lower,yes

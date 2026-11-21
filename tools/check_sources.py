@@ -133,7 +133,8 @@ def obdb_used() -> set[str]:
     if not os.path.exists(path):
         return set()
     text = open(path, encoding="utf-8").read()
-    return set(re.findall(r"^- ([A-Za-z0-9][A-Za-z0-9.-]*)$", text, re.MULTILINE))
+    # "- Repo <commit>", optionally "(signals from Make <commit>)" after it.
+    return set(re.findall(r"^- ([A-Za-z0-9][A-Za-z0-9.-]*)(?: |$)", text, re.MULTILINE))
 
 
 def check_obdb(state: dict, current: dict, lines: list[str]) -> bool:

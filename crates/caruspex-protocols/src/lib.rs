@@ -31,7 +31,7 @@ pub use kwp2000::{
 pub use obd2::{
     EcuInfo, Fault, FreezeFrame, InUseCounter, InUsePerformance, LiveValue, MisfireCount,
     MonitorResult, Obd2, OxygenSensorTest, ReadinessItem, VehicleIdentity, VehicleStatus,
-    batchable_pid, misfire_counts, split_multi_pid_answer,
+    batchable_pid, misfire_counts, mode01_answer_values, split_multi_pid_answer,
 };
 pub use uds::{
     ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, decode_bmw_dtc, decode_uds_dtc,

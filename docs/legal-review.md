@@ -115,6 +115,38 @@ macOS, Android). This is a technical review against the licence texts and source
    the makers), and no other freely licensed list was found; the GM OBD documents name GM's own codes, but only
    in fragments of table cells, so no brand table was extended. Ford's OBD summaries refuse automated
    downloads and were not fetched again.
+   **Manufacturer codes from NHTSA bulletins (2026-11-21).** 424 manufacturer codes in 12 families, in
+   `tools/dtc/brand_codes.csv` (loader and source statement in `tools/dtc/brand_ext.py`, written into the head
+   of `dtc_brands.rs`). Source: the manufacturer communications (technical service bulletins) that NHTSA
+   publishes as a data set, https://static.nhtsa.gov/odi/ffdd/tsbs/ (TSBS_RECEIVED_1995-1999 to
+   TSBS_RECEIVED_2020-2024, retrieved 2026-11-21; data.gov labels the data set as public domain, US government
+   data). From the summary of a bulletin only the fact is taken: which code it names and which part and fault
+   the code stands for. The texts are composed from Caruspex's own phrases (293 new parts and 6 fault types,
+   German and English in `tools/dtc/phrases.py`, the other 16 languages in `translations/*/core_dtcmfr.json`).
+   Every row names up to four NHTSA ids of its bulletins. Tier "confirmed" (274 codes): at least two bulletins
+   with their own number, issued in different months, give the same meaning; the same text filed once per
+   brand or model line counts once. Tier "single" (150): one bulletin; the app and the reports say "Meaning
+   from one source". Per family: Chrysler/Dodge/Jeep/Ram 239 (a new family), Fiat/Alfa Romeo 47, Nissan 37,
+   Honda 30, Ford 29, Hyundai/Kia 10, Toyota 10, Subaru 8, VAG 7, Mazda 3, Mercedes 2, Mitsubishi 2.
+   Remaining risks: the bulletins are written by the makers for the US market, so a code may mean something
+   else on a car for another market (said in the source statement); the bulletin summaries themselves are
+   the makers' text, of which nothing is copied. Still open, because no acceptable source exists: BMW and
+   Mini (their bulletins name BMW's own fault memory numbers such as 20A508, not P, B, C or U codes), Volvo
+   cars (the Volvo entries with such codes are Volvo trucks; the car bulletins use Volvo's module codes such
+   as ECM-130A), Opel (only the Ampera, whose GM Voltec codes do not hold for other Opel models), Renault and
+   PSA (not sold in the USA, no bulletins). Searched without a usable result: obdex (CC0, generic codes only),
+   OBDb (no fault codes in its signal sets), Wikidata (no property for fault codes), the full bulletin PDFs (the data set has no links to them and the API addresses tried did not answer, so
+   only the summaries were used). Not checked yet: whether the EU type approval rules (Regulation (EU)
+   2017/1151, Annex XI) contain manufacturer codes; I expect they only point to ISO 15031-6 and SAE J2012 for the
+   code format, but the text was not read for this.
+   Not used: GPL lists, unlicensed lists, forums, paid databases.
+   **OBD socket spots (2026-11-21).** The 209 car rows of `data/obd_sockets.csv` from before stay an own
+   compilation; no free source was found to check them (Wikidata has no property for it, OBDb no location
+   data). Eight Ford and Lincoln generations were added with a source: Ford's special service messages SSM
+   46022, 46118, 47070, 47489 and 47635 in the same NHTSA data set say the data link connector sits on the
+   driver side under the steering column. The file names the messages above these rows. Mondeo Mk5 and
+   Transit Mk8 keep their old spot (left of the column) although the messages say under the column for the
+   US Fusion and Transit; to be checked at a real car.
 5. **Default-on update check** (low). Resolved: asks first since 0.18. On every installation Caruspex asks once
    "Look for updates?"; only after a yes do official builds ask GitHub (a US service) for `latest.json`, at start and
    every six hours, which shows the IP address. No request goes out without a yes. It is disclosed on the privacy
@@ -137,3 +169,46 @@ macOS, Android). This is a technical review against the licence texts and source
    (`tools/package.sh` was not run, so the files in the packages were checked in the script only).
 10. **Workflow note**: dependency update pull requests (Dependabot) will fail the new notices check until
     `python tools/gen_notices.py` is run on their branch.
+11. **Own signals for Tesla Model S and X, BYD, Xpeng, NIO and VAG diesels (2026-11-21).** Searched: every
+    repository of OBDb (github.com/OBDb, 897 on 2026-11-21, CC BY-SA 4.0), opendbc (commaai/opendbc, MIT, at the
+    pinned commit c81a2155976b and on master 79ddcc7bb72d), the vehicle modules of OVMS 3 (MIT, commit
+    7470869a2db5) and the car modules of evDash (MIT). Taken:
+    - **BYD Atto 3**: 68 values (battery state of charge, pack and cell voltages, current, temperatures, wheel
+      speeds, 12 V battery). OBDb's own Atto 3 set is empty; the values come from OBDb's merged BYD set (commit
+      c154169b7527, made from the Sealion 6), and only for the commands and signals that the Atto 3's recorded
+      answers in its OBDb repository (commit 2019ba775df9) confirm with the same value. Such a make fallback is
+      used only for models listed in `FALLBACK` in `tools/gen_obdb.py` after a check by hand (the merged sets of
+      large makes read one identifier in different ways; for the Skoda Octavia it would have shown a high
+      voltage battery). For the Atto 3 the recorded values agree with each other and with the car, and OVMS's
+      `vehicle_byd_atto3.cpp` (MIT, (C) 2023 Alan Harper, added to `data/pids/LICENSE-OVMS`) reads the same
+      addresses with the same layout; only the sign of its current was taken from there, as a fact. One signal
+      without a matching recorded value was left out. Listening (opendbc `byd_atto3.dbc`, MIT, pinned commit): 7
+      values, new pack `opendbc-byd-atto3`.
+    - **BYD Seal U**: OBDb's Sealion 6 set (174 values, already imported) now reaches the Seal U through
+      `data/obdb_aliases.csv`; OBDb's own `generations.yaml` of the Sealion 6 says it is sold in Europe as the
+      Seal U.
+    - **Tesla Model X with HW4 (2024)**: 6 listening values from opendbc `tesla_model3_party.dbc` (its
+      `values.py` puts this car on that bus), new pack `opendbc-tesla-model-x-hw4`. **Model S and X up to 2020**:
+      one more value (outside temperature, `tesla_can.dbc` BODY_R1) in `opendbc-tesla-s-x`, now 8.
+    - **VAG diesels**: no new source was needed. The OBDb packs already hold, from each model's own set, soot
+      mass (27 VAG models), regeneration values (45) and the oil level (62), 1672 values on 63 VAG models in
+      all; recorded answers of the Audi Q7, VW Transporter and VW Passat are now test fixtures.
+    - OBDb's attribution (`data/obdb/ATTRIBUTION.md`) now names the commit of every repository read, as
+      `tools/gen_notices.py` already claimed.
+
+    Left open, and why:
+    - **Tesla Model S and X battery values**: OBDb's Tesla-Model-S and Tesla-Model-X repositories and its Tesla
+      make set are empty, opendbc has no battery messages for these cars. OVMS's `vehicle_teslamodels` (MIT) reads
+      voltage (0x102) and state of charge (0x302) on the powertrain bus, but its documentation calls that support
+      experimental, and no second source confirms it. Not taken; it can come with a recording of a real car.
+    - **Xpeng and NIO**: no repository in OBDb, no DBC or platform in opendbc, no module in OVMS or evDash.
+      Nothing freely licensed was found; forum posts and scan tool lists are not acceptable.
+    - **Other BYD models (Dolphin, Seal, Han, Dolphin Surf)**: OBDb has only an empty BYD-Dolphin-Mini without
+      recorded answers; nothing else.
+    - **VAG diesel: measured soot mass, distance and time since the last regeneration, regeneration duration**:
+      OBDb has them for many models, but only behind the extended diagnostic session (10 03, `din` in OBDb):
+      340 such signals on 50 VAG models. Caruspex does not switch sessions for custom values, so the converter
+      leaves them out ("session"). Whether the live values may change the control unit's session is a decision
+      for the owner, not a data question.
+    - The make fallback for the 16 other OBDb models with empty sets and recorded answers (among them Skoda
+      Octavia and Enyaq, Mitsubishi Lancer, Mazda CX-7, Volvo V70) stays off until each is checked by hand.

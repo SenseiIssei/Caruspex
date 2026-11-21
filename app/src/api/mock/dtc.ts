@@ -39,10 +39,16 @@ function phrase(i: number): string {
 // in Rust: the core catalogs translate the phrases with their %1, not every
 // finished text, so a text composed once in English stayed English.
 function compose(r: ComposedRecord): string {
-  const part = fill(phrase(r[1]), r[2]);
-  if (r[3] < 0) return part;
-  const how = phrase(r[3]);
-  return r[4] ? `${how}: ${part}` : `${part} - ${how}`;
+  return composeText(r[1], r[2], r[3], r[4] === 1);
+}
+
+// Also used by the manufacturer tables (areas/knowledge.ts), whose composed
+// codes point into the same phrase table.
+export function composeText(what: number, args: string, how: number, lead: boolean): string {
+  const part = fill(phrase(what), args);
+  if (how < 0) return part;
+  const fault = phrase(how);
+  return lead ? `${fault}: ${part}` : `${part} - ${fault}`;
 }
 
 const composedOf = new Map<string, ComposedRecord>(data.composed.map((r) => [r[0], r]));
@@ -60,7 +66,11 @@ function textOf(r: CodeRecord): string {
 }
 
 function sourceNote(r: CodeRecord | undefined): string {
-  return r?.[7] ? L("Bedeutung aus einer Quelle", "Meaning from one source") : "";
+  return sourceNoteFor(Boolean(r?.[7]));
+}
+
+export function sourceNoteFor(single: boolean): string {
+  return single ? L("Bedeutung aus einer Quelle", "Meaning from one source") : "";
 }
 
 export function severityLabel(s: Severity): string {

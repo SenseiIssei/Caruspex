@@ -36,9 +36,13 @@ impl Drop for LanguageGuard {
     }
 }
 
+// One folder per test process: two checkouts testing at the same time share
+// the system temp folder and would otherwise write the same files.
 fn temp_file(name: &str) -> String {
-    let path: PathBuf = std::env::temp_dir().join(name);
-    path.to_string_lossy().into_owned()
+    let dir: PathBuf =
+        std::env::temp_dir().join(format!("caruspex-record-tests-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).expect("temp folder");
+    dir.join(name).to_string_lossy().into_owned()
 }
 
 fn warm_demo(clock: &DemoClock, adapter: DemoAdapter) -> Box<DemoTransport> {

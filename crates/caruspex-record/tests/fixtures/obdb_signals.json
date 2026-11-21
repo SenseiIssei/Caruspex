@@ -254,6 +254,141 @@
    }
   },
   {
+   "repo": "Audi-Q7",
+   "year": 2018,
+   "command": {
+    "hdr": "7E0",
+    "cmd": {
+     "22": "114F"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2014,
+     "years": [
+      2016,
+      2017,
+      2019
+     ],
+     "from": 2022
+    },
+    "signals": [
+     {
+      "id": "Q7_PQ35_SOOT_MASS_CALC",
+      "path": "Engine.DPF",
+      "fmt": {
+       "len": 16,
+       "max": 655.35,
+       "div": 100,
+       "unit": "unknown"
+      },
+      "name": "Soot mass calculated"
+     }
+    ]
+   },
+   "response": [
+    "7E80562114F01BA"
+   ],
+   "expected": {
+    "Q7_PQ35_SOOT_MASS_CALC": 4.42
+   }
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "command": {
+    "hdr": "7E7",
+    "rax": "7EF",
+    "dbg": true,
+    "cmd": {
+     "22": "0005"
+    },
+    "freq": 1,
+    "signals": [
+     {
+      "id": "BYD_HVBAT_ST_CHG",
+      "path": "Battery",
+      "fmt": {
+       "len": 8,
+       "max": 255,
+       "unit": "percent"
+      },
+      "name": "High voltage battery state of charge"
+     }
+    ]
+   },
+   "response": [
+    "7EF0462000517"
+   ],
+   "expected": {
+    "BYD_HVBAT_ST_CHG": 23.0
+   }
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "command": {
+    "hdr": "7E7",
+    "rax": "7EF",
+    "dbg": true,
+    "cmd": {
+     "22": "0008"
+    },
+    "freq": 1,
+    "signals": [
+     {
+      "id": "BYD_BAT_TOT_V",
+      "path": "Battery",
+      "fmt": {
+       "len": 16,
+       "blsb": true,
+       "max": 65535,
+       "unit": "volts"
+      },
+      "name": "Battery total voltage"
+     }
+    ]
+   },
+   "response": [
+    "7EF056200086001"
+   ],
+   "expected": {
+    "BYD_BAT_TOT_V": 352.0
+   }
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "command": {
+    "hdr": "7E7",
+    "rax": "7EF",
+    "dbg": true,
+    "cmd": {
+     "22": "002B"
+    },
+    "freq": 1,
+    "signals": [
+     {
+      "id": "BYD_LOWEST_V_CELL_7E7",
+      "path": "Battery",
+      "fmt": {
+       "len": 16,
+       "blsb": true,
+       "max": 65.53,
+       "div": 1000,
+       "unit": "volts"
+      },
+      "name": "Lowest voltage cell value"
+     }
+    ]
+   },
+   "response": [
+    "7EF0562002B090C"
+   ],
+   "expected": {
+    "BYD_LOWEST_V_CELL_7E7": 3.081
+   }
+  },
+  {
    "repo": "Dacia-Dokker",
    "year": 2016,
    "command": {
@@ -1795,6 +1930,157 @@
     "PRIUS_O2S_A_FS_MONITOR_AVAIL": 1.0,
     "PRIUS_O2S_A_FS_MONITOR_INCMPL": 0.0,
     "PRIUS_RUNNING_TIME_FROM_MIL_ON": 7.0
+   }
+  },
+  {
+   "repo": "Volkswagen-Passat",
+   "year": 2017,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "22": "115A"
+    },
+    "freq": 30,
+    "dbgfilter": {
+     "to": 2011,
+     "years": [
+      2013,
+      2014,
+      2015,
+      2016
+     ],
+     "from": 2018
+    },
+    "signals": [
+     {
+      "id": "PASSAT_PQ35_DPF_FUEL_CON_REGEN",
+      "path": "Engine.DPF",
+      "fmt": {
+       "len": 16,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "liters"
+      },
+      "name": "Diesel particulate filter fuel consumption since last regeneration"
+     }
+    ]
+   },
+   "response": [
+    "7E80562115A002B"
+   ],
+   "expected": {
+    "PASSAT_PQ35_DPF_FUEL_CON_REGEN": 0.43
+   }
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "22": "114E"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2012,
+     "from": 2014
+    },
+    "signals": [
+     {
+      "id": "TRANSPORTER_PQ35_SOOT_MASS_MEAS",
+      "path": "Engine.DPF",
+      "fmt": {
+       "len": 16,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "unknown"
+      },
+      "name": "Soot mass measured"
+     }
+    ]
+   },
+   "response": [
+    "7E80562114E00C1"
+   ],
+   "expected": {
+    "TRANSPORTER_PQ35_SOOT_MASS_MEAS": 1.93
+   }
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "22": "115C"
+    },
+    "freq": 30,
+    "dbgfilter": {
+     "to": 2012,
+     "from": 2014
+    },
+    "signals": [
+     {
+      "id": "TRANSPORTER_PQ35_SRV_REGEN_STAT",
+      "path": "Engine.DPF",
+      "fmt": {
+       "len": 8,
+       "max": 255,
+       "unit": "scalar"
+      },
+      "name": "Service regeneration status"
+     }
+    ]
+   },
+   "response": [
+    "7E80462115C00"
+   ],
+   "expected": {
+    "TRANSPORTER_PQ35_SRV_REGEN_STAT": 0.0
+   }
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "cmd": {
+     "22": "11BC"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2012,
+     "from": 2014
+    },
+    "signals": [
+     {
+      "id": "TRANSPORTER_PQ35_OIL_LVL",
+      "path": "Engine",
+      "fmt": {
+       "len": 16,
+       "max": 131.068,
+       "min": -131.072,
+       "div": 250,
+       "sign": true,
+       "unit": "millimeters"
+      },
+      "name": "Engine oil level"
+     }
+    ]
+   },
+   "response": [
+    "7E8056211BC32EA"
+   ],
+   "expected": {
+    "TRANSPORTER_PQ35_OIL_LVL": 52.136
    }
   }
  ]

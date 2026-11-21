@@ -139,6 +139,86 @@
    ]
   },
   {
+   "repo": "Audi-Q7",
+   "year": 2018,
+   "request": "22114F",
+   "header": "7E0",
+   "response": "",
+   "frames": [
+    "7E80562114F01BA"
+   ],
+   "data": "01BA",
+   "signals": [
+    {
+     "id": "Q7_PQ35_SOOT_MASS_CALC",
+     "name": "Soot mass calculated",
+     "equation": "INT16(A:B)/100",
+     "unit": "",
+     "expected": 4.42
+    }
+   ]
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "request": "220005",
+   "header": "7E7",
+   "response": "7EF",
+   "frames": [
+    "7EF0462000517"
+   ],
+   "data": "17",
+   "signals": [
+    {
+     "id": "BYD_HVBAT_ST_CHG",
+     "name": "High voltage battery state of charge",
+     "equation": "A",
+     "unit": "%",
+     "expected": 23.0
+    }
+   ]
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "request": "220008",
+   "header": "7E7",
+   "response": "7EF",
+   "frames": [
+    "7EF056200086001"
+   ],
+   "data": "6001",
+   "signals": [
+    {
+     "id": "BYD_BAT_TOT_V",
+     "name": "Battery total voltage",
+     "equation": "INT16(B:A)",
+     "unit": "V",
+     "expected": 352.0
+    }
+   ]
+  },
+  {
+   "repo": "BYD-Atto-3",
+   "year": 2022,
+   "request": "22002B",
+   "header": "7E7",
+   "response": "7EF",
+   "frames": [
+    "7EF0562002B090C"
+   ],
+   "data": "090C",
+   "signals": [
+    {
+     "id": "BYD_LOWEST_V_CELL_7E7",
+     "name": "Lowest voltage cell value",
+     "equation": "MIN(INT16(B:A)/1000:65.53)",
+     "unit": "V",
+     "expected": 3.081
+    }
+   ]
+  },
+  {
    "repo": "Dacia-Dokker",
    "year": 2016,
    "skip": "session"
@@ -954,6 +1034,86 @@
      "equation": "INT16(I:J)",
      "unit": "min",
      "expected": 7.0
+    }
+   ]
+  },
+  {
+   "repo": "Volkswagen-Passat",
+   "year": 2017,
+   "request": "22115A",
+   "header": "7E0",
+   "response": "7E8",
+   "frames": [
+    "7E80562115A002B"
+   ],
+   "data": "002B",
+   "signals": [
+    {
+     "id": "PASSAT_PQ35_DPF_FUEL_CON_REGEN",
+     "name": "Diesel particulate filter fuel consumption since last regeneration",
+     "equation": "SIGNED16(INT16(A:B))/100",
+     "unit": "l",
+     "expected": 0.43
+    }
+   ]
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "request": "22114E",
+   "header": "7E0",
+   "response": "7E8",
+   "frames": [
+    "7E80562114E00C1"
+   ],
+   "data": "00C1",
+   "signals": [
+    {
+     "id": "TRANSPORTER_PQ35_SOOT_MASS_MEAS",
+     "name": "Soot mass measured",
+     "equation": "SIGNED16(INT16(A:B))/100",
+     "unit": "",
+     "expected": 1.93
+    }
+   ]
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "request": "22115C",
+   "header": "7E0",
+   "response": "7E8",
+   "frames": [
+    "7E80462115C00"
+   ],
+   "data": "00",
+   "signals": [
+    {
+     "id": "TRANSPORTER_PQ35_SRV_REGEN_STAT",
+     "name": "Service regeneration status",
+     "equation": "A",
+     "unit": "",
+     "expected": 0.0
+    }
+   ]
+  },
+  {
+   "repo": "Volkswagen-Transporter",
+   "year": 2013,
+   "request": "2211BC",
+   "header": "7E0",
+   "response": "7E8",
+   "frames": [
+    "7E8056211BC32EA"
+   ],
+   "data": "32EA",
+   "signals": [
+    {
+     "id": "TRANSPORTER_PQ35_OIL_LVL",
+     "name": "Engine oil level",
+     "equation": "SIGNED16(INT16(A:B))/250",
+     "unit": "mm",
+     "expected": 52.136
     }
    ]
   }
