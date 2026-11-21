@@ -15,6 +15,7 @@ La pagina **Valori live** (modalità esperto) mostra cosa misurano i sensori in 
 
 - **Batterie delle auto elettriche**: stato di salute, carica, tensioni delle celle con dispersione e temperature per Hyundai Kona e Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf e Tesla Model 3 e Y (ascoltando sul bus CAN), nella pagina **Batteria EV**.
 - **Valori OBDb** per circa 550 veicoli in più (pressione degli pneumatici, olio, contachilometri e altro), proposti da soli per l'auto riconosciuta.
+- **Sessione diagnostica estesa**: alcuni valori dei diesel del gruppo Volkswagen, come la massa di fuliggine misurata e la distanza dall'ultima rigenerazione, la centralina motore li fornisce solo nella sua sessione diagnostica estesa. In modalità esperto Caruspex porta il motore in questa sessione finché questi valori vengono richiesti, solo per leggerli, li segna con **Sessione 03** e poi lo riporta indietro. Si può disattivare nelle impostazioni, in **Valori del costruttore**. Se la centralina rifiuta, per esempio durante la marcia, il valore mostra il motivo.
 - **I tuoi valori** nel diffuso formato CSV di Torque, equazioni comprese.
 
 ![Batteria EV](screenshot-battery.png)

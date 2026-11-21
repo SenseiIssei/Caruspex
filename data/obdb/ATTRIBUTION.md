@@ -11,7 +11,7 @@ Changes made: `tools/gen_obdb.py` converted the signal sets as of 2026-11-21
 into packs of custom values for Caruspex. Every signal became a Torque
 equation that gives the same value as OBDb's own decoder; commands were split
 into packs by model year. Signals that cannot be expressed that way were left
-out (enumeration 976, extended 8245, fallback unconfirmed 1, functional 527, k-line 20, no model year or replaced 82, null bound 4065, session 6366, too long 26).
+out (enumeration 976, extended 8245, fallback unconfirmed 1, functional 527, k-line 20, no model year or replaced 82, null bound 4099, session 4472, too long 26).
 
 Models whose own signal sets are empty (1 here) take OBDb's merged
 set of the make, as OBDb's tools do, but only where that was checked (FALLBACK
@@ -20,7 +20,9 @@ answers of that model in its repository (tests/test_cases) confirm; such a
 line names the make repository and its commit after the model's own.
 
 Totals: 810 repositories read, 547 with values, 987 packs,
-153600 signals imported, 20308 skipped.
+155460 signals imported, 18448 skipped. Of the imported signals
+1860 are engine values of Volkswagen group cars that OBDb reads in
+the extended diagnostic session (din 03); their commands carry that session.
 
 Repositories used, each at github.com/OBDb/<name>, with the commit read:
 
@@ -99,7 +101,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Chevrolet-HHR 4849c33a6dfb65efa71cd4ea3928cd781dd85b02
 - Chevrolet-Impala 1934f8f265981f733288d56c3e23de6b36775a79
 - Chevrolet-Impala-Limited 04105d5979b0bc4a469dcd4197372e9f35695495
-- Chevrolet-Malibu 74324f9643f6055879ca6db07960e8aff2ab9ee5
+- Chevrolet-Malibu 8f66188718c4c32d7c12f588405f42218666a187
 - Chevrolet-Orlando 1c384d8f1e14e9f3b9622fc935105c565821e6d0
 - Chevrolet-S-10 6abd84bb24656ab0d3cea7ea0b5fd2b5736f4885
 - Chevrolet-Sail 4554b2bb11d205d9518bd7ddcd648125d54a582e
@@ -116,7 +118,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Chevrolet-Trax e9914133405762235dbbdc71d71c99052eef20fe
 - Chevrolet-Volt ce7c7feaf847a6d3288305b1dd559d7474d70ff6
 - Chrysler-200 ea4433131a620678906012eecaa38f18623ebdd1
-- Chrysler-300 8fc1b4717a4f072df50dc7bf8aecfacddb51c4a0
+- Chrysler-300 94c267b6729f121332e027b928b4827292e1d289
 - Chrysler-Pacifica e7d3183924d43f2cb9e101b9d205fc850f779822
 - Citroen-eC4-X 553e9e01be2adff83c04b06cfc2041434787a036
 - Cupra-Born fca6091d9657997b1fa748ae1eaa54fb27ba55d0
@@ -147,8 +149,8 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - FIAT-Panda 1b8d1cf9b3b4e9645920433a47790b62398eadcf
 - FIAT-Qubo 9683b45ff1ff9cbbda83b1354319b21e8323a28a
 - Ford-B-Max 4d6a3ec8170cc3f3772032fd77af222b65775e86
-- Ford-Bronco 4897c25852b3eb280421a8161362ae98f7611ef1
-- Ford-Bronco-Sport d9e9f00336420d4b592def24678b1e30c4e6707f
+- Ford-Bronco 574d55dc1b120ce70f5cf764653983bea3fd9c1e
+- Ford-Bronco-Sport 34968e228edef2d98b177e47f1eb3558f8cc8242
 - Ford-C-Max 3acf5af9b5251cd929b80e5572f60cfcd0ea3821
 - Ford-C-Max-Energi fcecdf8240a883223de0619f3cb2b1edf9d6daad
 - Ford-C-Max-Hybrid 1b35f26802b71469748d3141ed4513a8d597e266
@@ -157,12 +159,12 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Ford-E-Series-Wagon 35dfb191c13db84e72458773bfab7e358a708df0
 - Ford-EcoSport 56781b7a2854546c1e928efeba64a5cb9c883dd8
 - Ford-Edge c58f8c8234a3aed9e692670f57b864796220138f
-- Ford-Escape c9c28b963d51bece323d64ae27049ef0abfa5baa
+- Ford-Escape aaff580cbac2333a2d6e65d55f4e94eaf4338c0c
 - Ford-Everest 7d16f6c7490df5eff5f62ecbeeb98c99e9229dc5
 - Ford-Expedition 27cccb7243e06f3c1b4ac9aebe3285f4324312a4
-- Ford-Explorer 0f217c36959fb6304f91001dc97b212e35a2704b
+- Ford-Explorer 48f723439fc66e02a561d1f5f708a2a120962ed4
 - Ford-Explorer-Sport-Trac 1f16244bc9d8c7378cbb19b79d2ce8f864f24457
-- Ford-F-150 bdf565ce7402399eab6e4205cff8670e2cf10254
+- Ford-F-150 853279e0fbd22646117c3adfac85d571a92f5ee2
 - Ford-F-150-Lightning 4cce162ca99e65db4c2ffcb6a843b8a9f07f4d18
 - Ford-F-250 f64e2e4707b2b7072dbf471905009ac7be9fd008
 - Ford-F-350 16078a25276d4540004db0c60eb2ab5e45cd25d3
@@ -172,16 +174,16 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Ford-Focus-Electric 19d65d6f651e58af78d8fc837d23f2e9be4740fe
 - Ford-Focus-RS 6f595329de56a4717a0c5040ef23744b57ad10ad
 - Ford-Focus-ST 3225128e521e35eeb3b1dce6cf6a5c701a66c8d6
-- Ford-Fusion 8b727f5aa21b130ec81845f03d677b804a556900
+- Ford-Fusion 94d289af4038b744f22dd4552d892109b8c944f2
 - Ford-Fusion-Energi 0329e705f9ca00513b2f8a4662233e1b732cdeb7
 - Ford-Fusion-Hybrid 66e6d04372d72d50cdbd9263a32499bf1f044543
 - Ford-Kuga 03f2a22de3707b1385206db769f2729ee672175b
 - Ford-Maverick 3f48810ae43d8f118b82e89e5c54db1b02e294a3
 - Ford-Mondeo 909caab064db146d5a9d1979aa38e7a44f88bd46
-- Ford-Mustang 8de1188986fefc477f7dbaaecffc7ff585b0f65d
+- Ford-Mustang 5c1c4dc8780512fc179476e9da9d7e4e24b33cbe
 - Ford-Mustang-Mach-E e03e9b55f40abd672666f1fd741cab2aabd992a7
 - Ford-Puma b291ee79c63ea1025e8573a92480e43d653ca571
-- Ford-Ranger e7b126c0628c392450ff601e64c174fdb0899d20
+- Ford-Ranger 2556a8a818bef0c11bf2561abf8f41ad204d4ed7
 - Ford-S-Max a2f09f35daf0d56100aaad7abe0ab70a488a3493
 - Ford-Taurus 40c24282030b42eb637bb30d15f2b46268c412b7
 - Ford-Taurus-X cb8d6fd5f5c577aadac5c8a2a980c7723a74c59e
@@ -191,7 +193,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Ford-Transit-Connect 175b0277516165a75c7b7389c184f792f3103112
 - GAC-Aion-V 0dbe08650e2cf1f1985de9e4c47345272db3ba6f
 - Genesis-G70 c860c2dcf9dcfc6123f5d0c96d5b7c3c74e40618
-- Genesis-G80 a9e7d69c79ca1f461d6d27a9876225f83b58d477
+- Genesis-G80 812bbb09f59142d695e21540ce22512613fc7b91
 - Genesis-GV60 e5d9b204304822807398dae3387965960dad2904
 - Genesis-GV80 9b15f7551b9fe3da39135c5c33b66823fa50798c
 - GMC-Acadia 82855c55a41e9d1b2bf847227cafd9a43643709b
@@ -215,12 +217,12 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Honda-Clarity dedcb90f97972fa6e34a498492bfc6ba71bd065a
 - Honda-CR-V f82a2c4ae3dcac286737a0acd778b0e1747517e0
 - Honda-CR-V-Hybrid 0318a490ccdcf91411460391526f7b4bcacbe83a
-- Honda-CR-Z feef1200aabe81cd281f34c382c61735482ba218
+- Honda-CR-Z 9d3bc05a120317f6b1001a9078a7177a8ff2b69a
 - Honda-Crosstour fd3c1e50990d3798a4584d58c5b5d566a77930ba
 - Honda-Element 3cce15ae58685d809c3f3f834139974cd1bce3cd
 - Honda-Fit 5d564f6da4077eaa8ad72884090303693b1cd6d6
 - Honda-HR-V adbbe74d919baba1057e81041976afd5c1e76250
-- Honda-Insight f6176a8f7b35aaa0b8e53ed7f05a190f4c755423
+- Honda-Insight 04a16a613e6403e28a419a8576c35d938398d946
 - Honda-Jazz 35355f2fd5993ad0a74d2bef6e4c5b8318272cb4
 - Honda-Odyssey e43f739a21c22400a7a94bff4efedc73b14faeae
 - Honda-Pilot bdcbeb2aa6a6e98fca1a77f9a55de14892f1b173
@@ -233,7 +235,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Hyundai-Accent 841e31708466547d0774fdb113cb17e633cf81bf
 - Hyundai-Avante 9a1356119062ac38f5e886458bb3104b7999beb8
 - Hyundai-Azera 78de02fc8e092c19da203b2b07987c59797e604e
-- Hyundai-Elantra 870d3865d90b6328d945e3c93a2f054ffa546931
+- Hyundai-Elantra 8ddb08e6de3449092744490bf95f4b2efb8a33d3
 - Hyundai-HB20 a9eeb1523349eca5c87b291f3f47cb46e9891846
 - Hyundai-HB20S 1e0037e1df5ad568fd5aff3973bff47e42f054b7
 - Hyundai-i10 b8c65346e99b9e2eae0cd66a1a517ef44a10588d
@@ -253,7 +255,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Hyundai-Santa-Fe-Hybrid 9913ba580d62506aa42f68d0036f1b328f4c6f21
 - Hyundai-Sonata ed802a155ab1151702a8d52e6e45086745010fa4
 - Hyundai-Tucson 7e705e0ae0827e09a7b12906fe32b5e5bbe67a99
-- Hyundai-Tucson-Hybrid 8f5a80dccffc59c2bea34b4021cea26823246b30
+- Hyundai-Tucson-Hybrid 664031363c62eda1f89e01368deb4fe71798d310
 - Hyundai-Veloster 4395e8bcfdef94cf90b1fa40bd465cd964131dea
 - Hyundai-Venue b515b3b8b4753cd13b6a88ee60d1cf199e2fc23f
 - Hyundai-Veracruz 3f7c44b3786a7bc1df986a97e46af291e8afa655
@@ -273,7 +275,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Jeep-Cherokee beb08723f88fd24fe3e277500a86813665e59fec
 - Jeep-Compass cec886a83e63bc06a56051495ccdf7763b731452
 - Jeep-Gladiator 7d82e55096a7f85cebdc7747cc450085adf4d288
-- Jeep-Grand-Cherokee e156ecdae406a0e785b98f902f1f2fc2c67cf1f9
+- Jeep-Grand-Cherokee ff75899986641a8762bac00883764afa540faf6e
 - Jeep-Grand-Wagoneer 07bf558dbb9d9f2a59fd9e625b693470d96d4f07
 - Jeep-Patriot 27cde3bb0f22ddd0dab4ce7e5e234d8f8cd7fd75
 - Jeep-Renegade 9f6ed8983dfff0a3383d74ba5c231727a6c47fad
@@ -285,7 +287,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Kia-Carens 7ded2bce5dc688e98aee115ee372dbbc3358f0bc
 - Kia-Carnival 15ebee2ac0674b6758e0b7062dc33c71712efe5c
 - Kia-Ceed ca2b48cd2fbfc7d1d6103e12fb67b9efb6a5e8c4
-- Kia-Cerato 11ad368d374aaaa18e1a86f9502ee5f2eff6a1de
+- Kia-Cerato ed9cc71f2b52d2cb23aa467c37983885da52ccac
 - Kia-EV3 1e2e93c7977a3c7e7a5bbba617e14d3bf4df0acd
 - Kia-EV6 19ca3ae249c7a149438b9843acc1a07c8049de64
 - Kia-EV9 77319926a35c2e37a3da0aa8b0eb78498a5e0492
@@ -299,10 +301,10 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Kia-Rio 8935a711c52ca4ec3ec8f9ca433e1bb400a38d6c
 - Kia-Seltos 134314bcdbaf362629676a0984263b94e35e2c65
 - Kia-Sonet 6825750cfb177534817797b54a1b5bd4efc59212
-- Kia-Sorento 5dba9faf1e8a73fd3a6e4a03a19e4edf95042ac1
+- Kia-Sorento 2bc49d81648a6da4cf565f756768feed656cc713
 - Kia-Soul e75397b21601fc2fc7b4fb73ab22b16bb0c19137
 - Kia-Soul-EV 3ac65fea80b1f5700dff076c2abe9f495b39b16f
-- Kia-Sportage cd01beab521f05a7a437b727da4a0f0981f3c5f6
+- Kia-Sportage 2ed544865e86dd9ef4450d10c1fdb5b65a6e2a90
 - Kia-Sportage-HEV faa8ed1f5ce5d835421b674d4dd6a5759fbf1f86
 - Kia-Stinger 85cf94fdb6480a5a3f863e9814ffcbb49656f893
 - Kia-Stonic 5f5f4e76b72f25e62f0b44cf2f62a2a638f3815d
@@ -315,7 +317,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Land-Rover-Range-Rover e635a183438662d4b47762a2f6271a5304de20ea
 - Land-Rover-Range-Rover-Evoque 00f38936cc42aeb4f02a56fdc838d312ad4b0552
 - Land-Rover-Range-Rover-Velar 54da662b03b45199407c2471856ac40b04370ecf
-- Lexus-CT-200h a52a344deae454e07d7bff57e086dbc0fe581cc6
+- Lexus-CT-200h fe2e5ea8ee19319d757e2e2f6a1c9e295a78395b
 - Lexus-ES da574a473d04bb659917dbd2ceb1e4e03af6676e
 - Lexus-ES-300h 56e235ef28ba208899ab2d6d37d1909f589b3e33
 - Lexus-GX 3220af8e689b31dba539d542fbae7883c1336f8e
@@ -378,7 +380,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - MG-RX9 62af1718e1cef2b2fa7fd92f98da7d2e9fe59103
 - MG-ZS 407f75a6cfaf87faf74c6d523162d9f5fac47542
 - MG-ZS-EV 8cb3c223ee5b7172c65cafeca4eb7ddbe84b7fe4
-- Mitsubishi-ASX b8f754b0b1428a1d0ed0a3136b3dc1499ead93ab
+- Mitsubishi-ASX e3a4dfe953dad08046b89a28cc526fd29600e0e9
 - Mitsubishi-Eclipse-Cross c2752cd3f8cbf1edb1a84ce982f33793ce1c4253
 - Mitsubishi-Outlander 4fb0c929fefab5061158cfbde7a62a73d6f46fb9
 - Mitsubishi-Outlander-PHEV 4f71506c0e86d8a502f45341dae3bfc1cf478b92
@@ -433,7 +435,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Porsche-Macan-Electric 937172f896734a5088a19921ee5e8272c035c505
 - Porsche-Panamera 7aac37431de35f5912da9d1621fb471b68af8679
 - Porsche-Taycan e6773c17e8b061dd4df3eae6b5175439eb88dc0e
-- Ram-1500 0c4341e4bbcf3962f333b108706c12bc3feb96aa
+- Ram-1500 daa528b5db144b5784a63312faad54db73ab631d
 - Ram-1500-Classic 48d1b1d0d9683505c936cef0e378faf0bb19cca9
 - Ram-2500 628294d20df6f02f8c43184aa77078eec994ece5
 - Ram-3500 0c917d9883020a89e9acbd2080d069b474bc9d6c
@@ -505,11 +507,11 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Toyota-Hiace d80099864308822b8b84c93971692891a9d0c795
 - Toyota-Highlander 68667bfbaa0373ef4c4cf7e7269a95d2924dcd97
 - Toyota-Hilux 27b518e4cb0c83781bb46899125b66dc0b1dc08d
-- Toyota-Land-Cruiser c4bac4517a09a379e1b97234e02bb10aad643e32
+- Toyota-Land-Cruiser 1383c11b25c195b8bbac908a415d354429391cbc
 - Toyota-Land-Cruiser-Hybrid 75bd57c5f9f1f6fb1bcd928b33386c544348eea4
 - Toyota-Matrix fe6c043ba0ad70970e18ea28bfde947b98e1a981
 - Toyota-Mirai 022cdc9b24d6c3732f0ec8f3a890d5f15221e309
-- Toyota-Prius ef5fad3d35b4422300558fda2ebf66344d708070
+- Toyota-Prius 432b8d62009db03927ee1d9c8ce6f401a3ef3134
 - Toyota-Prius-Prime cd6cac6be33fe0249d15f01a8cd15cdc27a9f3e0
 - Toyota-Prius-v d167327624ddffbfb98239889d1be0f0ef115e7a
 - Toyota-RAV4 6aecb6bc52fc8ff83edb13a6309ece38915ea497
@@ -536,7 +538,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Volkswagen-Beetle-Convertible 4d47cb40003d9632150ccc2dc99b4abe88068abd
 - Volkswagen-CC 2ecb23c8ac7491f25d04727cbc0c26561b0ca36d
 - Volkswagen-Crafter 60faa46db77c15908d727438c5a24c3b6700bd4c
-- Volkswagen-e-Golf 94596a72e7088a98b20544403081c68072503fb1
+- Volkswagen-e-Golf eaa6f4877aec1dfc1dcc7aa6924bcc2a37a4d648
 - Volkswagen-e-Up 6e755d7940f0644c1a09514ae38537bcc61a1e8c
 - Volkswagen-Golf df613e7d6223a1a17ffdb35ccdf6c6eb5270461f
 - Volkswagen-ID-Buzz e9288b025e92f6a581d3ca448bbd5dcd0d2360f3
@@ -555,7 +557,7 @@ Repositories used, each at github.com/OBDb/<name>, with the commit read:
 - Volkswagen-T6-Transporter bc181d22062f23341a4309109b5106aa891bf518
 - Volkswagen-Taigo 033f1c9581258c83b5b7817d6e99fe733b8e8445
 - Volkswagen-Taos 147c274b6b5c0f0d61bd5e5411df38c11256e9f3
-- Volkswagen-Tiguan d238c7f057bb9288c85a14c895c6418ade6c3938
+- Volkswagen-Tiguan 304be13c2361411a78e06592b0f4399b79d68efb
 - Volkswagen-Touareg ec5b9858cdd71d38b66d6fb727f17bdfa1299037
 - Volkswagen-Touran 174fdb612727fc172bbc2751bb0665ea3cd60b6e
 - Volkswagen-Transporter 78421505fe69a6108bb8c90d36faeb74af0c2333

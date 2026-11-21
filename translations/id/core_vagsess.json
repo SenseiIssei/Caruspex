@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Percobaan berikutnya dalam 30 detik.",
+ "c-vagsess-2": "Tidak ada jawaban atas peralihan ke sesi diagnostik diperluas.",
+ "c-vagsess-3": "Unit kontrol saat ini tidak mengizinkan sesi diagnostik diperluas (syarat tidak terpenuhi, misalnya saat berkendara).",
+ "c-vagsess-4": "Unit kontrol berhenti menjawab dalam sesi diagnostik diperluas, sesi kini diakhiri. Percobaan berikutnya dalam 30 detik.",
+ "c-vagsess-5": "Sesi diagnostik diperluas ditolak.",
+ "c-vagsess-6": "Layanan ini diblokir saat membaca dalam sesi diperluas.",
+ "c-vagsess-7": "Nilai ini memerlukan sesi diagnostik diperluas dari unit kontrol. Caruspex hanya memakainya dalam mode profesional.",
+ "c-vagsess-8": "Nilai ini memerlukan sesi diagnostik diperluas dari unit kontrol. Fitur ini dimatikan di pengaturan.",
+ "c-vagsess-9": "Nilai ini memerlukan sesi diagnostik diperluas dari unit kontrol. Hanya tampilan langsung aplikasi yang membacanya.",
+ "c-vagsess-10": "Nilai ini memerlukan sesi diagnostik diperluas, yang sedang dimatikan.",
+ "c-vagsess-11": "tidak tersedia"
+}

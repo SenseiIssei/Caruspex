@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "30 saniye sonra yeniden denenecek.",
+ "c-vagsess-2": "Genişletilmiş teşhis oturumuna geçişe yanıt yok.",
+ "c-vagsess-3": "Kontrol ünitesi şu anda genişletilmiş teşhis oturumuna izin vermiyor (koşullar sağlanmadı, örneğin sürüş sırasında).",
+ "c-vagsess-4": "Kontrol ünitesi genişletilmiş teşhis oturumunda yanıt vermeyi bıraktı; oturum sona erdi. 30 saniye sonra yeniden denenecek.",
+ "c-vagsess-5": "Genişletilmiş teşhis oturumu reddedildi.",
+ "c-vagsess-6": "Bu hizmet genişletilmiş oturumda okuma sırasında engellidir.",
+ "c-vagsess-7": "Bu değer kontrol ünitesinin genişletilmiş teşhis oturumunu gerektirir. Caruspex bunu yalnızca profesyonel modda kullanır.",
+ "c-vagsess-8": "Bu değer kontrol ünitesinin genişletilmiş teşhis oturumunu gerektirir. Ayarlarda kapalı.",
+ "c-vagsess-9": "Bu değer kontrol ünitesinin genişletilmiş teşhis oturumunu gerektirir. Onu yalnızca uygulamanın canlı görünümü okur.",
+ "c-vagsess-10": "Bu değer kapalı olan genişletilmiş teşhis oturumunu gerektirir.",
+ "c-vagsess-11": "kullanılamıyor"
+}

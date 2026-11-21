@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Un nuovo tentativo seguirà tra 30 secondi.",
+ "c-vagsess-2": "Nessuna risposta al passaggio nella sessione diagnostica estesa.",
+ "c-vagsess-3": "La centralina al momento non consente la sessione diagnostica estesa (condizioni non soddisfatte, per esempio durante la marcia).",
+ "c-vagsess-4": "La centralina non risponde più nella sessione diagnostica estesa, che è ora terminata. Un nuovo tentativo seguirà tra 30 secondi.",
+ "c-vagsess-5": "La sessione diagnostica estesa è stata rifiutata.",
+ "c-vagsess-6": "Questo servizio è bloccato durante la lettura nella sessione estesa.",
+ "c-vagsess-7": "Questo valore richiede la sessione diagnostica estesa della centralina. Caruspex la usa solo in modalità esperto.",
+ "c-vagsess-8": "Questo valore richiede la sessione diagnostica estesa della centralina. È disattivata nelle impostazioni.",
+ "c-vagsess-9": "Questo valore richiede la sessione diagnostica estesa della centralina. Solo la vista dal vivo dell'app lo legge.",
+ "c-vagsess-10": "Questo valore richiede la sessione diagnostica estesa, che è disattivata.",
+ "c-vagsess-11": "non disponibile"
+}

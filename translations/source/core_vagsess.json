@@ -1,0 +1,57 @@
+[
+ {
+  "id": "c-vagsess-1",
+  "de": "Ein neuer Versuch folgt in 30 Sekunden.",
+  "en": "Another try follows in 30 seconds."
+ },
+ {
+  "id": "c-vagsess-2",
+  "de": "Keine Antwort auf den Wechsel in die erweiterte Diagnosesitzung.",
+  "en": "No answer to the switch into the extended diagnostic session."
+ },
+ {
+  "id": "c-vagsess-3",
+  "de": "Das Steuergerät lässt die erweiterte Diagnosesitzung gerade nicht zu (Bedingungen nicht erfüllt, etwa während der Fahrt).",
+  "en": "The control unit does not allow the extended diagnostic session right now (conditions not correct, for example while driving)."
+ },
+ {
+  "id": "c-vagsess-4",
+  "de": "Das Steuergerät antwortet in der erweiterten Diagnosesitzung nicht mehr; sie ist beendet. Ein neuer Versuch folgt in 30 Sekunden.",
+  "en": "The control unit stopped answering in the extended diagnostic session, which is now ended. Another try follows in 30 seconds."
+ },
+ {
+  "id": "c-vagsess-5",
+  "de": "Die erweiterte Diagnosesitzung wurde abgelehnt.",
+  "en": "The extended diagnostic session was refused."
+ },
+ {
+  "id": "c-vagsess-6",
+  "de": "Dieser Dienst ist beim Lesen in der erweiterten Sitzung gesperrt.",
+  "en": "This service is blocked while reading in the extended session."
+ },
+ {
+  "id": "c-vagsess-7",
+  "de": "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Die nutzt Caruspex nur im Profimodus.",
+  "en": "This value needs the extended diagnostic session of the control unit. Caruspex uses it in pro mode only."
+ },
+ {
+  "id": "c-vagsess-8",
+  "de": "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Sie ist in den Einstellungen ausgeschaltet.",
+  "en": "This value needs the extended diagnostic session of the control unit. It is switched off in the settings."
+ },
+ {
+  "id": "c-vagsess-9",
+  "de": "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Die liest nur die Live-Ansicht der App.",
+  "en": "This value needs the extended diagnostic session of the control unit. Only the live view of the app reads it."
+ },
+ {
+  "id": "c-vagsess-10",
+  "de": "Dieser Wert braucht die erweiterte Diagnosesitzung, die ausgeschaltet ist.",
+  "en": "This value needs the extended diagnostic session, which is switched off."
+ },
+ {
+  "id": "c-vagsess-11",
+  "de": "nicht verfügbar",
+  "en": "unavailable"
+ }
+]

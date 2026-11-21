@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Un nouvel essai suivra dans 30 secondes.",
+ "c-vagsess-2": "Pas de réponse au passage en session de diagnostic étendue.",
+ "c-vagsess-3": "Le calculateur n'autorise pas la session de diagnostic étendue pour le moment (conditions non remplies, par exemple en roulant).",
+ "c-vagsess-4": "Le calculateur ne répond plus dans la session de diagnostic étendue, qui est maintenant terminée. Un nouvel essai suivra dans 30 secondes.",
+ "c-vagsess-5": "La session de diagnostic étendue a été refusée.",
+ "c-vagsess-6": "Ce service est bloqué pendant la lecture en session étendue.",
+ "c-vagsess-7": "Cette valeur nécessite la session de diagnostic étendue du calculateur. Caruspex ne l'utilise qu'en mode expert.",
+ "c-vagsess-8": "Cette valeur nécessite la session de diagnostic étendue du calculateur. Elle est désactivée dans les réglages.",
+ "c-vagsess-9": "Cette valeur nécessite la session de diagnostic étendue du calculateur. Seule la vue en direct de l'application la lit.",
+ "c-vagsess-10": "Cette valeur nécessite la session de diagnostic étendue, qui est désactivée.",
+ "c-vagsess-11": "indisponible"
+}

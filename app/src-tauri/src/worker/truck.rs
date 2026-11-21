@@ -513,6 +513,7 @@ impl Worker {
                     time,
                     display_min: v.min,
                     display_max: v.max,
+                    ..LiveRow::default()
                 });
             }
             rows.push(ValueRow {

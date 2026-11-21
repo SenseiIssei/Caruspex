@@ -75,6 +75,10 @@ export interface LiveRow {
   // Sensible scale for charts and gauges, 0/0 when the table has none.
   displayMin: number;
   displayMax: number;
+  // Read with the control unit in the extended diagnostic session.
+  session?: boolean;
+  // Why the value is missing (its text then says "unavailable").
+  reason?: string;
 }
 
 export interface FreezeFrameRow {
@@ -344,6 +348,9 @@ export interface AppSettings {
   // Live values. Zero means: as fast as possible.
   pollIntervalMs: number;
   chartWindowSeconds: number;
+  // Manufacturer values that need the extended diagnostic session may switch
+  // the engine control unit into it while they are read (pro mode only).
+  extendedSessionValues: boolean;
   // Clearing.
   clearAttempts: number;
   confirmClear: boolean;
@@ -387,6 +394,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   autoConnect: false,
   pollIntervalMs: 20,
   chartWindowSeconds: 60,
+  extendedSessionValues: true,
   clearAttempts: 5,
   confirmClear: true,
   basicSettingSession: 0x85,

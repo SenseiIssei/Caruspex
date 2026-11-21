@@ -19,6 +19,7 @@ pub(super) fn to_row(v: &LiveValue) -> LiveRow {
         time: app_seconds(),
         display_min: v.display_min,
         display_max: v.display_max,
+        ..LiveRow::default()
     }
 }
 

@@ -254,6 +254,52 @@
    }
   },
   {
+   "repo": "Audi-A5",
+   "year": 2009,
+   "command": {
+    "hdr": "7E0",
+    "rax": "7E8",
+    "din": "03",
+    "cmd": {
+     "22": "114E"
+    },
+    "freq": 1,
+    "dbgfilter": {
+     "to": 2008,
+     "years": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2015,
+      2016
+     ],
+     "from": 2018
+    },
+    "signals": [
+     {
+      "id": "A5_PQ35_SOOT_MASS_MEAS",
+      "path": "Engine.DPF",
+      "fmt": {
+       "len": 16,
+       "max": 327.67,
+       "min": -327.68,
+       "div": 100,
+       "sign": true,
+       "unit": "unknown"
+      },
+      "name": "Soot mass measured"
+     }
+    ]
+   },
+   "response": [
+    "7E80562114E00C4"
+   ],
+   "expected": {
+    "A5_PQ35_SOOT_MASS_MEAS": 1.96
+   }
+  },
+  {
    "repo": "Audi-Q7",
    "year": 2018,
    "command": {

@@ -75,6 +75,13 @@ pub struct LiveRow {
     pub time: f64,
     pub display_min: f64,
     pub display_max: f64,
+    /// Read with the control unit in the extended diagnostic session. Left
+    /// out of the JSON when false, so ordinary rows stay as small as before.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub session: bool,
+    /// Why the value is missing (with text "unavailable"), else empty.
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub reason: String,
 }
 
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]

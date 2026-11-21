@@ -139,6 +139,27 @@
    ]
   },
   {
+   "repo": "Audi-A5",
+   "year": 2009,
+   "request": "22114E",
+   "header": "7E0",
+   "response": "7E8",
+   "session": "03",
+   "frames": [
+    "7E80562114E00C4"
+   ],
+   "data": "00C4",
+   "signals": [
+    {
+     "id": "A5_PQ35_SOOT_MASS_MEAS",
+     "name": "Soot mass measured",
+     "equation": "SIGNED16(INT16(A:B))/100",
+     "unit": "",
+     "expected": 1.96
+    }
+   ]
+  },
+  {
    "repo": "Audi-Q7",
    "year": 2018,
    "request": "22114F",

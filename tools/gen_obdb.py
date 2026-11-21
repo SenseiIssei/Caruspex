@@ -53,7 +53,11 @@ exactly is skipped and counted, never approximated:
     null bound    OBDb shows no value on some answers (nullmin, nullmax)
     too long      more than 40 bits, or a byte beyond ZZ
     extended      the command needs extended addressing (eax)
-    session       the command needs a diagnostic session (din, dout)
+    session       the command needs a diagnostic session (din, dout), except
+                  the extended session (din 03) of a Volkswagen group engine
+                  at 7E0: those commands are taken, their C line names the
+                  session "03" and the app switches the engine into it only
+                  while such a value is read (SESSION_MAKES below)
     k-line        the command is for ISO 9141 or 14230
     functional    asked at 7DF or DB33 but answered by one control unit (rax)
 
@@ -78,7 +82,7 @@ the text, tab separated:
 
     O <vehicles> <repositories> <signals> <skipped> <packs>     once, the totals
     R <repo> <make> <model> <from-to,...> <brand|model;...> <ev>  one car, its packs
-    C <pack mask> <request> <header> <response>                  a command
+    C <pack mask> <request> <header> <response> [<session>]      a command
     V <name> <ev short name> <equation> <min> <max> <unit>        a value of it
 
 C lines belong to the R line above them, V lines to the C line above them;
@@ -645,12 +649,34 @@ def check_signal(fmt: dict, equation: str, seed: int) -> None:
 # Commands: addresses and requests
 # ---------------------------------------------------------------------------
 
+# Makes whose engine values behind the extended diagnostic session are
+# taken: the Volkswagen group diesels (soot mass measured, distance and time
+# since the last regeneration). The app reads them in that session only from
+# the engine control unit and only with the services its allow list knows
+# (caruspex_protocols::session_request_allowed).
+SESSION_MAKES = ("Audi", "Volkswagen", "VW", "Seat", "SEAT", "Skoda", "Cupra", "Porsche", "Bentley",
+                 "Lamborghini")
+
+
+def command_session(repo: str, cmd: dict) -> str:
+    """The diagnostic session a command needs: "" for the default one,
+    "03" for the extended session of a Volkswagen group engine, or Skip."""
+    if "din" not in cmd and "dout" not in cmd:
+        return ""
+    make, _ = split_repo(repo)
+    service = next(iter(cmd["cmd"]), "")
+    if (make in SESSION_MAKES and str(cmd.get("din", "")).upper() == "03" and "dout" not in cmd
+            and cmd["hdr"].upper() == "7E0" and cmd.get("rax", "7E8").upper() == "7E8"
+            and service == "22" and "eax" not in cmd):
+        return "03"
+    raise Skip("session")
+
+
 def command_address(cmd: dict) -> tuple[str, str, str]:
-    """(request, header, response) in Caruspex form, or Skip."""
+    """(request, header, response) in Caruspex form, or Skip. The session
+    (din, dout) is checked by command_session."""
     if "eax" in cmd:
         raise Skip("extended")
-    if "din" in cmd or "dout" in cmd:
-        raise Skip("session")
     if cmd.get("proto") in ("9141-2", "14230") or "baud" in cmd or "init" in cmd:
         raise Skip("k-line")
     service, = cmd["cmd"].keys()
@@ -1164,6 +1190,7 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True,
                     stats["skip: no model year or replaced"] += len(signals)
                     continue
                 try:
+                    session = command_session(name, cmd)
                     address = command_address(cmd)
                 except Skip as s:
                     stats["skip: " + s.reason] += len(signals)
@@ -1194,7 +1221,9 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True,
                                      zlib.crc32(f"{name} {signal['id']}".encode()))
                     values.append(value)
                 if values:
-                    converted[(path, index)] = (address, values)
+                    converted[(path, index)] = (address, values, session)
+                    if session:
+                        stats["in the extended session"] += len(values)
                     stats["imported"] += len(values)
         packs = []
         for start, end, commands in segments:
@@ -1224,8 +1253,9 @@ def convert(stats: collections.Counter, unmatched: list, check: bool = True,
                        key=lambda pi: (list(repo["sets"]).index(pi[0]), pi[1]))
         for c in order:
             mask = sum(1 << i for i, (_, _, cs) in enumerate(packs) if c in cs)
-            (request, header, response), values = converted[c]
-            lines.append(tsv("C", f"{mask:x}", request, header, response))
+            (request, header, response), values, session = converted[c]
+            cells = ["C", f"{mask:x}", request, header, response] + ([session] if session else [])
+            lines.append(tsv(*cells))
             for v in values:
                 lines.append(tsv("V", v["name"], v["metric"], v["equation"], v["min"], v["max"],
                                  v["unit"]))
@@ -1253,6 +1283,7 @@ def do_convert() -> int:
           f"{stats['signals']} signals: {stats['imported']} imported, {skipped} skipped")
     for key in sorted(k for k in stats if k.startswith("skip: ")):
         print(f"  {key[6:]}: {stats[key]}")
+    print(f"{stats['in the extended session']} imported signals are read in the extended session")
     print(f"{len(unmatched)} vehicles without a catalog model"
           + (": " + ", ".join(unmatched) if "--verbose" in sys.argv else " (--verbose lists them)"))
     repos = [line.split("\t")[1] for line in lines if line.startswith("R\t")]
@@ -1287,7 +1318,9 @@ answers of that model in its repository (tests/test_cases) confirm; such a
 line names the make repository and its commit after the model's own.
 
 Totals: {stats['repos']} repositories read, {vehicles} with values, {stats['packs']} packs,
-{stats['imported']} signals imported, {skipped} skipped.
+{stats['imported']} signals imported, {skipped} skipped. Of the imported signals
+{stats['in the extended session']} are engine values of Volkswagen group cars that OBDb reads in
+the extended diagnostic session (din 03); their commands carry that session.
 
 Repositories used, each at github.com/OBDb/<name>, with the commit read:
 
@@ -1351,8 +1384,11 @@ def do_fixtures() -> int:
         cmd = entry["command"]
         item = {"repo": entry["repo"], "year": entry["year"]}
         try:
+            session = command_session(entry["repo"], cmd)
             request, header, response = command_address(cmd)
             item.update({"request": request, "header": header, "response": response})
+            if session:
+                item["session"] = session
         except Skip as s:
             item["skip"] = s.reason
             out.append(item)

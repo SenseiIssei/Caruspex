@@ -34,8 +34,8 @@ pub use obd2::{
     batchable_pid, misfire_counts, mode01_answer_values, split_multi_pid_answer,
 };
 pub use uds::{
-    ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, decode_bmw_dtc, decode_uds_dtc,
-    extended_request, find_present_ecus, scan_ecus,
+    ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, UdsRefusal, decode_bmw_dtc, decode_uds_dtc,
+    extended_request, find_present_ecus, scan_ecus, session_request_allowed, uds_refusal_text,
 };
 pub use vag_kline::{VagDiagnosis, VagKLine};
 pub use vag_tp20::{VagTp20, tp20_label};

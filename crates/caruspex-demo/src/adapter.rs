@@ -329,8 +329,12 @@ fn make_uds_units() -> Vec<UdsUnit> {
 }
 
 fn is_uds_service(sid: i32) -> bool {
-    sid == 0x14 || sid == 0x19 || sid == 0x22 || sid == 0x3E
+    sid == 0x10 || sid == 0x14 || sid == 0x19 || sid == 0x22 || sid == 0x3E
 }
+
+/// The engine leaves the extended session by itself this long after the
+/// last request (S3 server timer, 5 s in ISO 14229).
+const S3_SECONDS: f64 = 5.0;
 
 // ---------------------------------------------------------------------------
 // The adapter and the two control units
@@ -404,6 +408,10 @@ pub(crate) struct Impl {
 
     // The control units that answer UDS, with their own fault memory.
     uds_units: Vec<UdsUnit>,
+    // The diagnostic session of the engine (01 default, 03 extended) and
+    // the time of its last physical request, for the S3 timer.
+    engine_session: u8,
+    engine_last_request: f64,
 
     // Fault memory state.
     cleared: bool,
@@ -454,6 +462,8 @@ impl Impl {
             batch: false,
             adapter_clock: Arc::new(AtomicU64::new(0f64.to_bits())),
             uds_units: make_uds_units(),
+            engine_session: 0x01,
+            engine_last_request: 0.0,
             cleared: false,
             clear_run: 0.0,
             clear_km: 0.0,
@@ -1066,13 +1076,60 @@ impl Impl {
         }
     }
 
+    // Values the engine keeps only in the extended session, in the layout
+    // OBDb gives the Volkswagen group diesels (made up for the demo):
+    //   114E  soot mass measured, hundredths of a gram, signed 16 bit
+    //   1156  distance since the last regeneration, metres, 32 bit
+    fn engine_session_did(&self, id: i32, t: f64) -> Option<Bytes> {
+        let s = simulate(t, self.options.engine_start_seconds);
+        let mut out: Bytes = vec![0x62, (id >> 8) as u8, (id & 0xFF) as u8];
+        match id {
+            0x114E => {
+                let grams = 9.0 + (s.run_time / 600.0).min(6.0);
+                out.extend_from_slice(&((grams * 100.0).round() as i16).to_be_bytes());
+            }
+            0x1156 => {
+                let metres = ((s.odometer % 412.0) * 1000.0).round() as u32;
+                out.extend_from_slice(&metres.to_be_bytes());
+            }
+            _ => return None,
+        }
+        Some(out)
+    }
+
     // Answers of one unit to a physical request: none, one, or two when it
     // first reports "response pending" (7F xx 78).
     fn uds_service(&mut self, unit_index: usize, request: &[u8], t: f64) -> Vec<Bytes> {
         let sid = request[0];
         let negative = |nrc: u8| -> Bytes { vec![0x7F, sid, nrc] };
         let unit_request = self.uds_units[unit_index].request;
+        if unit_request == 0x7E0 {
+            // Without a request for longer than S3 the engine is back in
+            // the default session; every request starts the timer again.
+            if self.engine_session != 0x01 && t - self.engine_last_request > S3_SECONDS {
+                self.engine_session = 0x01;
+            }
+            self.engine_last_request = t;
+        }
         match sid {
+            0x10 => {
+                // diagnostic session control: the engine knows the default
+                // and the extended session, the other units none
+                if unit_request != 0x7E0 {
+                    return vec![negative(0x11)];
+                }
+                if request.len() != 2 {
+                    return vec![negative(0x13)];
+                }
+                match request[1] {
+                    0x01 => self.engine_session = 0x01,
+                    0x03 if self.options.refuse_extended_session => return vec![negative(0x22)],
+                    0x03 => self.engine_session = 0x03,
+                    _ => return vec![negative(0x12)],
+                }
+                // 50 xx with P2 = 50 ms and P2* = 5 s
+                vec![vec![0x50, request[1], 0x00, 0x32, 0x01, 0xF4]]
+            }
             0x3E => {
                 // tester present
                 if request.len() != 2 {
@@ -1092,6 +1149,15 @@ impl Impl {
                     return vec![negative(0x13)];
                 }
                 let id = (request[1] as i32) << 8 | request[2] as i32;
+                if unit_request == 0x7E0
+                    && let Some(value) = self.engine_session_did(id, t)
+                {
+                    // In the default session the engine does not know them.
+                    if self.engine_session != 0x03 {
+                        return vec![negative(0x31)];
+                    }
+                    return vec![value];
+                }
                 if unit_request == 0x7E0
                     && let Some(value) = self.engine_did(id, t)
                 {
