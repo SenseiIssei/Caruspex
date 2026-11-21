@@ -5,7 +5,7 @@
 // not carry them until a knowledge page asks.
 import type { BrandFamily, CatalogMatch, DtcLexiconEntry, Severity, VehicleDiagnosisInfo, VehicleGenerationInfo, VinInfo } from "../../types";
 import { L } from "../core";
-import { genericCount, lexicon, severityLabel, systemName } from "../dtc";
+import { composeText, genericCount, lexicon, severityLabel, sourceNoteFor, systemName } from "../dtc";
 import type { PartialHandlers } from "../runtime";
 
 // [brand, country de, country en, group]
@@ -19,8 +19,12 @@ type GenRecord = [string, string, string, number, number, number, number, number
 type WmiRecord = [string, string, string, number, number, [string, string] | null];
 // [first, from, to, de, en]
 type CountryRecord = [string, string, string, string, string];
-// [code, de, en, severity, system, detail, throttle]
-type BrandCode = [string, string, string, number, number, number, boolean];
+// [code, de, en, severity, system, detail, throttle], and for a code composed
+// from phrases (tools/dtc/brand_codes.csv) with empty de and en:
+// [..., single source, part, args, fault (-1 none), lead]
+type BrandCode =
+  | [string, string, string, number, number, number, boolean]
+  | [string, string, string, number, number, number, boolean, boolean, number, string, number, boolean];
 // [key, label de, label en, brands, records]
 type FamilyRecord = [string, string, string, string, BrandCode[]];
 
@@ -975,7 +979,9 @@ export const knowledgeHandlers: PartialHandlers = {
     for (const f of families) {
       const label = L(f[1], f[2]);
       for (const r of f[4]) {
-        out.push({ code: r[0], family: f[0], familyLabel: label, text: L(r[1], r[2]), severity: r[3] as Severity, system: r[4] });
+        const text = r.length === 12 ? composeText(r[8], r[9], r[10], r[11]) : L(r[1], r[2]);
+        const sourceNote = sourceNoteFor(r.length === 12 && r[7]);
+        out.push({ code: r[0], family: f[0], familyLabel: label, text, severity: r[3] as Severity, system: r[4], sourceNote });
       }
     }
     const systems = new Map<number, string>();

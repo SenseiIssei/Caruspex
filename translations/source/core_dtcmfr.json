@@ -1,0 +1,1482 @@
+[
+ {
+  "id": "c-dtcmfr-1",
+  "de": "Ansteuerung Relais Klimakompressor-Kupplung",
+  "en": "A/C clutch relay control"
+ },
+ {
+  "id": "c-dtcmfr-2",
+  "de": "ABS-Steuergerät - interner Fehler",
+  "en": "ABS control unit internal fault"
+ },
+ {
+  "id": "c-dtcmfr-3",
+  "de": "Variantencodierung ABS-Steuergerät",
+  "en": "ABS unit variant coding"
+ },
+ {
+  "id": "c-dtcmfr-4",
+  "de": "Fahrpedalgeber",
+  "en": "Accelerator pedal position sensor"
+ },
+ {
+  "id": "c-dtcmfr-5",
+  "de": "Rückmeldung aktive Luftklappe",
+  "en": "Active air flap feedback"
+ },
+ {
+  "id": "c-dtcmfr-6",
+  "de": "Abgasklappe %1",
+  "en": "Active exhaust valve %1"
+ },
+ {
+  "id": "c-dtcmfr-7",
+  "de": "Aktive Kühlerjalousie",
+  "en": "Active grille shutter"
+ },
+ {
+  "id": "c-dtcmfr-8",
+  "de": "Füllstand AdBlue-Tank",
+  "en": "AdBlue tank level"
+ },
+ {
+  "id": "c-dtcmfr-9",
+  "de": "Abstandsregeltempomat-Modul",
+  "en": "Adaptive cruise control module"
+ },
+ {
+  "id": "c-dtcmfr-10",
+  "de": "Temperatursensor Zusatz-Wasserstofftank",
+  "en": "Additional hydrogen tank temperature sensor"
+ },
+ {
+  "id": "c-dtcmfr-11",
+  "de": "Luftfederung erreicht die gewünschte Höhe nicht",
+  "en": "Air suspension cannot reach the requested ride height"
+ },
+ {
+  "id": "c-dtcmfr-12",
+  "de": "Spannung Reservekondensator Airbag-Steuergerät",
+  "en": "Airbag control unit backup capacitor voltage"
+ },
+ {
+  "id": "c-dtcmfr-13",
+  "de": "Innenraumsensor der Alarmanlage",
+  "en": "Alarm interior motion sensor"
+ },
+ {
+  "id": "c-dtcmfr-14",
+  "de": "Motorposition der Allrad-Abtriebseinheit (PTU)",
+  "en": "All-wheel drive power transfer unit motor position"
+ },
+ {
+  "id": "c-dtcmfr-15",
+  "de": "Schaltgabelposition der Allrad-Abtriebseinheit (PTU)",
+  "en": "All-wheel drive power transfer unit shift fork position"
+ },
+ {
+  "id": "c-dtcmfr-16",
+  "de": "Allrad-Magnetventil",
+  "en": "All-wheel drive solenoid"
+ },
+ {
+  "id": "c-dtcmfr-17",
+  "de": "Botschaft Außentemperatur fehlt",
+  "en": "Ambient temperature message missing"
+ },
+ {
+  "id": "c-dtcmfr-18",
+  "de": "Ammoniaksensor",
+  "en": "Ammonia sensor"
+ },
+ {
+  "id": "c-dtcmfr-19",
+  "de": "Audioverstärker - interner Fehler",
+  "en": "Audio amplifier internal fault"
+ },
+ {
+  "id": "c-dtcmfr-20",
+  "de": "Audioverstärker Lautsprecherausgang Kanal %1",
+  "en": "Audio amplifier speaker output channel %1"
+ },
+ {
+  "id": "c-dtcmfr-21",
+  "de": "Automatische Parkfunktion abgebrochen",
+  "en": "Automatic park function cancelled"
+ },
+ {
+  "id": "c-dtcmfr-22",
+  "de": "Automatikgetriebe - interner Fehler",
+  "en": "Automatic transmission internal fault"
+ },
+ {
+  "id": "c-dtcmfr-23",
+  "de": "Luftdrucksensor",
+  "en": "Barometric pressure sensor"
+ },
+ {
+  "id": "c-dtcmfr-24",
+  "de": "Systemspannung des Batteriesteuergeräts",
+  "en": "Battery energy control module system voltage"
+ },
+ {
+  "id": "c-dtcmfr-25",
+  "de": "Batteriesensor",
+  "en": "Battery sensor"
+ },
+ {
+  "id": "c-dtcmfr-26",
+  "de": "LIN-Kommunikation Batteriesensor",
+  "en": "Battery sensor LIN communication"
+ },
+ {
+  "id": "c-dtcmfr-27",
+  "de": "Batteriesensor - interner Fehler",
+  "en": "Battery sensor internal fault"
+ },
+ {
+  "id": "c-dtcmfr-28",
+  "de": "Inverter des Gebläsemotors",
+  "en": "Blower motor inverter"
+ },
+ {
+  "id": "c-dtcmfr-29",
+  "de": "Sicherheitscode-Botschaft des Bordnetzsteuergeräts fehlt",
+  "en": "Body control unit security code message missing"
+ },
+ {
+  "id": "c-dtcmfr-30",
+  "de": "Ladedrucksensor und Luftmassenmesser passen nicht zusammen",
+  "en": "Boost pressure sensor and mass air flow sensor do not agree"
+ },
+ {
+  "id": "c-dtcmfr-31",
+  "de": "Mechanischer Fehler am Bremskraftverstärker",
+  "en": "Brake booster mechanical fault"
+ },
+ {
+  "id": "c-dtcmfr-32",
+  "de": "Pedalkraftschalter des Bremskraftverstärkers",
+  "en": "Brake booster pedal force switch"
+ },
+ {
+  "id": "c-dtcmfr-33",
+  "de": "Pedalwegsensor der Bremse",
+  "en": "Brake pedal stroke sensor"
+ },
+ {
+  "id": "c-dtcmfr-34",
+  "de": "Bremspedalschalter",
+  "en": "Brake pedal switch"
+ },
+ {
+  "id": "c-dtcmfr-35",
+  "de": "Bremsdrucksensor",
+  "en": "Brake pressure sensor"
+ },
+ {
+  "id": "c-dtcmfr-36",
+  "de": "Hauptsignal Bremsdrucksensor",
+  "en": "Brake pressure sensor main input"
+ },
+ {
+  "id": "c-dtcmfr-37",
+  "de": "Zweitsignal Bremsdrucksensor",
+  "en": "Brake pressure sensor redundant input"
+ },
+ {
+  "id": "c-dtcmfr-38",
+  "de": "Botschaft Bremsschalter fehlt",
+  "en": "Brake switch message missing"
+ },
+ {
+  "id": "c-dtcmfr-39",
+  "de": "Steuerkreis der Bremsunterdruckpumpe",
+  "en": "Brake vacuum pump control circuit"
+ },
+ {
+  "id": "c-dtcmfr-40",
+  "de": "Bürstenloser Gebläsemotor",
+  "en": "Brushless blower motor"
+ },
+ {
+  "id": "c-dtcmfr-41",
+  "de": "CAN-Bus C am ESP-Steuergerät",
+  "en": "CAN bus C at the stability control unit"
+ },
+ {
+  "id": "c-dtcmfr-42",
+  "de": "CVT ruckelt (Steuergerät prüfen)",
+  "en": "CVT judder (check the control unit)"
+ },
+ {
+  "id": "c-dtcmfr-43",
+  "de": "CVT ruckelt (Getriebe prüfen)",
+  "en": "CVT judder (check the transmission)"
+ },
+ {
+  "id": "c-dtcmfr-44",
+  "de": "Übersetzungsregelung des CVT",
+  "en": "CVT ratio control system"
+ },
+ {
+  "id": "c-dtcmfr-45",
+  "de": "Kameramodul",
+  "en": "Camera module"
+ },
+ {
+  "id": "c-dtcmfr-46",
+  "de": "Privater CAN-Bus der Kamera",
+  "en": "Camera private CAN bus"
+ },
+ {
+  "id": "c-dtcmfr-47",
+  "de": "Zentralverriegelung Signal \"alle Türen verriegeln\"",
+  "en": "Central locking signal \"lock all doors\""
+ },
+ {
+  "id": "c-dtcmfr-48",
+  "de": "Zentralverriegelung Signal \"Fahrertür entriegeln oder sichern\"",
+  "en": "Central locking signal \"unlock or deadlock driver door\""
+ },
+ {
+  "id": "c-dtcmfr-49",
+  "de": "Zentraler Airbagsensor",
+  "en": "Centre airbag sensor assembly"
+ },
+ {
+  "id": "c-dtcmfr-50",
+  "de": "Veränderte Motorsoftware erkannt (fremde Kalibrierung)",
+  "en": "Changed engine software detected (aftermarket calibration)"
+ },
+ {
+  "id": "c-dtcmfr-51",
+  "de": "Ladeluftstrecke zwischen Turbolader und Drosselklappe - Druckverlust",
+  "en": "Charge air path between turbocharger and throttle - pressure loss"
+ },
+ {
+  "id": "c-dtcmfr-52",
+  "de": "Ladestatusanzeige - interner Fehler",
+  "en": "Charge status indicator module internal fault"
+ },
+ {
+  "id": "c-dtcmfr-53",
+  "de": "Chrysler/Dodge/Jeep/Ram",
+  "en": "Chrysler/Dodge/Jeep/Ram"
+ },
+ {
+  "id": "c-dtcmfr-54",
+  "de": "Klima-Bedienfeld (Touch)",
+  "en": "Climate touch control panel"
+ },
+ {
+  "id": "c-dtcmfr-55",
+  "de": "Lambdaregelung nicht erreicht, Bank %1 (Sonde vor Kat)",
+  "en": "Closed loop fuel control not reached bank %1 (upstream sensor)"
+ },
+ {
+  "id": "c-dtcmfr-56",
+  "de": "Kalibrierung des Steuergeräts",
+  "en": "Control unit calibration"
+ },
+ {
+  "id": "c-dtcmfr-57",
+  "de": "Konfiguration des Steuergeräts",
+  "en": "Control unit configuration"
+ },
+ {
+  "id": "c-dtcmfr-58",
+  "de": "Konfigurationsprüfung des Steuergeräts fehlgeschlagen",
+  "en": "Control unit configuration check failed"
+ },
+ {
+  "id": "c-dtcmfr-59",
+  "de": "Konfiguration des Steuergeräts passt nicht",
+  "en": "Control unit configuration mismatch"
+ },
+ {
+  "id": "c-dtcmfr-60",
+  "de": "Elektronik des Steuergeräts",
+  "en": "Control unit electronics"
+ },
+ {
+  "id": "c-dtcmfr-61",
+  "de": "Interner Abschalttest des Steuergeräts",
+  "en": "Control unit internal shut-off test"
+ },
+ {
+  "id": "c-dtcmfr-62",
+  "de": "Steuergerät nicht initialisiert",
+  "en": "Control unit not initialised"
+ },
+ {
+  "id": "c-dtcmfr-63",
+  "de": "Steuergerät hat sich neu gestartet (Reset)",
+  "en": "Control unit restarted itself (reset)"
+ },
+ {
+  "id": "c-dtcmfr-64",
+  "de": "Steuergerät wurde nicht ordnungsgemäß heruntergefahren",
+  "en": "Control unit was not shut down properly"
+ },
+ {
+  "id": "c-dtcmfr-65",
+  "de": "Filter der Kurbelgehäuseentlüftung verstopft",
+  "en": "Crankcase ventilation filter clogged"
+ },
+ {
+  "id": "c-dtcmfr-66",
+  "de": "Kurbelwellen-Impulssignal fehlt",
+  "en": "Crankshaft pulse signal missing"
+ },
+ {
+  "id": "c-dtcmfr-67",
+  "de": "Crashsignal-Eingang (digital)",
+  "en": "Crash signal input (digital)"
+ },
+ {
+  "id": "c-dtcmfr-68",
+  "de": "Botschaft Tempomat fehlt",
+  "en": "Cruise control message missing"
+ },
+ {
+  "id": "c-dtcmfr-69",
+  "de": "Tempomattaster am Lenkrad",
+  "en": "Cruise control switch on the steering wheel"
+ },
+ {
+  "id": "c-dtcmfr-70",
+  "de": "Ölversorgungs-Magnetventil Zylinder %1 (variabler Ventilhub)",
+  "en": "Cylinder %1 oil supply solenoid valve (variable valve lift)"
+ },
+ {
+  "id": "c-dtcmfr-71",
+  "de": "Kommunikation mit dem Schnellladegerät (DC)",
+  "en": "DC quick charger communication"
+ },
+ {
+  "id": "c-dtcmfr-72",
+  "de": "Dieselpartikelfilter-System",
+  "en": "Diesel particulate filter system"
+ },
+ {
+  "id": "c-dtcmfr-73",
+  "de": "Signal Türschlossschalter",
+  "en": "Door latch switch signal"
+ },
+ {
+  "id": "c-dtcmfr-74",
+  "de": "Winkelsignal des Fahrmotors",
+  "en": "Drive motor angle signal"
+ },
+ {
+  "id": "c-dtcmfr-75",
+  "de": "Stromsensor des Elektromotors (IMA)",
+  "en": "Drive motor current sensor (IMA)"
+ },
+ {
+  "id": "c-dtcmfr-76",
+  "de": "Resolversignal des Fahrmotors unplausibel",
+  "en": "Drive motor resolver signal implausible"
+ },
+ {
+  "id": "c-dtcmfr-77",
+  "de": "Zündkreis Fahrerairbag",
+  "en": "Driver airbag circuit"
+ },
+ {
+  "id": "c-dtcmfr-78",
+  "de": "Widerstand Zündkreis Fahrerairbag",
+  "en": "Driver airbag circuit resistance"
+ },
+ {
+  "id": "c-dtcmfr-79",
+  "de": "Zündkreis Fahrerairbag Stufe %1",
+  "en": "Driver airbag stage %1 circuit"
+ },
+ {
+  "id": "c-dtcmfr-80",
+  "de": "Türkontaktschalter Fahrertür %1",
+  "en": "Driver door ajar switch %1"
+ },
+ {
+  "id": "c-dtcmfr-81",
+  "de": "Türkontaktschalter Fahrertür %1 und %2 passen nicht zusammen",
+  "en": "Driver door ajar switches %1 and %2 do not agree"
+ },
+ {
+  "id": "c-dtcmfr-82",
+  "de": "Zündkreis Knieairbag Fahrer",
+  "en": "Driver knee airbag squib circuit"
+ },
+ {
+  "id": "c-dtcmfr-83",
+  "de": "Widerstand Zündkreis Gurtstraffer Fahrer",
+  "en": "Driver seat belt pretensioner circuit resistance"
+ },
+ {
+  "id": "c-dtcmfr-84",
+  "de": "Positionssensor Sitzschiene Fahrer",
+  "en": "Driver seat track position sensor"
+ },
+ {
+  "id": "c-dtcmfr-85",
+  "de": "Schaltwunsch des Fahrers",
+  "en": "Driver shift request"
+ },
+ {
+  "id": "c-dtcmfr-86",
+  "de": "EGR reagiert zu langsam - Durchfluss fallend",
+  "en": "EGR slow response - decreasing flow"
+ },
+ {
+  "id": "c-dtcmfr-87",
+  "de": "EGR reagiert zu langsam - Durchfluss steigend",
+  "en": "EGR slow response - increasing flow"
+ },
+ {
+  "id": "c-dtcmfr-88",
+  "de": "Unterer Anschlag Positionssensor AGR-Drosselklappe",
+  "en": "EGR throttle position sensor minimum stop"
+ },
+ {
+  "id": "c-dtcmfr-89",
+  "de": "Geschlossene Stellung des AGR-Ventils",
+  "en": "EGR valve closed position"
+ },
+ {
+  "id": "c-dtcmfr-90",
+  "de": "Tankentlüftung, Spülleitung auf der Ladedruckseite",
+  "en": "EVAP purge line on the boost side"
+ },
+ {
+  "id": "c-dtcmfr-91",
+  "de": "Drehzahlsignal des elektrischen Nockenwellenverstellers",
+  "en": "Electric camshaft adjuster motor speed signal"
+ },
+ {
+  "id": "c-dtcmfr-92",
+  "de": "Steuergerät der elektrischen Parkbremse",
+  "en": "Electric parking brake control unit"
+ },
+ {
+  "id": "c-dtcmfr-93",
+  "de": "Schalter der elektrischen Parkbremse",
+  "en": "Electric parking brake switch"
+ },
+ {
+  "id": "c-dtcmfr-94",
+  "de": "Elektronische Parkbremse abgeschaltet",
+  "en": "Electronic parking brake switched off"
+ },
+ {
+  "id": "c-dtcmfr-95",
+  "de": "Elektronische Parksperre hat die Stellung P ungewollt verlassen",
+  "en": "Electronic parking lock left the park position unintentionally"
+ },
+ {
+  "id": "c-dtcmfr-96",
+  "de": "Elektronischer Wählhebel",
+  "en": "Electronic shift module"
+ },
+ {
+  "id": "c-dtcmfr-97",
+  "de": "Selbstlernen der elektronischen Drosselklappe fehlgeschlagen",
+  "en": "Electronic throttle self-learning failed"
+ },
+ {
+  "id": "c-dtcmfr-98",
+  "de": "Motorsteuergerät",
+  "en": "Engine control module"
+ },
+ {
+  "id": "c-dtcmfr-99",
+  "de": "Nachlauftimer im Motorsteuergerät unplausibel",
+  "en": "Engine control unit internal shutdown timer implausible"
+ },
+ {
+  "id": "c-dtcmfr-100",
+  "de": "Motorhaubenschalter %1",
+  "en": "Engine hood switch %1"
+ },
+ {
+  "id": "c-dtcmfr-101",
+  "de": "Motorhaubenschalter %1 und %2 passen nicht zusammen",
+  "en": "Engine hood switches %1 and %2 do not agree"
+ },
+ {
+  "id": "c-dtcmfr-102",
+  "de": "Motoröldruck außerhalb des Sollbereichs - Nockenwellenverstellung abgeschaltet",
+  "en": "Engine oil pressure out of range - camshaft adjustment switched off"
+ },
+ {
+  "id": "c-dtcmfr-103",
+  "de": "Signal Motoröltemperatur",
+  "en": "Engine oil temperature signal"
+ },
+ {
+  "id": "c-dtcmfr-104",
+  "de": "Viskosität des Motoröls",
+  "en": "Engine oil viscosity"
+ },
+ {
+  "id": "c-dtcmfr-105",
+  "de": "Motorsignal am ABS-Steuergerät",
+  "en": "Engine signal at the ABS unit"
+ },
+ {
+  "id": "c-dtcmfr-106",
+  "de": "Motordrehzahl nicht ermittelbar",
+  "en": "Engine speed cannot be determined"
+ },
+ {
+  "id": "c-dtcmfr-107",
+  "de": "Motordrehzahl beim automatischen Start zu niedrig (Hybrid)",
+  "en": "Engine speed too low during automatic start (hybrid)"
+ },
+ {
+  "id": "c-dtcmfr-108",
+  "de": "Start-Stopp-Taster des Motors",
+  "en": "Engine start/stop button"
+ },
+ {
+  "id": "c-dtcmfr-109",
+  "de": "Signal Motordrehmoment",
+  "en": "Engine torque signal"
+ },
+ {
+  "id": "c-dtcmfr-110",
+  "de": "Lüfterdrehzahl der EyeSight-Kamera",
+  "en": "EyeSight camera fan motor speed"
+ },
+ {
+  "id": "c-dtcmfr-111",
+  "de": "Ansteuerung Vorderachsabkopplung",
+  "en": "Front axle disconnect control"
+ },
+ {
+  "id": "c-dtcmfr-112",
+  "de": "Stromkreis Frontaufprallsensor",
+  "en": "Front impact severity sensor circuit"
+ },
+ {
+  "id": "c-dtcmfr-113",
+  "de": "Sicht des Frontradars blockiert",
+  "en": "Front radar view blocked"
+ },
+ {
+  "id": "c-dtcmfr-114",
+  "de": "Sitzheizung vorn",
+  "en": "Front seat heater"
+ },
+ {
+  "id": "c-dtcmfr-115",
+  "de": "Steuergerät Luftpumpe der Brennstoffzelle",
+  "en": "Fuel cell air pump control unit"
+ },
+ {
+  "id": "c-dtcmfr-116",
+  "de": "Leitung vom Pumpensteuergerät zur Kraftstoffpumpe",
+  "en": "Fuel pump circuit from the fuel pump control module"
+ },
+ {
+  "id": "c-dtcmfr-117",
+  "de": "Raildrucksensor %1",
+  "en": "Fuel rail pressure sensor %1"
+ },
+ {
+  "id": "c-dtcmfr-118",
+  "de": "Kraftstofftank leer",
+  "en": "Fuel tank empty"
+ },
+ {
+  "id": "c-dtcmfr-119",
+  "de": "Gemischadaption 2 Bank %1",
+  "en": "Fuel trim 2 bank %1"
+ },
+ {
+  "id": "c-dtcmfr-120",
+  "de": "Gangsteller %1 - mechanischer Fehler",
+  "en": "Gear actuator %1 mechanical fault"
+ },
+ {
+  "id": "c-dtcmfr-121",
+  "de": "Gang lässt sich nicht einlegen",
+  "en": "Gear cannot be engaged"
+ },
+ {
+  "id": "c-dtcmfr-122",
+  "de": "Ganganzeige",
+  "en": "Gear position display"
+ },
+ {
+  "id": "c-dtcmfr-123",
+  "de": "Lichtmaschine",
+  "en": "Generator"
+ },
+ {
+  "id": "c-dtcmfr-124",
+  "de": "Lastsignal der Lichtmaschine",
+  "en": "Generator load input"
+ },
+ {
+  "id": "c-dtcmfr-125",
+  "de": "Inverter des Generatormotors",
+  "en": "Generator motor inverter"
+ },
+ {
+  "id": "c-dtcmfr-126",
+  "de": "Luftverteilungsklappe",
+  "en": "HVAC air distribution door"
+ },
+ {
+  "id": "c-dtcmfr-127",
+  "de": "Modul berührungslose Heckklappe",
+  "en": "Hands-free tailgate module"
+ },
+ {
+  "id": "c-dtcmfr-128",
+  "de": "Hochdruck-Kraftstoffpumpe",
+  "en": "High pressure fuel pump"
+ },
+ {
+  "id": "c-dtcmfr-129",
+  "de": "Schütze der Hochvoltbatterie in falscher Reihenfolge geschaltet",
+  "en": "High voltage battery contactors switched in the wrong order"
+ },
+ {
+  "id": "c-dtcmfr-130",
+  "de": "Hochvolt-Stromkreis",
+  "en": "High voltage circuit"
+ },
+ {
+  "id": "c-dtcmfr-131",
+  "de": "Vorladung Hochvoltsystem",
+  "en": "High voltage pre-charge"
+ },
+ {
+  "id": "c-dtcmfr-132",
+  "de": "Stromkreis der Hupe überlastet",
+  "en": "Horn circuit overloaded"
+ },
+ {
+  "id": "c-dtcmfr-133",
+  "de": "Zellüberwachung Hybridbatterie Schaltkreis %1",
+  "en": "Hybrid battery cell supervision circuit %1"
+ },
+ {
+  "id": "c-dtcmfr-134",
+  "de": "Ladezustand Hybridbatterie",
+  "en": "Hybrid battery state of charge"
+ },
+ {
+  "id": "c-dtcmfr-135",
+  "de": "Hybridsteuergerät",
+  "en": "Hybrid control unit"
+ },
+ {
+  "id": "c-dtcmfr-136",
+  "de": "Sicherheitscode-Botschaft des Hybridsteuergeräts fehlt",
+  "en": "Hybrid control unit security code message missing"
+ },
+ {
+  "id": "c-dtcmfr-137",
+  "de": "Riemen des Hybrid-Startergenerators rutscht",
+  "en": "Hybrid starter generator belt slipping"
+ },
+ {
+  "id": "c-dtcmfr-138",
+  "de": "Ansteuerung Thermomanagement Hybrid",
+  "en": "Hybrid thermal management control"
+ },
+ {
+  "id": "c-dtcmfr-139",
+  "de": "Fehler Hybrid-/Elektroakku Stufe %1",
+  "en": "Hybrid/EV battery fault level %1"
+ },
+ {
+  "id": "c-dtcmfr-140",
+  "de": "Isolationsfehler auf der Seite des Hybrid-/Elektroakkus",
+  "en": "Hybrid/EV battery side isolation fault"
+ },
+ {
+  "id": "c-dtcmfr-141",
+  "de": "Zustandsprüfung des Hybrid-/Elektroakkus fehlgeschlagen",
+  "en": "Hybrid/EV battery state of health check failed"
+ },
+ {
+  "id": "c-dtcmfr-142",
+  "de": "Weckleitung %1 Hybrid/Elektro",
+  "en": "Hybrid/EV wake-up control %1 output"
+ },
+ {
+  "id": "c-dtcmfr-143",
+  "de": "Abstellzeit der Zündung",
+  "en": "Ignition key-off time"
+ },
+ {
+  "id": "c-dtcmfr-144",
+  "de": "Zündungseingänge %1 und %2 passen nicht zusammen",
+  "en": "Ignition run/start inputs %1 and %2 do not agree"
+ },
+ {
+  "id": "c-dtcmfr-145",
+  "de": "Antennenverstärker der Wegfahrsperre",
+  "en": "Immobiliser antenna amplifier"
+ },
+ {
+  "id": "c-dtcmfr-146",
+  "de": "Basisstation der Wegfahrsperre passt nicht",
+  "en": "Immobiliser base station does not match"
+ },
+ {
+  "id": "c-dtcmfr-147",
+  "de": "Signal der Wegfahrsperre",
+  "en": "Immobiliser signal"
+ },
+ {
+  "id": "c-dtcmfr-148",
+  "de": "Wegfahrsperre",
+  "en": "Immobiliser system"
+ },
+ {
+  "id": "c-dtcmfr-149",
+  "de": "Falsche Übersetzung - Kupplung %1 defekt",
+  "en": "Incorrect gear ratio - clutch %1 faulty"
+ },
+ {
+  "id": "c-dtcmfr-150",
+  "de": "Falsche Übersetzung - Kupplung %1 oder %2 defekt",
+  "en": "Incorrect gear ratio - clutch %1 or %2 faulty"
+ },
+ {
+  "id": "c-dtcmfr-151",
+  "de": "Falsche Übersetzung - Kupplung %1, %2 oder %3 defekt",
+  "en": "Incorrect gear ratio - clutch %1, %2 or %3 faulty"
+ },
+ {
+  "id": "c-dtcmfr-152",
+  "de": "Drehrichtung von Eingangs- und Ausgangswelle passt nicht zusammen",
+  "en": "Input and output shaft turning directions do not match"
+ },
+ {
+  "id": "c-dtcmfr-153",
+  "de": "Stromkreis Positionssensor Ansaugluft-Umschaltklappe",
+  "en": "Intake air diverter valve position sensor circuit"
+ },
+ {
+  "id": "c-dtcmfr-154",
+  "de": "Ansteuerung Saugrohr-Umschaltklappe (kurzer Ansaugweg)",
+  "en": "Intake manifold short runner valve control"
+ },
+ {
+  "id": "c-dtcmfr-155",
+  "de": "Magnetsteller Einlassventil %1",
+  "en": "Intake valve control solenoid %1"
+ },
+ {
+  "id": "c-dtcmfr-156",
+  "de": "Einlassventil hängt in der Stellung kleiner Hub",
+  "en": "Intake valve stuck in low lift position"
+ },
+ {
+  "id": "c-dtcmfr-157",
+  "de": "Radarsensor des Abstandsregeltempomats",
+  "en": "Intelligent cruise control radar sensor"
+ },
+ {
+  "id": "c-dtcmfr-158",
+  "de": "Interne CAN-Kommunikation des Steuergeräts",
+  "en": "Internal CAN communication of the control unit"
+ },
+ {
+  "id": "c-dtcmfr-159",
+  "de": "Interne SPI-Kommunikation des Steuergeräts",
+  "en": "Internal SPI communication of the control unit"
+ },
+ {
+  "id": "c-dtcmfr-160",
+  "de": "Schlüsselkennung nicht lesbar",
+  "en": "Key ID cannot be read"
+ },
+ {
+  "id": "c-dtcmfr-161",
+  "de": "Schlüssel nicht erkannt (ungültiger Schlüssel)",
+  "en": "Key not recognised (invalid key)"
+ },
+ {
+  "id": "c-dtcmfr-162",
+  "de": "Keyless-Antenne %1",
+  "en": "Keyless entry antenna %1"
+ },
+ {
+  "id": "c-dtcmfr-163",
+  "de": "LIN-Bus %1",
+  "en": "LIN bus %1"
+ },
+ {
+  "id": "c-dtcmfr-164",
+  "de": "LIN-Kommunikation zwischen Motorsteuergerät und Gleichspannungswandler",
+  "en": "LIN communication between engine control unit and DC/DC converter"
+ },
+ {
+  "id": "c-dtcmfr-165",
+  "de": "Niveausensor vorn links",
+  "en": "Left front ride height sensor"
+ },
+ {
+  "id": "c-dtcmfr-166",
+  "de": "Seitenairbag vorn links",
+  "en": "Left front side airbag module"
+ },
+ {
+  "id": "c-dtcmfr-167",
+  "de": "Scheinwerfer links",
+  "en": "Left headlamp unit"
+ },
+ {
+  "id": "c-dtcmfr-168",
+  "de": "Ansteuerung Fernlicht links",
+  "en": "Left high beam control"
+ },
+ {
+  "id": "c-dtcmfr-169",
+  "de": "Zuleitung Luftfeder hinten links verstopft",
+  "en": "Left rear air spring inlet blocked"
+ },
+ {
+  "id": "c-dtcmfr-170",
+  "de": "Öldruckabweichung Kupplung Hinterachsdifferential links",
+  "en": "Left rear differential clutch fluid pressure deviation"
+ },
+ {
+  "id": "c-dtcmfr-171",
+  "de": "Insassenerkennung hinten links",
+  "en": "Left rear occupant detection sensor"
+ },
+ {
+  "id": "c-dtcmfr-172",
+  "de": "Niveausensor hinten links",
+  "en": "Left rear ride height sensor"
+ },
+ {
+  "id": "c-dtcmfr-173",
+  "de": "Bildsignal Seitenkamera links",
+  "en": "Left side camera image signal"
+ },
+ {
+  "id": "c-dtcmfr-174",
+  "de": "Licht- und Sonnensensor",
+  "en": "Light and sunlight sensor"
+ },
+ {
+  "id": "c-dtcmfr-175",
+  "de": "Wenig oder kein Antriebsmoment an den Hinterrädern",
+  "en": "Little or no drive torque at the rear wheels"
+ },
+ {
+  "id": "c-dtcmfr-176",
+  "de": "Regelung Kraftstoff-Niederdruck - Druck außerhalb der Toleranz",
+  "en": "Low pressure fuel supply control - pressure out of tolerance"
+ },
+ {
+  "id": "c-dtcmfr-177",
+  "de": "Temperatursensor Haupt-Wasserstofftank",
+  "en": "Main hydrogen tank temperature sensor"
+ },
+ {
+  "id": "c-dtcmfr-178",
+  "de": "Verbindung Medienanschluss %1",
+  "en": "Media port %1 connection"
+ },
+ {
+  "id": "c-dtcmfr-179",
+  "de": "Leistungsinverter des Elektromotors (IMA)",
+  "en": "Motor power inverter module (IMA)"
+ },
+ {
+  "id": "c-dtcmfr-180",
+  "de": "Ausgang Leistungsinverter des Elektromotors (IMA)",
+  "en": "Motor power inverter module (IMA) output"
+ },
+ {
+  "id": "c-dtcmfr-181",
+  "de": "Signal Leistungsinverter des Elektromotors (IMA)",
+  "en": "Motor power inverter module (IMA) signal"
+ },
+ {
+  "id": "c-dtcmfr-182",
+  "de": "Temperatur der Multifunktionskamera",
+  "en": "Multipurpose camera temperature"
+ },
+ {
+  "id": "c-dtcmfr-183",
+  "de": "Nullpunkt NOx-Sensor Bank %1 Sonde %2",
+  "en": "NOx sensor bank %1 sensor %2 zero offset"
+ },
+ {
+  "id": "c-dtcmfr-184",
+  "de": "Pumpstrom Lambdasonde Bank %1 Sonde %2",
+  "en": "O2 sensor pumping current bank %1 sensor %2"
+ },
+ {
+  "id": "c-dtcmfr-185",
+  "de": "Referenzspannung Lambdasonde",
+  "en": "O2 sensor reference voltage circuit"
+ },
+ {
+  "id": "c-dtcmfr-186",
+  "de": "Öldruck der variablen Ventilbetätigung",
+  "en": "Oil pressure of the variable valve actuation"
+ },
+ {
+  "id": "c-dtcmfr-187",
+  "de": "Bordladegerät",
+  "en": "On-board charging module"
+ },
+ {
+  "id": "c-dtcmfr-188",
+  "de": "Abtriebsdrehzahl und Raddrehzahl passen nicht zusammen",
+  "en": "Output shaft speed and wheel speed do not agree"
+ },
+ {
+  "id": "c-dtcmfr-189",
+  "de": "Dachkonsole (LIN)",
+  "en": "Overhead console (LIN)"
+ },
+ {
+  "id": "c-dtcmfr-190",
+  "de": "Parksensor %1",
+  "en": "Park assist sensor %1"
+ },
+ {
+  "id": "c-dtcmfr-191",
+  "de": "Schalter Park/Neutral oder Kupplung",
+  "en": "Park/neutral position or clutch switch"
+ },
+ {
+  "id": "c-dtcmfr-192",
+  "de": "Parksperre",
+  "en": "Parking lock (park pawl) system"
+ },
+ {
+  "id": "c-dtcmfr-193",
+  "de": "Stromsensor des Parksperren-Stellmotors",
+  "en": "Parking lock actuator motor current sensor"
+ },
+ {
+  "id": "c-dtcmfr-194",
+  "de": "Steuergerät Parksensoren",
+  "en": "Parking sensor control unit"
+ },
+ {
+  "id": "c-dtcmfr-195",
+  "de": "Widerstand Zündkreis Beifahrerairbag",
+  "en": "Passenger airbag circuit resistance"
+ },
+ {
+  "id": "c-dtcmfr-196",
+  "de": "Widerstand Zündkreis Gurtstraffer Beifahrer",
+  "en": "Passenger seat belt pretensioner circuit resistance"
+ },
+ {
+  "id": "c-dtcmfr-197",
+  "de": "Zündkreis Seitenairbag Beifahrersitz",
+  "en": "Passenger seat side airbag circuit"
+ },
+ {
+  "id": "c-dtcmfr-198",
+  "de": "Elektrische Türentriegelung",
+  "en": "Power door unlock"
+ },
+ {
+  "id": "c-dtcmfr-199",
+  "de": "Leistungsinverter",
+  "en": "Power inverter module"
+ },
+ {
+  "id": "c-dtcmfr-200",
+  "de": "CAN-Kommunikation der Servolenkung mit dem Motorsteuergerät",
+  "en": "Power steering CAN communication with the engine control unit"
+ },
+ {
+  "id": "c-dtcmfr-201",
+  "de": "Servolenkungs-Steuergerät - interner Fehler",
+  "en": "Power steering control unit internal fault"
+ },
+ {
+  "id": "c-dtcmfr-202",
+  "de": "Steuergerät elektrische Heckklappe",
+  "en": "Power tailgate control unit"
+ },
+ {
+  "id": "c-dtcmfr-203",
+  "de": "Motor Heckklappenantrieb links",
+  "en": "Power tailgate left strut motor"
+ },
+ {
+  "id": "c-dtcmfr-204",
+  "de": "Sensor Heckklappenantrieb links",
+  "en": "Power tailgate left strut sensor"
+ },
+ {
+  "id": "c-dtcmfr-205",
+  "de": "Motor Heckklappenantrieb rechts",
+  "en": "Power tailgate right strut motor"
+ },
+ {
+  "id": "c-dtcmfr-206",
+  "de": "Sensor Heckklappenantrieb rechts",
+  "en": "Power tailgate right strut sensor"
+ },
+ {
+  "id": "c-dtcmfr-207",
+  "de": "Drucksensoren passen nicht zueinander",
+  "en": "Pressure sensors do not agree with each other"
+ },
+ {
+  "id": "c-dtcmfr-208",
+  "de": "Lokaler CAN-Bus des Radarsensors",
+  "en": "Radar sensor local CAN bus"
+ },
+ {
+  "id": "c-dtcmfr-209",
+  "de": "Bremse des Hinterachsdifferential-Motors",
+  "en": "Rear differential motor brake"
+ },
+ {
+  "id": "c-dtcmfr-210",
+  "de": "Motorposition des Hinterachsantriebs (RDM)",
+  "en": "Rear drive module motor position"
+ },
+ {
+  "id": "c-dtcmfr-211",
+  "de": "Kommunikation mit dem Heckradar",
+  "en": "Rear radar communication"
+ },
+ {
+  "id": "c-dtcmfr-212",
+  "de": "Stellmotoren der Hinterradlenkung abgeklemmt",
+  "en": "Rear wheel steering actuators disconnected"
+ },
+ {
+  "id": "c-dtcmfr-213",
+  "de": "Steuergerät Hinterradlenkung",
+  "en": "Rear wheel steering control unit"
+ },
+ {
+  "id": "c-dtcmfr-214",
+  "de": "Steuergerät Rekuperationsbremse",
+  "en": "Regenerative braking control unit"
+ },
+ {
+  "id": "c-dtcmfr-215",
+  "de": "Relaissteuergerät",
+  "en": "Relay control module"
+ },
+ {
+  "id": "c-dtcmfr-216",
+  "de": "Batterie im Funkschlüssel %1 schwach",
+  "en": "Remote key %1 battery weak"
+ },
+ {
+  "id": "c-dtcmfr-217",
+  "de": "Kompressormotor der Niveauregulierung",
+  "en": "Ride height control compressor motor"
+ },
+ {
+  "id": "c-dtcmfr-218",
+  "de": "Frontcrashsensor rechts",
+  "en": "Right front crash sensor"
+ },
+ {
+  "id": "c-dtcmfr-219",
+  "de": "Insassenerkennung vorn rechts",
+  "en": "Right front occupant detection sensor"
+ },
+ {
+  "id": "c-dtcmfr-220",
+  "de": "Niveausensor vorn rechts",
+  "en": "Right front ride height sensor"
+ },
+ {
+  "id": "c-dtcmfr-221",
+  "de": "Scheinwerfer rechts",
+  "en": "Right headlamp unit"
+ },
+ {
+  "id": "c-dtcmfr-222",
+  "de": "Ansteuerung Fernlicht rechts",
+  "en": "Right high beam control"
+ },
+ {
+  "id": "c-dtcmfr-223",
+  "de": "Öldruckabweichung Kupplung Hinterachsdifferential rechts",
+  "en": "Right rear differential clutch fluid pressure deviation"
+ },
+ {
+  "id": "c-dtcmfr-224",
+  "de": "Insassenerkennung hinten rechts",
+  "en": "Right rear occupant detection sensor"
+ },
+ {
+  "id": "c-dtcmfr-225",
+  "de": "Niveausensor hinten rechts",
+  "en": "Right rear ride height sensor"
+ },
+ {
+  "id": "c-dtcmfr-226",
+  "de": "Brems- und Schlussleuchte hinten rechts Kanal %1",
+  "en": "Right rear stop/tail lamp channel %1"
+ },
+ {
+  "id": "c-dtcmfr-227",
+  "de": "Bildsignal Seitenkamera rechts",
+  "en": "Right side camera image signal"
+ },
+ {
+  "id": "c-dtcmfr-228",
+  "de": "Drehsteller",
+  "en": "Rotary control knob"
+ },
+ {
+  "id": "c-dtcmfr-229",
+  "de": "Unrunder Leerlauf",
+  "en": "Rough idle"
+ },
+ {
+  "id": "c-dtcmfr-230",
+  "de": "SCP-Datenbus",
+  "en": "SCP data bus"
+ },
+ {
+  "id": "c-dtcmfr-231",
+  "de": "SCR-Katalysator fehlt",
+  "en": "SCR catalyst missing"
+ },
+ {
+  "id": "c-dtcmfr-232",
+  "de": "Heizung des Sitzkissens",
+  "en": "Seat cushion heater"
+ },
+ {
+  "id": "c-dtcmfr-233",
+  "de": "Vorderer Anschlag der Sitzlängsverstellung",
+  "en": "Seat fore/aft front end stop"
+ },
+ {
+  "id": "c-dtcmfr-234",
+  "de": "Sensorversorgung %1",
+  "en": "Sensor supply %1"
+ },
+ {
+  "id": "c-dtcmfr-235",
+  "de": "Kommunikation mit dem Seitencrashsensor",
+  "en": "Side crash sensor communication"
+ },
+ {
+  "id": "c-dtcmfr-236",
+  "de": "Schaltventil hängt in der Stellung Kupplung Low/Reverse",
+  "en": "Solenoid switch valve stuck in low/reverse clutch position"
+ },
+ {
+  "id": "c-dtcmfr-237",
+  "de": "Schaltventil hängt in der Stellung Wandlerkupplung",
+  "en": "Solenoid switch valve stuck in torque converter clutch position"
+ },
+ {
+  "id": "c-dtcmfr-238",
+  "de": "Botschaft Momentenanforderung ESP fehlt",
+  "en": "Stability control torque request message missing"
+ },
+ {
+  "id": "c-dtcmfr-239",
+  "de": "Steuerkreis Anlasser %1",
+  "en": "Starter control %1 circuit"
+ },
+ {
+  "id": "c-dtcmfr-240",
+  "de": "Relais Anlasssperre",
+  "en": "Starter cut relay"
+ },
+ {
+  "id": "c-dtcmfr-241",
+  "de": "Anlasserrelais",
+  "en": "Starter motor relay"
+ },
+ {
+  "id": "c-dtcmfr-242",
+  "de": "Nachrichtenlänge des Lenkwinkelsensors",
+  "en": "Steering angle sensor message length"
+ },
+ {
+  "id": "c-dtcmfr-243",
+  "de": "Botschaft Anforderung Lenkschloss fehlt",
+  "en": "Steering lock request message missing"
+ },
+ {
+  "id": "c-dtcmfr-244",
+  "de": "Signale %1 und %2 des Lenkwinkelsensors",
+  "en": "Steering wheel angle sensor signals %1 and %2"
+ },
+ {
+  "id": "c-dtcmfr-245",
+  "de": "Lenkradtasten",
+  "en": "Steering wheel switches"
+ },
+ {
+  "id": "c-dtcmfr-246",
+  "de": "Gespeicherte FIN fehlt oder passt nicht",
+  "en": "Stored VIN missing or does not match"
+ },
+ {
+  "id": "c-dtcmfr-247",
+  "de": "Kompressor-Bypassventil - maximales Tastverhältnis überschritten",
+  "en": "Supercharger bypass valve actuator - maximum duty cycle exceeded"
+ },
+ {
+  "id": "c-dtcmfr-248",
+  "de": "Ansteuerung Kompressor-Bypassventil",
+  "en": "Supercharger bypass valve control"
+ },
+ {
+  "id": "c-dtcmfr-249",
+  "de": "Positionssensor %1 des Kompressor-Bypassventils",
+  "en": "Supercharger bypass valve position sensor %1"
+ },
+ {
+  "id": "c-dtcmfr-250",
+  "de": "Positionssensoren %1 und %2 des Kompressor-Bypassventils passen nicht zusammen",
+  "en": "Supercharger bypass valve position sensors %1 and %2 do not agree"
+ },
+ {
+  "id": "c-dtcmfr-251",
+  "de": "Schalterleiste",
+  "en": "Switch bank module"
+ },
+ {
+  "id": "c-dtcmfr-252",
+  "de": "Schalterleiste %1",
+  "en": "Switch bank module %1"
+ },
+ {
+  "id": "c-dtcmfr-253",
+  "de": "Ausgang Heckklappe offen",
+  "en": "Tailgate ajar output"
+ },
+ {
+  "id": "c-dtcmfr-254",
+  "de": "Taster Heckklappenentriegelung",
+  "en": "Tailgate release button"
+ },
+ {
+  "id": "c-dtcmfr-255",
+  "de": "GPS-Empfänger der Telematikeinheit",
+  "en": "Telematics unit GPS receiver"
+ },
+ {
+  "id": "c-dtcmfr-256",
+  "de": "Temperatursensoren passen nicht zueinander",
+  "en": "Temperature sensors do not agree with each other"
+ },
+ {
+  "id": "c-dtcmfr-257",
+  "de": "Schalterleiste Fahrprogramme",
+  "en": "Terrain mode switch bank"
+ },
+ {
+  "id": "c-dtcmfr-258",
+  "de": "Momentenanforderung des ABS/ESP-Steuergeräts abgelehnt",
+  "en": "Torque request from the ABS/ESC unit refused"
+ },
+ {
+  "id": "c-dtcmfr-259",
+  "de": "Momentenanforderung des Getriebesteuergeräts abgelehnt",
+  "en": "Torque request from the transmission control unit refused"
+ },
+ {
+  "id": "c-dtcmfr-260",
+  "de": "Ungewollte Kraftübertragung in Neutral",
+  "en": "Torque transmitted unintentionally in neutral"
+ },
+ {
+  "id": "c-dtcmfr-261",
+  "de": "Ansteuerung Bremse Verteilergetriebe",
+  "en": "Transfer case brake control"
+ },
+ {
+  "id": "c-dtcmfr-262",
+  "de": "Kupplung im Verteilergetriebe",
+  "en": "Transfer case clutch"
+ },
+ {
+  "id": "c-dtcmfr-263",
+  "de": "Steuergerät Verteilergetriebe - interner Fehler",
+  "en": "Transfer case control unit internal fault"
+ },
+ {
+  "id": "c-dtcmfr-264",
+  "de": "Motor des Verteilergetriebes blockiert",
+  "en": "Transfer case motor blocked"
+ },
+ {
+  "id": "c-dtcmfr-265",
+  "de": "Ansteuerung Motor Verteilergetriebe",
+  "en": "Transfer case motor control"
+ },
+ {
+  "id": "c-dtcmfr-266",
+  "de": "Motor des Verteilergetriebes überlastet",
+  "en": "Transfer case motor overused"
+ },
+ {
+  "id": "c-dtcmfr-267",
+  "de": "Positionssensor Motor Verteilergetriebe",
+  "en": "Transfer case motor position sensor"
+ },
+ {
+  "id": "c-dtcmfr-268",
+  "de": "Versorgung Positionssensor Motor Verteilergetriebe",
+  "en": "Transfer case motor position sensor supply"
+ },
+ {
+  "id": "c-dtcmfr-269",
+  "de": "Positionssensor Verteilergetriebe-Stufe",
+  "en": "Transfer case range position sensor"
+ },
+ {
+  "id": "c-dtcmfr-270",
+  "de": "Übersetzung Verteilergetriebe (Straßengang)",
+  "en": "Transfer case ratio (high range)"
+ },
+ {
+  "id": "c-dtcmfr-271",
+  "de": "Getriebe-Kennungsblock beschädigt oder nicht programmiert",
+  "en": "Transmission ID block corrupted or not programmed"
+ },
+ {
+  "id": "c-dtcmfr-272",
+  "de": "Getriebesteuergerät",
+  "en": "Transmission control module"
+ },
+ {
+  "id": "c-dtcmfr-273",
+  "de": "Diagnoseleitung zum Getriebesteuergerät",
+  "en": "Transmission diagnosis communication line"
+ },
+ {
+  "id": "c-dtcmfr-274",
+  "de": "Botschaft Getriebe fehlt",
+  "en": "Transmission message missing"
+ },
+ {
+  "id": "c-dtcmfr-275",
+  "de": "Getriebeüberwachung - mehrere Kupplungen gleichzeitig geschlossen",
+  "en": "Transmission monitoring - several clutches engaged at once"
+ },
+ {
+  "id": "c-dtcmfr-276",
+  "de": "Getriebesystem",
+  "en": "Transmission system"
+ },
+ {
+  "id": "c-dtcmfr-277",
+  "de": "Reifendrucksensoren - Radposition nicht ermittelt",
+  "en": "Tyre pressure sensor positions not determined"
+ },
+ {
+  "id": "c-dtcmfr-278",
+  "de": "Kommunikation USB-Anschluss",
+  "en": "USB port communication"
+ },
+ {
+  "id": "c-dtcmfr-279",
+  "de": "Ventil %1 im Teilgetriebe %2",
+  "en": "Valve %1 in sub-gearbox %2"
+ },
+ {
+  "id": "c-dtcmfr-280",
+  "de": "Anschlagposition der variablen Verdichtung",
+  "en": "Variable compression ratio actuator stop position"
+ },
+ {
+  "id": "c-dtcmfr-281",
+  "de": "Sollposition des variablen Saugrohrs",
+  "en": "Variable intake manifold target position"
+ },
+ {
+  "id": "c-dtcmfr-282",
+  "de": "Variable Ventilsteuerung beim Kaltstart - Schließposition %1 zu spät",
+  "en": "Variable valve timing at cold start - closing position %1 too late"
+ },
+ {
+  "id": "c-dtcmfr-283",
+  "de": "Variable Ventilsteuerung beim Kaltstart - Schließposition zu früh",
+  "en": "Variable valve timing at cold start - closing position too early"
+ },
+ {
+  "id": "c-dtcmfr-284",
+  "de": "Fahrzeugkonfiguration passt nicht",
+  "en": "Vehicle configuration mismatch"
+ },
+ {
+  "id": "c-dtcmfr-285",
+  "de": "Fahrzeuggeschwindigkeit nicht ermittelbar",
+  "en": "Vehicle speed cannot be determined"
+ },
+ {
+  "id": "c-dtcmfr-286",
+  "de": "Botschaft Fahrzeuggeschwindigkeit fehlt",
+  "en": "Vehicle speed message missing"
+ },
+ {
+  "id": "c-dtcmfr-287",
+  "de": "Videoverteiler",
+  "en": "Video routing module"
+ },
+ {
+  "id": "c-dtcmfr-288",
+  "de": "Botschaft Radwegstrecke fehlt",
+  "en": "Wheel distance message missing"
+ },
+ {
+  "id": "c-dtcmfr-289",
+  "de": "Raddrehzahlen passen nicht zusammen",
+  "en": "Wheel speeds do not match"
+ },
+ {
+  "id": "c-dtcmfr-290",
+  "de": "Scheibenwischermodul",
+  "en": "Windscreen wiper module"
+ },
+ {
+  "id": "c-dtcmfr-291",
+  "de": "Induktive Ladeschale",
+  "en": "Wireless charging pad"
+ },
+ {
+  "id": "c-dtcmfr-292",
+  "de": "Überstrom",
+  "en": "overcurrent"
+ },
+ {
+  "id": "c-dtcmfr-293",
+  "de": "Kurzschluss nach Masse",
+  "en": "short to ground"
+ },
+ {
+  "id": "c-dtcmfr-294",
+  "de": "klemmt",
+  "en": "stuck"
+ },
+ {
+  "id": "c-dtcmfr-295",
+  "de": "Ausschaltzeit außerhalb des Sollbereichs",
+  "en": "switch-off time out of range"
+ },
+ {
+  "id": "c-dtcmfr-296",
+  "de": "Einschaltzeit außerhalb des Sollbereichs",
+  "en": "switch-on time out of range"
+ }
+]

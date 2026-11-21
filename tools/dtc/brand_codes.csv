@@ -1,0 +1,427 @@
+# Manufacturer codes from public NHTSA documents, see tools/dtc/brand_ext.py for the
+# format and the source statement. One row per family and code.
+# family;code;part;args;fault;form;severity;system;detail;tier;nhtsa
+VAG;P1093;Fuel trim 2 bank %1;1;fault;-;medium;fuel;fuel_trim;single;10025965
+VAG;P1297;Charge air path between turbocharger and throttle - pressure loss;;;-;medium;turbo;underboost;single;10032265
+VAG;P1724;Immobiliser signal;;short to ground;-;high;security;immobilizer;confirmed;10122456,10123581
+VAG;P174B;Valve %1 in sub-gearbox %2;4|1;circuit;-;high;transmission;trans_solenoid;single;10122686
+VAG;P174F;Valve %1 in sub-gearbox %2;4|2;circuit;-;high;transmission;trans_solenoid;single;10122686
+VAG;P17E1;Gear actuator %1 mechanical fault;2;;-;high;transmission;trans_general;single;10123579,10210651
+VAG;P310B;Low pressure fuel supply control - pressure out of tolerance;;;-;medium;fuel;fuel_pressure;confirmed;10033329,10034344
+MERCEDES;C1140;Steering wheel angle sensor;;;-;medium;steering;;single;605159
+MERCEDES;C1401;ABS pump motor;;;-;high;brakes;abs_unit;single;10028624
+FORD;B1310;Power door unlock;;circuit;-;low;body;;single;10008175
+FORD;B1676;Battery voltage;;range/performance;-;medium;charging;battery_low;confirmed;605332,622797
+FORD;B1877;Driver seat belt pretensioner circuit resistance;;too high;-;high;airbag;airbag;confirmed;10002477,10004894
+FORD;B1881;Passenger seat belt pretensioner circuit resistance;;too high;-;high;airbag;airbag;confirmed;10002477,10004894
+FORD;B1932;Driver airbag circuit;;open;-;high;airbag;airbag;single;10003850
+FORD;B1994;Driver airbag circuit resistance;;too high;-;high;airbag;airbag;confirmed;621087,624925,630194,630529
+FORD;B1998;Passenger airbag circuit resistance;;too high;-;high;airbag;airbag;confirmed;619159,619162,619163,619312
+FORD;B2232;Driver airbag stage %1 circuit;2;open;-;high;airbag;airbag;single;10003850
+FORD;B2295;Passenger seat side airbag circuit;;fault;-;high;airbag;airbag;single;630134
+FORD;B2296;Front impact severity sensor circuit;;fault;-;high;airbag;airbag;single;630134
+FORD;B2477;Control unit configuration;;fault;-;medium;body;;single;10004921
+FORD;B2607;Control unit configuration mismatch;;;-;medium;body;;confirmed;617973,620507
+FORD;B2721;Tailgate ajar output;;short to ground;-;low;body;;confirmed;10008187,10012960
+FORD;B2729;Seat cushion heater;;over temperature;-;low;body;;single;10003728
+FORD;C1222;Wheel speeds do not match;;;-;medium;brakes;wheel_speed;single;10007332
+FORD;C1277;Steering wheel angle sensor signals %1 and %2;1|2;circuit;-;medium;steering;;confirmed;10003857,10004050
+FORD;C1278;Steering wheel angle sensor signals %1 and %2;1|2;fault;-;medium;steering;;confirmed;10003857,10004050
+FORD;C1286;Brake booster mechanical fault;;;-;critical;brakes;;single;608770,6091866
+FORD;C1287;Brake booster pedal force switch;;circuit;-;high;brakes;;single;10002644
+FORD;C1288;Brake pressure sensor main input;;circuit;-;high;brakes;;confirmed;10002473,10004941
+FORD;C1289;Brake pressure sensor redundant input;;circuit;-;high;brakes;;single;10002473
+FORD;C1946;Driver seat track position sensor;;circuit;-;low;airbag;airbag;single;622831
+FORD;C1991;Control unit calibration;;fault;-;medium;brakes;;confirmed;636271,10008251
+FORD;P1246;Generator load input;;fault;-;medium;charging;alternator;confirmed;616567,10003742
+FORD;P1334;EGR throttle position sensor minimum stop;;performance;-;medium;egr;egr;single;10017912
+FORD;P1572;Brake pedal switch;;circuit;-;medium;brakes;brake_switch;single;617935
+FORD;P163F;Transmission ID block corrupted or not programmed;;;-;medium;transmission;;single;10119681
+FORD;U1262;SCP data bus;;fault;-;medium;network;can_bus;confirmed;10004053,10007391,10011174
+FORD;U2018;Side crash sensor communication;;fault;-;high;airbag;airbag;confirmed;616871,617964
+MAZDA;B1602;Key ID cannot be read;;;-;medium;security;immobilizer;single;10009107
+MAZDA;P1260;Immobiliser system;;fault;-;high;security;immobilizer;single;10009107
+MAZDA;P1738;Automatic transmission internal fault;;;-;high;transmission;trans_general;confirmed;10097745,10098017
+TOYOTA;B1000;Centre airbag sensor assembly;;fault;-;high;airbag;airbag;confirmed;10132448,10150018,10159731
+TOYOTA;B14C1;Front seat heater;;circuit;-;low;body;;confirmed;10181745,10181773,10190451
+TOYOTA;B1861;Driver knee airbag squib circuit;;open;-;high;airbag;airbag;single;10155240
+TOYOTA;C1234;Yaw rate sensor;;;-;medium;brakes;;single;10005249
+TOYOTA;C1247;Brake pedal stroke sensor;;fault;-;high;brakes;;single;10132767,10132768
+TOYOTA;C13B0;Electric parking brake control unit;;fault;-;medium;brakes;;confirmed;10170739,10172860
+TOYOTA;C1752;Ride height control compressor motor;;circuit;-;medium;chassis;;single;10164874
+TOYOTA;P107B;Fuel rail pressure sensor %1;B;circuit range/performance;-;medium;fuel;fuel_pressure;single;10176696
+TOYOTA;P1235;High pressure fuel pump;;circuit;-;high;fuel;fuel_pressure;single;10133953
+TOYOTA;P1605;Rough idle;;;-;medium;engine;idle;single;10132332
+HONDA;B1192;Battery sensor;;Lost communication;:;low;network;lost_comm;confirmed;10107035,10107322
+HONDA;B121E;Climate touch control panel;;Lost communication;:;low;network;lost_comm;single;10087966,10088181,10193300,10211619
+HONDA;B123F;Light and sunlight sensor;;fault;-;low;body;;single;10168043
+HONDA;B12C5;Engine start/stop button;;fault;-;medium;body;;confirmed;10184317,10184329,10184330,10184335
+HONDA;B1403;Telematics unit GPS receiver;;fault;-;low;body;;single;10108380
+HONDA;B26AE;Horn circuit overloaded;;;-;low;body;;confirmed;10161249,10163182
+HONDA;B2A60;Multipurpose camera temperature;;too high;-;low;body;;confirmed;10115759,10118208
+HONDA;C1120;Electric parking brake switch;;circuit;-;medium;brakes;;confirmed;10169497,10170234,10170236,10171023
+HONDA;C1621;Rear wheel steering actuators disconnected;;;-;medium;steering;;single;10237809,10237813,10237815
+HONDA;C1843;Left rear differential clutch fluid pressure deviation;;;-;medium;transmission;;single;10177397
+HONDA;C1844;Right rear differential clutch fluid pressure deviation;;;-;medium;transmission;;single;10177397
+HONDA;C1850;Little or no drive torque at the rear wheels;;;-;medium;transmission;;single;10108835
+HONDA;P100C;Electric camshaft adjuster motor speed signal;;circuit;-;medium;timing;vvt;confirmed;10088144,10143164,10145430,10145433
+HONDA;P1437;Motor power inverter module (IMA);;shorted;-;high;hybrid;hybrid_system;single;10184658,10184664
+HONDA;P1440;Motor power inverter module (IMA) output;;circuit;-;high;hybrid;hybrid_system;single;10184658,10184664
+HONDA;P154A;Battery sensor internal fault;;;-;low;charging;;confirmed;10076466,10116731,10118183
+HONDA;P15A5;Drive motor current sensor (IMA);;circuit;-;high;hybrid;hybrid_system;single;10184658,10184664
+HONDA;P1634;Motor power inverter module (IMA) signal;;circuit;-;high;hybrid;hybrid_system;single;10184658,10184664
+HONDA;P16E3;Battery sensor LIN communication;;fault;-;low;charging;;single;10120780
+HONDA;P16E5;LIN communication between engine control unit and DC/DC converter;;fault;-;medium;charging;;confirmed;10098941,10108058,10108101,10108306
+HONDA;P16F7;Starter cut relay;;stuck on;-;medium;engine;;single;10107088,10107128
+HONDA;P1890;CVT ratio control system;;fault;-;medium;transmission;trans_general;single;10084781,10084782,10084981
+HONDA;P1D8D;Generator motor inverter;;shorted;-;high;hybrid;hybrid_system;single;10187007
+HONDA;P1E4D;Drive motor angle signal;;fault;-;high;hybrid;hybrid_system;single;10166434
+HONDA;P1F76;Main hydrogen tank temperature sensor;;fault;-;high;fuel;;confirmed;10118540,10152744
+HONDA;P1F77;Additional hydrogen tank temperature sensor;;fault;-;high;fuel;;confirmed;10118540,10152744
+HONDA;P1FBF;Fuel cell air pump control unit;;fault;-;high;hybrid;;single;10179515
+HONDA;U1291;Relay control module;;Lost communication;:;low;network;lost_comm;single;10108761
+HONDA;U129D;Rear wheel steering control unit;;Lost communication;:;medium;network;lost_comm;confirmed;10134525,10136429,10142630
+HONDA;U12B7;Radar sensor local CAN bus;;fault;-;medium;network;can_bus;single;10115759
+NISSAN;B1136;Left front side airbag module;;short to ground;-;high;airbag;airbag;single;10017047
+NISSAN;B2190;Immobiliser antenna amplifier;;;-;high;security;immobilizer;single;10192508,10192511
+NISSAN;B2426;Power tailgate left strut sensor;;;-;low;body;;confirmed;10192783,10222712
+NISSAN;B2427;Power tailgate right strut sensor;;;-;low;body;;confirmed;10192783,10222712
+NISSAN;B2428;Power tailgate control unit;;;-;low;body;;single;10211984
+NISSAN;B2436;Power tailgate left strut motor;;;-;low;body;;single;10222712
+NISSAN;B2437;Power tailgate right strut motor;;;-;low;body;;single;10222712
+NISSAN;B24B7;HVAC recirculation door;;;-;low;climate;;single;10192487
+NISSAN;B24B9;HVAC air distribution door;;;-;low;climate;;single;10192487
+NISSAN;B24BB;HVAC air mix door;;;-;low;climate;;single;10192487
+NISSAN;B2604;Park/neutral position or clutch switch;;;-;medium;body;;single;10192643,10192644
+NISSAN;B2724;Parking sensor control unit;;fault;-;low;body;;confirmed;10183965,10218755
+NISSAN;C1116;Stop lamp switch;;;-;medium;brakes;brake_switch;confirmed;10130482,10130483,10130498,10211983
+NISSAN;C1130;Engine signal at the ABS unit;;;-;medium;brakes;;single;10119264,10119282
+NISSAN;C1142;Brake pressure sensor;;circuit;-;medium;brakes;;confirmed;10180997,10211983,10212011,10222724
+NISSAN;C1143;Steering wheel angle sensor;;;-;medium;steering;;single;10031124
+NISSAN;C1170;ABS unit variant coding;;;-;medium;brakes;;single;10192608
+NISSAN;C1204;All-wheel drive solenoid;;;-;medium;transmission;;single;10192546
+NISSAN;C1A17;Intelligent cruise control radar sensor;;fault;-;medium;chassis;;single;10204198
+NISSAN;P11A7;Variable compression ratio actuator stop position;;;-;medium;engine;;single;10206346,10206383
+NISSAN;P1228;Accelerator pedal position sensor;;;-;high;throttle;pedal;single;627461
+NISSAN;P1349;AdBlue tank level;;intermittent or erratic;-;low;diesel;adblue_level;single;10172247
+NISSAN;P1451;Diesel particulate filter system;;performance;-;medium;diesel;dpf_soot;single;10109131
+NISSAN;P159F;Active grille air shutter %1;A;;-;low;cooling;;single;10199173
+NISSAN;P1605;Transmission diagnosis communication line;;fault;-;medium;transmission;;single;618035
+NISSAN;P1650;Starter relay %1;2;;-;medium;engine;;single;10055835
+NISSAN;P1651;Starter motor relay;;;-;medium;engine;;single;10055835
+NISSAN;P17F0;CVT judder (check the transmission);;;-;medium;transmission;trans_general;confirmed;10091460,10091528,10144522,10192792
+NISSAN;P17F1;CVT judder (check the control unit);;;-;medium;transmission;trans_general;confirmed;10091460,10091528,10192792,10192793
+NISSAN;P187E;Transmission system;;fault;-;medium;transmission;trans_general;single;10170012
+NISSAN;P18A5;Automatic park function cancelled;;;-;low;transmission;;confirmed;10191949,10192682
+NISSAN;P1C55;NOx sensor bank %1 sensor %2;1|1;intermittent;-;medium;diesel;nox_sensor;single;10192832
+NISSAN;P1C56;NOx sensor bank %1 sensor %2;1|2;intermittent;-;medium;diesel;nox_sensor;single;10192832
+NISSAN;P3141;On-board charging module;;fault;-;medium;hybrid;;single;10192466
+NISSAN;U1009;DC quick charger communication;;fault;-;medium;network;;single;10163708
+NISSAN;U111B;Left side camera image signal;;circuit;-;low;body;;single;10091449,10091513
+NISSAN;U111D;Right side camera image signal;;circuit;-;low;body;;single;10091449,10091513
+HYUNDAI;B1111;Battery voltage;;high;-;medium;charging;voltage_high;single;613467
+HYUNDAI;C1212;Vehicle speed sensor;;;-;medium;brakes;;confirmed;10082364,10089951
+HYUNDAI;C1501;Electric parking brake switch;;fault;-;medium;brakes;;confirmed;10237179,10238340
+HYUNDAI;C1611;Power steering CAN communication with the engine control unit;;fault;-;medium;steering;;confirmed;10109786,10109795
+HYUNDAI;P1159;Variable intake manifold target position;;;-;medium;intake;imrc;single;10017993
+HYUNDAI;P1237;Active air flap feedback;;high;-;low;cooling;;single;10090806
+HYUNDAI;P1A77;Hybrid starter generator belt slipping;;;-;medium;hybrid;hybrid_system;confirmed;10215600,10232200
+HYUNDAI;P1B25;High voltage circuit;;fault;-;high;hybrid;hybrid_system;confirmed;10136619,10141382,10154660
+HYUNDAI;P1B77;High voltage pre-charge;;fault;-;high;hybrid;hybrid_system;confirmed;10136619,10141382,10154660,10174515
+HYUNDAI;P1CD0;Blower motor inverter;;performance;-;low;climate;;single;10196551
+FIAT;B1000;Control unit electronics;;;-;medium;body;ecu_internal;single;10121872
+FIAT;B1004;Tailgate release button;;;-;low;body;;single;11010469,11010782
+FIAT;B1006;Camera module;;;-;low;body;;confirmed;10175724,10180265,10221875
+FIAT;B1014;Door latch switch signal;;;-;low;body;;single;11010469,11010782
+FIAT;B105A;Central locking signal "lock all doors";;;-;low;body;;confirmed;10121931,10160070
+FIAT;B105D;Central locking signal "unlock or deadlock driver door";;;-;low;body;;confirmed;10121931,10160070
+FIAT;B1073;Alarm interior motion sensor;;;-;low;body;;single;10243273,10243274
+FIAT;B10AA;Control unit configuration check failed;;;-;medium;body;;confirmed;10139661,10224722
+FIAT;B10C8;Brushless blower motor;;;-;low;climate;;confirmed;10187718,10187719,10198433,10198436
+FIAT;B1603;Rotary control knob;;;-;low;body;;confirmed;10187694,10187696,10187711,10187712
+FIAT;B25C9;Driver door ajar switch %1;2;stuck closed;-;low;body;;single;10247481,10247485
+FIAT;C141C;Camera private CAN bus;;;-;medium;network;can_bus;confirmed;10175724,10180265,10221875
+FIAT;C2020;Control unit electronics;;;-;medium;chassis;ecu_internal;confirmed;10188829,10216321,10220625
+FIAT;P1046;Cylinder %1 oil supply solenoid valve (variable valve lift);1;overcurrent;-;medium;timing;vvt;confirmed;10121800,10121933,10148991,10148992
+FIAT;P1048;Cylinder %1 oil supply solenoid valve (variable valve lift);2;overcurrent;-;medium;timing;vvt;confirmed;10121800,10121933,10148991,10148992
+FIAT;P104A;Cylinder %1 oil supply solenoid valve (variable valve lift);3;overcurrent;-;medium;timing;vvt;confirmed;10121800,10121933,10148991,10148992
+FIAT;P104C;Cylinder %1 oil supply solenoid valve (variable valve lift);4;overcurrent;-;medium;timing;vvt;confirmed;10121800,10121933,10148991,10148992
+FIAT;P1066;Cylinder %1 oil supply solenoid valve (variable valve lift);1;switch-off time out of range;-;medium;timing;vvt;confirmed;10121715,10170394,10170397,10175728
+FIAT;P1068;Cylinder %1 oil supply solenoid valve (variable valve lift);2;switch-off time out of range;-;medium;timing;vvt;single;10121715
+FIAT;P106A;Cylinder %1 oil supply solenoid valve (variable valve lift);3;switch-off time out of range;-;medium;timing;vvt;single;10121715
+FIAT;P1128;Closed loop fuel control not reached bank %1 (upstream sensor);1;;-;medium;fuel;o2_up;confirmed;10076535,10160023,10160078
+FIAT;P113D;O2 sensor circuit slow response bank %1 sensor %2;1|1;;-;medium;exhaust;o2_up;confirmed;10137016,10150538,10160023
+FIAT;P1185;Pressure sensors do not agree with each other;;;-;medium;intake;map;confirmed;10121715,10121806,10137049,10140187
+FIAT;P1239;Engine oil temperature;;too low;-;low;lubrication;;confirmed;10139792,10150518,10150541
+FIAT;P1523;Oil pressure of the variable valve actuation;;too low;-;medium;lubrication;oil_pressure;confirmed;10121798,10121800,10140020,10198417
+FIAT;P1524;Engine oil pressure out of range - camshaft adjustment switched off;;;-;medium;lubrication;oil_pressure;confirmed;10121800,10121817,10150538,10160023
+FIAT;P1607;Engine control unit internal shutdown timer implausible;;;-;low;engine;ecu_internal;confirmed;10121715,10137049,10139792,10140187
+FIAT;P164E;A/C clutch relay control;;range/performance;-;low;climate;ac;confirmed;10170388,10170404,10174245,10174247
+FIAT;P1A21;High voltage battery contactors switched in the wrong order;;;-;high;hybrid;hybrid_battery;single;10076284
+FIAT;P1CC9;Gear cannot be engaged;;;-;high;transmission;trans_general;confirmed;10121931,10148681,10160027,10160071
+FIAT;P1CEA;EVAP purge line on the boost side;;performance;-;low;evap;evap_valve;confirmed;10138905,10170388,10170393,10170399
+FIAT;P1CEC;Variable valve timing at cold start - closing position %1 too late;1;;-;medium;timing;vvt;confirmed;10121715,10137049,10140187,10220259
+FIAT;P1CED;Variable valve timing at cold start - closing position too early;;;-;medium;timing;vvt;confirmed;10121715,10137049,10140187,10220259
+FIAT;P1D7F;Electronic throttle self-learning failed;;;-;medium;throttle;throttle;confirmed;10121798,10121800,10121802,10198417
+FIAT;P1D98;Incorrect gear ratio - clutch %1 or %2 faulty;B|D;;-;high;transmission;trans_ratio;confirmed;10121931,10148681,10160027,10160071
+FIAT;P1DAD;Input and output shaft turning directions do not match;;;-;medium;transmission;trans_sensor;confirmed;10121931,10148681,10160027,10160071
+FIAT;P1DD2;Torque request from the transmission control unit refused;;;-;medium;transmission;;single;10174253
+FIAT;P1E25;Hybrid/EV battery fault level %1;2;;-;high;hybrid;hybrid_battery;confirmed;10148580,10148902,10150528
+FIAT;P304A;Fuel rail pressure sensor %1;1;high;-;medium;fuel;fuel_pressure;confirmed;10236913,10236917,10236918,10236927
+FIAT;P304E;Fuel rail pressure sensor %1;2;high;-;medium;fuel;fuel_pressure;confirmed;10236913,10236917,10236918,10236927
+FIAT;U1008;LIN bus %1;1;;-;low;network;can_bus;confirmed;10170388,10170393,10170394,10170397
+FIAT;U1014;Internal CAN communication of the control unit;;;-;medium;network;can_bus;single;10148902
+FIAT;U1200;Power inverter module;;Lost communication;:;high;network;lost_comm;single;10076281
+FIAT;U1412;Vehicle speed signal;;Invalid data received;:;medium;network;invalid_data;single;10121805,10121813
+FIAT;U1424;Engine torque signal;;Invalid data received;:;medium;network;invalid_data;confirmed;10121715,10121931,10137049,10140187
+FIAT;U1487;Regenerative braking control unit;;Invalid data received;:;medium;network;invalid_data;single;10076281
+FIAT;U1504;Steering angle sensor message length;;Invalid data received;:;medium;network;invalid_data;single;10121806
+CHRYSLER;B1004;Tailgate release button;;;-;low;body;;single;11010470,11010787,11010788
+CHRYSLER;B100A;Right rear stop/tail lamp channel %1;1;;-;low;body;;confirmed;10168452,10176567
+CHRYSLER;B100C;Right rear stop/tail lamp channel %1;2;;-;low;body;;confirmed;10168452,10176567
+CHRYSLER;B1014;Door latch switch signal;;;-;low;body;;single;11010470,11010787,11010788
+CHRYSLER;B104D;HVAC air mix door;;control circuit low;-;low;climate;;confirmed;10118803,10138955,10159914
+CHRYSLER;B10E9;Front blower motor;;control circuit low;-;low;climate;;confirmed;10074933,10119630,10121801,10140167
+CHRYSLER;B10EA;Front blower motor;;control circuit high;-;low;climate;;confirmed;10074933,10119630,10121801,10140167
+CHRYSLER;B128E;Park assist sensor %1;1;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B128F;Park assist sensor %1;2;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1290;Park assist sensor %1;3;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1291;Park assist sensor %1;4;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1292;Park assist sensor %1;5;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1293;Park assist sensor %1;6;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1295;Park assist sensor %1;8;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1296;Park assist sensor %1;9;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1297;Park assist sensor %1;10;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1298;Park assist sensor %1;11;;-;low;body;;confirmed;10139706,10162552,10181617
+CHRYSLER;B1299;Park assist sensor %1;12;;-;low;body;;confirmed;10162552,10181617
+CHRYSLER;B12B4;Charge status indicator module internal fault;;;-;low;hybrid;;confirmed;11001128,11001220,11001221,11001224
+CHRYSLER;B1479;Audio amplifier speaker output channel %1;6;open;-;low;body;;single;10151741,10151778,10216160
+CHRYSLER;B154F;Crankshaft pulse signal missing;;;-;low;body;;confirmed;10175714,10228049
+CHRYSLER;B1570;USB port communication;;;-;low;body;;confirmed;10212425,10226022
+CHRYSLER;B15A1;Media port %1 connection;1;;-;low;body;;confirmed;10212387,10212391,11005692
+CHRYSLER;B15A2;Media port %1 connection;2;;-;low;body;;confirmed;10212387,11005692
+CHRYSLER;B15A3;Media port %1 connection;3;;-;low;body;;confirmed;10212387,10212391,11005692
+CHRYSLER;B15A4;Media port %1 connection;4;;-;low;body;;confirmed;10212387,10212391,11005692
+CHRYSLER;B1632;Left high beam control;;;-;low;body;;single;10194040,10221187
+CHRYSLER;B1636;Right high beam control;;;-;low;body;;single;10194040,10221187
+CHRYSLER;B1783;Stop lamp control;;;-;medium;body;;confirmed;10187145,10187693
+CHRYSLER;B1A10;Remote key %1 battery weak;1;;-;info;body;;confirmed;11005310,11005699,11008743,11011719
+CHRYSLER;B1A11;Remote key %1 battery weak;2;;-;info;body;;confirmed;11005310,11005699,11008743,11011719
+CHRYSLER;B1A25;Key not recognised (invalid key);;;-;medium;security;immobilizer;single;10138952,10224641
+CHRYSLER;B1A29;Immobiliser base station does not match;;;-;high;security;immobilizer;single;10138952,10224641
+CHRYSLER;B1A71;Keyless entry antenna %1;1;;-;low;body;;confirmed;10231795,10231796,10231797,10239939
+CHRYSLER;B1A72;Keyless entry antenna %1;2;;-;low;body;;confirmed;10231795,10231796,10231797,10239939
+CHRYSLER;B1A73;Keyless entry antenna %1;3;;-;low;body;;confirmed;10231795,10231796,10231797,10239939
+CHRYSLER;B1A74;Keyless entry antenna %1;4;;-;low;body;;confirmed;10231795,10231796,10231797,10239939
+CHRYSLER;B1A75;Keyless entry antenna %1;5;;-;low;body;;confirmed;10231795,10231796,10231797,10239939
+CHRYSLER;B1D9B;Seat fore/aft front end stop;;not learned;-;low;body;;confirmed;10222998,10225290,10225291,10225292
+CHRYSLER;B2199;Battery voltage;;;-;medium;charging;battery_low;confirmed;10139916,10144827,10212493,10221086
+CHRYSLER;B21DD;System voltage;;;-;medium;charging;battery_low;confirmed;10212493,10221355,10231795,10231796
+CHRYSLER;B221F;Audio amplifier internal fault;;;-;low;body;;single;10212373,10212380
+CHRYSLER;B223B;Vehicle configuration mismatch;;;-;medium;body;;single;11005013,11005014,11005015
+CHRYSLER;B22A9;Control unit electronics;;;-;medium;body;ecu_internal;confirmed;10187117,10187118,10187122,10194049
+CHRYSLER;B25C7;Driver door ajar switch %1;2;circuit low;-;low;body;;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;B25C8;Driver door ajar switch %1;2;circuit high;-;low;body;;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;B25C9;Driver door ajar switch %1;2;stuck closed;-;low;body;;confirmed;10169222,10176577,10181596,10181598
+CHRYSLER;B25CB;Driver door ajar switches %1 and %2 do not agree;1|2;;-;low;body;;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;B273C;Crash signal input (digital);;;-;medium;airbag;airbag;confirmed;11002032,11006514,11008974,11010255
+CHRYSLER;B2834;Right headlamp unit;;performance;-;low;body;;confirmed;10212428,10218550
+CHRYSLER;B2835;Left headlamp unit;;performance;-;low;body;;confirmed;10212428,10218550
+CHRYSLER;C10D0;Electronic parking brake switched off;;;-;medium;brakes;;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;C121C;Torque request from the ABS/ESC unit refused;;;-;medium;brakes;;confirmed;10080001,10141280,10212348,10224733
+CHRYSLER;C1252;Brake vacuum pump control circuit;;;-;high;brakes;;confirmed;10169222,10176577,10178684,10178688
+CHRYSLER;C1403;Transfer case range position sensor;;;-;medium;transmission;;confirmed;10181618,10239921,10239927
+CHRYSLER;C1406;Transfer case brake control;;open;-;medium;transmission;;confirmed;10248920,11001210
+CHRYSLER;C140A;Transfer case motor control;;open;-;medium;transmission;;confirmed;10248920,11001210
+CHRYSLER;C140E;Transfer case motor blocked;;;-;medium;transmission;;confirmed;10183078,10223967,11004888
+CHRYSLER;C1423;Transfer case control unit internal fault;;;-;medium;transmission;;confirmed;10222987,10248920,11001210
+CHRYSLER;C1444;Transfer case motor overused;;over temperature;-;medium;transmission;;confirmed;10248920,11001210,11006985
+CHRYSLER;C1463;Front axle disconnect control;;;-;medium;transmission;;confirmed;10214601,10218588,10221494,10221679
+CHRYSLER;C1477;Transfer case clutch;;over temperature;-;medium;transmission;;confirmed;10248920,11001210,11006985
+CHRYSLER;C1489;Rear differential motor brake;;;-;medium;transmission;;single;10136946,10136964
+CHRYSLER;C1494;All-wheel drive power transfer unit shift fork position;;;-;medium;transmission;;confirmed;10118804,10160081
+CHRYSLER;C1496;All-wheel drive power transfer unit motor position;;;-;medium;transmission;;confirmed;10144829,10150516,10160081
+CHRYSLER;C1499;Rear drive module motor position;;;-;medium;transmission;;confirmed;10144829,10150516,10160081
+CHRYSLER;C149E;Transfer case motor position sensor;;;-;medium;transmission;;confirmed;10222987,10248920,11001210
+CHRYSLER;C14AA;Transfer case motor position sensor supply;;;-;medium;transmission;;single;10239921,10239927
+CHRYSLER;C151D;Tyre pressure sensor positions not determined;;;-;low;chassis;;confirmed;10144834,10144835,10231795,10231796
+CHRYSLER;C151E;Left front ride height sensor;;stuck;-;medium;chassis;;confirmed;10239964,11002799,11002801
+CHRYSLER;C1522;Right front ride height sensor;;stuck;-;medium;chassis;;confirmed;10239964,11002799,11002801
+CHRYSLER;C1526;Left rear ride height sensor;;stuck;-;medium;chassis;;confirmed;10239964,11002799,11002801
+CHRYSLER;C152A;Right rear ride height sensor;;stuck;-;medium;chassis;;confirmed;10239964,11002799,11002801
+CHRYSLER;C1592;Electric power steering motor;;;-;high;steering;;confirmed;10174214,10216306,10226027,10226032
+CHRYSLER;C1593;Electric power steering torque sensor;;;-;high;steering;;confirmed;10216306,10226027,10226032,10227764
+CHRYSLER;C15A1;Air suspension cannot reach the requested ride height;;;-;medium;chassis;;confirmed;10076287,10204407,10212302,10243264
+CHRYSLER;C15E1;Left rear air spring inlet blocked;;;-;medium;chassis;;confirmed;10180255,10204401,10221865
+CHRYSLER;C2020;Control unit electronics;;;-;medium;chassis;ecu_internal;confirmed;10188829,10216321,10220625
+CHRYSLER;C2100;Battery voltage;;low;-;medium;charging;battery_low;single;10212493,10221355
+CHRYSLER;C2200;ABS control unit internal fault;;;-;high;brakes;abs_unit;confirmed;10175660,10187115,10187121,10187123
+CHRYSLER;C2203;Stored VIN missing or does not match;;;-;medium;chassis;;confirmed;11006628,11010228
+CHRYSLER;C2217;Power steering control unit internal fault;;;-;high;steering;;confirmed;10216306,10226027,10226032,10227764
+CHRYSLER;C221F;Control unit not initialised;;;-;medium;chassis;;confirmed;10243249,10243250,11010249
+CHRYSLER;C2222;Control unit was not shut down properly;;;-;low;chassis;;single;10162529,10162535
+CHRYSLER;P1004;Intake manifold short runner valve control;;performance;-;medium;intake;imrc;confirmed;10021091,10121873,10128959,10139764
+CHRYSLER;P1046;Cylinder %1 oil supply solenoid valve (variable valve lift);1;overcurrent;-;medium;timing;vvt;confirmed;10148653,10148673,10148952,10148995
+CHRYSLER;P1048;Cylinder %1 oil supply solenoid valve (variable valve lift);2;overcurrent;-;medium;timing;vvt;confirmed;10148653,10148673,10148952,10148995
+CHRYSLER;P104A;Cylinder %1 oil supply solenoid valve (variable valve lift);3;overcurrent;-;medium;timing;vvt;confirmed;10148653,10148673,10148952,10148995
+CHRYSLER;P104C;Cylinder %1 oil supply solenoid valve (variable valve lift);4;overcurrent;-;medium;timing;vvt;confirmed;10148653,10148673,10148952,10148995
+CHRYSLER;P1050;Intake valve control solenoid %1;1;circuit/open;-;medium;timing;vvt;single;10221658,10221660
+CHRYSLER;P1053;Intake valve control solenoid %1;2;circuit/open;-;medium;timing;vvt;single;10221658,10221660
+CHRYSLER;P1056;Intake valve control solenoid %1;3;circuit/open;-;medium;timing;vvt;single;10221658,10221660
+CHRYSLER;P1059;Intake valve control solenoid %1;4;circuit/open;-;medium;timing;vvt;single;10221658,10221660
+CHRYSLER;P105C;Intake valve stuck in low lift position;;;-;medium;timing;vvt;single;10183097,10223986
+CHRYSLER;P1061;Cylinder %1 oil supply solenoid valve (variable valve lift);1;stuck;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P1062;Cylinder %1 oil supply solenoid valve (variable valve lift);2;stuck;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P1063;Cylinder %1 oil supply solenoid valve (variable valve lift);3;stuck;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P1064;Cylinder %1 oil supply solenoid valve (variable valve lift);4;stuck;-;medium;timing;vvt;confirmed;10221670,10239926
+CHRYSLER;P1065;Cylinder %1 oil supply solenoid valve (variable valve lift);1;switch-on time out of range;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P1066;Cylinder %1 oil supply solenoid valve (variable valve lift);1;switch-off time out of range;-;medium;timing;vvt;confirmed;10084053,10121782,10121865,10121887
+CHRYSLER;P1067;Cylinder %1 oil supply solenoid valve (variable valve lift);2;switch-on time out of range;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P1068;Cylinder %1 oil supply solenoid valve (variable valve lift);2;switch-off time out of range;-;medium;timing;vvt;confirmed;10084053,10121782,10121865,10121887
+CHRYSLER;P1069;Cylinder %1 oil supply solenoid valve (variable valve lift);3;switch-on time out of range;-;medium;timing;vvt;confirmed;10221670,10231781,10239926
+CHRYSLER;P106A;Cylinder %1 oil supply solenoid valve (variable valve lift);3;switch-off time out of range;-;medium;timing;vvt;confirmed;10084053,10121782,10121865,10121887
+CHRYSLER;P106B;Cylinder %1 oil supply solenoid valve (variable valve lift);4;switch-on time out of range;-;medium;timing;vvt;confirmed;10221670,10239926
+CHRYSLER;P106C;Cylinder %1 oil supply solenoid valve (variable valve lift);4;switch-off time out of range;-;medium;timing;vvt;confirmed;10084053,10121782,10121865,10121887
+CHRYSLER;P1115;Temperature sensors do not agree with each other;;;-;low;cooling;ect_sensor;confirmed;10121721,10121725,10140194,10220266
+CHRYSLER;P1128;Closed loop fuel control not reached bank %1 (upstream sensor);1;;-;medium;fuel;o2_up;confirmed;10148653,10148673,10148994,10148995
+CHRYSLER;P1129;Closed loop fuel control not reached bank %1 (upstream sensor);2;;-;medium;fuel;o2_up;confirmed;11001126,11001130,11001133,11001282
+CHRYSLER;P112D;O2 sensor pumping current bank %1 sensor %2;2|1;overcurrent;-;medium;exhaust;o2_up;confirmed;10080063,10140223,10140224
+CHRYSLER;P113D;O2 sensor circuit slow response bank %1 sensor %2;1|1;;-;medium;exhaust;o2_up;confirmed;10148673,10148995,10160050
+CHRYSLER;P1185;Pressure sensors do not agree with each other;;;-;medium;intake;map;confirmed;10084053,10121691,10121704,10121782
+CHRYSLER;P1206;Fuel pump circuit from the fuel pump control module;;open;-;high;fuel;fuel_pump;confirmed;10169244,10178688,10180285,10181644
+CHRYSLER;P1217;Active exhaust valve %1;1;performance;-;low;exhaust;;confirmed;10076306,10076308,10084055,10148978
+CHRYSLER;P121B;Active exhaust valve %1;2;performance;-;low;exhaust;;confirmed;10076306,10076308,10084055,10150624
+CHRYSLER;P1239;Engine oil temperature;;too low;-;low;lubrication;;confirmed;10084060,10121677,10121870,10121935
+CHRYSLER;P1288;NOx sensor bank %1 sensor %2 zero offset;1|2;too high;-;medium;diesel;nox_sensor;confirmed;10118801,10139789,10139912,10144840
+CHRYSLER;P1289;NOx sensor bank %1 sensor %2 zero offset;1|2;too low;-;medium;diesel;nox_sensor;confirmed;10118801,10139912,10144840,10148929
+CHRYSLER;P1296;EGR slow response - increasing flow;;;-;medium;egr;egr;confirmed;10118801,10139789,10139912,10141269
+CHRYSLER;P1297;EGR slow response - decreasing flow;;;-;medium;egr;egr;confirmed;10118801,10139789,10139912,10144840
+CHRYSLER;P1400;Changed engine software detected (aftermarket calibration);;;-;medium;engine;;single;10190619,10220872
+CHRYSLER;P1404;EGR valve closed position;;performance;-;medium;egr;egr;confirmed;10138930,10169244,10178688,10180285
+CHRYSLER;P141B;Starter control %1 circuit;1;performance;-;medium;engine;;confirmed;10162559,10162573,10169225,10220077
+CHRYSLER;P141C;Starter control %1 circuit;2;performance;-;medium;engine;;confirmed;10162559,10162573,10169225,10220077
+CHRYSLER;P1451;Diesel particulate filter system;;performance;-;medium;diesel;dpf_soot;confirmed;10139778,10139839,10139911,10140028
+CHRYSLER;P1477;Intake air diverter valve position sensor circuit;;short to ground;-;low;intake;;confirmed;10076305,10138979,10141277,10148901
+CHRYSLER;P1507;Crankcase ventilation filter clogged;;;-;low;engine;;confirmed;10168471,10174200,10180257,10181614
+CHRYSLER;P1523;Oil pressure of the variable valve actuation;;too low;-;medium;lubrication;oil_pressure;confirmed;10198417,10223323,10224947
+CHRYSLER;P1524;Engine oil pressure out of range - camshaft adjustment switched off;;;-;medium;lubrication;oil_pressure;confirmed;10121808,10198417,10198418,10223323
+CHRYSLER;P152E;Engine hood switch %1;2;circuit high;-;low;body;;confirmed;10227743,10227744,10227750,10229785
+CHRYSLER;P152F;Engine hood switches %1 and %2 do not agree;2|1;;-;low;body;;confirmed;10227750,10229785,10241086,11001223
+CHRYSLER;P1607;Engine control unit internal shutdown timer implausible;;;-;low;engine;ecu_internal;confirmed;10025362,10074916,10084053,10118803
+CHRYSLER;P1610;Supercharger bypass valve position sensor %1;1;circuit low;-;medium;turbo;;confirmed;10139966,10148978,10219908
+CHRYSLER;P1611;Supercharger bypass valve position sensor %1;1;circuit high;-;medium;turbo;;confirmed;10076308,10148978,10219908
+CHRYSLER;P1613;Boost pressure sensor and mass air flow sensor do not agree;;;-;medium;turbo;boost_sensor;confirmed;10076308,10144903,10150515,10219908
+CHRYSLER;P1614;Control unit restarted itself (reset);;;-;low;engine;ecu_internal;confirmed;10170380,10174226,10178687,10181605
+CHRYSLER;P1616;Supercharger bypass valve position sensor %1;2;circuit low;-;medium;turbo;;confirmed;10139966,10148978,10219908
+CHRYSLER;P1617;Supercharger bypass valve position sensor %1;2;circuit high;-;medium;turbo;;confirmed;10139966,10148978,10219908
+CHRYSLER;P1620;Supercharger bypass valve control;;open;-;medium;turbo;boost_actuator;confirmed;10139966,10148978,10219908
+CHRYSLER;P1621;O2 sensor reference voltage circuit;;low;-;medium;exhaust;o2_up;confirmed;10121676,10159953,10180287,10221897
+CHRYSLER;P1622;O2 sensor reference voltage circuit;;high;-;medium;exhaust;o2_up;confirmed;10121676,10159953,10180287,10221897
+CHRYSLER;P1625;Parking lock (park pawl) system;;fault;-;high;transmission;trans_general;confirmed;10187119,10214640
+CHRYSLER;P1627;Supercharger bypass valve position sensors %1 and %2 do not agree;1|2;;-;medium;turbo;;confirmed;10139966,10148978,10219908
+CHRYSLER;P162A;Supercharger bypass valve actuator - maximum duty cycle exceeded;;;-;medium;turbo;boost_actuator;confirmed;10139966,10148978,10219908
+CHRYSLER;P162C;Supercharger bypass valve control;;circuit;-;medium;turbo;boost_actuator;confirmed;10139966,10148978
+CHRYSLER;P16F0;Internal SPI communication of the control unit;;fault;-;low;engine;ecu_internal;confirmed;10248915,10251834,10251836,10251837
+CHRYSLER;P1720;Output shaft speed and wheel speed do not agree;;;-;medium;transmission;trans_sensor;confirmed;10138937,10148984,10159947,10198435
+CHRYSLER;P1775;Solenoid switch valve stuck in torque converter clutch position;;;-;medium;transmission;trans_solenoid;confirmed;10136532,10139840,10149698,10159916
+CHRYSLER;P1776;Solenoid switch valve stuck in low/reverse clutch position;;;-;medium;transmission;trans_solenoid;confirmed;10136532,10139840,10149698,10159916
+CHRYSLER;P1778;Input/turbine shaft speed sensor %1;A;high;-;medium;transmission;trans_sensor;single;10173360,10173368
+CHRYSLER;P177C;Parking lock actuator motor current sensor;;performance;-;medium;transmission;;confirmed;10187120,10187126,10214640,10214641
+CHRYSLER;P177F;Output shaft speed sensor;;high;-;medium;transmission;trans_sensor;single;10173360,10173368
+CHRYSLER;P1A0C;Battery energy control module system voltage;;low;-;medium;hybrid;;confirmed;10212405,10214608,10218593,10225248
+CHRYSLER;P1A16;Hybrid/EV wake-up control %1 output;3;circuit/open;-;medium;hybrid;hybrid_system;single;10218553,10218555,10218556
+CHRYSLER;P1A1E;Hybrid thermal management control;;circuit;-;medium;hybrid;hybrid_system;single;10242800,10242803
+CHRYSLER;P1A21;High voltage battery contactors switched in the wrong order;;;-;high;hybrid;hybrid_battery;confirmed;10225248,10225250,10234484,10234488
+CHRYSLER;P1A26;Hybrid battery state of charge;;performance;-;medium;hybrid;hybrid_battery;single;10190705,10220958
+CHRYSLER;P1A29;Hybrid battery cell supervision circuit %1;A;fault;-;high;hybrid;hybrid_battery;confirmed;10175729,10175737,10218555,10218556
+CHRYSLER;P1A2A;Hybrid battery cell supervision circuit %1;B;fault;-;high;hybrid;hybrid_battery;confirmed;10175729,10175737,10218555,10218556
+CHRYSLER;P1A9B;Hybrid/EV battery temperature sensor %1;1;high;-;medium;hybrid;hybrid_battery;confirmed;10138922,10212405,10214608,10224726
+CHRYSLER;P1AA7;Hybrid/EV battery temperature sensor %1;4;high;-;medium;hybrid;hybrid_battery;confirmed;10138922,10224726
+CHRYSLER;P1B03;Drive motor resolver signal implausible;;;-;high;hybrid;hybrid_system;confirmed;10187133,11010255,11010478
+CHRYSLER;P1B13;Electronic parking lock left the park position unintentionally;;;-;high;transmission;trans_general;confirmed;10080071,10121790,10121879,10138918
+CHRYSLER;P1C00;Hybrid/EV battery voltage sense %1;1;low;-;medium;hybrid;hybrid_battery;confirmed;10212405,10214608,10225248,10234488
+CHRYSLER;P1C01;Hybrid/EV battery voltage sense %1;1;high;-;medium;hybrid;hybrid_battery;confirmed;10212405,10214608,10225248,10234488
+CHRYSLER;P1C54;SCR catalyst missing;;;-;high;diesel;scr;confirmed;10180252,10183088,10188801,10188807
+CHRYSLER;P1C55;NOx sensor bank %1 sensor %2;1|1;intermittent;-;medium;diesel;nox_sensor;confirmed;10139778,10139839,10140171,10141277
+CHRYSLER;P1C5E;Hybrid/EV battery state of health check failed;;;-;high;hybrid;hybrid_battery;single;11011925,11011926
+CHRYSLER;P1C64;Engine speed too low during automatic start (hybrid);;;-;medium;hybrid;hybrid_system;confirmed;10138921,10187133,10214603,10214605
+CHRYSLER;P1CC9;Gear cannot be engaged;;;-;high;transmission;trans_general;confirmed;10076538,10080072,10137062,10138918
+CHRYSLER;P1CEA;EVAP purge line on the boost side;;performance;-;low;evap;evap_valve;confirmed;10148994,10174255,10176583,10194055
+CHRYSLER;P1CEC;Variable valve timing at cold start - closing position %1 too late;1;;-;medium;timing;vvt;confirmed;10129031,10137056,10137058,10141283
+CHRYSLER;P1CED;Variable valve timing at cold start - closing position too early;;;-;medium;timing;vvt;confirmed;10121865,10129031,10137056,10137058
+CHRYSLER;P1D30;Engine oil viscosity;;too low;-;medium;lubrication;;confirmed;10139789,10180279,10181619,10181621
+CHRYSLER;P1D3E;Control unit internal shut-off test;;fault;-;low;engine;ecu_internal;confirmed;10175729,10218556
+CHRYSLER;P1D5B;Sensor supply %1;C;circuit range/performance;-;medium;engine;ref_voltage;single;10181632,10181635
+CHRYSLER;P1D73;Active grille shutter;;performance;-;low;cooling;;confirmed;10080062,10139816,10139922,10139941
+CHRYSLER;P1D7F;Electronic throttle self-learning failed;;;-;medium;throttle;throttle;confirmed;10121808,10198417,10198418,10223323
+CHRYSLER;P1D83;Engine oil temperature signal;;Invalid data received;:;low;network;invalid_data;confirmed;10074933,10140167,10180275,10221502
+CHRYSLER;P1D92;Incorrect gear ratio - clutch %1 faulty;4;;-;high;transmission;trans_ratio;confirmed;11001310,11001771,11006254,11007649
+CHRYSLER;P1D98;Incorrect gear ratio - clutch %1 or %2 faulty;B|D;;-;high;transmission;trans_ratio;confirmed;10137062,10148655,10149677,10226276
+CHRYSLER;P1DA8;Incorrect gear ratio - clutch %1, %2 or %3 faulty;A|B|D;;-;high;transmission;trans_ratio;confirmed;11001310,11001771,11006254,11007649
+CHRYSLER;P1DAB;Vehicle speed cannot be determined;;;-;medium;transmission;;single;10173360,10173368
+CHRYSLER;P1DAC;Engine speed cannot be determined;;;-;medium;transmission;;single;10173360,10173368
+CHRYSLER;P1DAD;Input and output shaft turning directions do not match;;;-;medium;transmission;trans_sensor;confirmed;10121787,10137062,10138937,10144839
+CHRYSLER;P1DB6;Vehicle speed signal;;performance;-;medium;transmission;;single;10173360,10173368
+CHRYSLER;P1DB7;Torque converter clutch;;performance;-;medium;transmission;trans_solenoid;single;10251866,10251874
+CHRYSLER;P1DB8;Torque transmitted unintentionally in neutral;;;-;high;transmission;trans_general;confirmed;10140022,10224762
+CHRYSLER;P1DCD;Transmission monitoring - several clutches engaged at once;;;-;high;transmission;trans_general;confirmed;10080071,10121790,10121879,10138906
+CHRYSLER;P1DD2;Torque request from the transmission control unit refused;;;-;medium;transmission;;confirmed;10121782,10121810,10162569,10162574
+CHRYSLER;P1DDE;Ignition run/start inputs %1 and %2 do not agree;1|2;;-;medium;engine;;confirmed;10138918,10141285,10175740,10188827
+CHRYSLER;P1DF3;Control unit not initialised;;;-;medium;engine;;confirmed;10175740,10188827,10220623
+CHRYSLER;P1E0C;Fuel tank empty;;;-;low;fuel;fuel_level;confirmed;10118801,10148688,10151735,10159959
+CHRYSLER;P1E1B;Hybrid/EV battery side isolation fault;;;-;critical;hybrid;hv_isolation;confirmed;10138922,10224726,10225248,10225250
+CHRYSLER;P3032;Barometric pressure sensor;;performance;-;medium;intake;map;confirmed;10129030,10138935,10169222,10176577
+CHRYSLER;U1003;CAN bus C at the stability control unit;;performance;-;low;network;can_bus;single;10190705,10220958
+CHRYSLER;U1008;LIN bus %1;1;;-;low;network;can_bus;confirmed;10176569,10223810,10225263,10225264
+CHRYSLER;U110E;Ambient temperature message missing;;;-;low;network;lost_comm;confirmed;10076305,10121722,10129029,10138956
+CHRYSLER;U1110;Vehicle speed message missing;;;-;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U1120;Wheel distance message missing;;;-;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U112D;Steering wheel switches;;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U113B;Switch bank module;;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U1141;Stability control torque request message missing;;;-;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U114C;Gear position display;;Lost communication;:;low;network;lost_comm;single;10080162,10217355
+CHRYSLER;U114D;Hands-free tailgate module;;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U114F;Overhead console (LIN);;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U1153;Windscreen wiper module;;Lost communication;:;medium;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U1186;Adaptive cruise control module;;Lost communication;:;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U1191;Switch bank module %1;2;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U11BB;Video routing module;;Lost communication;:;low;network;lost_comm;confirmed;10168442,10168444,10168445,10187144
+CHRYSLER;U11BC;Brake switch message missing;;;-;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U11C2;Transmission message missing;;;-;medium;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U11C5;On-board charging module;;Lost communication;:;medium;network;lost_comm;confirmed;10138922,10224726
+CHRYSLER;U11DE;Cruise control message missing;;;-;low;network;lost_comm;single;10222991,10222992,10222994
+CHRYSLER;U11E3;Electronic shift module;;Lost communication;:;high;network;lost_comm;confirmed;10227740,10236909
+CHRYSLER;U11E9;Active grille shutter;;Lost communication;:;low;network;lost_comm;confirmed;10121641,10226037,10226041
+CHRYSLER;U1207;Terrain mode switch bank;;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U121E;Cruise control switch on the steering wheel;;Lost communication;:;low;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U1220;Steering lock request message missing;;;-;medium;network;lost_comm;confirmed;10139916,10144827,10221086,10223614
+CHRYSLER;U1223;Wireless charging pad;;Lost communication;:;info;network;lost_comm;confirmed;10223810,10225263,10225264,10227756
+CHRYSLER;U1267;Electronic shift module;;Invalid data received;:;high;network;invalid_data;confirmed;10138927,10227740,10236909,11005338
+CHRYSLER;U12A3;Particulate matter sensor;;Lost communication;:;medium;network;lost_comm;single;10137006,10137010
+CHRYSLER;U1409;Left front wheel speed sensor;;Invalid data received;:;medium;network;invalid_data;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;U140A;Right front wheel speed sensor;;Invalid data received;:;medium;network;invalid_data;confirmed;10169222,10176577,10181610,10183065
+CHRYSLER;U1412;Vehicle speed signal;;Invalid data received;:;medium;network;invalid_data;confirmed;10121787,10121811,10140039
+CHRYSLER;U1421;Ignition key-off time;;Invalid data received;:;low;network;invalid_data;confirmed;10076305,10121722,10138979,10139600
+CHRYSLER;U1424;Engine torque signal;;Invalid data received;:;medium;network;invalid_data;confirmed;10074933,10076533,10080543,10084060
+CHRYSLER;U1440;Transfer case ratio (high range);;Invalid data received;:;medium;network;invalid_data;confirmed;10181618,10194072,10221219,10223813
+CHRYSLER;U145D;Transmission control module;;Invalid data received;:;medium;network;invalid_data;confirmed;10162529,10162535,10212404,10214609
+CHRYSLER;U1465;Driver shift request;;Invalid data received;:;medium;network;invalid_data;confirmed;10138927,10162529,10162535
+CHRYSLER;U1504;Steering angle sensor message length;;Invalid data received;:;medium;network;invalid_data;confirmed;10121801,10121810,10121865,10140043
+CHRYSLER;U1517;Body control unit security code message missing;;;-;high;security;immobilizer;confirmed;10139916,10144827,10221086,10223614
+CHRYSLER;U151A;Hybrid control unit security code message missing;;;-;high;security;immobilizer;confirmed;10198457,10212400,10223363,11011916
+CHRYSLER;U1710;HVAC control module;;Invalid data received;:;low;network;invalid_data;confirmed;10162564,10229806
+CHRYSLER;U1818;Engine control module;;Lost communication;:;high;network;lost_comm;single;10190705,10220958
+CHRYSLER;U1850;Engine control module;;Invalid data received;:;medium;network;invalid_data;single;10190705,10220958
+CHRYSLER;U1885;Hybrid control unit;;Lost communication;:;high;network;lost_comm;confirmed;10212405,10214608,10225248,10234488
+CHRYSLER;U1886;Engine control module;;Lost communication;:;high;network;lost_comm;single;10242800,10242803
+CHRYSLER;U1A24;Ammonia sensor;;Lost communication;:;medium;network;lost_comm;confirmed;10136532,10139778,10139839,10139840
+SUBARU;B1610;Right front crash sensor;;fault;-;high;airbag;airbag;single;10219471
+SUBARU;B1650;Occupant classification system;;fault;-;high;airbag;airbag;single;10117531
+SUBARU;B1792;Right front occupant detection sensor;;fault;-;medium;airbag;airbag;single;11000832
+SUBARU;B1793;Left rear occupant detection sensor;;fault;-;medium;airbag;airbag;single;11000832
+SUBARU;B1794;Right rear occupant detection sensor;;fault;-;medium;airbag;airbag;single;11000832
+SUBARU;B2350;Rear radar communication;;fault;-;low;network;;single;10173186
+SUBARU;B28C7;EyeSight camera fan motor speed;;fault;-;low;body;;single;11009700
+SUBARU;P1C14;Generator;;performance;-;medium;charging;alternator;single;10130274
+MITSUBISHI;B1479;Airbag control unit backup capacitor voltage;;too low;-;high;airbag;airbag;single;10148753
+MITSUBISHI;C1753;Front radar view blocked;;;-;low;chassis;;single;10174062

@@ -595,3 +595,76 @@ fn generic_codes_from_phrases_read_in_the_chosen_language() {
         assert_ne!(lookup_dtc("P0420", "").text, written_en, "{code}");
     }
 }
+
+#[test]
+fn manufacturer_codes_from_bulletins_are_composed_and_tiered() {
+    let lang = english();
+    // The US brands of the former FCA have their own family now.
+    for brand in ["Jeep", "Dodge", "Chrysler", "RAM", "Ram Trucks"] {
+        assert_eq!(brand_family(brand), "CHRYSLER", "{brand}");
+    }
+    // Two bulletins from different months: no note.
+    let fiat = lookup_dtc("P1046", "Fiat");
+    assert!(fiat.known && fiat.manufacturer_specific);
+    assert_eq!(fiat.family, "FIAT");
+    assert!(!fiat.single_source);
+    assert_eq!(
+        fiat.text,
+        "Cylinder 1 oil supply solenoid valve (variable valve lift) - overcurrent"
+    );
+    assert_eq!(fiat.system, DtcSystem::ValveTiming);
+    assert!(fiat.has_details);
+    // The same code means nothing known on a brand without that bulletin.
+    assert!(!lookup_dtc("P1046", "Renault").known);
+    // Lost communication and invalid data lead with the fault type.
+    assert_eq!(
+        lookup_dtc("U1424", "Jeep").text,
+        "Invalid data received: Engine torque signal"
+    );
+    // One bulletin only: the note says so.
+    let single = lookup_dtc("C1140", "Mercedes-Benz");
+    assert!(single.known && single.single_source);
+    assert_eq!(single.source_note(), "Meaning from one source");
+    lang.set(Language::German);
+    assert_eq!(
+        lookup_dtc("P1046", "Alfa Romeo").text,
+        "Ölversorgungs-Magnetventil Zylinder 1 (variabler Ventilhub) - Überstrom"
+    );
+    // Every language has the phrases, none falls back to English.
+    for info in languages() {
+        if matches!(info.id, Language::English | Language::German) {
+            continue;
+        }
+        lang.set(info.id);
+        let text = lookup_dtc("P1046", "Fiat").text;
+        assert!(!text.contains("overcurrent"), "{}: {text}", info.code);
+        assert!(!text.contains('%'), "{}: {text}", info.code);
+        for f in tables::families() {
+            for r in f.records {
+                let t = r.text();
+                assert!(
+                    !t.is_empty() && !t.contains('%'),
+                    "{} {} {}",
+                    info.code,
+                    f.key,
+                    r.code
+                );
+                assert!(!has_long_dash(&t), "{} {}: {t}", info.code, r.code);
+            }
+        }
+    }
+    // The lexicon lists the composed brand codes with their tier.
+    let lexicon = dtc_lexicon();
+    assert!(
+        lexicon
+            .iter()
+            .any(|e| e.code == "C1140" && e.family == "MERCEDES" && e.single_source)
+    );
+    assert!(
+        lexicon
+            .iter()
+            .any(|e| e.code == "P1D73" && e.family == "CHRYSLER" && !e.single_source)
+    );
+    assert!(dtc_count("CHRYSLER") > 200);
+    assert!(dtc_count("FIAT") > 40);
+}
