@@ -344,7 +344,10 @@ mod tests {
             );
             t += 0.2;
         }
-        let path = std::env::temp_dir().join("caruspex_rs_test_tune_pull.jsonl");
+        let path = std::env::temp_dir().join(format!(
+            "caruspex_rs_test_tune_pull_{}.jsonl",
+            std::process::id()
+        ));
         std::fs::write(&path, text).unwrap();
         let v = compare_json(
             path.to_str().unwrap(),
@@ -369,7 +372,10 @@ mod tests {
 
     #[test]
     fn a_recording_without_rpm_is_explained() {
-        let path = std::env::temp_dir().join("caruspex_rs_test_tune_empty.jsonl");
+        let path = std::env::temp_dir().join(format!(
+            "caruspex_rs_test_tune_empty_{}.jsonl",
+            std::process::id()
+        ));
         std::fs::write(
             &path,
             "{\"format\":\"caruspex-recording\",\"version\":1,\"created\":\"2026-11-20T10:00:00Z\",\"transport\":\"test\"}\n",
