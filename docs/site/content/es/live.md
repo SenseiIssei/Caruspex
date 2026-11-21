@@ -15,6 +15,7 @@ La página **Valores en vivo** (modo profesional) muestra lo que miden los senso
 
 - **Baterías de coches eléctricos**: estado de salud, carga, tensiones de celda con su dispersión y temperaturas para Hyundai Kona e Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf y Tesla Model 3 e Y (escuchando en el bus CAN), en la página **Batería del eléctrico**.
 - **Valores de OBDb** para unos 550 vehículos más (presión de neumáticos, aceite, cuentakilómetros y más), que se ofrecen solos para el coche detectado.
+- **Sesión de diagnóstico extendida**: algunos valores de los diésel del grupo Volkswagen, como la masa de hollín medida y la distancia desde la última regeneración, la unidad de control del motor solo los entrega en su sesión de diagnóstico extendida. En el modo profesional Caruspex pasa el motor a esa sesión mientras se consultan esos valores, solo para leerlos, los marca con **Sesión 03** y después lo devuelve. Se puede desactivar en los ajustes, en **Valores del fabricante**. Si la unidad de control lo rechaza, por ejemplo durante la marcha, el valor indica el motivo.
 - **Tus propios valores** en el formato CSV de Torque, muy extendido, ecuaciones incluidas.
 
 ![Batería del eléctrico](screenshot-battery.png)

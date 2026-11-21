@@ -46,6 +46,9 @@ impl Worker {
 
     pub(super) fn stop_live(&mut self) {
         self.custom_poll_keys.clear();
+        // Nothing reads the session values any more: back to the default
+        // session before the adapter does anything else.
+        self.sessions.leave_all(&mut self.elm);
         if self.poll_timer.active {
             self.poll_timer.stop();
             self.log(w("Messung gestoppt.", "Measurement stopped."));
@@ -102,6 +105,34 @@ impl Worker {
             .or_else(|| obdb_pid(key))
     }
 
+    /// The extended diagnostic session for manufacturer values: on in the
+    /// settings, and only in pro mode.
+    pub(super) fn apply_session_setting(&mut self) {
+        let allowed = self.settings.extended_session_values && self.settings.pro_mode;
+        let reason = if !self.settings.pro_mode {
+            l(
+                "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Die nutzt Caruspex nur im Profimodus.",
+                "This value needs the extended diagnostic session of the control unit. Caruspex uses it in pro mode only.",
+            )
+        } else {
+            l(
+                "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Sie ist in den Einstellungen ausgeschaltet.",
+                "This value needs the extended diagnostic session of the control unit. It is switched off in the settings.",
+            )
+        };
+        if !allowed && self.sessions.any_active() {
+            self.sessions.leave_all(&mut self.elm);
+        }
+        self.sessions.set_enabled(allowed, reason);
+    }
+
+    /// Whether one of these values needs the extended session.
+    fn needs_session(&self, keys: &[i32]) -> bool {
+        keys.iter()
+            .filter_map(|&k| self.find_custom(k))
+            .any(|p| p.session != 0)
+    }
+
     /// Reads custom values and emits them; returns (ok, failed, first error).
     fn read_custom_now(&mut self, keys: &[i32]) -> (usize, usize, String) {
         let list: Vec<CustomPid> = keys.iter().filter_map(|&k| self.find_custom(k)).collect();
@@ -110,16 +141,28 @@ impl Worker {
         let mut first_error = String::new();
         let readings = {
             // The reader restores the normal OBD addressing when it goes out
-            // of scope, so the next OBD request works as before.
+            // of scope, so the next OBD request works as before. The
+            // sessions outlive it, so a unit stays in the extended session
+            // between ticks.
+            let sessions = &mut self.sessions;
             let mut reader = CustomPidReader::new(&mut self.elm);
-            reader.read_all(&list)
+            reader.read_all_with(&list, Some(sessions))
         };
-        for r in readings {
+        for (pid, r) in list.iter().zip(readings) {
             if r.ok {
                 ok += 1;
-                self.emit_live(to_row(&r.value));
+                let mut row = to_row(&r.value);
+                row.session = r.session;
+                self.emit_live(row);
             } else {
                 bad += 1;
+                if pid.session != 0 {
+                    // Shown as missing, with the reason, instead of silently.
+                    let mut row = to_row(&r.value);
+                    row.text = l("nicht verfügbar", "unavailable").to_string();
+                    row.reason = r.error.clone();
+                    self.emit_live(row);
+                }
                 if first_error.is_empty() {
                     first_error = r.error;
                 }
@@ -138,6 +181,11 @@ impl Worker {
         }
         self.busy(true);
         let (ok, failed, error) = self.read_custom_now(keys);
+        // Read once, not polled: the session is not needed any more.
+        let polled = self.custom_poll_keys.clone();
+        if !self.needs_session(&polled) {
+            self.sessions.leave_all(&mut self.elm);
+        }
         self.emit(
             "custom_read",
             json!({ "ok": ok, "failed": failed, "firstError": error }),
@@ -150,6 +198,10 @@ impl Worker {
             return;
         }
         self.custom_poll_keys = keys;
+        let polled = self.custom_poll_keys.clone();
+        if !self.needs_session(&polled) {
+            self.sessions.leave_all(&mut self.elm);
+        }
         self.poll_timer
             .set_interval(self.settings.poll_interval_ms.max(0) as u64);
         if !self.custom_poll_keys.is_empty() && !self.poll_timer.active {

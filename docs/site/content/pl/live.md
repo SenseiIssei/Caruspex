@@ -15,6 +15,7 @@ Strona **Wartości na żywo** (tryb profesjonalny) pokazuje, co czujniki mierzą
 
 - **Akumulatory aut elektrycznych**: stan zdrowia, naładowanie, napięcia ogniw z rozrzutem i temperatury dla Hyundai Kona i Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf oraz Tesla Model 3 i Y (przez nasłuchiwanie na magistrali CAN), na stronie **Akumulator EV**.
 - **Wartości OBDb** dla około 550 kolejnych pojazdów (ciśnienie w oponach, olej, przebieg i inne), oferowane same dla rozpoznanego auta.
+- **Rozszerzona sesja diagnostyczna**: niektóre wartości diesli koncernu Volkswagen, na przykład zmierzoną masę sadzy i dystans od ostatniej regeneracji, sterownik silnika podaje tylko w swojej rozszerzonej sesji diagnostycznej. W trybie profesjonalnym Caruspex przełącza silnik w tę sesję, dopóki takie wartości są odpytywane, tylko w celu odczytu, oznacza je jako **Sesja 03** i potem przełącza z powrotem. Można to wyłączyć w ustawieniach w sekcji **Wartości producenta**. Jeśli sterownik odmówi, na przykład podczas jazdy, przy wartości widać powód.
 - **Twoje własne wartości** w popularnym formacie CSV z Torque, razem z równaniami.
 
 ![Akumulator EV](screenshot-battery.png)

@@ -210,5 +210,11 @@ macOS, Android). This is a technical review against the licence texts and source
       340 such signals on 50 VAG models. Caruspex does not switch sessions for custom values, so the converter
       leaves them out ("session"). Whether the live values may change the control unit's session is a decision
       for the owner, not a data question.
+      **Owner's decision (2026-11-21): allowed, strictly read only.** The converter now takes OBDb's extended
+      session commands (din 03) of Volkswagen group engines at 7E0 (1860 values on 58 models, same CC BY-SA 4.0
+      data and attribution as the rest); everything else with din/dout stays out. In pro mode, with the
+      setting on (default), the live view switches only the engine into that session while such a value is
+      polled and leaves it with 10 01; on that path `session_request_allowed` in `caruspex-protocols` lets only
+      10 01, 10 03, 3E and 22 through. Not tested on a real car.
     - The make fallback for the 16 other OBDb models with empty sets and recorded answers (among them Skoda
       Octavia and Enyaq, Mitsubishi Lancer, Mazda CX-7, Volvo V70) stays off until each is checked by hand.

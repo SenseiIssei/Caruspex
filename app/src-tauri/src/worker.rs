@@ -16,7 +16,7 @@ use caruspex_i18n::l;
 use caruspex_link::{AdaptiveTiming, Elm327, StnBus, Transport};
 use caruspex_net::SharedCanLink;
 use caruspex_protocols::{Obd2, VagDiagnosis};
-use caruspex_record::CustomPid;
+use caruspex_record::{CustomPid, ExtendedSessions};
 use serde::Serialize;
 use serde_json::{Value, json};
 
@@ -254,6 +254,9 @@ pub struct Worker {
     custom_poll_keys: Vec<i32>,
     custom_turn: bool,
     user_pids: Vec<CustomPid>,
+    /// Control units the live values put into the extended diagnostic
+    /// session, kept between ticks and left when no such value is read.
+    sessions: ExtendedSessions,
     /// The VAG control unit session of the KKL pages: K-line (KKL cable or
     /// J2534) or TP 2.0 on the CAN interface of the connection.
     kwp: Option<Box<dyn VagDiagnosis>>,
@@ -307,6 +310,7 @@ impl Worker {
             custom_poll_keys: Vec::new(),
             custom_turn: false,
             user_pids: Vec::new(),
+            sessions: ExtendedSessions::new(),
             kwp: None,
             kkl_on_can: false,
             can_link: None,
@@ -610,6 +614,7 @@ impl Worker {
         if let Some(kwp) = self.kwp.as_mut() {
             kwp.set_basic_setting_session(self.settings.basic_setting_session.clamp(0, 255) as u8);
         }
+        self.apply_session_setting();
     }
 
     #[cfg(test)]

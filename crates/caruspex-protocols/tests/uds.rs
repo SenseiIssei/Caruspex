@@ -699,3 +699,115 @@ fn bmw_addressing_busy_refusals_and_foreign_frames() {
     assert!(!reply.answered);
     assert!(!reply.error.is_empty());
 }
+
+// ---------------------------------------------------------------------------
+// The extended session path of the live values: allow list and the demo
+// engine, which keeps two values in the extended session only.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn the_session_path_lets_only_session_control_tester_present_and_reads_through() {
+    use caruspex_protocols::session_request_allowed as allowed;
+    for ok in [
+        &[0x10, 0x01][..],
+        &[0x10, 0x03],
+        &[0x3E, 0x00],
+        &[0x3E, 0x80],
+        &[0x22, 0x11, 0x4E],
+        &[0x22, 0x11, 0x4E, 0x11, 0x56],
+    ] {
+        assert!(allowed(ok), "{ok:02X?}");
+    }
+    for refused in [
+        &[0x27, 0x01][..],         // security access
+        &[0x27, 0x02, 0x12, 0x34], // a key
+        &[0x2E, 0x11, 0x4E, 0x00], // write data by identifier
+        &[0x2F, 0x11, 0x4E, 0x03], // input output control
+        &[0x31, 0x01, 0x02, 0x03], // routine control
+        &[0x34, 0x00, 0x44],       // request download
+        &[0x35, 0x00, 0x44],       // request upload
+        &[0x36, 0x01],             // transfer data
+        &[0x37],                   // transfer exit
+        &[0x11, 0x01],             // ECU reset
+        &[0x14, 0xFF, 0xFF, 0xFF], // clear faults
+        &[0x28, 0x03, 0x01],       // communication control
+        &[0x85, 0x02],             // control DTC setting
+        &[0x10, 0x02],             // programming session
+        &[0x10, 0x40],             // a maker's own session
+        &[0x22],                   // no identifier
+        &[0x22, 0x11],             // half an identifier
+        &[0x3E, 0x01],
+        &[],
+    ] {
+        assert!(!allowed(refused), "{refused:02X?}");
+    }
+}
+
+#[test]
+fn a_forbidden_service_is_refused_before_it_reaches_the_adapter() {
+    let _lang = german();
+    let mut rig = DemoRig::new(600.0);
+    assert!(rig.connected, "{}", rig.error);
+    let log = rig.sent.clone();
+    let mut uds = Uds::new(&mut rig.elm);
+    uds.select(&ecu(0x7E0, 0x7E8, "Engine")).unwrap();
+    let before = log.lock().unwrap().len();
+    for request in [
+        &[0x27, 0x01][..],
+        &[0x2E, 0x11, 0x4E, 0x00],
+        &[0x31, 0x01, 0x02, 0x03],
+        &[0x11, 0x01],
+        &[0x10, 0x02],
+    ] {
+        let refusal = uds.session_request(request, 500).unwrap_err();
+        assert_eq!(refusal.nrc, None);
+        assert!(refusal.message.contains("gesperrt"), "{}", refusal.message);
+    }
+    assert_eq!(
+        log.lock().unwrap().len(),
+        before,
+        "nothing went to the adapter"
+    );
+}
+
+#[test]
+fn the_demo_engine_gives_its_filter_values_only_in_the_extended_session() {
+    let _lang = german();
+    let mut rig = DemoRig::new(600.0);
+    assert!(rig.connected, "{}", rig.error);
+    let clock = rig.clock.clone();
+    let mut uds = Uds::new(&mut rig.elm);
+    uds.select(&ecu(0x7E0, 0x7E8, "Engine")).unwrap();
+    // Default session: the identifier is unknown (7F 22 31).
+    let refusal = uds.session_request(&[0x22, 0x11, 0x4E], 500).unwrap_err();
+    assert_eq!(refusal.nrc, Some(0x31));
+    // Extended session: 50 03 with the timing, then the value.
+    assert_eq!(uds.session_request(&[0x10, 0x03], 500).unwrap()[0], 0x03);
+    let soot = uds.session_request(&[0x22, 0x11, 0x4E], 500).unwrap();
+    assert_eq!(&soot[..2], &[0x11, 0x4E]);
+    assert_eq!(soot.len(), 4);
+    // Kept with tester present for longer than S3 (5 s) in all.
+    for _ in 0..4 {
+        clock.advance(3.0);
+        assert_eq!(uds.session_request(&[0x3E, 0x00], 500).unwrap(), vec![0x00]);
+    }
+    assert!(uds.session_request(&[0x22, 0x11, 0x56], 500).is_ok());
+    // Six seconds without a request: back in the default session by itself.
+    clock.advance(6.0);
+    let refusal = uds.session_request(&[0x22, 0x11, 0x56], 500).unwrap_err();
+    assert_eq!(refusal.nrc, Some(0x31));
+    // Leaving on purpose works too.
+    uds.session_request(&[0x10, 0x03], 500).unwrap();
+    uds.session_request(&[0x10, 0x01], 500).unwrap();
+    assert_eq!(
+        uds.session_request(&[0x22, 0x11, 0x4E], 500)
+            .unwrap_err()
+            .nrc,
+        Some(0x31)
+    );
+    // Normal OBD still works afterwards.
+    uds.restore_default();
+    drop(uds);
+    let mut obd = Obd2::new(&mut rig.elm);
+    assert!(obd.read_live(0x0C).is_some());
+}

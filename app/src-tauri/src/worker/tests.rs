@@ -441,6 +441,83 @@ fn custom_values_of_the_demo_pack() {
     );
 }
 
+// A VAG diesel value from OBDb that needs the extended session, read from
+// the demo engine (which keeps 22 114E in that session): only in pro mode,
+// marked as read in the session, and the session is left when the value is
+// no longer polled.
+#[test]
+fn extended_session_values_in_pro_mode_only_and_left_afterwards() {
+    let key = caruspex_record::obdb_packs()
+        .iter()
+        .flat_map(|p| caruspex_record::obdb_pack_pids(&p.id))
+        .find(|p| p.session == 0x03 && p.request == "22114E" && p.header == "7E0")
+        .expect("an OBDb soot mass value")
+        .key;
+    let (mut worker, sink) = demo_worker();
+    sink.take();
+
+    // Beginner mode (the default): shown as unavailable, with the reason.
+    worker.handle(Job::ReadCustom(vec![key]));
+    let rows = Collect::named(&sink.take(), "live_value");
+    assert_eq!(rows.len(), 1);
+    assert!(rows[0]["row"].get("session").is_none());
+    assert!(
+        rows[0]["row"]["reason"]
+            .as_str()
+            .unwrap()
+            .contains("Profimodus"),
+        "{}",
+        rows[0]
+    );
+    assert!(!worker.sessions.any_active());
+
+    // Pro mode: read in the session; read once only, so it is left again.
+    worker.apply_settings(AppSettings {
+        pro_mode: true,
+        ..AppSettings::default()
+    });
+    worker.handle(Job::ReadCustom(vec![key]));
+    let rows = Collect::named(&sink.take(), "live_value");
+    assert_eq!(rows[0]["row"]["session"], true, "{}", rows[0]);
+    assert!(rows[0]["row"].get("reason").is_none());
+    assert!(!worker.sessions.any_active());
+
+    // Polled: the engine stays in the session between ticks ...
+    worker.handle(Job::StartCustomPoll(vec![key]));
+    worker.poll_tick();
+    assert!(worker.sessions.any_active());
+    // ... until the values change to ones without it, or the measurement stops.
+    worker.handle(Job::StartCustomPoll(vec![]));
+    assert!(!worker.sessions.any_active());
+    worker.handle(Job::StartCustomPoll(vec![key]));
+    worker.poll_tick();
+    assert!(worker.sessions.any_active());
+    worker.handle(Job::StopLive);
+    assert!(!worker.sessions.any_active());
+
+    // Switched off in the settings: left at once, then shown as unavailable.
+    worker.handle(Job::StartCustomPoll(vec![key]));
+    worker.poll_tick();
+    assert!(worker.sessions.any_active());
+    worker.apply_settings(AppSettings {
+        pro_mode: true,
+        extended_session_values: false,
+        ..AppSettings::default()
+    });
+    assert!(!worker.sessions.any_active());
+    sink.take();
+    worker.handle(Job::ReadCustom(vec![key]));
+    let rows = Collect::named(&sink.take(), "live_value");
+    assert!(
+        rows[0]["row"]["reason"]
+            .as_str()
+            .unwrap()
+            .contains("Einstellungen"),
+        "{}",
+        rows[0]
+    );
+}
+
 /// An adapter that answers, in front of a car that does not.
 #[derive(Default)]
 struct SilentCar {

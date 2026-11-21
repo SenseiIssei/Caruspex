@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Over 30 seconden volgt een nieuwe poging.",
+ "c-vagsess-2": "Geen antwoord op de overstap naar de uitgebreide diagnosesessie.",
+ "c-vagsess-3": "De regeleenheid staat de uitgebreide diagnosesessie nu niet toe (voorwaarden niet vervuld, bijvoorbeeld tijdens het rijden).",
+ "c-vagsess-4": "De regeleenheid antwoordt niet meer in de uitgebreide diagnosesessie; die is nu beëindigd. Over 30 seconden volgt een nieuwe poging.",
+ "c-vagsess-5": "De uitgebreide diagnosesessie is geweigerd.",
+ "c-vagsess-6": "Deze dienst is geblokkeerd tijdens het lezen in de uitgebreide sessie.",
+ "c-vagsess-7": "Deze waarde heeft de uitgebreide diagnosesessie van de regeleenheid nodig. Caruspex gebruikt die alleen in de expertmodus.",
+ "c-vagsess-8": "Deze waarde heeft de uitgebreide diagnosesessie van de regeleenheid nodig. Die staat uit in de instellingen.",
+ "c-vagsess-9": "Deze waarde heeft de uitgebreide diagnosesessie van de regeleenheid nodig. Alleen de liveweergave van de app leest die.",
+ "c-vagsess-10": "Deze waarde heeft de uitgebreide diagnosesessie nodig, die uit staat.",
+ "c-vagsess-11": "niet beschikbaar"
+}

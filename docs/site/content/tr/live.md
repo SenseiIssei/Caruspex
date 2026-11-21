@@ -15,6 +15,7 @@
 
 - **Elektrikli araç aküleri**: Hyundai Kona ve Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf ve Tesla Model 3 ve Y için (CAN hattını dinleyerek) sağlık durumu, şarj, sapmasıyla birlikte hücre voltajları ve sıcaklıklar, **Elektrikli araç aküsü** sayfasında.
 - Yaklaşık 550 araç daha için **OBDb değerleri** (lastik basıncı, yağ, kilometre ve daha fazlası), tanınan araç için kendiliğinden sunulur.
+- **Genişletilmiş teşhis oturumu**: Volkswagen grubu dizellerinin bazı değerlerini, örneğin ölçülen is kütlesini ve son rejenerasyondan bu yana gidilen mesafeyi, motor kontrol ünitesi yalnızca genişletilmiş teşhis oturumunda verir. Profesyonel modda Caruspex bu tür değerler sorgulandığı sürece motoru bu oturuma alır, yalnızca okumak için, onları **Oturum 03** ile işaretler ve sonra geri alır. Bu, ayarlarda **Üretici değerleri** altında kapatılabilir. Kontrol ünitesi reddederse, örneğin sürüş sırasında, nedeni değerin yanında görünür.
 - Yaygın Torque CSV biçiminde **kendi değerleriniz**, formüller dahil.
 
 ![Elektrikli araç aküsü](screenshot-battery.png)

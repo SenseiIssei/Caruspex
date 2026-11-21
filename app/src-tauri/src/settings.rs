@@ -31,6 +31,11 @@ pub struct AppSettings {
     pub poll_interval_ms: i32,
     /// How far back the charts reach.
     pub chart_window_seconds: i32,
+    /// Manufacturer values that need the extended diagnostic session (the
+    /// soot mass of the Volkswagen group diesels, for example) may switch the
+    /// engine control unit into it while they are read, in pro mode only.
+    /// Missing in older files means on.
+    pub extended_session_values: bool,
 
     // --- Clearing ------------------------------------------------------------
     pub clear_attempts: i32,
@@ -105,6 +110,7 @@ impl Default for AppSettings {
             auto_connect: false,
             poll_interval_ms: 20,
             chart_window_seconds: 60,
+            extended_session_values: true,
             clear_attempts: 5,
             confirm_clear: true,
             basic_setting_session: 0x85,

@@ -15,6 +15,7 @@ Stránka **Živé hodnoty** (profesionální režim) ukazuje, co snímače práv
 
 - **Baterie elektromobilů**: stav baterie, nabití, napětí článků s rozptylem a teploty pro Hyundai Kona a Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf a Tesla Model 3 a Y (odposlechem na sběrnici CAN), na stránce **Baterie elektromobilu**.
 - **Hodnoty OBDb** pro zhruba 550 dalších vozidel (tlak v pneumatikách, olej, stav tachometru a další), nabízené samy pro rozpoznané auto.
+- **Rozšířená diagnostická relace**: některé hodnoty dieselů koncernu Volkswagen, například naměřenou hmotnost sazí a vzdálenost od poslední regenerace, vydává řídicí jednotka motoru jen ve své rozšířené diagnostické relaci. V režimu pro profesionály ji do ní Caruspex přepne, dokud se takové hodnoty dotazují, jen kvůli čtení, označí je **Relace 03** a pak ji přepne zpět. Vypnout se to dá v nastavení v části **Hodnoty výrobce**. Když jednotka odmítne, například za jízdy, u hodnoty je uveden důvod.
 - **Vaše vlastní hodnoty** v rozšířeném formátu CSV z Torque, včetně rovnic.
 
 ![Baterie elektromobilu](screenshot-battery.png)
