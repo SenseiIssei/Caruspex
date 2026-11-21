@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Uma nova tentativa ocorre dentro de 30 segundos.",
+ "c-vagsess-2": "Sem resposta à mudança para a sessão de diagnóstico estendida.",
+ "c-vagsess-3": "A central não permite agora a sessão de diagnóstico estendida (condições não cumpridas, por exemplo durante a condução).",
+ "c-vagsess-4": "A central deixou de responder na sessão de diagnóstico estendida, que terminou. Uma nova tentativa ocorre dentro de 30 segundos.",
+ "c-vagsess-5": "A sessão de diagnóstico estendida foi recusada.",
+ "c-vagsess-6": "Este serviço está bloqueado durante a leitura na sessão estendida.",
+ "c-vagsess-7": "Este valor precisa da sessão de diagnóstico estendida da central. O Caruspex só a usa no modo profissional.",
+ "c-vagsess-8": "Este valor precisa da sessão de diagnóstico estendida da central. Ela está desativada nas configurações.",
+ "c-vagsess-9": "Este valor precisa da sessão de diagnóstico estendida da central. Só a vista ao vivo do aplicativo o lê.",
+ "c-vagsess-10": "Este valor precisa da sessão de diagnóstico estendida, que está desativada.",
+ "c-vagsess-11": "indisponível"
+}

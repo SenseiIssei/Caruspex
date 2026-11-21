@@ -15,6 +15,7 @@ Halaman **Nilai langsung** (mode profesional) menampilkan apa yang diukur sensor
 
 - **Baterai mobil listrik**: kondisi kesehatan, isi daya, tegangan sel dengan selisihnya, dan suhu untuk Hyundai Kona dan Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf, serta Tesla Model 3 dan Y (dengan mendengarkan bus CAN), di halaman **Baterai EV**.
 - **Nilai OBDb** untuk sekitar 550 kendaraan lagi (tekanan ban, oli, odometer, dan lainnya), ditawarkan sendiri untuk mobil yang terdeteksi.
+- **Sesi diagnostik diperluas**: beberapa nilai mesin diesel grup Volkswagen, misalnya massa jelaga terukur dan jarak sejak regenerasi terakhir, hanya diberikan unit kontrol mesin dalam sesi diagnostik diperluasnya. Dalam mode profesional Caruspex memindahkan mesin ke sesi itu selama nilai tersebut ditanyakan, hanya untuk membaca, menandainya dengan **Sesi 03**, lalu mengembalikannya. Ini dapat dimatikan di pengaturan pada **Nilai pabrikan**. Jika unit kontrol menolak, misalnya saat berkendara, nilai tersebut menampilkan alasannya.
 - **Nilai sendiri** dalam format CSV Torque yang banyak dipakai, termasuk rumusnya.
 
 ![Baterai EV](screenshot-battery.png)

@@ -15,6 +15,7 @@ The **Live values** page (pro mode) shows what the sensors measure right now. In
 
 - **Electric car batteries**: state of health, charge, cell voltages with spread and temperatures for Hyundai Kona and Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf and Tesla Model 3 and Y (by listening on the CAN bus), on the page **EV battery**.
 - **OBDb values** for about 550 more vehicles (tyre pressure, oil, odometer and more), offered by themselves for the detected car.
+- **Extended diagnostic session**: some values of Volkswagen group diesels, such as the measured soot mass and the distance since the last regeneration, are given out by the engine control unit only in its extended diagnostic session. In pro mode Caruspex switches the engine into it while such values are polled, only to read them, marks them with **Session 03** and switches back afterwards. It can be switched off in the settings under **Manufacturer values**. If the control unit refuses, for example while driving, the value shows why.
 - **Your own values** in the widely used Torque CSV format, equations included.
 
 ![EV battery](screenshot-battery.png)

@@ -52,8 +52,19 @@ const LiveTableRow = memo(function LiveTableRow({ row }: { row: LiveRow }) {
   const term = trimTerm(row.pid);
   return (
     <tr className="fade-in">
-      <td>{term ? <Term id={term}>{row.name}</Term> : row.name}</td>
-      <td className={cx("num", row.warn && "warn")} title={row.text || undefined}>
+      <td>
+        {term ? <Term id={term}>{row.name}</Term> : row.name}
+        {row.session ? (
+          <span
+            className="live-session"
+            title={tr("Das Motorsteuergerät ist zum Lesen dieses Werts in der erweiterten Diagnosesitzung. Es wird nur gelesen; Caruspex schaltet es zurück, sobald der Wert nicht mehr abgefragt wird.")}
+          >
+            {tr("Sitzung 03")}
+          </span>
+        ) : null}
+        {row.reason ? <div className="live-reason muted">{row.reason}</div> : null}
+      </td>
+      <td className={cx("num", row.warn && "warn")} title={row.reason || row.text || undefined}>
         <span className="ltr live-value">{row.text ? row.text : row.value.toFixed(2)}</span>
       </td>
       <td className="muted">{row.unit}</td>

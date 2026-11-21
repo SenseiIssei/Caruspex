@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Kolejna próba nastąpi za 30 sekund.",
+ "c-vagsess-2": "Brak odpowiedzi na przejście do rozszerzonej sesji diagnostycznej.",
+ "c-vagsess-3": "Sterownik nie pozwala teraz na rozszerzoną sesję diagnostyczną (warunki niespełnione, na przykład podczas jazdy).",
+ "c-vagsess-4": "Sterownik przestał odpowiadać w rozszerzonej sesji diagnostycznej, która została zakończona. Kolejna próba nastąpi za 30 sekund.",
+ "c-vagsess-5": "Rozszerzona sesja diagnostyczna została odrzucona.",
+ "c-vagsess-6": "Ta usługa jest zablokowana podczas odczytu w sesji rozszerzonej.",
+ "c-vagsess-7": "Ta wartość wymaga rozszerzonej sesji diagnostycznej sterownika. Caruspex używa jej tylko w trybie profesjonalnym.",
+ "c-vagsess-8": "Ta wartość wymaga rozszerzonej sesji diagnostycznej sterownika. Jest wyłączona w ustawieniach.",
+ "c-vagsess-9": "Ta wartość wymaga rozszerzonej sesji diagnostycznej sterownika. Odczytuje ją tylko widok na żywo aplikacji.",
+ "c-vagsess-10": "Ta wartość wymaga rozszerzonej sesji diagnostycznej, która jest wyłączona.",
+ "c-vagsess-11": "niedostępne"
+}

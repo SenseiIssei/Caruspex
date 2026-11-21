@@ -15,6 +15,7 @@ La page **Valeurs en direct** (mode expert) montre ce que mesurent les capteurs 
 
 - **Batteries de voitures électriques** : état de santé, charge, tensions des cellules avec leur écart et températures pour Hyundai Kona et Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf et Tesla Model 3 et Y (par écoute du bus CAN), sur la page **Batterie VE**.
 - **Valeurs OBDb** pour environ 550 véhicules de plus (pression des pneus, huile, kilométrage et d'autres), proposées d'elles-mêmes pour la voiture détectée.
+- **Session de diagnostic étendue** : certaines valeurs des diesels du groupe Volkswagen, comme la masse de suie mesurée et la distance depuis la dernière régénération, ne sont fournies par le calculateur moteur que dans sa session de diagnostic étendue. En mode expert, Caruspex y fait passer le calculateur tant que ces valeurs sont interrogées, uniquement pour les lire, les marque avec **Session 03** et le remet ensuite en session normale. Cela se désactive dans les réglages, sous **Valeurs constructeur**. Si le calculateur refuse, par exemple en roulant, la valeur en indique la raison.
 - **Vos propres valeurs** au format CSV de Torque, très répandu, équations comprises.
 
 ![Batterie VE](screenshot-battery.png)

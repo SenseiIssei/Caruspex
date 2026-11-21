@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Se volverá a intentar dentro de 30 segundos.",
+ "c-vagsess-2": "No hay respuesta al cambio a la sesión de diagnóstico extendida.",
+ "c-vagsess-3": "La unidad de control no permite ahora la sesión de diagnóstico extendida (condiciones no cumplidas, por ejemplo durante la marcha).",
+ "c-vagsess-4": "La unidad de control dejó de responder en la sesión de diagnóstico extendida, que ya ha terminado. Se volverá a intentar dentro de 30 segundos.",
+ "c-vagsess-5": "Se ha rechazado la sesión de diagnóstico extendida.",
+ "c-vagsess-6": "Este servicio está bloqueado al leer en la sesión extendida.",
+ "c-vagsess-7": "Este valor necesita la sesión de diagnóstico extendida de la unidad de control. Caruspex solo la usa en el modo profesional.",
+ "c-vagsess-8": "Este valor necesita la sesión de diagnóstico extendida de la unidad de control. Está desactivada en los ajustes.",
+ "c-vagsess-9": "Este valor necesita la sesión de diagnóstico extendida de la unidad de control. Solo la vista en directo de la aplicación lo lee.",
+ "c-vagsess-10": "Este valor necesita la sesión de diagnóstico extendida, que está desactivada.",
+ "c-vagsess-11": "no disponible"
+}

@@ -233,7 +233,8 @@ fn build_index(compressed: &[u8]) -> Result<Index, String> {
                     first_pack,
                 });
             }
-            "C" if cells.len() == 5 => {
+            // A sixth cell names the diagnostic session the command needs.
+            "C" if cells.len() == 5 || cells.len() == 6 => {
                 let repo = index
                     .repos
                     .last()
@@ -360,12 +361,17 @@ fn build_values(index: &Index, pack: &ObdbPack) -> Vec<CustomPid> {
     let mut key = repo.first_key;
     let mut mask = 0u64;
     let mut address = ("", "", "");
+    let mut session = 0u8;
     let mut metrics: BTreeSet<&str> = BTreeSet::new();
     for n in repo.lines.clone() {
         let cells: Vec<&str> = index.line(n).split('\t').collect();
         if cells[0] == "C" {
             mask = u64::from_str_radix(cells[1], 16).unwrap_or(0);
             address = (cells[2], cells[3], cells[4]);
+            session = cells
+                .get(5)
+                .and_then(|s| u8::from_str_radix(s, 16).ok())
+                .unwrap_or(0);
             continue;
         }
         if cells[0] != "V" {
@@ -398,6 +404,7 @@ fn build_values(index: &Index, pack: &ObdbPack) -> Vec<CustomPid> {
             source: pack.source(),
             key: this_key,
             category: pack.category(),
+            session,
         });
     }
     out

@@ -15,6 +15,7 @@ De pagina **Live-waarden** (expertmodus) toont wat de sensoren op dit moment met
 
 - **Accu's van elektrische auto's**: gezondheidstoestand, lading, celspanningen met spreiding en temperaturen voor Hyundai Kona en Ioniq, Kia e-Niro, Renault Zoe, Nissan Leaf en Tesla Model 3 en Y (door mee te luisteren op de CAN-bus), op de pagina **EV-accu**.
 - **OBDb-waarden** voor ongeveer 550 extra voertuigen (bandenspanning, olie, kilometerstand en meer), vanzelf aangeboden voor de herkende auto.
+- **Uitgebreide diagnosesessie**: sommige waarden van diesels van de Volkswagen-groep, zoals de gemeten roetmassa en de afstand sinds de laatste regeneratie, geeft de motorregeleenheid alleen in haar uitgebreide diagnosesessie. In de expertmodus zet Caruspex de motor in die sessie zolang zulke waarden worden opgevraagd, alleen om te lezen, markeert ze met **Sessie 03** en zet hem daarna terug. Uitzetten kan in de instellingen onder **Fabriekswaarden**. Weigert de regeleenheid, bijvoorbeeld tijdens het rijden, dan staat de reden bij de waarde.
 - **Je eigen waarden** in het veelgebruikte CSV-formaat van Torque, inclusief formules.
 
 ![EV-accu](screenshot-battery.png)

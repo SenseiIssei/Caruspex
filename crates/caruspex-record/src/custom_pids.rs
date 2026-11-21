@@ -58,7 +58,9 @@ use caruspex_link::Elm327;
 use caruspex_net::can_signals::{
     CanSignal, decode_can_signal, parse_can_signal, parse_monitor_request,
 };
-use caruspex_protocols::{LiveValue, Uds, ecu_display_name};
+use caruspex_protocols::{LiveValue, Uds, UdsRefusal, ecu_display_name};
+
+use crate::session::ExtendedSessions;
 
 /// Keys of custom values in `LiveValue::key`. OBD keys are pid | (sub << 8)
 /// and stay far below these ranges, so both can share one series map.
@@ -94,6 +96,10 @@ pub struct CustomPid {
     /// Series id, see [`PACK_KEY_BASE`].
     pub key: i32,
     pub category: PidCategory,
+    /// The diagnostic session the request needs: 0 for the default one,
+    /// 0x03 for the extended session (ISO 14229), which the reader enters
+    /// only through [`ExtendedSessions`].
+    pub session: u8,
 }
 
 impl Default for CustomPid {
@@ -112,6 +118,7 @@ impl Default for CustomPid {
             source: String::new(),
             key: 0,
             category: PidCategory::Custom,
+            session: 0,
         }
     }
 }
@@ -1363,6 +1370,37 @@ pub struct CustomReading {
     pub ok: bool,
     pub value: LiveValue,
     pub error: String,
+    /// Read with the control unit in the extended diagnostic session.
+    pub session: bool,
+}
+
+/// Why a value that needs the extended session was not read, when the
+/// caller keeps no sessions (the command line).
+fn no_session_reason() -> String {
+    l(
+        "Dieser Wert braucht die erweiterte Diagnosesitzung des Steuergeräts. Die liest nur die Live-Ansicht der App.",
+        "This value needs the extended diagnostic session of the control unit. Only the live view of the app reads it.",
+    )
+    .to_string()
+}
+
+/// The control unit a value is asked at.
+pub(crate) fn ecu_definition(
+    pid: &CustomPid,
+) -> Result<caruspex_data::ecu_addresses::EcuDefinition, String> {
+    let invalid = || l("Ungültige Adresse.", "Invalid address.").to_string();
+    let response = if pid.response.is_empty() {
+        default_response(&pid.header)
+    } else {
+        pid.response.clone()
+    };
+    Ok(caruspex_data::ecu_addresses::EcuDefinition {
+        request: u32::from_str_radix(&pid.header, 16).map_err(|_| invalid())?,
+        response: u32::from_str_radix(&response, 16).map_err(|_| invalid())?,
+        extended29: pid.header.len() > 3,
+        name: format!("ECU {}", pid.header),
+        ..Default::default()
+    })
 }
 
 /// Reads custom values over and over, as the live view does. It remembers
@@ -1407,19 +1445,7 @@ impl<'a> CustomPidReader<'a> {
         if self.addressed && key == self.current {
             return Ok(());
         }
-        let invalid = || l("Ungültige Adresse.", "Invalid address.").to_string();
-        let response = if pid.response.is_empty() {
-            default_response(&pid.header)
-        } else {
-            pid.response.clone()
-        };
-        let def = caruspex_data::ecu_addresses::EcuDefinition {
-            request: u32::from_str_radix(&pid.header, 16).map_err(|_| invalid())?,
-            response: u32::from_str_radix(&response, 16).map_err(|_| invalid())?,
-            extended29: pid.header.len() > 3,
-            name: format!("ECU {}", pid.header),
-            ..Default::default()
-        };
+        let def = ecu_definition(pid)?;
         self.addressed = false;
         self.current.clear();
         self.uds.select(&def)?; // select puts the default back itself
@@ -1444,6 +1470,33 @@ impl<'a> CustomPidReader<'a> {
                 "The answer does not match the request.",
             )
             .to_string());
+        }
+        Ok(response[echo..].to_vec())
+    }
+
+    /// The same in the extended session: only the requests the allow list of
+    /// [`Uds::session_request`] knows (22 here) go out.
+    fn ask_session(&mut self, pid: &CustomPid) -> Result<Vec<u8>, UdsRefusal> {
+        let refused = |message: String| UdsRefusal { nrc: None, message };
+        let request = match parse_request_hex(&pid.request) {
+            Some(r) if r.len() >= 2 => r,
+            _ => {
+                return Err(refused(
+                    l("Ungültige Anfrage.", "Invalid request.").to_string(),
+                ));
+            }
+        };
+        self.address(pid).map_err(refused)?;
+        let response = self.uds.session_request(&request, REQUEST_TIMEOUT_MS)?;
+        let echo = request.len() - 1;
+        if response.len() < echo || response[..echo] != request[1..] {
+            return Err(refused(
+                l(
+                    "Die Antwort passt nicht zur Anfrage.",
+                    "The answer does not match the request.",
+                )
+                .to_string(),
+            ));
         }
         Ok(response[echo..].to_vec())
     }
@@ -1542,8 +1595,12 @@ impl<'a> CustomPidReader<'a> {
         Ok(())
     }
 
-    /// One value, the simple way.
+    /// One value, the simple way. A value that needs the extended session
+    /// is not read here, see [`Self::read_all_with`].
     pub fn read(&mut self, pid: &CustomPid) -> Result<LiveValue, String> {
+        if pid.session != 0 {
+            return Err(no_session_reason());
+        }
         let mut out = LiveValue::default();
         if let Some(id) = parse_monitor_request(&pid.request) {
             let multiplexed = pid.equation.contains(" m") || pid.equation.contains(")m");
@@ -1563,8 +1620,21 @@ impl<'a> CustomPidReader<'a> {
     /// All values, in the order given. Values sharing a header and a request
     /// are served from one answer (the battery management of an EV puts some
     /// thirty values into one), and values of the same control unit are
-    /// asked one after another to save re-addressing.
+    /// asked one after another to save re-addressing. Values that need the
+    /// extended session are not read, see [`Self::read_all_with`].
     pub fn read_all(&mut self, pids: &[CustomPid]) -> Vec<CustomReading> {
+        self.read_all_with(pids, None)
+    }
+
+    /// [`Self::read_all`], and the values that need the extended diagnostic
+    /// session through `sessions`, which enters and keeps it for their
+    /// control unit. While a unit is in that session every request to it
+    /// goes through the allow list of [`Uds::session_request`].
+    pub fn read_all_with(
+        &mut self,
+        pids: &[CustomPid],
+        mut sessions: Option<&mut ExtendedSessions>,
+    ) -> Vec<CustomReading> {
         let mut out: Vec<CustomReading> = vec![CustomReading::default(); pids.len()];
 
         // Group by control unit, in the order the units first appear; the
@@ -1622,8 +1692,33 @@ impl<'a> CustomPidReader<'a> {
                 continue;
             }
             let mut answers: BTreeMap<String, Answer> = BTreeMap::new(); // by request
+            // The extended session, when a value of this unit needs it:
+            // Ok when the unit is in it, Err with the reason when not.
+            let mut session: Option<Result<(), String>> = None;
+            if let Some(first) = pids
+                .iter()
+                .find(|p| address_key(p) == *unit && p.session != 0)
+            {
+                session = Some(match sessions.as_deref_mut() {
+                    None => Err(no_session_reason()),
+                    Some(s) if !s.enabled() => Err(s.off_reason()),
+                    Some(s) => match self.address(first).and_then(|_| ecu_definition(first)) {
+                        Ok(def) => s.prepare(&mut self.uds, unit, &def),
+                        Err(e) => Err(e),
+                    },
+                });
+            }
+            let mut retried = false;
             for (i, pid) in pids.iter().enumerate() {
                 if address_key(pid) != *unit {
+                    continue;
+                }
+                if pid.session != 0
+                    && let Some(Err(reason)) = &session
+                {
+                    let reading = &mut out[i];
+                    reading.value = Self::base_value(pid);
+                    reading.error = reason.clone();
                     continue;
                 }
                 let eq = self.equation(&pid.equation);
@@ -1634,19 +1729,78 @@ impl<'a> CustomPidReader<'a> {
                     reading.error = eq.error().to_string();
                     continue;
                 }
+                let in_session = matches!(session, Some(Ok(())));
                 if !answers.contains_key(&pid.request) {
-                    let answer = self.ask(pid);
+                    let answer = if in_session {
+                        self.ask_in_session(pid, unit, &mut sessions, &mut session, &mut retried)
+                    } else {
+                        self.ask(pid)
+                    };
                     answers.insert(pid.request.clone(), answer);
                 }
                 let answer = &answers[&pid.request];
                 let reading = &mut out[i];
                 match self.decode(pid, answer, &mut reading.value) {
-                    Ok(()) => reading.ok = true,
+                    Ok(()) => {
+                        reading.ok = true;
+                        reading.session = in_session && pid.session != 0;
+                    }
                     Err(e) => reading.error = e,
                 }
             }
         }
         out
+    }
+}
+
+impl CustomPidReader<'_> {
+    /// One request to a unit in the extended session. A refusal that looks
+    /// like the unit left the session by itself (its S3 timer ran out)
+    /// enters it once more and asks again; no answer at all leaves the
+    /// session at once.
+    fn ask_in_session(
+        &mut self,
+        pid: &CustomPid,
+        unit: &str,
+        sessions: &mut Option<&mut ExtendedSessions>,
+        session: &mut Option<Result<(), String>>,
+        retried: &mut bool,
+    ) -> Answer {
+        let Some(keeper) = sessions.as_deref_mut() else {
+            return Err(no_session_reason());
+        };
+        let mut result = self.ask_session(pid);
+        if let Err(refusal) = &result
+            && matches!(refusal.nrc, Some(0x31 | 0x7E | 0x7F))
+            && pid.session != 0
+            && !*retried
+        {
+            *retried = true;
+            keeper.mark_left(unit);
+            match ecu_definition(pid).and_then(|def| keeper.prepare(&mut self.uds, unit, &def)) {
+                Ok(()) => result = self.ask_session(pid),
+                Err(reason) => {
+                    *session = Some(Err(reason.clone()));
+                    return Err(reason);
+                }
+            }
+        }
+        match result {
+            Ok(data) => {
+                keeper.touch(unit);
+                Ok(data)
+            }
+            Err(refusal) if refusal.nrc.is_none() => {
+                keeper.give_up(&mut self.uds, unit);
+                *session = Some(Err(refusal.message.clone()));
+                Err(refusal.message)
+            }
+            Err(refusal) => {
+                // The unit answered, so it still counts as kept.
+                keeper.touch(unit);
+                Err(refusal.message)
+            }
+        }
     }
 }
 

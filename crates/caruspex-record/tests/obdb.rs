@@ -334,3 +334,56 @@ fn vag_diesel_particulate_filter_and_oil_level_values() {
     read_through_adapter("Volkswagen-Transporter", "2211BC");
     read_through_adapter("Volkswagen-Passat", "22115A");
 }
+
+// Engine values that OBDb reads in the extended diagnostic session come with
+// that session, and only for the engine of the Volkswagen group cars.
+#[test]
+fn extended_session_values_are_vag_engine_values_only() {
+    let _lang = german();
+    let mut seen = 0;
+    for pack in obdb_packs() {
+        for p in obdb_pack_pids(&pack.id) {
+            if p.session == 0 {
+                continue;
+            }
+            seen += 1;
+            assert_eq!(p.session, 0x03, "{}", pack.id);
+            assert_eq!(p.header, "7E0", "{} {}", pack.id, p.name);
+            assert!(p.request.starts_with("22"), "{} {}", pack.id, p.request);
+            let make = pack.repo.split('-').next().unwrap();
+            assert!(
+                [
+                    "Audi",
+                    "Volkswagen",
+                    "Seat",
+                    "Skoda",
+                    "Cupra",
+                    "Porsche",
+                    "Bentley"
+                ]
+                .contains(&make),
+                "{}",
+                pack.repo
+            );
+        }
+    }
+    assert!(seen > 1000, "{seen}");
+    // The measured soot mass of a 2009 Audi A5, with OBDb's recorded answer.
+    let entry = cases()
+        .into_iter()
+        .find(|e| e["repo"] == "Audi-A5" && e["request"] == "22114E")
+        .unwrap();
+    assert_eq!(entry["session"], "03");
+    let pack = obdb_packs()
+        .iter()
+        .find(|p| p.repo == "Audi-A5" && p.covers(2009))
+        .unwrap();
+    let soot: Vec<_> = obdb_pack_pids(&pack.id)
+        .into_iter()
+        .filter(|p| p.request == "22114E" && p.header == "7E0")
+        .collect();
+    assert_eq!(soot.len(), 1);
+    assert_eq!(soot[0].session, 0x03);
+    let eq = TorqueEquation::new(&soot[0].equation);
+    assert!(approx(eq.evaluate(&hex("00C4")).unwrap(), 1.96));
+}

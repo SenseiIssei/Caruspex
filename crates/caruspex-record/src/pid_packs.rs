@@ -85,6 +85,7 @@ fn build(english: bool) -> Vec<CustomPid> {
                 source: r.source.to_string(),
                 key: PACK_KEY_BASE + i as i32,
                 category: pack.category,
+                session: 0,
             }
         })
         .collect()

@@ -198,6 +198,8 @@ struct Exchange {
     /// Positive response without the service id.
     data: Vec<u8>,
     error: String,
+    /// The negative response code of a refusal.
+    nrc: Option<u8>,
 }
 
 /// Hex bytes of one raw adapter line, the 11-bit id dropped when headers
@@ -392,6 +394,7 @@ fn exchange_extended(elm: &mut Elm327, target: u8, bytes: &[u8], timeout_ms: u64
                 continue;
             }
             ex.error = nrc_text(b[2]);
+            ex.nrc = Some(b[2]);
             return ex;
         }
         ex.error = l(
@@ -465,6 +468,7 @@ fn exchange(elm: &mut Elm327, bytes: &[u8], timeout_ms: u64, extended: i32) -> E
         }
         if let Some(nrc) = refusal {
             ex.error = nrc_text(nrc);
+            ex.nrc = Some(nrc);
             return ex;
         }
         if pending || busy {
@@ -547,6 +551,34 @@ pub fn decode_bmw_dtc(b1: u8, b2: u8, b3: u8, status: u8) -> UdsDtc {
     )
     .to_string();
     dtc
+}
+
+/// Plain text for a negative response code, "Steuergerät lehnt ab: ...".
+pub fn uds_refusal_text(nrc: u8) -> String {
+    nrc_text(nrc)
+}
+
+/// Why a request of the extended session path got no positive answer.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct UdsRefusal {
+    /// The negative response code, when the control unit sent one.
+    pub nrc: Option<u8>,
+    pub message: String,
+}
+
+/// The only requests the live values send to a control unit they put into
+/// the extended diagnostic session (ISO 14229): enter it (10 03), go back to
+/// the default session (10 01), keep it (3E 00, or 3E 80 without an answer)
+/// and read data by identifier (22 with one to three identifiers). Nothing
+/// that writes, unlocks, resets, controls or starts a routine (27, 2E, 2F,
+/// 31, 34 to 37, 11, 14, 28, 85, other sessions) gets past this, so the path
+/// stays read only whatever a data file asks for.
+pub fn session_request_allowed(bytes: &[u8]) -> bool {
+    match bytes {
+        [0x10, 0x01] | [0x10, 0x03] | [0x3E, 0x00] | [0x3E, 0x80] => true,
+        [0x22, ids @ ..] => !ids.is_empty() && ids.len() <= 6 && ids.len() % 2 == 0,
+        _ => false,
+    }
 }
 
 /// UDS on one control unit at a time. Dropping it restores the default OBD
@@ -708,6 +740,36 @@ impl<'a> Uds<'a> {
             return Err(ex.error);
         }
         Ok(ex.data)
+    }
+
+    /// A request of the extended session path: only what
+    /// [`session_request_allowed`] lets through goes to the adapter, anything
+    /// else is refused without sending. A refusal of the control unit keeps
+    /// its negative response code.
+    pub fn session_request(
+        &mut self,
+        bytes: &[u8],
+        timeout_ms: u64,
+    ) -> Result<Vec<u8>, UdsRefusal> {
+        if !session_request_allowed(bytes) {
+            return Err(UdsRefusal {
+                nrc: None,
+                message: l(
+                    "Dieser Dienst ist beim Lesen in der erweiterten Sitzung gesperrt.",
+                    "This service is blocked while reading in the extended session.",
+                )
+                .to_string(),
+            });
+        }
+        let ex = exchange(self.elm, bytes, timeout_ms, self.extended);
+        if ex.positive {
+            Ok(ex.data)
+        } else {
+            Err(UdsRefusal {
+                nrc: ex.nrc,
+                message: ex.error,
+            })
+        }
     }
 
     /// 3E 00. True if the selected ECU answered.

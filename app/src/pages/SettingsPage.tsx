@@ -336,6 +336,21 @@ export default function SettingsPage() {
         </Row>
       </Group>
 
+      {pro ? (
+        <Group title={tr("Herstellerwerte")}>
+          <Full>
+            <Check checked={values.extendedSessionValues} onChange={(v) => change({ extendedSessionValues: v })}>
+              {tr("Erweiterte Diagnosesitzung für Herstellerwerte")}
+            </Check>
+          </Full>
+          <Hint>
+            {tr(
+              "Manche Werte gibt das Motorsteuergerät nur in der erweiterten Diagnosesitzung heraus, etwa die gemessene Rußmasse und die Strecke seit der letzten Regeneration bei Dieseln aus dem VW-Konzern. Ist das an, schaltet Caruspex das Steuergerät dafür in diese Sitzung, solange solche Werte abgefragt werden, und danach zurück. Dabei wird nur gelesen, nie etwas geändert. Lehnt das Steuergerät ab, etwa während der Fahrt, steht der Grund am Wert.",
+            )}
+          </Hint>
+        </Group>
+      ) : null}
+
       <Group title={tr("Fehler löschen")}>
         <Row label={tr("Versuche beim hartnäckigen Löschen")}>
           <SettingNumber

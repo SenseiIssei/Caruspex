@@ -22,7 +22,11 @@
 //! climate 744, each on request + 8. The engine also has a few maker values
 //! under service 22 (oil level, oil temperature, starts, a multi-frame block),
 //! and the instrument cluster and the ABS keep the odometer, all read by the
-//! demo pack of the custom values (data/pids/caruspex-demo.csv).
+//! demo pack of the custom values (data/pids/caruspex-demo.csv). Like a
+//! diesel engine of the Volkswagen group it keeps two particulate filter
+//! values (22 114E, 22 1156) that it gives out only in the extended
+//! diagnostic session (10 03), which it leaves by itself five seconds after
+//! the last request (the S3 timer of ISO 14229).
 //!
 //! Two more units sit on buses an ELM327 cannot reach: a body control unit
 //! on the medium speed CAN (726, answers on 72E) and one on the single wire
@@ -162,6 +166,11 @@ pub struct DemoOptions {
     /// The truck's dashboard shows 200 000 km less than engine and
     /// tachograph (see [`truck::TruckSim::with_odometer_mismatch`]).
     pub truck_odometer_mismatch: bool,
+
+    /// The engine control unit refuses the extended diagnostic session
+    /// (10 03) with "conditions not correct" (7F 10 22), as a real one may
+    /// while driving.
+    pub refuse_extended_session: bool,
 }
 
 impl Default for DemoOptions {
@@ -175,6 +184,7 @@ impl Default for DemoOptions {
             round_trip_ms: 0.0,
             vehicle: DemoVehicle::Car,
             truck_odometer_mismatch: false,
+            refuse_extended_session: false,
         }
     }
 }

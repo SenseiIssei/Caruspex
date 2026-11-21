@@ -11,6 +11,7 @@ pub mod live_log;
 pub mod obdb;
 pub mod pid_packs;
 pub mod recording;
+pub mod session;
 pub mod share;
 
 pub use custom_pids::{
@@ -33,4 +34,5 @@ pub use recording::{
     ReplayTransport, active_recording, describe_recording, load_recording, normalize_command,
     parse_recording, recording_summary, start_recording, stop_recording, write_recording,
 };
+pub use session::ExtendedSessions;
 pub use share::{SharePreview, SharedRecording, VIN_HIDDEN, find_vins, share_recording};

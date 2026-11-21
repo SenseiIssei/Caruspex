@@ -1,0 +1,13 @@
+{
+ "c-vagsess-1": "Další pokus proběhne za 30 sekund.",
+ "c-vagsess-2": "Žádná odpověď na přechod do rozšířené diagnostické relace.",
+ "c-vagsess-3": "Řídicí jednotka teď rozšířenou diagnostickou relaci nepovoluje (podmínky nesplněny, například za jízdy).",
+ "c-vagsess-4": "Řídicí jednotka v rozšířené diagnostické relaci přestala odpovídat; relace je ukončena. Další pokus proběhne za 30 sekund.",
+ "c-vagsess-5": "Rozšířená diagnostická relace byla odmítnuta.",
+ "c-vagsess-6": "Tato služba je při čtení v rozšířené relaci zablokovaná.",
+ "c-vagsess-7": "Tato hodnota potřebuje rozšířenou diagnostickou relaci řídicí jednotky. Caruspex ji používá jen v režimu pro profesionály.",
+ "c-vagsess-8": "Tato hodnota potřebuje rozšířenou diagnostickou relaci řídicí jednotky. V nastavení je vypnutá.",
+ "c-vagsess-9": "Tato hodnota potřebuje rozšířenou diagnostickou relaci řídicí jednotky. Čte ji jen živé zobrazení aplikace.",
+ "c-vagsess-10": "Tato hodnota potřebuje rozšířenou diagnostickou relaci, která je vypnutá.",
+ "c-vagsess-11": "nedostupné"
+}
