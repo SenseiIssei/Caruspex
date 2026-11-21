@@ -5,8 +5,8 @@
 //! the answer with the code of the live view: the reply lines as
 //! `Elm327::send` keeps them (`reply_lines`), the messages as the driver puts
 //! them together (`decode_messages`, ISO-TP per sender included) and the
-//! values as `Obd2::read_live_batch` takes them (`mode01_answer_values`, the
-//! first control unit that answers a PID keeps it). The batched lines of an
+//! values as `Obd2::read_live_batch` takes them (`mode01_answer_values`: the
+//! engine keeps a PID it answers, else the first other control unit). The batched lines of an
 //! STN chip ("010C0D|0105") are cut apart like `Elm327::request_many` does.
 //! The tuning simulator compares the series of frames with its model.
 //!

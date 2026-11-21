@@ -504,12 +504,22 @@ fn kwp_answers_of_a_recording_started_in_a_running_session_are_read() {
     );
     text += &exchange(1.0, "010C", &[&kwp(0x10, &[0x41, 0x0C, 0x1A, 0xF8])]);
     text += &exchange(1.1, "0105", &[&kwp(0x10, &[0x41, 0x05, 0x5A])]);
+    // The transmission answers first; the engine (source 10) keeps the speed.
+    text += &exchange(
+        1.2,
+        "010D",
+        &[
+            &kwp(0x18, &[0x41, 0x0D, 0x4F]),
+            &kwp(0x10, &[0x41, 0x0D, 0x50]),
+        ],
+    );
     text += &exchange(2.0, "010C", &[&kwp(0x10, &[0x41, 0x0C, 0x2E, 0xE0])]);
     let frames = live_frames(&parse_recording(&text).expect("parses"));
     assert_eq!(frames.len(), 2);
     assert_eq!(frames[0].values.get(&0x0C), Some(&1726.0));
     // 0x5A - 40 = 50 °C.
     assert_eq!(frames[0].values.get(&0x05), Some(&50.0));
+    assert_eq!(frames[0].values.get(&0x0D), Some(&80.0));
     assert_eq!(frames[1].values.get(&0x0C), Some(&3000.0));
 }
 
@@ -529,7 +539,8 @@ fn two_control_units_on_can_29_bit_keep_the_engine_value_and_their_own() {
         ],
     );
     // The engine's answer in three frames, the transmission's single frame
-    // in between: each sender is put together on its own.
+    // in between and so complete first: each sender is put together on its
+    // own, and the engine keeps the speed it answered.
     text += &exchange(
         2.0,
         "010C0D0B0F1011",
@@ -540,6 +551,8 @@ fn two_control_units_on_can_29_bit_keep_the_engine_value_and_their_own() {
             "18DAF11022111F5555555555",
         ],
     );
+    // Only the transmission knows the gear: its value counts.
+    text += &exchange(2.5, "01A4", &["18DAF1180641A402600334AA"]);
     text += &exchange(3.0, "010C", &["18DAF11004410C1AF8AAAAAA"]);
 
     let frames = live_frames(&parse_recording(&text).expect("parses"));
@@ -548,6 +561,9 @@ fn two_control_units_on_can_29_bit_keep_the_engine_value_and_their_own() {
     assert_eq!(frames[0].values.get(&0x0D), Some(&80.0));
     let second = &frames[1];
     assert_eq!(second.values.get(&0x0C), Some(&3000.0));
+    // 0x51 = 81 km/h from the engine, not the transmission's 79.
+    assert_eq!(second.values.get(&0x0D), Some(&81.0));
+    assert!(second.values.keys().any(|key| key & 0xFF == 0xA4));
     // 0x63 = 99 kPa, 0x37 - 40 = 15 °C, 0x0113 / 100 = 2.75 g/s, 0x1F = 12.2 %.
     assert_eq!(second.values.get(&0x0B), Some(&99.0));
     assert_eq!(second.values.get(&0x0F), Some(&15.0));

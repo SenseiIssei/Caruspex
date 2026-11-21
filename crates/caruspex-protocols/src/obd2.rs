@@ -21,7 +21,7 @@ use caruspex_i18n::{Language, Text, l, language};
 use caruspex_link::elm327::DEFAULT_REQUEST_TIMEOUT_MS;
 use caruspex_link::{Elm327, ElmResult, ElmStatus};
 
-use crate::ecu_address::ecu_display_name;
+use crate::ecu_address::{EcuRole, ecu_display_name, ecu_role};
 
 /// How many freeze frames `Obd2::read_freeze_frames` asks for by default.
 pub const DEFAULT_FREEZE_FRAMES: usize = 4;
@@ -381,6 +381,28 @@ fn pid_command(pids: &[i32]) -> String {
     command
 }
 
+fn from_engine(result: &ElmResult, index: usize) -> bool {
+    result
+        .sources
+        .get(index)
+        .is_some_and(|source| ecu_role(source) == EcuRole::Engine)
+}
+
+/// The order in which the messages of an answer may claim a PID: the
+/// engine's first (7E8, 18DAF110, source byte 10 on the K-line, as
+/// `ecu_role` reads them), then the others as they came. Several control
+/// units answer the vehicle speed, for example, and the order of their
+/// answers says little: a transmission's single frame is complete before the
+/// engine's multi-frame answer. With `every_ecu`, or headers off (no
+/// sources), simply the order of the answer.
+fn engine_first(result: &ElmResult, every_ecu: bool) -> impl Iterator<Item = usize> + '_ {
+    let count = result.messages.len();
+    let prefer = !every_ecu && !result.sources.is_empty();
+    let engine = (0..count).filter(move |&i| prefer && from_engine(result, i));
+    let rest = (0..count).filter(move |&i| !prefer || !from_engine(result, i));
+    engine.chain(rest)
+}
+
 /// The values of one PID in the answer to its single request, optionally
 /// those of every control unit.
 fn pid_values(pid: i32, result: &ElmResult, every_ecu: bool) -> Vec<LiveValue> {
@@ -392,8 +414,9 @@ fn pid_values(pid: i32, result: &ElmResult, every_ecu: bool) -> Vec<LiveValue> {
         return out;
     }
     // Several control units may answer (vehicle speed comes from engine and
-    // transmission); the first answer counts, which is the engine on CAN.
-    for (i, message) in result.messages.iter().enumerate() {
+    // transmission); the engine's answer counts, else the first other one.
+    for i in engine_first(result, every_ecu) {
+        let message = &result.messages[i];
         if message.first().map(|&b| i32::from(b)) != Some(pid) {
             continue;
         }
@@ -412,8 +435,8 @@ fn pid_values(pid: i32, result: &ElmResult, every_ecu: bool) -> Vec<LiveValue> {
 /// The values in one answer to a mode 01 request for `pids`, decoded the
 /// way [`Obd2::read_live_batch`] decodes it: one PID like `read_live_all`,
 /// several like one group, where an answer that does not add up gives
-/// nothing. With several control units the first one that answers a PID
-/// keeps it. Reading a recording goes through here, so it shows the numbers
+/// nothing. With several control units the engine keeps a PID it answers,
+/// else the first other one that answers it. Reading a recording goes through here, so it shows the numbers
 /// the live view showed.
 pub fn mode01_answer_values(pids: &[i32], result: &ElmResult) -> Vec<LiveValue> {
     if let [pid] = pids {
@@ -989,13 +1012,13 @@ impl<'a> Obd2<'a> {
         let mut found: BTreeMap<i32, Vec<LiveValue>> = BTreeMap::new();
         // Present in an answer, even if no value was usable.
         let mut answered = BTreeSet::new();
-        for (i, message) in result.messages.iter().enumerate() {
-            let blocks = split_multi_pid_answer(message, group)?;
+        for i in engine_first(result, every_ecu) {
+            let blocks = split_multi_pid_answer(&result.messages[i], group)?;
             for (pid, data) in blocks {
                 answered.insert(pid);
-                // As in read_live_all: the first control unit that answers a
-                // PID with something usable keeps it, unless every one is
-                // wanted.
+                // As in read_live_all: the engine keeps a PID it answers with
+                // something usable, else the first other control unit,
+                // unless every one is wanted.
                 if !every_ecu && found.contains_key(&pid) {
                     continue;
                 }
@@ -1040,7 +1063,8 @@ impl<'a> Obd2<'a> {
     /// of a group answer.
     ///
     /// Several control units: like `read_live_all`, a PID keeps the values of
-    /// the first control unit that answers it (the engine on CAN). With
+    /// the engine (by its address, see `ecu_role`) when it answers it, else
+    /// those of the first other control unit that does. With
     /// `every_ecu` the values of every control unit are kept, each with its
     /// ecu/ecu_source (needs headers on to tell them apart).
     ///
