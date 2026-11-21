@@ -135,10 +135,10 @@ macOS, Android). This is a technical review against the licence texts and source
    cars (the Volvo entries with such codes are Volvo trucks; the car bulletins use Volvo's module codes such
    as ECM-130A), Opel (only the Ampera, whose GM Voltec codes do not hold for other Opel models), Renault and
    PSA (not sold in the USA, no bulletins). Searched without a usable result: obdex (CC0, generic codes only),
-   OBDb (no fault codes in its signal sets), Wikidata (no property for fault codes), the EU type approval
-   rules (Regulation (EU) 2017/1151, Annex XI, refers to ISO 15031-6 and SAE J2012 and lists no manufacturer
-   codes), the full bulletin PDFs (the data set has no links to them and the API addresses tried did not answer, so
-   only the summaries were used).
+   OBDb (no fault codes in its signal sets), Wikidata (no property for fault codes), the full bulletin PDFs (the data set has no links to them and the API addresses tried did not answer, so
+   only the summaries were used). Not checked yet: whether the EU type approval rules (Regulation (EU)
+   2017/1151, Annex XI) contain manufacturer codes; I expect they only point to ISO 15031-6 and SAE J2012 for the
+   code format, but the text was not read for this.
    Not used: GPL lists, unlicensed lists, forums, paid databases.
    **OBD socket spots (2026-11-21).** The 209 car rows of `data/obd_sockets.csv` from before stay an own
    compilation; no free source was found to check them (Wikidata has no property for it, OBDb no location
