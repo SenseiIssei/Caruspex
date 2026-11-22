@@ -493,7 +493,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-advice"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-analysis",
  "caruspex-data",
@@ -502,14 +502,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-analysis"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-i18n",
 ]
 
 [[package]]
 name = "caruspex-app"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "base64 0.23.1",
  "block2",
@@ -552,7 +552,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-cli"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-analysis",
  "caruspex-data",
@@ -570,14 +570,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-data"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-i18n",
 ]
 
 [[package]]
 name = "caruspex-demo"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-i18n",
  "caruspex-link",
@@ -585,7 +585,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-i18n"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "miniz_oxide 0.9.1",
  "serde_json",
@@ -593,14 +593,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-j2534"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "libloading 0.9.1",
 ]
 
 [[package]]
 name = "caruspex-link"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "btleplug",
  "caruspex-i18n",
@@ -616,7 +616,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-net"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-data",
  "caruspex-demo",
@@ -632,11 +632,11 @@ dependencies = [
 
 [[package]]
 name = "caruspex-pdf"
-version = "0.22.0"
+version = "0.23.0"
 
 [[package]]
 name = "caruspex-protocols"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-data",
  "caruspex-demo",
@@ -648,7 +648,7 @@ dependencies = [
 
 [[package]]
 name = "caruspex-record"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-data",
  "caruspex-demo",
@@ -664,14 +664,14 @@ dependencies = [
 
 [[package]]
 name = "caruspex-tune"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-i18n",
 ]
 
 [[package]]
 name = "caruspex-vehicles"
-version = "0.22.0"
+version = "0.23.0"
 dependencies = [
  "caruspex-i18n",
 ]
