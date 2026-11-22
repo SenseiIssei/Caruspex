@@ -213,7 +213,7 @@ pub fn parse_torque_csv(text: &str, key_base: i32) -> (Vec<CustomPid>, Vec<Strin
         let head = &head_record.cells;
         let is_header = head
             .iter()
-            .any(|title| matches!(column_for(title), Some(COL_REQUEST) | Some(COL_EQUATION)));
+            .any(|title| matches!(column_for(title), Some(COL_REQUEST | COL_EQUATION)));
         if is_header {
             map = [None; COLUMN_COUNT];
             for (i, title) in head.iter().enumerate() {

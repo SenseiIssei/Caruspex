@@ -318,7 +318,7 @@ struct Ctx<'a> {
     out: HealthReport,
 }
 
-impl<'a> Ctx<'a> {
+impl Ctx<'_> {
     fn add(
         &mut self,
         id: impl Into<String>,
