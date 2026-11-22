@@ -2,7 +2,7 @@
 // search by code or keyword, filter by brand family. A click on a row shows
 // what the fault page shows for a code: advice, where to look, causes,
 // checks and the rough cost.
-import { useEffect, useMemo, useState } from "react";
+import { memo, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { call } from "../api";
 import type { BrandFamily, DtcInfo, DtcLexiconEntry, ZoneInfo } from "../api";
 import { CarZone } from "../api";
@@ -35,6 +35,50 @@ export function severityTone(severity: number): string {
 }
 
 type Entry = DtcLexiconEntry & { systemName: string; severityLabel: string };
+
+// Up to 3000 rows: memoised, so showing or hiding the page (the page renders
+// again when it becomes active) and typing elsewhere do not build them anew.
+const LexiconRows = memo(function LexiconRows({
+  hits,
+  shown,
+  selected,
+  onSelect,
+}: {
+  hits: Entry[];
+  shown: number;
+  selected: Entry | null;
+  onSelect: (e: Entry) => void;
+}) {
+  return (
+    <tbody>
+      {hits.slice(0, shown).map((e) => (
+        <tr
+          key={`${e.family}|${e.code}`}
+          className={cx(selected?.code === e.code && selected.family === e.family && "selected")}
+          onClick={() => onSelect(e)}
+          tabIndex={0}
+          aria-selected={selected?.code === e.code && selected.family === e.family}
+          onKeyDown={(k) => {
+            if (k.key === "Enter" || k.key === " ") {
+              k.preventDefault();
+              onSelect(e);
+            }
+          }}
+        >
+          <td className="mono strong ltr" style={{ color: severityTone(e.severity) }}>
+            {e.code}
+          </td>
+          <td className="lexicon-text">{e.text}</td>
+          <td className="muted lexicon-nowrap">{e.systemName}</td>
+          <td className="lexicon-nowrap" style={{ color: severityTone(e.severity) }}>
+            {e.severityLabel}
+          </td>
+          <td className="faint lexicon-nowrap">{e.familyLabel}</td>
+        </tr>
+      ))}
+    </tbody>
+  );
+});
 
 export default function LexiconPage() {
   const active = usePageActive();
@@ -69,14 +113,17 @@ export default function LexiconPage() {
     };
   }, [visited]);
 
+  // The search box follows every key at once; the table of up to 3000 rows
+  // follows the deferred query, in a render that the next key can interrupt.
+  const deferredQuery = useDeferredValue(query);
   const hits = useMemo(() => {
-    const q = query.trim().toLocaleLowerCase();
+    const q = deferredQuery.trim().toLocaleLowerCase();
     return entries.filter(
       (e) =>
         (family === ALL || e.family === family) &&
         (!q || e.code.toLowerCase().includes(q) || e.text.toLocaleLowerCase().includes(q) || e.systemName.toLocaleLowerCase().includes(q)),
     );
-  }, [entries, query, family]);
+  }, [entries, deferredQuery, family]);
   const shown = Math.min(hits.length, MAX_ROWS);
 
   // The generic codes under their label, then every family that has codes.
@@ -152,33 +199,7 @@ export default function LexiconPage() {
                 <th>{tr("Gilt für")}</th>
               </tr>
             </thead>
-            <tbody>
-              {hits.slice(0, shown).map((e) => (
-                <tr
-                  key={`${e.family}|${e.code}`}
-                  className={cx(selected?.code === e.code && selected.family === e.family && "selected")}
-                  onClick={() => setSelected(e)}
-                  tabIndex={0}
-                  aria-selected={selected?.code === e.code && selected.family === e.family}
-                  onKeyDown={(k) => {
-                    if (k.key === "Enter" || k.key === " ") {
-                      k.preventDefault();
-                      setSelected(e);
-                    }
-                  }}
-                >
-                  <td className="mono strong ltr" style={{ color: severityTone(e.severity) }}>
-                    {e.code}
-                  </td>
-                  <td className="lexicon-text">{e.text}</td>
-                  <td className="muted lexicon-nowrap">{e.systemName}</td>
-                  <td className="lexicon-nowrap" style={{ color: severityTone(e.severity) }}>
-                    {e.severityLabel}
-                  </td>
-                  <td className="faint lexicon-nowrap">{e.familyLabel}</td>
-                </tr>
-              ))}
-            </tbody>
+            <LexiconRows hits={hits} shown={shown} selected={selected} onSelect={setSelected} />
           </table>
         </div>
 
