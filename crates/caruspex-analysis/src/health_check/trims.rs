@@ -1,7 +1,8 @@
 //! Short and long term fuel trims per bank.
 
-use super::{Area, Ctx, PID_RPM, get, limits, mean, nearest, none};
+use super::{Area, Ctx, PID_RPM, get, limits, nearest, none};
 use crate::common::{Level, Phrase, format, number, signed_number};
+use crate::series::mean;
 
 pub(super) fn check_trims(c: &mut Ctx, bank: i32) {
     let input = c.input;

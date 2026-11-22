@@ -1,9 +1,10 @@
 //! Battery and charging voltage.
 
 use super::{
-    Area, Ctx, PID_RPM, PID_VOLTAGE, RUNNING_RPM, STOPPED_RPM, get, limits, median, nearest, none,
+    Area, Ctx, PID_RPM, PID_VOLTAGE, RUNNING_RPM, STOPPED_RPM, get, limits, nearest, none,
 };
 use crate::common::{Level, format, number};
+use crate::series::median;
 
 pub(super) fn check_voltage(c: &mut Ctx) {
     let input = c.input;

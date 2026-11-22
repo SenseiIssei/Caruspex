@@ -17,6 +17,7 @@ use std::collections::BTreeMap;
 
 use crate::common::{Level, TrafficLight};
 use crate::health_check::TimedValue;
+use crate::series::{latest, max_of, median, min_of};
 use crate::used_car::{Message, raw, text};
 
 /// The SPNs the rules read.
@@ -275,33 +276,6 @@ fn none() -> Message {
     Message::default()
 }
 
-fn max(s: &[TimedValue]) -> f64 {
-    s.iter().map(|v| v.value).fold(f64::MIN, f64::max)
-}
-
-fn min(s: &[TimedValue]) -> f64 {
-    s.iter().map(|v| v.value).fold(f64::MAX, f64::min)
-}
-
-fn median(mut v: Vec<f64>) -> f64 {
-    if v.is_empty() {
-        return 0.0;
-    }
-    v.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
-    let n = v.len();
-    if n % 2 == 1 {
-        v[n / 2]
-    } else {
-        (v[n / 2 - 1] + v[n / 2]) / 2.0
-    }
-}
-
-fn latest(s: &[TimedValue]) -> f64 {
-    s.iter()
-        .max_by(|a, b| a.t.partial_cmp(&b.t).unwrap_or(std::cmp::Ordering::Equal))
-        .map_or(0.0, |v| v.value)
-}
-
 struct Ctx<'a> {
     input: &'a TruckHealthInput,
     findings: Vec<TruckFinding>,
@@ -512,7 +486,7 @@ fn check_coolant(c: &mut Ctx) {
     match input.series(spn::COOLANT_TEMP) {
         None => c.missing("coolant_temp", title, spn::COOLANT_TEMP),
         Some(s) => {
-            let hot = max(s);
+            let hot = max_of(s);
             if hot >= limits::COOLANT_CRITICAL {
                 c.add(
                     "coolant_temp",
@@ -572,7 +546,7 @@ fn check_coolant(c: &mut Ctx) {
 
     let level_title = text("Kühlmittelstand", "Coolant level");
     if let Some(s) = input.series(spn::COOLANT_LEVEL) {
-        let low = min(s);
+        let low = min_of(s);
         let (level, title, advice) = if low < limits::COOLANT_LEVEL_CRITICAL {
             (
                 Level::Critical,
@@ -619,7 +593,7 @@ fn check_oil(c: &mut Ctx) {
     match input.series(spn::OIL_TEMP) {
         None => c.missing("oil_temp", temp_title, spn::OIL_TEMP),
         Some(s) => {
-            let hot = max(s);
+            let hot = max_of(s);
             let (level, title, advice) = if hot >= limits::OIL_TEMP_CRITICAL {
                 (
                     Level::Critical,
@@ -754,7 +728,7 @@ fn check_voltage(c: &mut Ctx) {
     };
     // The system says its own voltage: a battery that never reaches 16 V
     // belongs to a 12 V system (many buses, US trucks), else it is 24 V.
-    let twelve = max(volts) <= limits::TWELVE_VOLT_MAX;
+    let twelve = max_of(volts) <= limits::TWELVE_VOLT_MAX;
     let factor = if twelve { 0.5 } else { 1.0 };
     c.system_volts = if twelve { 12 } else { 24 };
     let mut running = Vec::new();
@@ -1126,7 +1100,7 @@ fn check_air(c: &mut Ctx) {
             ),
         );
     } else if let Some(s) = input.series(spn::INTAKE_TEMP) {
-        let hot = max(s);
+        let hot = max_of(s);
         let (level, title, advice) = if hot >= limits::INTAKE_WARNING {
             (
                 Level::Warning,

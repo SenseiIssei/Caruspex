@@ -313,53 +313,6 @@ fn nearest_within(s: Option<&Series>, t: f64, window: f64) -> Option<f64> {
     Some(best.value)
 }
 
-fn latest(s: &Series) -> f64 {
-    let mut best = &s[0];
-    for v in s {
-        if v.t >= best.t {
-            best = v;
-        }
-    }
-    best.value
-}
-
-fn max_of(s: &Series) -> f64 {
-    let mut m = s[0].value;
-    for v in s {
-        m = m.max(v.value);
-    }
-    m
-}
-
-fn min_of(s: &Series) -> f64 {
-    let mut m = s[0].value;
-    for v in s {
-        m = m.min(v.value);
-    }
-    m
-}
-
-fn mean(v: &[f64]) -> f64 {
-    if v.is_empty() {
-        0.0
-    } else {
-        v.iter().sum::<f64>() / v.len() as f64
-    }
-}
-
-fn median(mut v: Vec<f64>) -> f64 {
-    if v.is_empty() {
-        return 0.0;
-    }
-    v.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
-    let n = v.len();
-    if n % 2 == 1 {
-        v[n / 2]
-    } else {
-        (v[n / 2 - 1] + v[n / 2]) / 2.0
-    }
-}
-
 struct Ctx<'a> {
     input: &'a HealthInput,
     out: HealthReport,

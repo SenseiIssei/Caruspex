@@ -14,6 +14,7 @@ pub mod health_check;
 pub mod inputs;
 pub mod performance_timer;
 pub mod readiness;
+mod series;
 pub mod trip_computer;
 pub mod truck_health;
 pub mod truck_used;

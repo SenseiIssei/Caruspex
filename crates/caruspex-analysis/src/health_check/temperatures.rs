@@ -2,10 +2,10 @@
 
 use super::{
     Area, Ctx, HealthInput, PID_CATALYST_TEMP, PID_COOLANT, PID_INTAKE_TEMP, PID_OIL_TEMP, PID_RPM,
-    PID_RUN_TIME, PID_SPEED, RUNNING_RPM, get, latest, limits, max_of, median, min_of, nearest,
-    none,
+    PID_RUN_TIME, PID_SPEED, RUNNING_RPM, get, limits, nearest, none,
 };
 use crate::common::{Level, format, number, same};
+use crate::series::{latest, max_of, median, min_of};
 
 /// How long the engine has been running, in seconds, if it can be told.
 fn engine_run_time(input: &HealthInput) -> Option<f64> {

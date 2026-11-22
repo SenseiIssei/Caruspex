@@ -1,10 +1,9 @@
 //! Readiness monitors and the history since the fault memory was last cleared.
 
-use super::{
-    Area, Ctx, PID_CLEAR_DISTANCE, PID_MIL_DISTANCE, PID_WARMUPS, get, latest, limits, none,
-};
+use super::{Area, Ctx, PID_CLEAR_DISTANCE, PID_MIL_DISTANCE, PID_WARMUPS, get, limits, none};
 use crate::common::{Level, Phrase, format, number};
 use crate::readiness::{Monitor, monitor_name};
+use crate::series::latest;
 
 pub(super) fn check_readiness(c: &mut Ctx) {
     let input = c.input;
