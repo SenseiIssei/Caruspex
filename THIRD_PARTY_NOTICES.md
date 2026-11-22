@@ -52,7 +52,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 
 ## Rust crates
 
-507 components.
+508 components.
 
 | Component | Version | Licence | Source |
 |---|---|---|---|
@@ -89,14 +89,14 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | blocking | 1.7.0 | Apache-2.0 OR MIT | https://github.com/smol-rs/blocking |
 | bluez-async | 0.9.0 | MIT OR Apache-2.0 | https://github.com/bluez-rs/bluez-async/ |
 | bluez-generated | 0.4.0 | MIT OR Apache-2.0 | https://github.com/bluez-rs/bluez-async/ |
-| brotli | 9.1.1 | BSD-3-Clause AND MIT | https://github.com/dropbox/rust-brotli |
-| brotli-decompressor | 6.3.1 | BSD-3-Clause/MIT | https://github.com/dropbox/rust-brotli-decompressor |
+| brotli | 9.1.3 | BSD-3-Clause AND MIT | https://github.com/dropbox/rust-brotli |
+| brotli-decompressor | 6.3.2 | BSD-3-Clause/MIT | https://github.com/dropbox/rust-brotli-decompressor |
 | bs58 | 0.5.1 | MIT/Apache-2.0 | https://github.com/Nullus157/bs58-rs |
 | btleplug | 0.13.5 | MIT/Apache-2.0/BSD-3-Clause | https://github.com/deviceplug/btleplug |
-| bumpalo | 3.20.3 | MIT OR Apache-2.0 | https://github.com/fitzgen/bumpalo |
+| bumpalo | 3.20.4 | MIT OR Apache-2.0 | https://github.com/fitzgen/bumpalo |
 | bytemuck | 1.25.2 | Zlib OR Apache-2.0 OR MIT | https://github.com/Lokathor/bytemuck |
 | byteorder | 1.5.0 | Unlicense OR MIT | https://github.com/BurntSushi/byteorder |
-| bytes | 1.12.1 | MIT | https://github.com/tokio-rs/bytes |
+| bytes | 1.12.2 | MIT | https://github.com/tokio-rs/bytes |
 | cairo-rs | 0.18.5 | MIT | https://github.com/gtk-rs/gtk-rs-core |
 | cairo-sys-rs | 0.18.2 | MIT | https://github.com/gtk-rs/gtk-rs-core |
 | camino | 1.2.6 | MIT OR Apache-2.0 | https://github.com/camino-rs/camino |
@@ -125,7 +125,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | cssparser | 0.37.0 | MPL-2.0 | https://github.com/servo/rust-cssparser |
 | cssparser | 0.38.0 | MPL-2.0 | https://github.com/servo/rust-cssparser |
 | cssparser-macros | 0.7.1 | MPL-2.0 | https://github.com/servo/rust-cssparser |
-| ctor | 1.0.13 | Apache-2.0 OR MIT | https://github.com/mmastrac/linktime |
+| ctor | 1.0.14 | Apache-2.0 OR MIT | https://github.com/mmastrac/linktime |
 | darling | 0.24.1 | MIT | https://github.com/TedDriggs/darling |
 | darling_core | 0.24.1 | MIT | https://github.com/TedDriggs/darling |
 | darling_macro | 0.24.1 | MIT | https://github.com/TedDriggs/darling |
@@ -158,7 +158,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | enumflags2_derive | 0.7.12 | MIT OR Apache-2.0 | https://github.com/meithecatte/enumflags2 |
 | equivalent | 1.0.3 | Apache-2.0 OR MIT | https://github.com/indexmap-rs/equivalent |
 | erased-serde | 0.4.11 | MIT OR Apache-2.0 | https://github.com/dtolnay/erased-serde |
-| errno | 0.3.14 | MIT OR Apache-2.0 | https://github.com/lambda-fairy/rust-errno |
+| errno | 0.3.15 | MIT OR Apache-2.0 | https://github.com/lambda-fairy/rust-errno |
 | event-listener | 5.4.2 | Apache-2.0 OR MIT | https://github.com/smol-rs/event-listener |
 | event-listener-strategy | 0.5.4 | Apache-2.0 OR MIT | https://github.com/smol-rs/event-listener-strategy |
 | fastrand | 2.5.0 | Apache-2.0 OR MIT | https://github.com/smol-rs/fastrand |
@@ -170,7 +170,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | foreign-types | 0.5.0 | MIT/Apache-2.0 | https://github.com/sfackler/foreign-types |
 | foreign-types-macros | 0.2.4 | MIT/Apache-2.0 | https://github.com/sfackler/foreign-types |
 | foreign-types-shared | 0.3.1 | MIT/Apache-2.0 | https://github.com/sfackler/foreign-types |
-| form_urlencoded | 1.2.2 | MIT OR Apache-2.0 | https://github.com/servo/rust-url |
+| form_urlencoded | 1.2.3 | MIT OR Apache-2.0 | https://github.com/servo/rust-url |
 | futures | 0.3.34 | MIT OR Apache-2.0 | https://github.com/rust-lang/futures-rs |
 | futures-channel | 0.3.34 | MIT OR Apache-2.0 | https://github.com/rust-lang/futures-rs |
 | futures-core | 0.3.34 | MIT OR Apache-2.0 | https://github.com/rust-lang/futures-rs |
@@ -204,7 +204,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | gtk3-macros | 0.18.2 | MIT | https://github.com/gtk-rs/gtk3-rs |
 | hashbrown | 0.12.3 | MIT OR Apache-2.0 | https://github.com/rust-lang/hashbrown |
 | hashbrown | 0.14.5 | MIT OR Apache-2.0 | https://github.com/rust-lang/hashbrown |
-| hashbrown | 0.17.1 | MIT OR Apache-2.0 | https://github.com/rust-lang/hashbrown |
+| hashbrown | 0.17.2 | MIT OR Apache-2.0 | https://github.com/rust-lang/hashbrown |
 | heck | 0.4.1 | MIT OR Apache-2.0 | https://github.com/withoutboats/heck |
 | heck | 0.5.0 | MIT OR Apache-2.0 | https://github.com/withoutboats/heck |
 | hermit-abi | 0.5.3 | MIT OR Apache-2.0 | https://github.com/hermit-os/hermit-rs |
@@ -243,12 +243,12 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | javascriptcore-rs | 1.1.2 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
 | javascriptcore-rs-sys | 1.1.1 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
 | jiff | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff | 1.0.2 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-core | 0.1.8 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-core | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-static | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-static | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-tzdb | 0.1.9 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-static | 1.0.2 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-tzdb | 0.1.10 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb | 1.0.0 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb-platform | 0.1.3 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb-platform | 1.0.0 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
@@ -271,6 +271,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | libredox | 0.1.25 | MIT | https://gitlab.redox-os.org/redox-os/libredox.git |
 | libudev | 0.3.0 | MIT | https://github.com/dcuddeback/libudev-rs |
 | libudev-sys | 0.1.4 | MIT | https://github.com/dcuddeback/libudev-sys |
+| link-section | 0.19.4 | Apache-2.0 OR MIT | https://github.com/mmastrac/linktime |
 | linux-raw-sys | 0.12.1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/sunfishcode/linux-raw-sys |
 | litemap | 0.8.3 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | litrs | 1.0.1 | MIT OR Apache-2.0 | https://github.com/LukasKalbertodt/litrs |
@@ -285,7 +286,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | minisign-verify | 0.3.0 | MIT | https://github.com/jedisct1/rust-minisign-verify |
 | miniz_oxide | 0.8.9 | MIT OR Zlib OR Apache-2.0 | https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide |
 | miniz_oxide | 0.9.1 | MIT OR Zlib OR Apache-2.0 | https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide |
-| mio | 1.2.4 | MIT | https://github.com/tokio-rs/mio |
+| mio | 1.2.5 | MIT | https://github.com/tokio-rs/mio |
 | muda | 0.20.0 | Apache-2.0 OR MIT | https://github.com/tauri-apps/muda |
 | ndk | 0.9.0 | MIT OR Apache-2.0 | https://github.com/rust-mobile/ndk |
 | ndk-context | 0.1.1 | MIT OR Apache-2.0 | https://github.com/rust-windowing/android-ndk-rs |
@@ -332,7 +333,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | phf_macros | 0.14.0 | MIT | https://github.com/rust-phf/rust-phf |
 | phf_shared | 0.13.1 | MIT | https://github.com/rust-phf/rust-phf |
 | phf_shared | 0.14.0 | MIT | https://github.com/rust-phf/rust-phf |
-| pin-project-lite | 0.2.17 | Apache-2.0 OR MIT | https://github.com/taiki-e/pin-project-lite |
+| pin-project-lite | 0.2.18 | Apache-2.0 OR MIT | https://github.com/taiki-e/pin-project-lite |
 | piper | 0.2.5 | MIT OR Apache-2.0 | https://github.com/smol-rs/piper |
 | plist | 1.10.4 | MIT | https://github.com/ebarnard/rust-plist/ |
 | png | 0.18.1 | MIT OR Apache-2.0 | https://github.com/image-rs/image-png |
@@ -358,9 +359,9 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | redox_users | 0.5.3 | MIT | https://gitlab.redox-os.org/redox-os/users |
 | ref-cast | 1.0.27 | MIT OR Apache-2.0 | https://github.com/dtolnay/ref-cast |
 | ref-cast-impl | 1.0.27 | MIT OR Apache-2.0 | https://github.com/dtolnay/ref-cast |
-| regex | 1.13.1 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
-| regex-automata | 0.4.18 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
-| regex-syntax | 0.8.11 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
+| regex | 1.13.2 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
+| regex-automata | 0.4.19 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
+| regex-syntax | 0.8.12 | MIT OR Apache-2.0 | https://github.com/rust-lang/regex |
 | reqwest | 0.13.5 | MIT OR Apache-2.0 | https://github.com/seanmonstar/reqwest |
 | rfd | 0.17.2 | MIT | https://github.com/PolyMeilex/rfd |
 | ring | 0.17.14 | Apache-2.0 AND ISC | https://github.com/briansmith/ring |
@@ -368,7 +369,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | rustix | 1.1.6 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/bytecodealliance/rustix |
 | rustls | 0.23.46 | Apache-2.0 OR ISC OR MIT | https://github.com/rustls/rustls |
 | rustls-pki-types | 1.16.0 | MIT OR Apache-2.0 | https://github.com/rustls/pki-types |
-| rustls-webpki | 0.103.16 | ISC | https://github.com/rustls/webpki |
+| rustls-webpki | 0.103.17 | ISC | https://github.com/rustls/webpki |
 | rustversion | 1.0.23 | MIT OR Apache-2.0 | https://github.com/dtolnay/rustversion |
 | same-file | 1.0.6 | Unlicense/MIT | https://github.com/BurntSushi/same-file |
 | schemars | 0.8.22 | MIT | https://github.com/GREsau/schemars |
@@ -389,8 +390,8 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | serde_repr | 0.1.21 | MIT OR Apache-2.0 | https://github.com/dtolnay/serde-repr |
 | serde_spanned | 0.6.9 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | serde_spanned | 1.1.3 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
-| serde_with | 3.24.0 | MIT OR Apache-2.0 | https://github.com/jonasbb/serde_with/ |
-| serde_with_macros | 3.24.0 | MIT OR Apache-2.0 | https://github.com/jonasbb/serde_with/ |
+| serde_with | 3.25.0 | MIT OR Apache-2.0 | https://github.com/jonasbb/serde_with/ |
+| serde_with_macros | 3.25.0 | MIT OR Apache-2.0 | https://github.com/jonasbb/serde_with/ |
 | serialize-to-javascript | 0.1.2 | MIT OR Apache-2.0 | https://github.com/chippers/serialize-to-javascript |
 | serialize-to-javascript-impl | 0.1.2 | MIT OR Apache-2.0 | https://github.com/chippers/serialize-to-javascript |
 | serialport | 4.10.1 | MPL-2.0 | https://github.com/serialport/serialport-rs |
@@ -404,7 +405,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | simdutf8 | 0.1.5 | MIT OR Apache-2.0 | https://github.com/rusticstuff/simdutf8 |
 | siphasher | 1.0.4 | MIT OR Apache-2.0 | https://github.com/jedisct1/rust-siphash |
 | slab | 0.4.12 | MIT | https://github.com/tokio-rs/slab |
-| smallvec | 1.16.5 | MIT OR Apache-2.0 | https://github.com/servo/rust-smallvec |
+| smallvec | 1.16.6 | MIT OR Apache-2.0 | https://github.com/smallvec/smallvec |
 | socket2 | 0.6.5 | MIT OR Apache-2.0 | https://github.com/rust-lang/socket2 |
 | softbuffer | 0.4.8 | MIT OR Apache-2.0 | https://github.com/rust-windowing/softbuffer |
 | soup3 | 0.5.0 | MIT | https://gitlab.gnome.org/World/Rust/soup3-rs |
@@ -421,9 +422,9 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | syn | 3.0.10 | MIT OR Apache-2.0 | https://github.com/dtolnay/syn |
 | sync_wrapper | 1.0.2 | Apache-2.0 | https://github.com/Actyx/sync_wrapper |
 | synstructure | 0.14.0 | MIT | https://github.com/mystor/synstructure |
-| tao | 0.37.2 | Apache-2.0 | https://github.com/tauri-apps/tao |
+| tao | 0.37.3 | Apache-2.0 | https://github.com/tauri-apps/tao |
 | tao-macros | 0.1.4 | MIT OR Apache-2.0 | https://github.com/tauri-apps/tao |
-| tauri | 2.12.6 | Apache-2.0 OR MIT | https://github.com/tauri-apps/tauri |
+| tauri | 2.12.7 | Apache-2.0 OR MIT | https://github.com/tauri-apps/tauri |
 | tauri-codegen | 2.7.6 | Apache-2.0 OR MIT | https://github.com/tauri-apps/tauri |
 | tauri-macros | 2.7.6 | Apache-2.0 OR MIT | https://github.com/tauri-apps/tauri |
 | tauri-plugin-dialog | 2.8.4 | Apache-2.0 OR MIT | https://github.com/tauri-apps/plugins-workspace |
@@ -448,13 +449,13 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | tokio-macros | 2.7.2 | MIT | https://github.com/tokio-rs/tokio |
 | tokio-stream | 0.1.19 | MIT | https://github.com/tokio-rs/tokio |
 | tokio-util | 0.7.20 | MIT | https://github.com/tokio-rs/tokio |
-| toml | 1.2.1+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml | 1.2.2+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_datetime | 0.6.3 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_datetime | 1.1.3+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_edit | 0.19.15 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_edit | 0.20.2 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
-| toml_edit | 0.25.19+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
-| toml_parser | 1.1.5+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml_edit | 0.25.20+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml_parser | 1.1.6+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_writer | 1.2.0+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | tower | 0.5.3 | MIT | https://github.com/tower-rs/tower |
 | tower-http | 0.6.11 | MIT | https://github.com/tower-rs/tower-http |
@@ -474,13 +475,13 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | untrusted | 0.9.0 | ISC | https://github.com/briansmith/untrusted |
 | ureq | 3.5.2 | MIT OR Apache-2.0 | https://github.com/algesten/ureq |
 | ureq-proto | 0.7.1 | MIT OR Apache-2.0 | https://github.com/algesten/ureq-proto |
-| url | 2.5.8 | MIT OR Apache-2.0 | https://github.com/servo/rust-url |
+| url | 2.5.9 | MIT OR Apache-2.0 | https://github.com/servo/rust-url |
 | urlpattern | 0.6.0 | MIT | https://github.com/denoland/rust-urlpattern |
 | utf8-zero | 0.8.1 | MIT OR Apache-2.0 | https://github.com/algesten/utf8-zero |
 | utf8_iter | 1.1.0 | Apache-2.0 OR MIT | https://github.com/hsivonen/utf8_iter |
 | utf_types | 1.0.0 | Apache-2.0 OR MIT | https://github.com/hsivonen/utf_types |
-| uuid | 1.29.2 | Apache-2.0 OR MIT | https://github.com/uuid-rs/uuid |
-| walkdir | 2.5.0 | Unlicense/MIT | https://github.com/BurntSushi/walkdir |
+| uuid | 1.29.3 | Apache-2.0 OR MIT | https://github.com/uuid-rs/uuid |
+| walkdir | 2.5.1 | Unlicense/MIT | https://github.com/BurntSushi/walkdir |
 | want | 0.3.2 | MIT | https://github.com/seanmonstar/want |
 | wasi | 0.11.1+wasi-snapshot-preview1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/bytecodealliance/wasi |
 | wasip2 | 1.0.4+wasi-0.2.12 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/bytecodealliance/wasi-rs |
@@ -542,7 +543,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | winreg | 0.56.0 | MIT | https://github.com/gentoo90/winreg-rs |
 | wit-bindgen | 0.57.1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/bytecodealliance/wit-bindgen |
 | writeable | 0.6.4 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
-| wry | 0.57.2 | Apache-2.0 OR MIT | https://github.com/tauri-apps/wry |
+| wry | 0.57.3 | Apache-2.0 OR MIT | https://github.com/tauri-apps/wry |
 | x11 | 2.21.0 | MIT | https://github.com/AltF02/x11-rs.git |
 | x11-dl | 2.21.0 | MIT | https://github.com/AltF02/x11-rs.git |
 | xml | 1.4.0 | MIT | https://github.com/kornelski/xml-rs |
@@ -551,10 +552,10 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | zbus | 5.19.0 | MIT | https://github.com/z-galaxy/zbus/ |
 | zbus_macros | 5.19.0 | MIT | https://github.com/z-galaxy/zbus/ |
 | zbus_names | 4.3.5 | MIT | https://github.com/z-galaxy/zbus/ |
-| zcheapstr | 1.2.0 | MIT | https://github.com/z-galaxy/zcheapstr/ |
+| zcheapstr | 1.4.0 | MIT | https://github.com/z-galaxy/zcheapstr/ |
 | zerofrom | 0.1.8 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | zerofrom-derive | 0.1.8 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
-| zeroize | 1.9.1 | Apache-2.0 OR MIT | https://github.com/RustCrypto/utils |
+| zeroize | 1.9.2 | Apache-2.0 OR MIT | https://github.com/RustCrypto/utils |
 | zerotrie | 0.2.5 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | zerovec | 0.11.9 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | zerovec-derive | 0.11.7 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
@@ -573,7 +574,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | @tauri-apps/api | 2.12.5 | Apache-2.0 OR MIT | https://www.npmjs.com/package/@tauri-apps/api |
 | react | 19.3.1 | MIT | https://www.npmjs.com/package/react |
 | react-dom | 19.3.1 | MIT | https://www.npmjs.com/package/react-dom |
-| rolldown | 1.2.18 | MIT | https://www.npmjs.com/package/rolldown |
+| rolldown | 1.2.19 | MIT | https://www.npmjs.com/package/rolldown |
 | scheduler | 0.28.0 | MIT | https://www.npmjs.com/package/scheduler |
 | three | 0.187.0 | MIT | https://www.npmjs.com/package/three |
 | vite | 8.3.8 | MIT | https://www.npmjs.com/package/vite |
@@ -584,19 +585,19 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 
 | Component | Version | Licence | Source |
 |---|---|---|---|
-| androidx.activity:activity-ktx | 1.10.1 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
-| androidx.appcompat:appcompat | 1.7.1 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
-| androidx.lifecycle:lifecycle-process | 2.10.0 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
-| androidx.webkit:webkit | 1.14.0 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
-| com.github.mik3y:usb-serial-for-android | 3.9.0 | MIT | https://github.com/mik3y/usb-serial-for-android |
-| com.google.android.material:material | 1.12.0 | Apache-2.0 | https://github.com/material-components/material-components-android |
+| androidx.activity:activity-ktx | 1.13.0 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
+| androidx.appcompat:appcompat | 1.8.0 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
+| androidx.lifecycle:lifecycle-process | 2.11.1 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
+| androidx.webkit:webkit | 1.18.0 | Apache-2.0 | https://developer.android.com/jetpack/androidx |
+| com.github.mik3y:usb-serial-for-android | 3.12.0 | MIT | https://github.com/mik3y/usb-serial-for-android |
+| com.google.android.material:material | 1.14.0 | Apache-2.0 | https://github.com/material-components/material-components-android |
 | Kotlin standard library and kotlinx |  | Apache-2.0 | https://github.com/JetBrains/kotlin |
 
 ## Licence texts
 
 ### Text 1
 
-Used by: adler2 2.0.1, anyhow 1.0.104, async-channel 2.5.0, async-executor 1.14.1, async-io 2.6.0, async-lock 3.5.0, async-process 2.5.0, async-recursion 1.2.0, async-signal 0.2.14, async-task 4.7.1, async-trait 0.1.92, atk 0.18.2, atk-sys 0.18.2, atomic-waker 1.1.2, blocking 1.7.0, cairo-rs 0.18.5, cairo-sys-rs 0.18.2, camino 1.2.6, cargo-platform 0.1.9, cargo_metadata 0.19.2, concurrent-queue 2.5.0, ctor 1.0.13, displaydoc 0.2.7, dtoa 1.0.11, dyn-clone 1.0.20, endi 1.1.1, erased-serde 0.4.11, event-listener 5.4.2, event-listener-strategy 0.5.4, fastrand 2.5.0, futures-lite 2.6.1, gdk 0.18.2, gdk-pixbuf 0.18.5, gdk-pixbuf-sys 0.18.0, gdk-sys 0.18.2, gdkwayland-sys 0.18.2, gdkx11 0.18.2, gdkx11-sys 0.18.2, gio 0.18.4, gio-sys 0.18.1, glib 0.18.5, glib-macros 0.18.5, glib-sys 0.18.1, gobject-sys 0.18.0, gtk 0.18.2, gtk-sys 0.18.2, gtk3-macros 0.18.2, hermit-abi 0.5.3, itoa 1.0.19, jni-macros 0.22.4, libappindicator-sys 0.9.0, linux-raw-sys 0.12.1, num_enum 0.7.6, num_enum_derive 0.7.6, objc2-app-kit 0.3.2, objc2-cloud-kit 0.3.2, objc2-core-bluetooth 0.3.2, objc2-core-data 0.3.2, objc2-core-foundation 0.3.2, objc2-core-graphics 0.3.2, objc2-core-image 0.3.2, objc2-core-location 0.3.2, objc2-core-text 0.3.2, objc2-foundation 0.3.2, objc2-io-surface 0.3.2, objc2-quartz-core 0.3.2, objc2-ui-kit 0.3.2, objc2-user-notifications 0.3.2, objc2-web-kit 0.3.2, once_cell 1.21.4, ordered-stream 0.2.0, pango 0.18.3, pango-sys 0.18.0, parking 2.2.1, pin-project-lite 0.2.17, piper 0.2.5, polling 3.11.0, portable-atomic 1.15.0, portable-atomic-util 0.2.8, proc-macro-crate 1.3.1, proc-macro-crate 2.0.2, proc-macro-crate 3.5.0, proc-macro2 1.0.107, quote 1.0.47, r-efi 5.3.0, r-efi 6.0.0, ref-cast 1.0.27, ref-cast-impl 1.0.27, rustc-hash 2.1.3, rustix 1.1.6, rustversion 1.0.23, semver 1.0.28, serde 1.0.229, serde-untagged 0.1.9, serde_core 1.0.229, serde_derive 1.0.229, serde_derive_internals 0.29.1, serde_json 1.0.154, serde_repr 0.1.21, servo_arc 0.4.3, servo_arc 0.5.0, simd_cesu8 1.2.0, siphasher 1.0.4, syn 1.0.109, syn 2.0.119, syn 3.0.10, thiserror 1.0.69, thiserror 2.0.21, thiserror-impl 1.0.69, thiserror-impl 2.0.21, tinyvec 1.13.3, typeid 1.0.3, unicode-ident 1.0.27, utf8-zero 0.8.1, wasi 0.11.1+wasi-snapshot-preview1, wasip2 1.0.4+wasi-0.2.12, wasm-streams 0.5.0, webview2-com 0.39.1, webview2-com-macros 0.8.1, webview2-com-sys 0.39.1, winnow 0.5.40, winnow 1.0.5, wit-bindgen 0.57.1, x11 2.21.0, x11-dl 2.21.0, zmij 1.0.23, zvariant_utils 4.2.0.
+Used by: adler2 2.0.1, anyhow 1.0.104, async-channel 2.5.0, async-executor 1.14.1, async-io 2.6.0, async-lock 3.5.0, async-process 2.5.0, async-recursion 1.2.0, async-signal 0.2.14, async-task 4.7.1, async-trait 0.1.92, atk 0.18.2, atk-sys 0.18.2, atomic-waker 1.1.2, blocking 1.7.0, cairo-rs 0.18.5, cairo-sys-rs 0.18.2, camino 1.2.6, cargo-platform 0.1.9, cargo_metadata 0.19.2, concurrent-queue 2.5.0, ctor 1.0.14, displaydoc 0.2.7, dtoa 1.0.11, dyn-clone 1.0.20, endi 1.1.1, erased-serde 0.4.11, event-listener 5.4.2, event-listener-strategy 0.5.4, fastrand 2.5.0, futures-lite 2.6.1, gdk 0.18.2, gdk-pixbuf 0.18.5, gdk-pixbuf-sys 0.18.0, gdk-sys 0.18.2, gdkwayland-sys 0.18.2, gdkx11 0.18.2, gdkx11-sys 0.18.2, gio 0.18.4, gio-sys 0.18.1, glib 0.18.5, glib-macros 0.18.5, glib-sys 0.18.1, gobject-sys 0.18.0, gtk 0.18.2, gtk-sys 0.18.2, gtk3-macros 0.18.2, hermit-abi 0.5.3, itoa 1.0.19, jni-macros 0.22.4, libappindicator-sys 0.9.0, link-section 0.19.4, linux-raw-sys 0.12.1, num_enum 0.7.6, num_enum_derive 0.7.6, objc2-app-kit 0.3.2, objc2-cloud-kit 0.3.2, objc2-core-bluetooth 0.3.2, objc2-core-data 0.3.2, objc2-core-foundation 0.3.2, objc2-core-graphics 0.3.2, objc2-core-image 0.3.2, objc2-core-location 0.3.2, objc2-core-text 0.3.2, objc2-foundation 0.3.2, objc2-io-surface 0.3.2, objc2-quartz-core 0.3.2, objc2-ui-kit 0.3.2, objc2-user-notifications 0.3.2, objc2-web-kit 0.3.2, once_cell 1.21.4, ordered-stream 0.2.0, pango 0.18.3, pango-sys 0.18.0, parking 2.2.1, pin-project-lite 0.2.18, piper 0.2.5, polling 3.11.0, portable-atomic 1.15.0, portable-atomic-util 0.2.8, proc-macro-crate 1.3.1, proc-macro-crate 2.0.2, proc-macro-crate 3.5.0, proc-macro2 1.0.107, quote 1.0.47, r-efi 5.3.0, r-efi 6.0.0, ref-cast 1.0.27, ref-cast-impl 1.0.27, rustc-hash 2.1.3, rustix 1.1.6, rustversion 1.0.23, semver 1.0.28, serde 1.0.229, serde-untagged 0.1.9, serde_core 1.0.229, serde_derive 1.0.229, serde_derive_internals 0.29.1, serde_json 1.0.154, serde_repr 0.1.21, servo_arc 0.4.3, servo_arc 0.5.0, simd_cesu8 1.2.0, siphasher 1.0.4, syn 1.0.109, syn 2.0.119, syn 3.0.10, thiserror 1.0.69, thiserror 2.0.21, thiserror-impl 1.0.69, thiserror-impl 2.0.21, tinyvec 1.13.3, typeid 1.0.3, unicode-ident 1.0.27, utf8-zero 0.8.1, wasi 0.11.1+wasi-snapshot-preview1, wasip2 1.0.4+wasi-0.2.12, wasm-streams 0.5.0, webview2-com 0.39.1, webview2-com-macros 0.8.1, webview2-com-sys 0.39.1, winnow 0.5.40, winnow 1.0.5, wit-bindgen 0.57.1, x11 2.21.0, x11-dl 2.21.0, zmij 1.0.23, zvariant_utils 4.2.0.
 
 ```text
 Permission is hereby granted, free of charge, to any
@@ -626,7 +627,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 2
 
-Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.46, jiff 1.0.1, jiff-core 0.1.8, jiff-core 1.0.1, jiff-static 0.2.46, jiff-static 1.0.1, jiff-tzdb 0.1.9, jiff-tzdb 1.0.0, jiff-tzdb-platform 0.1.3, jiff-tzdb-platform 1.0.0, memchr 2.8.3, walkdir 2.5.0.
+Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.46, jiff 1.0.2, jiff-core 0.1.8, jiff-core 1.0.1, jiff-static 0.2.46, jiff-static 1.0.2, jiff-tzdb 0.1.10, jiff-tzdb 1.0.0, jiff-tzdb-platform 0.1.3, jiff-tzdb-platform 1.0.0, memchr 2.8.3, walkdir 2.5.1.
 
 ```text
 The MIT License (MIT)
@@ -654,7 +655,7 @@ THE SOFTWARE.
 
 ### Text 3
 
-Used by: alloc-no-stdlib 3.0.0, brotli 9.1.1, brotli-decompressor 6.3.1.
+Used by: alloc-no-stdlib 3.0.0, brotli 9.1.3, brotli-decompressor 6.3.2.
 
 ```text
 Copyright (c) 2016 Dropbox, Inc.
@@ -849,7 +850,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 10
 
-Used by: bitflags 1.3.2, bitflags 2.13.2, glob 0.3.4, log 0.4.35, num-traits 0.2.19, regex 1.13.1, regex-automata 0.4.18, regex-syntax 0.8.11.
+Used by: bitflags 1.3.2, bitflags 2.13.2, glob 0.3.4, log 0.4.35, num-traits 0.2.19, regex 1.13.2, regex-automata 0.4.19, regex-syntax 0.8.12.
 
 ```text
 Copyright (c) 2014 The Rust Project Developers
@@ -997,7 +998,7 @@ SOFTWARE.
 
 ### Text 15
 
-Used by: brotli 9.1.1.
+Used by: brotli 9.1.3.
 
 ```text
 Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors.
@@ -1355,7 +1356,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ### Text 18
 
-Used by: bumpalo 3.20.3.
+Used by: bumpalo 3.20.4.
 
 ```text
 Copyright (c) 2019 Nick Fitzgerald
@@ -1403,7 +1404,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ### Text 20
 
-Used by: bytes 1.12.1.
+Used by: bytes 1.12.2.
 
 ```text
 Copyright (c) 2018 Carl Lerche
@@ -3226,7 +3227,7 @@ developed by Chen Jiaju, licensed under the MIT License and the Apache License 2
 
 ### Text 49
 
-Used by: dpi 0.1.2, tao 0.37.2.
+Used by: dpi 0.1.2, tao 0.37.3.
 
 ```text
 Apache License
@@ -3620,7 +3621,7 @@ express Statement of Purpose.
 
 ### Text 52
 
-Used by: either 1.19.0, itertools 0.15.0, serde_with 3.24.0, serde_with_macros 3.24.0.
+Used by: either 1.19.0, itertools 0.15.0, serde_with 3.25.0, serde_with_macros 3.25.0.
 
 ```text
 Copyright (c) 2015
@@ -3776,7 +3777,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 57
 
-Used by: errno 0.3.14.
+Used by: errno 0.3.15.
 
 ```text
 Copyright (c) 2014 Chris Wong
@@ -3984,7 +3985,7 @@ SOFTWARE.
 
 ### Text 64
 
-Used by: form_urlencoded 1.2.2.
+Used by: form_urlencoded 1.2.3.
 
 ```text
 Copyright (c) 2013-2016 The rust-url developers
@@ -4176,7 +4177,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 70
 
-Used by: hashbrown 0.12.3, hashbrown 0.14.5, hashbrown 0.17.1.
+Used by: hashbrown 0.12.3, hashbrown 0.14.5, hashbrown 0.17.2.
 
 ```text
 Copyright (c) 2016 Amanieu d'Antras
@@ -4586,7 +4587,7 @@ ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation a
 
 ### Text 83
 
-Used by: idna 1.1.0, percent-encoding 2.3.2, url 2.5.8.
+Used by: idna 1.1.0, percent-encoding 2.3.2, url 2.5.9.
 
 ```text
 Copyright (c) 2013-2025 The rust-url developers
@@ -5392,7 +5393,7 @@ SOFTWARE.
 
 ### Text 111
 
-Used by: mio 1.2.4.
+Used by: mio 1.2.5.
 
 ```text
 Copyright (c) 2014 Carl Lerche and other MIO contributors
@@ -6742,7 +6743,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 138
 
-Used by: rustls-webpki 0.103.16.
+Used by: rustls-webpki 0.103.17.
 
 ```text
 Except as otherwise noted, this project is licensed under the following
@@ -6884,7 +6885,7 @@ SOFTWARE.
 
 ### Text 143
 
-Used by: serde_spanned 0.6.9, serde_spanned 1.1.3, toml 1.2.1+spec-1.1.0, toml_datetime 1.1.3+spec-1.1.0, toml_edit 0.19.15, toml_edit 0.20.2, toml_edit 0.25.19+spec-1.1.0, toml_parser 1.1.5+spec-1.1.0, toml_writer 1.2.0+spec-1.1.0.
+Used by: serde_spanned 0.6.9, serde_spanned 1.1.3, toml 1.2.2+spec-1.1.0, toml_datetime 1.1.3+spec-1.1.0, toml_edit 0.19.15, toml_edit 0.20.2, toml_edit 0.25.20+spec-1.1.0, toml_parser 1.1.6+spec-1.1.0, toml_writer 1.2.0+spec-1.1.0.
 
 ```text
 Copyright (c) Individual contributors
@@ -7108,7 +7109,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 151
 
-Used by: smallvec 1.16.5.
+Used by: smallvec 1.16.6.
 
 ```text
 Copyright (c) 2018 The Servo Project Developers
@@ -7318,7 +7319,7 @@ SOFTWARE.
 
 ### Text 158
 
-Used by: androidx.activity:activity-ktx 1.10.1, androidx.appcompat:appcompat 1.7.1, androidx.lifecycle:lifecycle-process 2.10.0, androidx.webkit:webkit 1.14.0, com.google.android.material:material 1.12.0, Kotlin standard library and kotlinx, sync_wrapper 1.0.2, unicode-ident 1.0.27.
+Used by: androidx.activity:activity-ktx 1.13.0, androidx.appcompat:appcompat 1.8.0, androidx.lifecycle:lifecycle-process 2.11.1, androidx.webkit:webkit 1.18.0, com.google.android.material:material 1.14.0, Kotlin standard library and kotlinx, sync_wrapper 1.0.2, unicode-ident 1.0.27.
 
 ```text
                                  Apache License
@@ -7543,7 +7544,7 @@ SOFTWARE.
 
 ### Text 161
 
-Used by: @tauri-apps/api 2.12.5, tauri 2.12.6, tauri-codegen 2.7.6, tauri-macros 2.7.6, tauri-plugin-dialog 2.8.4, tauri-plugin-fs 2.7.1, tauri-plugin-opener 2.7.3, tauri-runtime 2.12.4, tauri-runtime-wry 2.12.5, tauri-utils 2.10.4.
+Used by: @tauri-apps/api 2.12.5, tauri 2.12.7, tauri-codegen 2.7.6, tauri-macros 2.7.6, tauri-plugin-dialog 2.8.4, tauri-plugin-fs 2.7.1, tauri-plugin-opener 2.7.3, tauri-runtime 2.12.4, tauri-runtime-wry 2.12.5, tauri-utils 2.10.4.
 
 ```text
 MIT License
@@ -8121,7 +8122,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 181
 
-Used by: uuid 1.29.2.
+Used by: uuid 1.29.3.
 
 ```text
 Copyright (c) 2014 The Rust Project Developers
@@ -8462,7 +8463,7 @@ THE SOFTWARE.
 
 ### Text 192
 
-Used by: wry 0.57.2.
+Used by: wry 0.57.3.
 
 ```text
 MIT License
@@ -8550,7 +8551,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 195
 
-Used by: zcheapstr 1.2.0.
+Used by: zcheapstr 1.4.0.
 
 ```text
 Copyright (c) 2026 Zeeshan Ali Khan & zcheapstr contributors
@@ -8582,7 +8583,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 196
 
-Used by: zeroize 1.9.1.
+Used by: zeroize 1.9.2.
 
 ```text
 Copyright (c) 2018-2026 The RustCrypto Project Developers
@@ -8668,7 +8669,7 @@ SOFTWARE.
 
 ### Text 199
 
-Used by: rolldown 1.2.18.
+Used by: rolldown 1.2.19.
 
 ```text
 MIT License
@@ -10819,7 +10820,7 @@ Repository: https://github.com/sveltejs/zimmerframe
 
 ### Text 202
 
-Used by: com.github.mik3y:usb-serial-for-android 3.9.0.
+Used by: com.github.mik3y:usb-serial-for-android 3.12.0.
 
 ```text
 MIT License
