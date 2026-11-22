@@ -179,6 +179,22 @@ The interface is React 19 in a WebView (WebView2 on Windows). Two facts shape ev
   table of readings is its own component with one memoised row per value. `StatTile` is memoised.
 - **Hidden pages do not poll.** Timers that refresh what is on screen run only while `usePageActive()` is
   true (the "What should I do now?" advice, the live table, the X-ray labels).
+- **The first picture comes first.** `PageHost` (`app/src/shell/App.tsx`) mounts the page on screen, and the
+  other pages in a transition right after it. The start-up in `App` waits for `pagesMounted()`
+  (`app/src/shell/nav.ts`) before it asks for `app_info`, which starts the tasks of the command line in the
+  backend, so every page listens before anything is connected. Whatever has to be heard before that belongs
+  in a store in `app/src/state/` or in `App`.
+- **A page shown once keeps its layout while hidden.** Its slot gets the class `kept`: hidden with
+  `content-visibility: hidden` and `inert` instead of `display: none`, so showing it again does not lay it out
+  anew. Pages never shown stay `display: none`. Reading a size (`clientWidth`, `getBoundingClientRect`,
+  `scrollHeight`) inside a hidden page forces the layout of that page; do it in an event handler, a
+  `ResizeObserver` callback or while the page is active.
+- **No measuring in mount effects.** A `useLayoutEffect` that reads a size when it mounts forces a layout of
+  the whole window in the middle of a commit; `VehicleDiagram` takes its size from its `ResizeObserver`.
+- **Growing text is appended.** The log panel (`app/src/shell/LogDrawer.tsx`) adds one block per batch of
+  lines and drops whole blocks at the top; while it is closed it does not update at all.
+- **Intl formatters are kept.** `localeNumber`, `localeDate` and `localeDateTime` (`app/src/i18n/index.ts`)
+  keep one formatter per language and form; building one costs about two hundred times as much as using it.
 - **Large data loads on the first visit.** The fault code lexicon fetches and draws its table when it is first
   opened (it was ten thousand elements at start).
 - **One backend subscription per event name.** `app/src/api/hub.ts` shares one Tauri `listen()` between all
@@ -303,9 +319,59 @@ The heap of the app barely changes: it never held the core catalogs, and a catal
 once parsed. What changed for the app is what it carries and what it parses at start and on a language switch.
 The browser preview still loads the demo backend (927 KB) and the core catalog of its language (580 to 990 KB).
 
+### Second round (22 November 2026)
+
+Branch `opt-ui`. The demo backend of the browser preview now writes one raw log line per live tick, like the
+worker does with "Log raw adapter traffic" on (the default), so the browser numbers include the log panel.
+"App" is a debug build of `caruspex-app` on Windows 11 with WebView2, the demo car, `--page live-run`, measured
+through WebView2's DevTools port; the interface in it is the same release bundle as in a release build. The
+machine was busy with other builds during these runs, so times vary by about a third between runs; the
+counts (renders, commits, layouts) do not.
+
+| What | Before | After |
+|---|---|---|
+| Live page, app, 60 s into a session, log closed: main thread / layout per s | 264 to 316 / 206 to 241 ms | 46 to 63 / 3 to 4 ms |
+| Live page, app, same with the log open | 277 to 351 / 215 to 253 ms | 119 / 39 ms |
+| Live page, browser, after 60 s (about 1700 log lines): main thread per s | 233 to 248 ms | 64 to 69 ms |
+| Live page, browser, 18 s after start: commits / renders / main thread per s | 10 / 115 / 74 ms | 4 / 60 / 21 ms |
+| Start page with gauges, browser: commits / renders per s | 31 / 173 | 25 / 121 |
+| Start, app: first contentful paint (median of 4) | 232 ms | 178 ms |
+| Start, browser, CPU 4x slower: frame after the first React commit (from navigation, demo backend included) | 710 to 796 ms | 271 to 310 ms |
+| Start, browser, CPU 4x slower: long task holding the first commit / components in it | 481 to 544 ms / 699 | 61 to 65 ms / 81 |
+| Start, browser, CPU 4x slower: all pages mounted | 660 ms | 808 ms |
+| Fault code lexicon shown again, browser, CPU 4x slower | 619 to 1295 ms | 101 to 357 ms |
+| Glossary shown again, same | 112 to 130 ms | 67 to 70 ms |
+| `localeNumber`, Node 24 | 148 us per call | 0.67 us per call |
+| X-ray page opened 20 times, rebuilt 20 times | no leak | no leak (WebGL buffers 267, textures 8, programs 11 throughout) |
+
+What was behind it:
+
+- **The log panel** joined up to 5000 lines into one text and laid all of it out again every 150 ms while
+  values streamed, also when it was closed. That was most of the main thread on every page during a live
+  session in the app. It now appends one block per batch and does nothing while closed (`LogDrawer.tsx`).
+- **The start** read the size of the car picture of the start page in a layout effect, which forced a layout
+  of the whole window in the middle of the first commit and a second render; and it built all 29 pages before
+  the first picture. Now the picture measures with its `ResizeObserver` and `PageHost` mounts the visible page
+  first. The other pages are mounted a little later than before (about 150 ms with the CPU 4x slower), and
+  the start-up waits for them before it talks to the backend.
+- **Showing a page again** laid it out from scratch (`display: none`); the lexicon table has 3000 rows.
+  Pages shown once keep their layout now (`content-visibility: hidden`), the lexicon rows are memoised and
+  its search uses `useDeferredValue`, the glossary sorts once per language.
+
+Run again with `py -I tools/ui_measure.py live <base> live-run 60` (and `... 60 open`), `firstframe <base> 4`
+and `switch <base> 4`.
+
 ### Still open
 
-- `ThrottlePage.tsx` should show its readings with `useLiveValues` like the other pages.
+- `PageSlot` renders the whole page again on every switch, because `<Component />` is a new element each
+  time. A memoised element would leave pages that do not call `usePageActive()` alone, but a page that reads
+  changing state outside a hook during render would then show old values until its next render; that needs a
+  pass over every page first.
+- The X-ray view draws every frame while a fault pulses (the demo car has faults), and the chips over the 3D
+  view blur what is behind them (`backdrop-filter`), which the GPU redoes for every frame. Both are part of
+  the look; a slower pulse or chips without blur would change it.
+- With the log panel open during a live session the app still spends about 40 ms a second on layout, mostly
+  for following the end of the text.
 - The core catalogs of the demo build repeat every English text as the key; a shared list of the English
   texts and one array per language would cut about 300 KB from each, for the browser preview only.
 - `XrayPage` keeps the layout code of the 3D view (about 110 kB) in the entry chunk, because the page
