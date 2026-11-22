@@ -101,7 +101,10 @@ jobs:
           # tests: it fell behind once when the trucks came (ids shifted).
           python app/scripts/extract-catalog.py
           git add --intent-to-add crates
-          git diff --exit-code -- 'crates/*/src/generated' 'crates/caruspex-record/tests/fixtures' 'crates/caruspex-vehicles/tests/fixtures' 'app/src/api/mock/data'
+          # 'crates/*/src/generated' alone matches no file (a pathspec with
+          # a wildcard has to match the whole path), so the tables of the
+          # crates were never compared; the trailing /* makes it match.
+          git diff --exit-code -- 'crates/*/src/generated/*' 'crates/caruspex-record/tests/fixtures' 'crates/caruspex-vehicles/tests/fixtures' 'app/src/api/mock/data'
 
       # Every text in every language: new texts in the code must be
       # translated before they reach main (see translations/TRANSLATING.md).
