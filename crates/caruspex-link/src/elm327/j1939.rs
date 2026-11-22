@@ -257,9 +257,13 @@ impl FrameLink for Elm327 {
             }
             None => "ATMA".to_string(),
         };
+        let interrupt = self.interrupt.as_deref();
         let Some(t) = self.transport.as_mut() else {
             return Err(l("Kein Adapter verbunden.", "No adapter connected.").to_string());
         };
+        if super::raised(interrupt) {
+            return Err(l("Kein Adapter verbunden.", "No adapter connected.").to_string());
+        }
         t.flush_input();
         let mut line = command.into_bytes();
         line.push(b'\r');
@@ -274,7 +278,7 @@ impl FrameLink for Elm327 {
         let mut pending: Vec<u8> = Vec::new();
         let mut prompt = false;
         let mut done = false;
-        while !done && !prompt && now_ms() < deadline {
+        while !done && !prompt && now_ms() < deadline && !super::raised(interrupt) {
             let chunk = t.read(40);
             if chunk.is_empty() {
                 continue;
@@ -298,7 +302,7 @@ impl FrameLink for Elm327 {
             t.write(b"\r");
             let stop = now_ms() + 1500;
             let mut tail: Vec<u8> = Vec::new();
-            while now_ms() < stop && !tail.contains(&b'>') {
+            while now_ms() < stop && !tail.contains(&b'>') && !super::raised(interrupt) {
                 tail.extend(t.read(40));
             }
         }

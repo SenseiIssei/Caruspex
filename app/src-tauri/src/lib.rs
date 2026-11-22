@@ -418,9 +418,13 @@ pub fn run() {
         .expect("error while building Caruspex")
         .run(|app, event| {
             if let tauri::RunEvent::Exit = event {
+                // The window is gone already. The worker gets a moment to
+                // close the adapter (ATPC) and let go of the port before the
+                // process ends; a job in flight is cut short for that.
                 if let Some(state) = app.try_state::<AppState>() {
-                    state.worker.cancel_scan();
-                    state.worker.send(worker::Job::Shutdown);
+                    state
+                        .worker
+                        .shutdown(std::time::Duration::from_millis(3000));
                 }
                 // The WebView2 folder of a command-line run; what the browser
                 // processes still hold is left to the temp folder cleanup.

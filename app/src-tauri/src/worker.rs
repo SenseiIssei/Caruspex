@@ -8,7 +8,7 @@
 use std::collections::BTreeSet;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, channel};
-use std::sync::{Arc, OnceLock};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{Duration, Instant};
 
 use caruspex_advice::connect_help::{ConnectFacts, LinkKind, connect_help};
@@ -176,6 +176,10 @@ pub enum Job {
 pub struct WorkerHandle {
     tx: Sender<Job>,
     cancel: Arc<AtomicBool>,
+    /// The interrupt flag of the worker's ELM327 (`Elm327::set_interrupt`).
+    interrupt: Arc<AtomicBool>,
+    /// Closed when the worker thread has ended (also after a panic).
+    done: Arc<Mutex<Option<Receiver<()>>>>,
 }
 
 impl WorkerHandle {
@@ -187,19 +191,54 @@ impl WorkerHandle {
     pub fn cancel_scan(&self) {
         self.cancel.store(true, Ordering::SeqCst);
     }
+    /// Disconnect. A running scan or check is cancelled and the request in
+    /// flight cut short, so the close does not wait behind a job that may
+    /// take minutes, or behind a live round on an adapter that went silent,
+    /// where every request costs its whole timeout. The worker lowers the
+    /// flags again when it gets to the close.
+    pub fn close(&self) {
+        self.cancel.store(true, Ordering::SeqCst);
+        self.interrupt.store(true, Ordering::SeqCst);
+        self.send(Job::Close);
+    }
+    /// Ends the worker like `close` ends a job, and waits up to `wait` for
+    /// it to close the adapter and let go of the port. True if it ended.
+    pub fn shutdown(&self, wait: Duration) -> bool {
+        self.cancel.store(true, Ordering::SeqCst);
+        self.interrupt.store(true, Ordering::SeqCst);
+        self.send(Job::Shutdown);
+        let done = self.done.lock().ok().and_then(|mut d| d.take());
+        match done {
+            Some(rx) => !matches!(rx.recv_timeout(wait), Err(RecvTimeoutError::Timeout)),
+            // Another caller is waiting already or has waited.
+            None => false,
+        }
+    }
 }
 
 /// Starts the worker thread.
 pub fn spawn(sink: Arc<dyn Sink>, settings: AppSettings) -> WorkerHandle {
     let (tx, rx) = channel();
+    let (done_tx, done_rx) = channel::<()>();
     let cancel = Arc::new(AtomicBool::new(false));
     let mut worker = Worker::new(sink, cancel.clone());
     worker.apply_settings(settings);
+    let interrupt = worker.interrupt.clone();
     std::thread::Builder::new()
         .name("caruspex-worker".into())
-        .spawn(move || worker.run(rx))
+        .spawn(move || {
+            // Dropped when the thread ends, also by a panic: that is the
+            // signal `shutdown` waits for.
+            let _done = done_tx;
+            worker.run(rx);
+        })
         .expect("worker thread starts");
-    WorkerHandle { tx, cancel }
+    WorkerHandle {
+        tx,
+        cancel,
+        interrupt,
+        done: Arc::new(Mutex::new(Some(done_rx))),
+    }
 }
 
 #[derive(Default)]
@@ -240,6 +279,9 @@ impl Timer {
 pub struct Worker {
     sink: Arc<dyn Sink>,
     cancel: Arc<AtomicBool>,
+    /// Raised by `WorkerHandle::close` and `shutdown` from another thread:
+    /// the ELM327 stops waiting for its adapter (`Elm327::set_interrupt`).
+    interrupt: Arc<AtomicBool>,
     elm: Elm327,
     // The Qt worker kept an Obd2 next to the Elm327 while connected. Obd2
     // borrows the driver here, so only its batch memory is kept.
@@ -297,10 +339,14 @@ pub struct Worker {
 
 impl Worker {
     pub fn new(sink: Arc<dyn Sink>, cancel: Arc<AtomicBool>) -> Self {
+        let interrupt = Arc::new(AtomicBool::new(false));
+        let mut elm = Elm327::new();
+        elm.set_interrupt(interrupt.clone());
         Self {
             sink,
             cancel,
-            elm: Elm327::new(),
+            interrupt,
+            elm,
             obd_ready: false,
             batch_refused: BTreeSet::new(),
             poll_timer: Timer::default(),
@@ -447,6 +493,8 @@ impl Worker {
 
     fn shutdown(&mut self) {
         self.cancel.store(true, Ordering::SeqCst);
+        // What was in flight has ended; the adapter still gets its close.
+        self.interrupt.store(false, Ordering::SeqCst);
         self.stop_live();
         self.elm.disconnect();
         if let Some(mut kwp) = self.kwp.take() {
@@ -534,6 +582,10 @@ impl Worker {
                 }
             }
             Job::Close => {
+                // WorkerHandle::close cut short what ran before; the close
+                // itself talks to the adapter normally again.
+                self.interrupt.store(false, Ordering::SeqCst);
+                self.cancel.store(false, Ordering::SeqCst);
                 self.close_adapter();
                 #[cfg(target_os = "android")]
                 crate::android::bind_wifi(false);

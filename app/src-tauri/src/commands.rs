@@ -887,7 +887,7 @@ pub fn open_replay(
 
 #[tauri::command]
 pub fn close_adapter(state: State<'_, AppState>) {
-    job(&state, Job::Close);
+    state.worker.close();
 }
 
 #[tauri::command]
