@@ -19,8 +19,66 @@ function stamp(): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}`;
 }
 
+type LogState = ReturnType<typeof logStore.get>;
+
+// What the panel shows: one block per batch of lines. With the raw log on a
+// live session adds lines every 150 ms; setting the whole text again joined
+// up to 5000 lines and laid all of them out each time (about 190 ms of
+// layout a second at 1700 lines). A new batch is appended and laid out on its
+// own, and lines that fall off the top shorten the first blocks.
+interface LogView {
+  total: number;
+  clears: number;
+  count: number;
+  blocks: { el: HTMLElement; lines: string[] }[];
+}
+
+function appendBlock(pre: HTMLElement, view: LogView, lines: string[]): void {
+  if (lines.length === 0) return;
+  const el = document.createElement("span");
+  el.className = "log-block";
+  el.textContent = lines.join("\n");
+  pre.appendChild(el);
+  view.blocks.push({ el, lines });
+  view.count += lines.length;
+}
+
+function syncLog(pre: HTMLElement, view: LogView, state: LogState): void {
+  const added = state.total - view.total;
+  if (state.clears !== view.clears || added < 0 || added > state.lines.length) {
+    pre.replaceChildren();
+    view.blocks = [];
+    view.count = 0;
+    appendBlock(pre, view, state.lines);
+  } else if (added > 0) {
+    appendBlock(pre, view, state.lines.slice(state.lines.length - added));
+  }
+  let extra = view.count - state.lines.length;
+  while (extra > 0) {
+    const first = view.blocks[0]!;
+    if (first.lines.length <= extra) {
+      first.el.remove();
+      view.blocks.shift();
+      view.count -= first.lines.length;
+      extra -= first.lines.length;
+    } else {
+      first.lines = first.lines.slice(extra);
+      first.el.textContent = first.lines.join("\n");
+      view.count -= extra;
+      extra = 0;
+    }
+  }
+  view.total = state.total;
+  view.clears = state.clears;
+}
+
 export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const lines = useStore(logStore, (s) => s.lines);
+  // A closed drawer keeps the text it showed and catches up when it opens,
+  // so new lines cost nothing while it is shut.
+  const shown = useRef(logStore.get());
+  const log = useStore(logStore, (s) => (open ? s : shown.current));
+  shown.current = log;
+  const view = useRef<LogView>({ total: 0, clears: 0, count: 0, blocks: [] });
   const recording = useSession((s) => s.recording);
   const box = useRef<HTMLPreElement>(null);
   const [share, setShare] = useState<{ path: string; shared: SharedRecording; version: string } | null>(null);
@@ -38,8 +96,10 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
   useEffect(() => {
     const el = box.current;
     if (!el) return;
-    if (el.scrollHeight - el.scrollTop - el.clientHeight < 60) el.scrollTop = el.scrollHeight;
-  }, [lines, open]);
+    const atEnd = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    syncLog(el, view.current, log);
+    if (atEnd) el.scrollTop = el.scrollHeight;
+  }, [log, open]);
 
   const toggleRecording = async () => {
     if (recording) {
@@ -93,9 +153,8 @@ export function LogDrawer({ open, onClose }: { open: boolean; onClose: () => voi
           </Button>
           <Button variant="ghost" small icon="chevron-down" title={t("caruspex::TitleBar", "Protokoll ein- oder ausblenden")} onClick={onClose} />
         </div>
-        <pre ref={box} className="log-text mono selectable">
-          {lines.join("\n")}
-        </pre>
+        {/* Filled by syncLog, not by React. */}
+        <pre ref={box} className="log-text mono selectable" />
       </div>
       {share ? <ShareDialog path={share.path} shared={share.shared} version={share.version} onClose={() => setShare(null)} /> : null}
     </section>

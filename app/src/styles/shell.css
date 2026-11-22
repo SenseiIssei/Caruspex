@@ -226,6 +226,8 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+/* One batch of lines each (LogDrawer.tsx): appending lays out only the new one. */
+.log-block { display: block; }
 
 /* --- Toasts ------------------------------------------------------------------------------ */
 

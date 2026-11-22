@@ -199,7 +199,9 @@ export async function applySettings(values: AppSettings): Promise<void> {
 
 // --- Log --------------------------------------------------------------------------------
 
-export const logStore = createStore<{ lines: string[] }>({ lines: [] });
+// total: lines added so far, clears: how often the log was emptied; with both
+// the log panel can tell which of `lines` are new and append only those.
+export const logStore = createStore<{ lines: string[]; total: number; clears: number }>({ lines: [], total: 0, clears: 0 });
 
 // A line the interface logs itself: shown and, like everything in
 // MainWindow::appendLog, written to the log file when one is open.
@@ -222,7 +224,7 @@ function flushLog(): void {
   if (!add.length) return;
   logStore.set((s) => {
     const lines = s.lines.concat(add);
-    return { lines: lines.length > 5000 ? lines.slice(-5000) : lines };
+    return { lines: lines.length > 5000 ? lines.slice(-5000) : lines, total: s.total + add.length };
   });
 }
 
@@ -235,7 +237,7 @@ function showLog(line: string): void {
 
 export function clearLog(): void {
   pendingLines = [];
-  logStore.set({ lines: [] });
+  logStore.set((s) => ({ lines: [], clears: s.clears + 1 }));
 }
 
 // --- Title bar ---------------------------------------------------------------------------
