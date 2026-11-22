@@ -10,6 +10,19 @@ export const navStore = createStore<{ page: PageId; reportOpen: boolean; garageR
   usedCarReport: false,
 });
 
+// The pages besides the first one mount just after the first picture (see
+// PageHost in App.tsx); this resolves once all of them listen.
+let pagesDone: () => void = () => undefined;
+const pagesReady = new Promise<void>((resolve) => (pagesDone = resolve));
+
+export function markPagesMounted(): void {
+  pagesDone();
+}
+
+export function pagesMounted(): Promise<void> {
+  return pagesReady;
+}
+
 export function navigate(page: PageId): void {
   if (navStore.get().page !== page) navStore.set({ page });
   emitApp("navigated", page);
