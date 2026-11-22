@@ -203,8 +203,8 @@ export function translator(context: string): Translator {
 // Numbers the way QLocale writes them in the active language ("48.213" in
 // German), with a fixed number of decimals.
 // One formatter per language and number of decimals: building one costs
-// about thirty times as much as formatting with it, and live values are
-// formatted many times a second.
+// about two hundred times as much as formatting with it (Node 24), and live
+// values are formatted many times a second.
 const numberFormats = new Map<string, Intl.NumberFormat>();
 
 export function localeNumber(value: number, decimals = 0): string {
