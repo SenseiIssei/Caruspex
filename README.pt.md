@@ -272,6 +272,22 @@ O que realmente foi experimentado com o Caruspex até agora, listado com honesti
 Experimentou o Caruspex no seu carro? Envie um [relatório de teste](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): cada relatório entra nesta lista, por marca e interface.
 <!-- /tested -->
 
+<!-- help -->
+## Como você pode ajudar
+
+O Caruspex é um projeto pessoal em que trabalho no meu tempo livre. Algumas coisas eu não consigo fazer sozinho, e cada uma delas ajuda todos os usuários:
+
+- **Experimente no seu carro.** Fora o carro de demonstração, quase tudo até agora só foi testado com centrais simuladas. Um breve [relatório de teste](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) com o carro, o adaptador e o que funcionou ou falhou é a ajuda mais útil de todas. Preciso principalmente de:
+  - carros com K-Line, como os do grupo VW até cerca de 2005 ou os BMW da série E, com um cabo KKL ou OBDLink;
+  - carros a diesel do grupo VW: se a central do motor permite a sessão de diagnóstico estendida para os valores de fuligem, em marcha lenta e rodando;
+  - carros mais novos com DoIP (VW MEB, Volvo, Mercedes com MBUX): a lista de centrais que uma varredura encontra;
+  - carros elétricos, sobretudo Tesla Model S e X, BYD, Xpeng e NIO.
+- **Compartilhe uma gravação.** Grave uma sessão no aplicativo e use **Compartilhar gravação**: isso remove os dados pessoais e mostra o que fica antes que qualquer coisa saia do seu computador. As gravações mostram exatamente como um carro responde e me permitem dar suporte a ele sem tê-lo aqui.
+- **Me indique fontes livres.** Códigos de falha de fabricante (por exemplo da BMW, Opel, Renault, PSA e Volvo), a posição exata da tomada OBD e sinais para mais carros só entram a partir de fontes que podem ser usadas livremente (CC0, CC BY, CC BY-SA, MIT ou domínio público). Se você conhece alguma, abra uma issue com o link. Também ajuda me dizer onde fica a tomada no seu próprio carro.
+- **Melhore uma tradução.** O Caruspex fala 18 idiomas, e a maioria ainda não foi revisada por nenhum falante nativo. Se algo soar estranho no seu idioma, [translations/TRANSLATING.md](translations/TRANSLATING.md) mostra como corrigir.
+- **Código.** Pull requests são bem-vindos, veja [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Download
 
 Pacotes prontos estão na [página de versões](https://github.com/SenseiIssei/Caruspex/releases):

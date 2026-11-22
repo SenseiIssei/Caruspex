@@ -272,6 +272,22 @@ KKL 케이블은 K-Line을 그대로 통과시키므로 Caruspex가 프로토콜
 내 차에서 Caruspex를 써 보셨나요? [시험 보고서](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)를 보내 주세요. 모든 보고서는 브랜드와 인터페이스별로 이 목록에 들어갑니다.
 <!-- /tested -->
 
+<!-- help -->
+## 도울 수 있는 방법
+
+Caruspex는 제가 여가 시간에 만드는 취미 프로젝트입니다. 혼자서는 할 수 없는 일이 있는데, 그 하나하나가 모든 사용자에게 도움이 됩니다.
+
+- **내 차에서 써 보기.** 데모 차를 빼면 지금까지 거의 모든 것이 모의 제어 장치로만 시험되었습니다. 차, 어댑터, 무엇이 되고 무엇이 안 됐는지를 적은 짧은 [시험 보고서](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)가 가장 큰 도움이 됩니다. 특히 다음이 필요합니다.
+  - K-Line이 있는 차: 2005년경까지의 VW 그룹 차나 BMW E 시리즈 등, KKL 또는 OBDLink 케이블로 연결하는 차
+  - VW 그룹 디젤 차: 엔진 제어 장치가 공회전 중과 주행 중에 매연 값을 읽는 확장 진단 세션을 허용하는지
+  - DoIP가 있는 최신 차(VW MEB, Volvo, MBUX가 있는 Mercedes): 스캔으로 찾은 제어 장치 목록
+  - 전기차, 특히 Tesla Model S와 X, BYD, Xpeng, NIO
+- **녹화 공유하기.** 앱에서 세션을 녹화한 뒤 **기록 공유**를 사용하세요. 개인 데이터를 지우고, 무엇이든 컴퓨터 밖으로 나가기 전에 무엇이 남는지 보여 줍니다. 녹화를 보면 차가 어떻게 응답하는지 정확히 알 수 있어서, 차가 여기 없어도 지원할 수 있습니다.
+- **자유로운 출처 알려 주기.** 제조사 고유 고장 코드(예: BMW, Opel, Renault, PSA, Volvo), OBD 단자의 정확한 위치, 더 많은 차의 신호는 자유롭게 쓸 수 있는 출처(CC0, CC BY, CC BY-SA, MIT 또는 퍼블릭 도메인)에서만 들어갑니다. 그런 출처를 알고 계시면 링크와 함께 issue를 열어 주세요. 내 차의 단자가 어디에 있는지 알려 주시는 것도 도움이 됩니다.
+- **번역 다듬기.** Caruspex는 18개 언어를 지원하지만, 대부분은 아직 원어민이 검토하지 않았습니다. 내 언어에서 어색한 부분이 있으면 [translations/TRANSLATING.md](translations/TRANSLATING.md)에서 고치는 방법을 볼 수 있습니다.
+- **코드.** 풀 리퀘스트를 환영합니다. [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+<!-- /help -->
+
 ## 다운로드
 
 바로 쓸 수 있는 패키지는 [릴리스 페이지](https://github.com/SenseiIssei/Caruspex/releases)에 있습니다.

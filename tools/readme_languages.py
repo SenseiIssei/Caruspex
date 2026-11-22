@@ -11,12 +11,15 @@
    <!-- /tested -->, put right before the download section the first time.
 4. The pointer to CONTRIBUTING.md in the reader's language, between
    <!-- contrib --> and <!-- /contrib --> below the documentation link.
-5. Safety and liability, trademarks, licence and data credits at the end,
+5. What others can help with (test reports, recordings, free sources,
+   translations), between <!-- help --> and <!-- /help -->, right after the
+   list of what has been tested.
+6. Safety and liability, trademarks, licence and data credits at the end,
    between <!-- legal --> and <!-- /legal -->. The first time it replaces
    everything from the heading `legal_from` (the old disclaimer or licence
    section) to the end of the file.
 
-The texts of 2 to 5 are in tools/readme_blocks.json, one entry per language.
+The texts of 2 to 6 are in tools/readme_blocks.json, one entry per language.
 The English README.md is the reference, the other files are translations of it.
 """
 
@@ -121,6 +124,9 @@ def main() -> int:
         new = set_block(new, "contrib", texts["contrib"], after="<!-- /docs -->")
         tested = texts["tested"].replace("{form}", FORM_URL)
         new = set_block(new, "tested", tested, before=texts["before"])
+        # What others can help with, right after the honest test list.
+        help_text = texts["help"].replace("{form}", FORM_URL)
+        new = set_block(new, "help", help_text, before=texts["before"])
         new = set_tail(new, "legal", texts["legal"], texts["legal_from"])
         if new != text:
             stale.append(file_of(code))

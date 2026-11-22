@@ -272,6 +272,22 @@ Apa yang sungguh sudah dicoba dengan Caruspex sejauh ini, dicatat dengan jujur. 
 Sudah mencoba Caruspex di mobil Anda? Kirimkan [laporan uji](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): setiap laporan masuk ke daftar ini, per merek dan antarmuka.
 <!-- /tested -->
 
+<!-- help -->
+## Cara Anda bisa membantu
+
+Caruspex adalah proyek hobi yang saya kerjakan di waktu luang. Ada hal-hal yang tidak bisa saya lakukan sendiri, dan masing-masing membantu semua pengguna:
+
+- **Coba di mobil Anda.** Selain mobil demo, hampir semuanya sejauh ini baru diuji dengan unit kontrol tiruan. [Laporan uji](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) singkat berisi mobil, adaptor, dan apa yang berhasil atau gagal adalah bantuan yang paling berguna. Saya terutama membutuhkan:
+  - mobil dengan K-Line, seperti grup VW hingga sekitar 2005 atau BMW seri E, dengan kabel KKL atau OBDLink;
+  - mobil diesel grup VW: apakah unit kontrol mesin mengizinkan sesi diagnostik diperluas untuk nilai jelaga, saat idle dan saat berkendara;
+  - mobil yang lebih baru dengan DoIP (VW MEB, Volvo, Mercedes dengan MBUX): daftar unit kontrol yang ditemukan oleh pemindaian;
+  - mobil listrik, terutama Tesla Model S dan X, BYD, Xpeng, dan NIO.
+- **Bagikan rekaman.** Rekam satu sesi di aplikasi lalu gunakan **Bagikan rekaman**: fitur ini menghapus data pribadi dan menunjukkan apa yang tersisa sebelum apa pun keluar dari komputer Anda. Rekaman menunjukkan dengan tepat bagaimana sebuah mobil menjawab dan memungkinkan saya mendukungnya tanpa mobil itu ada di sini.
+- **Tunjukkan sumber bebas kepada saya.** Kode kesalahan pabrikan (misalnya BMW, Opel, Renault, PSA, dan Volvo), letak persis soket OBD, dan sinyal untuk lebih banyak mobil hanya dimasukkan dari sumber yang boleh dipakai secara bebas (CC0, CC BY, CC BY-SA, MIT, atau domain publik). Jika Anda tahu salah satunya, buka issue dengan tautannya. Memberi tahu saya letak soket di mobil Anda sendiri juga membantu.
+- **Perbaiki terjemahan.** Caruspex berbicara dalam 18 bahasa, dan sebagian besar belum pernah diperiksa oleh penutur asli. Jika ada yang terasa janggal dalam bahasa Anda, [translations/TRANSLATING.md](translations/TRANSLATING.md) menjelaskan cara memperbaikinya.
+- **Kode.** Pull request sangat diterima, lihat [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Unduh
 
 Paket siap pakai ada di [halaman rilis](https://github.com/SenseiIssei/Caruspex/releases):

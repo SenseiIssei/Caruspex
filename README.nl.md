@@ -272,6 +272,22 @@ Wat tot nu toe echt met Caruspex is uitgeprobeerd, eerlijk opgesomd. Al het ande
 Caruspex in je eigen auto geprobeerd? Stuur dan een [testrapport](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): elk rapport komt in deze lijst, per merk en interface.
 <!-- /tested -->
 
+<!-- help -->
+## Hoe je kunt helpen
+
+Caruspex is een hobbyproject waar ik in mijn vrije tijd aan werk. Sommige dingen kan ik niet in mijn eentje, en elk daarvan helpt alle gebruikers:
+
+- **Probeer het in je auto.** Behalve met de demo-auto is bijna alles tot nu toe alleen getest tegen nagebootste regeleenheden. Een kort [testrapport](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) met auto, adapter en wat wel of niet werkte, is de nuttigste hulp van allemaal. Ik zoek vooral:
+  - auto's met een K-Line, zoals de VW-groep tot ongeveer 2005 of BMW uit de E-serie, met een KKL- of OBDLink-kabel;
+  - diesels uit de VW-groep: of de motorregeleenheid de uitgebreide diagnosesessie voor de roetwaarden toestaat, stationair en tijdens het rijden;
+  - nieuwere auto's met DoIP (VW MEB, Volvo, Mercedes met MBUX): de lijst met regeleenheden die een scan vindt;
+  - elektrische auto's, vooral Tesla Model S en X, BYD, Xpeng en NIO.
+- **Deel een opname.** Neem in de app een sessie op en kies **Opname delen**: dat verwijdert persoonlijke gegevens en laat je zien wat er overblijft voordat er iets je computer verlaat. Opnames laten precies zien hoe een auto antwoordt, zodat ik hem kan ondersteunen zonder hem hier te hebben.
+- **Wijs me op vrije bronnen.** Fabrikantspecifieke foutcodes (bijvoorbeeld van BMW, Opel, Renault, PSA en Volvo), de precieze plek van de OBD-aansluiting en signalen voor meer auto's komen er alleen in uit bronnen die vrij gebruikt mogen worden (CC0, CC BY, CC BY-SA, MIT of publiek domein). Ken je er een, open dan een issue met de link. Het helpt ook als je me vertelt waar de aansluiting in je eigen auto zit.
+- **Verbeter een vertaling.** Caruspex spreekt 18 talen, en de meeste zijn nog door geen enkele moedertaalspreker nagelezen. Klinkt iets vreemd in jouw taal, dan laat [translations/TRANSLATING.md](translations/TRANSLATING.md) zien hoe je het verbetert.
+- **Code.** Pull requests zijn welkom, zie [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Downloaden
 
 Kant-en-klare pakketten staan op de [releasepagina](https://github.com/SenseiIssei/Caruspex/releases):

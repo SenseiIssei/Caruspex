@@ -272,6 +272,22 @@ KKL 线缆把 K-Line 原样透传，所以 Caruspex 可以自己说这个协议�
 在自己的车上试过 Caruspex？请发送一份[测试报告](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)：每份报告都会按品牌和接口加入这个列表。
 <!-- /tested -->
 
+<!-- help -->
+## 你可以如何帮忙
+
+Caruspex 是我利用业余时间开发的个人爱好项目。有些事情我一个人做不到，而每一件都能帮到所有用户：
+
+- **在你的车上试一试。** 除了演示车，几乎所有功能到目前为止都只在模拟控制单元上测试过。一份简短的[测试报告](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml)，写明车辆、适配器以及哪些正常、哪些失败，就是最有用的帮助。我特别需要：
+  - 带 K-Line 的车，例如约 2005 年以前的 VW 集团车型或 BMW E 系列，配 KKL 或 OBDLink 线缆；
+  - VW 集团的柴油车：发动机控制单元在怠速和行驶中是否允许进入读取碳烟数值所需的扩展诊断会话；
+  - 带 DoIP 的较新车型（VW MEB、Volvo、带 MBUX 的 Mercedes）：扫描找到的控制单元列表；
+  - 电动车，尤其是 Tesla Model S 和 X、BYD、Xpeng 和 NIO。
+- **分享一份记录。** 在应用中记录一次会话，然后使用**分享记录**：它会删除个人数据，并在任何内容离开你的电脑之前向你展示会保留哪些内容。记录能准确显示一辆车如何应答，让我无需车在身边也能支持它。
+- **告诉我开放的资料来源。** 厂家专用故障码（例如 BMW、Opel、Renault、PSA 和 Volvo）、OBD 接口的确切位置以及更多车型的信号，只会从可以自由使用的来源（CC0、CC BY、CC BY-SA、MIT 或公有领域）收录。如果你知道这样的来源，请开一个附带链接的 issue。告诉我你自己车上的接口在哪里也很有帮助。
+- **改进翻译。** Caruspex 支持 18 种语言，其中大多数还没有母语者检查过。如果你的语言里有读起来别扭的地方，[translations/TRANSLATING.md](translations/TRANSLATING.md) 说明了如何修正。
+- **代码。** 欢迎提交 pull request，见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+<!-- /help -->
+
 ## 下载
 
 现成的安装包在 [发布页面](https://github.com/SenseiIssei/Caruspex/releases)：

@@ -272,6 +272,22 @@ Ce qui a vraiment été essayé avec Caruspex jusqu'ici, en toute honnêteté. T
 Vous avez essayé Caruspex sur votre voiture ? Envoyez un [rapport de test](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) : chaque rapport entre dans cette liste, par marque et par interface.
 <!-- /tested -->
 
+<!-- help -->
+## Comment vous pouvez aider
+
+Caruspex est un projet personnel sur lequel je travaille pendant mon temps libre. Certaines choses, je ne peux pas les faire seul, et chacune d'elles aide tous les utilisateurs :
+
+- **Essayez-le sur votre voiture.** En dehors de la voiture de démo, presque tout n'a été testé jusqu'ici qu'avec des calculateurs simulés. Un court [rapport de test](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) indiquant la voiture, l'adaptateur et ce qui a marché ou échoué est l'aide la plus utile de toutes. Je cherche surtout :
+  - des voitures avec une K-Line, comme celles du groupe VW jusqu'à 2005 environ ou les BMW de la série E, avec un câble KKL ou OBDLink ;
+  - des diesels du groupe VW : le calculateur moteur autorise-t-il la session de diagnostic étendue pour les valeurs de suie, au ralenti et en roulant ;
+  - des voitures plus récentes avec DoIP (VW MEB, Volvo, Mercedes avec MBUX) : la liste des calculateurs qu'une analyse trouve ;
+  - des voitures électriques, avant tout Tesla Model S et X, BYD, Xpeng et NIO.
+- **Partagez un enregistrement.** Enregistrez une session dans l'application et utilisez **Partager l'enregistrement** : cela retire les données personnelles et vous montre ce qui reste avant que quoi que ce soit ne quitte votre ordinateur. Les enregistrements montrent exactement comment une voiture répond et me permettent de la prendre en charge sans l'avoir ici.
+- **Indiquez-moi des sources libres.** Les codes défaut constructeur (par exemple BMW, Opel, Renault, PSA et Volvo), l'emplacement exact de la prise OBD et les signaux d'autres voitures ne sont intégrés qu'à partir de sources utilisables librement (CC0, CC BY, CC BY-SA, MIT ou domaine public). Si vous en connaissez une, ouvrez une issue avec le lien. Me dire où se trouve la prise sur votre propre voiture aide aussi.
+- **Améliorez une traduction.** Caruspex parle 18 langues, et la plupart n'ont encore été relues par aucun locuteur natif. Si quelque chose sonne bizarrement dans votre langue, [translations/TRANSLATING.md](translations/TRANSLATING.md) explique comment le corriger.
+- **Code.** Les pull requests sont les bienvenues, voir [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Téléchargement
 
 Des paquets prêts à l'emploi sont disponibles sur la [page des versions](https://github.com/SenseiIssei/Caruspex/releases) :

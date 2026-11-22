@@ -205,6 +205,22 @@ Was mit Caruspex bisher wirklich ausprobiert wurde, ehrlich aufgelistet. Alles a
 Caruspex am eigenen Auto ausprobiert? Bitte einen [Testbericht](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) schicken: Jeder Bericht kommt in diese Liste, nach Marke und Schnittstelle.
 <!-- /tested -->
 
+<!-- help -->
+## Wobei man helfen kann
+
+Caruspex ist ein Hobbyprojekt, an dem ich in meiner Freizeit arbeite. Manches kann ich allein nicht leisten, und jedes davon hilft allen, die Caruspex nutzen:
+
+- **Am eigenen Auto ausprobieren.** Außer mit dem Demo-Auto ist fast alles bisher nur gegen nachgebildete Steuergeräte geprüft. Ein kurzer [Testbericht](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) mit Auto, Adapter und dem, was geklappt hat oder nicht, hilft am meisten. Besonders gesucht:
+  - Autos mit K-Line, etwa aus dem VW-Konzern bis ungefähr 2005 oder BMW der E-Reihe, mit KKL- oder OBDLink-Kabel;
+  - Diesel aus dem VW-Konzern: ob das Motorsteuergerät die erweiterte Diagnosesitzung für die Rußwerte zulässt, im Stand und während der Fahrt;
+  - neuere Autos mit DoIP (VW MEB, Volvo, Mercedes mit MBUX): die Liste der Steuergeräte, die ein Suchlauf findet;
+  - Elektroautos, vor allem Tesla Model S und X, BYD, Xpeng und NIO.
+- **Einen Mitschnitt teilen.** In der App eine Sitzung aufnehmen und **Mitschnitt teilen** wählen: Das entfernt persönliche Daten und zeigt vorher, was bleibt; nichts verlässt den Rechner ohne eigenes Zutun. Mitschnitte zeigen genau, wie ein Auto antwortet, und so kann ich es unterstützen, ohne es hier zu haben.
+- **Freie Quellen nennen.** Herstellerspezifische Fehlercodes (etwa von BMW, Opel, Renault, PSA und Volvo), die genaue Lage der OBD-Buchse und Werte für weitere Autos kommen nur aus Quellen hinein, die frei genutzt werden dürfen (CC0, CC BY, CC BY-SA, MIT oder gemeinfrei). Wer eine kennt, eröffnet bitte ein Issue mit dem Link. Auch der Hinweis, wo die Buchse im eigenen Auto sitzt, hilft.
+- **Eine Übersetzung verbessern.** Caruspex spricht 18 Sprachen, und die meisten hat noch niemand mit dieser Muttersprache gegengelesen. Klingt etwas in einer Sprache seltsam, zeigt [translations/TRANSLATING.md](translations/TRANSLATING.md), wie es sich verbessern lässt.
+- **Code.** Pull Requests sind willkommen, siehe [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Herunterladen
 
 Fertige Pakete liegen auf der [Release-Seite](https://github.com/SenseiIssei/Caruspex/releases):

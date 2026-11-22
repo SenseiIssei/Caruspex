@@ -136,9 +136,11 @@ macOS, Android). This is a technical review against the licence texts and source
    as ECM-130A), Opel (only the Ampera, whose GM Voltec codes do not hold for other Opel models), Renault and
    PSA (not sold in the USA, no bulletins). Searched without a usable result: obdex (CC0, generic codes only),
    OBDb (no fault codes in its signal sets), Wikidata (no property for fault codes), the full bulletin PDFs (the data set has no links to them and the API addresses tried did not answer, so
-   only the summaries were used). Not checked yet: whether the EU type approval rules (Regulation (EU)
-   2017/1151, Annex XI) contain manufacturer codes; I expect they only point to ISO 15031-6 and SAE J2012 for the
-   code format, but the text was not read for this.
+   only the summaries were used). The EU type approval rules contain no manufacturer
+   codes either: Regulation (EU) 2017/1151, Annex XI, Appendix 1, paragraph 6.5.3.5 asks for ISO/SAE controlled
+   codes from ISO 15031-6 or SAE J2012 and allows manufacturer controlled codes "according to the same standard",
+   without listing their meanings (read 2026-11-22 in the text published in the Official Journal in 2017; later
+   consolidations up to 2026-08-13 were not read).
    Not used: GPL lists, unlicensed lists, forums, paid databases.
    **OBD socket spots (2026-11-21).** The 209 car rows of `data/obd_sockets.csv` from before stay an own
    compilation; no free source was found to check them (Wikidata has no property for it, OBDb no location
