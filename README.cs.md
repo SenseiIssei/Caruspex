@@ -306,7 +306,7 @@ otevřete aplikaci poprvé pravým kliknutím a "Otevřít".
 
 ## Sestavení
 
-Požadavky: stabilní toolchain Rustu (edice 2024, Rust 1.90 nebo novější), Node 24 s npm a Python 3 pro
+Požadavky: stabilní toolchain Rustu (edice 2024, Rust 1.90 nebo novější), Node 26 s npm a Python 3 pro
 generátory a kontroly překladů. V Linuxu systémové balíčky, které potřebuje rozhraní a spojení s adaptéry
 (názvy pro Debian a Ubuntu):
 
