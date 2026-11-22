@@ -295,13 +295,15 @@ pub mod limits {
 
 // --- Rules -------------------------------------------------------------------
 
-struct Ctx {
-    items: Vec<Item>,
-    not_checked: Vec<NotChecked>,
+/// Collects the findings while the rules run; the used truck check uses it
+/// too, its report has the same shape.
+pub(crate) struct Ctx {
+    pub(crate) items: Vec<Item>,
+    pub(crate) not_checked: Vec<NotChecked>,
 }
 
 impl Ctx {
-    fn add(
+    pub(crate) fn add(
         &mut self,
         id: &'static str,
         section: Section,
@@ -320,17 +322,13 @@ impl Ctx {
         });
     }
 
-    fn skip(&mut self, section: Section, title: Message, reason: Message) {
+    pub(crate) fn skip(&mut self, section: Section, title: Message, reason: Message) {
         self.not_checked.push(NotChecked {
             section,
             title,
             reason,
         });
     }
-}
-
-fn none() -> Message {
-    Message::default()
 }
 
 /// Upper case without the separators people type along.

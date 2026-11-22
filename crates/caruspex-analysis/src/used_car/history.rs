@@ -1,9 +1,9 @@
 //! When the fault memory was last cleared, and the readiness monitors.
 
 use super::faults::{codes, fault_list};
-use super::{Ctx, Drive, FaultKind, Section, UsedCarFault, UsedCarInput, limits, none};
+use super::{Ctx, Drive, FaultKind, Section, UsedCarFault, UsedCarInput, limits};
 use crate::common::Level;
-use crate::message::{Message, text};
+use crate::message::{Message, none, text};
 use crate::readiness::{MonitorState, monitor_name};
 
 pub(super) fn check_clearing(c: &mut Ctx, input: &UsedCarInput) {

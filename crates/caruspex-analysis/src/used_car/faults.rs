@@ -1,8 +1,8 @@
 //! Stored and pending faults, and the short health check.
 
-use super::{Ctx, FaultKind, Section, UsedCarFault, UsedCarInput, none};
+use super::{Ctx, FaultKind, Section, UsedCarFault, UsedCarInput};
 use crate::common::{Level, TrafficLight};
-use crate::message::{Message, raw, text};
+use crate::message::{Message, none, raw, text};
 
 pub(super) fn fault_list(faults: &[&UsedCarFault]) -> Vec<Message> {
     faults

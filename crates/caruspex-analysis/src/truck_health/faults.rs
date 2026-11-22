@@ -1,8 +1,8 @@
 //! Active and previous faults of every unit, and the lamps.
 
-use super::{Ctx, TruckFault, TruckLamps, TruckUnit, none};
+use super::{Ctx, TruckFault, TruckLamps, TruckUnit};
 use crate::common::Level;
-use crate::message::{Message, raw, text};
+use crate::message::{Message, none, raw, text};
 
 pub(super) fn check_faults(c: &mut Ctx) {
     let input = c.input;

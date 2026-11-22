@@ -286,10 +286,6 @@ impl TruckHealthReport {
     }
 }
 
-fn none() -> Message {
-    Message::default()
-}
-
 struct Ctx<'a> {
     input: &'a TruckHealthInput,
     findings: Vec<TruckFinding>,

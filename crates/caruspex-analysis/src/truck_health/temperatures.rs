@@ -1,8 +1,8 @@
 //! Coolant and oil: temperatures and pressures.
 
-use super::{Ctx, limits, none, spn};
+use super::{Ctx, limits, spn};
 use crate::common::Level;
-use crate::message::text;
+use crate::message::{none, text};
 use crate::series::{latest, max_of, min_of};
 
 pub(super) fn check_coolant(c: &mut Ctx) {

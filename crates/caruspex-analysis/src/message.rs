@@ -41,6 +41,11 @@ pub fn text(de: &'static str, en: &'static str) -> Message {
     }
 }
 
+/// No text (an empty explanation or question).
+pub(crate) fn none() -> Message {
+    Message::default()
+}
+
 /// A message that only carries a ready text (the health check summary).
 pub fn raw(value: impl Into<String>) -> Message {
     Message {

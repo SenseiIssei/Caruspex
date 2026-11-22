@@ -1,8 +1,8 @@
 //! The air path (boost, intake) and the engine hours.
 
-use super::{Ctx, limits, none, spn};
+use super::{Ctx, limits, spn};
 use crate::common::Level;
-use crate::message::text;
+use crate::message::{none, text};
 use crate::series::{max_of, median};
 
 pub(super) fn check_air(c: &mut Ctx) {

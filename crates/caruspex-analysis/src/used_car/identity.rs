@@ -1,8 +1,8 @@
 //! The VIN of every control unit against the papers and the catalog.
 
-use super::{Ctx, Section, UsedCarInput, none, normalise_vin, vin_well_formed};
+use super::{Ctx, Section, UsedCarInput, normalise_vin, vin_well_formed};
 use crate::common::Level;
-use crate::message::text;
+use crate::message::{none, text};
 
 pub(super) fn check_identity(c: &mut Ctx, input: &UsedCarInput) {
     let papers = normalise_vin(&input.papers_vin);

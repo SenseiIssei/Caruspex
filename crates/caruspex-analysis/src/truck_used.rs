@@ -17,11 +17,10 @@
 //! counters, the state of frame, brakes and tyres).
 
 use crate::common::{Level, TrafficLight};
-use crate::message::{Message, raw, text};
+use crate::message::{Message, none, raw, text};
 use crate::truck_health::{TruckFault, TruckUnit};
 use crate::used_car::{
-    HealthSummary, Item, MileageReading, NotChecked, Section, UsedCarReport, normalise_vin,
-    vin_well_formed,
+    Ctx, HealthSummary, MileageReading, Section, UsedCarReport, normalise_vin, vin_well_formed,
 };
 
 /// The SPNs of the odometers that are compared.
@@ -141,44 +140,6 @@ pub struct TruckUsedFacts {
 pub struct TruckUsedReport {
     pub report: UsedCarReport,
     pub facts: TruckUsedFacts,
-}
-
-struct Ctx {
-    items: Vec<Item>,
-    not_checked: Vec<NotChecked>,
-}
-
-impl Ctx {
-    fn add(
-        &mut self,
-        id: &'static str,
-        section: Section,
-        level: Level,
-        title: Message,
-        explanation: Message,
-        ask: Message,
-    ) {
-        self.items.push(Item {
-            id,
-            section,
-            level,
-            title,
-            explanation,
-            ask,
-        });
-    }
-
-    fn skip(&mut self, section: Section, title: Message, reason: Message) {
-        self.not_checked.push(NotChecked {
-            section,
-            title,
-            reason,
-        });
-    }
-}
-
-fn none() -> Message {
-    Message::default()
 }
 
 fn ask_records() -> Message {

@@ -1,8 +1,8 @@
 //! Battery and charging voltage of 12 and 24 volt systems.
 
-use super::{Ctx, limits, none, spn};
+use super::{Ctx, limits, spn};
 use crate::common::Level;
-use crate::message::text;
+use crate::message::{none, text};
 use crate::series::{max_of, median};
 
 pub(super) fn check_voltage(c: &mut Ctx) {

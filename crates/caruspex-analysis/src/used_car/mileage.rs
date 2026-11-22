@@ -1,8 +1,8 @@
 //! The odometers of the control units against each other.
 
-use super::{Ctx, MileageReading, Section, UsedCarInput, limits, none};
+use super::{Ctx, MileageReading, Section, UsedCarInput, limits};
 use crate::common::Level;
-use crate::message::{Message, text};
+use crate::message::{Message, none, text};
 
 fn mileage_tolerance(km: f64) -> f64 {
     (km * limits::MILEAGE_TOLERANCE_SHARE).max(limits::MILEAGE_TOLERANCE_KM)

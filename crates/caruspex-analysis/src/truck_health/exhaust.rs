@@ -1,8 +1,8 @@
 //! Exhaust aftertreatment: AdBlue and the particulate filter.
 
-use super::{Ctx, TruckFault, limits, none, spn};
+use super::{Ctx, TruckFault, limits, spn};
 use crate::common::Level;
-use crate::message::{Message, text};
+use crate::message::{Message, none, text};
 use crate::series::latest;
 
 pub(super) fn check_def(c: &mut Ctx) {

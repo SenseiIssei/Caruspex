@@ -1,8 +1,8 @@
 //! The high voltage battery of electric and hybrid cars.
 
-use super::{Ctx, Section, UsedCarInput, limits, none};
+use super::{Ctx, Section, UsedCarInput, limits};
 use crate::common::Level;
-use crate::message::{Message, text};
+use crate::message::{Message, none, text};
 
 fn ask_battery_certificate() -> Message {
     text(
