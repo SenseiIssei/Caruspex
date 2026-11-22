@@ -21,7 +21,9 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use alloc::{Counting, Snapshot, Uncounted, paused, snapshot};
-use caruspex_app_lib::bench::{AppSettings, Job, Sink, Worker, init_english_names};
+use caruspex_app_lib::bench::{
+    AppSettings, Job, LiveEvent, LiveRow, Sink, Worker, init_english_names,
+};
 use caruspex_data::pids::default_live_pids;
 use caruspex_demo::{DemoOptions, DemoTransport, LineStats, LineTiming, SimulatedSerial};
 use caruspex_link::Transport;
@@ -63,6 +65,19 @@ impl Sink for Probe {
     fn emit(&self, event: &str, payload: Value) {
         // What Tauri does with every event before it reaches the window.
         let text = serde_json::to_string(&payload).unwrap_or_default();
+        self.record(event, text);
+    }
+
+    // The window's sink (TauriSink) hands the row to Tauri as it is, which
+    // serializes it once.
+    fn live_value(&self, row: &LiveRow) {
+        let text = serde_json::to_string(&LiveEvent { row }).unwrap_or_default();
+        self.record("live_value", text);
+    }
+}
+
+impl Probe {
+    fn record(&self, event: &str, text: String) {
         let now = Instant::now();
         let prompt = self.stats.as_ref().and_then(|s| s.get().last_prompt);
         paused(|| {
@@ -276,10 +291,11 @@ fn the_live_loop_keeps_to_the_poll_interval_and_allocates_little() {
     // second, whatever the adapter can do.
     assert!(r.values_per_s < 330.0, "{} values/s", r.values_per_s);
     assert!(r.values_per_s > 30.0, "{} values/s", r.values_per_s);
-    // About 37 now, 85 before the copies in the hot path went (see
-    // docs/performance.md): allocation counts do not depend on the machine.
+    // About 23 now, 37 while live_value went through a serde_json::Value,
+    // 85 before the copies in the hot path went (see docs/performance.md):
+    // allocation counts do not depend on the machine.
     assert!(
-        r.allocs_per_value < 70.0,
+        r.allocs_per_value < 45.0,
         "{:.1} allocations per live value",
         r.allocs_per_value
     );

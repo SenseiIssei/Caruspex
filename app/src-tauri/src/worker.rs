@@ -61,6 +61,12 @@ pub trait Sink: Send + Sync + 'static {
     /// Every live value, before it goes out as an event (the trip computer
     /// listens here).
     fn live(&self, _row: &LiveRow) {}
+    /// Every live value as the `live_value` event. The most frequent event
+    /// (up to 24 per tick): the window's sink serializes the row straight to
+    /// JSON instead of building a `Value` of it first.
+    fn live_value(&self, row: &LiveRow) {
+        self.emit("live_value", json!(LiveEvent { row }));
+    }
 }
 
 pub enum Job {
@@ -423,7 +429,7 @@ impl Worker {
     }
     fn emit_live(&self, row: LiveRow) {
         self.sink.live(&row);
-        self.sink.emit("live_value", json!({ "row": row }));
+        self.sink.live_value(&row);
     }
     fn kkl_message(&self, message: impl Into<String>, is_error: bool) {
         self.emit(
