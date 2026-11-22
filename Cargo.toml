@@ -43,13 +43,11 @@ caruspex-tune = { path = "crates/caruspex-tune" }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-thiserror = "2"
 log = "0.4"
 serialport = "4"
 libloading = "0.9"
 btleplug = "0.13"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
-clap = { version = "4", features = ["derive"] }
 miniz_oxide = "0.9"
 # Local time for reports, crash files and the log (chrono is unmaintained,
 # RUSTSEC-2026-0543). The default features read the system time zone; on
