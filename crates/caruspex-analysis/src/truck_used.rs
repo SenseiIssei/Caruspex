@@ -17,10 +17,11 @@
 //! counters, the state of frame, brakes and tyres).
 
 use crate::common::{Level, TrafficLight};
+use crate::message::{Message, raw, text};
 use crate::truck_health::{TruckFault, TruckUnit};
 use crate::used_car::{
-    HealthSummary, Item, Message, MileageReading, NotChecked, Section, UsedCarReport,
-    normalise_vin, raw, text, vin_well_formed,
+    HealthSummary, Item, MileageReading, NotChecked, Section, UsedCarReport, normalise_vin,
+    vin_well_formed,
 };
 
 /// The SPNs of the odometers that are compared.

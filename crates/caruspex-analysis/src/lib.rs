@@ -12,6 +12,7 @@ pub mod common;
 pub mod drive_cycle_guide;
 pub mod health_check;
 pub mod inputs;
+pub mod message;
 pub mod performance_timer;
 pub mod readiness;
 mod series;

@@ -17,8 +17,8 @@ use std::collections::BTreeMap;
 
 use crate::common::{Level, TrafficLight};
 use crate::health_check::TimedValue;
+use crate::message::{Message, raw, text};
 use crate::series::{latest, max_of, median, min_of};
-use crate::used_car::{Message, raw, text};
 
 /// The SPNs the rules read.
 pub mod spn {
