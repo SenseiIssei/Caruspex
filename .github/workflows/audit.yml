@@ -65,10 +65,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Keeps the installed cargo-audit between runs (cache-bin).
+      # Keeps the installed cargo-audit between runs (cache-bin); written on
+      # main only, like the caches of build.yml.
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: cargo-audit-${{ env.CARGO_AUDIT_VERSION }}
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: cargo-audit
         run: |

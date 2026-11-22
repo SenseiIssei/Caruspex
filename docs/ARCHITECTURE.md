@@ -63,6 +63,14 @@ Take "read the fault memory" on the faults page:
 
 The tests of the worker use a `Sink` that collects events in a list (`app/src-tauri/src/worker/tests.rs`).
 
+The checks in `caruspex-analysis` follow one layout: the types, the limits and the function that runs
+everything in the module file (`health_check.rs`, `used_car.rs`, `truck_health.rs`, `truck_used.rs`), one rule
+module per area of the car in the folder of the same name (`health_check/trims.rs`, `used_car/mileage.rs`, ...).
+The texts of the vehicle checks are `message::Message` patterns; statistics over recorded values are in
+`series.rs`. Large files elsewhere are split the same way: `caruspex-demo/src/adapter/` (OBD, UDS, AT commands,
+J1939), `caruspex-record/src/recording/` (JSON, recorder, replay) and `custom_pids/` (equations, Torque CSV,
+reading), `caruspex-cli/src/commands/` (one module per group of commands).
+
 ## Where the data comes from
 
 | Data | Edited in | Generator | Generated into |
@@ -121,8 +129,8 @@ The X-ray page (`app/src/pages/XrayPage.tsx`) shows the connected car, or any ge
 ## Release and updater
 
 - A release starts with `bash tools/release.sh <version>`, which prepares a branch locally (version in
-  `Cargo.toml` and `app/package.json`, `changelog/<version>.md` in German and English, checks, packages, smoke
-  test, screenshots) and pushes nothing.
+  `Cargo.toml` and `app/package.json`, `changelog/<version>.md` in German and English, every check of a pull
+  request through `tools/check_all.sh`, packages, smoke test, screenshots) and pushes nothing.
 - After the pull request is merged, the maintainer pushes the tag `v<version>`. The CI builds and smoke-tests the
   packages on Windows, Linux and macOS; the `release` job checks that the tag matches the version, signs the update
   packages with the updater key held as a repository secret, runs `tools/release_assets.py` (checks every signature

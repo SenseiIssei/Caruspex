@@ -7,7 +7,8 @@
 # 2. version in Cargo.toml (workspace) and app/package.json
 # 3. changelog/<version>.md with a German and an English part (written as a
 #    skeleton if it does not exist yet; the script stops until it is filled)
-# 4. checks, tests, packages and smoke test of this system
+# 4. all checks of a pull request (tools/check_all.sh), packages and smoke
+#    test of this system
 # 5. fresh README screenshots in both languages
 #
 # Afterwards, by hand and only after an explicit go: push the branch, open
@@ -61,17 +62,9 @@ if LC_ALL=C grep -q $'\xe2\x80\x94\|\xe2\x80\x93' "$notes"; then   # U+2014, U+2
     exit 2
 fi
 
-# The first Python that really runs (on Windows "python3" can be a stub that
-# only points to the Microsoft Store).
-python_bin=""
-for candidate in python3 python "py -I"; do
-    if $candidate -c "pass" >/dev/null 2>&1; then python_bin=$candidate; break; fi
-done
-[ -n "$python_bin" ] || { echo "no working Python found" >&2; exit 1; }
-$python_bin tools/i18n_rust.py --strict
-cargo fmt --all --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
+# Every check of a pull request (generators, texts, interface, notices,
+# SBOM, lints, tests), so the release branch is green before it is pushed.
+bash tools/check_all.sh
 cargo update -w   # the new version into Cargo.lock
 REQUIRE_INSTALLER=1 bash tools/package.sh
 # On Windows the smoke test window goes next to the main screen.

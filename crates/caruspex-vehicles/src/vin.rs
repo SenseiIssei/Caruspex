@@ -124,8 +124,6 @@ const TESLA: VinModelCodeRule = VinModelCodeRule::Tesla4;
 const IN_AUSTRIA: Text = Text::new("Österreich", "Austria");
 const IN_GERMANY: Text = Text::new("Deutschland", "Germany");
 const IN_FRANCE: Text = Text::new("Frankreich", "France");
-#[allow(dead_code)]
-const IN_SPAIN: Text = Text::new("Spanien", "Spain");
 const NO_COUNTRY: Text = Text::new("", "");
 
 const fn w(

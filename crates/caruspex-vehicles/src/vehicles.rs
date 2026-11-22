@@ -646,12 +646,6 @@ pub fn find_profile(brand: &str, year: i32) -> Option<&'static VehicleProfile> {
     fallback
 }
 
-/// The "brand" entry that tries all protocols ("Automatisch erkennen" /
-/// "Auto-detect"), in the active language. Use it to preselect that entry.
-pub fn auto_detect_brand() -> &'static str {
-    AUTO_DETECT.get()
-}
-
 pub fn bus_name(bus: BusKind) -> &'static str {
     match bus {
         BusKind::KLine => "K-Line (ISO 9141-2 / KWP2000)",

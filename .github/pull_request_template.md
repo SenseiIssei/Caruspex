@@ -9,6 +9,7 @@
 ## Checks
 
 The CI runs all of these. Tick what you ran yourself (see CONTRIBUTING.md, "What a pull request must pass").
+`bash tools/check_all.sh` runs every one of them in one go and lists what failed.
 
 - [ ] `cargo fmt --all --check`
 - [ ] `cargo clippy --workspace --all-targets -- -D warnings`
