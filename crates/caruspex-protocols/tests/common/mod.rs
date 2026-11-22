@@ -99,6 +99,9 @@ pub struct ScriptState {
     pub obd_sent: Vec<String>,
     /// The answer to 0100 when no reply is scripted for it.
     pub protocol_reply: String,
+    /// The adapter has gone quiet (a pulled cable): commands are still
+    /// listed in `sent`, but nothing comes back, not even a prompt.
+    pub silent: bool,
     headers: bool,
 }
 
@@ -133,6 +136,7 @@ impl ScriptCar {
             sent: Vec::new(),
             obd_sent: Vec::new(),
             protocol_reply: "41 00 BE 1F A8 13".to_string(),
+            silent: false,
             headers: false,
         }));
         (
@@ -150,6 +154,10 @@ impl Transport for ScriptCar {
         let mut cmd = normalize(data);
         let mut s = self.state.lock().unwrap();
         s.sent.push(cmd.clone());
+        if s.silent {
+            self.pending.clear();
+            return true;
+        }
         // The answer count digit after a request (ELM327 v1.3 and later)
         // only tells the adapter when to stop waiting; the script answers
         // the request itself, and obd_sent lists it without the digit.
