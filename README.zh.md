@@ -306,7 +306,7 @@ Caruspex 是我利用业余时间开发的个人爱好项目。有些事情我�
 
 ## 构建
 
-要求：稳定版 Rust 工具链（edition 2024，Rust 1.90 或更新）、带 npm 的 Node 24，以及用于
+要求：稳定版 Rust 工具链（edition 2024，Rust 1.90 或更新）、带 npm 的 Node 26，以及用于
 生成器和翻译检查的 Python 3。在 Linux 上还需要界面和适配器连接所需的系统软件包
 （Debian 和 Ubuntu 的包名）：
 

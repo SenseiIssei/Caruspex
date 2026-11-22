@@ -276,7 +276,7 @@ Die CI (`.github/workflows/build.yml`) prüft zuerst unter Linux Formatierung, e
 
 ## Selbst bauen
 
-Vorausgesetzt: die stabile Rust-Toolchain (Edition 2024, Rust 1.90 oder neuer), Node 24 mit npm und Python 3 für die Generatoren und die Übersetzungsprüfung. Unter Linux kommen die Systempakete dazu, die Oberfläche und Adapteranbindung brauchen (Namen für Debian und Ubuntu):
+Vorausgesetzt: die stabile Rust-Toolchain (Edition 2024, Rust 1.90 oder neuer), Node 26 mit npm und Python 3 für die Generatoren und die Übersetzungsprüfung. Unter Linux kommen die Systempakete dazu, die Oberfläche und Adapteranbindung brauchen (Namen für Debian und Ubuntu):
 
 ```bash
 sudo apt-get install libwebkit2gtk-4.1-dev librsvg2-dev libdbus-1-dev libudev-dev pkg-config

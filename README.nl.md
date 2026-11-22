@@ -306,7 +306,7 @@ de eerste keer met een rechtsklik en "Open".
 
 ## Bouwen
 
-Vereisten: de stabiele Rust-toolchain (edition 2024, Rust 1.90 of nieuwer), Node 24 met npm en Python 3 voor
+Vereisten: de stabiele Rust-toolchain (edition 2024, Rust 1.90 of nieuwer), Node 26 met npm en Python 3 voor
 de generatoren en vertaalcontroles. Op Linux de systeempakketten die de interface en de adapterverbindingen nodig hebben
 (namen voor Debian en Ubuntu):
 

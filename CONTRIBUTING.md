@@ -38,7 +38,7 @@ conventions in [crates/README.md](crates/README.md).
 
 - **Rust**: the stable toolchain, at least the `rust-version` in the root `Cargo.toml` (1.90 at the moment),
   with `rustfmt` and `clippy` (`rustup component add rustfmt clippy`).
-- **Node**: Node 24 (the LTS line the CI uses) with npm.
+- **Node**: Node 26 (the LTS line the CI uses) with npm.
 - **Python 3** (the CI uses 3.12) for the generators and checks in `tools/`. Only the standard library is
   needed for the checks. The examples below say `python`; on Windows use `py -I`.
 - **Linux**: the system packages of the interface and the adapter links (Debian and Ubuntu names):

@@ -306,7 +306,7 @@ apri l'app la prima volta con il clic destro e "Apri".
 
 ## Compilazione
 
-Requisiti: la toolchain Rust stabile (edizione 2024, Rust 1.90 o successivo), Node 24 con npm e Python 3 per
+Requisiti: la toolchain Rust stabile (edizione 2024, Rust 1.90 o successivo), Node 26 con npm e Python 3 per
 i generatori e i controlli delle traduzioni. Su Linux i pacchetti di sistema di cui hanno bisogno l'interfaccia e i collegamenti con l'adattatore
 (nomi Debian e Ubuntu):
 

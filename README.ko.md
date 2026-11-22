@@ -306,7 +306,7 @@ Caruspex는 제가 여가 시간에 만드는 취미 프로젝트입니다. 혼�
 
 ## 빌드
 
-필요한 것: 안정 버전 Rust 툴체인(edition 2024, Rust 1.90 이상), npm이 포함된 Node 24, 그리고 생성기와 번역 검사용
+필요한 것: 안정 버전 Rust 툴체인(edition 2024, Rust 1.90 이상), npm이 포함된 Node 26, 그리고 생성기와 번역 검사용
 Python 3. Linux에서는 화면과 어댑터 연결에 필요한 시스템 패키지도 필요합니다
 (Debian과 Ubuntu에서의 이름).
 

@@ -306,7 +306,7 @@ otwórz aplikację za pierwszym razem prawym przyciskiem myszy i "Otwórz".
 
 ## Budowanie
 
-Wymagania: stabilny toolchain Rusta (edycja 2024, Rust 1.90 lub nowszy), Node 24 z npm oraz Python 3 dla
+Wymagania: stabilny toolchain Rusta (edycja 2024, Rust 1.90 lub nowszy), Node 26 z npm oraz Python 3 dla
 generatorów i kontroli tłumaczeń. W Linuksie pakiety systemowe potrzebne interfejsowi i łączom adapterów
 (nazwy dla Debiana i Ubuntu):
 
