@@ -10,7 +10,9 @@ pub type LogFn = Box<dyn Fn(&str) + Send + Sync>;
 pub trait Transport: Send {
     /// Sends everything or returns false.
     fn write(&mut self, data: &[u8]) -> bool;
-    /// Whatever arrives within `timeout_ms`. Empty = nothing there.
+    /// Whatever arrives within `timeout_ms`. Empty = nothing there. A
+    /// transport whose link is gone waits the time as well, so a caller
+    /// that reads until its deadline does not spin.
     fn read(&mut self, timeout_ms: u64) -> Vec<u8>;
     /// Drops everything already received and not read yet.
     fn flush_input(&mut self);

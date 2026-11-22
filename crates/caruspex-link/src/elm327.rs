@@ -1,5 +1,8 @@
 //! ELM327 driver: initialisation, protocol selection, commands, response parsing.
 
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+
 use caruspex_i18n::l;
 
 use crate::timing::{now_ms, sleep_ms};
@@ -665,20 +668,30 @@ pub struct Elm327 {
     count_hint_misses: u8,
     /// Answer frames per request, learned from plain requests.
     answer_counts: Vec<AnswerCount>,
+    /// Raised by another thread to end the exchange in flight
+    /// ([`Elm327::set_interrupt`]).
+    interrupt: Option<Arc<AtomicBool>>,
+    /// The last command got nothing back at all, not even a prompt.
+    silent: bool,
 }
 
 /// Reads until a prompt came or `ms` passed; true if the prompt came.
-fn wait_for_prompt(t: &mut dyn Transport, ms: u64) -> bool {
+fn wait_for_prompt(t: &mut dyn Transport, ms: u64, interrupt: Option<&AtomicBool>) -> bool {
     let deadline = now_ms() + ms;
     loop {
         let now = now_ms();
-        if now >= deadline {
+        if now >= deadline || raised(interrupt) {
             return false;
         }
         if t.read((deadline - now).min(50)).contains(&b'>') {
             return true;
         }
     }
+}
+
+/// Whether the interrupt flag of [`Elm327::set_interrupt`] is up.
+pub(crate) fn raised(interrupt: Option<&AtomicBool>) -> bool {
+    interrupt.is_some_and(|flag| flag.load(Ordering::SeqCst))
 }
 
 /// How many answer lines a request got last time.
@@ -741,6 +754,34 @@ impl Elm327 {
             count_hint_enabled: true,
             count_hint_misses: 0,
             answer_counts: Vec::new(),
+            interrupt: None,
+            silent: false,
+        }
+    }
+
+    /// A flag another thread may raise to end what the driver is doing: the
+    /// command in flight returns within one read of the transport (at most
+    /// 120 ms) as if the adapter had not answered, and every further command
+    /// returns at once without being sent, until the flag is lowered again.
+    /// The app's Disconnect raises it, so it does not wait for a search or a
+    /// live round on a silent adapter, where every request costs a whole
+    /// timeout.
+    pub fn set_interrupt(&mut self, flag: Arc<AtomicBool>) {
+        self.interrupt = Some(flag);
+    }
+
+    /// Whether the flag of [`Elm327::set_interrupt`] is up.
+    pub fn interrupted(&self) -> bool {
+        raised(self.interrupt.as_deref())
+    }
+
+    /// The answer to a command that was cut short or not sent because the
+    /// interrupt flag is up.
+    fn interrupted_result() -> ElmResult {
+        ElmResult {
+            status: ElmStatus::AdapterError,
+            message: l("Kein Adapter verbunden.", "No adapter connected.").to_string(),
+            ..ElmResult::default()
         }
     }
 
@@ -903,10 +944,11 @@ impl Elm327 {
         // next command: once the prompt is there, waiting longer gains
         // nothing. The same for the answer to the lone carriage return.
         // Without a prompt this waits as long as it always did.
-        wait_for_prompt(t.as_mut(), 300);
+        let interrupt = self.interrupt.as_deref();
+        wait_for_prompt(t.as_mut(), 300, interrupt);
         t.flush_input();
         t.write(b"\r");
-        wait_for_prompt(t.as_mut(), 200);
+        wait_for_prompt(t.as_mut(), 200, interrupt);
         t.flush_input();
     }
 
@@ -914,11 +956,15 @@ impl Elm327 {
     pub fn send(&mut self, command: &str, timeout_ms: u64) -> ElmResult {
         let mut result = ElmResult::default();
         let scale = self.timeout_scale;
+        let interrupt = self.interrupt.as_deref();
         let Some(t) = self.transport.as_mut() else {
             result.status = ElmStatus::AdapterError;
             result.message = l("Kein Adapter verbunden.", "No adapter connected.").to_string();
             return result;
         };
+        if raised(interrupt) {
+            return Self::interrupted_result();
+        }
         t.flush_input();
         let mut line = command.as_bytes().to_vec();
         line.push(b'\r');
@@ -930,16 +976,26 @@ impl Elm327 {
 
         let mut buffer: Vec<u8> = Vec::new();
         let deadline = now_ms() + wait_ms;
+        let mut prompt = false;
         while now_ms() < deadline {
             let chunk = t.read(120);
             if !chunk.is_empty() {
                 buffer.extend_from_slice(&chunk);
                 // Earlier chunks had no prompt, or the loop would have ended.
                 if chunk.contains(&b'>') {
+                    prompt = true;
                     break;
                 }
             }
+            if raised(interrupt) {
+                break;
+            }
         }
+        // Cut short: what came so far is no whole answer.
+        if !prompt && raised(interrupt) {
+            return Self::interrupted_result();
+        }
+        self.silent = buffer.is_empty();
         if buffer.is_empty() {
             result.status = ElmStatus::AdapterError;
             result.message = format!(
@@ -1330,10 +1386,11 @@ impl Elm327 {
         let mut line = command.as_bytes().to_vec();
         line.push(b'\r');
         t.write(&line);
+        let interrupt = self.interrupt.as_deref();
         let mut buffer: Vec<u8> = Vec::new();
         let deadline = now_ms() + duration_ms;
         let complete = |b: &[u8]| b.iter().filter(|&&c| c == b'\r').count();
-        while now_ms() < deadline && complete(&buffer) <= max_lines {
+        while now_ms() < deadline && complete(&buffer) <= max_lines && !raised(interrupt) {
             buffer.extend(t.read(50));
             if buffer.contains(&b'>') {
                 break; // stopped by itself (BUFFER FULL)
@@ -1343,7 +1400,7 @@ impl Elm327 {
             // Any character ends the monitor; the prompt follows.
             t.write(b"\r");
             let stop = now_ms() + 1500;
-            while now_ms() < stop {
+            while now_ms() < stop && !raised(interrupt) {
                 buffer.extend(t.read(50));
                 if buffer.contains(&b'>') {
                     break;
@@ -1694,9 +1751,12 @@ impl Elm327 {
 
     /// Closes the protocol (ATPC) and drops the transport.
     pub fn disconnect(&mut self) {
-        if self.transport.is_some() && self.connected {
+        // An adapter that said nothing at all to the last command will not
+        // answer this one either; asking would only cost the whole wait.
+        if self.transport.is_some() && self.connected && !self.silent {
             self.at("PC", 2000);
         }
+        self.silent = false;
         self.transport = None;
         self.connected = false;
         self.headers = false;

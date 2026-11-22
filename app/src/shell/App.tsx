@@ -2,7 +2,7 @@
 // soft transition, the log drawer, toasts and the report preview. All pages
 // stay mounted, the way the Qt stack kept its widgets, so every page keeps
 // listening to the backend while another one is on screen.
-import { memo, useEffect, useRef, useState, type ComponentType } from "react";
+import { memo, startTransition, useEffect, useRef, useState, type ComponentType } from "react";
 import { call, on, type CrashReport, type UpdateInfo } from "../api";
 import { confirm } from "../components/Modal";
 import { Toaster } from "../components/Toast";
@@ -16,7 +16,7 @@ import { appendLog, applySettings, settingsStore } from "../state/session";
 import { openSetup, setupStore } from "../state/setup";
 import { SetupAssistant } from "./SetupAssistant";
 import { LogDrawer } from "./LogDrawer";
-import { navigate, navStore, useCurrentPage } from "./nav";
+import { markPagesMounted, navigate, navStore, pagesMounted, useCurrentPage } from "./nav";
 import { PAGES, isPageId, type PageId } from "./pages";
 import { Sidebar } from "./Sidebar";
 import { TitleBar } from "./TitleBar";
@@ -28,9 +28,15 @@ const MW = "caruspex::MainWindow";
 
 // One page in its slot. Memoised, so a change of page renders the two pages
 // whose visibility changed, not all of them.
+// A page that was on screen once keeps its layout while hidden (shell.css,
+// .page-slot.kept): showing it again skips laying it out anew, which took
+// the fault code lexicon about a quarter of a second each time. Pages never
+// shown stay display: none, so nothing measures them at start.
 const PageSlot = memo(function PageSlot({ id, active, Component }: { id: PageId; active: boolean; Component: ComponentType }) {
+  const [kept, setKept] = useState(active);
+  if (active && !kept) setKept(true);
   return (
-    <div className={`page-slot${active ? " active" : ""}`} hidden={!active} data-page={id}>
+    <div className={`page-slot${active ? " active" : ""}${kept ? " kept" : ""}`} hidden={!active} inert={!active} data-page={id}>
       <PageActiveContext.Provider value={active}>
         <Component />
       </PageActiveContext.Provider>
@@ -41,9 +47,22 @@ const PageSlot = memo(function PageSlot({ id, active, Component }: { id: PageId;
 function PageHost() {
   const current = useCurrentPage();
   const scroller = useRef<HTMLDivElement>(null);
+  // The page on screen first, so the window shows it before the other 28
+  // pages are built (they were more than half of the work before the first
+  // picture). The rest follows right after in a transition, which React
+  // builds in small slices; once they are mounted, pagesMounted() resolves
+  // and the start-up (app_info, the command line tasks, auto-connect) goes
+  // on, so every page listens before anything is connected.
+  const [all, setAll] = useState(false);
+  const [seen] = useState(() => new Set<PageId>());
+  seen.add(current);
+  useEffect(() => {
+    if (!all) startTransition(() => setAll(true));
+    else markPagesMounted();
+  }, [all]);
   return (
     <div className="pages" ref={scroller}>
-      {PAGES.map(({ id, component }) => (
+      {PAGES.filter(({ id }) => all || seen.has(id)).map(({ id, component }) => (
         <PageSlot key={id} id={id} active={id === current} Component={component} />
       ))}
     </div>
@@ -132,6 +151,10 @@ export function App({ startPage }: { startPage: string | null }) {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      // app_info starts the tasks of the command line in the backend (a
+      // connection 300 ms later), so every page has to listen first.
+      await pagesMounted();
+      if (cancelled) return;
       try {
         const info = await call("app_info");
         if (!cancelled) setVersion(info.version);

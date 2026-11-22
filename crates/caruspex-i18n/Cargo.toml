@@ -4,6 +4,9 @@ description = "Languages of Caruspex: German and English in the code, every othe
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [dependencies]
 miniz_oxide.workspace = true

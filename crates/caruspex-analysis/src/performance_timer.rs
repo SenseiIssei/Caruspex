@@ -262,7 +262,7 @@ pub fn measure_quarter_mile(s: &[SpeedSample]) -> TimedRun {
             }
             let va = prev.kmh / 3.6;
             let vb = cur.kmh / 3.6;
-            let segment = (va + vb) / 2.0 * dt;
+            let segment = f64::midpoint(va, vb) * dt;
             if distance + segment >= QUARTER_MILE_METERS {
                 // Solve for the moment inside the segment where the
                 // distance is reached, with the speed rising linearly.
@@ -319,7 +319,7 @@ pub fn measure_braking(s: &[SpeedSample], from_kmh: f64) -> TimedRun {
             lowest = lowest.min(cur.kmh);
             let dt = cur.t - prev.t;
             if dt > 0.0 {
-                distance += (prev.kmh + cur.kmh) / 2.0 / 3.6 * dt;
+                distance += f64::midpoint(prev.kmh, cur.kmh) / 3.6 * dt;
             }
             if cur.kmh < STANDSTILL {
                 run.end_time = cur.t;

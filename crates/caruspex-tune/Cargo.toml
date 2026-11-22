@@ -4,6 +4,9 @@ description = "Tuning simulator: a transparent full-load model of the BMW N55 en
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 # Deliberately no link, protocol or recording crate: this crate computes and
 # nothing else, so it cannot reach a car even by mistake.

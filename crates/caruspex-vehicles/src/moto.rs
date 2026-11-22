@@ -17,7 +17,7 @@
 
 use caruspex_i18n::{Text, l};
 
-use crate::catalog::{Connector, VehicleGeneration, connector_for};
+use crate::catalog::{Connector, VehicleGeneration};
 
 /// First model year in which every new motorcycle must meet Euro 5.
 pub const EURO5_ALL: i32 = 2021;
@@ -167,9 +167,4 @@ pub fn connect_steps() -> Vec<&'static str> {
             "Run the engine for live values only outdoors, with the motorcycle parked safely.",
         ),
     ]
-}
-
-/// True when the connector of this generation and year is a motorcycle plug.
-pub fn has_moto_plug(g: &VehicleGeneration, year: i32) -> bool {
-    connector_for(g, year) == Connector::Moto
 }

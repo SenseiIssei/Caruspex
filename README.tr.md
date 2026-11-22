@@ -306,7 +306,7 @@ uygulamayı ilk kez sağ tıklayıp "Aç" ile açın.
 
 ## Derleme
 
-Gereksinimler: kararlı Rust araç zinciri (edition 2024, Rust 1.90 veya daha yeni), npm'li Node 24 ve
+Gereksinimler: kararlı Rust araç zinciri (edition 2024, Rust 1.90 veya daha yeni), npm'li Node 26 ve
 üreticiler ile çeviri denetimleri için Python 3. Linux'ta arayüzün ve adaptör bağlantılarının ihtiyaç duyduğu sistem paketleri
 (Debian ve Ubuntu adlarıyla):
 

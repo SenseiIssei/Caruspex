@@ -306,7 +306,7 @@ abre la aplicación la primera vez con clic derecho y "Abrir".
 
 ## Compilación
 
-Requisitos: la cadena de herramientas estable de Rust (edición 2024, Rust 1.90 o posterior), Node 24 con npm y Python 3 para
+Requisitos: la cadena de herramientas estable de Rust (edición 2024, Rust 1.90 o posterior), Node 26 con npm y Python 3 para
 los generadores y las revisiones de traducciones. En Linux, los paquetes del sistema que necesitan la interfaz y los enlaces con el adaptador
 (nombres de Debian y Ubuntu):
 

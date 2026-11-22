@@ -4,6 +4,9 @@ description = "A small PDF 1.4 writer: text in the standard fonts, lines, boxes,
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 # No dependencies on purpose: the command line tool writes its report with
 # this and nothing else.

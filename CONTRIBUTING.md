@@ -38,7 +38,7 @@ conventions in [crates/README.md](crates/README.md).
 
 - **Rust**: the stable toolchain, at least the `rust-version` in the root `Cargo.toml` (1.90 at the moment),
   with `rustfmt` and `clippy` (`rustup component add rustfmt clippy`).
-- **Node**: Node 24 (the LTS line the CI uses) with npm.
+- **Node**: Node 26 (the LTS line the CI uses) with npm.
 - **Python 3** (the CI uses 3.12) for the generators and checks in `tools/`. Only the standard library is
   needed for the checks. The examples below say `python`; on Windows use `py -I`.
 - **Linux**: the system packages of the interface and the adapter links (Debian and Ubuntu names):
@@ -123,7 +123,16 @@ Example: `cargo run -p caruspex-app -- --demo --mode pro --language en --page fa
 ## What a pull request must pass
 
 The CI (`.github/workflows/build.yml`) runs these on every pull request. Run them before you push; all of them
-work offline and without secrets. On Linux and macOS:
+work offline and without secrets. One command runs all of them in the order of the CI, keeps going after a
+failure and ends with a list of every step with its time:
+
+```bash
+bash tools/check_all.sh              # everything below
+bash tools/check_all.sh --no-npm-ci  # keep app/node_modules, faster on a second run
+bash tools/check_all.sh --android    # plus clippy of the app for Android (needs ANDROID_HOME with an NDK)
+```
+
+The single steps, on Linux and macOS:
 
 ```bash
 cargo fmt --all --check
@@ -150,6 +159,8 @@ npm --prefix app ci
 python tools/gen_notices.py --check
 I18N_STRICT=1 npm --prefix app run build
 I18N_STRICT=1 npm --prefix app test
+python tools/bundle_budget.py
+python tools/sbom.py --check
 
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace

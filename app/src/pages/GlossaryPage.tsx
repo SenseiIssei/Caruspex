@@ -1,10 +1,10 @@
 // The glossary under Wissen: every technical word Caruspex uses, in plain
 // words. The words themselves carry a short hint wherever they appear
 // (components/Term.tsx); a click there jumps here.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../components/Icon";
 import { Card, EmptyState, Page, PageHeader, TextInput, cx } from "../components/ui";
-import { locale, translator } from "../i18n";
+import { language, locale, translator } from "../i18n";
 import { GLOSSARY, type TermId } from "../lib/glossary";
 import { useAppEvent } from "../lib/hooks";
 import "./GlossaryPage.css";
@@ -28,10 +28,19 @@ export default function GlossaryPage() {
     el?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [marked]);
 
+  // Translated, lower-cased for the search and sorted once per language,
+  // not on every render (the page renders each time it is shown).
+  const lang = language();
+  const all = useMemo(() => {
+    const collator = new Intl.Collator(locale());
+    return GLOSSARY.map((e) => {
+      const entry = { id: e.id, term: e.term(), short: e.short(), long: e.long() };
+      return { ...entry, haystack: `${entry.term} ${entry.short} ${entry.long}`.toLocaleLowerCase() };
+    }).sort((a, b) => collator.compare(a.term, b.term));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
   const needle = query.trim().toLocaleLowerCase();
-  const entries = GLOSSARY.map((e) => ({ id: e.id, term: e.term(), short: e.short(), long: e.long() }))
-    .filter((e) => !needle || `${e.term} ${e.short} ${e.long}`.toLocaleLowerCase().includes(needle))
-    .sort((a, b) => a.term.localeCompare(b.term, locale()));
+  const entries = needle ? all.filter((e) => e.haystack.includes(needle)) : all;
 
   return (
     <Page className="glossary-page">

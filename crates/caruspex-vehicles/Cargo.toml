@@ -4,6 +4,9 @@ description = "VIN decoding and the vehicle catalog: brands, models, generations
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [dependencies]
 caruspex-i18n.workspace = true

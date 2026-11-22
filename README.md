@@ -308,7 +308,7 @@ open the app the first time with right click and "Open".
 
 ## Building
 
-Requirements: the stable Rust toolchain (edition 2024, Rust 1.90 or newer), Node 24 with npm, and Python 3 for
+Requirements: the stable Rust toolchain (edition 2024, Rust 1.90 or newer), Node 26 with npm, and Python 3 for
 the generators and translation checks. On Linux the system packages the interface and the adapter links need
 (Debian and Ubuntu names):
 

@@ -196,9 +196,13 @@ impl<S: RfcommSocket> Transport for RfcommTransport<S> {
 
     /// Waits for the first bytes, then takes whatever else is already there.
     fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        let started = std::time::Instant::now();
         let mut out = Vec::new();
         if self.pull(&mut out, timeout_ms) > 0 {
             while out.len() < READ_LIMIT && self.pull(&mut out, 0) > 0 {}
+        } else if self.disconnected {
+            // A broken connection answers at once.
+            crate::timing::wait_out(started, timeout_ms);
         }
         out
     }
@@ -1114,6 +1118,20 @@ mod tests {
         assert!(!t.write(b"0100\r"));
         assert!(t.read(100).is_empty());
         assert!(wire.lock().unwrap().sent.is_empty());
+    }
+
+    #[test]
+    fn a_closed_connection_waits_instead_of_spinning() {
+        use std::time::{Duration, Instant};
+        let (mut t, _) = transport(vec![Incoming::Closed]);
+        for _ in 0..2 {
+            let started = Instant::now();
+            assert!(t.read(60).is_empty());
+            // The driver reads in a loop until its deadline; a read that
+            // came back at once would spin a core for the whole wait.
+            assert!(started.elapsed() >= Duration::from_millis(50));
+        }
+        assert!(t.is_disconnected());
     }
 
     #[test]

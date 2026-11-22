@@ -64,7 +64,7 @@ machine, before and after a change.
 | `caruspex-protocols` `a_live_round_allocates_little` | under 220 allocations per round of 6 PIDs (314 before) | about 110 |
 | `caruspex-protocols` `the_live_loop_does_not_grow` | heap grows less than 64 KiB over 3000 rounds | 0 |
 | `caruspex-protocols` `a_round_on_a_slow_line_costs_one_request_per_six_pids` | one request per round, the answer count on all but the first, under 150 ms per round at 38400 baud | 15 requests, 14 with the count, about 35 ms |
-| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 70 allocations per live value (85 before), heap growth under 256 KiB in 2 s | about 192 values per second, 37 allocations per value |
+| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 45 allocations per live value (85 in 0.16, 37 with the event through a `Value`), heap growth under 256 KiB in 2 s | about 192 values per second, 23 allocations per value |
 | `caruspex-app` `an_answer_reaches_the_sink_quickly` | median under 50 ms from the prompt to the event at 115200 baud, best of three runs (shared CI macOS runners reach 15 ms, once 50 ms) | under 1 ms |
 | `caruspex-record` `a_thirty_minute_recording_is_read_quickly` | `live_frames` reads 30 minutes of CAN 29 bit with headers (36 000 rounds, 144 006 events, 11 MB) in under 20 s in a debug build | about 1.3 s debug, 0.2 s release |
 | `caruspex-link` `count_hint.rs` | the answer count digit: learned, used, dropped when refused or when it loses answers, relearned every 32nd request | |
@@ -133,6 +133,46 @@ The OBDLink rows of the protocols report change less: with the batched commands 
   the worker hands its `json!` payloads for log lines, busy and live values straight to the sink instead of
   copying the finished `Value` once more through `serde_json::to_value`.
 
+### Hangs, dead links and the window thread (November 2026)
+
+The worker runs one job after the other, so anything that waits long inside a job also holds every job
+behind it, Disconnect included. Measured with the tests named in brackets, Windows 11, debug builds unless
+release is said.
+
+| What | Before | After |
+|---|---|---|
+| Disconnect during a live round on an adapter that fell silent (`disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round`) | over 20 s (the request in flight, six single requests of 4 s each, ATPC) | 2.1 s, of which 2 s are the ATPC |
+| Disconnect during a control unit scan, health check or used car check | until the job ended | the job is cancelled, the request in flight ends within 120 ms |
+| Live round of 6 PIDs on a silent adapter, CAN / K-line (`a_silent_adapter_costs_one_timeout_per_round_and_keeps_the_batch_memory`) | 7 / 6 timeouts of 4 s, and on CAN six requests per round for the rest of the session | 1 timeout, the PIDs stay batched |
+| Reads of a closed TCP connection in 300 ms (`a_connection_the_adapter_closed_waits_instead_of_spinning`) | 138 289 (a core at 100 %) | 7 |
+| Connecting to a Wi-Fi address nobody answers | 21 s (Windows), up to 2 min (Linux) | 5 s |
+| A Bluetooth LE call that never finishes | waits forever | fails after its limit (scan + 20 s, connect 60 s) |
+| Program end | the process ended while the worker might still close the adapter | waits up to 3 s for ATPC and the port |
+| Share recording of 30 minutes (11 MB, release) | 0.35 to 0.7 s on the window's thread | on a thread of its own |
+| Worker, allocations per live value, JSON for the window included (release report) | 37.3 (4047 bytes) | 23.3 (2711 bytes) |
+
+- **Interrupting the driver.** `Elm327::set_interrupt` takes a flag another thread may raise: the command in
+  flight ends within one read (at most 120 ms), further commands return at once without being sent. The
+  app's Disconnect (`WorkerHandle::close`) cancels a running scan or check and raises the flag; the worker
+  lowers both when it reaches the close, so the ATPC goes out as before. `disconnect` leaves the ATPC out when
+  the adapter said nothing at all to the last command. Ending the program does the same and waits up to 3 s.
+- **Silence is not a refusal.** A request that got no byte at all (not even NO DATA or a prompt) means the
+  adapter is gone or hung: `request_many` hands the same answer to the requests after it without sending them,
+  and `read_live_batch` keeps the PIDs batched and skips the single requests of that round.
+- **Dead links wait like quiet ones.** A pulled USB cable, a closed Wi-Fi connection or a lost Bluetooth
+  adapter answered every `read` at once with nothing; the driver and the K-line code read in a loop until their
+  deadline and spun a core during every request. Serial, TCP, RFCOMM and Bluetooth LE now wait out the time
+  asked (`timing::wait_out`). A healthy port waits that long anyway, so no timing the control units see
+  changes.
+- **The window's thread.** A Tauri command without `async` runs on the thread of the window. The lists of
+  J2534 devices and of PCAN and Kvaser channels (driver DLLs of other makers) and Share recording run with
+  `spawn_blocking` now. The lookups (catalog, PID table, fault codes) stay: under 3 ms on their first call
+  (catalog search 2.9 ms, PID table 0.9 ms, release); the fault code lexicon (19 ms) was async already.
+  Saving settings and the garage stays a plain command on purpose: as async commands two saves could overtake
+  each other and the older state would be written last.
+- **Live values straight to JSON.** `Sink::live_value` hands the row to Tauri, which serializes it once; the
+  `serde_json::Value` built for every live value before is gone. The payload is the same.
+
 ### Looked at and left as it is
 
 - **Events to the window.** Every live value is its own `live_value` event, and many pages listen to it.
@@ -179,6 +219,22 @@ The interface is React 19 in a WebView (WebView2 on Windows). Two facts shape ev
   table of readings is its own component with one memoised row per value. `StatTile` is memoised.
 - **Hidden pages do not poll.** Timers that refresh what is on screen run only while `usePageActive()` is
   true (the "What should I do now?" advice, the live table, the X-ray labels).
+- **The first picture comes first.** `PageHost` (`app/src/shell/App.tsx`) mounts the page on screen, and the
+  other pages in a transition right after it. The start-up in `App` waits for `pagesMounted()`
+  (`app/src/shell/nav.ts`) before it asks for `app_info`, which starts the tasks of the command line in the
+  backend, so every page listens before anything is connected. Whatever has to be heard before that belongs
+  in a store in `app/src/state/` or in `App`.
+- **A page shown once keeps its layout while hidden.** Its slot gets the class `kept`: hidden with
+  `content-visibility: hidden` and `inert` instead of `display: none`, so showing it again does not lay it out
+  anew. Pages never shown stay `display: none`. Reading a size (`clientWidth`, `getBoundingClientRect`,
+  `scrollHeight`) inside a hidden page forces the layout of that page; do it in an event handler, a
+  `ResizeObserver` callback or while the page is active.
+- **No measuring in mount effects.** A `useLayoutEffect` that reads a size when it mounts forces a layout of
+  the whole window in the middle of a commit; `VehicleDiagram` takes its size from its `ResizeObserver`.
+- **Growing text is appended.** The log panel (`app/src/shell/LogDrawer.tsx`) adds one block per batch of
+  lines and drops whole blocks at the top; while it is closed it does not update at all.
+- **Intl formatters are kept.** `localeNumber`, `localeDate` and `localeDateTime` (`app/src/i18n/index.ts`)
+  keep one formatter per language and form; building one costs about two hundred times as much as using it.
 - **Large data loads on the first visit.** The fault code lexicon fetches and draws its table when it is first
   opened (it was ten thousand elements at start).
 - **One backend subscription per event name.** `app/src/api/hub.ts` shares one Tauri `listen()` between all
@@ -303,9 +359,59 @@ The heap of the app barely changes: it never held the core catalogs, and a catal
 once parsed. What changed for the app is what it carries and what it parses at start and on a language switch.
 The browser preview still loads the demo backend (927 KB) and the core catalog of its language (580 to 990 KB).
 
+### Second round (22 November 2026)
+
+Branch `opt-ui`. The demo backend of the browser preview now writes one raw log line per live tick, like the
+worker does with "Log raw adapter traffic" on (the default), so the browser numbers include the log panel.
+"App" is a debug build of `caruspex-app` on Windows 11 with WebView2, the demo car, `--page live-run`, measured
+through WebView2's DevTools port; the interface in it is the same release bundle as in a release build. The
+machine was busy with other builds during these runs, so times vary by about a third between runs; the
+counts (renders, commits, layouts) do not.
+
+| What | Before | After |
+|---|---|---|
+| Live page, app, 60 s into a session, log closed: main thread / layout per s | 264 to 316 / 206 to 241 ms | 46 to 63 / 3 to 4 ms |
+| Live page, app, same with the log open | 277 to 351 / 215 to 253 ms | 119 / 39 ms |
+| Live page, browser, after 60 s (about 1700 log lines): main thread per s | 233 to 248 ms | 64 to 69 ms |
+| Live page, browser, 18 s after start: commits / renders / main thread per s | 10 / 115 / 74 ms | 4 / 60 / 21 ms |
+| Start page with gauges, browser: commits / renders per s | 31 / 173 | 25 / 121 |
+| Start, app: first contentful paint (median of 4) | 232 ms | 178 ms |
+| Start, browser, CPU 4x slower: frame after the first React commit (from navigation, demo backend included) | 710 to 796 ms | 271 to 310 ms |
+| Start, browser, CPU 4x slower: long task holding the first commit / components in it | 481 to 544 ms / 699 | 61 to 65 ms / 81 |
+| Start, browser, CPU 4x slower: all pages mounted | 660 ms | 808 ms |
+| Fault code lexicon shown again, browser, CPU 4x slower | 619 to 1295 ms | 101 to 357 ms |
+| Glossary shown again, same | 112 to 130 ms | 67 to 70 ms |
+| `localeNumber`, Node 24 | 148 us per call | 0.67 us per call |
+| X-ray page opened 20 times, rebuilt 20 times | no leak | no leak (WebGL buffers 267, textures 8, programs 11 throughout) |
+
+What was behind it:
+
+- **The log panel** joined up to 5000 lines into one text and laid all of it out again every 150 ms while
+  values streamed, also when it was closed. That was most of the main thread on every page during a live
+  session in the app. It now appends one block per batch and does nothing while closed (`LogDrawer.tsx`).
+- **The start** read the size of the car picture of the start page in a layout effect, which forced a layout
+  of the whole window in the middle of the first commit and a second render; and it built all 29 pages before
+  the first picture. Now the picture measures with its `ResizeObserver` and `PageHost` mounts the visible page
+  first. The other pages are mounted a little later than before (about 150 ms with the CPU 4x slower), and
+  the start-up waits for them before it talks to the backend.
+- **Showing a page again** laid it out from scratch (`display: none`); the lexicon table has 3000 rows.
+  Pages shown once keep their layout now (`content-visibility: hidden`), the lexicon rows are memoised and
+  its search uses `useDeferredValue`, the glossary sorts once per language.
+
+Run again with `py -I tools/ui_measure.py live <base> live-run 60` (and `... 60 open`), `firstframe <base> 4`
+and `switch <base> 4`.
+
 ### Still open
 
-- `ThrottlePage.tsx` should show its readings with `useLiveValues` like the other pages.
+- `PageSlot` renders the whole page again on every switch, because `<Component />` is a new element each
+  time. A memoised element would leave pages that do not call `usePageActive()` alone, but a page that reads
+  changing state outside a hook during render would then show old values until its next render; that needs a
+  pass over every page first.
+- The X-ray view draws every frame while a fault pulses (the demo car has faults), and the chips over the 3D
+  view blur what is behind them (`backdrop-filter`), which the GPU redoes for every frame. Both are part of
+  the look; a slower pulse or chips without blur would change it.
+- With the log panel open during a live session the app still spends about 40 ms a second on layout, mostly
+  for following the end of the text.
 - The core catalogs of the demo build repeat every English text as the key; a shared list of the English
   texts and one array per language would cut about 300 KB from each, for the browser preview only.
 - `XrayPage` keeps the layout code of the 3D view (about 110 kB) in the entry chunk, because the page

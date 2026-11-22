@@ -63,6 +63,13 @@ pub struct FaultRow {
     pub ecu: String,
 }
 
+/// The payload of the `live_value` event, `{ "row": ... }`, serialized
+/// straight from the row.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct LiveEvent<'a> {
+    pub row: &'a LiveRow,
+}
+
 #[derive(Clone, Debug, Default, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct LiveRow {

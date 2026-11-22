@@ -4,6 +4,9 @@ description = "SAE J2534 PassThru drivers: the driver DLL in the program, or a 3
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [[bin]]
 # Built for i686-pc-windows-msvc and shipped next to caruspex.exe: loads a

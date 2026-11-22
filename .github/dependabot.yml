@@ -59,9 +59,9 @@ updates:
     groups:
       interface:
         patterns: ["*"]
-    # The types of Node follow the Node the project runs on (24, the
+    # The types of Node follow the Node the project runs on (26, the
     # node-version in .github/workflows/build.yml): a new major of
-    # @types/node describes APIs that Node 24 does not have. It is raised by
+    # @types/node describes APIs that Node 26 does not have. It is raised by
     # hand together with Node itself; minor and patch updates still come.
     ignore:
       - dependency-name: "@types/node"
@@ -69,7 +69,8 @@ updates:
 
   # The Android project that tauri generated (app/src-tauri/gen/android):
   # the Android Gradle plugin, Kotlin and the AndroidX libraries of the APK.
-  # Their versions follow tauri's template, so no monthly version updates
+  # Since 0.22 they are newer than tauri's template and raised by hand after
+  # a local APK build (docs/android.md), so no monthly version updates
   # (open-pull-requests-limit 0); security updates still come when they are
   # switched on in the repository settings (SECURITY.md, "Dependencies").
   - package-ecosystem: gradle

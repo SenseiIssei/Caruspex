@@ -306,7 +306,7 @@ ouvrez l'application la première fois par un clic droit et « Ouvrir ».
 
 ## Compilation
 
-Prérequis : la chaîne d'outils Rust stable (édition 2024, Rust 1.90 ou plus récent), Node 24 avec npm, et Python 3 pour
+Prérequis : la chaîne d'outils Rust stable (édition 2024, Rust 1.90 ou plus récent), Node 26 avec npm, et Python 3 pour
 les générateurs et les vérifications des traductions. Sous Linux, les paquets système dont l'interface et les liaisons avec l'adaptateur ont besoin
 (noms Debian et Ubuntu) :
 

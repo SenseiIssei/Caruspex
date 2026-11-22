@@ -34,7 +34,7 @@ mod worker;
 #[doc(hidden)]
 pub mod bench {
     pub use crate::knowledge::init_english_names;
-    pub use crate::rows::LiveRow;
+    pub use crate::rows::{LiveEvent, LiveRow};
     pub use crate::settings::AppSettings;
     pub use crate::worker::{Job, Sink, Worker};
 }
@@ -50,7 +50,7 @@ use tauri::{AppHandle, Emitter, Manager, WebviewWindowBuilder};
 
 use crate::cli::Cli;
 use crate::measure::{Trip, TripState};
-use crate::rows::LiveRow;
+use crate::rows::{LiveEvent, LiveRow};
 use crate::settings::AppSettings;
 use crate::worker::{Sink, WorkerHandle};
 
@@ -112,6 +112,13 @@ impl Sink for TauriSink {
         if let Ok(mut trip) = self.trip.lock() {
             trip.feed(row);
         }
+    }
+
+    // Tauri serializes the payload to JSON anyway; going through a Value
+    // first cost about 15 allocations per live value. Nothing in
+    // on_worker_event looks at live values.
+    fn live_value(&self, row: &LiveRow) {
+        let _ = self.app.emit("live_value", LiveEvent { row });
     }
 }
 
@@ -418,9 +425,13 @@ pub fn run() {
         .expect("error while building Caruspex")
         .run(|app, event| {
             if let tauri::RunEvent::Exit = event {
+                // The window is gone already. The worker gets a moment to
+                // close the adapter (ATPC) and let go of the port before the
+                // process ends; a job in flight is cut short for that.
                 if let Some(state) = app.try_state::<AppState>() {
-                    state.worker.cancel_scan();
-                    state.worker.send(worker::Job::Shutdown);
+                    state
+                        .worker
+                        .shutdown(std::time::Duration::from_millis(3000));
                 }
                 // The WebView2 folder of a command-line run; what the browser
                 // processes still hold is left to the temp folder cleanup.

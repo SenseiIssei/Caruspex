@@ -49,6 +49,9 @@ history and in the v0.8.0 release.
 
 ## Checks
 
+`bash tools/check_all.sh` runs all of them and the rest of the list in
+CONTRIBUTING.md. The Rust part alone:
+
     cargo fmt --all --check
     cargo clippy --workspace --all-targets -- -D warnings
     cargo test --workspace

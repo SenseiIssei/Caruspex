@@ -290,6 +290,61 @@ fn a_refused_or_empty_group_falls_back_to_single_pids_and_is_remembered() {
 }
 
 #[test]
+fn a_silent_adapter_costs_one_timeout_per_round_and_keeps_the_batch_memory() {
+    let _lang = german();
+    let (mut elm, script) = script_rig_with("6", six_pid_car);
+    // 4 s per request become 80 ms.
+    elm.set_timeout_scale(0.02);
+    let mut obd = Obd2::new(&mut elm);
+    clear_obd_sent(&script);
+    check_six_values(&obd.read_live_batch(&SIX, false));
+    assert_eq!(obd_sent(&script), ["010C0D05110F04"]);
+
+    // The cable is pulled: one request goes out and waits for nothing.
+    // Before, the group counted as refused, and its six PIDs were asked one
+    // by one, each with its own timeout, then and for the rest of the
+    // session.
+    let requests = |script: &Script| {
+        let s = script.lock().unwrap();
+        s.sent.iter().filter(|c| c.starts_with("01")).count()
+    };
+    script.lock().unwrap().silent = true;
+    let before = requests(&script);
+    let started = Instant::now();
+    assert!(obd.read_live_batch(&SIX, false).is_empty());
+    assert_eq!(requests(&script) - before, 1);
+    assert!(
+        started.elapsed().as_millis() < 1000,
+        "{:?}",
+        started.elapsed()
+    );
+    assert!(obd.batch_refused_pids().is_empty());
+
+    // Back: still one request for all six.
+    script.lock().unwrap().silent = false;
+    clear_obd_sent(&script);
+    check_six_values(&obd.read_live_batch(&SIX, false));
+    assert_eq!(obd_sent(&script), ["010C0D05110F04"]);
+}
+
+#[test]
+fn a_silent_adapter_on_the_k_line_costs_one_timeout_per_round() {
+    let _lang = german();
+    let (mut elm, script) = script_rig_with("3", add_singles);
+    elm.set_timeout_scale(0.02);
+    let mut obd = Obd2::new(&mut elm);
+    // Without CAN every PID is its own request; once the first one got
+    // nothing at all, the other five are not sent.
+    check_six_values(&obd.read_live_batch(&SIX, false));
+    script.lock().unwrap().silent = true;
+    let before = script.lock().unwrap().sent.len();
+    assert!(obd.read_live_batch(&SIX, false).is_empty());
+    assert_eq!(script.lock().unwrap().sent.len() - before, 1);
+    script.lock().unwrap().silent = false;
+    check_six_values(&obd.read_live_batch(&SIX, false));
+}
+
+#[test]
 fn a_control_unit_that_answers_only_the_first_pid_of_a_group() {
     let _lang = german();
     let (mut elm, script) = script_rig_with("6", |s| {

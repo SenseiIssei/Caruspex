@@ -238,15 +238,6 @@ pub fn monitor_name(monitor: Monitor) -> Text {
     }
 }
 
-/// True for the three monitors that run all the time and usually report
-/// complete within seconds of starting the engine.
-pub fn is_continuous_monitor(monitor: Monitor) -> bool {
-    matches!(
-        monitor,
-        Monitor::Misfire | Monitor::FuelSystem | Monitor::Components
-    )
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

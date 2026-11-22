@@ -306,7 +306,7 @@ buka aplikasi pertama kali dengan klik kanan dan "Buka".
 
 ## Membangun
 
-Persyaratan: toolchain Rust stabil (edisi 2024, Rust 1.90 atau lebih baru), Node 24 dengan npm, dan Python 3 untuk
+Persyaratan: toolchain Rust stabil (edisi 2024, Rust 1.90 atau lebih baru), Node 26 dengan npm, dan Python 3 untuk
 generator dan pemeriksaan terjemahan. Di Linux diperlukan paket sistem yang dibutuhkan antarmuka dan tautan adaptor
 (nama di Debian dan Ubuntu):
 

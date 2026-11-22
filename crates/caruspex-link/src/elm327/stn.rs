@@ -222,15 +222,31 @@ impl Elm327 {
         expected_service: u8,
         timeout_ms: u64,
     ) -> Vec<ElmResult> {
+        // An adapter that said nothing at all for a whole timeout (not even
+        // NO DATA or a prompt) is gone or hung: the requests after it get the
+        // same answer without being sent, instead of a timeout each. On the
+        // live page that was six timeouts per round on a pulled cable, and a
+        // Stop or Disconnect waited for all of them.
+        let mut out: Vec<ElmResult> = Vec::with_capacity(commands.len());
         if !self.stn_batch || self.obd_on_uds || commands.len() < 2 {
-            return commands
-                .iter()
-                .map(|command| self.request(command, expected_service, timeout_ms))
-                .collect();
+            for command in commands {
+                let next = match out.last() {
+                    Some(last) if last.status == ElmStatus::AdapterError => last.clone(),
+                    _ => self.request(command, expected_service, timeout_ms),
+                };
+                out.push(next);
+            }
+            return out;
         }
-        let mut out = Vec::with_capacity(commands.len());
         let mut start = 0;
         while start < commands.len() {
+            if let Some(last) = out.last()
+                && last.status == ElmStatus::AdapterError
+            {
+                let silent = last.clone();
+                out.resize(commands.len(), silent);
+                break;
+            }
             let mut end = start + 1;
             let mut length = commands[start].len();
             while end < commands.len() && length + 1 + commands[end].len() <= BATCH_LIMIT {

@@ -1083,6 +1083,7 @@ impl<'a> Obd2<'a> {
 
         let mut values: BTreeMap<i32, Vec<LiveValue>> = BTreeMap::new();
         let mut single: Vec<i32> = Vec::new();
+        let mut silent = false;
         if self.elm.is_can() {
             let mut grouped: Vec<i32> = Vec::new();
             for &pid in &order {
@@ -1112,7 +1113,16 @@ impl<'a> Obd2<'a> {
             let mut commands: Vec<String> = groups.iter().map(|g| pid_command(g)).collect();
             commands.extend(early.iter().map(|&pid| pid_command(&[pid])));
             let results = self.elm.request_many(&commands, 0x01, 4000);
+            if results.iter().any(|r| r.status == ElmStatus::AdapterError) {
+                // Silence from the adapter says nothing about the PIDs: they
+                // stay batched, and the singles of this round would only
+                // wait for the same silence (request_many).
+                silent = true;
+            }
             for (group, result) in groups.iter().zip(&results) {
+                if result.status == ElmStatus::AdapterError {
+                    continue;
+                }
                 let missing = Self::take_group(group, result, every_ecu, &mut values)
                     .unwrap_or_else(|| group.to_vec());
                 // Left out or spoilt: from now on these are asked one by one.
@@ -1136,6 +1146,9 @@ impl<'a> Obd2<'a> {
             single = order.clone();
         }
 
+        if silent {
+            single.clear();
+        }
         let commands: Vec<String> = single.iter().map(|&pid| pid_command(&[pid])).collect();
         let results = self.elm.request_many(&commands, 0x01, 4000);
         for (&pid, result) in single.iter().zip(&results) {
