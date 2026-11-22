@@ -64,7 +64,7 @@ machine, before and after a change.
 | `caruspex-protocols` `a_live_round_allocates_little` | under 220 allocations per round of 6 PIDs (314 before) | about 110 |
 | `caruspex-protocols` `the_live_loop_does_not_grow` | heap grows less than 64 KiB over 3000 rounds | 0 |
 | `caruspex-protocols` `a_round_on_a_slow_line_costs_one_request_per_six_pids` | one request per round, the answer count on all but the first, under 150 ms per round at 38400 baud | 15 requests, 14 with the count, about 35 ms |
-| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 70 allocations per live value (85 before), heap growth under 256 KiB in 2 s | about 192 values per second, 37 allocations per value |
+| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 45 allocations per live value (85 in 0.16, 37 with the event through a `Value`), heap growth under 256 KiB in 2 s | about 192 values per second, 23 allocations per value |
 | `caruspex-app` `an_answer_reaches_the_sink_quickly` | median under 50 ms from the prompt to the event at 115200 baud, best of three runs (shared CI macOS runners reach 15 ms, once 50 ms) | under 1 ms |
 | `caruspex-record` `a_thirty_minute_recording_is_read_quickly` | `live_frames` reads 30 minutes of CAN 29 bit with headers (36 000 rounds, 144 006 events, 11 MB) in under 20 s in a debug build | about 1.3 s debug, 0.2 s release |
 | `caruspex-link` `count_hint.rs` | the answer count digit: learned, used, dropped when refused or when it loses answers, relearned every 32nd request | |
@@ -132,6 +132,46 @@ The OBDLink rows of the protocols report change less: with the batched commands 
   the worker instead of being cloned every tick, mode 01 requests are built without `format!` per PID, and
   the worker hands its `json!` payloads for log lines, busy and live values straight to the sink instead of
   copying the finished `Value` once more through `serde_json::to_value`.
+
+### Hangs, dead links and the window thread (November 2026)
+
+The worker runs one job after the other, so anything that waits long inside a job also holds every job
+behind it, Disconnect included. Measured with the tests named in brackets, Windows 11, debug builds unless
+release is said.
+
+| What | Before | After |
+|---|---|---|
+| Disconnect during a live round on an adapter that fell silent (`disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round`) | over 20 s (the request in flight, six single requests of 4 s each, ATPC) | 2.1 s, of which 2 s are the ATPC |
+| Disconnect during a control unit scan, health check or used car check | until the job ended | the job is cancelled, the request in flight ends within 120 ms |
+| Live round of 6 PIDs on a silent adapter, CAN / K-line (`a_silent_adapter_costs_one_timeout_per_round_and_keeps_the_batch_memory`) | 7 / 6 timeouts of 4 s, and on CAN six requests per round for the rest of the session | 1 timeout, the PIDs stay batched |
+| Reads of a closed TCP connection in 300 ms (`a_connection_the_adapter_closed_waits_instead_of_spinning`) | 138 289 (a core at 100 %) | 7 |
+| Connecting to a Wi-Fi address nobody answers | 21 s (Windows), up to 2 min (Linux) | 5 s |
+| A Bluetooth LE call that never finishes | waits forever | fails after its limit (scan + 20 s, connect 60 s) |
+| Program end | the process ended while the worker might still close the adapter | waits up to 3 s for ATPC and the port |
+| Share recording of 30 minutes (11 MB, release) | 0.35 to 0.7 s on the window's thread | on a thread of its own |
+| Worker, allocations per live value, JSON for the window included (release report) | 37.3 (4047 bytes) | 23.3 (2711 bytes) |
+
+- **Interrupting the driver.** `Elm327::set_interrupt` takes a flag another thread may raise: the command in
+  flight ends within one read (at most 120 ms), further commands return at once without being sent. The
+  app's Disconnect (`WorkerHandle::close`) cancels a running scan or check and raises the flag; the worker
+  lowers both when it reaches the close, so the ATPC goes out as before. `disconnect` leaves the ATPC out when
+  the adapter said nothing at all to the last command. Ending the program does the same and waits up to 3 s.
+- **Silence is not a refusal.** A request that got no byte at all (not even NO DATA or a prompt) means the
+  adapter is gone or hung: `request_many` hands the same answer to the requests after it without sending them,
+  and `read_live_batch` keeps the PIDs batched and skips the single requests of that round.
+- **Dead links wait like quiet ones.** A pulled USB cable, a closed Wi-Fi connection or a lost Bluetooth
+  adapter answered every `read` at once with nothing; the driver and the K-line code read in a loop until their
+  deadline and spun a core during every request. Serial, TCP, RFCOMM and Bluetooth LE now wait out the time
+  asked (`timing::wait_out`). A healthy port waits that long anyway, so no timing the control units see
+  changes.
+- **The window's thread.** A Tauri command without `async` runs on the thread of the window. The lists of
+  J2534 devices and of PCAN and Kvaser channels (driver DLLs of other makers) and Share recording run with
+  `spawn_blocking` now. The lookups (catalog, PID table, fault codes) stay: under 3 ms on their first call
+  (catalog search 2.9 ms, PID table 0.9 ms, release); the fault code lexicon (19 ms) was async already.
+  Saving settings and the garage stays a plain command on purpose: as async commands two saves could overtake
+  each other and the older state would be written last.
+- **Live values straight to JSON.** `Sink::live_value` hands the row to Tauri, which serializes it once; the
+  `serde_json::Value` built for every live value before is gone. The payload is the same.
 
 ### Looked at and left as it is
 

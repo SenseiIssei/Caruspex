@@ -681,18 +681,27 @@ pub struct J2534DeviceRow {
     bridged: bool,
 }
 
+// The lists of drivers and channels and the shared recording run on a
+// thread of their own: a plain command runs on the window's thread, and
+// these call into drivers of other makers or read a whole recording (a
+// recording of 30 minutes takes 0.35 to 0.7 s to share), while the window
+// would not even repaint.
 #[tauri::command]
-pub fn list_j2534_devices() -> Vec<J2534DeviceRow> {
-    caruspex_net::j2534_devices()
-        .into_iter()
-        .map(|d| J2534DeviceRow {
-            name: d.name,
-            vendor: d.vendor,
-            library: d.library,
-            usable: d.usable,
-            bridged: d.bridged,
-        })
-        .collect()
+pub async fn list_j2534_devices() -> Result<Vec<J2534DeviceRow>> {
+    tauri::async_runtime::spawn_blocking(|| {
+        caruspex_net::j2534_devices()
+            .into_iter()
+            .map(|d| J2534DeviceRow {
+                name: d.name,
+                vendor: d.vendor,
+                library: d.library,
+                usable: d.usable,
+                bridged: d.bridged,
+            })
+            .collect()
+    })
+    .await
+    .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -708,14 +717,18 @@ pub struct VendorCanRow {
 
 /// The channels of PEAK PCAN-Basic and Kvaser CANlib, when installed.
 #[tauri::command]
-pub fn list_can_vendor_channels() -> Vec<VendorCanRow> {
-    caruspex_net::can_vendor_channels()
-        .into_iter()
-        .map(|c| VendorCanRow {
-            label: c.label,
-            spec: c.spec,
-        })
-        .collect()
+pub async fn list_can_vendor_channels() -> Result<Vec<VendorCanRow>> {
+    tauri::async_runtime::spawn_blocking(|| {
+        caruspex_net::can_vendor_channels()
+            .into_iter()
+            .map(|c| VendorCanRow {
+                label: c.label,
+                spec: c.spec,
+            })
+            .collect()
+    })
+    .await
+    .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -887,7 +900,7 @@ pub fn open_replay(
 
 #[tauri::command]
 pub fn close_adapter(state: State<'_, AppState>) {
-    job(&state, Job::Close);
+    state.worker.close();
 }
 
 #[tauri::command]
@@ -906,10 +919,14 @@ pub fn stop_recording(state: State<'_, AppState>) {
 /// are found anyway. Nothing is written or sent: the interface shows the
 /// preview and saves the file only when asked.
 #[tauri::command]
-pub fn share_recording(path: String, vin: String) -> Result<Value> {
-    let recording = caruspex_record::load_recording(&path)?;
-    let shared = caruspex_record::share_recording(&recording, &[vin.as_str()]);
-    Ok(share_json(&shared))
+pub async fn share_recording(path: String, vin: String) -> Result<Value> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let recording = caruspex_record::load_recording(&path)?;
+        let shared = caruspex_record::share_recording(&recording, &[vin.as_str()]);
+        Ok(share_json(&shared))
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 /// The newest crash report the user has not decided about, if any. Runs

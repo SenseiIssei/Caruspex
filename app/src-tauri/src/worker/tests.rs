@@ -855,3 +855,154 @@ fn the_bmw_page_needs_a_serial_cable() {
     let events = sink.take();
     assert_eq!(Collect::named(&events, "bmw_clear_result")[0]["ok"], false);
 }
+
+// --- Threads: closing and ending while something runs -----------------------------
+
+/// The demo car behind an adapter that can fall silent, like a Bluetooth
+/// adapter out of range or a cable pulled: writes vanish and every read
+/// waits its whole time for nothing.
+struct Muted {
+    inner: DemoTransport,
+    mute: Arc<AtomicBool>,
+}
+
+impl Transport for Muted {
+    fn write(&mut self, data: &[u8]) -> bool {
+        if self.mute.load(Ordering::SeqCst) {
+            return true;
+        }
+        self.inner.write(data)
+    }
+    fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        if self.mute.load(Ordering::SeqCst) {
+            std::thread::sleep(Duration::from_millis(timeout_ms));
+            return Vec::new();
+        }
+        self.inner.read(timeout_ms)
+    }
+    fn flush_input(&mut self) {
+        self.inner.flush_input();
+    }
+    fn name(&self) -> String {
+        "muted".into()
+    }
+}
+
+/// Waits up to `limit` until the sink has `count` events named `name`.
+fn wait_for(sink: &Collect, name: &str, count: usize, limit: Duration) -> bool {
+    let until = Instant::now() + limit;
+    while Instant::now() < until {
+        let seen = sink
+            .0
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|(e, _)| e == name)
+            .count();
+        if seen >= count {
+            return true;
+        }
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    false
+}
+
+fn spawned_demo(transport: Box<dyn Transport>) -> (WorkerHandle, Arc<Collect>) {
+    let sink = Arc::new(Collect::default());
+    let handle = spawn(sink.clone(), AppSettings::default());
+    handle.send(Job::OpenTransport {
+        transport,
+        protocol_order: "6".into(),
+    });
+    assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
+    (handle, sink)
+}
+
+#[test]
+fn disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round() {
+    let mute = Arc::new(AtomicBool::new(false));
+    let (handle, sink) = spawned_demo(Box::new(Muted {
+        inner: DemoTransport::new(DemoOptions {
+            latency_scale: 0.0,
+            ..DemoOptions::default()
+        }),
+        mute: mute.clone(),
+    }));
+    handle.send(Job::StartLive(vec![0x0C, 0x0D, 0x05, 0x11, 0x04, 0x0F]));
+    assert!(wait_for(&sink, "live_value", 12, Duration::from_secs(10)));
+    // The adapter falls silent: the live request in flight waits for its
+    // four seconds, and the next ones would wait as long.
+    mute.store(true, Ordering::SeqCst);
+    std::thread::sleep(Duration::from_millis(300));
+    let started = Instant::now();
+    handle.close();
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(20)));
+    let took = started.elapsed();
+    // What is left is the adapter's ATPC (at most 2 s; whether the adapter
+    // is gone or only had not answered yet is not known when the request
+    // was cut short). Before, the close waited for the request in flight
+    // (4 s), the six single requests the round fell back to (4 s each) and
+    // then the ATPC: about 30 s.
+    assert!(took < Duration::from_millis(2600), "took {took:?}");
+
+    // The flags are down again: the next connection works as usual.
+    sink.take();
+    handle.send(Job::OpenTransport {
+        transport: quick_demo(),
+        protocol_order: "6".into(),
+    });
+    assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
+    handle.send(Job::StartLive(vec![0x0C, 0x0D]));
+    assert!(wait_for(&sink, "live_value", 4, Duration::from_secs(10)));
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn ending_the_program_during_a_health_check_frees_the_worker() {
+    let (handle, sink) = spawned_demo(quick_demo());
+    handle.send(Job::HealthCheck(60));
+    assert!(wait_for(&sink, "live_value", 3, Duration::from_secs(10)));
+    let started = Instant::now();
+    assert!(handle.shutdown(Duration::from_secs(5)), "the worker ended");
+    let took = started.elapsed();
+    assert!(took < Duration::from_millis(1500), "took {took:?}");
+    // A second caller does not wait again.
+    assert!(!handle.shutdown(Duration::from_millis(10)));
+}
+
+#[test]
+fn commands_from_many_threads_at_once_cannot_hang_the_worker() {
+    let (handle, sink) = spawned_demo(quick_demo());
+    let threads: Vec<_> = (0..4)
+        .map(|n| {
+            let handle = handle.clone();
+            std::thread::spawn(move || {
+                for i in 0..40 {
+                    match (i + n) % 8 {
+                        0 => handle.send(Job::StartLive(vec![0x0C, 0x0D, 0x05])),
+                        1 => handle.send(Job::StopLive),
+                        2 => handle.send(Job::ReadFaults),
+                        3 => handle.close(),
+                        4 => handle.cancel_scan(),
+                        5 => handle.send(Job::OpenTransport {
+                            transport: quick_demo(),
+                            protocol_order: "6".into(),
+                        }),
+                        6 => handle.send(Job::SendRaw("ATI".into())),
+                        _ => handle.send(Job::StartVoltagePoll(20)),
+                    }
+                    if i % 5 == 0 {
+                        std::thread::sleep(Duration::from_millis(2));
+                    }
+                }
+            })
+        })
+        .collect();
+    for t in threads {
+        t.join().unwrap();
+    }
+    // Everything queued gets through and the worker still answers.
+    handle.close();
+    assert!(wait_for(&sink, "closed", 21, Duration::from_secs(60)));
+    assert!(handle.shutdown(Duration::from_secs(10)));
+}

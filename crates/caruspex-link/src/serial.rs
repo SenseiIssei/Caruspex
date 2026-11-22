@@ -2,8 +2,8 @@
 //! serialport crate, with the port list and adapter guesses of the C++
 //! version.
 
-use std::io::{Read, Write};
-use std::time::Duration;
+use std::io::{ErrorKind, Read, Write};
+use std::time::{Duration, Instant};
 
 use caruspex_i18n::l;
 use serialport::{ClearBuffer, DataBits, FlowControl, Parity, SerialPort, StopBits};
@@ -449,10 +449,24 @@ impl Serial {
             return Vec::new();
         };
         let _ = port.set_timeout(Duration::from_millis(timeout_ms.max(1)));
+        let started = Instant::now();
         let mut buffer = [0u8; 512];
         match port.read(&mut buffer) {
-            Ok(n) => buffer[..n].to_vec(),
-            Err(_) => Vec::new(),
+            Ok(n) if n > 0 => buffer[..n].to_vec(),
+            // A quiet port has waited its time already.
+            Err(e)
+                if matches!(
+                    e.kind(),
+                    ErrorKind::TimedOut | ErrorKind::Interrupted | ErrorKind::WouldBlock
+                ) =>
+            {
+                Vec::new()
+            }
+            // A pulled cable answers every read with an error at once.
+            _ => {
+                crate::timing::wait_out(started, timeout_ms);
+                Vec::new()
+            }
         }
     }
 

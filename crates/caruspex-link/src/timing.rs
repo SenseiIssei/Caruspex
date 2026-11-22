@@ -45,6 +45,17 @@ pub fn now_ms() -> u64 {
     start().elapsed().as_millis() as u64
 }
 
+/// For a read whose link is gone: waits whatever is left of `timeout_ms`
+/// since `started`. A dead port or socket answers at once, and the callers
+/// read in a loop until their deadline, so without this they would spin a
+/// core for the whole wait (on every live request while a cable is pulled).
+pub(crate) fn wait_out(started: Instant, timeout_ms: u64) {
+    let left = Duration::from_millis(timeout_ms).saturating_sub(started.elapsed());
+    if !left.is_zero() {
+        std::thread::sleep(left);
+    }
+}
+
 pub fn sleep_ms(milliseconds: u64) {
     if virtual_now_us().is_some() {
         advance_virtual_us(milliseconds * 1000);

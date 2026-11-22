@@ -64,8 +64,12 @@ fn runtime() -> Result<&'static Runtime, String> {
         .ok_or_else(no_ble)
 }
 
-/// Runs a future on the Bluetooth runtime and waits for it.
-fn run<F>(future: F) -> Result<F::Output, String>
+/// Runs a future on the Bluetooth runtime and waits for it, at most
+/// `limit`. The worker thread waits here, and with it every job of the
+/// app (Disconnect included), so a Bluetooth stack that stops answering
+/// (some calls of btleplug have no time limit of their own) must not hold
+/// it forever: after `limit` the future is dropped and the call fails.
+fn run<F>(limit: Duration, future: F) -> Result<F::Output, String>
 where
     F: Future + Send + 'static,
     F::Output: Send + 'static,
@@ -73,10 +77,19 @@ where
     let rt = runtime()?;
     let (tx, rx) = std::sync::mpsc::channel();
     rt.spawn(async move {
-        let _ = tx.send(future.await);
+        if let Ok(output) = tokio::time::timeout(limit, future).await {
+            let _ = tx.send(output);
+        }
     });
     rx.recv().map_err(|_| no_ble())
 }
+
+/// The longest a scan may take beyond the time it was asked to listen.
+const SCAN_SLACK: Duration = Duration::from_secs(20);
+/// The longest connecting may take: the search for the device (10 s), the
+/// connection (15 s), the services (10 s) and the notifications (3 s) have
+/// their own limits; this is for the calls between them that have none.
+const OPEN_LIMIT: Duration = Duration::from_secs(60);
 
 fn no_ble() -> String {
     l(
@@ -170,7 +183,10 @@ async fn scan_async(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
 /// adapters first. The error is the reason when the system has no usable
 /// Bluetooth.
 pub fn scan_ble_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
-    run(scan_async(milliseconds))?
+    run(
+        Duration::from_millis(milliseconds) + SCAN_SLACK,
+        scan_async(milliseconds),
+    )?
 }
 
 fn same_id(p: &Peripheral, id: &str) -> bool {
@@ -295,7 +311,7 @@ async fn connect_and_discover(device: BleDevice) -> Result<Connected, String> {
 /// writing anything to it.
 pub fn inspect_ble_device(device: &BleDevice) -> Result<BleInspection, String> {
     let device = device.clone();
-    run(async move {
+    run(OPEN_LIMIT, async move {
         let c = connect_and_discover(device).await?;
         let _ = c.peripheral.disconnect().await;
         Ok(BleInspection {
@@ -344,7 +360,7 @@ impl BleTransport {
     /// anything is written to it.
     pub fn open(device: &BleDevice) -> Result<Self, String> {
         let device = device.clone();
-        run(Self::open_async(device))?
+        run(OPEN_LIMIT, Self::open_async(device))?
     }
 
     async fn open_async(device: BleDevice) -> Result<Self, String> {
@@ -463,7 +479,7 @@ impl Transport for BleTransport {
             let c = self.write_char.clone();
             let kind = self.write_type;
             let bytes = piece.to_vec();
-            let sent = run(async move {
+            let sent = run(Duration::from_millis(5000), async move {
                 tokio::time::timeout(Duration::from_millis(2000), p.write(&c, &bytes, kind)).await
             });
             if !matches!(sent, Ok(Ok(Ok(())))) {
@@ -474,6 +490,7 @@ impl Transport for BleTransport {
     }
 
     fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        let started = std::time::Instant::now();
         let Ok(mut buffer) = self.shared.buffer.lock() else {
             return Vec::new();
         };
@@ -487,6 +504,12 @@ impl Transport for BleTransport {
                 Ok((b, _)) => buffer = b,
                 Err(_) => return Vec::new(),
             }
+        }
+        if buffer.is_empty() && self.disconnected() {
+            // The adapter is gone: the wait above ends at once, every time.
+            drop(buffer);
+            crate::timing::wait_out(started, timeout_ms);
+            return Vec::new();
         }
         std::mem::take(&mut *buffer)
     }
@@ -508,7 +531,7 @@ impl Drop for BleTransport {
             t.abort();
         }
         let p = self.peripheral.clone();
-        let _ = run(async move {
+        let _ = run(Duration::from_millis(6000), async move {
             let _ = tokio::time::timeout(Duration::from_millis(3000), p.disconnect()).await;
         });
     }
@@ -638,6 +661,15 @@ pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
 mod tests {
     // The device list tests (order, kinds) live in crate::bluetooth.
     use super::*;
+
+    #[test]
+    fn a_call_that_never_finishes_gives_up_after_its_limit() {
+        let started = std::time::Instant::now();
+        let outcome = run(Duration::from_millis(100), std::future::pending::<()>());
+        assert!(outcome.is_err());
+        assert!(started.elapsed() < Duration::from_secs(5));
+        assert_eq!(run(Duration::from_millis(1000), async { 7 }), Ok(7));
+    }
 
     #[test]
     fn connect_error_text() {
