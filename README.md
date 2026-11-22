@@ -274,6 +274,22 @@ What has really been tried with Caruspex so far, listed honestly. Everything els
 Tried Caruspex on your car? Please send a [test report](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): every report goes into this list, per brand and interface.
 <!-- /tested -->
 
+<!-- help -->
+## How you can help
+
+Caruspex is a hobby project I work on in my free time. Some things I cannot do on my own, and each of them helps every user:
+
+- **Try it on your car.** Beyond the demo car, almost everything is only tested against simulated control units so far. A short [test report](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) with car, adapter and what worked or failed is the most useful help of all. I especially need:
+  - cars with a K-line, such as the VW group up to about 2005 or BMW E-series, with a KKL or OBDLink cable;
+  - VW group diesels: whether the engine control unit allows the extended diagnostic session for the soot values, at idle and while driving;
+  - newer cars with DoIP (VW MEB, Volvo, Mercedes with MBUX): the list of control units a scan finds;
+  - electric cars, above all Tesla Model S and X, BYD, Xpeng and NIO.
+- **Share a recording.** Record a session in the app and use **Share recording**: it removes personal data and shows you what stays before anything leaves your computer. Recordings show exactly how a car answers and let me support it without having it here.
+- **Point me to free sources.** Manufacturer fault codes (for example BMW, Opel, Renault, PSA and Volvo), the exact spot of the OBD socket and signals for more cars only go in from sources that may be used freely (CC0, CC BY, CC BY-SA, MIT or public domain). If you know one, open an issue with the link. Telling me where the socket sits in your own car helps too.
+- **Improve a translation.** Caruspex speaks 18 languages, and no native speaker has checked most of them yet. If something reads oddly in your language, [translations/TRANSLATING.md](translations/TRANSLATING.md) shows how to fix it.
+- **Code.** Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Download
 
 Ready-made packages are on the [releases page](https://github.com/SenseiIssei/Caruspex/releases):

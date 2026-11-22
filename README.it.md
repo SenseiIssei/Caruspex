@@ -272,6 +272,22 @@ Ciò che finora è stato davvero provato con Caruspex, elencato onestamente. Tut
 Hai provato Caruspex sulla tua auto? Invia un [rapporto di prova](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): ogni rapporto entra in questo elenco, per marca e interfaccia.
 <!-- /tested -->
 
+<!-- help -->
+## Come puoi aiutare
+
+Caruspex è un progetto amatoriale a cui lavoro nel tempo libero. Alcune cose non riesco a farle da solo, e ognuna di esse aiuta tutti gli utenti:
+
+- **Provalo sulla tua auto.** A parte l'auto demo, quasi tutto finora è stato testato solo con centraline simulate. Un breve [rapporto di prova](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) con auto, adattatore e cosa ha funzionato o no è l'aiuto più utile in assoluto. Mi servono soprattutto:
+  - auto con K-Line, come il gruppo VW fino al 2005 circa o le BMW della serie E, con un cavo KKL o OBDLink;
+  - diesel del gruppo VW: se la centralina motore consente la sessione di diagnosi estesa per i valori della fuliggine, al minimo e durante la marcia;
+  - auto più recenti con DoIP (VW MEB, Volvo, Mercedes con MBUX): l'elenco delle centraline che trova una scansione;
+  - auto elettriche, soprattutto Tesla Model S e X, BYD, Xpeng e NIO.
+- **Condividi una registrazione.** Registra una sessione nell'applicazione e usa **Condividi registrazione**: rimuove i dati personali e ti mostra cosa resta prima che qualsiasi cosa lasci il tuo computer. Le registrazioni mostrano esattamente come risponde un'auto e mi permettono di supportarla senza averla qui.
+- **Segnalami fonti libere.** I codici errore dei costruttori (per esempio BMW, Opel, Renault, PSA e Volvo), la posizione esatta della presa OBD e i segnali per altre auto entrano solo da fonti che si possono usare liberamente (CC0, CC BY, CC BY-SA, MIT o pubblico dominio). Se ne conosci una, apri una issue con il link. Aiuta anche dirmi dove si trova la presa sulla tua auto.
+- **Migliora una traduzione.** Caruspex parla 18 lingue, e la maggior parte non è ancora stata controllata da nessun madrelingua. Se qualcosa suona strano nella tua lingua, [translations/TRANSLATING.md](translations/TRANSLATING.md) spiega come correggerlo.
+- **Codice.** Le pull request sono benvenute, vedi [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Download
 
 I pacchetti pronti sono nella [pagina delle release](https://github.com/SenseiIssei/Caruspex/releases):

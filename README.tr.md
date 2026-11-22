@@ -272,6 +272,22 @@ Caruspex ile şimdiye kadar gerçekten denenenler, dürüstçe listelendi. Geri 
 Caruspex'i kendi aracınızda denediniz mi? Lütfen bir [test raporu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) gönderin: her rapor marka ve arayüze göre bu listeye girer.
 <!-- /tested -->
 
+<!-- help -->
+## Nasıl yardım edebilirsiniz
+
+Caruspex, boş zamanlarımda üzerinde çalıştığım bir hobi projesi. Bazı şeyleri tek başıma yapamıyorum; bunların her biri tüm kullanıcılara yardımcı olur:
+
+- **Kendi aracınızda deneyin.** Demo araç dışında neredeyse her şey şimdiye kadar yalnızca taklit kontrol üniteleriyle test edildi. Araç, adaptör ve neyin çalışıp neyin çalışmadığını içeren kısa bir [test raporu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) en faydalı yardımdır. Özellikle şunlara ihtiyacım var:
+  - K-Line'lı araçlar, örneğin yaklaşık 2005'e kadar VW grubu ya da E serisi BMW'ler, KKL veya OBDLink kablosuyla;
+  - VW grubu dizel araçlar: motor kontrol ünitesinin, is değerleri için genişletilmiş teşhis oturumuna rölantide ve sürüş sırasında izin verip vermediği;
+  - DoIP'li yeni araçlar (VW MEB, Volvo, MBUX'lu Mercedes): bir taramanın bulduğu kontrol ünitelerinin listesi;
+  - elektrikli araçlar, özellikle Tesla Model S ve X, BYD, Xpeng ve NIO.
+- **Bir kaydı paylaşın.** Uygulamada bir oturum kaydedin ve **Kaydı paylaş** seçeneğini kullanın: kişisel verileri kaldırır ve bilgisayarınızdan herhangi bir şey çıkmadan önce neyin kalacağını size gösterir. Kayıtlar bir aracın tam olarak nasıl yanıt verdiğini gösterir ve araç elimde olmadan onu desteklememi sağlar.
+- **Bana serbest kaynaklar gösterin.** Üreticiye özgü arıza kodları (örneğin BMW, Opel, Renault, PSA ve Volvo), OBD soketinin tam yeri ve daha fazla araç için sinyaller yalnızca serbestçe kullanılabilen kaynaklardan eklenir (CC0, CC BY, CC BY-SA, MIT veya kamu malı). Böyle bir kaynak biliyorsanız bağlantısıyla birlikte bir issue açın. Kendi aracınızda soketin nerede olduğunu bana söylemeniz de yardımcı olur.
+- **Bir çeviriyi iyileştirin.** Caruspex 18 dil konuşuyor ve çoğu henüz hiçbir anadil konuşucusu tarafından kontrol edilmedi. Kendi dilinizde bir şey tuhaf okunuyorsa [translations/TRANSLATING.md](translations/TRANSLATING.md) nasıl düzelteceğinizi gösterir.
+- **Kod.** Pull request'ler memnuniyetle karşılanır, bkz. [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## İndirme
 
 Hazır paketler [sürümler sayfasında](https://github.com/SenseiIssei/Caruspex/releases):

@@ -272,6 +272,22 @@ Co se s Caruspexem zatím opravdu vyzkoušelo, poctivě vypsáno. Vše ostatní 
 Vyzkoušeli jste Caruspex na svém autě? Pošlete prosím [zprávu o testu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): každá zpráva přijde do tohoto seznamu, podle značky a rozhraní.
 <!-- /tested -->
 
+<!-- help -->
+## Jak můžete pomoci
+
+Caruspex je hobby projekt, na kterém pracuji ve volném čase. Některé věci sám nezvládnu. Každá z nich přitom pomůže všem uživatelům:
+
+- **Vyzkoušejte ho na svém autě.** Kromě demo auta je zatím téměř vše otestováno jen proti simulovaným řídicím jednotkám. Krátká [zpráva o testu](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) s údaji o autě, adaptéru a o tom, co fungovalo a co ne, je ze všeho nejužitečnější pomoc. Hledám hlavně:
+  - auta s K-Line, například z koncernu VW zhruba do roku 2005 nebo BMW řady E, s kabelem KKL nebo OBDLink;
+  - diesely z koncernu VW: zda řídicí jednotka motoru povolí rozšířenou diagnostickou relaci pro hodnoty sazí, při volnoběhu i za jízdy;
+  - novější auta s DoIP (VW MEB, Volvo, Mercedes s MBUX): seznam řídicích jednotek, které najde prohledání;
+  - elektromobily, především Tesla Model S a X, BYD, Xpeng a NIO.
+- **Sdílejte záznam.** Zaznamenejte v aplikaci relaci a použijte **Sdílet záznam**: odstraní osobní údaje a ukáže vám, co zůstane, dřív než cokoli opustí váš počítač. Záznamy přesně ukazují, jak auto odpovídá, a díky nim ho mohu podporovat, aniž bych ho tu měl.
+- **Upozorněte mě na volné zdroje.** Chybové kódy výrobců (například BMW, Opel, Renault, PSA a Volvo), přesné umístění zásuvky OBD a signály pro další auta se do projektu dostanou jen ze zdrojů, které se smějí volně používat (CC0, CC BY, CC BY-SA, MIT nebo volné dílo). Pokud nějaký znáte, založte issue s odkazem. Pomůže i informace, kde je zásuvka ve vašem autě.
+- **Vylepšete překlad.** Caruspex mluví 18 jazyky a většinu z nich zatím nezkontroloval žádný rodilý mluvčí. Pokud něco ve vašem jazyce zní divně, [translations/TRANSLATING.md](translations/TRANSLATING.md) ukazuje, jak to opravit.
+- **Kód.** Pull requesty jsou vítány, viz [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Stažení
 
 Hotové balíčky jsou na [stránce vydání](https://github.com/SenseiIssei/Caruspex/releases):

@@ -272,6 +272,22 @@ Lo que de verdad se ha probado con Caruspex hasta ahora, contado con honestidad.
 ¿Has probado Caruspex en tu coche? Envía un [informe de prueba](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml): cada informe entra en esta lista, por marca e interfaz.
 <!-- /tested -->
 
+<!-- help -->
+## Cómo puedes ayudar
+
+Caruspex es un proyecto personal en el que trabajo en mi tiempo libre. Hay cosas que no puedo hacer solo, y cada una de ellas ayuda a todos los usuarios:
+
+- **Pruébalo en tu coche.** Aparte del coche de demostración, casi todo se ha probado hasta ahora solo con unidades de control simuladas. Un breve [informe de prueba](https://github.com/SenseiIssei/Caruspex/issues/new?template=test-report.yml) con el coche, el adaptador y lo que funcionó o falló es la ayuda más útil de todas. Sobre todo necesito:
+  - coches con K-Line, como los del grupo VW hasta aproximadamente 2005 o los BMW de la serie E, con un cable KKL u OBDLink;
+  - diésel del grupo VW: si la unidad de control del motor permite la sesión de diagnóstico extendida para los valores de hollín, al ralentí y en marcha;
+  - coches más nuevos con DoIP (VW MEB, Volvo, Mercedes con MBUX): la lista de unidades de control que encuentra un escaneo;
+  - coches eléctricos, sobre todo Tesla Model S y X, BYD, Xpeng y NIO.
+- **Comparte una grabación.** Graba una sesión en la aplicación y usa **Compartir grabación**: elimina los datos personales y te muestra lo que queda antes de que nada salga de tu ordenador. Las grabaciones muestran exactamente cómo responde un coche y me permiten darle soporte sin tenerlo aquí.
+- **Indícame fuentes libres.** Los códigos de avería de fabricante (por ejemplo de BMW, Opel, Renault, PSA y Volvo), la ubicación exacta de la toma OBD y las señales de más coches solo entran desde fuentes que se pueden usar libremente (CC0, CC BY, CC BY-SA, MIT o dominio público). Si conoces alguna, abre un issue con el enlace. También ayuda que me digas dónde está la toma en tu propio coche.
+- **Mejora una traducción.** Caruspex habla 18 idiomas, y ningún hablante nativo ha revisado todavía la mayoría de ellos. Si algo suena raro en tu idioma, [translations/TRANSLATING.md](translations/TRANSLATING.md) explica cómo corregirlo.
+- **Código.** Los pull requests son bienvenidos, consulta [CONTRIBUTING.md](CONTRIBUTING.md).
+<!-- /help -->
+
 ## Descarga
 
 Los paquetes listos están en la [página de versiones](https://github.com/SenseiIssei/Caruspex/releases):
