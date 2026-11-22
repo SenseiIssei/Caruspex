@@ -62,10 +62,12 @@ if LC_ALL=C grep -q $'\xe2\x80\x94\|\xe2\x80\x93' "$notes"; then   # U+2014, U+2
     exit 2
 fi
 
+# The new version into Cargo.lock first: the notices and SBOM steps read the
+# metadata with --locked and refuse a lockfile that still names the old one.
+cargo update -w
 # Every check of a pull request (generators, texts, interface, notices,
 # SBOM, lints, tests), so the release branch is green before it is pushed.
 bash tools/check_all.sh
-cargo update -w   # the new version into Cargo.lock
 REQUIRE_INSTALLER=1 bash tools/package.sh
 # On Windows the smoke test window goes next to the main screen.
 SMOKE_WINDOW_POS=${SMOKE_WINDOW_POS:--1880,40} bash tools/smoke_test.sh smoke
