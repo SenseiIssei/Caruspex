@@ -4,6 +4,9 @@ description = "Caruspex desktop app: the Tauri window around the web interface"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
 
 [[bin]]
 name = "caruspex"
