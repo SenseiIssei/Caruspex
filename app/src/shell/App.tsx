@@ -28,9 +28,15 @@ const MW = "caruspex::MainWindow";
 
 // One page in its slot. Memoised, so a change of page renders the two pages
 // whose visibility changed, not all of them.
+// A page that was on screen once keeps its layout while hidden (shell.css,
+// .page-slot.kept): showing it again skips laying it out anew, which took
+// the fault code lexicon about a quarter of a second each time. Pages never
+// shown stay display: none, so nothing measures them at start.
 const PageSlot = memo(function PageSlot({ id, active, Component }: { id: PageId; active: boolean; Component: ComponentType }) {
+  const [kept, setKept] = useState(active);
+  if (active && !kept) setKept(true);
   return (
-    <div className={`page-slot${active ? " active" : ""}`} hidden={!active} data-page={id}>
+    <div className={`page-slot${active ? " active" : ""}${kept ? " kept" : ""}`} hidden={!active} inert={!active} data-page={id}>
       <PageActiveContext.Provider value={active}>
         <Component />
       </PageActiveContext.Provider>
