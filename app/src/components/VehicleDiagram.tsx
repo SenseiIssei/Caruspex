@@ -10,7 +10,7 @@
 // without distortion (the SVG viewBox does what fieldToWidget() did), so it
 // looks right at every size. The labels above the car are drawn in a second
 // layer in real pixels, so their text stays the same size at every width.
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { BodyStyle } from "../api";
 import { CarZone } from "../api";
 import { usePageActive } from "../lib/hooks";
@@ -56,12 +56,18 @@ export function VehicleDiagram({
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
-  useLayoutEffect(() => {
+  // Only the observer: it reports the first size after the browser's own
+  // layout, before the picture is painted. Reading clientWidth here forced a
+  // layout of the whole window in the middle of the start (a third of the
+  // first long task with the CPU four times slower), and a second render.
+  useEffect(() => {
     const el = box.current;
     if (!el) return;
-    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight });
-    measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      setSize((s) => (s.w === w && s.h === h ? s : { w, h }));
+    });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
