@@ -57,6 +57,9 @@ export const link = {
   customKeys: [] as number[],
   customTurn: false,
   pollIntervalMs: 20,
+  // "Log raw adapter traffic" (logRaw, on by default): the worker then logs
+  // every request with its answer, one line per live tick.
+  logRaw: true,
   recording: "" as string,
   exchanges: 0,
   cancel: false,

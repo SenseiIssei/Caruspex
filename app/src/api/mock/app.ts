@@ -4,7 +4,7 @@ import type { AppSettings, FileFilter, GarageCar, OpenedTextFile } from "../type
 import { DEFAULT_SETTINGS } from "../types";
 import { setCoreLanguage } from "./core";
 import { applyPollInterval } from "./session";
-import { emit, type PartialHandlers } from "./runtime";
+import { emit, link, type PartialHandlers } from "./runtime";
 
 const SETTINGS_KEY = "caruspex.settings";
 const GARAGE_KEY = "caruspex.garage";
@@ -125,10 +125,15 @@ export const appHandlers: PartialHandlers = {
         }
       : null,
   crash_report_done: () => undefined,
-  load_settings: () => ({ ...DEFAULT_SETTINGS, ...readJson<Partial<AppSettings>>(SETTINGS_KEY, {}) }),
+  load_settings: () => {
+    const values = { ...DEFAULT_SETTINGS, ...readJson<Partial<AppSettings>>(SETTINGS_KEY, {}) };
+    link.logRaw = values.logRaw;
+    return values;
+  },
   save_settings: ({ values }) => {
     writeJson(SETTINGS_KEY, values);
     applyPollInterval(values.pollIntervalMs);
+    link.logRaw = values.logRaw;
   },
   // The browser preview has no log file.
   write_log: () => undefined,

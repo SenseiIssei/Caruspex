@@ -9,8 +9,13 @@ runs with the demo backend in the browser preview:
     npm --prefix app run dev                                                   (port 5287, for "xray")
 
     py -I tools/ui_measure.py startup http://localhost:5392 [4]   first paint, ready, long tasks; 4 = CPU four times slower
-    py -I tools/ui_measure.py live http://localhost:5392 [page]   renders and CPU per second while values stream
-                                                                  (page: live-run for the live page, start-live for the start page)
+    py -I tools/ui_measure.py firstframe http://localhost:5392 [4]  the frame after the first React commit and the long task holding it
+    py -I tools/ui_measure.py live http://localhost:5392 [page] [warm] [log]
+                                                                  renders and CPU per second while values stream
+                                                                  (page: live-run for the live page, start-live for the start page;
+                                                                  warm: seconds before measuring, 60 fills the log panel with about
+                                                                  1700 lines; log: "open" opens the log panel first)
+    py -I tools/ui_measure.py switch http://localhost:5392 [4]    time from a click in the sidebar to the frame with the page, per page
     py -I tools/ui_measure.py long http://localhost:5392 10       heap, DOM nodes and listeners over a 10 minute live session
     py -I tools/ui_measure.py xray http://localhost:5287          WebGL objects after 20 visits of the X-ray page and 20 rebuilds
     py -I tools/ui_measure.py xraylive http://localhost:5287      WebGL objects made per second while packets fly
@@ -114,6 +119,28 @@ GL_HOOK = r"""
 """
 
 
+# When each React commit happened and how many components it rendered, and
+# the time of every animation frame of the first four seconds.
+COMMITS = r"""
+(() => {
+  const hook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+  const inner = hook.onCommitFiberRoot.bind(hook);
+  window.__commits = [];
+  hook.onCommitFiberRoot = function (id, root) {
+    const before = window.__perf.renders;
+    inner(id, root);
+    window.__commits.push([Math.round(performance.now()), window.__perf.renders - before]);
+  };
+  window.__frames = [];
+  const tick = () => {
+    window.__frames.push(Math.round(performance.now()));
+    if (performance.now() < 4000) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+"""
+
+
 def metrics(cdp):
     return {m["name"]: m["value"] for m in cdp.send("Performance.getMetrics")["metrics"]}
 
@@ -170,10 +197,64 @@ def startup(browser, base, slow=1):
     print(json.dumps(out))
 
 
-def live(browser, base, which="live-run", seconds=10):
+def firstframe(browser, base, slow=1):
+    # The browser preview loads the demo backend before the first render, so
+    # times from the navigation include it; compare runs of the same build.
+    rows = []
+    for _ in range(6):
+        ctx, page, cdp = new_page(browser, COMMITS)
+        if slow > 1:
+            cdp.send("Emulation.setCPUThrottlingRate", {"rate": slow})
+        page.goto(f"{base}/?lang=en", wait_until="load")
+        page.wait_for_function("window.__ready !== null", timeout=30000)
+        page.wait_for_timeout(3000)
+        commits, lt, frames = page.evaluate("[window.__commits, window.__lt, window.__frames]")
+        first = commits[0][0]
+        holding = [d for s, d in lt if s <= first <= s + d + 5]
+        rows.append({
+            "firstCommit": first,
+            "frameAfter": next((f for f in frames if f >= first), 0),
+            "longTaskWithIt": round(holding[0]) if holding else 0,
+            "firstCommitRenders": commits[0][1],
+            "blocking": round(sum(max(0, d - 50) for _, d in lt)),
+        })
+        ctx.close()
+    rows = rows[1:]
+    print(json.dumps({k: statistics.median(r[k] for r in rows) for k in rows[0]}))
+
+
+def switch(browser, base, slow=1):
+    ctx, page, cdp = new_page(browser)
+    page.goto(f"{base}/?demo&mode=pro&lang=en", wait_until="load")
+    page.wait_for_timeout(8000)
+    if slow > 1:
+        cdp.send("Emulation.setCPUThrottlingRate", {"rate": slow})
+    click = """async (i) => {
+      const b = document.querySelectorAll('.sidebar .nav-button')[i];
+      const t0 = performance.now();
+      b.click();
+      await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+      return [document.querySelector('.page-slot.active')?.dataset.page, performance.now() - t0];
+    }"""
+    n = page.evaluate("document.querySelectorAll('.sidebar .nav-button').length")
+    times = {}
+    # Three rounds: the first visit of a page, then two visits back.
+    for _ in range(3):
+        for i in range(n):
+            name, ms = page.evaluate(click, i)
+            page.wait_for_timeout(350)
+            times.setdefault(name, []).append(round(ms, 1))
+    print(json.dumps({"medianMs": statistics.median(t for v in times.values() for t in v[1:]), "pages": times}))
+    ctx.close()
+
+
+def live(browser, base, which="live-run", warm=8, log=False, seconds=10):
     ctx, page, cdp = new_page(browser)
     page.goto(f"{base}/?demo&mode=pro&lang=en&page={which}", wait_until="load")
-    page.wait_for_timeout(8000)
+    if log:
+        page.wait_for_timeout(9000)
+        page.locator("button.tool-button[aria-pressed]").first.click()
+    page.wait_for_timeout(warm * 1000)
     page.evaluate("() => { window.__perf.commits = 0; window.__perf.renders = 0; window.__perf.byName = {}; window.__perf.byPage = {}; }")
     m0 = metrics(cdp)
     page.wait_for_timeout(seconds * 1000)
@@ -283,8 +364,18 @@ def main():
         browser = p.chromium.launch(headless=True, args=ARGS)
         if mode == "startup":
             startup(browser, base, int(sys.argv[3]) if len(sys.argv) > 3 else 1)
+        elif mode == "firstframe":
+            firstframe(browser, base, int(sys.argv[3]) if len(sys.argv) > 3 else 1)
+        elif mode == "switch":
+            switch(browser, base, int(sys.argv[3]) if len(sys.argv) > 3 else 1)
         elif mode == "live":
-            live(browser, base, sys.argv[3] if len(sys.argv) > 3 else "live-run")
+            live(
+                browser,
+                base,
+                sys.argv[3] if len(sys.argv) > 3 else "live-run",
+                int(sys.argv[4]) if len(sys.argv) > 4 else 8,
+                len(sys.argv) > 5 and sys.argv[5] == "open",
+            )
         elif mode == "long":
             long(browser, base, float(sys.argv[3]))
         elif mode == "xray":

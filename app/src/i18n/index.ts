@@ -202,11 +202,19 @@ export function translator(context: string): Translator {
 
 // Numbers the way QLocale writes them in the active language ("48.213" in
 // German), with a fixed number of decimals.
+// One formatter per language and number of decimals: building one costs
+// about two hundred times as much as formatting with it (Node 24), and live
+// values are formatted many times a second.
+const numberFormats = new Map<string, Intl.NumberFormat>();
+
 export function localeNumber(value: number, decimals = 0): string {
-  return new Intl.NumberFormat(active, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
+  const key = `${active}|${decimals}`;
+  let format = numberFormats.get(key);
+  if (!format) {
+    format = new Intl.NumberFormat(active, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    numberFormats.set(key, format);
+  }
+  return format.format(value);
 }
 
 // Numbers the way QString::number(value, 'f', decimals) writes them: a dot,
@@ -216,12 +224,24 @@ export function fixed(value: number, decimals = 0): string {
 }
 
 // Date and time in the active language.
+const dateFormats = new Map<string, Intl.DateTimeFormat>();
+
+function dateFormat(options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
+  const key = `${active}|${JSON.stringify(options)}`;
+  let format = dateFormats.get(key);
+  if (!format) {
+    format = new Intl.DateTimeFormat(active, options);
+    dateFormats.set(key, format);
+  }
+  return format;
+}
+
 export function localeDate(value: Date | string | number, options?: Intl.DateTimeFormatOptions): string {
   const d = value instanceof Date ? value : new Date(value);
-  return new Intl.DateTimeFormat(active, options ?? { dateStyle: "medium" }).format(d);
+  return dateFormat(options ?? { dateStyle: "medium" }).format(d);
 }
 
 export function localeDateTime(value: Date | string | number): string {
   const d = value instanceof Date ? value : new Date(value);
-  return new Intl.DateTimeFormat(active, { dateStyle: "medium", timeStyle: "short" }).format(d);
+  return dateFormat({ dateStyle: "medium", timeStyle: "short" }).format(d);
 }

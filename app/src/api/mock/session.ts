@@ -189,9 +189,11 @@ function pollTick(): void {
   if (link.livePids.length === 0) return;
   const t0 = car.now();
   const sample = simulate(t0);
+  const asked: number[] = [];
   for (let i = 0; i < 6 && i < link.livePids.length; i++) {
     const pid = link.livePids[link.liveIndex % link.livePids.length]!;
     link.liveIndex = (link.liveIndex + 1) % link.livePids.length;
+    asked.push(pid);
     // A PID answers with all its values (0x01 lamp and count, 0x14 voltage and trim).
     const keys = pid > 0xff ? [pid] : keysOfPid(pid);
     for (const key of keys) {
@@ -199,6 +201,13 @@ function pollTick(): void {
       if (row) emit("live_value", { row });
     }
     if (link.recording) link.exchanges++;
+  }
+  // The worker logs each request of a tick with its answer when the raw log
+  // is on (Elm327::request); the log panel and its cost are part of a live
+  // session in the app, so the preview sends the same number of lines.
+  if (link.logRaw) {
+    const mode01 = asked.filter((pid) => pid <= 0xff).map((pid) => pid.toString(16).toUpperCase().padStart(2, "0"));
+    if (mode01.length > 0) log(`  > 01${mode01.join("")}   ->   7E8 10 ${(2 + mode01.length * 3).toString(16).toUpperCase().padStart(2, "0")} 41 ${mode01.join(" 00 ")} 00 | `);
   }
 }
 
