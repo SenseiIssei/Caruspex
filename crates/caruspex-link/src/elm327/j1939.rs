@@ -40,7 +40,7 @@ const TRAFFIC_FRAMES: usize = 2;
 /// header formatting of the ELM327 (priority, PGN with the data page bit,
 /// source: "6 0FECA 00 44 FF ..."). Without spaces the first eight digits
 /// are the id. Anything else (status lines, prompts) is `None`.
-pub fn parse_j1939_line(line: &str) -> Option<BusFrame> {
+pub(crate) fn parse_j1939_line(line: &str) -> Option<BusFrame> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
     if tokens.is_empty()
         || !tokens

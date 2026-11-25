@@ -86,7 +86,7 @@ pub struct ConnectHelp {
 }
 
 /// "CAN, KWP2000 (K-Line)" for the protocol numbers "6754".
-pub fn protocol_families(numbers: &str) -> String {
+pub(crate) fn protocol_families(numbers: &str) -> String {
     let mut out: Vec<&str> = Vec::new();
     for c in numbers.chars() {
         let name = match c {
@@ -106,7 +106,7 @@ pub fn protocol_families(numbers: &str) -> String {
 
 /// Adapters that call themselves v1.5 are clones (ELM Electronics never
 /// released that version); an id without ELM, OBD or STN is odd too.
-pub fn looks_like_clone(adapter_id: &str) -> bool {
+pub(crate) fn looks_like_clone(adapter_id: &str) -> bool {
     let up = adapter_id.to_ascii_uppercase();
     if up.trim().is_empty() || up.trim() == "?" {
         return false;

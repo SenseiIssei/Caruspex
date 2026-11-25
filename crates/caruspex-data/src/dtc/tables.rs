@@ -9,9 +9,9 @@ use crate::generated::{dtc_brands, dtc_details, dtc_generic_cbu, dtc_generic_p, 
 use crate::severity::Severity;
 use caruspex_i18n::Text;
 
-pub const NO_DETAIL: u16 = 0xFFFF;
+pub(crate) const NO_DETAIL: u16 = 0xFFFF;
 /// `how` of a composed text without a fault type.
-pub const NO_PHRASE: u16 = 0xFFFF;
+pub(crate) const NO_PHRASE: u16 = 0xFFFF;
 
 /// How a record names its fault.
 #[derive(Clone, Copy, Debug)]
@@ -175,19 +175,19 @@ pub struct RangeRule {
     pub detail: u16,
 }
 
-pub fn generic_powertrain() -> &'static [Record] {
+pub(crate) fn generic_powertrain() -> &'static [Record] {
     dtc_generic_p::POWERTRAIN
 }
 
-pub fn generic_chassis() -> &'static [Record] {
+pub(crate) fn generic_chassis() -> &'static [Record] {
     dtc_generic_cbu::CHASSIS
 }
 
-pub fn generic_body() -> &'static [Record] {
+pub(crate) fn generic_body() -> &'static [Record] {
     dtc_generic_cbu::BODY
 }
 
-pub fn generic_network() -> &'static [Record] {
+pub(crate) fn generic_network() -> &'static [Record] {
     dtc_generic_cbu::NETWORK
 }
 
@@ -199,7 +199,7 @@ pub fn details() -> &'static [Detail] {
     dtc_details::DETAILS
 }
 
-pub fn range_rules() -> &'static [RangeRule] {
+pub(crate) fn range_rules() -> &'static [RangeRule] {
     dtc_details::RANGE_RULES
 }
 

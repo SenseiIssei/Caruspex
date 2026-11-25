@@ -126,7 +126,8 @@ impl JsonWriter {
     }
 
     /// A string that may hold bytes outside UTF-8; those become U+FFFD.
-    pub fn value_bytes(&mut self, bytes: &[u8]) -> &mut Self {
+    #[cfg(test)]
+    pub(crate) fn value_bytes(&mut self, bytes: &[u8]) -> &mut Self {
         self.separate();
         self.quote(bytes);
         self

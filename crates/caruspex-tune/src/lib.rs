@@ -28,10 +28,7 @@ pub mod spec;
 
 pub use compare::{CompareBand, LogComparison, LogSample, Pair, compare_log};
 pub use limits::{Severity, Warning, WarningKind, warnings};
-pub use model::{
-    BandOffset, BoostCap, Conditions, Gearbox, Maps, POINTS, Point, RPM_END, RPM_START, RPM_STEP,
-    curve, rpm_at,
-};
+pub use model::{BandOffset, BoostCap, Conditions, Gearbox, Maps, POINTS, Point, curve, rpm_at};
 
 /// A simulated curve with its warnings and peaks.
 #[derive(Clone, Debug, PartialEq)]

@@ -200,7 +200,7 @@ pub fn parse_monitor_request(request: &str) -> Option<u32> {
 }
 
 /// The raw bits of a field, as DBC counts them.
-pub fn can_bits(frame: &[u8], start: i32, length: i32, intel: bool) -> u64 {
+pub(crate) fn can_bits(frame: &[u8], start: i32, length: i32, intel: bool) -> u64 {
     let mut raw: u64 = 0;
     if intel {
         // Bit i of the frame is bit (i % 8) of byte i / 8, the field runs

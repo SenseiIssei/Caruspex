@@ -21,12 +21,12 @@ pub mod vag_kline;
 pub mod vag_tp20;
 
 pub use bmw_kline::{BmwFault, BmwKLine, BmwProtocol, BmwUnit};
-pub use ecu_address::{EcuRole, ecu_display_name, ecu_role, ecu_role_name};
+pub use ecu_address::{EcuRole, ecu_display_name};
 pub use j1939::{J1939Session, J1939Unit, UnitFaults};
 pub use kwp1281::{Ecu, KLineLog, Kwp1281, Kwp1281Fault, MeasuringValue, decode_measurement};
 pub use kwp2000::{
-    KLineProtocol, Kwp2000, decode_kwp2000_fault, negative_response_text, protocol_from_key_bytes,
-    protocol_label, wake_up_kline,
+    KLineProtocol, Kwp2000, negative_response_text, protocol_from_key_bytes, protocol_label,
+    wake_up_kline,
 };
 pub use obd2::{
     EcuInfo, Fault, FreezeFrame, InUseCounter, InUsePerformance, LiveValue, MisfireCount,
@@ -34,8 +34,8 @@ pub use obd2::{
     batchable_pid, misfire_counts, mode01_answer_values, split_multi_pid_answer,
 };
 pub use uds::{
-    ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, UdsRefusal, decode_bmw_dtc, decode_uds_dtc,
-    extended_request, find_present_ecus, scan_ecus, session_request_allowed, uds_refusal_text,
+    ExtendedReply, Uds, UdsDtc, UdsEcu, UdsEcuInfo, UdsRefusal, decode_uds_dtc, extended_request,
+    find_present_ecus, scan_ecus, session_request_allowed, uds_refusal_text,
 };
 pub use vag_kline::{VagDiagnosis, VagKLine};
-pub use vag_tp20::{VagTp20, tp20_label};
+pub use vag_tp20::VagTp20;

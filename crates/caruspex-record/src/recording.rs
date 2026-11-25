@@ -42,7 +42,7 @@ pub use recorder::{
 };
 pub use replay::{ReplayPacing, ReplayTransport};
 
-pub const RECORDING_FORMAT: &str = "caruspex-recording";
+pub(crate) const RECORDING_FORMAT: &str = "caruspex-recording";
 pub const RECORDING_VERSION: i32 = 1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -236,7 +236,7 @@ fn one_decimal(value: f64) -> String {
 
 /// Normalises a command for comparison: upper case, without spaces and line
 /// ends. "01 0c\r" and "010C" are the same command.
-pub fn normalize_command(command: &[u8]) -> Vec<u8> {
+pub(crate) fn normalize_command(command: &[u8]) -> Vec<u8> {
     command
         .iter()
         .filter(|c| !matches!(c, b' ' | b'\t' | b'\r' | b'\n'))

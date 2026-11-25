@@ -11,7 +11,7 @@
 pub type Table = &'static [(f64, f64)];
 
 /// Linear interpolation in a table, clamped at both ends.
-pub fn interp(table: Table, x: f64) -> f64 {
+pub(crate) fn interp(table: Table, x: f64) -> f64 {
     let first = table[0];
     if x <= first.0 {
         return first.1;
@@ -31,23 +31,18 @@ pub fn interp(table: Table, x: f64) -> f64 {
 // ---------------------------------------------------------------------------
 
 /// Displacement in m³: 2,979 cm³. Published: Wikipedia "BMW N55" (CC BY-SA 4.0).
-pub const DISPLACEMENT_M3: f64 = 2.979e-3;
+pub(crate) const DISPLACEMENT_M3: f64 = 2.979e-3;
 
 /// Cylinders. Published: Wikipedia "BMW N55", straight six.
-pub const CYLINDERS: f64 = 6.0;
-
-/// Compression ratio 10.2:1. Published: Wikipedia "BMW N55". Only quoted in
-/// the documentation; the efficiency below already contains it.
-pub const COMPRESSION_RATIO: f64 = 10.2;
+pub(crate) const CYLINDERS: f64 = 6.0;
 
 /// Redline 7,000 rpm. Published: Wikipedia "BMW N55".
-pub const REDLINE_RPM: f64 = 7000.0;
+pub(crate) const REDLINE_RPM: f64 = 7000.0;
 
 /// Rated torque 400 Nm from 1,200 to 5,000 rpm. Published: Wikipedia "BMW N55",
 /// row N55B30M0 (used in the F30 335i and the F32/F33/F36 435i), and BMW's
 /// data for the 435i.
 pub const RATED_TORQUE_NM: f64 = 400.0;
-pub const RATED_TORQUE_FROM_RPM: f64 = 1200.0;
 pub const RATED_TORQUE_TO_RPM: f64 = 5000.0;
 
 /// Rated power 225 kW (306 PS). Wikipedia "BMW N55" gives 5,700 to 5,800 rpm
@@ -59,39 +54,39 @@ pub const RATED_POWER_TO_RPM: f64 = 6000.0;
 
 /// Rated input torque of the ZF 8HP45 automatic: 450 Nm. Published:
 /// Wikipedia "ZF 8HP transmission", key data table (CC BY-SA 4.0).
-pub const GEARBOX_8HP45_NM: f64 = 450.0;
+pub(crate) const GEARBOX_8HP45_NM: f64 = 450.0;
 
 /// The six-speed manual of the F3x 35i models. Assumption: about 450 Nm for
 /// gearbox and clutch together. I found no freely licensed source that names
 /// the exact type and its rating; BMW's six-speed boxes carry the rated torque
 /// in tens of Nm in their type name (GS6-45 = 450 Nm), so check the plate.
-pub const GEARBOX_MANUAL_NM: f64 = 450.0;
+pub(crate) const GEARBOX_MANUAL_NM: f64 = 450.0;
 
 // ---------------------------------------------------------------------------
 // Published physical constants
 // ---------------------------------------------------------------------------
 
 /// Gas constant of air, J/(kg K). Textbook value.
-pub const R_AIR: f64 = 287.05;
+pub(crate) const R_AIR: f64 = 287.05;
 
 /// (kappa - 1) / kappa of air with kappa = 1.4. Textbook value.
-pub const KAPPA_EXP: f64 = 0.2857;
+pub(crate) const KAPPA_EXP: f64 = 0.2857;
 
 /// Standard atmosphere at sea level, bar. ISO 2533.
-pub const P_STANDARD_BAR: f64 = 1.01325;
+pub(crate) const P_STANDARD_BAR: f64 = 1.01325;
 
 /// Reference temperature of corrected compressor flow, K (25 °C). The usual
 /// convention of compressor maps.
-pub const T_CORRECTED_K: f64 = 298.15;
+pub(crate) const T_CORRECTED_K: f64 = 298.15;
 
 /// Stoichiometric air to fuel ratio of E5 petrol (Super Plus in Germany).
 /// Assumption between pure petrol (about 14.7) and E10 (about 14.1).
-pub const AFR_STOICH: f64 = 14.4;
+pub(crate) const AFR_STOICH: f64 = 14.4;
 
 /// Lower heating value of E5 petrol, J/kg. Assumption: 42.4 MJ/kg, between
 /// petrol without ethanol (about 43 MJ/kg) and ethanol (about 27 MJ/kg) at
 /// 5 % ethanol.
-pub const LHV_J_PER_KG: f64 = 42.4e6;
+pub(crate) const LHV_J_PER_KG: f64 = 42.4e6;
 
 // ---------------------------------------------------------------------------
 // Assumptions: air path
@@ -101,7 +96,7 @@ pub const LHV_J_PER_KG: f64 = 42.4e6;
 /// the manifold. Assumption: a typical shape for a four-valve engine with
 /// variable cam timing (Valvetronic, double VANOS): lower at low rpm, best in
 /// the middle, falling towards the redline as the ports choke.
-pub const VOLUMETRIC_EFFICIENCY: Table = &[
+pub(crate) const VOLUMETRIC_EFFICIENCY: Table = &[
     (1000.0, 0.86),
     (1500.0, 0.90),
     (2000.0, 0.93),
@@ -119,7 +114,7 @@ pub const VOLUMETRIC_EFFICIENCY: Table = &[
 /// The highest boost (bar above ambient) the turbo can build at a given rpm,
 /// because at low rpm there is too little exhaust energy. Assumption: chosen
 /// so the published 400 Nm start at 1,200 rpm and not much earlier.
-pub const SPOOL_LIMIT_BAR: Table = &[
+pub(crate) const SPOOL_LIMIT_BAR: Table = &[
     (1000.0, 0.35),
     (1100.0, 0.62),
     (1200.0, 0.95),
@@ -136,29 +131,29 @@ pub const TURBO_MAX_PRESSURE_RATIO: f64 = 2.55;
 /// Corrected air flow limit of the compressor (choke), kg/s. Assumption: same
 /// generic small compressor; about a quarter above the air flow the stock
 /// engine needs at rated power (corrected to 25 °C and 1013 hPa).
-pub const TURBO_MAX_FLOW_KG_S: f64 = 0.32;
+pub(crate) const TURBO_MAX_FLOW_KG_S: f64 = 0.32;
 
 /// Compressor efficiency in the middle of its map; it falls towards choke.
 /// Assumption: typical value for small automotive compressors.
-pub const COMPRESSOR_EFFICIENCY: f64 = 0.72;
+pub(crate) const COMPRESSOR_EFFICIENCY: f64 = 0.72;
 
 /// Temperature rise of the intake air before the compressor (engine bay,
 /// warm intake pipes), K. Assumption.
-pub const INLET_HEAT_K: f64 = 5.0;
+pub(crate) const INLET_HEAT_K: f64 = 5.0;
 
 /// Intercooler effectiveness: share of the temperature rise it removes.
 /// Assumption: an air-to-air intercooler at the front, better at low flow.
-pub const INTERCOOLER_EFFECTIVENESS_LOW_FLOW: f64 = 0.85;
+pub(crate) const INTERCOOLER_EFFECTIVENESS_LOW_FLOW: f64 = 0.85;
 /// How much the effectiveness drops at the flow limit of the turbo. Assumption.
-pub const INTERCOOLER_EFFECTIVENESS_DROP: f64 = 0.20;
+pub(crate) const INTERCOOLER_EFFECTIVENESS_DROP: f64 = 0.20;
 
 /// Pressure drop over the intercooler and its pipes at 0.25 kg/s, bar; grows
 /// with the square of the flow. Assumption.
-pub const INTERCOOLER_DROP_BAR: f64 = 0.10;
+pub(crate) const INTERCOOLER_DROP_BAR: f64 = 0.10;
 /// Pressure drop over the air filter at 0.25 kg/s, bar. Assumption.
-pub const FILTER_DROP_BAR: f64 = 0.025;
+pub(crate) const FILTER_DROP_BAR: f64 = 0.025;
 /// Flow at which the two drops above are given, kg/s.
-pub const DROP_REFERENCE_FLOW_KG_S: f64 = 0.25;
+pub(crate) const DROP_REFERENCE_FLOW_KG_S: f64 = 0.25;
 
 // ---------------------------------------------------------------------------
 // Assumptions: combustion
@@ -167,11 +162,11 @@ pub const DROP_REFERENCE_FLOW_KG_S: f64 = 0.25;
 /// Indicated efficiency at the best ignition timing (MBT) and lambda 1, before
 /// friction. Assumption: in the usual range of modern direct-injection petrol
 /// engines at full load (0.36 to 0.42).
-pub const INDICATED_EFFICIENCY: f64 = 0.39;
+pub(crate) const INDICATED_EFFICIENCY: f64 = 0.39;
 
 /// Best ignition timing (MBT) at full load, degrees before top dead centre.
 /// Assumption: typical for a bore of 84 mm with fast burning.
-pub const MBT_TIMING_DEG: Table = &[
+pub(crate) const MBT_TIMING_DEG: Table = &[
     (1000.0, 18.0),
     (2000.0, 22.0),
     (3000.0, 25.0),
@@ -185,7 +180,7 @@ pub const MBT_TIMING_DEG: Table = &[
 /// 1013 hPa, degrees before top dead centre. Assumption: a turbo petrol engine
 /// at full load runs far later than MBT at low rpm, where the mixture has the
 /// most time to knock, and gets closer at high rpm.
-pub const KNOCK_LIMIT_REFERENCE_DEG: Table = &[
+pub(crate) const KNOCK_LIMIT_REFERENCE_DEG: Table = &[
     (1000.0, 3.0),
     (1500.0, 3.5),
     (2000.0, 5.0),
@@ -204,27 +199,27 @@ pub const STOCK_KNOCK_RESERVE_DEG: f64 = 1.5;
 /// Knock limit sensitivities. All assumptions in the range found in general
 /// engine literature, not measured on an N55:
 /// - degrees per octane number (RON),
-pub const KNOCK_DEG_PER_RON: f64 = 1.0;
+pub(crate) const KNOCK_DEG_PER_RON: f64 = 1.0;
 /// - degrees per kelvin of charge air temperature,
-pub const KNOCK_DEG_PER_K: f64 = 0.10;
+pub(crate) const KNOCK_DEG_PER_K: f64 = 0.10;
 /// - degrees per bar of manifold pressure,
-pub const KNOCK_DEG_PER_BAR: f64 = 6.0;
+pub(crate) const KNOCK_DEG_PER_BAR: f64 = 6.0;
 /// - degrees per unit of lambda richer than stock (0.1 richer = 2.5 degrees).
-pub const KNOCK_DEG_PER_LAMBDA: f64 = 25.0;
+pub(crate) const KNOCK_DEG_PER_LAMBDA: f64 = 25.0;
 
 /// Torque lost when the ignition is away from MBT: share per squared degree.
 /// Assumption: the usual parabola, about 4 % at 10 degrees.
-pub const SPARK_LOSS_PER_DEG2: f64 = 0.0004;
+pub(crate) const SPARK_LOSS_PER_DEG2: f64 = 0.0004;
 
 /// Friction mean effective pressure, bar: a + b * n + c * n² with n in
 /// 1000 rpm. Assumption: the quadratic form of engine textbooks with
 /// coefficients for a modern six with roller cams.
-pub const FRICTION_BAR: [f64; 3] = [0.60, 0.12, 0.022];
+pub(crate) const FRICTION_BAR: [f64; 3] = [0.60, 0.12, 0.022];
 
 /// Stock lambda at full load. Assumption: lambda 1 where the exhaust stays
 /// cool enough, richer at high rpm to protect turbo and catalyst, as petrol
 /// turbos of that time did.
-pub const STOCK_LAMBDA: Table = &[
+pub(crate) const STOCK_LAMBDA: Table = &[
     (1000.0, 1.00),
     (3500.0, 1.00),
     (4000.0, 0.97),
@@ -244,7 +239,7 @@ pub const STOCK_LAMBDA: Table = &[
 /// 6,000 rpm and falling to 205 kW at 7,000 rpm; about 290 Nm at 1,000 rpm
 /// (the last two are assumptions, nothing is published there). See
 /// `tests/model.rs` for the check.
-pub const STOCK_BOOST_BAR: Table = &[
+pub(crate) const STOCK_BOOST_BAR: Table = &[
     (1000.0, 0.24),
     (1250.0, 0.73),
     (1500.0, 0.72),
@@ -273,7 +268,7 @@ pub const STOCK_BOOST_BAR: Table = &[
 /// Exhaust gas temperature before the turbine with the stock maps at
 /// reference conditions, °C. Assumption: typical full-load values of petrol
 /// turbos with component protection.
-pub const STOCK_EGT_C: Table = &[
+pub(crate) const STOCK_EGT_C: Table = &[
     (1000.0, 760.0),
     (2000.0, 820.0),
     (3000.0, 860.0),
@@ -284,11 +279,11 @@ pub const STOCK_EGT_C: Table = &[
 ];
 /// Kelvin per degree of ignition later than stock (more heat goes out with
 /// the exhaust). Assumption.
-pub const EGT_K_PER_DEG_RETARD: f64 = 12.0;
+pub(crate) const EGT_K_PER_DEG_RETARD: f64 = 12.0;
 /// Kelvin per 0.01 lambda leaner than stock (less fuel to cool). Assumption.
-pub const EGT_K_PER_CENTI_LAMBDA: f64 = 7.0;
+pub(crate) const EGT_K_PER_CENTI_LAMBDA: f64 = 7.0;
 /// Kelvin per bar more manifold pressure than stock. Assumption.
-pub const EGT_K_PER_BAR: f64 = 60.0;
+pub(crate) const EGT_K_PER_BAR: f64 = 60.0;
 /// Turbine inlet temperature above which the warning starts, °C. Assumption:
 /// series turbo housings of petrol engines are usually built for about
 /// 950 to 1050 °C; the engine control enriches before that.
@@ -301,27 +296,27 @@ pub const EGT_LIMIT_C: f64 = 980.0;
 /// Fuel the high-pressure pump can deliver at full rail pressure, kg/s.
 /// Assumption: about a third more than stock needs at rated power, a usual
 /// design reserve; not measured.
-pub const HPFP_MAX_KG_S: f64 = 0.027;
+pub(crate) const HPFP_MAX_KG_S: f64 = 0.027;
 
 /// Static flow of one direct injector at full rail pressure, kg/s.
 /// Assumption for a solenoid DI injector of this size.
-pub const INJECTOR_FLOW_KG_S: f64 = 0.014;
+pub(crate) const INJECTOR_FLOW_KG_S: f64 = 0.014;
 
 /// Share of the engine cycle in which direct injection is possible (intake
 /// and early compression stroke). Assumption: about 290 of 720 degrees.
-pub const INJECTION_WINDOW: f64 = 0.40;
+pub(crate) const INJECTION_WINDOW: f64 = 0.40;
 
 /// Below this rpm, high load raises the risk of low-speed pre-ignition.
 /// Assumption from the general literature on downsized turbo engines.
-pub const LSPI_RPM: f64 = 2500.0;
+pub(crate) const LSPI_RPM: f64 = 2500.0;
 /// Brake mean effective pressure above which that risk counts as raised,
 /// bar. Assumption: stock reaches about 16.9 bar (400 Nm); the literature
 /// sees the risk climb steeply from about 18 to 20 bar at low rpm.
-pub const LSPI_BMEP_BAR: f64 = 18.0;
+pub(crate) const LSPI_BMEP_BAR: f64 = 18.0;
 
 /// Charge air temperature above which the knock limit falls noticeably, °C.
 /// Assumption, used only for a note.
-pub const CHARGE_AIR_NOTE_C: f64 = 65.0;
+pub(crate) const CHARGE_AIR_NOTE_C: f64 = 65.0;
 
 // ---------------------------------------------------------------------------
 // Honest uncertainty

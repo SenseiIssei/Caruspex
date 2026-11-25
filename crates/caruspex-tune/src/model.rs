@@ -23,11 +23,11 @@ use std::f64::consts::PI;
 use crate::spec::{self, interp};
 
 /// First rpm of the curve.
-pub const RPM_START: f64 = 1000.0;
+pub(crate) const RPM_START: f64 = 1000.0;
 /// Last rpm of the curve: the redline.
-pub const RPM_END: f64 = spec::REDLINE_RPM;
+pub(crate) const RPM_END: f64 = spec::REDLINE_RPM;
 /// Distance of the points.
-pub const RPM_STEP: f64 = 250.0;
+pub(crate) const RPM_STEP: f64 = 250.0;
 /// Number of points from 1,000 to 7,000 rpm.
 pub const POINTS: usize = 25;
 
@@ -46,7 +46,7 @@ pub enum Gearbox {
 
 impl Gearbox {
     /// Rated input torque, Nm.
-    pub fn rated_nm(self) -> f64 {
+    pub(crate) fn rated_nm(self) -> f64 {
         match self {
             Gearbox::Automatic8hp45 => spec::GEARBOX_8HP45_NM,
             Gearbox::Manual6 => spec::GEARBOX_MANUAL_NM,
@@ -117,9 +117,9 @@ pub struct BandOffset {
 }
 
 /// Limits of the inputs. Outside these the model has nothing to say.
-pub const BOOST_RANGE_BAR: (f64, f64) = (0.0, 1.8);
-pub const IGNITION_OFFSET_RANGE_DEG: (f64, f64) = (-15.0, 10.0);
-pub const LAMBDA_RANGE: (f64, f64) = (0.70, 1.10);
+pub(crate) const BOOST_RANGE_BAR: (f64, f64) = (0.0, 1.8);
+pub(crate) const IGNITION_OFFSET_RANGE_DEG: (f64, f64) = (-15.0, 10.0);
+pub(crate) const LAMBDA_RANGE: (f64, f64) = (0.70, 1.10);
 
 impl Maps {
     /// The stock maps ("Serie").

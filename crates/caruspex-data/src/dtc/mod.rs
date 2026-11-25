@@ -11,10 +11,14 @@
 
 pub mod tables;
 
-use std::collections::{HashMap, HashSet};
+#[cfg(test)]
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::sync::OnceLock;
 
-use caruspex_i18n::{Language, Text, l, language, with_language};
+use caruspex_i18n::l;
+#[cfg(test)]
+use caruspex_i18n::{Language, Text, language, with_language};
 
 use crate::severity::Severity;
 use tables::{Detail, Family, NO_DETAIL, RangeRule, Record};
@@ -162,7 +166,7 @@ pub fn cost_class_hint(cost: CostClass) -> &'static str {
 
 /// General "may I keep driving?" advice for a severity, used when a code has
 /// no specific advice of its own.
-pub fn severity_advice(severity: Severity) -> &'static str {
+pub(crate) fn severity_advice(severity: Severity) -> &'static str {
     match severity {
         Severity::Info => l(
             "Kein Fehler im eigentlichen Sinn, Weiterfahren ist in Ordnung.",
@@ -616,7 +620,8 @@ pub fn describe_dtc(code: &str) -> String {
 }
 
 /// Same, with the meaning for the given brand (see `lookup_dtc`).
-pub fn describe_dtc_for_brand(code: &str, brand: &str) -> String {
+#[cfg(test)]
+pub(crate) fn describe_dtc_for_brand(code: &str, brand: &str) -> String {
     lookup_dtc(code, brand).text
 }
 
@@ -626,7 +631,8 @@ pub fn is_throttle_dtc(code: &str) -> bool {
 }
 
 /// All generic and VAG codes with their description in German and English.
-pub fn dtc_texts() -> &'static HashMap<&'static str, Text> {
+#[cfg(test)]
+pub(crate) fn dtc_texts() -> &'static HashMap<&'static str, Text> {
     static TEXTS: OnceLock<HashMap<&'static str, Text>> = OnceLock::new();
     TEXTS.get_or_init(|| {
         let mut map = HashMap::new();
@@ -639,6 +645,7 @@ pub fn dtc_texts() -> &'static HashMap<&'static str, Text> {
 
 /// A record's text in German and English. Composed texts are built once and
 /// kept for the life of the program, like the tables themselves.
+#[cfg(test)]
 fn both_languages(r: &'static Record) -> Text {
     match r.desc {
         tables::Desc::Plain(text) => text,
@@ -653,7 +660,7 @@ fn both_languages(r: &'static Record) -> Text {
     }
 }
 
-pub fn dtc_throttle_codes() -> &'static HashSet<&'static str> {
+pub(crate) fn dtc_throttle_codes() -> &'static HashSet<&'static str> {
     static CODES: OnceLock<HashSet<&'static str>> = OnceLock::new();
     CODES.get_or_init(|| {
         let mut set = HashSet::new();
@@ -666,6 +673,7 @@ pub fn dtc_throttle_codes() -> &'static HashSet<&'static str> {
     })
 }
 
+#[cfg(test)]
 fn build_descriptions(lang: Language) -> HashMap<&'static str, &'static str> {
     dtc_texts()
         .iter()
@@ -684,7 +692,8 @@ fn build_descriptions(lang: Language) -> HashMap<&'static str, &'static str> {
 
 /// All generic and VAG codes with their description in the active language
 /// (English, or German for every other language).
-pub fn dtc_descriptions() -> &'static HashMap<&'static str, &'static str> {
+#[cfg(test)]
+pub(crate) fn dtc_descriptions() -> &'static HashMap<&'static str, &'static str> {
     static ENGLISH: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
     static GERMAN: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
     if language() == Language::English {

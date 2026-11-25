@@ -39,7 +39,7 @@ fn role_for_source_byte(address: u64) -> EcuRole {
 }
 
 /// Role by address. Unknown for an empty source (headers off).
-pub fn ecu_role(source: &str) -> EcuRole {
+pub(crate) fn ecu_role(source: &str) -> EcuRole {
     if !all_hex(source) {
         return EcuRole::Unknown;
     }
@@ -64,7 +64,7 @@ pub fn ecu_role(source: &str) -> EcuRole {
 
 /// Plain name of the role in the active language: "Motor", "Getriebe",
 /// "Steuergerät". Empty for Unknown.
-pub fn ecu_role_name(role: EcuRole) -> &'static str {
+pub(crate) fn ecu_role_name(role: EcuRole) -> &'static str {
     match role {
         EcuRole::Engine => l("Motor", "Engine"),
         EcuRole::Transmission => l("Getriebe", "Transmission"),

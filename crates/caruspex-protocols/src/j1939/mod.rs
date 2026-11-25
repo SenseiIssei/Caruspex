@@ -29,57 +29,55 @@ pub mod tp;
 
 use caruspex_i18n::l;
 
-pub use dtc::{
-    DiagnosticMessage, J1939Dtc, LampState, Lamps, SpnConversion, decode_dm, describe, parse_code,
-};
-pub use fmi::{fmi_text, fmi_weight};
-pub use params::{J1939Param, J1939Value, decode_params, find_param, j1939_params};
+pub use dtc::{DiagnosticMessage, J1939Dtc, LampState, Lamps, SpnConversion, describe, parse_code};
+pub use fmi::fmi_weight;
+pub use params::{J1939Param, J1939Value, find_param};
 pub use session::{AckKind, ClearResult, ComponentId, J1939Session, J1939Unit, UnitFaults};
 
 /// PGN 59904: request for another PGN.
-pub const PGN_REQUEST: u32 = 0xEA00;
+pub(crate) const PGN_REQUEST: u32 = 0xEA00;
 /// PGN 59392: acknowledgement (positive, negative, access denied, busy).
-pub const PGN_ACK: u32 = 0xE800;
+pub(crate) const PGN_ACK: u32 = 0xE800;
 /// PGN 60416: transport protocol, connection management.
-pub const PGN_TP_CM: u32 = 0xEC00;
+pub(crate) const PGN_TP_CM: u32 = 0xEC00;
 /// PGN 60160: transport protocol, data transfer.
-pub const PGN_TP_DT: u32 = 0xEB00;
+pub(crate) const PGN_TP_DT: u32 = 0xEB00;
 /// PGN 60928: address claimed.
-pub const PGN_ADDRESS_CLAIM: u32 = 0xEE00;
+pub(crate) const PGN_ADDRESS_CLAIM: u32 = 0xEE00;
 /// PGN 65226: DM1, active faults.
-pub const PGN_DM1: u32 = 0xFECA;
+pub(crate) const PGN_DM1: u32 = 0xFECA;
 /// PGN 65227: DM2, previously active faults.
-pub const PGN_DM2: u32 = 0xFECB;
+pub(crate) const PGN_DM2: u32 = 0xFECB;
 /// PGN 65228: DM3, clear previously active faults.
-pub const PGN_DM3: u32 = 0xFECC;
+pub(crate) const PGN_DM3: u32 = 0xFECC;
 /// PGN 65235: DM11, clear active faults.
-pub const PGN_DM11: u32 = 0xFED3;
+pub(crate) const PGN_DM11: u32 = 0xFED3;
 /// PGN 65260: vehicle identification number.
-pub const PGN_VIN: u32 = 0xFEEC;
+pub(crate) const PGN_VIN: u32 = 0xFEEC;
 /// PGN 65259: component identification (make, model, serial, unit).
-pub const PGN_COMPONENT_ID: u32 = 0xFEEB;
+pub(crate) const PGN_COMPONENT_ID: u32 = 0xFEEB;
 /// PGN 65242: software identification.
-pub const PGN_SOFTWARE_ID: u32 = 0xFEDA;
+pub(crate) const PGN_SOFTWARE_ID: u32 = 0xFEDA;
 /// PGN 65253: engine hours and revolutions, usually only on request.
-pub const PGN_ENGINE_HOURS: u32 = 0xFEE5;
+pub(crate) const PGN_ENGINE_HOURS: u32 = 0xFEE5;
 /// PGN 65257: fuel consumption (trip and total), usually only on request.
-pub const PGN_FUEL_CONSUMPTION: u32 = 0xFEE9;
+pub(crate) const PGN_FUEL_CONSUMPTION: u32 = 0xFEE9;
 /// PGN 65244: idle operation (total idle hours and idle fuel), on request.
-pub const PGN_IDLE_OPERATION: u32 = 0xFEDC;
+pub(crate) const PGN_IDLE_OPERATION: u32 = 0xFEDC;
 /// PGN 65248: vehicle distance (trip and total, 125 m steps).
-pub const PGN_VEHICLE_DISTANCE: u32 = 0xFEE0;
+pub(crate) const PGN_VEHICLE_DISTANCE: u32 = 0xFEE0;
 /// PGN 65217: high resolution vehicle distance (5 m steps).
-pub const PGN_VEHICLE_DISTANCE_HR: u32 = 0xFEC1;
+pub(crate) const PGN_VEHICLE_DISTANCE_HR: u32 = 0xFEC1;
 /// PGN 49408: DM21, distance and time with the emission lamp on and since
 /// the faults were last cleared. PDU1, so it is asked of every unit.
-pub const PGN_DM21: u32 = 0xC100;
+pub(crate) const PGN_DM21: u32 = 0xC100;
 
 /// The global address: to everybody.
-pub const GLOBAL: u8 = 0xFF;
+pub(crate) const GLOBAL: u8 = 0xFF;
 /// The null address: a node without a claimed address.
-pub const NULL_ADDRESS: u8 = 0xFE;
+pub(crate) const NULL_ADDRESS: u8 = 0xFE;
 /// The preferred addresses of an off-board diagnostic tool.
-pub const TESTER_ADDRESSES: [u8; 2] = [0xF9, 0xFA];
+pub(crate) const TESTER_ADDRESSES: [u8; 2] = [0xF9, 0xFA];
 
 /// One 29-bit id, taken apart.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -113,7 +111,7 @@ impl J1939Id {
     }
 
     /// The 29-bit id. For a PDU2 group the destination is ignored.
-    pub fn to_id(self) -> u32 {
+    pub(crate) fn to_id(self) -> u32 {
         let pf = (self.pgn >> 8) & 0xFF;
         let mut id = (u32::from(self.priority & 0x7) << 26) | ((self.pgn & 0x3FF00) << 8);
         if pf < 240 {
@@ -137,14 +135,15 @@ impl J1939Id {
 }
 
 /// True for a PGN that carries its destination (PDU1, PF below 240).
-pub fn is_pdu1(pgn: u32) -> bool {
+#[cfg(test)]
+pub(crate) fn is_pdu1(pgn: u32) -> bool {
     ((pgn >> 8) & 0xFF) < 240
 }
 
 /// What a source address usually stands for: the preferred addresses of
 /// the common control units. A maker may put a unit elsewhere, so this is
 /// a hint, not a promise.
-pub fn address_name(address: u8) -> &'static str {
+pub(crate) fn address_name(address: u8) -> &'static str {
     match address {
         0x00 => l("Motor", "Engine"),
         0x01 => l("Motor 2", "Engine 2"),

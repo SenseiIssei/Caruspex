@@ -20,9 +20,9 @@ use caruspex_i18n::{Text, l};
 use crate::catalog::{Connector, VehicleGeneration};
 
 /// First model year in which every new motorcycle must meet Euro 5.
-pub const EURO5_ALL: i32 = 2021;
+pub(crate) const EURO5_ALL: i32 = 2021;
 /// First model year of new types under Euro 5.
-pub const EURO5_NEW_TYPES: i32 = 2020;
+pub(crate) const EURO5_NEW_TYPES: i32 = 2020;
 
 /// The diagnostic plug of one maker and the cable that fits it.
 #[derive(Clone, Copy, Debug)]
@@ -110,7 +110,7 @@ pub fn is_motorcycle(g: &VehicleGeneration) -> bool {
 }
 
 /// The plug of a maker, if Caruspex knows it.
-pub fn moto_plug(brand: &str) -> Option<&'static MotoPlug> {
+pub(crate) fn moto_plug(brand: &str) -> Option<&'static MotoPlug> {
     PLUGS
         .iter()
         .find(|p| p.brands.iter().any(|b| b.eq_ignore_ascii_case(brand)))
@@ -123,7 +123,7 @@ pub fn plug_text(brand: &str) -> &'static str {
 
 /// Whether a motorcycle of this generation and model year falls under
 /// Euro 5 and so speaks the standard OBD services.
-pub fn euro5(g: &VehicleGeneration, year: i32) -> bool {
+pub(crate) fn euro5(g: &VehicleGeneration, year: i32) -> bool {
     let year = if year <= 0 { g.year_from } else { year };
     year >= EURO5_ALL || (year >= EURO5_NEW_TYPES && g.year_from >= EURO5_NEW_TYPES)
 }

@@ -129,7 +129,7 @@ pub fn number(value: f64, decimals: i32) -> Phrase {
 }
 
 /// Same, with a leading plus sign for positive values (for fuel trims).
-pub fn signed_number(value: f64, decimals: i32) -> Phrase {
+pub(crate) fn signed_number(value: f64, decimals: i32) -> Phrase {
     let mut p = number(value, decimals);
     // Only add the plus if the rounded value is really above zero.
     let scale = 10f64.powi(decimals);

@@ -101,17 +101,17 @@ pub struct BatteryStep {
 
 pub mod battery {
     pub const FULL: f64 = 12.6;
-    pub const THREE_QUARTERS: f64 = 12.4;
+    pub(crate) const THREE_QUARTERS: f64 = 12.4;
     pub const WEAK: f64 = 12.2;
-    pub const FLAT: f64 = 11.9;
-    pub const CRANK_GOOD: f64 = 10.0;
-    pub const CRANK_WEAK: f64 = 9.6;
-    pub const CRANK_BAD: f64 = 8.5;
-    pub const CHARGE_LOW: f64 = 13.8;
-    pub const CHARGE_HIGH: f64 = 14.8;
-    pub const CHARGE_NONE: f64 = 13.2;
-    pub const CHARGE_TOO_HIGH: f64 = 15.0;
-    pub const CHARGE_DANGEROUS: f64 = 15.5;
+    pub(crate) const FLAT: f64 = 11.9;
+    pub(crate) const CRANK_GOOD: f64 = 10.0;
+    pub(crate) const CRANK_WEAK: f64 = 9.6;
+    pub(crate) const CRANK_BAD: f64 = 8.5;
+    pub(crate) const CHARGE_LOW: f64 = 13.8;
+    pub(crate) const CHARGE_HIGH: f64 = 14.8;
+    pub(crate) const CHARGE_NONE: f64 = 13.2;
+    pub(crate) const CHARGE_TOO_HIGH: f64 = 15.0;
+    pub(crate) const CHARGE_DANGEROUS: f64 = 15.5;
 }
 
 fn smart_charging(input: &BatteryInput) -> bool {

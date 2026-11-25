@@ -25,7 +25,7 @@ pub fn ljust(text: &str, width: usize) -> String {
 }
 
 /// printf("%Ns"): the same, padding on the left.
-pub fn rjust(text: &str, width: usize) -> String {
+pub(crate) fn rjust(text: &str, width: usize) -> String {
     let mut s = String::new();
     while s.len() + text.len() < width {
         s.push(' ');

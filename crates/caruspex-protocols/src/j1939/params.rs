@@ -131,7 +131,7 @@ impl J1939Param {
     }
 
     /// Puts a raw number into its place (also the error and n/a codes).
-    pub fn put_raw(&self, raw: u64, data: &mut [u8]) {
+    pub(crate) fn put_raw(&self, raw: u64, data: &mut [u8]) {
         let first = usize::from(self.byte);
         let count = (usize::from(self.bit) + usize::from(self.bits)).div_ceil(8);
         if data.len() < first + count {
@@ -161,7 +161,7 @@ pub enum RawKind {
 /// to last step means "error", the last "not available". For one byte: up
 /// to FA a value, FE error, FF not available (FB to FD are kept for
 /// later and counted as not available).
-pub fn raw_kind(raw: u64, bits: u8) -> RawKind {
+pub(crate) fn raw_kind(raw: u64, bits: u8) -> RawKind {
     if bits < 8 {
         // Two bit states: 2 error, 3 not available; longer ones alike.
         let top = (1u64 << bits) - 1;
@@ -453,7 +453,8 @@ static PARAMS: &[J1939Param] = &[
 ];
 
 /// Every value of the table.
-pub fn j1939_params() -> &'static [J1939Param] {
+#[cfg(test)]
+pub(crate) fn j1939_params() -> &'static [J1939Param] {
     PARAMS
 }
 
@@ -475,7 +476,7 @@ pub struct J1939Value {
 }
 
 /// Every value of the table in one frame of the parameter group `pgn`.
-pub fn decode_params(pgn: u32, source: u8, data: &[u8]) -> Vec<J1939Value> {
+pub(crate) fn decode_params(pgn: u32, source: u8, data: &[u8]) -> Vec<J1939Value> {
     PARAMS
         .iter()
         .filter(|p| p.pgn == pgn)

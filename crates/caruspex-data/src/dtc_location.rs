@@ -463,7 +463,7 @@ fn zone_for(letter: char, number: i32) -> (CarZone, &'static str) {
 }
 
 /// Zone name in the active language.
-pub fn zone_name(zone: CarZone) -> &'static str {
+pub(crate) fn zone_name(zone: CarZone) -> &'static str {
     match zone {
         CarZone::Intake => l("Ansaugtrakt", "Intake system"),
         CarZone::Throttle => l("Drosselklappe", "Throttle body"),
@@ -485,7 +485,8 @@ pub fn zone_name(zone: CarZone) -> &'static str {
 }
 
 /// All zones, in the order the drawing knows them.
-pub fn all_zones() -> &'static [CarZone] {
+#[cfg(test)]
+pub(crate) fn all_zones() -> &'static [CarZone] {
     static ZONES: [CarZone; 15] = [
         CarZone::Intake,
         CarZone::Throttle,

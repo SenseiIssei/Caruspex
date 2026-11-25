@@ -232,7 +232,8 @@ fn catalog(language: Language) -> Option<&'static Catalog> {
 }
 
 /// Packed bytes of all catalogs together, for the size check in the tests.
-pub fn packed_catalog_bytes() -> usize {
+#[cfg(test)]
+pub(crate) fn packed_catalog_bytes() -> usize {
     PACKED.iter().map(|(_, bytes)| bytes.len()).sum()
 }
 

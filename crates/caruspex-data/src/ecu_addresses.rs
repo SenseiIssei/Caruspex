@@ -110,7 +110,7 @@ fn sweep_entry(request: u32, kind: EcuKind) -> EcuDefinition {
 }
 
 /// Plain name of a kind in the active language ("Bremsen und ABS").
-pub fn ecu_kind_name(kind: EcuKind) -> &'static str {
+pub(crate) fn ecu_kind_name(kind: EcuKind) -> &'static str {
     match kind {
         EcuKind::Engine => l("Motor", "Engine"),
         EcuKind::Gearbox => l("Getriebe", "Gearbox"),

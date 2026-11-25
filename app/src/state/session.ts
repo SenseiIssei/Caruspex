@@ -392,7 +392,7 @@ export function startSession(): void {
       linkText: lost ? t(MW, "Verbindung verloren") : t(MW, "Nicht verbunden"),
       servicesDue: 0,
     });
-    if (lost) toast(lost, "error", 10000);
+    if (lost) toast(lost, "error", 6000);
     appendLog(t(MW, "Verbindung getrennt."));
   });
 

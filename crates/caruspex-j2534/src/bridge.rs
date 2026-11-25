@@ -17,7 +17,7 @@ use crate::api::{Ioctl, IoctlOut, Message, PassThru};
 use crate::wire::{self, Call, Reply};
 
 /// The file name of the helper program, next to caruspex.exe.
-pub const BRIDGE_EXE: &str = "caruspex-j2534-bridge.exe";
+pub(crate) const BRIDGE_EXE: &str = "caruspex-j2534-bridge.exe";
 
 /// How long the helper may take to start and open its pipe.
 const START_TIMEOUT: Duration = Duration::from_secs(10);
@@ -184,7 +184,7 @@ mod pipe {
 
     /// One pipe instance, local clients only, byte mode, blocking; returns
     /// once the client is there.
-    pub fn create_and_wait(name: &str) -> io::Result<File> {
+    pub(crate) fn create_and_wait(name: &str) -> io::Result<File> {
         let wide: Vec<u16> = name.encode_utf16().chain(Some(0)).collect();
         // SAFETY: a terminated name, no security attributes (the default:
         // the same user and the administrators).

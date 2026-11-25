@@ -648,9 +648,6 @@ impl SerialTransport {
     pub fn serial(&self) -> &Serial {
         &self.port
     }
-    pub fn serial_mut(&mut self) -> &mut Serial {
-        &mut self.port
-    }
 }
 
 impl Transport for SerialTransport {

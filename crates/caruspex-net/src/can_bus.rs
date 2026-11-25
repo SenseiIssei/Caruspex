@@ -1039,18 +1039,6 @@ pub fn socket_can_interfaces() -> Vec<String> {
     }
 }
 
-/// The interface must already be up at the right bit rate
-/// (ip link set can0 up type can bitrate 500000).
-pub fn open_socket_can(interface: &str) -> Result<Box<dyn CanLink>, String> {
-    open_socket_can_with(interface, false)
-}
-
-/// SocketCAN with CAN FD: the interface must be up with FD on (ip link set
-/// can0 up type can bitrate 500000 dbitrate 2000000 fd on).
-pub fn open_socket_can_fd(interface: &str) -> Result<Box<dyn CanLink>, String> {
-    open_socket_can_with(interface, true)
-}
-
 fn open_socket_can_with(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String> {
     #[cfg(target_os = "linux")]
     {
@@ -1152,7 +1140,7 @@ pub enum KLineKind {
 
 /// The driver DLL for a registered device name, a DLL path as it is, or the
 /// first usable driver when `place` is empty.
-pub fn j2534_library(place: &str) -> String {
+pub(crate) fn j2534_library(place: &str) -> String {
     let all = j2534_devices();
     let mut library = place.to_string();
     for d in &all {

@@ -27,7 +27,7 @@ pub fn virtual_now_us() -> Option<u64> {
 }
 
 /// Moves the simulated clock of this thread forward; no effect in real time.
-pub fn advance_virtual_us(us: u64) {
+pub(crate) fn advance_virtual_us(us: u64) {
     VIRTUAL_US.with(|c| {
         if let Some(now) = c.get() {
             c.set(Some(now + us));

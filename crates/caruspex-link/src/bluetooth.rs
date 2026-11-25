@@ -40,7 +40,7 @@ pub fn sort_devices(devices: &mut [BleDevice]) {
 /// "AA-BB-CC-DD-EE-FF", twelve hex digits, or a BlueZ object path ending in
 /// "dev_AA_BB_CC_DD_EE_FF". `None` for anything else (a macOS UUID) and for
 /// the null address, which the C++ version rejected the same way.
-pub fn parse_address(text: &str) -> Option<u64> {
+pub(crate) fn parse_address(text: &str) -> Option<u64> {
     let text = text.trim();
     let text = match text.rfind("dev_") {
         Some(i) => &text[i + 4..],
@@ -61,7 +61,7 @@ pub fn parse_address(text: &str) -> Option<u64> {
 }
 
 /// "AA:BB:CC:DD:EE:FF", the way QBluetoothAddress::toString wrote it.
-pub fn format_address(address: u64) -> String {
+pub(crate) fn format_address(address: u64) -> String {
     let bytes = address.to_be_bytes();
     bytes[2..]
         .iter()

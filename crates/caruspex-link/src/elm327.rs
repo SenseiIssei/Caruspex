@@ -10,7 +10,6 @@ use crate::transport::{IsoTpBatch, LogFn, Transport};
 
 mod j1939;
 mod stn;
-pub use j1939::parse_j1939_line;
 pub use stn::{StnBus, split_batch_answer, stn_buses};
 
 /// Default wait of [`Elm327::send`] in milliseconds.
@@ -845,9 +844,6 @@ impl Elm327 {
     pub fn set_log(&mut self, log: LogFn) {
         self.log = Some(log);
     }
-    pub fn clear_log(&mut self) {
-        self.log = None;
-    }
 
     fn log(&self, line: &str) {
         if let Some(log) = &self.log {
@@ -860,9 +856,6 @@ impl Elm327 {
     /// not everything is set to the same value.
     pub fn set_timeout_scale(&mut self, scale: f64) {
         self.timeout_scale = if scale > 0.0 { scale } else { 1.0 };
-    }
-    pub fn timeout_scale(&self) -> f64 {
-        self.timeout_scale
     }
     /// Log every sent line together with its response.
     pub fn set_verbose(&mut self, verbose: bool) {
@@ -906,9 +899,6 @@ impl Elm327 {
     /// The transport in use, if any. Elm327 keeps ownership.
     pub fn transport(&self) -> Option<&dyn Transport> {
         self.transport.as_deref()
-    }
-    pub fn transport_mut(&mut self) -> Option<&mut (dyn Transport + 'static)> {
-        self.transport.as_deref_mut()
     }
     /// Several ISO-TP sessions at once, when connected through a raw CAN
     /// interface; `None` for a real ELM327 (and while recording, so the

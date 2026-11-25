@@ -37,7 +37,7 @@ const DM1_WAIT_MS: u64 = 1600;
 
 /// The NAME of Caruspex as a tester: able to take any address, industry
 /// group "global", function 129 (off-board service tool), a fixed identity.
-pub const TESTER_NAME: u64 = (1u64 << 63) | (129u64 << 40) | 0x0C_A5;
+pub(crate) const TESTER_NAME: u64 = (1u64 << 63) | (129u64 << 40) | 0x0C_A5;
 
 /// One control unit heard on the bus.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -231,19 +231,9 @@ impl J1939Session {
         self.dm1_wait_ms = dm1_ms;
     }
 
-    /// How SPNs with the CM bit set are read; `None` guesses per fault.
-    pub fn set_spn_conversion(&mut self, older: Option<SpnConversion>) {
-        self.older = older;
-    }
-
     /// The tester's address, and whether it has been claimed yet.
     pub fn address(&self) -> (u8, bool) {
         (self.address, self.claimed)
-    }
-
-    /// Frames heard so far.
-    pub fn frames_heard(&self) -> u64 {
-        self.frames
     }
 
     /// Everything one frame tells.

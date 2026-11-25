@@ -225,35 +225,35 @@ pub fn fuel_type_from_obd(code: i32) -> FuelType {
 /// can refer to them.
 pub mod limits {
     /// |STFT + LTFT| in %.
-    pub const TRIM_WARN: f64 = 10.0;
-    pub const TRIM_BAD: f64 = 20.0;
+    pub(crate) const TRIM_WARN: f64 = 10.0;
+    pub(crate) const TRIM_BAD: f64 = 20.0;
     /// V, engine running.
-    pub const CHARGING_LOW: f64 = 13.2;
+    pub(crate) const CHARGING_LOW: f64 = 13.2;
     /// V, engine running: not charging.
     pub const CHARGING_NONE: f64 = 12.6;
     /// V, engine running.
-    pub const CHARGING_HIGH: f64 = 15.0;
+    pub(crate) const CHARGING_HIGH: f64 = 15.0;
     pub const CHARGING_TOO_HIGH: f64 = 15.5;
     /// V, engine off.
-    pub const BATTERY_WEAK: f64 = 12.2;
-    pub const BATTERY_FLAT: f64 = 11.8;
+    pub(crate) const BATTERY_WEAK: f64 = 12.2;
+    pub(crate) const BATTERY_FLAT: f64 = 11.8;
     /// C after a long run.
-    pub const WARM_COOLANT: f64 = 80.0;
+    pub(crate) const WARM_COOLANT: f64 = 80.0;
     /// Below this after a long run: stuck open.
-    pub const COLD_THERMOSTAT: f64 = 75.0;
+    pub(crate) const COLD_THERMOSTAT: f64 = 75.0;
     /// "Long run" for the thermostat rule.
-    pub const LONG_RUN_SECONDS: f64 = 15.0 * 60.0;
+    pub(crate) const LONG_RUN_SECONDS: f64 = 15.0 * 60.0;
     pub const COOLANT_HOT: f64 = 108.0;
     pub const COOLANT_OVERHEAT: f64 = 115.0;
-    pub const OIL_HOT: f64 = 135.0;
-    pub const OIL_OVERHEAT: f64 = 150.0;
-    pub const CATALYST_HOT: f64 = 900.0;
+    pub(crate) const OIL_HOT: f64 = 135.0;
+    pub(crate) const OIL_OVERHEAT: f64 = 150.0;
+    pub(crate) const CATALYST_HOT: f64 = 900.0;
     /// Mode 06: within 10 % of the limit.
-    pub const NEAR_LIMIT_SHARE: f64 = 0.10;
+    pub(crate) const NEAR_LIMIT_SHARE: f64 = 0.10;
     /// Since codes cleared.
-    pub const FEW_WARMUPS: i32 = 5;
+    pub(crate) const FEW_WARMUPS: i32 = 5;
     /// Since codes cleared.
-    pub const SHORT_DISTANCE_KM: f64 = 50.0;
+    pub(crate) const SHORT_DISTANCE_KM: f64 = 50.0;
 }
 
 type Series = [TimedValue];

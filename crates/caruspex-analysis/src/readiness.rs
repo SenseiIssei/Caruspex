@@ -211,7 +211,7 @@ pub fn readiness_from_status(status: &VehicleStatus) -> Vec<MonitorState> {
 
 /// Plain name of a monitor in both languages, e.g. ("Tankentlüftung",
 /// "Evaporative system").
-pub fn monitor_name(monitor: Monitor) -> Text {
+pub(crate) fn monitor_name(monitor: Monitor) -> Text {
     match monitor {
         Monitor::Misfire => Text::new("Verbrennungsaussetzer", "Misfire"),
         Monitor::FuelSystem => Text::new("Kraftstoffsystem", "Fuel system"),

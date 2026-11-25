@@ -82,7 +82,7 @@ impl StnBus {
 
     /// The STP preset for ISO 15765 on this bus, with the id size of the
     /// protocol the car was found on ('7' and '9' are 29 bit).
-    pub fn stp_preset(self, protocol_id: char) -> u8 {
+    pub(crate) fn stp_preset(self, protocol_id: char) -> u8 {
         let bits29 = matches!(protocol_id, '7' | '9');
         match self {
             StnBus::HighSpeed => match protocol_id {

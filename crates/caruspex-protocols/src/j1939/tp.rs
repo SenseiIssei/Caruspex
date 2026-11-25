@@ -13,11 +13,11 @@ use std::collections::BTreeMap;
 
 use super::{GLOBAL, J1939Id, PGN_TP_CM, PGN_TP_DT};
 
-pub const CM_RTS: u8 = 16;
-pub const CM_CTS: u8 = 17;
-pub const CM_END_OF_MESSAGE: u8 = 19;
-pub const CM_BAM: u8 = 32;
-pub const CM_ABORT: u8 = 255;
+pub(crate) const CM_RTS: u8 = 16;
+pub(crate) const CM_CTS: u8 = 17;
+pub(crate) const CM_END_OF_MESSAGE: u8 = 19;
+pub(crate) const CM_BAM: u8 = 32;
+pub(crate) const CM_ABORT: u8 = 255;
 
 /// One connection management frame.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -122,7 +122,8 @@ impl TpCm {
 
 /// The data packets of a message: sequence number from 1, seven bytes,
 /// the last one filled up with FF.
-pub fn data_packets(payload: &[u8]) -> Vec<Vec<u8>> {
+#[cfg(test)]
+pub(crate) fn data_packets(payload: &[u8]) -> Vec<Vec<u8>> {
     payload
         .chunks(7)
         .enumerate()
@@ -136,7 +137,8 @@ pub fn data_packets(payload: &[u8]) -> Vec<Vec<u8>> {
 }
 
 /// Number of packets for a message of `size` bytes.
-pub fn packet_count(size: usize) -> u8 {
+#[cfg(test)]
+pub(crate) fn packet_count(size: usize) -> u8 {
     size.div_ceil(7).min(255) as u8
 }
 
@@ -282,7 +284,7 @@ impl TpCollector {
     }
 
     /// Forgets a transfer (after an abort sent by us).
-    pub fn drop_transfer(&mut self, source: u8, destination: u8) {
+    pub(crate) fn drop_transfer(&mut self, source: u8, destination: u8) {
         self.transfers.remove(&(source, destination));
     }
 }

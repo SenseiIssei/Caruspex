@@ -70,7 +70,7 @@ pub struct ReplayTransport {
 impl ReplayTransport {
     /// How far forward from the current position a command is looked for
     /// before the search starts over at the beginning.
-    pub const SEARCH_WINDOW: usize = 64;
+    pub(crate) const SEARCH_WINDOW: usize = 64;
 
     fn empty(recording: Recording, display_name: String, pacing: ReplayPacing) -> Self {
         Self {

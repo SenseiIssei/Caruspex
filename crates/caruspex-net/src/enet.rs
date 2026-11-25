@@ -37,8 +37,8 @@ use crate::text::is_hex;
 pub mod hsfz {
     //! HSFZ frames and the identification answer.
 
-    pub const DIAGNOSTIC_PORT: u16 = 6801;
-    pub const IDENT_PORT: u16 = 6811;
+    pub(crate) const DIAGNOSTIC_PORT: u16 = 6801;
+    pub(crate) const IDENT_PORT: u16 = 6811;
     /// ENET testers use F4, D-CAN uses F1.
     pub const TESTER: u8 = 0xF4;
     /// All units.
@@ -176,16 +176,16 @@ pub mod doip {
     //! Logical addresses are 16 bit; testers use 0x0E00 to 0x0FFF, and 0xE400 is
     //! the functional address of the legislated OBD units.
 
-    pub const PORT: u16 = 13400;
+    pub(crate) const PORT: u16 = 13400;
     pub const TESTER: u16 = 0x0E80;
     pub const OBD_FUNCTIONAL: u16 = 0xE400;
     /// ISO 13400-2:2012.
-    pub const VERSION: u8 = 0x02;
+    pub(crate) const VERSION: u8 = 0x02;
 
     // Payload types.
-    pub const GENERIC_NACK: u16 = 0x0000;
+    pub(crate) const GENERIC_NACK: u16 = 0x0000;
     pub const VEHICLE_IDENT_REQUEST: u16 = 0x0001;
-    pub const VEHICLE_ANNOUNCEMENT: u16 = 0x0004;
+    pub(crate) const VEHICLE_ANNOUNCEMENT: u16 = 0x0004;
     pub const ROUTING_ACTIVATION_REQUEST: u16 = 0x0005;
     pub const ROUTING_ACTIVATION_RESPONSE: u16 = 0x0006;
     pub const ALIVE_CHECK_REQUEST: u16 = 0x0007;
@@ -350,7 +350,7 @@ impl HsfzSession {
         Self::with_tester(stream, hsfz::TESTER)
     }
 
-    pub fn with_tester(stream: Box<dyn NetStream>, tester: u8) -> Self {
+    pub(crate) fn with_tester(stream: Box<dyn NetStream>, tester: u8) -> Self {
         Self {
             stream,
             parser: hsfz::Parser::new(),
@@ -542,7 +542,7 @@ impl DoipSession {
         Self::with_tester(stream, doip::TESTER)
     }
 
-    pub fn with_tester(stream: Box<dyn NetStream>, tester: u16) -> Self {
+    pub(crate) fn with_tester(stream: Box<dyn NetStream>, tester: u16) -> Self {
         Self {
             stream,
             parser: doip::Parser::new(),
@@ -1319,7 +1319,7 @@ pub fn open_enet(host: &str) -> Result<(EnetElm, hsfz::VehicleIdent), String> {
     Ok((EnetElm::new(Box::new(session), name, Flavor::Bmw), ident))
 }
 
-pub fn open_doip(host: &str) -> Result<(EnetElm, doip::Entity), String> {
+pub(crate) fn open_doip(host: &str) -> Result<(EnetElm, doip::Entity), String> {
     let mut entity = doip::Entity::default();
     let address;
     if host.is_empty() || host == "auto" {

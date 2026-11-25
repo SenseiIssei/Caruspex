@@ -24,8 +24,7 @@ use std::io;
 use caruspex_i18n::l;
 
 use crate::ble_profile::obd_adapter_name_score;
-use crate::bluetooth::BleDevice;
-pub use crate::bluetooth::{format_address, parse_address};
+use crate::bluetooth::{BleDevice, format_address, parse_address};
 use crate::transport::Transport;
 
 /// The serial port profile, 00001101-0000-1000-8000-00805F9B34FB. The
@@ -53,7 +52,7 @@ pub trait RfcommSocket: Send {
 }
 
 /// The text when this system has no direct classic Bluetooth.
-pub fn not_supported() -> String {
+pub(crate) fn not_supported() -> String {
     l(
         "Klassisches Bluetooth direkt wird auf diesem System nicht unterstützt. Einen gekoppelten Adapter über seinen seriellen Anschluss (Kabel) verbinden.",
         "Direct classic Bluetooth is not supported on this system. Connect a paired adapter through its serial port (cable) instead.",
@@ -64,7 +63,7 @@ pub fn not_supported() -> String {
 /// The classic devices the system knows or sees within about `milliseconds`,
 /// unsorted. Errors only when classic Bluetooth is not supported here; a
 /// computer without a radio simply has none.
-pub fn classic_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
+pub(crate) fn classic_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
     os::classic_devices(milliseconds)
 }
 
@@ -110,7 +109,7 @@ impl RfcommTransport<SystemSocket> {
 
 /// [`RfcommTransport::open`] with the connection made by `connect`, which
 /// gets the address and returns the socket or the system's error text.
-pub fn open_with<S: RfcommSocket>(
+pub(crate) fn open_with<S: RfcommSocket>(
     device: &BleDevice,
     connect: impl FnOnce(u64) -> Result<S, String>,
 ) -> Result<RfcommTransport<S>, String> {
@@ -148,7 +147,7 @@ pub fn open_with<S: RfcommSocket>(
 }
 
 impl<S: RfcommSocket> RfcommTransport<S> {
-    pub fn with_socket(socket: S, name: String) -> Self {
+    pub(crate) fn with_socket(socket: S, name: String) -> Self {
         Self {
             socket,
             name,
@@ -158,7 +157,8 @@ impl<S: RfcommSocket> RfcommTransport<S> {
     }
 
     /// The adapter closed the connection or it broke.
-    pub fn is_disconnected(&self) -> bool {
+    #[cfg(test)]
+    pub(crate) fn is_disconnected(&self) -> bool {
         self.disconnected
     }
 
@@ -345,7 +345,7 @@ mod sdp {
     }
 
     /// The RFCOMM channel in the collected attribute lists.
-    pub fn rfcomm_channel(lists: &[u8]) -> Option<u8> {
+    pub(crate) fn rfcomm_channel(lists: &[u8]) -> Option<u8> {
         let (root, _) = element(lists, 0)?;
         find(&root)
     }
@@ -378,7 +378,7 @@ mod bluez {
     }
 
     /// "Device AA:BB:CC:DD:EE:FF Name" lines of `bluetoothctl devices`.
-    pub fn device_lines(text: &str) -> Vec<(u64, String)> {
+    pub(crate) fn device_lines(text: &str) -> Vec<(u64, String)> {
         text.lines()
             .filter_map(|line| {
                 let line = plain(line);
@@ -391,7 +391,7 @@ mod bluez {
 
     /// Whether `bluetoothctl info` describes a classic device: it has a
     /// class of device or offers the serial port.
-    pub fn info_is_classic(info: &str) -> bool {
+    pub(crate) fn info_is_classic(info: &str) -> bool {
         let lower = info.to_ascii_lowercase();
         lower.contains("class: 0x") || lower.contains("00001101-0000-1000-8000-00805f9b34fb")
     }
@@ -420,7 +420,7 @@ mod os {
 
     use super::{BleDevice, CONNECT_TIMEOUT_MS, RfcommSocket, SPP_UUID, classic_device};
 
-    pub const SUPPORTED: bool = true;
+    pub(crate) const SUPPORTED: bool = true;
 
     /// An open RFCOMM socket, closed on drop.
     pub struct Socket(SOCKET);
@@ -619,7 +619,7 @@ mod os {
         }
     }
 
-    pub fn classic_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
+    pub(crate) fn classic_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
         if !has_radio() {
             return Ok(Vec::new());
         }
@@ -672,7 +672,7 @@ mod os {
     use super::{BleDevice, CONNECT_TIMEOUT_MS, RfcommSocket, bluez, classic_device, sdp};
     use crate::bluetooth::format_address;
 
-    pub const SUPPORTED: bool = true;
+    pub(crate) const SUPPORTED: bool = true;
 
     const BTPROTO_L2CAP: libc::c_int = 0;
     const BTPROTO_RFCOMM: libc::c_int = 3;
@@ -927,7 +927,7 @@ mod os {
     /// The paired devices BlueZ knows, the classic ones of them. Pairing is
     /// needed for these adapters anyway (PIN), so devices in range that were
     /// never paired are not searched for.
-    pub fn classic_devices(_milliseconds: u64) -> Result<Vec<BleDevice>, String> {
+    pub(crate) fn classic_devices(_milliseconds: u64) -> Result<Vec<BleDevice>, String> {
         let listing = bluetoothctl(&["devices", "Paired"])
             .filter(|text| !bluez::device_lines(text).is_empty())
             .or_else(|| bluetoothctl(&["paired-devices"]))
@@ -953,7 +953,7 @@ mod os {
 
     use super::{BleDevice, RfcommSocket, not_supported};
 
-    pub const SUPPORTED: bool = false;
+    pub(crate) const SUPPORTED: bool = false;
 
     /// No socket exists here.
     pub enum Socket {}
@@ -971,7 +971,7 @@ mod os {
         Err(not_supported())
     }
 
-    pub fn classic_devices(_milliseconds: u64) -> Result<Vec<BleDevice>, String> {
+    pub(crate) fn classic_devices(_milliseconds: u64) -> Result<Vec<BleDevice>, String> {
         Err(not_supported())
     }
 }

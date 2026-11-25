@@ -20,7 +20,7 @@ impl Font {
     ];
 
     /// The /BaseFont name.
-    pub fn base_name(self) -> &'static str {
+    pub(crate) fn base_name(self) -> &'static str {
         match self {
             Font::Helvetica => "Helvetica",
             Font::HelveticaBold => "Helvetica-Bold",
@@ -30,7 +30,7 @@ impl Font {
     }
 
     /// The name in the page resources.
-    pub fn resource(self) -> &'static str {
+    pub(crate) fn resource(self) -> &'static str {
         match self {
             Font::Helvetica => "F1",
             Font::HelveticaBold => "F2",
@@ -60,14 +60,14 @@ impl Font {
     }
 
     /// Width of encoded text at `size` points.
-    pub fn bytes_width(self, bytes: &[u8], size: f32) -> f32 {
+    pub(crate) fn bytes_width(self, bytes: &[u8], size: f32) -> f32 {
         let units: u32 = bytes.iter().map(|&b| u32::from(self.width(b))).sum();
         units as f32 * size / 1000.0
     }
 
     /// Width of `text` at `size` points, as it will be written (stand-ins
     /// included).
-    pub fn text_width(self, text: &str, size: f32) -> f32 {
+    pub(crate) fn text_width(self, text: &str, size: f32) -> f32 {
         self.bytes_width(&crate::encoding::encode(text).bytes, size)
     }
 }

@@ -65,13 +65,13 @@ impl BodyType {
 pub const PT_PETROL: u32 = 1 << 0;
 pub const PT_DIESEL: u32 = 1 << 1;
 /// Full or mild hybrid without a charging plug.
-pub const PT_HYBRID: u32 = 1 << 2;
+pub(crate) const PT_HYBRID: u32 = 1 << 2;
 /// Plug-in hybrid or range extender.
-pub const PT_PLUG_IN: u32 = 1 << 3;
+pub(crate) const PT_PLUG_IN: u32 = 1 << 3;
 /// Battery electric only.
 pub const PT_ELECTRIC: u32 = 1 << 4;
 /// LPG or CNG from the factory.
-pub const PT_GAS: u32 = 1 << 5;
+pub(crate) const PT_GAS: u32 = 1 << 5;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Connector {

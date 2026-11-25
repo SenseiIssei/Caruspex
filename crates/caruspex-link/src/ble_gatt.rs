@@ -20,10 +20,10 @@ use crate::transport::Transport;
 /// The property bits of a characteristic as Android reports them
 /// (BluetoothGattCharacteristic.PROPERTY_*), the same as in the
 /// Bluetooth core specification.
-pub const PROPERTY_WRITE_NO_RESPONSE: u32 = 0x04;
-pub const PROPERTY_WRITE: u32 = 0x08;
-pub const PROPERTY_NOTIFY: u32 = 0x10;
-pub const PROPERTY_INDICATE: u32 = 0x20;
+pub(crate) const PROPERTY_WRITE_NO_RESPONSE: u32 = 0x04;
+pub(crate) const PROPERTY_WRITE: u32 = 0x08;
+pub(crate) const PROPERTY_NOTIFY: u32 = 0x10;
+pub(crate) const PROPERTY_INDICATE: u32 = 0x20;
 
 /// A characteristic described by its property bits.
 pub fn characteristic(uuid: &str, properties: u32) -> BleCharacteristicDesc {
@@ -37,7 +37,8 @@ pub fn characteristic(uuid: &str, properties: u32) -> BleCharacteristicDesc {
 }
 
 /// The smallest MTU every device supports.
-pub const DEFAULT_MTU: u32 = 23;
+#[cfg(test)]
+pub(crate) const DEFAULT_MTU: u32 = 23;
 /// What we ask for: the most Android allows.
 pub const WANTED_MTU: u32 = 517;
 

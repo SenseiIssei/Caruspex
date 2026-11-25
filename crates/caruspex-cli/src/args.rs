@@ -14,7 +14,7 @@ pub fn stoi(text: &str) -> Option<i32> {
 
 /// `std::stol`-style parse with the number of bytes used. Base 16 accepts a
 /// "0x" prefix. `None` if there is no digit at all or the value overflows.
-pub fn strto(text: &str, radix: u32) -> Option<(i64, usize)> {
+pub(crate) fn strto(text: &str, radix: u32) -> Option<(i64, usize)> {
     let bytes = text.as_bytes();
     let mut i = 0;
     while i < bytes.len() && matches!(bytes[i], b' ' | b'\t' | b'\n' | b'\r' | 0x0B | 0x0C) {

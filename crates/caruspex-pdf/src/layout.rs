@@ -162,7 +162,7 @@ impl Flow {
         self.width - self.margins.right
     }
 
-    pub fn content_width(&self) -> f32 {
+    pub(crate) fn content_width(&self) -> f32 {
         self.right() - self.left()
     }
 
@@ -181,7 +181,7 @@ impl Flow {
     }
 
     /// Room on a fresh page.
-    pub fn page_room(&self) -> f32 {
+    pub(crate) fn page_room(&self) -> f32 {
         self.height - self.margins.bottom - self.margins.top
     }
 
@@ -193,13 +193,13 @@ impl Flow {
         self.y <= self.margins.top + 0.01
     }
 
-    pub fn new_page(&mut self) {
+    pub(crate) fn new_page(&mut self) {
         self.doc.add_page(self.width, self.height);
         self.y = self.margins.top;
     }
 
     /// Starts a new page unless `height` still fits; true if it did.
-    pub fn ensure(&mut self, height: f32) -> bool {
+    pub(crate) fn ensure(&mut self, height: f32) -> bool {
         if height > self.remaining() && !self.at_page_top() {
             self.new_page();
             return true;

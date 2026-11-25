@@ -64,8 +64,8 @@ pub struct PerformanceReport {
     pub accuracy_hint: Phrase,
 }
 
-pub const QUARTER_MILE_METERS: f64 = 402.336;
-pub const SIXTY_MPH_KMH: f64 = 96.56064;
+pub(crate) const QUARTER_MILE_METERS: f64 = 402.336;
+pub(crate) const SIXTY_MPH_KMH: f64 = 96.56064;
 
 /// km/h; below this the car stands.
 const STANDSTILL: f64 = 0.5;
@@ -162,7 +162,7 @@ pub fn clean_speed_samples(mut samples: Vec<SpeedSample>) -> (Vec<SpeedSample>, 
 
 /// The single measurements on a cleaned series. Each returns the best
 /// (fastest, or for braking shortest) run in the series.
-pub fn measure_from_standstill(s: &[SpeedSample], target_kmh: f64) -> TimedRun {
+pub(crate) fn measure_from_standstill(s: &[SpeedSample], target_kmh: f64) -> TimedRun {
     let mut best = TimedRun::default();
     for i in 0..s.len().saturating_sub(1) {
         if s[i].kmh >= STANDSTILL || s[i + 1].kmh < STANDSTILL {
@@ -193,7 +193,7 @@ pub fn measure_from_standstill(s: &[SpeedSample], target_kmh: f64) -> TimedRun {
     best
 }
 
-pub fn measure_rolling(s: &[SpeedSample], from_kmh: f64, to_kmh: f64) -> TimedRun {
+pub(crate) fn measure_rolling(s: &[SpeedSample], from_kmh: f64, to_kmh: f64) -> TimedRun {
     let mut best = TimedRun::default();
     for i in 1..s.len() {
         if !(s[i - 1].kmh < from_kmh && s[i].kmh >= from_kmh) {
@@ -230,7 +230,7 @@ pub fn measure_rolling(s: &[SpeedSample], from_kmh: f64, to_kmh: f64) -> TimedRu
     best
 }
 
-pub fn measure_quarter_mile(s: &[SpeedSample]) -> TimedRun {
+pub(crate) fn measure_quarter_mile(s: &[SpeedSample]) -> TimedRun {
     let mut best = TimedRun::default();
     for i in 0..s.len().saturating_sub(1) {
         if s[i].kmh >= STANDSTILL || s[i + 1].kmh < STANDSTILL {
@@ -291,7 +291,7 @@ pub fn measure_quarter_mile(s: &[SpeedSample]) -> TimedRun {
     best
 }
 
-pub fn measure_braking(s: &[SpeedSample], from_kmh: f64) -> TimedRun {
+pub(crate) fn measure_braking(s: &[SpeedSample], from_kmh: f64) -> TimedRun {
     let mut best = TimedRun::default();
     for i in 1..s.len() {
         if !(s[i - 1].kmh >= from_kmh && s[i].kmh < from_kmh) {

@@ -125,7 +125,7 @@ pub struct LogComparison {
 }
 
 /// Width of the comparison bands.
-pub const BAND_RPM: f64 = 500.0;
+pub(crate) const BAND_RPM: f64 = 500.0;
 
 #[derive(Default)]
 struct Sum {

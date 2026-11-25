@@ -216,7 +216,10 @@ fn cable_row(device: &str) -> KklCableRow {
 
 fn open_line(device: &str) -> Result<Box<dyn RawKLine>, String> {
     if let Some(fault) = A2Fault::from_device(device) {
-        return Ok(Box::new(A2Line::new(fault)));
+        let line = A2Line::new(fault);
+        #[cfg(test)]
+        tests::CHANGING_REQUESTS.with(|all| all.borrow_mut().push(line.changing_requests()));
+        return Ok(Box::new(line));
     }
     if device.is_empty() {
         return Err(l(
@@ -1018,7 +1021,8 @@ impl Worker {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::atomic::AtomicBool;
+    use std::cell::RefCell;
+    use std::sync::atomic::{AtomicBool, AtomicUsize};
 
     use serde_json::Value;
 
@@ -1064,9 +1068,23 @@ mod tests {
         &report.steps.iter().find(|s| s.id == id).unwrap().state
     }
 
+    thread_local! {
+        /// The counters of every simulated A2 this thread talked to: requests
+        /// that would change something in the car.
+        pub(super) static CHANGING_REQUESTS: RefCell<Vec<Arc<AtomicUsize>>> =
+            const { RefCell::new(Vec::new()) };
+    }
+
     #[test]
     fn the_first_test_reads_the_whole_a2_and_writes_nothing() {
         let (report, log) = first_test(A2Fault::None);
+        CHANGING_REQUESTS.with(|all| {
+            let all = all.borrow();
+            assert!(!all.is_empty());
+            for changing in all.iter() {
+                assert_eq!(changing.load(Ordering::SeqCst), 0);
+            }
+        });
         assert_eq!(report.verdict.kind, "connected", "{report:#?}");
         assert!(report.verdict.ok);
         for id in ["cable", "wake", "ident", "faults", "groups"] {

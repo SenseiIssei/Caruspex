@@ -28,7 +28,7 @@ pub struct MonitorGuide {
 }
 
 /// All guides, in the order of the readiness list.
-pub fn all_drive_cycle_guides() -> &'static [MonitorGuide] {
+pub(crate) fn all_drive_cycle_guides() -> &'static [MonitorGuide] {
     static GUIDES: OnceLock<Vec<MonitorGuide>> = OnceLock::new();
     GUIDES.get_or_init(|| {
         vec![
