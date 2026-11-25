@@ -38,8 +38,13 @@ pub mod constants {
     pub const NO_ERROR: i32 = 0;
     pub const ERR_NOT_SUPPORTED: i32 = 0x01;
     pub const ERR_FAILED: i32 = 0x07;
+    /// The device was unplugged.
+    pub const ERR_DEVICE_NOT_CONNECTED: i32 = 0x08;
     /// The bridge lost its helper program; not a J2534 code.
     pub const ERR_BRIDGE: i32 = -1;
+    /// The driver in the helper program did not come back in time and was
+    /// ended with it; not a J2534 code.
+    pub const ERR_BRIDGE_TIMEOUT: i32 = -2;
     /// Room for data in one PASSTHRU_MSG.
     pub const MESSAGE_ROOM: usize = 4128;
 }

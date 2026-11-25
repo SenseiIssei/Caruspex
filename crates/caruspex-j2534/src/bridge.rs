@@ -9,9 +9,10 @@
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, channel};
 use std::time::{Duration, Instant};
 
-use crate::api::constants::ERR_BRIDGE;
+use crate::api::constants::{ERR_BRIDGE, ERR_BRIDGE_TIMEOUT};
 use crate::api::{Ioctl, IoctlOut, Message, PassThru};
 use crate::wire::{self, Call, Reply};
 
@@ -20,10 +21,48 @@ pub const BRIDGE_EXE: &str = "caruspex-j2534-bridge.exe";
 
 /// How long the helper may take to start and open its pipe.
 const START_TIMEOUT: Duration = Duration::from_secs(10);
+/// How long the helper waits for Caruspex, which ended or was ended when it
+/// does not come.
+#[cfg(windows)]
+const CLIENT_TIMEOUT: Duration = Duration::from_secs(30);
 
-/// Both directions of the pipe.
-trait Duplex: Read + Write + Send {}
-impl<T: Read + Write + Send> Duplex for T {}
+/// How long the driver behind the pipe may take. A driver that hangs (a
+/// device that was unplugged at the wrong moment, a message box nobody
+/// sees) would otherwise hang Caruspex with it: the limits are far above
+/// what a working driver needs.
+#[derive(Clone, Copy, Debug)]
+struct Limits {
+    /// Loading the DLL and opening the device: drivers look for it on USB,
+    /// Bluetooth or the network first.
+    start: Duration,
+    /// Every other call without a timeout of its own (the 5-baud init takes
+    /// about 2.5 s).
+    call: Duration,
+    /// Reading and writing: this much more than the timeout they carry.
+    grace: Duration,
+}
+
+impl Default for Limits {
+    fn default() -> Self {
+        Self {
+            start: Duration::from_secs(30),
+            call: Duration::from_secs(10),
+            grace: Duration::from_secs(5),
+        }
+    }
+}
+
+impl Limits {
+    fn of(&self, call: &Call) -> Duration {
+        match call {
+            Call::Load(_) | Call::Open => self.start,
+            Call::Read { timeout_ms, .. } | Call::Write { timeout_ms, .. } => {
+                Duration::from_millis(u64::from(*timeout_ms)) + self.grace
+            }
+            _ => self.call,
+        }
+    }
+}
 
 /// The helper program next to the running program, if it is there.
 pub fn bridge_next_to_program() -> Option<PathBuf> {
@@ -96,7 +135,16 @@ fn carry_out(d: &mut dyn PassThru, call: Call) -> Reply {
 /// for Caruspex and serves the driver DLLs it names.
 #[cfg(windows)]
 pub fn serve_pipe(name: &str) -> std::io::Result<()> {
+    // Waiting for the client cannot be cut short from outside: a helper
+    // whose Caruspex has ended in the meantime ends itself.
+    let (connected, waited_for) = channel::<()>();
+    std::thread::spawn(move || {
+        if waited_for.recv_timeout(CLIENT_TIMEOUT) == Err(RecvTimeoutError::Timeout) {
+            std::process::exit(3);
+        }
+    });
     let mut pipe = pipe::create_and_wait(name)?;
+    let _ = connected.send(());
     serve(&mut pipe, |path| {
         crate::dll::Dll::load(path)
             .map(|d| Box::new(d) as Box<dyn PassThru>)
@@ -171,9 +219,44 @@ mod pipe {
 
 /// A PassThru driver in the helper program, reached over its pipe.
 pub struct Bridge {
-    stream: Option<Box<dyn Duplex>>,
+    /// The thread that owns the pipe: a blocking read of a pipe cannot be
+    /// given a time limit, waiting for the thread can. `None` once the pipe
+    /// is broken or a call took too long.
+    pipe: Option<PipeThread>,
+    /// The last call took longer than its limit.
+    timed_out: bool,
+    limits: Limits,
     child: Option<Child>,
     library: String,
+}
+
+struct PipeThread {
+    calls: Sender<Vec<u8>>,
+    /// The reply frame, or `None` when the pipe broke.
+    replies: Receiver<Option<Vec<u8>>>,
+}
+
+impl PipeThread {
+    fn start(mut stream: impl Read + Write + Send + 'static) -> Result<Self, String> {
+        let (calls, next_call) = channel::<Vec<u8>>();
+        let (reply, replies) = channel();
+        std::thread::Builder::new()
+            .name("caruspex-j2534-pipe".into())
+            .spawn(move || {
+                for frame in next_call {
+                    let answer = wire::send(&mut stream, &frame)
+                        .and_then(|()| wire::receive(&mut stream))
+                        .ok()
+                        .flatten();
+                    let broken = answer.is_none();
+                    if reply.send(answer).is_err() || broken {
+                        break;
+                    }
+                }
+            })
+            .map_err(|e| e.to_string())?;
+        Ok(Self { calls, replies })
+    }
 }
 
 impl Bridge {
@@ -212,22 +295,28 @@ impl Bridge {
                 }
             }
         };
-        let mut bridge = Bridge {
-            stream: Some(Box::new(stream)),
-            child: Some(child),
-            library: library.to_string(),
-        };
-        bridge.load()?;
-        Ok(bridge)
+        Self::with(stream, Some(child), library, Limits::default())
     }
 
     /// A bridge over any stream to a [`serve`] loop, for the tests.
     pub fn over(stream: impl Read + Write + Send + 'static, library: &str) -> Result<Self, String> {
+        Self::with(stream, None, library, Limits::default())
+    }
+
+    fn with(
+        stream: impl Read + Write + Send + 'static,
+        child: Option<Child>,
+        library: &str,
+        limits: Limits,
+    ) -> Result<Self, String> {
         let mut bridge = Bridge {
-            stream: Some(Box::new(stream)),
-            child: None,
+            pipe: None,
+            timed_out: false,
+            limits,
+            child,
             library: library.to_string(),
         };
+        bridge.pipe = Some(PipeThread::start(stream)?);
         bridge.load()?;
         Ok(bridge)
     }
@@ -236,28 +325,51 @@ impl Bridge {
         match self.call(&Call::Load(self.library.clone())) {
             Some(Reply::Loaded(error)) if error.is_empty() => Ok(()),
             Some(Reply::Loaded(error)) => Err(error),
+            _ if self.timed_out => Err("the driver did not answer in time".into()),
             _ => Err("no answer from the bridge".into()),
         }
     }
 
-    /// One call and its reply; `None` once the pipe is broken.
+    /// One call and its reply; `None` once the pipe is broken or when the
+    /// driver took longer than its limit.
     fn call(&mut self, call: &Call) -> Option<Reply> {
-        let stream = self.stream.as_mut()?;
-        let answer = wire::send(stream, &call.encode())
-            .and_then(|()| wire::receive(stream))
+        let pipe = self.pipe.as_ref()?;
+        let answer = match pipe.calls.send(call.encode()) {
+            Ok(()) => pipe.replies.recv_timeout(self.limits.of(call)),
+            Err(_) => Err(RecvTimeoutError::Disconnected),
+        };
+        self.timed_out = answer == Err(RecvTimeoutError::Timeout);
+        let reply = answer
             .ok()
             .flatten()
             .and_then(|frame| Reply::decode(&frame).ok());
-        if answer.is_none() {
-            self.stream = None; // the helper is gone, every later call fails at once
+        if reply.is_none() {
+            // The helper is gone or hangs: every later call fails at once.
+            self.pipe = None;
+            // Ending a hung helper also breaks the pipe, which frees the
+            // thread waiting for it.
+            if self.timed_out
+                && let Some(child) = self.child.as_mut()
+            {
+                child.kill().ok();
+            }
         }
-        answer
+        reply
+    }
+
+    /// The status code of a call that got no reply.
+    fn failure(&self) -> i32 {
+        if self.timed_out {
+            ERR_BRIDGE_TIMEOUT
+        } else {
+            ERR_BRIDGE
+        }
     }
 
     fn status(&mut self, call: Call) -> i32 {
         match self.call(&call) {
             Some(Reply::Status(s)) => s,
-            _ => ERR_BRIDGE,
+            _ => self.failure(),
         }
     }
 
@@ -265,7 +377,7 @@ impl Bridge {
         match self.call(&call) {
             Some(Reply::Number(n)) => n,
             Some(Reply::Status(s)) => Err(s),
-            _ => Err(ERR_BRIDGE),
+            _ => Err(self.failure()),
         }
     }
 }
@@ -273,7 +385,7 @@ impl Bridge {
 impl Drop for Bridge {
     fn drop(&mut self) {
         // Closing the pipe ends the helper; it gets a moment, then it is ended.
-        self.stream = None;
+        self.pipe = None;
         if let Some(mut child) = self.child.take() {
             let until = Instant::now() + Duration::from_secs(2);
             while Instant::now() < until {
@@ -335,7 +447,7 @@ impl PassThru for Bridge {
         }) {
             Some(Reply::Read(r)) => r,
             Some(Reply::Status(s)) => Err(s),
-            _ => Err(ERR_BRIDGE),
+            _ => Err(self.failure()),
         }
     }
 
@@ -371,7 +483,7 @@ impl PassThru for Bridge {
         }) {
             Some(Reply::Ioctl(r)) => r,
             Some(Reply::Status(s)) => Err(s),
-            _ => Err(ERR_BRIDGE),
+            _ => Err(self.failure()),
         }
     }
 
@@ -451,6 +563,163 @@ mod tests {
         fn library(&self) -> &str {
             "loop.dll"
         }
+    }
+
+    /// A driver that hangs in the calls named, like one whose device was
+    /// unplugged in the middle of a transfer.
+    struct Hanging {
+        open: bool,
+        inner: Loop,
+    }
+
+    const HANG: Duration = Duration::from_secs(20);
+
+    impl PassThru for Hanging {
+        fn open(&mut self) -> Result<u32, i32> {
+            if self.open {
+                std::thread::sleep(HANG);
+            }
+            Ok(1)
+        }
+        fn close(&mut self, device: u32) -> i32 {
+            self.inner.close(device)
+        }
+        fn connect(&mut self, d: u32, protocol: u32, f: u32, baud: u32) -> Result<u32, i32> {
+            self.inner.connect(d, protocol, f, baud)
+        }
+        fn disconnect(&mut self, channel: u32) -> i32 {
+            self.inner.disconnect(channel)
+        }
+        fn read(&mut self, _channel: u32, _timeout_ms: u32) -> Result<Option<Message>, i32> {
+            std::thread::sleep(HANG);
+            Ok(None)
+        }
+        fn write(&mut self, channel: u32, m: &Message, timeout_ms: u32) -> Result<u32, i32> {
+            self.inner.write(channel, m, timeout_ms)
+        }
+        fn start_filter(
+            &mut self,
+            channel: u32,
+            kind: u32,
+            mask: &Message,
+            pattern: &Message,
+            flow: Option<&Message>,
+        ) -> Result<u32, i32> {
+            self.inner.start_filter(channel, kind, mask, pattern, flow)
+        }
+        fn ioctl(&mut self, target: u32, request: &Ioctl) -> Result<IoctlOut, i32> {
+            self.inner.ioctl(target, request)
+        }
+        fn last_error(&mut self) -> String {
+            self.inner.last_error()
+        }
+        fn library(&self) -> &str {
+            "hanging.dll"
+        }
+    }
+
+    const SHORT: Limits = Limits {
+        start: Duration::from_millis(300),
+        call: Duration::from_millis(300),
+        grace: Duration::from_millis(200),
+    };
+
+    /// A bridge to a hanging driver with limits fit for a test. The server
+    /// thread is left to itself, like a helper that has to be killed.
+    fn hanging_bridge(open: bool) -> Bridge {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let _ = serve(&mut stream, |_| {
+                Ok(Box::new(Hanging {
+                    open,
+                    inner: Loop::default(),
+                }) as Box<dyn PassThru>)
+            });
+        });
+        Bridge::with(
+            TcpStream::connect(address).unwrap(),
+            None,
+            "hanging.dll",
+            SHORT,
+        )
+        .unwrap()
+    }
+
+    #[test]
+    fn a_driver_that_hangs_in_a_read_is_given_up_in_time() {
+        let mut b = hanging_bridge(false);
+        let device = b.open().unwrap();
+        let channel = b.connect(device, PROTOCOL_CAN, 0, 500000).unwrap();
+        let started = Instant::now();
+        // The read's own 100 ms and the grace, instead of for ever.
+        assert_eq!(b.read(channel, 100), Err(ERR_BRIDGE_TIMEOUT));
+        let took = started.elapsed();
+        assert!(took >= Duration::from_millis(290), "took {took:?}");
+        assert!(took < Duration::from_secs(3), "took {took:?}");
+        // Every later call fails at once and keeps the reason, closing too.
+        let started = Instant::now();
+        let frame = Message::new(PROTOCOL_CAN, &[0, 0, 7, 0xDF, 2, 1, 0]);
+        assert_eq!(b.write(channel, &frame, 100), Err(ERR_BRIDGE_TIMEOUT));
+        assert_eq!(b.last_error(), "");
+        assert_eq!(b.disconnect(channel), ERR_BRIDGE_TIMEOUT);
+        drop(b);
+        assert!(started.elapsed() < Duration::from_millis(500));
+    }
+
+    #[test]
+    fn a_driver_that_hangs_while_opening_is_given_up_in_time() {
+        let mut b = hanging_bridge(true);
+        let started = Instant::now();
+        assert_eq!(b.open(), Err(ERR_BRIDGE_TIMEOUT));
+        assert!(started.elapsed() < Duration::from_secs(3));
+    }
+
+    #[test]
+    fn the_limits_leave_room_for_the_time_a_call_carries() {
+        let limits = Limits::default();
+        let read = Call::Read {
+            channel: 1,
+            timeout_ms: 60_000,
+        };
+        assert_eq!(limits.of(&read), Duration::from_secs(65));
+        assert!(limits.of(&Call::Open) >= Duration::from_secs(30));
+        // The 5-baud init takes about 2.5 s on the wire.
+        let init = Call::Ioctl {
+            target: 1,
+            request: Ioctl::FiveBaudInit(vec![0x33], 2),
+        };
+        assert!(limits.of(&init) >= Duration::from_secs(8));
+    }
+
+    /// What the thread between Caruspex and the pipe costs per call:
+    /// cargo test -p caruspex-j2534 --release -- --ignored --nocapture cost
+    #[test]
+    #[ignore = "prints a measurement"]
+    fn the_cost_of_a_call_over_the_bridge() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            stream.set_nodelay(true).unwrap();
+            serve(&mut stream, |_| {
+                Ok(Box::new(Loop::default()) as Box<dyn PassThru>)
+            })
+            .unwrap();
+        });
+        let stream = TcpStream::connect(address).unwrap();
+        stream.set_nodelay(true).unwrap();
+        let mut b = Bridge::over(stream, "loop.dll").unwrap();
+        let rounds = 20_000;
+        let started = Instant::now();
+        for _ in 0..rounds {
+            assert_eq!(b.read(2, 10), Err(0x10));
+        }
+        let each = started.elapsed() / rounds;
+        println!("one call over the bridge: {each:?}");
+        drop(b);
+        server.join().unwrap();
     }
 
     #[test]
