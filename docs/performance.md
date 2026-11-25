@@ -182,7 +182,7 @@ release is said.
 | One request on a pulled cable (`crates/caruspex-link/tests/link_lost.rs`) | its whole timeout, 6 s | one read, 120 ms |
 | A hundred requests after it, such as a control unit scan | a hundred timeouts | not sent, under 0.2 s for all |
 | An adapter that fell silent (`an_adapter_that_fell_silent_is_noticed`) | "connected" for ever | the request in flight (4 s), then ATI twice, 1.5 s each: about 7 s |
-| Wi-Fi out of range, nothing running | "connected" for ever | about 11 s (TCP keepalive: 5 s, then three tries 2 s apart), by the settings, not measured on a real adapter |
+| Wi-Fi out of range, nothing running | "connected" for ever | about 25 s (TCP keepalive: 10 s, then five tries 3 s apart), by the settings, not measured on a real adapter |
 | Cancelling a connection attempt (`connecting_can_be_cancelled_*`) | not possible: 5 s for a Wi-Fi address, up to 60 s for Bluetooth LE, minutes for a search over many ports | under 0.7 s in the tests, at most one read (120 ms) or one wait (50 ms) in the code |
 | A hanging 32-bit J2534 driver (`a_driver_that_hangs_*`) | Caruspex hangs with it | given up after the time the call carries plus 5 s (loading and opening 30 s, other calls 10 s), the helper program is ended |
 | One call over the J2534 bridge (`the_cost_of_a_call_over_the_bridge`, release) | 33 us | 46 us, the thread in between |

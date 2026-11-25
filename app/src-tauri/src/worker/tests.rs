@@ -1306,3 +1306,62 @@ fn cancelling_the_remembered_way_does_not_start_the_search() {
     );
     assert!(Collect::named(&events, "connected").is_empty());
 }
+
+/// A car that answers no request and only broadcasts frames, like a Tesla.
+#[derive(Default)]
+struct Broadcasting {
+    reply: Vec<u8>,
+    monitoring: bool,
+}
+
+impl Transport for Broadcasting {
+    fn write(&mut self, data: &[u8]) -> bool {
+        if std::mem::take(&mut self.monitoring) {
+            self.reply.extend_from_slice(b"STOPPED\r\r>");
+            return true;
+        }
+        let command = String::from_utf8_lossy(data).trim().to_ascii_uppercase();
+        let answer = match command.as_str() {
+            "" => "",
+            "ATZ" => "ELM327 v1.5",
+            "ATMA" => {
+                self.monitoring = true;
+                self.reply = b"132 10 96 38 FF\r".repeat(12);
+                return true;
+            }
+            c if c.starts_with("AT") => "OK",
+            "STI" => "?",
+            _ => "NO DATA",
+        };
+        self.reply = format!("{answer}\r\r>").into_bytes();
+        true
+    }
+    fn read(&mut self, _timeout_ms: u64) -> Vec<u8> {
+        std::mem::take(&mut self.reply)
+    }
+    fn flush_input(&mut self) {
+        self.reply.clear();
+    }
+    fn name(&self) -> String {
+        "broadcasting".into()
+    }
+}
+
+#[test]
+fn a_car_that_only_broadcasts_is_no_failed_fault_memory() {
+    let sink = Arc::new(Collect::default());
+    let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+    worker.apply_settings(AppSettings::default());
+    worker.handle(Job::OpenTransport {
+        transport: Box::new(Broadcasting::default()),
+        protocol_order: "6".into(),
+    });
+    let events = sink.take();
+    assert_eq!(Collect::named(&events, "connected").len(), 1, "{events:?}");
+    assert!(worker.elm.listen_only());
+    // Neither a failure (it has no fault memory over OBD) nor "no entries".
+    assert!(Collect::named(&events, "failed").is_empty(), "{events:?}");
+    assert!(Collect::named(&events, "faults").is_empty());
+    assert_eq!(Collect::named(&events, "supported_pids").len(), 1);
+    assert!(Collect::named(&events, "closed").is_empty());
+}

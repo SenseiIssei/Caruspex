@@ -22,9 +22,12 @@ const WRITE_TIMEOUT: Duration = Duration::from_secs(2);
 /// out of range closes nothing, so otherwise an idle connection would look
 /// alive for ever. The question is an empty TCP segment, the adapter's
 /// program never sees it.
-const KEEPALIVE_AFTER: Duration = Duration::from_secs(5);
-const KEEPALIVE_EVERY: Duration = Duration::from_secs(2);
-const KEEPALIVE_TRIES: u32 = 3;
+///
+/// Generous on purpose: a Wi-Fi that stumbles for some seconds must not cost
+/// the connection, and an idle one has time.
+const KEEPALIVE_AFTER: Duration = Duration::from_secs(10);
+const KEEPALIVE_EVERY: Duration = Duration::from_secs(3);
+const KEEPALIVE_TRIES: u32 = 5;
 
 #[derive(Default)]
 pub struct TcpTransport {

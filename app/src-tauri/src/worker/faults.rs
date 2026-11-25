@@ -35,7 +35,10 @@ impl Worker {
         self.emit("status", json!({ "row": status_row(&st) }));
 
         let faults = match self.with_obd(|o| o.read_faults()) {
-            Ok(faults) => faults,
+            Ok(faults) => Some(faults),
+            // A car that only broadcasts its values (Tesla) has no fault
+            // memory over OBD; there is nothing to report as unread.
+            Err(_) if self.elm.listen_only() && !self.elm.known_lost() => None,
             Err(error) => {
                 // "Not read" must not look like "no faults". When it was the
                 // link, check_link has closed the connection with its reason.
@@ -47,23 +50,25 @@ impl Worker {
                 return;
             }
         };
-        let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
-        let count = rows.len();
-        self.emit("faults", json!({ "rows": rows }));
-        self.log(if count == 0 {
-            w(
-                "Fehlerspeicher gelesen: kein Eintrag.",
-                "Fault memory read: no entries.",
-            )
-        } else {
-            args(
-                &w(
-                    "Fehlerspeicher gelesen: %1 Einträge.",
-                    "Fault memory read: %1 entries.",
-                ),
-                &[&count],
-            )
-        });
+        if let Some(faults) = faults {
+            let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
+            let count = rows.len();
+            self.emit("faults", json!({ "rows": rows }));
+            self.log(if count == 0 {
+                w(
+                    "Fehlerspeicher gelesen: kein Eintrag.",
+                    "Fault memory read: no entries.",
+                )
+            } else {
+                args(
+                    &w(
+                        "Fehlerspeicher gelesen: %1 Einträge.",
+                        "Fault memory read: %1 entries.",
+                    ),
+                    &[&count],
+                )
+            });
+        }
 
         let supported: Vec<i32> = self.with_obd(|o| o.supported_pids()).into_iter().collect();
         self.emit("supported_pids", json!({ "pids": supported }));
