@@ -57,6 +57,10 @@ Take "read the fault memory" on the faults page:
 6. **Transport.** The protocol talks through `caruspex_link::Elm327` to a `Transport`: a serial port, TCP,
    Bluetooth, the demo car, a replay, or a front end in `caruspex-net` that turns ENET, DoIP or a CAN interface into
    ELM327 answers. K-line protocols use a `ByteStream` instead.
+   Every transport can say whether the way to the adapter is gone (`Transport::lost`, which asks the operating
+   system and sends nothing); `worker/link.rs` looks every two seconds and after each job, and ends the
+   connection with the reason in the `closed` event. A fault memory that could not be read is an error, never
+   an empty list.
 7. **Events back.** The worker emits events through its `Sink` (`TauriSink` in `lib.rs`), for example
    `faults` with the rows; `app.emit` sends them to the window. Pages and the stores in `app/src/state/` subscribe
    with `on(...)` or `useBackendEvent(...)`. The log lines take the same way (`log_line`).

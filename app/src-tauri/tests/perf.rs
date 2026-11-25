@@ -324,7 +324,7 @@ fn the_live_loop_keeps_to_the_poll_interval_and_allocates_little() {
         r.live_events_per_s,
         r.values_per_s
     );
-    // About 23 now, 37 while live_value went through a serde_json::Value,
+    // About 22 now, 37 while every live value went through a serde_json::Value,
     // 85 before the copies in the hot path went (see docs/performance.md):
     // allocation counts do not depend on the machine.
     assert!(

@@ -623,8 +623,6 @@ impl Worker {
                 self.interrupt.store(false, Ordering::SeqCst);
                 self.cancel.store(false, Ordering::SeqCst);
                 self.close_adapter();
-                #[cfg(target_os = "android")]
-                crate::android::bind_wifi(false);
             }
             Job::StartRecording(path) => self.start_recording(&path),
             Job::StopRecording => self.stop_recording(),

@@ -162,6 +162,8 @@ impl Worker {
         self.forget_can_link();
         self.elm.disconnect();
         self.obd_ready = false;
+        #[cfg(target_os = "android")]
+        crate::android::bind_wifi(false);
     }
 }
 

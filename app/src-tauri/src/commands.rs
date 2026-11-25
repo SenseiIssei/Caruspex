@@ -1572,6 +1572,12 @@ pub fn on_worker_event(app: &AppHandle, event: &str, payload: &Value) {
             });
         }
         "failed" => finish(app, 2, payload["error"].as_str().unwrap_or("")),
+        // A report of a car that is gone would be an empty one.
+        "closed" => {
+            if let Some(reason) = payload["lost"].as_str() {
+                finish(app, 2, reason);
+            }
+        }
         _ => {}
     }
 }

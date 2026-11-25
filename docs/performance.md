@@ -64,7 +64,7 @@ machine, before and after a change.
 | `caruspex-protocols` `a_live_round_allocates_little` | under 220 allocations per round of 6 PIDs (314 before) | about 110 |
 | `caruspex-protocols` `the_live_loop_does_not_grow` | heap grows less than 64 KiB over 3000 rounds | 0 |
 | `caruspex-protocols` `a_round_on_a_slow_line_costs_one_request_per_six_pids` | one request per round, the answer count on all but the first, under 150 ms per round at 38400 baud | 15 requests, 14 with the count, about 35 ms |
-| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 45 allocations per live value (85 in 0.16, 37 with the event through a `Value`), heap growth under 256 KiB in 2 s | about 192 values per second, 23 allocations per value |
+| `caruspex-app` `the_live_loop_keeps_to_the_poll_interval_and_allocates_little` | 30 to 330 live values per second at the default 20 ms interval, under 45 allocations per live value (85 in 0.16, 37 with the event through a `Value`), at most one event for five values, heap growth under 256 KiB in 2 s | about 192 values per second in 32 events, 22 allocations per value |
 | `caruspex-app` `an_answer_reaches_the_sink_quickly` | median under 50 ms from the prompt to the event at 115200 baud, best of three runs (shared CI macOS runners reach 15 ms, once 50 ms) | under 1 ms |
 | `caruspex-record` `a_thirty_minute_recording_is_read_quickly` | `live_frames` reads 30 minutes of CAN 29 bit with headers (36 000 rounds, 144 006 events, 11 MB) in under 20 s in a debug build | about 1.3 s debug, 0.2 s release |
 | `caruspex-link` `count_hint.rs` | the answer count digit: learned, used, dropped when refused or when it loses answers, relearned every 32nd request | |
@@ -170,15 +170,78 @@ release is said.
   (catalog search 2.9 ms, PID table 0.9 ms, release); the fault code lexicon (19 ms) was async already.
   Saving settings and the garage stays a plain command on purpose: as async commands two saves could overtake
   each other and the older state would be written last.
-- **Live values straight to JSON.** `Sink::live_value` hands the row to Tauri, which serializes it once; the
+- **Live values straight to JSON.** `Sink::live_values` hands the rows to Tauri, which serializes them once; the
   `serde_json::Value` built for every live value before is gone. The payload is the same.
+
+### Lost links, cancelling and one event per tick (25 November 2026)
+
+| What | Before | After |
+|---|---|---|
+| Pulled USB cable, nothing running (`a_pulled_cable_is_noticed_while_nothing_runs`) | "connected" for ever | noticed at the next look, every 2 s (test: under 3.5 s) |
+| Pulled USB cable during live values (`a_pulled_cable_is_noticed_at_once_while_values_are_read`) | "connected" for ever, one timeout per round | noticed within one read of 120 ms (test: under 1 s) |
+| One request on a pulled cable (`crates/caruspex-link/tests/link_lost.rs`) | its whole timeout, 6 s | one read, 120 ms |
+| A hundred requests after it, such as a control unit scan | a hundred timeouts | not sent, under 0.2 s for all |
+| An adapter that fell silent (`an_adapter_that_fell_silent_is_noticed`) | "connected" for ever | the request in flight (4 s), then ATI twice, 1.5 s each: about 7 s |
+| Wi-Fi out of range, nothing running | "connected" for ever | about 11 s (TCP keepalive: 5 s, then three tries 2 s apart), by the settings, not measured on a real adapter |
+| Cancelling a connection attempt (`connecting_can_be_cancelled_*`) | not possible: 5 s for a Wi-Fi address, up to 60 s for Bluetooth LE, minutes for a search over many ports | under 0.7 s in the tests, at most one read (120 ms) or one wait (50 ms) in the code |
+| A hanging 32-bit J2534 driver (`a_driver_that_hangs_*`) | Caruspex hangs with it | given up after the time the call carries plus 5 s (loading and opening 30 s, other calls 10 s), the helper program is ended |
+| One call over the J2534 bridge (`the_cost_of_a_call_over_the_bridge`, release) | 33 us | 46 us, the thread in between |
+| Live values, 6 PIDs: events per second with the raw log (without) | 224 (192) | 64 (32) |
+| Live values on an OBDLink, 12 PIDs: live events per second | 385 | 32 |
+| Allocations per live value, JSON included | 23.3 (2711 bytes) | 22.2 (2783 bytes) |
+| Adapter prompt to event, ELM327 at 38400 baud, median / p95 | 0.3 / 0.6 ms | 0.33 / 0.62 ms |
+
+- **`Transport::lost`** asks the operating system whether the way to the adapter is still there and sends
+  nothing: a peek at the socket (TCP), the count of waiting bytes (serial), the disconnect notice (Bluetooth LE,
+  RFCOMM, Android), the socket error of SocketCAN, the status codes of a J2534 driver, the closed connection of
+  ENET and DoIP. SLCAN asks its serial port. PCAN and Kvaser do not say so yet. `Elm327` remembers it: from then
+  on every command returns at once without being sent, and a scan or check sees it as cancelled.
+- **Silence is asked about once.** An adapter that said nothing at all to a command is asked for its name (ATI,
+  which changes nothing) before it counts as gone, so a single lost answer does not end a connection. A "NO DATA"
+  of the car is an answer. Replays are left out.
+- **Not read is not empty.** `Obd2::read_faults` fails when the adapter is gone, the bus reports an error or
+  nothing in the car answers any more (mode 03 without an answer is checked with 0100). Before, all of these
+  were "no entries", and the persistent clear called an unreadable memory empty.
+- **Cancelling** raises the interrupt flag Disconnect already used. What cannot be interrupted (opening a port, a
+  Bluetooth search, a TCP connect, the network search) runs on a thread of its own that is left behind
+  (`worker/link.rs`); what it opens in the end is closed again. Opening a J2534, PCAN or Kvaser driver stays on
+  the worker thread, because some drivers care which thread opened them: there the cancel waits for the driver.
+- **One event per tick.** `live_values` carries all rows of a tick. Every Tauri event reaches the WebView as a
+  script of its own, so this is a sixth of the scripts on a plain ELM327 and a twelfth on an OBDLink with 12 PIDs;
+  the values arrive no later, because the rows of a tick were decoded together before as well.
+
+### The browser demo with the Rust rules: measured, not built (25 November 2026)
+
+The browser preview (`npm run dev`, `npm run build:demo`) uses rules ported to TypeScript by hand
+(`app/src/api/mock/`, 8 986 lines). A trial crate compiled the Rust rules to `wasm32-unknown-unknown`
+(opt-level z, fat LTO, panic abort, no wasm-opt):
+
+| Contents | Size | gzip |
+|---|---|---|
+| Health check, used car check, battery, performance | 2.99 MB | 2.86 MB |
+| plus advice and fault codes | 3.94 MB | 3.11 MB |
+| plus vehicle catalog and VIN | 4.25 MB | 3.18 MB |
+| of it the 16 language catalogs of `caruspex-i18n`, always included | 2.79 MB | 2.79 MB |
+| everything without them, if they were loaded one language at a time | 1.46 MB | about 0.39 MB |
+| for comparison: the mock chunk of the demo build | 0.97 MB | 0.22 MB |
+| one language catalog of the demo build | 0.71 to 1.06 MB | 0.17 to 0.20 MB |
+| the whole demo build | 18.4 MB | |
+
+Size is no obstacle, once `caruspex-i18n` can take a catalog from outside. It still does not pay today:
+
+- About 4 000 of the 8 986 lines are rules (advice, fault codes, health and used car check, battery, trip,
+  vehicle catalog). The rest simulates the worker, the demo car and the workshop pages; `caruspex-demo`, the
+  protocols and the worker need threads, a clock and `caruspex-link`, which a browser does not have.
+- The rows the interface reads are built in `app/src-tauri` (`knowledge.rs`, `rows.rs`, `worker/convert.rs`,
+  `advice.rs`); they would have to move into a crate of their own first, or be written a third time.
+- `npm run dev` and the interface tests would need a Rust build with the wasm target.
+- Nobody but developers sees the demo: it is published nowhere.
+
+It pays as soon as the demo becomes a public "try it in the browser" page. Until then a test that feeds the same
+inputs to both sides and compares the results would catch the drift for a fraction of the work (PLAN.md).
 
 ### Looked at and left as it is
 
-- **Events to the window.** Every live value is its own `live_value` event, and many pages listen to it.
-  A batched event (one per tick with all rows) would save the per-event cost in Tauri and the webview, but
-  only once the interface listens to it; the payload of `live_value` is unchanged. The rate is capped by the
-  poll interval: at most six values per 20 ms tick on a plain ELM327, 24 with STN batching.
 - **The raw log** (on by default) sends one `log_line` per request, which is about one event per live tick.
   It is part of what users and test reports rely on, so it is not thinned; with it off the worker sends
   only the live values.
@@ -203,15 +266,15 @@ The interface is React 19 in a WebView (WebView2 on Windows). Two facts shape ev
   computer, the statistics and the X-ray view collect what happens meanwhile). So whatever a hidden page does
   per event, it does all the time. `usePageActive()` (in `app/src/lib/hooks.ts`) tells a component whether its
   page is the one on screen.
-- **Live values arrive many times a second**, one `live_value` event per reading. The demo backend of the
+- **Live values arrive many times a second**, one `live_values` event per tick with all its readings. The demo backend of the
   browser preview sends up to 150 a second, a real adapter 10 to 50.
 
 ### Rules for UI code
 
 - **Show readings with `useLiveValues` / `useLiveRows`** (`app/src/state/liveView.ts`), not with a
-  `useBackendEvent("live_value")` that sets state. They render at most once per animation frame, only when a
+  `useBackendEvent("live_values")` that sets state. They render at most once per animation frame, only when a
   shown value changed, and not at all while the page is hidden; the page catches up when it is shown.
-  Keep `useBackendEvent("live_value")` for code that needs every reading (the chart, the CSV recording, the
+  Keep `useBackendEvent("live_values")` for code that needs every reading (the chart, the CSV recording, the
   performance timer, the trip statistics), and let it write to refs, not state.
 - **Animate outside React.** The needle of `Gauge` moves by setting four SVG attributes in an animation
   frame; React renders the gauge only when its value changes.
@@ -416,5 +479,3 @@ and `switch <base> 4`.
   texts and one array per language would cut about 300 KB from each, for the browser preview only.
 - `XrayPage` keeps the layout code of the 3D view (about 110 kB) in the entry chunk, because the page
   collects scan results while hidden; moving the layout into the lazy chunk needs the page split in two.
-- Every Tauri event reaches the WebView as a script of its own. A batched live event from the backend would
-  cut that per reading cost; the interface keeps handling `live_value` either way.
