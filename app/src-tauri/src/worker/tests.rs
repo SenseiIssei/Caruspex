@@ -25,6 +25,13 @@ impl Collect {
             .map(|(_, p)| p.clone())
             .collect()
     }
+    /// The rows of every `live_values` event.
+    fn live_rows(events: &[(String, Value)]) -> Vec<Value> {
+        Self::named(events, "live_values")
+            .iter()
+            .flat_map(|v| v["rows"].as_array().cloned().unwrap_or_default())
+            .collect()
+    }
 }
 
 fn demo_worker() -> (Worker, Arc<Collect>) {
@@ -162,7 +169,7 @@ fn details_bring_vin_and_freeze_frames() {
             .unwrap()
             .is_empty()
     );
-    assert!(!Collect::named(&events, "live_value").is_empty());
+    assert!(!Collect::live_rows(&events).is_empty());
 }
 
 #[test]
@@ -178,13 +185,17 @@ fn live_loop_reads_values_and_stops() {
     worker.handle(Job::StopLive);
     assert!(!worker.live_running());
     let events = sink.take();
-    let values = Collect::named(&events, "live_value");
-    assert!(values.iter().any(|v| v["row"]["pid"] == 0x0C), "{values:?}");
+    // One event per tick with all its values, not one per value.
+    let ticks = Collect::named(&events, "live_values");
+    assert!((1..=3).contains(&ticks.len()), "{ticks:?}");
     assert!(
-        values
+        ticks
             .iter()
-            .all(|v| v["row"]["time"].as_f64().unwrap() > 0.0)
+            .all(|t| t["rows"].as_array().unwrap().len() == 3)
     );
+    let values = Collect::live_rows(&events);
+    assert!(values.iter().any(|v| v["pid"] == 0x0C), "{values:?}");
+    assert!(values.iter().all(|v| v["time"].as_f64().unwrap() > 0.0));
 }
 
 #[test]
@@ -435,9 +446,9 @@ fn custom_values_of_the_demo_pack() {
     let read = &Collect::named(&events, "custom_read")[0];
     assert!(read["ok"].as_u64().unwrap() > 0, "{read}");
     assert!(
-        Collect::named(&events, "live_value")
+        Collect::live_rows(&events)
             .iter()
-            .any(|v| keys.contains(&(v["row"]["pid"].as_i64().unwrap() as i32)))
+            .any(|v| keys.contains(&(v["pid"].as_i64().unwrap() as i32)))
     );
 }
 
@@ -458,14 +469,11 @@ fn extended_session_values_in_pro_mode_only_and_left_afterwards() {
 
     // Beginner mode (the default): shown as unavailable, with the reason.
     worker.handle(Job::ReadCustom(vec![key]));
-    let rows = Collect::named(&sink.take(), "live_value");
+    let rows = Collect::live_rows(&sink.take());
     assert_eq!(rows.len(), 1);
-    assert!(rows[0]["row"].get("session").is_none());
+    assert!(rows[0].get("session").is_none());
     assert!(
-        rows[0]["row"]["reason"]
-            .as_str()
-            .unwrap()
-            .contains("Profimodus"),
+        rows[0]["reason"].as_str().unwrap().contains("Profimodus"),
         "{}",
         rows[0]
     );
@@ -477,9 +485,9 @@ fn extended_session_values_in_pro_mode_only_and_left_afterwards() {
         ..AppSettings::default()
     });
     worker.handle(Job::ReadCustom(vec![key]));
-    let rows = Collect::named(&sink.take(), "live_value");
-    assert_eq!(rows[0]["row"]["session"], true, "{}", rows[0]);
-    assert!(rows[0]["row"].get("reason").is_none());
+    let rows = Collect::live_rows(&sink.take());
+    assert_eq!(rows[0]["session"], true, "{}", rows[0]);
+    assert!(rows[0].get("reason").is_none());
     assert!(!worker.sessions.any_active());
 
     // Polled: the engine stays in the session between ticks ...
@@ -507,9 +515,9 @@ fn extended_session_values_in_pro_mode_only_and_left_afterwards() {
     assert!(!worker.sessions.any_active());
     sink.take();
     worker.handle(Job::ReadCustom(vec![key]));
-    let rows = Collect::named(&sink.take(), "live_value");
+    let rows = Collect::live_rows(&sink.take());
     assert!(
-        rows[0]["row"]["reason"]
+        rows[0]["reason"]
             .as_str()
             .unwrap()
             .contains("Einstellungen"),
@@ -929,7 +937,7 @@ fn disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round() {
         mute: mute.clone(),
     }));
     handle.send(Job::StartLive(vec![0x0C, 0x0D, 0x05, 0x11, 0x04, 0x0F]));
-    assert!(wait_for(&sink, "live_value", 12, Duration::from_secs(10)));
+    assert!(wait_for(&sink, "live_values", 3, Duration::from_secs(10)));
     // The adapter falls silent: the live request in flight waits for its
     // four seconds, and the next ones would wait as long.
     mute.store(true, Ordering::SeqCst);
@@ -953,7 +961,7 @@ fn disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round() {
     });
     assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
     handle.send(Job::StartLive(vec![0x0C, 0x0D]));
-    assert!(wait_for(&sink, "live_value", 4, Duration::from_secs(10)));
+    assert!(wait_for(&sink, "live_values", 4, Duration::from_secs(10)));
     assert!(handle.shutdown(Duration::from_secs(5)));
 }
 
@@ -961,7 +969,7 @@ fn disconnect_on_a_silent_adapter_does_not_wait_for_the_live_round() {
 fn ending_the_program_during_a_health_check_frees_the_worker() {
     let (handle, sink) = spawned_demo(quick_demo());
     handle.send(Job::HealthCheck(60));
-    assert!(wait_for(&sink, "live_value", 3, Duration::from_secs(10)));
+    assert!(wait_for(&sink, "live_values", 3, Duration::from_secs(10)));
     let started = Instant::now();
     assert!(handle.shutdown(Duration::from_secs(5)), "the worker ended");
     let took = started.elapsed();
@@ -1005,4 +1013,296 @@ fn commands_from_many_threads_at_once_cannot_hang_the_worker() {
     handle.close();
     assert!(wait_for(&sink, "closed", 21, Duration::from_secs(60)));
     assert!(handle.shutdown(Duration::from_secs(10)));
+}
+
+// --- The way to the adapter goes away ---------------------------------------------
+
+/// The demo car on a cable that can be pulled: the transport says so, every
+/// write fails and every read waits for nothing.
+struct Pulled {
+    inner: DemoTransport,
+    gone: Arc<AtomicBool>,
+}
+
+impl Transport for Pulled {
+    fn write(&mut self, data: &[u8]) -> bool {
+        !self.gone.load(Ordering::SeqCst) && self.inner.write(data)
+    }
+    fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        if self.gone.load(Ordering::SeqCst) {
+            std::thread::sleep(Duration::from_millis(timeout_ms));
+            return Vec::new();
+        }
+        self.inner.read(timeout_ms)
+    }
+    fn flush_input(&mut self) {
+        self.inner.flush_input();
+    }
+    fn name(&self) -> String {
+        "pulled".into()
+    }
+    fn lost(&mut self) -> bool {
+        self.gone.load(Ordering::SeqCst)
+    }
+}
+
+fn pulled_demo() -> (Pulled, Arc<AtomicBool>) {
+    let gone = Arc::new(AtomicBool::new(false));
+    let cable = Pulled {
+        inner: DemoTransport::new(DemoOptions {
+            latency_scale: 0.0,
+            ..DemoOptions::default()
+        }),
+        gone: gone.clone(),
+    };
+    (cable, gone)
+}
+
+fn lost_reason(sink: &Collect) -> String {
+    let events = sink.0.lock().unwrap();
+    let closed = Collect::named(&events, "closed");
+    assert_eq!(closed.len(), 1, "{closed:?}");
+    closed[0]["lost"].as_str().unwrap_or_default().to_string()
+}
+
+#[test]
+fn a_pulled_cable_is_noticed_while_nothing_runs() {
+    let (cable, gone) = pulled_demo();
+    let (handle, sink) = spawned_demo(Box::new(cable));
+    assert!(wait_for(
+        &sink,
+        "supported_pids",
+        1,
+        Duration::from_secs(10)
+    ));
+    gone.store(true, Ordering::SeqCst);
+    let started = Instant::now();
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(10)));
+    let took = started.elapsed();
+    assert!(took < Duration::from_millis(3500), "took {took:?}");
+    assert!(!lost_reason(&sink).is_empty());
+    // It is reported once, and the next connection works as usual.
+    std::thread::sleep(Duration::from_millis(300));
+    lost_reason(&sink);
+    sink.take();
+    handle.send(Job::OpenTransport {
+        transport: quick_demo(),
+        protocol_order: "6".into(),
+    });
+    assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn a_pulled_cable_is_noticed_at_once_while_values_are_read() {
+    let (cable, gone) = pulled_demo();
+    let (handle, sink) = spawned_demo(Box::new(cable));
+    handle.send(Job::StartLive(vec![0x0C, 0x0D, 0x05, 0x11, 0x04, 0x0F]));
+    assert!(wait_for(&sink, "live_values", 3, Duration::from_secs(10)));
+    gone.store(true, Ordering::SeqCst);
+    let started = Instant::now();
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(10)));
+    let took = started.elapsed();
+    // Before: never. The live loop went on with a timeout per round.
+    assert!(took < Duration::from_millis(1000), "took {took:?}");
+    assert!(!lost_reason(&sink).is_empty());
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn an_adapter_that_fell_silent_is_noticed() {
+    let mute = Arc::new(AtomicBool::new(false));
+    let sink = Arc::new(Collect::default());
+    let settings = AppSettings {
+        timeout_percent: 10,
+        ..AppSettings::default()
+    };
+    let handle = spawn(sink.clone(), settings);
+    handle.send(Job::OpenTransport {
+        transport: Box::new(Muted {
+            inner: DemoTransport::new(DemoOptions {
+                latency_scale: 0.0,
+                ..DemoOptions::default()
+            }),
+            mute: mute.clone(),
+        }),
+        protocol_order: "6".into(),
+    });
+    assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
+    handle.send(Job::StartLive(vec![0x0C, 0x0D]));
+    assert!(wait_for(&sink, "live_values", 2, Duration::from_secs(10)));
+    mute.store(true, Ordering::SeqCst);
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(10)));
+    assert!(!lost_reason(&sink).is_empty());
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn a_link_lost_while_reading_faults_is_not_an_empty_fault_memory() {
+    let (cable, gone) = pulled_demo();
+    let sink = Arc::new(Collect::default());
+    let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+    worker.handle(Job::OpenTransport {
+        transport: Box::new(cable),
+        protocol_order: "6".into(),
+    });
+    sink.take();
+    gone.store(true, Ordering::SeqCst);
+    worker.handle(Job::ReadFaults);
+    let events = sink.take();
+    // Before: "faults" with no rows, shown as "no entries".
+    assert!(Collect::named(&events, "faults").is_empty(), "{events:?}");
+    assert_eq!(Collect::named(&events, "closed").len(), 1);
+    assert!(Collect::named(&events, "failed").is_empty());
+}
+
+#[test]
+fn a_link_lost_while_clearing_is_not_an_empty_fault_memory() {
+    let (cable, gone) = pulled_demo();
+    let sink = Arc::new(Collect::default());
+    let mut worker = Worker::new(sink.clone(), Arc::new(AtomicBool::new(false)));
+    worker.handle(Job::OpenTransport {
+        transport: Box::new(cable),
+        protocol_order: "6".into(),
+    });
+    sink.take();
+    gone.store(true, Ordering::SeqCst);
+    worker.handle(Job::BruteForceClear(5));
+    let events = sink.take();
+    // Before: "Memory is empty" and everythingGone true.
+    let finished = Collect::named(&events, "clear_finished");
+    assert_eq!(finished.len(), 1);
+    assert_eq!(finished[0]["everythingGone"], false);
+    assert_eq!(Collect::named(&events, "closed").len(), 1);
+}
+
+#[test]
+fn a_link_lost_in_a_check_gives_no_result() {
+    let (cable, gone) = pulled_demo();
+    let (handle, sink) = spawned_demo(Box::new(cable));
+    handle.send(Job::HealthCheck(60));
+    assert!(wait_for(&sink, "live_values", 3, Duration::from_secs(10)));
+    gone.store(true, Ordering::SeqCst);
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(10)));
+    assert!(!lost_reason(&sink).is_empty());
+    let events = sink.take();
+    assert!(Collect::named(&events, "health_result").is_empty());
+    assert_eq!(
+        Collect::named(&events, "busy").last().unwrap()["active"],
+        false
+    );
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn a_recording_that_ends_with_the_link_is_kept() {
+    let (cable, gone) = pulled_demo();
+    let (handle, sink) = spawned_demo(Box::new(cable));
+    let path =
+        std::env::temp_dir().join(format!("caruspex-link-lost-{}.jsonl", std::process::id()));
+    handle.send(Job::StartRecording(path.to_string_lossy().into_owned()));
+    handle.send(Job::StartLive(vec![0x0C]));
+    assert!(wait_for(&sink, "live_values", 3, Duration::from_secs(10)));
+    gone.store(true, Ordering::SeqCst);
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(10)));
+    let states = Collect::named(&sink.take(), "recording_state");
+    let last = states.last().unwrap();
+    assert_eq!(last["active"], false);
+    assert!(last["exchanges"].as_u64().unwrap() > 0);
+    assert!(std::fs::metadata(&path).unwrap().len() > 0);
+    std::fs::remove_file(&path).ok();
+    assert!(handle.shutdown(Duration::from_secs(5)));
+}
+
+/// A car that answers the adapter only, and slowly: every protocol search
+/// takes its whole time.
+struct Searching;
+
+impl Transport for Searching {
+    fn write(&mut self, _data: &[u8]) -> bool {
+        true
+    }
+    fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        std::thread::sleep(Duration::from_millis(timeout_ms));
+        Vec::new()
+    }
+    fn flush_input(&mut self) {}
+    fn name(&self) -> String {
+        "searching".into()
+    }
+}
+
+fn cancel_after(job: Job, wait: Duration, limit: Duration) -> Vec<(String, Value)> {
+    let sink = Arc::new(Collect::default());
+    let handle = spawn(sink.clone(), AppSettings::default());
+    handle.send(job);
+    std::thread::sleep(wait);
+    assert!(wait_for(&sink, "busy", 1, Duration::from_secs(5)));
+    let started = Instant::now();
+    handle.close();
+    assert!(wait_for(&sink, "closed", 1, Duration::from_secs(30)));
+    let took = started.elapsed();
+    assert!(took < limit, "took {took:?}");
+    let events = sink.take();
+    // Cancelling is no failure, and it was asked for, so it is no lost link.
+    assert!(Collect::named(&events, "failed").is_empty(), "{events:?}");
+    assert!(Collect::named(&events, "closed")[0]["lost"].is_null());
+    assert_eq!(
+        Collect::named(&events, "busy").last().unwrap()["active"],
+        false
+    );
+    // The flags are down again: the next connection works.
+    handle.send(Job::OpenTransport {
+        transport: quick_demo(),
+        protocol_order: "6".into(),
+    });
+    assert!(wait_for(&sink, "connected", 1, Duration::from_secs(10)));
+    assert!(handle.shutdown(Duration::from_secs(5)));
+    events
+}
+
+#[test]
+fn connecting_can_be_cancelled_while_the_adapter_is_silent() {
+    cancel_after(
+        Job::OpenTransport {
+            transport: Box::new(Searching),
+            protocol_order: "54312678".into(),
+        },
+        Duration::from_millis(400),
+        Duration::from_millis(700),
+    );
+}
+
+#[test]
+fn connecting_can_be_cancelled_while_nobody_answers_on_the_network() {
+    // TEST-NET-1 (RFC 5737): routed nowhere, five seconds until it gives up.
+    cancel_after(
+        Job::OpenTcp {
+            host: "192.0.2.1".into(),
+            port: 35000,
+            protocol_order: "6".into(),
+        },
+        Duration::from_millis(300),
+        Duration::from_millis(700),
+    );
+}
+
+#[test]
+fn cancelling_the_remembered_way_does_not_start_the_search() {
+    let events = cancel_after(
+        Job::OpenRemembered {
+            route: ConnectRoute {
+                kind: "tcp".into(),
+                device: "192.0.2.1:35000".into(),
+                ..ConnectRoute::default()
+            },
+            then: Box::new(Job::OpenTransport {
+                transport: quick_demo(),
+                protocol_order: "6".into(),
+            }),
+        },
+        Duration::from_millis(300),
+        Duration::from_millis(700),
+    );
+    assert!(Collect::named(&events, "connected").is_empty());
 }

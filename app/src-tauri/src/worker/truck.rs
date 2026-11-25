@@ -119,7 +119,8 @@ impl Worker {
         self.truck = None;
     }
 
-    fn truck_connected_event(&self, adapter: &str, transport: &str, protocol: &str) {
+    fn truck_connected_event(&mut self, adapter: &str, transport: &str, protocol: &str) {
+        self.watch_link();
         let mut route = self.route.clone();
         route.protocol = "J1939".into();
         self.emit(
@@ -187,6 +188,9 @@ impl Worker {
         for rate in rates_for(kbit) {
             let spec = format!("{base}@{}", rate * 1000);
             self.facts.can_bit_rate = rate * 1000;
+            if self.stop_connecting() {
+                return;
+            }
             let front = match open_can_interface(&spec, &opener) {
                 Ok(front) => front,
                 Err(error) => {
@@ -481,7 +485,13 @@ impl Worker {
     pub(super) fn truck_tick(&mut self) {
         if let Some(Err(error)) = self.with_truck(|s, link| s.listen(link, LISTEN_MS)) {
             self.stop_live();
-            self.failed(error);
+            // When it was the link, check_link has closed the connection
+            // with its reason.
+            self.link_tick();
+            self.check_link();
+            if self.truck_connected() && !self.interrupted() {
+                self.failed(error);
+            }
             return;
         }
         self.emit_truck_values();
@@ -493,6 +503,7 @@ impl Worker {
         };
         let time = app_seconds();
         let mut rows = Vec::new();
+        let mut live = Vec::new();
         for v in values {
             let (value, state) = match v.reading {
                 Reading::Value(x) => (x, "value"),
@@ -503,7 +514,7 @@ impl Worker {
             if state == "value"
                 && let Some(&(_, pid)) = AS_OBD_PID.iter().find(|(spn, _)| *spn == v.spn)
             {
-                self.emit_live(LiveRow {
+                live.push(LiveRow {
                     pid,
                     name: v.name.clone(),
                     unit: v.unit.clone(),
@@ -531,6 +542,7 @@ impl Worker {
                 time,
             });
         }
+        self.emit_live(&live);
         self.emit("j1939_values", json!({ "rows": rows }));
     }
 }
@@ -639,8 +651,12 @@ mod tests {
                 .any(|v| v["spn"] == 105 && v["state"] == "error")
         );
         // Engine speed and the other tile values also go out as OBD values.
-        let live = sink.take("live_value");
-        assert!(live.iter().any(|v| v["row"]["pid"] == 0x0C));
+        let live = sink.take("live_values");
+        assert!(
+            live.iter()
+                .flat_map(|v| v["rows"].as_array().unwrap())
+                .any(|row| row["pid"] == 0x0C)
+        );
 
         worker.handle(Job::StartLive(Vec::new()));
         assert!(worker.poll_timer.active);

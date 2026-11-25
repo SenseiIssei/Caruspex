@@ -308,11 +308,16 @@ export interface Events {
   adapter_found: { device: string };
   ble_adapter_found: { id: string; name: string; kinds: number };
   ble_scan_finished: { devices: BleDeviceRow[]; error: string };
-  closed: None;
+  // lost: why, when nobody asked for it (the cable was pulled, the adapter
+  // no longer answers). Empty after Disconnect and a cancelled connect.
+  closed: { lost?: string };
   busy: { active: boolean };
   faults: { rows: FaultRow[] };
   status: { row: StatusRow };
-  live_value: { row: LiveRow };
+  // The live values that came in together: one event per tick of the live
+  // loop with up to 24 rows, not one per value. Every event reaches the
+  // window as a script of its own.
+  live_values: { rows: LiveRow[] };
   vehicle_info: { vin: string; freezeCode: string; freezeRows: LiveRow[] };
   supported_pids: { pids: number[] };
   raw_reply: { reply: string };

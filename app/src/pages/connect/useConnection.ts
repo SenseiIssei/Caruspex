@@ -18,6 +18,10 @@ export function useConnection(latest: RefObject<ConnectLatest>) {
   // Connection state
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
+  // Cancel was pressed; the backend answers with "closed".
+  const [cancelling, setCancelling] = useState(false);
+  // The error is that a connection broke off, not that none came about.
+  const [lost, setLost] = useState(false);
   const [stateTone, setStateTone] = useState<"muted" | "warn" | "good" | "bad">("muted");
   const [details, setDetails] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +37,7 @@ export function useConnection(latest: RefObject<ConnectLatest>) {
   // --- Connecting ----------------------------------------------------------------------------
 
   const showError = (text: string, checklist: ConnectHelp | null = null) => {
+    setLost(false);
     setError(text);
     setHelp(checklist && checklist.items.length > 0 ? checklist : null);
   };
@@ -138,11 +143,18 @@ export function useConnection(latest: RefObject<ConnectLatest>) {
     onConnecting();
   };
 
+  const cancelConnect = () => {
+    if (!latest.current.connecting || cancelling) return;
+    setCancelling(true);
+    void call("close_adapter");
+  };
+
   // --- Backend events -------------------------------------------------------------------------
 
   useBackendEvent("connected", ({ adapter, transport, protocol }) => {
     setConnected(true);
     setConnecting(false);
+    setCancelling(false);
     setStateTone("good");
     setDetails(tr("Adapter: %1\nWeg: %2\nProtokoll: %3", adapter, transport, protocol));
     setError(null);
@@ -150,16 +162,22 @@ export function useConnection(latest: RefObject<ConnectLatest>) {
 
   useBackendEvent("failed", ({ error: text, help: checklist }) => {
     setConnecting(false);
+    setCancelling(false);
     if (!latest.current.connected) setStateTone("bad");
     showError(text, checklist ?? null);
   });
 
-  useBackendEvent("closed", () => {
+  useBackendEvent("closed", ({ lost: reason }) => {
     setConnected(false);
     setConnecting(false);
-    setStateTone("muted");
+    setCancelling(false);
+    setStateTone(reason ? "bad" : "muted");
     setDetails("");
+    if (reason) {
+      showError(reason);
+      setLost(true);
+    }
   });
 
-  return { connected, connecting, stateTone, details, error, help, startConnect };
+  return { connected, connecting, cancelling, lost, stateTone, details, error, help, startConnect, cancelConnect };
 }

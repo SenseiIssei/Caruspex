@@ -1,0 +1,94 @@
+[
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "Abbrechen",
+  "en": "Cancel",
+  "tr": {
+   "es": "Cancelar",
+   "fr": "Annuler",
+   "pt": "Cancelar",
+   "it": "Annulla",
+   "nl": "Annuleren",
+   "pl": "Anuluj",
+   "cs": "Zrušit",
+   "ru": "Отмена",
+   "uk": "Скасувати",
+   "tr": "İptal",
+   "ar": "إلغاء",
+   "zh": "取消",
+   "ja": "キャンセル",
+   "ko": "취소",
+   "hi": "रद्द करें",
+   "id": "Batal"
+  }
+ },
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "Wird abgebrochen ...",
+  "en": "Cancelling ...",
+  "tr": {
+   "es": "Cancelando ...",
+   "fr": "Annulation ...",
+   "pt": "A cancelar ...",
+   "it": "Annullamento ...",
+   "nl": "Wordt geannuleerd ...",
+   "pl": "Anulowanie ...",
+   "cs": "Ruší se ...",
+   "ru": "Отмена ...",
+   "uk": "Скасування ...",
+   "tr": "İptal ediliyor ...",
+   "ar": "جارٍ الإلغاء ...",
+   "zh": "正在取消 ...",
+   "ja": "中止しています ...",
+   "ko": "취소하는 중 ...",
+   "hi": "रद्द हो रहा है ...",
+   "id": "Membatalkan ..."
+  }
+ },
+ {
+  "context": "caruspex::ConnectPage",
+  "de": "Die Verbindung ist abgerissen",
+  "en": "The connection broke off",
+  "tr": {
+   "es": "Se cortó la conexión",
+   "fr": "La connexion s'est interrompue",
+   "pt": "A ligação caiu",
+   "it": "La connessione si è interrotta",
+   "nl": "De verbinding is verbroken",
+   "pl": "Połączenie zostało przerwane",
+   "cs": "Spojení se přerušilo",
+   "ru": "Соединение прервалось",
+   "uk": "З'єднання обірвалося",
+   "tr": "Bağlantı koptu",
+   "ar": "انقطع الاتصال",
+   "zh": "连接中断",
+   "ja": "接続が切れました",
+   "ko": "연결이 끊어졌습니다",
+   "hi": "कनेक्शन टूट गया",
+   "id": "Sambungan terputus"
+  }
+ },
+ {
+  "context": "caruspex::MainWindow",
+  "de": "Verbindung verloren",
+  "en": "Connection lost",
+  "tr": {
+   "es": "Conexión perdida",
+   "fr": "Connexion perdue",
+   "pt": "Ligação perdida",
+   "it": "Connessione persa",
+   "nl": "Verbinding verloren",
+   "pl": "Utracono połączenie",
+   "cs": "Spojení ztraceno",
+   "ru": "Соединение потеряно",
+   "uk": "З'єднання втрачено",
+   "tr": "Bağlantı koptu",
+   "ar": "فُقد الاتصال",
+   "zh": "连接已丢失",
+   "ja": "接続が失われました",
+   "ko": "연결 끊김",
+   "hi": "कनेक्शन टूट गया",
+   "id": "Sambungan hilang"
+  }
+ }
+]

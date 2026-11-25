@@ -1,0 +1,37 @@
+[
+ {
+  "id": "c-link39-1",
+  "de": "Verbinden abgebrochen.",
+  "en": "Connecting cancelled."
+ },
+ {
+  "id": "c-link39-2",
+  "de": "Der Adapter antwortet nicht mehr. Steckt er noch, und hat er Strom?",
+  "en": "The adapter no longer answers. Is it still plugged in, and does it have power?"
+ },
+ {
+  "id": "c-link39-3",
+  "de": "Das Auto antwortet nicht mehr. Ist die Zündung noch an?",
+  "en": "The car no longer answers. Is the ignition still on?"
+ },
+ {
+  "id": "c-link39-4",
+  "de": "Die Verbindung zum Adapter ist abgerissen. Kabel ab, WLAN oder Bluetooth außer Reichweite?",
+  "en": "The connection to the adapter broke off. Cable unplugged, Wi-Fi or Bluetooth out of range?"
+ },
+ {
+  "id": "c-link39-5",
+  "de": "Die Verbindung zum Adapter ist weg.",
+  "en": "The connection to the adapter is gone."
+ },
+ {
+  "id": "c-link39-6",
+  "de": "Der Treiber hat zu lange nicht geantwortet und wurde beendet.",
+  "en": "The driver did not answer for too long and was ended."
+ },
+ {
+  "id": "c-link39-7",
+  "de": "Der Fehlerspeicher ließ sich nicht lesen: %1",
+  "en": "The fault memory could not be read: %1"
+ }
+]

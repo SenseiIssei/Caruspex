@@ -508,7 +508,7 @@ async function usedCarCheck(papersVin: string): Promise<void> {
   const value = (pid: number): number | null => {
     const row = readLive(pid);
     if (!row) return null;
-    emit("live_value", { row });
+    emit("live_values", { rows: [row] });
     return row.value;
   };
   const odometer = value(0xa6);

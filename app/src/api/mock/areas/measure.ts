@@ -10,6 +10,7 @@ import type {
   BatteryStepResult,
   CustomRow,
   Level,
+  LiveRow,
   PerformanceReport,
   PidPackInfo,
   SpeedSample,
@@ -494,9 +495,10 @@ const DEFAULT_TRIP: TripConfig = {
 const trip = { computer: new TripComputer(DEFAULT_TRIP), running: false };
 
 // The backend feeds the trip computer from its live loop; here that loop is
-// the live_value event of the demo.
-subscribe("live_value", ({ row }) => {
-  if (trip.running) trip.computer.addSample(row.pid, row.value, row.time);
+// the live_values event of the demo.
+subscribe("live_values", ({ rows }) => {
+  if (!trip.running) return;
+  for (const row of rows) trip.computer.addSample(row.pid, row.value, row.time);
 });
 subscribe("closed", () => {
   trip.running = false;
@@ -1245,30 +1247,30 @@ function readCustomNow(keys: number[]): { ok: number; failed: number; firstError
   let ok = 0;
   let failed = 0;
   let firstError = "";
+  const rows: LiveRow[] = [];
   for (const key of keys) {
     const k = known.get(key);
     if (!k) continue;
     const a = answer(k.value);
     if ("value" in a) {
       ok++;
-      emit("live_value", {
-        row: {
-          pid: key,
-          name: L(k.value.de, k.value.en),
-          unit: k.value.unit,
-          text: "",
-          value: a.value,
-          warn: false,
-          time: appSeconds(),
-          displayMin: k.value.min,
-          displayMax: k.value.max,
-        },
+      rows.push({
+        pid: key,
+        name: L(k.value.de, k.value.en),
+        unit: k.value.unit,
+        text: "",
+        value: a.value,
+        warn: false,
+        time: appSeconds(),
+        displayMin: k.value.min,
+        displayMax: k.value.max,
       });
     } else {
       failed++;
       if (!firstError) firstError = a.error;
     }
   }
+  if (rows.length > 0) emit("live_values", { rows });
   return { ok, failed, firstError };
 }
 

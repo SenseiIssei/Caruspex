@@ -11,6 +11,7 @@ import type {
   HealthRow,
   J2534DeviceRow,
   Level,
+  LiveRow,
   MonitorGuideRow,
   MonitorRow,
   SerialPortInfo,
@@ -1578,14 +1579,16 @@ export async function quietHealthCheck(seconds: number, onTick: (elapsed: number
     const now = car.now();
     const sample = simulate(now);
     const elapsedAtRead = appSeconds() - start;
+    const rows: LiveRow[] = [];
     for (const pid of pids) {
       const row = liveRow(pid, sample, car, now, appSeconds());
       if (!row) continue;
-      emit("live_value", { row });
+      rows.push(row);
       const series = live.get(pid) ?? [];
       series.push({ t: elapsedAtRead, value: row.value });
       live.set(pid, series);
     }
+    emit("live_values", { rows });
     await wait(220);
     onTick(appSeconds() - start);
   }
@@ -1635,14 +1638,16 @@ async function healthCheck(seconds: number): Promise<void> {
     const now = car.now();
     const sample = simulate(now);
     const elapsedAtRead = appSeconds() - start;
+    const rows: LiveRow[] = [];
     for (const pid of pids) {
       const row = liveRow(pid, sample, car, now, appSeconds());
       if (!row) continue;
-      emit("live_value", { row });
+      rows.push(row);
       const series = live.get(pid) ?? [];
       series.push({ t: elapsedAtRead, value: row.value });
       live.set(pid, series);
     }
+    emit("live_values", { rows });
     await wait(220);
     const elapsed = appSeconds() - start;
     const left = Math.max(0, seconds - Math.trunc(elapsed));

@@ -39,11 +39,11 @@ describe("event hub", () => {
     const tauri = fakeListen();
     const hub = createEventHub(tauri.subscribe);
     const got: number[] = [];
-    for (let i = 0; i < 10; i++) hub.on("live_value", () => got.push(i));
+    for (let i = 0; i < 10; i++) hub.on("live_values", () => got.push(i));
     tauri.answer();
     await settle();
     expect(tauri.made()).toBe(1);
-    tauri.emit("live_value", {});
+    tauri.emit("live_values", {});
     expect(got).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 

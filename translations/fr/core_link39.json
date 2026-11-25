@@ -1,0 +1,9 @@
+{
+ "c-link39-1": "Connexion annulée.",
+ "c-link39-2": "L'adaptateur ne répond plus. Est-il toujours branché et alimenté ?",
+ "c-link39-3": "La voiture ne répond plus. Le contact est-il toujours mis ?",
+ "c-link39-4": "La connexion à l'adaptateur s'est interrompue. Câble débranché, Wi-Fi ou Bluetooth hors de portée ?",
+ "c-link39-5": "La connexion à l'adaptateur est perdue.",
+ "c-link39-6": "Le pilote n'a pas répondu pendant trop longtemps et a été arrêté.",
+ "c-link39-7": "La mémoire des défauts n'a pas pu être lue : %1"
+}

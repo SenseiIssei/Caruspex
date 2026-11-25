@@ -30,6 +30,14 @@ pub trait Transport: Send {
     fn count_hint_allowed(&self) -> bool {
         true
     }
+    /// The way to the adapter is known to be gone for good: the port or the
+    /// connection was closed from the other side, the cable pulled, the
+    /// Bluetooth device out of range. Asks the operating system only and
+    /// sends nothing, so it may be called between two requests as often as
+    /// wanted. `false` is no promise that somebody still answers.
+    fn lost(&mut self) -> bool {
+        false
+    }
 }
 
 /// One physical ISO-TP request of a batch: to one control unit, as a
@@ -220,5 +228,8 @@ impl<T: Transport + ?Sized> Transport for Box<T> {
     }
     fn count_hint_allowed(&self) -> bool {
         (**self).count_hint_allowed()
+    }
+    fn lost(&mut self) -> bool {
+        (**self).lost()
     }
 }

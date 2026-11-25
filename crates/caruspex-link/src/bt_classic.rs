@@ -93,6 +93,8 @@ pub struct RfcommTransport<S: RfcommSocket = SystemSocket> {
     socket: S,
     name: String,
     disconnected: bool,
+    /// Bytes that came in while `lost` looked whether the link is alive.
+    early: Vec<u8>,
 }
 
 impl RfcommTransport<SystemSocket> {
@@ -151,6 +153,7 @@ impl<S: RfcommSocket> RfcommTransport<S> {
             socket,
             name,
             disconnected: false,
+            early: Vec::new(),
         }
     }
 
@@ -197,8 +200,8 @@ impl<S: RfcommSocket> Transport for RfcommTransport<S> {
     /// Waits for the first bytes, then takes whatever else is already there.
     fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
         let started = std::time::Instant::now();
-        let mut out = Vec::new();
-        if self.pull(&mut out, timeout_ms) > 0 {
+        let mut out = std::mem::take(&mut self.early);
+        if !out.is_empty() || self.pull(&mut out, timeout_ms) > 0 {
             while out.len() < READ_LIMIT && self.pull(&mut out, 0) > 0 {}
         } else if self.disconnected {
             // A broken connection answers at once.
@@ -208,12 +211,24 @@ impl<S: RfcommSocket> Transport for RfcommTransport<S> {
     }
 
     fn flush_input(&mut self) {
+        self.early.clear();
         let mut dropped = Vec::new();
         while self.pull(&mut dropped, 0) > 0 && dropped.len() < READ_LIMIT {}
     }
 
     fn name(&self) -> String {
         self.name.clone()
+    }
+
+    fn lost(&mut self) -> bool {
+        // Only a read tells that the other side closed; what came in with
+        // it is kept for the next read.
+        if self.early.len() < READ_LIMIT {
+            let mut early = std::mem::take(&mut self.early);
+            self.pull(&mut early, 0);
+            self.early = early;
+        }
+        self.disconnected
     }
 }
 
@@ -1132,6 +1147,24 @@ mod tests {
             assert!(started.elapsed() >= Duration::from_millis(50));
         }
         assert!(t.is_disconnected());
+    }
+
+    #[test]
+    fn a_closed_connection_is_lost_without_a_request() {
+        let (mut t, wire) = transport(vec![
+            Incoming::Quiet,
+            Incoming::Bytes(b"41 0C\r>"),
+            Incoming::Closed,
+        ]);
+        assert!(!t.lost(), "idle is not lost");
+        // Looking takes nothing away from the next read.
+        assert!(!t.lost());
+        assert!(t.lost());
+        assert_eq!(t.read(100), b"41 0C\r>");
+        assert!(t.read(10).is_empty());
+        let wire = wire.lock().unwrap();
+        assert!(wire.sent.is_empty());
+        assert!(wire.waits.iter().all(|&ms| ms == 0), "{:?}", wire.waits);
     }
 
     #[test]

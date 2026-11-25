@@ -275,17 +275,19 @@ function CarLivePage() {
     toast(text, errors.length === 0 ? "success" : "warning", 7000);
   });
 
-  useBackendEvent("live_value", ({ row }) => {
-    readings.rows.set(row.pid, row);
-    readings.dirty = true;
-    if (row.text) return; // status values do not belong in the chart
-    if (clockStart.current === null) return;
-    const seconds = (performance.now() - clockStart.current) / 1000;
-    if (recordRef.current) {
-      recorded.push(seconds, row.pid, row.name, row.value, row.unit);
-      if (recorded.length === 1) setCanExport(true);
+  useBackendEvent("live_values", ({ rows }) => {
+    // Values of one tick were read together and get the same time.
+    const seconds = clockStart.current === null ? null : (performance.now() - clockStart.current) / 1000;
+    for (const row of rows) {
+      readings.rows.set(row.pid, row);
+      readings.dirty = true;
+      if (row.text || seconds === null) continue; // status values do not belong in the chart
+      if (recordRef.current) {
+        recorded.push(seconds, row.pid, row.name, row.value, row.unit);
+        if (recorded.length === 1) setCanExport(true);
+      }
+      store.add(row.pid, seconds, row.value, row);
     }
-    store.add(row.pid, seconds, row.value, row);
   });
 
   const selected = (kind: "pid" | "custom") =>

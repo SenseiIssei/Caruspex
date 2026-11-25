@@ -39,6 +39,11 @@ pub trait CanLink: Send {
     fn fd(&self) -> bool {
         false
     }
+    /// The interface is known to be gone (unplugged, taken down), see
+    /// [`Transport::lost`].
+    fn lost(&mut self) -> bool {
+        false
+    }
 }
 
 /// A [`CanLink`] that several users share, one call at a time: the ELM
@@ -72,6 +77,9 @@ impl CanLink for SharedCanLink {
     }
     fn fd(&self) -> bool {
         self.lock().fd()
+    }
+    fn lost(&mut self) -> bool {
+        self.lock().lost()
     }
 }
 
@@ -626,6 +634,10 @@ impl Transport for CanElm {
         self.name.clone()
     }
 
+    fn lost(&mut self) -> bool {
+        self.link.lost()
+    }
+
     fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
         if self.monitoring { None } else { Some(self) }
     }
@@ -1004,6 +1016,10 @@ impl CanLink for SlcanLink {
             name += &format!(" {}", self.version);
         }
         name
+    }
+
+    fn lost(&mut self) -> bool {
+        self.serial.lost()
     }
 }
 

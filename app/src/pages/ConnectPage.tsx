@@ -34,7 +34,7 @@ export default function ConnectPage() {
   const { ble } = bt;
   const vehicle = useVehicleChoice(adapter.setTruck);
   const { generation } = vehicle;
-  const { connected, connecting, stateTone, details, error, help, startConnect } = useConnection(latest);
+  const { connected, connecting, cancelling, lost, stateTone, details, error, help, startConnect, cancelConnect } = useConnection(latest);
   latest.current = { mode, port, address, replayPath, replayRealTime, ble, enetHost, canDevices, canIndex, canRate, canFd, truck, truckRate, generation, connected, connecting };
 
   // The hand-overs from other pages and the command line (connect:demo of
@@ -50,7 +50,7 @@ export default function ConnectPage() {
     startConnect,
   });
 
-  const stateText = connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
+  const stateText = cancelling ? tr("Wird abgebrochen ...") : connecting ? tr("Verbinde ...") : connected ? tr("Verbunden") : tr("Nicht verbunden");
 
   return (
     <Page className="connect-page">
@@ -82,15 +82,20 @@ export default function ConnectPage() {
 
           <hr className="divider" />
 
-          <Button
-            variant={connected ? "danger" : "primary"}
-            icon={connected ? "unplug" : "plug"}
-            className={cx("connect-button", !connected && !connecting && "pulse")}
-            disabled={connecting}
-            onClick={() => startConnect()}
-          >
-            {connected ? tr("Trennen") : mode === "bmw" ? tbmw("Zur BMW-Seite") : tr("Verbinden")}
-          </Button>
+          {connecting ? (
+            <Button icon="x" className="connect-button" disabled={cancelling} onClick={cancelConnect}>
+              {tr("Abbrechen")}
+            </Button>
+          ) : (
+            <Button
+              variant={connected ? "danger" : "primary"}
+              icon={connected ? "unplug" : "plug"}
+              className={cx("connect-button", !connected && "pulse")}
+              onClick={() => startConnect()}
+            >
+              {connected ? tr("Trennen") : mode === "bmw" ? tbmw("Zur BMW-Seite") : tr("Verbinden")}
+            </Button>
+          )}
 
           <div className="connect-state">
             {connecting ? <Spinner size={16} /> : null}
@@ -100,9 +105,9 @@ export default function ConnectPage() {
 
           {error !== null ? (
             <div className="connect-error fade-in" role="alert">
-              <div className="connect-error-head">{tr("Das hat nicht geklappt")}</div>
+              <div className="connect-error-head">{lost ? tr("Die Verbindung ist abgerissen") : tr("Das hat nicht geklappt")}</div>
               <div className="wrap selectable">{error}</div>
-              {help ? null : (
+              {help || lost ? null : (
                 <div className="subtle">
                   {tr(
                     "Häufige Gründe: Zündung aus, Adapter nicht ganz eingesteckt, falscher " +

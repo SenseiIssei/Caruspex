@@ -56,6 +56,8 @@ export const link = {
   liveTimer: 0 as ReturnType<typeof setInterval> | 0,
   customKeys: [] as number[],
   customTurn: false,
+  // Counts connection attempts and closes, so a cancelled attempt knows it.
+  attempt: 0,
   pollIntervalMs: 20,
   // "Log raw adapter traffic" (logRaw, on by default): the worker then logs
   // every request with its answer, one line per live tick.

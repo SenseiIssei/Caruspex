@@ -1,0 +1,9 @@
+{
+ "c-link39-1": "Connessione annullata.",
+ "c-link39-2": "L'adattatore non risponde più. È ancora inserito e alimentato?",
+ "c-link39-3": "L'auto non risponde più. Il quadro è ancora acceso?",
+ "c-link39-4": "La connessione con l'adattatore si è interrotta. Cavo scollegato, Wi-Fi o Bluetooth fuori portata?",
+ "c-link39-5": "La connessione con l'adattatore è persa.",
+ "c-link39-6": "Il driver non ha risposto per troppo tempo ed è stato terminato.",
+ "c-link39-7": "Non è stato possibile leggere la memoria guasti: %1"
+}

@@ -97,9 +97,21 @@ impl Received {
 /// A link the Java side holds open, by its number.
 struct Link {
     id: i64,
+    /// The Java side said that the device has gone.
+    closed: bool,
+    /// Bytes that came in while `lost` looked whether the link is alive.
+    early: Vec<u8>,
 }
 
 impl Link {
+    fn new(id: i64) -> Self {
+        Self {
+            id,
+            closed: false,
+            early: Vec::new(),
+        }
+    }
+
     fn write(&mut self, data: &[u8]) -> bool {
         call::<Value>(
             "write",
@@ -108,20 +120,30 @@ impl Link {
         .is_ok_and(|v| v["ok"].as_bool() == Some(true))
     }
 
-    fn receive(&mut self, timeout_ms: u64) -> Received {
-        call::<Received>("read", json!({ "id": self.id, "timeout": timeout_ms })).unwrap_or(
-            Received {
+    fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
+        if !self.early.is_empty() {
+            return std::mem::take(&mut self.early);
+        }
+        let received = call::<Received>("read", json!({ "id": self.id, "timeout": timeout_ms }))
+            .unwrap_or(Received {
                 data: String::new(),
                 closed: true,
-            },
-        )
+            });
+        self.closed = received.closed;
+        received.bytes()
     }
 
-    fn read(&mut self, timeout_ms: u64) -> Vec<u8> {
-        self.receive(timeout_ms).bytes()
+    /// The device has gone (cable pulled, Bluetooth connection closed); what
+    /// came in with the look is kept for the next read.
+    fn lost(&mut self) -> bool {
+        if !self.closed && self.early.is_empty() {
+            self.early = self.read(0);
+        }
+        self.closed && self.early.is_empty()
     }
 
     fn flush(&mut self) {
+        self.early.clear();
         let _ = call::<Value>("flush", json!({ "id": self.id }));
     }
 }
@@ -210,7 +232,7 @@ impl SerialTransport {
                     )
                 }
             })?;
-        self.link = Some(Link { id: opened.id });
+        self.link = Some(Link::new(opened.id));
         self.device = device.to_string();
         self.baud = baud;
         Ok(())
@@ -235,6 +257,9 @@ impl Transport for SerialTransport {
     fn name(&self) -> String {
         format!("{} @ {}{}", self.device, self.baud, l(" Baud", " baud"))
     }
+    fn lost(&mut self) -> bool {
+        self.link.as_mut().is_none_or(Link::lost)
+    }
 }
 
 // --- Classic Bluetooth --------------------------------------------------------------------
@@ -257,6 +282,9 @@ impl Transport for BluetoothTransport {
     }
     fn name(&self) -> String {
         self.name.clone()
+    }
+    fn lost(&mut self) -> bool {
+        self.link.lost()
     }
 }
 
@@ -496,7 +524,6 @@ pub mod ble {
     /// The set up GATT connection the Java side holds.
     struct AndroidGatt {
         link: Link,
-        closed: bool,
     }
 
     impl GattLink for AndroidGatt {
@@ -504,15 +531,13 @@ pub mod ble {
             self.link.write(value)
         }
         fn notifications(&mut self, timeout_ms: u64) -> Vec<u8> {
-            let received = self.link.receive(timeout_ms);
-            self.closed = received.closed;
-            received.bytes()
+            self.link.read(timeout_ms)
         }
         fn clear(&mut self) {
             self.link.flush();
         }
         fn closed(&self) -> bool {
-            self.closed
+            self.link.closed
         }
     }
 
@@ -544,7 +569,7 @@ pub mod ble {
         })?;
         // From here on the Java side closes the connection when `link` is
         // dropped, also on every early return.
-        let link = Link { id: opened.id };
+        let link = Link::new(opened.id);
         let services: Vec<BleServiceDesc> = opened
             .services
             .iter()
@@ -577,10 +602,7 @@ pub mod ble {
         )
         .map_err(|e| explain(&e, |_| could_not_connect(shown)))?;
         let transport = GattTransport::new(
-            AndroidGatt {
-                link,
-                closed: false,
-            },
+            AndroidGatt { link },
             ready.mtu,
             format!("Bluetooth LE {shown}"),
         );
@@ -608,7 +630,7 @@ pub mod ble {
             format!("{} ({})", d.name, d.id)
         };
         Ok(Box::new(BluetoothTransport {
-            link: Link { id: opened.id },
+            link: Link::new(opened.id),
             name,
         }))
     }

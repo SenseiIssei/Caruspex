@@ -609,6 +609,7 @@ dependencies = [
  "log",
  "proptest",
  "serialport",
+ "socket2",
  "tokio",
  "windows-sys 0.61.2",
  "winreg",

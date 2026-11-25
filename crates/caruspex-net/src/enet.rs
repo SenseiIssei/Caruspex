@@ -321,6 +321,10 @@ pub trait DiagLink: Send {
         data: &[u8],
         timeout_ms: u64,
     ) -> Result<Vec<DiagAnswer>, String>;
+    /// The connection to the car is gone, see [`Transport::lost`].
+    fn lost(&mut self) -> bool {
+        false
+    }
 }
 
 /// After every 7F xx 78.
@@ -359,6 +363,17 @@ impl HsfzSession {
         self.closed
     }
 
+    /// Looks whether the car closed the connection between two requests;
+    /// what came in with the look waits in the parser.
+    fn look(&mut self) -> bool {
+        let mut buffer = [0u8; 4096];
+        match self.stream.receive(&mut buffer, 0) {
+            None => self.closed = true,
+            Some(got) => self.parser.feed(&buffer[..got]),
+        }
+        self.closed
+    }
+
     fn read_frame(&mut self, deadline: u64) -> Option<hsfz::Frame> {
         let mut buffer = [0u8; 4096];
         loop {
@@ -391,6 +406,10 @@ impl HsfzSession {
 }
 
 impl DiagLink for HsfzSession {
+    fn lost(&mut self) -> bool {
+        self.closed || self.look()
+    }
+
     fn request(
         &mut self,
         target: u16,
@@ -532,6 +551,17 @@ impl DoipSession {
         }
     }
 
+    /// Looks whether the car closed the connection between two requests;
+    /// what came in with the look waits in the parser.
+    fn look(&mut self) -> bool {
+        let mut buffer = [0u8; 4096];
+        match self.stream.receive(&mut buffer, 0) {
+            None => self.closed = true,
+            Some(got) => self.parser.feed(&buffer[..got]),
+        }
+        self.closed
+    }
+
     fn read_message(&mut self, deadline: u64) -> Option<doip::Message> {
         let mut buffer = [0u8; 4096];
         let message = loop {
@@ -613,6 +643,10 @@ impl DoipSession {
 }
 
 impl DiagLink for DoipSession {
+    fn lost(&mut self) -> bool {
+        self.closed || self.look()
+    }
+
     fn request(
         &mut self,
         target: u16,
@@ -1067,6 +1101,10 @@ impl Transport for EnetElm {
 
     fn name(&self) -> String {
         self.name.clone()
+    }
+
+    fn lost(&mut self) -> bool {
+        self.link.lost()
     }
 }
 

@@ -523,6 +523,10 @@ impl Transport for BleTransport {
     fn name(&self) -> String {
         self.name.clone()
     }
+
+    fn lost(&mut self) -> bool {
+        self.disconnected()
+    }
 }
 
 impl Drop for BleTransport {

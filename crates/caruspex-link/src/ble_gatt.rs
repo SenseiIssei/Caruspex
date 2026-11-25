@@ -160,6 +160,10 @@ impl<L: GattLink> Transport for GattTransport<L> {
     fn name(&self) -> String {
         self.name.clone()
     }
+
+    fn lost(&mut self) -> bool {
+        self.link.closed()
+    }
 }
 
 #[cfg(test)]

@@ -812,11 +812,16 @@ impl<'a> Obd2<'a> {
         self.elm
     }
 
-    fn read_codes(&mut self, service: &str, sid: u8, kind: &str) -> Vec<Fault> {
+    fn read_codes(
+        &mut self,
+        service: &str,
+        sid: u8,
+        kind: &str,
+    ) -> Result<Vec<Fault>, (ElmStatus, String)> {
         let mut out: Vec<Fault> = Vec::new();
         let result = self.elm.request(service, sid, DEFAULT_REQUEST_TIMEOUT_MS);
         if !result.ok() {
-            return out;
+            return Err((result.status, result.message));
         }
 
         for (m, data) in result.messages.iter().enumerate() {
@@ -844,30 +849,53 @@ impl<'a> Obd2<'a> {
                 });
             }
         }
-        out
+        Ok(out)
     }
 
     /// Stored (03), pending (07) and permanent (0A) codes of every control
     /// unit that answers, each code once per control unit.
     ///
-    /// Shaped like the other readers so callers can tell "not read" apart
-    /// from "no faults" (HealthInput::faults_read). Like the C++ version
-    /// (Obd2::readFaults clears its error and never sets it), a service that
-    /// does not answer only contributes no codes, so this is `Ok` today.
+    /// `Err` when the fault memory could not be read, which is not "no
+    /// faults": the adapter is gone, the bus reports an error, or nothing in
+    /// the car answers any more. On the K-line a unit without stored codes
+    /// may stay silent (SAE J1979), so silence alone only counts as "no
+    /// faults" while the car still answers the request every car must
+    /// answer (0100).
     pub fn read_faults(&mut self) -> Result<Vec<Fault>, String> {
-        let mut all = self.read_codes("03", 0x03, l("gespeichert", "stored"));
+        let stored = self.read_codes("03", 0x03, l("gespeichert", "stored"));
+        let answered = stored.is_ok();
+        let mut all = match stored {
+            Ok(codes) => codes,
+            Err((ElmStatus::AdapterError | ElmStatus::BusError, message)) => return Err(message),
+            Err(_) => Vec::new(),
+        };
         let extra = [
             ("07", 0x07, l("sporadisch", "intermittent")),
             ("0A", 0x0A, l("dauerhaft", "permanent")),
         ];
         for (service, sid, kind) in extra {
-            for f in self.read_codes(service, sid, kind) {
+            let codes = match self.read_codes(service, sid, kind) {
+                Ok(codes) => codes,
+                Err((ElmStatus::AdapterError, message)) => return Err(message),
+                Err(_) => Vec::new(),
+            };
+            for f in codes {
                 let known = all
                     .iter()
                     .any(|existing| existing.code == f.code && existing.ecu_source == f.ecu_source);
                 if !known {
                     all.push(f);
                 }
+            }
+        }
+        if !answered && all.is_empty() {
+            let alive = self.elm.request("0100", 0x01, DEFAULT_REQUEST_TIMEOUT_MS);
+            if !alive.ok() {
+                return Err(l(
+                    "Das Auto antwortet nicht mehr. Ist die Zündung noch an?",
+                    "The car no longer answers. Is the ignition still on?",
+                )
+                .to_string());
             }
         }
         Ok(all)
@@ -884,8 +912,8 @@ impl<'a> Obd2<'a> {
             return Err(result.message);
         }
         // Some control units acknowledge silently: check whether it worked.
-        // The read error is ignored there too: nothing read counts as empty.
-        if self.read_faults().unwrap_or_default().is_empty() {
+        // A memory that cannot be read back is not a cleared one.
+        if self.read_faults()?.is_empty() {
             Ok(())
         } else {
             Err(String::new())

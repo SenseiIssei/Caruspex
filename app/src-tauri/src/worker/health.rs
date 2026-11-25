@@ -146,8 +146,10 @@ impl Worker {
         input.faults_read = read.is_ok();
         let faults = read.unwrap_or_default();
         input.faults = faults.iter().map(analysis_fault).collect();
-        let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
-        self.emit("faults", json!({ "rows": rows }));
+        if input.faults_read {
+            let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
+            self.emit("faults", json!({ "rows": rows }));
+        }
         input.fault_level = Some(Arc::new(|f: &ai::Fault| {
             dtc_level(&f.code, is_stored_kind(&f.kind))
         }));
@@ -195,9 +197,8 @@ impl Worker {
                 })
                 .collect();
             input.add_snapshot(&snapshot, t);
-            for value in &values {
-                self.emit_live(to_row(value));
-            }
+            let rows: Vec<LiveRow> = values.iter().map(to_row).collect();
+            self.emit_live(&rows);
             let elapsed = app_seconds() - start;
             let left = (seconds - elapsed as i32).max(0);
             let percent = 25 + (70.0 * elapsed / f64::from(total)) as i32;
@@ -218,6 +219,11 @@ impl Worker {
             }
         }
 
+        if self.elm.known_lost() {
+            // Half a check says nothing about the car; "closed" follows.
+            self.busy(false);
+            return;
+        }
         let report = health_check::run_health_check(&input);
         let mut row = HealthRow {
             score: report.score,

@@ -94,7 +94,7 @@ export default function XrayPage() {
     lastPacket.current = now;
     sceneRef.current?.sendPacket(engineKey);
   }, [engineKey]);
-  useBackendEvent("live_value", obdPacket);
+  useBackendEvent("live_values", obdPacket);
   useBackendEvent("faults", obdPacket);
   useBackendEvent("vehicle_info", obdPacket);
   useBackendEvent("status", obdPacket);

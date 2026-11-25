@@ -389,6 +389,21 @@ pub struct Serial {
     port: Option<Box<dyn SerialPort>>,
     device: String,
     baud: u32,
+    /// Reads and writes in a row that failed with something else than a
+    /// timeout.
+    failures: u32,
+}
+
+/// So many failures in a row mean the port is gone, also where the system
+/// cannot say so itself.
+const FAILURES_UNTIL_LOST: u32 = 3;
+
+/// Nothing there right now, as opposed to a port that is gone.
+fn temporary(error: &std::io::Error) -> bool {
+    matches!(
+        error.kind(),
+        ErrorKind::TimedOut | ErrorKind::Interrupted | ErrorKind::WouldBlock
+    )
 }
 
 impl Serial {
@@ -418,6 +433,7 @@ impl Serial {
         self.port = Some(port);
         self.device = device.to_string();
         self.baud = baud;
+        self.failures = 0;
         #[cfg(unix)]
         crate::timing::sleep_ms(150); // some adapters need a moment after opening
         Ok(())
@@ -438,7 +454,24 @@ impl Serial {
             return false;
         };
         let _ = port.set_timeout(Duration::from_millis(500));
-        port.write_all(data).is_ok()
+        match port.write_all(data) {
+            Ok(()) => true,
+            Err(e) => {
+                self.failures += u32::from(!temporary(&e));
+                false
+            }
+        }
+    }
+
+    /// The port is gone: the cable was pulled, or the Bluetooth port closed.
+    /// Asks the system how many bytes are waiting, which it can only answer
+    /// for a device that is still there.
+    pub fn lost(&self) -> bool {
+        self.failures >= FAILURES_UNTIL_LOST
+            || self
+                .port
+                .as_ref()
+                .is_none_or(|port| port.bytes_to_read().is_err())
     }
 
     /// Reads whatever arrives within `timeout_ms`. Empty = nothing there.
@@ -452,18 +485,18 @@ impl Serial {
         let started = Instant::now();
         let mut buffer = [0u8; 512];
         match port.read(&mut buffer) {
-            Ok(n) if n > 0 => buffer[..n].to_vec(),
+            Ok(n) if n > 0 => {
+                self.failures = 0;
+                buffer[..n].to_vec()
+            }
             // A quiet port has waited its time already.
-            Err(e)
-                if matches!(
-                    e.kind(),
-                    ErrorKind::TimedOut | ErrorKind::Interrupted | ErrorKind::WouldBlock
-                ) =>
-            {
+            Err(e) if temporary(&e) => {
+                self.failures = 0;
                 Vec::new()
             }
             // A pulled cable answers every read with an error at once.
             _ => {
+                self.failures += 1;
                 crate::timing::wait_out(started, timeout_ms);
                 Vec::new()
             }
@@ -638,6 +671,9 @@ impl Transport for SerialTransport {
             l(" Baud", " baud")
         )
     }
+    fn lost(&mut self) -> bool {
+        self.port.lost()
+    }
 }
 
 #[cfg(test)]
@@ -694,6 +730,7 @@ mod tests {
         assert!(!serial.write(b"ATZ\r"));
         assert!(serial.read(1).is_empty());
         assert!(!serial.set_break(true));
+        assert!(serial.lost());
         assert!(!serial.change_baud(9600));
     }
 }

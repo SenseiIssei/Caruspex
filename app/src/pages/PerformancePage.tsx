@@ -113,9 +113,9 @@ export default function PerformancePage() {
 
   useInterval(() => void evaluate(), running ? 700 : null);
 
-  useBackendEvent("live_value", ({ row }) => {
-    if (row.pid !== 0x0d) return;
-    if (runningRef.current) samples.current.push({ t: row.time, kmh: row.value });
+  useBackendEvent("live_values", ({ rows }) => {
+    if (!runningRef.current) return;
+    for (const row of rows) if (row.pid === 0x0d) samples.current.push({ t: row.time, kmh: row.value });
   });
 
   const tile = (key: RunKey, icon: "timer" | "route" | "stop", caption: string) => {

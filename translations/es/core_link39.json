@@ -1,0 +1,9 @@
+{
+ "c-link39-1": "Conexión cancelada.",
+ "c-link39-2": "El adaptador ya no responde. ¿Sigue enchufado y tiene corriente?",
+ "c-link39-3": "El coche ya no responde. ¿Sigue puesto el contacto?",
+ "c-link39-4": "Se cortó la conexión con el adaptador. ¿Cable desenchufado, Wi-Fi o Bluetooth fuera de alcance?",
+ "c-link39-5": "La conexión con el adaptador se ha perdido.",
+ "c-link39-6": "El controlador tardó demasiado en responder y se ha terminado.",
+ "c-link39-7": "No se pudo leer la memoria de averías: %1"
+}
