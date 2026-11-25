@@ -2,7 +2,7 @@
 // most once per animation frame, and not at all while its page is hidden
 // (every page stays mounted); it catches up when the page comes back.
 // Whatever needs every single reading (charts, recordings, timers) keeps
-// listening to "live_value" itself.
+// listening to "live_values" itself.
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import type { LiveRow } from "../api";
 import { usePageActive } from "../lib/hooks";

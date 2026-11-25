@@ -301,7 +301,7 @@ impl Impl {
 
     /// The longest command line the adapter takes: the ELM327 buffer, or
     /// the 1024 characters of an STN chip (enough for batched commands).
-    pub fn line_limit(&self) -> usize {
+    pub(crate) fn line_limit(&self) -> usize {
         if self.profile.stn_id.is_some() {
             1024
         } else {

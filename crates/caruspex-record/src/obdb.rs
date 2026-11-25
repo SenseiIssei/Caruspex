@@ -23,7 +23,7 @@ use crate::custom_pids::{CustomPid, PACK_KEY_BASE, USER_KEY_BASE};
 pub const OBDB_KEY_BASE: i32 = PACK_KEY_BASE + 0x1000;
 
 /// Every OBDb pack id starts with this.
-pub const OBDB_PREFIX: &str = "obdb-";
+pub(crate) const OBDB_PREFIX: &str = "obdb-";
 
 static DATA: &[u8] = include_bytes!("../../../data/obdb/obdb-packs.z");
 

@@ -1,6 +1,7 @@
 // The fault memory and what the control unit tells about itself: status and
 // faults, clearing (also the persistent way), VIN and freeze frames, and the
 // component monitoring of mode 06.
+use caruspex_i18n::l;
 use caruspex_link::elm327::DEFAULT_SEND_TIMEOUT_MS;
 use caruspex_link::timing::sleep_ms;
 use serde_json::json;
@@ -9,6 +10,16 @@ use super::Worker;
 use super::convert::{fault_row, status_row, to_row};
 use crate::rows::*;
 use crate::texts::{args, w};
+
+fn not_read(error: &str) -> String {
+    args(
+        l(
+            "Der Fehlerspeicher ließ sich nicht lesen: %1",
+            "The fault memory could not be read: %1",
+        ),
+        &[&error],
+    )
+}
 
 impl Worker {
     pub(super) fn refresh_status_and_faults(&mut self) {
@@ -23,28 +34,41 @@ impl Worker {
         let st = self.with_obd(|o| o.read_status());
         self.emit("status", json!({ "row": status_row(&st) }));
 
-        let rows: Vec<FaultRow> = self
-            .with_obd(|o| o.read_faults())
-            .unwrap_or_default()
-            .iter()
-            .map(fault_row)
-            .collect();
-        let count = rows.len();
-        self.emit("faults", json!({ "rows": rows }));
-        self.log(if count == 0 {
-            w(
-                "Fehlerspeicher gelesen: kein Eintrag.",
-                "Fault memory read: no entries.",
-            )
-        } else {
-            args(
-                &w(
-                    "Fehlerspeicher gelesen: %1 Einträge.",
-                    "Fault memory read: %1 entries.",
-                ),
-                &[&count],
-            )
-        });
+        let faults = match self.with_obd(|o| o.read_faults()) {
+            Ok(faults) => Some(faults),
+            // A car that only broadcasts its values (Tesla) has no fault
+            // memory over OBD; there is nothing to report as unread.
+            Err(_) if self.elm.listen_only() && !self.elm.known_lost() => None,
+            Err(error) => {
+                // "Not read" must not look like "no faults". When it was the
+                // link, check_link has closed the connection with its reason.
+                self.busy(false);
+                self.check_link();
+                if self.elm.connected() && !self.interrupted() {
+                    self.failed(not_read(&error));
+                }
+                return;
+            }
+        };
+        if let Some(faults) = faults {
+            let rows: Vec<FaultRow> = faults.iter().map(fault_row).collect();
+            let count = rows.len();
+            self.emit("faults", json!({ "rows": rows }));
+            self.log(if count == 0 {
+                w(
+                    "Fehlerspeicher gelesen: kein Eintrag.",
+                    "Fault memory read: no entries.",
+                )
+            } else {
+                args(
+                    &w(
+                        "Fehlerspeicher gelesen: %1 Einträge.",
+                        "Fault memory read: %1 entries.",
+                    ),
+                    &[&count],
+                )
+            });
+        }
 
         let supported: Vec<i32> = self.with_obd(|o| o.supported_pids()).into_iter().collect();
         self.emit("supported_pids", json!({ "pids": supported }));
@@ -112,7 +136,7 @@ impl Worker {
                 continue;
             }
             if let Some(value) = self.with_obd(|o| o.read_live(pid)) {
-                self.emit_live(to_row(&value));
+                self.emit_live(&[to_row(&value)]);
             }
         }
         self.busy(false);
@@ -202,6 +226,9 @@ impl Worker {
         self.busy(true);
         let mut remaining = 0usize;
         for attempt in 1..=attempts {
+            if self.elm.known_lost() || self.interrupted() {
+                break;
+            }
             let line = |s: String| json!({ "line": s });
             self.emit(
                 "clear_progress",
@@ -224,9 +251,12 @@ impl Worker {
             }
             sleep_ms(600);
 
-            let left = self.with_obd(|o| o.read_faults()).unwrap_or_default();
-            remaining = left.len();
-            if left.is_empty() {
+            // A memory that cannot be read back is not an empty one.
+            let left = self.with_obd(|o| o.read_faults());
+            if let Ok(left) = &left {
+                remaining = left.len();
+            }
+            if left.as_ref().is_ok_and(|left| left.is_empty()) {
                 self.emit(
                     "clear_progress",
                     line(w("   Speicher ist leer.", "   Memory is empty.")),
@@ -241,10 +271,13 @@ impl Worker {
             }
             self.emit(
                 "clear_progress",
-                line(args(
-                    &w("   noch %1 Einträge", "   %1 entries left"),
-                    &[&remaining],
-                )),
+                line(match &left {
+                    Ok(_) => args(
+                        &w("   noch %1 Einträge", "   %1 entries left"),
+                        &[&remaining],
+                    ),
+                    Err(error) => format!("   {}", not_read(error)),
+                }),
             );
 
             // From the second failure on, re-establish the connection. Some

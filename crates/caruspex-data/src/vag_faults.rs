@@ -611,7 +611,7 @@ fn find(table: Table, code: i32) -> Option<&'static Text> {
 }
 
 /// Address (0x01 engine, 0x03 ABS, ...) to functional area.
-pub fn area_for_ecu_address(address: i32) -> FaultArea {
+pub(crate) fn area_for_ecu_address(address: i32) -> FaultArea {
     match address {
         // 0x11: engine 2 on eight-cylinder engines
         0x01 | 0x11 => FaultArea::Engine,
@@ -629,7 +629,7 @@ pub fn area_for_ecu_address(address: i32) -> FaultArea {
 }
 
 /// Conversion to the P-code, empty if the number is too small for that.
-pub fn vag_code_to_p_code(vag_code: i32) -> String {
+pub(crate) fn vag_code_to_p_code(vag_code: i32) -> String {
     if vag_code < P_CODE_OFFSET {
         return String::new();
     }
@@ -679,7 +679,8 @@ pub fn describe_vag_fault(vag_code: i32, ecu_address: i32) -> String {
 }
 
 /// How many old VAG numbers are stored in total.
-pub fn vag_fault_count() -> usize {
+#[cfg(test)]
+pub(crate) fn vag_fault_count() -> usize {
     SHARED.len()
         + AREA_TABLES
             .iter()

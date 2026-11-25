@@ -5,7 +5,7 @@
 use caruspex_i18n::l;
 
 /// What FMI 0 to 31 means, in plain words.
-pub fn fmi_text(fmi: u8) -> &'static str {
+pub(crate) fn fmi_text(fmi: u8) -> &'static str {
     match fmi {
         0 => l(
             "Wert viel zu hoch, über dem normalen Bereich (schwerste Stufe)",

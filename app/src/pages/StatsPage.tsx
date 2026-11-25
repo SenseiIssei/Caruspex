@@ -64,7 +64,9 @@ export default function StatsPage() {
     if (!connected) reset();
   }, [connected]);
 
-  useBackendEvent("live_value", ({ row }: { row: LiveRow }) => {
+  useBackendEvent("live_values", ({ rows }) => rows.forEach(addReading));
+
+  function addReading(row: LiveRow): void {
     if (row.text) return; // status values cannot be averaged
     if (clockStart.current === null) clockStart.current = performance.now();
 
@@ -116,7 +118,7 @@ export default function StatsPage() {
       tt.lastSpeedMs = now;
     }
     dirty.current = true;
-  });
+  }
 
   // The figures follow a few times a second while the page is on screen.
   useEffect(() => {

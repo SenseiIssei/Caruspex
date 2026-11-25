@@ -43,14 +43,27 @@ const WARM_UP_VALUES: u64 = 60;
 struct State {
     connected: Option<Instant>,
     ready: Option<Instant>,
+    /// Live values, and the events they came in.
     live: u64,
+    live_events: u64,
     logs: u64,
     other: u64,
     json_bytes: u64,
-    window_start: Option<(Instant, Snapshot, u64, u64, u64, u64)>,
-    window_end: Option<(Instant, Snapshot, u64, u64, u64, u64)>,
+    window_start: Option<Mark>,
+    window_end: Option<Mark>,
     last_prompt: Option<Instant>,
     latencies: Vec<Duration>,
+}
+
+#[derive(Clone, Copy)]
+struct Mark {
+    at: Instant,
+    memory: Snapshot,
+    live: u64,
+    live_events: u64,
+    logs: u64,
+    other: u64,
+    json_bytes: u64,
 }
 
 struct Probe {
@@ -65,27 +78,29 @@ impl Sink for Probe {
     fn emit(&self, event: &str, payload: Value) {
         // What Tauri does with every event before it reaches the window.
         let text = serde_json::to_string(&payload).unwrap_or_default();
-        self.record(event, text);
+        self.record(event, text, 0);
     }
 
-    // The window's sink (TauriSink) hands the row to Tauri as it is, which
-    // serializes it once.
-    fn live_value(&self, row: &LiveRow) {
-        let text = serde_json::to_string(&LiveEvent { row }).unwrap_or_default();
-        self.record("live_value", text);
+    // The window's sink (TauriSink) hands the rows to Tauri as they are,
+    // which serializes them once.
+    fn live_values(&self, rows: &[LiveRow]) {
+        let text = serde_json::to_string(&LiveEvent { rows }).unwrap_or_default();
+        self.record("live_values", text, rows.len() as u64);
     }
 }
 
 impl Probe {
-    fn record(&self, event: &str, text: String) {
+    fn record(&self, event: &str, text: String, values: u64) {
         let now = Instant::now();
         let prompt = self.stats.as_ref().and_then(|s| s.get().last_prompt);
         paused(|| {
             let mut s = self.state.lock().unwrap();
             s.json_bytes += text.len() as u64;
             match event {
-                "live_value" => {
-                    s.live += 1;
+                "live_values" => {
+                    s.live += values;
+                    s.other += 1;
+                    s.live_events += 1;
                     // The first value after a new answer: how long from the
                     // adapter's prompt to the event.
                     if let Some(p) = prompt
@@ -110,12 +125,20 @@ impl Probe {
                 }
                 _ => s.other += 1,
             }
-            let mark = (now, snapshot(), s.live, s.logs, s.other, s.json_bytes);
+            let mark = Mark {
+                at: now,
+                memory: snapshot(),
+                live: s.live,
+                live_events: s.live_events,
+                logs: s.logs,
+                other: s.other,
+                json_bytes: s.json_bytes,
+            };
             if s.window_start.is_none() && s.live >= WARM_UP_VALUES {
                 s.window_start = Some(mark);
             } else if let Some(start) = s.window_start {
                 s.window_end = Some(mark);
-                if now.duration_since(start.0) >= self.window {
+                if now.duration_since(start.at) >= self.window {
                     self.done.store(true, Ordering::SeqCst);
                 }
             }
@@ -130,6 +153,7 @@ struct Report {
     seconds: f64,
     values_per_s: f64,
     logs_per_s: f64,
+    live_events_per_s: f64,
     events_per_s: f64,
     json_kib_per_s: f64,
     allocs_per_value: f64,
@@ -184,11 +208,12 @@ fn run(
     stopper.join().unwrap();
 
     let s = probe.state.lock().unwrap();
-    let (t0, a0, live0, logs0, other0, json0) = s.window_start.expect("live values arrived");
-    let (t1, a1, live1, logs1, other1, json1) = s.window_end.expect("live values went on");
-    let seconds = t1.duration_since(t0).as_secs_f64();
-    let used = a1.since(a0);
-    let values = (live1 - live0).max(1) as f64;
+    let start = s.window_start.expect("live values arrived");
+    let end = s.window_end.expect("live values went on");
+    let seconds = end.at.duration_since(start.at).as_secs_f64();
+    let used = end.memory.since(start.memory);
+    let values = (end.live - start.live).max(1) as f64;
+    let logs = end.logs - start.logs;
     let mut lat = s.latencies.clone();
     lat.sort();
     let pick = |q: f64| {
@@ -198,12 +223,13 @@ fn run(
     };
     Report {
         connect: s.connected.unwrap().duration_since(probe.started),
-        ready: s.ready.unwrap_or(t0).duration_since(probe.started),
+        ready: s.ready.unwrap_or(start.at).duration_since(probe.started),
         seconds,
         values_per_s: values / seconds,
-        logs_per_s: (logs1 - logs0) as f64 / seconds,
-        events_per_s: ((live1 - live0) + (logs1 - logs0) + (other1 - other0)) as f64 / seconds,
-        json_kib_per_s: (json1 - json0) as f64 / 1024.0 / seconds,
+        logs_per_s: logs as f64 / seconds,
+        live_events_per_s: (end.live_events - start.live_events) as f64 / seconds,
+        events_per_s: (logs + (end.other - start.other)) as f64 / seconds,
+        json_kib_per_s: (end.json_bytes - start.json_bytes) as f64 / 1024.0 / seconds,
         allocs_per_value: used.allocs as f64 / values,
         bytes_per_value: used.bytes as f64 / values,
         heap_growth: used.live,
@@ -252,8 +278,8 @@ fn print(label: &str, r: &Report) {
         r.values_per_s, r.seconds
     );
     println!(
-        "| {label}: events per second (log lines) | {:.0} ({:.0}) |",
-        r.events_per_s, r.logs_per_s
+        "| {label}: events per second (live values / log lines) | {:.0} ({:.0} / {:.0}) |",
+        r.events_per_s, r.live_events_per_s, r.logs_per_s
     );
     println!(
         "| {label}: JSON to the window | {:.1} KiB/s |",
@@ -291,7 +317,14 @@ fn the_live_loop_keeps_to_the_poll_interval_and_allocates_little() {
     // second, whatever the adapter can do.
     assert!(r.values_per_s < 330.0, "{} values/s", r.values_per_s);
     assert!(r.values_per_s > 30.0, "{} values/s", r.values_per_s);
-    // About 23 now, 37 while live_value went through a serde_json::Value,
+    // All values of a tick in one event: a sixth of one event per value.
+    assert!(
+        r.live_events_per_s * 5.0 < r.values_per_s,
+        "{} events/s for {} values/s",
+        r.live_events_per_s,
+        r.values_per_s
+    );
+    // About 22 now, 37 while every live value went through a serde_json::Value,
     // 85 before the copies in the hot path went (see docs/performance.md):
     // allocation counts do not depend on the machine.
     assert!(
@@ -373,6 +406,15 @@ fn report() {
     let (t, s) = serial(LineTiming::elm327_38400());
     let r = run(t, Some(s), default_live_pids().to_vec(), window, settings());
     print("ELM327 38400, 12 PIDs", &r);
+    // An OBDLink: four requests per round trip, 24 values per tick.
+    let stn = Box::new(Uncounted(DemoTransport::new(DemoOptions {
+        latency_scale: 0.0,
+        engine_start_seconds: 0.0,
+        adapter: caruspex_demo::DemoAdapter::ObdLinkMxPlus,
+        ..DemoOptions::default()
+    })));
+    let r = run(stn, None, default_live_pids().to_vec(), window, settings());
+    print("OBDLink at once, 12 PIDs", &r);
     let demo = Box::new(Uncounted(DemoTransport::new(DemoOptions {
         engine_start_seconds: 0.0,
         ..DemoOptions::default()

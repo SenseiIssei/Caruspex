@@ -271,26 +271,26 @@ impl UsedCarReport {
 /// Thresholds of the rules.
 pub mod limits {
     /// Fewer warm-ups than this since clearing: cleared recently.
-    pub const RECENT_WARM_UPS: f64 = 5.0;
+    pub(crate) const RECENT_WARM_UPS: f64 = 5.0;
     /// Less distance since clearing: cleared recently.
-    pub const RECENT_DISTANCE_KM: f64 = 50.0;
+    pub(crate) const RECENT_DISTANCE_KM: f64 = 50.0;
     /// Less time since clearing: cleared recently.
-    pub const RECENT_MINUTES: f64 = 180.0;
+    pub(crate) const RECENT_MINUTES: f64 = 180.0;
     /// Control units store the odometer at different moments and in steps;
     /// this much difference is normal.
-    pub const MILEAGE_TOLERANCE_KM: f64 = 100.0;
+    pub(crate) const MILEAGE_TOLERANCE_KM: f64 = 100.0;
     /// Or this share of the reading, whichever is larger.
-    pub const MILEAGE_TOLERANCE_SHARE: f64 = 0.01;
+    pub(crate) const MILEAGE_TOLERANCE_SHARE: f64 = 0.01;
     /// Below this per year (cars of three years and more): remarkably little.
-    pub const LOW_KM_PER_YEAR: f64 = 3000.0;
+    pub(crate) const LOW_KM_PER_YEAR: f64 = 3000.0;
     /// Above this per year: a lot.
-    pub const HIGH_KM_PER_YEAR: f64 = 40000.0;
+    pub(crate) const HIGH_KM_PER_YEAR: f64 = 40000.0;
     /// State of health in %.
-    pub const SOH_WORN: f64 = 80.0;
+    pub(crate) const SOH_WORN: f64 = 80.0;
     /// Many makers guarantee this much for eight years.
-    pub const SOH_WARRANTY: f64 = 70.0;
+    pub(crate) const SOH_WARRANTY: f64 = 70.0;
     /// V between the highest and the lowest cell.
-    pub const CELL_SPREAD_V: f64 = 0.08;
+    pub(crate) const CELL_SPREAD_V: f64 = 0.08;
 }
 
 // --- Rules -------------------------------------------------------------------
@@ -341,7 +341,7 @@ pub fn normalise_vin(input: &str) -> String {
 }
 
 /// 17 letters and digits without I, O and Q.
-pub fn vin_well_formed(vin: &str) -> bool {
+pub(crate) fn vin_well_formed(vin: &str) -> bool {
     vin.len() == 17
         && vin
             .chars()
@@ -350,7 +350,7 @@ pub fn vin_well_formed(vin: &str) -> bool {
 
 /// The odometer readings to compare: the engine (PID A6) first, then the
 /// other control units.
-pub fn mileage_readings(input: &UsedCarInput) -> Vec<MileageReading> {
+pub(crate) fn mileage_readings(input: &UsedCarInput) -> Vec<MileageReading> {
     let mut out = Vec::new();
     if let Some(km) = input.odometer_km {
         out.push(MileageReading {

@@ -17,6 +17,17 @@ const CONNECT_TIMEOUT: Duration = Duration::from_secs(5);
 /// A command is a few bytes; a send that does not get rid of them in this
 /// time goes nowhere.
 const WRITE_TIMEOUT: Duration = Duration::from_secs(2);
+/// A connection that carries nothing for this long is asked by the system
+/// whether the other side is still there (TCP keepalive): a Wi-Fi that went
+/// out of range closes nothing, so otherwise an idle connection would look
+/// alive for ever. The question is an empty TCP segment, the adapter's
+/// program never sees it.
+///
+/// Generous on purpose: a Wi-Fi that stumbles for some seconds must not cost
+/// the connection, and an idle one has time.
+const KEEPALIVE_AFTER: Duration = Duration::from_secs(10);
+const KEEPALIVE_EVERY: Duration = Duration::from_secs(3);
+const KEEPALIVE_TRIES: u32 = 5;
 
 #[derive(Default)]
 pub struct TcpTransport {
@@ -69,6 +80,11 @@ impl TcpTransport {
         };
         let _ = stream.set_nodelay(true);
         let _ = stream.set_write_timeout(Some(WRITE_TIMEOUT));
+        let keepalive = socket2::TcpKeepalive::new()
+            .with_time(KEEPALIVE_AFTER)
+            .with_interval(KEEPALIVE_EVERY)
+            .with_retries(KEEPALIVE_TRIES);
+        let _ = socket2::SockRef::from(&stream).set_tcp_keepalive(&keepalive);
         self.socket = Some(stream);
         self.name = format!("{}:{}{}", host, service, l(" (WLAN)", " (Wi-Fi)"));
         Ok(())
@@ -78,7 +94,13 @@ impl TcpTransport {
 impl Transport for TcpTransport {
     fn write(&mut self, data: &[u8]) -> bool {
         match self.socket.as_mut() {
-            Some(s) if !self.gone => s.write_all(data).is_ok(),
+            Some(s) if !self.gone => match s.write_all(data) {
+                Ok(()) => true,
+                Err(e) => {
+                    self.gone = !temporary(&e);
+                    false
+                }
+            },
             _ => false,
         }
     }
@@ -97,14 +119,7 @@ impl Transport for TcpTransport {
         let mut buffer = [0u8; 512];
         match s.read(&mut buffer) {
             Ok(n) if n > 0 => buffer[..n].to_vec(),
-            Err(e)
-                if matches!(
-                    e.kind(),
-                    ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
-                ) =>
-            {
-                Vec::new()
-            }
+            Err(e) if temporary(&e) => Vec::new(),
             // Closed by the adapter (0 bytes) or broken: every later read
             // would come back at once.
             _ => {
@@ -128,6 +143,31 @@ impl Transport for TcpTransport {
     fn name(&self) -> String {
         self.name.clone()
     }
+
+    fn lost(&mut self) -> bool {
+        let Some(s) = self.socket.as_ref().filter(|_| !self.gone) else {
+            return true;
+        };
+        // Looks at the next byte without taking it: 0 bytes means closed.
+        if s.set_nonblocking(true).is_err() {
+            return false;
+        }
+        let seen = s.peek(&mut [0u8; 1]);
+        let _ = s.set_nonblocking(false);
+        self.gone = match seen {
+            Ok(n) => n == 0,
+            Err(e) => !temporary(&e),
+        };
+        self.gone
+    }
+}
+
+/// Nothing there right now, as opposed to a connection that is gone.
+fn temporary(error: &std::io::Error) -> bool {
+    matches!(
+        error.kind(),
+        ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+    )
 }
 
 #[cfg(test)]
@@ -186,6 +226,38 @@ mod tests {
         }
         assert!(reads <= 8, "{reads} reads");
         assert!(!t.write(b"ATZ\r"));
+    }
+
+    #[test]
+    fn a_connection_the_adapter_closed_is_lost_without_a_request() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let mut t = TcpTransport::new();
+        t.open("127.0.0.1", port).unwrap();
+        let (mut peer, _) = listener.accept().unwrap();
+        assert!(!t.lost(), "idle is not lost");
+        peer.write_all(b"OK\r\r>").unwrap();
+        std::thread::sleep(Duration::from_millis(50));
+        assert!(!t.lost());
+        // Looking took nothing away.
+        assert_eq!(t.read(500), b"OK\r\r>");
+        drop(peer);
+        let until = Instant::now() + Duration::from_secs(2);
+        while !t.lost() && Instant::now() < until {
+            std::thread::sleep(Duration::from_millis(10));
+        }
+        assert!(t.lost());
+        assert!(!t.write(b"ATI\r"));
+    }
+
+    #[test]
+    fn an_idle_connection_is_watched_by_the_system() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let mut t = TcpTransport::new();
+        t.open("127.0.0.1", listener.local_addr().unwrap().port())
+            .unwrap();
+        let socket = t.socket.as_ref().unwrap();
+        assert!(socket2::SockRef::from(socket).keepalive().unwrap());
     }
 
     #[test]

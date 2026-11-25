@@ -37,7 +37,7 @@ use crate::can_bus::{CanFrame, CanLink};
 
 /// Channel setup requests go to this id, the answers come from it plus the
 /// address of the unit.
-pub const SETUP_ID: u32 = 0x200;
+pub(crate) const SETUP_ID: u32 = 0x200;
 const SETUP_REQUEST: u8 = 0xC0;
 const SETUP_POSITIVE: u8 = 0xD0;
 const APPLICATION_KWP2000: u8 = 0x01;
@@ -48,7 +48,7 @@ const DISCONNECT: u8 = 0xA8;
 /// High byte flag of a CAN id in the setup: not set.
 const ID_NOT_SET: u8 = 0x10;
 /// The id we ask the unit to send on.
-pub const TESTER_RX_ID: u32 = 0x300;
+pub(crate) const TESTER_RX_ID: u32 = 0x300;
 /// Our parameters: block size 15, T1 100 ms, T2 unused, T3 5 ms, T4 unused.
 const OUR_PARAMETERS: [u8; 6] = [PARAMETERS_REQUEST, 0x0F, 0x8A, 0xFF, 0x32, 0xFF];
 
@@ -63,7 +63,7 @@ const NEXT_PACKET_MS: u64 = 1000;
 const CLOSE_MS: u64 = 200;
 
 /// A TP 2.0 time byte in microseconds.
-pub fn time_byte_us(byte: u8) -> u64 {
+pub(crate) fn time_byte_us(byte: u8) -> u64 {
     const UNIT_US: [u64; 4] = [100, 1_000, 10_000, 100_000];
     u64::from(byte & 0x3F) * UNIT_US[usize::from(byte >> 6)]
 }

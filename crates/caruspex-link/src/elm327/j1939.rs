@@ -40,7 +40,7 @@ const TRAFFIC_FRAMES: usize = 2;
 /// header formatting of the ELM327 (priority, PGN with the data page bit,
 /// source: "6 0FECA 00 44 FF ..."). Without spaces the first eight digits
 /// are the id. Anything else (status lines, prompts) is `None`.
-pub fn parse_j1939_line(line: &str) -> Option<BusFrame> {
+pub(crate) fn parse_j1939_line(line: &str) -> Option<BusFrame> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
     if tokens.is_empty()
         || !tokens
@@ -105,6 +105,8 @@ impl Elm327 {
         rates_kbit: &[u32],
     ) -> Result<u32, String> {
         self.transport = Some(transport);
+        self.silent = false;
+        self.lost = false;
         self.connected = false;
         self.j1939_kbit = 0;
         self.j1939_header = None;
@@ -264,6 +266,9 @@ impl FrameLink for Elm327 {
         if super::raised(interrupt) {
             return Err(l("Kein Adapter verbunden.", "No adapter connected.").to_string());
         }
+        if self.lost {
+            return Err(Self::lost_result().message);
+        }
         t.flush_input();
         let mut line = command.into_bytes();
         line.push(b'\r');
@@ -281,6 +286,10 @@ impl FrameLink for Elm327 {
         while !done && !prompt && now_ms() < deadline && !super::raised(interrupt) {
             let chunk = t.read(40);
             if chunk.is_empty() {
+                if t.lost() {
+                    self.lost = true;
+                    return Err(Self::lost_result().message);
+                }
                 continue;
             }
             pending.extend_from_slice(&chunk);
@@ -305,6 +314,13 @@ impl FrameLink for Elm327 {
             while now_ms() < stop && !tail.contains(&b'>') && !super::raised(interrupt) {
                 tail.extend(t.read(40));
             }
+            // A bus may be silent, but the adapter ends its listening with a
+            // prompt.
+            if !super::raised(interrupt) {
+                self.silent = pending.is_empty() && tail.is_empty();
+            }
+        } else {
+            self.silent = false;
         }
         Ok(())
     }

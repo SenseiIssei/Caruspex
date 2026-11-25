@@ -539,7 +539,7 @@ pub fn decode_uds_dtc(b1: u8, b2: u8, b3: u8, status: u8) -> UdsDtc {
 
 /// BMW stores its own codes in the three bytes, shown as six hex digits the
 /// way ISTA does ("480A10"), without an SAE meaning or failure type.
-pub fn decode_bmw_dtc(b1: u8, b2: u8, b3: u8, status: u8) -> UdsDtc {
+pub(crate) fn decode_bmw_dtc(b1: u8, b2: u8, b3: u8, status: u8) -> UdsDtc {
     let mut dtc = UdsDtc {
         code: format!("{b1:02X}{b2:02X}{b3:02X}"),
         ..UdsDtc::default()

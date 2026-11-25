@@ -24,7 +24,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use caruspex_link::RawKLine;
 
 /// The port name of the simulated car in the lists.
-pub const A2_SIM_DEVICE: &str = "sim:a2";
+pub(crate) const A2_SIM_DEVICE: &str = "sim:a2";
 
 /// One byte at 9600 baud (start, 8 data, stop).
 const BYTE_US: u64 = 1_042;

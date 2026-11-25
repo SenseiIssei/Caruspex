@@ -117,8 +117,8 @@ impl Sink for TauriSink {
     // Tauri serializes the payload to JSON anyway; going through a Value
     // first cost about 15 allocations per live value. Nothing in
     // on_worker_event looks at live values.
-    fn live_value(&self, row: &LiveRow) {
-        let _ = self.app.emit("live_value", LiveEvent { row });
+    fn live_values(&self, rows: &[LiveRow]) {
+        let _ = self.app.emit("live_values", LiveEvent { rows });
     }
 }
 

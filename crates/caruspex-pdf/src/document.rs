@@ -57,7 +57,7 @@ pub fn num(v: f32) -> String {
 
 /// A PDF literal string of WinAnsi bytes: ( ) and \ escaped, everything
 /// outside printable ASCII as an octal escape, so the file stays ASCII.
-pub fn literal(bytes: &[u8]) -> String {
+pub(crate) fn literal(bytes: &[u8]) -> String {
     let mut s = String::with_capacity(bytes.len() + 2);
     s.push('(');
     for &b in bytes {
@@ -171,7 +171,7 @@ impl Page {
     }
 
     /// A filled rectangle, (x, y) its bottom left corner.
-    pub fn fill_rect(&mut self, x: f32, y: f32, w: f32, h: f32, color: Color) {
+    pub(crate) fn fill_rect(&mut self, x: f32, y: f32, w: f32, h: f32, color: Color) {
         let _ = write!(
             self.content,
             "{} {} {} rg\n{} {} {} {} re\nf\n",
@@ -206,7 +206,7 @@ impl Document {
     }
 
     /// Appends an empty page and returns it.
-    pub fn add_page(&mut self, width: f32, height: f32) -> &mut Page {
+    pub(crate) fn add_page(&mut self, width: f32, height: f32) -> &mut Page {
         self.pages.push(Page::new(width, height));
         self.pages.last_mut().expect("just pushed")
     }

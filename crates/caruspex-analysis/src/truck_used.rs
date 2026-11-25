@@ -41,29 +41,29 @@ pub mod limits {
     /// Units store the odometer at different moments, and engine and
     /// tachograph may be calibrated a little apart (tyre size); this much
     /// difference is normal.
-    pub const MILEAGE_TOLERANCE_KM: f64 = 200.0;
+    pub(crate) const MILEAGE_TOLERANCE_KM: f64 = 200.0;
     /// Or this share of the reading, whichever is larger.
-    pub const MILEAGE_TOLERANCE_SHARE: f64 = 0.005;
+    pub(crate) const MILEAGE_TOLERANCE_SHARE: f64 = 0.005;
     /// km/h over all engine hours. Above this the hours are too few for
     /// the distance: no truck averages more, stops and idling included.
-    pub const SPEED_TOO_HIGH: f64 = 75.0;
+    pub(crate) const SPEED_TOO_HIGH: f64 = 75.0;
     /// Below this the distance is very low for the hours: stationary work
     /// (crane, refuse, power take-off) or a turned back odometer.
-    pub const SPEED_TOO_LOW: f64 = 8.0;
+    pub(crate) const SPEED_TOO_LOW: f64 = 8.0;
     /// Share of the engine hours at idle.
-    pub const IDLE_HIGH: f64 = 0.40;
-    pub const IDLE_NOTABLE: f64 = 0.25;
+    pub(crate) const IDLE_HIGH: f64 = 0.40;
+    pub(crate) const IDLE_NOTABLE: f64 = 0.25;
     /// l/100 km over the whole life outside this range does not fit a
     /// heavy truck or bus.
-    pub const FUEL_LOW: f64 = 15.0;
-    pub const FUEL_HIGH: f64 = 70.0;
+    pub(crate) const FUEL_LOW: f64 = 15.0;
+    pub(crate) const FUEL_HIGH: f64 = 70.0;
     /// Less distance or time since clearing: cleared recently.
-    pub const RECENT_KM: f64 = 50.0;
-    pub const RECENT_MINUTES: f64 = 180.0;
+    pub(crate) const RECENT_KM: f64 = 50.0;
+    pub(crate) const RECENT_MINUTES: f64 = 180.0;
     /// A fault that went active this often keeps coming back.
-    pub const RECURRING: u8 = 10;
+    pub(crate) const RECURRING: u8 = 10;
     /// This many previous faults in one unit are worth a question.
-    pub const MANY_PREVIOUS: usize = 5;
+    pub(crate) const MANY_PREVIOUS: usize = 5;
 }
 
 /// The VIN one unit keeps.

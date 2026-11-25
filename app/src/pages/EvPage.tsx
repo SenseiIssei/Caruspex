@@ -147,11 +147,22 @@ export default function EvPage() {
     if (connectedRef.current) readNow();
   });
 
-  useBackendEvent("live_value", ({ row }) => {
-    const spec = byKey.get(row.pid);
-    if (!spec) return;
-    setValues((prev) => new Map(prev).set(shortKey(spec), row.value));
-    setCells((prev) => new Map(prev).set(row.pid, row.text ? row.text : `${num(row.value, 2)} ${row.unit}`.trim()));
+  useBackendEvent("live_values", ({ rows }) => {
+    const mine = rows.flatMap((row) => {
+      const spec = byKey.get(row.pid);
+      return spec ? [{ row, key: shortKey(spec) }] : [];
+    });
+    if (mine.length === 0) return;
+    setValues((prev) => {
+      const next = new Map(prev);
+      for (const { row, key } of mine) next.set(key, row.value);
+      return next;
+    });
+    setCells((prev) => {
+      const next = new Map(prev);
+      for (const { row } of mine) next.set(row.pid, row.text ? row.text : `${num(row.value, 2)} ${row.unit}`.trim());
+      return next;
+    });
     setRefreshed(true);
   });
 

@@ -131,3 +131,96 @@ fn obd_on_uds_detected_at_connect_classic_results_from_uds_answers() {
         assert_eq!(count_sent(&sent, "03"), 0);
     }
 }
+
+// --- "Not read" is not "no faults" ------------------------------------------
+
+/// A car with scripted answers per request; anything else is NO DATA.
+struct Scripted {
+    answers: Vec<(&'static str, &'static str)>,
+    pending: Vec<u8>,
+}
+
+impl caruspex_link::Transport for Scripted {
+    fn write(&mut self, data: &[u8]) -> bool {
+        let command: String = String::from_utf8_lossy(data)
+            .chars()
+            .filter(|c| !c.is_whitespace())
+            .collect();
+        let reply = match command.as_str() {
+            "ATZ" => "ELM327 v1.5",
+            c if c.starts_with("AT") => "OK",
+            c => self
+                .answers
+                .iter()
+                .find(|(request, _)| *request == c)
+                .map_or("NO DATA", |(_, reply)| reply),
+        };
+        self.pending = format!("{reply}\r\r>").into_bytes();
+        // The car answers the search once; then the scripted state holds.
+        if command == "0100" && self.answers.first().is_some_and(|a| a.0 == "0100") {
+            self.answers.remove(0);
+        }
+        true
+    }
+    fn read(&mut self, _timeout_ms: u64) -> Vec<u8> {
+        std::mem::take(&mut self.pending)
+    }
+    fn flush_input(&mut self) {
+        self.pending.clear();
+    }
+    fn name(&self) -> String {
+        "scripted".into()
+    }
+}
+
+const ALIVE: (&str, &str) = ("0100", "41 00 BE 1F A8 13");
+
+fn scripted(answers: &[(&'static str, &'static str)]) -> Elm327 {
+    let mut elm = Elm327::new();
+    // The first 0100 belongs to connecting.
+    let mut list = vec![ALIVE];
+    list.extend_from_slice(answers);
+    elm.connect(
+        Box::new(Scripted {
+            answers: list,
+            pending: Vec::new(),
+        }),
+        "6",
+    )
+    .expect("connects");
+    elm
+}
+
+#[test]
+fn a_car_without_codes_that_still_answers_has_no_faults() {
+    let mut elm = scripted(&[ALIVE]);
+    // Mode 03, 07 and 0A: NO DATA, which a K-line unit may say for "none".
+    assert_eq!(Obd2::new(&mut elm).read_faults(), Ok(Vec::new()));
+    let mut elm = scripted(&[("03", "43 00")]);
+    // An answer with no codes needs no second look (0100 would be NO DATA).
+    assert_eq!(Obd2::new(&mut elm).read_faults(), Ok(Vec::new()));
+}
+
+#[test]
+fn a_car_that_answers_nothing_any_more_is_not_free_of_faults() {
+    let mut elm = scripted(&[]);
+    let error = Obd2::new(&mut elm).read_faults().expect_err("not read");
+    assert!(!error.is_empty());
+}
+
+#[test]
+fn a_bus_error_is_not_an_empty_fault_memory() {
+    let mut elm = scripted(&[("03", "CAN ERROR"), ALIVE]);
+    let error = Obd2::new(&mut elm).read_faults().expect_err("not read");
+    assert!(error.contains("CAN ERROR"), "{error}");
+}
+
+#[test]
+fn clearing_that_cannot_be_read_back_is_not_a_success() {
+    // Mode 04 unanswered and afterwards nobody there.
+    let mut elm = scripted(&[]);
+    assert!(Obd2::new(&mut elm).clear_faults().is_err());
+    // Unanswered, but the memory reads back empty: cleared.
+    let mut elm = scripted(&[("03", "43 00")]);
+    assert_eq!(Obd2::new(&mut elm).clear_faults(), Ok(()));
+}

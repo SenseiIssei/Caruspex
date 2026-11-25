@@ -35,6 +35,7 @@ mod faults;
 mod health;
 mod kkl;
 pub(crate) mod kkl_test;
+mod link;
 mod live;
 mod truck;
 mod truck_check;
@@ -61,11 +62,13 @@ pub trait Sink: Send + Sync + 'static {
     /// Every live value, before it goes out as an event (the trip computer
     /// listens here).
     fn live(&self, _row: &LiveRow) {}
-    /// Every live value as the `live_value` event. The most frequent event
-    /// (up to 24 per tick): the window's sink serializes the row straight to
-    /// JSON instead of building a `Value` of it first.
-    fn live_value(&self, row: &LiveRow) {
-        self.emit("live_value", json!(LiveEvent { row }));
+    /// The live values that came in together (one tick of the live loop, up
+    /// to 24) as one `live_values` event: every event is a script of its own
+    /// for the window. The most frequent event, so the window's sink
+    /// serializes the rows straight to JSON instead of building a `Value`
+    /// first.
+    fn live_values(&self, rows: &[LiveRow]) {
+        self.emit("live_values", json!(LiveEvent { rows }));
     }
 }
 
@@ -317,6 +320,9 @@ pub struct Worker {
     basic_setting_timer: Timer,
     basic_setting_group: i32,
     voltage_timer: Timer,
+    /// Looks every two seconds whether the way to the adapter is still
+    /// there (worker/link.rs). Runs while connected.
+    link_timer: Timer,
     settings: AppSettings,
     /// What the running connection attempt found out, for the connection
     /// assistant (caruspex_advice::connect_help).
@@ -370,6 +376,7 @@ impl Worker {
             basic_setting_timer: Timer::default(),
             basic_setting_group: 60,
             voltage_timer: Timer::default(),
+            link_timer: Timer::default(),
             settings: AppSettings::default(),
             facts: ConnectFacts::default(),
             used_car_live_seconds: USED_CAR_LIVE_SECONDS,
@@ -415,6 +422,11 @@ impl Worker {
             *quiet = Some(error.into());
             return;
         }
+        // Cancelled by the user: that is no failure.
+        if self.interrupted() {
+            self.log(l("Verbinden abgebrochen.", "Connecting cancelled."));
+            return;
+        }
         let help = crate::advice::help_json(&connect_help(&self.facts));
         self.emit("failed", json!({ "error": error.into(), "help": help }));
     }
@@ -427,9 +439,14 @@ impl Worker {
             ": is another program using the port?",
         ));
     }
-    fn emit_live(&self, row: LiveRow) {
-        self.sink.live(&row);
-        self.sink.live_value(&row);
+    fn emit_live(&self, rows: &[LiveRow]) {
+        if rows.is_empty() {
+            return;
+        }
+        for row in rows {
+            self.sink.live(row);
+        }
+        self.sink.live_values(rows);
     }
     fn kkl_message(&self, message: impl Into<String>, is_error: bool) {
         self.emit(
@@ -437,8 +454,10 @@ impl Worker {
             json!({ "message": message.into(), "isError": is_error }),
         );
     }
+    /// A scan or check should end: the user cancelled it, or the adapter it
+    /// talks to is gone.
     fn cancelled(&self) -> bool {
-        self.cancel.load(Ordering::SeqCst)
+        self.cancel.load(Ordering::SeqCst) || self.elm.known_lost()
     }
 
     fn set_elm_log(&mut self) {
@@ -465,6 +484,7 @@ impl Worker {
             &self.basic_setting_timer,
             &self.voltage_timer,
             &self.kkl_keep_alive_timer,
+            &self.link_timer,
         ]
         .iter()
         .filter(|t| t.active)
@@ -531,9 +551,19 @@ impl Worker {
             self.kkl_keep_alive_tick();
             self.kkl_keep_alive_timer.rearm();
         }
+        if self.link_timer.due(now) {
+            self.link_tick();
+            self.link_timer.rearm();
+        }
+        self.check_link();
     }
 
     pub fn handle(&mut self, job: Job) {
+        self.carry_out(job);
+        self.check_link();
+    }
+
+    fn carry_out(&mut self, job: Job) {
         match job {
             Job::OpenSerial {
                 device,
@@ -593,8 +623,6 @@ impl Worker {
                 self.interrupt.store(false, Ordering::SeqCst);
                 self.cancel.store(false, Ordering::SeqCst);
                 self.close_adapter();
-                #[cfg(target_os = "android")]
-                crate::android::bind_wifi(false);
             }
             Job::StartRecording(path) => self.start_recording(&path),
             Job::StopRecording => self.stop_recording(),

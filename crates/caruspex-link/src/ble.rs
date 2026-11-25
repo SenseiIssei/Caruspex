@@ -31,23 +31,10 @@ use tokio::runtime::Runtime;
 use tokio::task::JoinHandle;
 
 use crate::ble_gatt::plan_channel;
-use crate::ble_profile::{
-    BleChannel, BleCharacteristicDesc, BleServiceDesc, advertised_profile, choose_ble_channel,
-    is_obd_adapter, scan_score,
-};
+use crate::ble_profile::{BleCharacteristicDesc, BleServiceDesc, advertised_profile, scan_score};
 use crate::transport::Transport;
 
 pub use crate::bluetooth::{BleDevice, bluetooth_kinds, sort_devices};
-
-/// What a device offers, as seen without writing anything to it.
-#[derive(Clone, Debug, Default)]
-pub struct BleInspection {
-    pub name: String,
-    pub services: Vec<BleServiceDesc>,
-    pub channel: BleChannel,
-    /// [`is_obd_adapter`] for this device.
-    pub recognised: bool,
-}
 
 fn runtime() -> Result<&'static Runtime, String> {
     static RUNTIME: OnceLock<Option<Runtime>> = OnceLock::new();
@@ -182,7 +169,7 @@ async fn scan_async(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
 /// Scans for Bluetooth LE devices for the given time and returns them, OBD
 /// adapters first. The error is the reason when the system has no usable
 /// Bluetooth.
-pub fn scan_ble_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
+pub(crate) fn scan_ble_devices(milliseconds: u64) -> Result<Vec<BleDevice>, String> {
     run(
         Duration::from_millis(milliseconds) + SCAN_SLACK,
         scan_async(milliseconds),
@@ -231,7 +218,6 @@ struct Connected {
     name: String,
     services: Vec<BleServiceDesc>,
     characteristics: Vec<Vec<Characteristic>>,
-    channel: BleChannel,
 }
 
 /// Connects and reads the services. Nothing is written.
@@ -297,30 +283,12 @@ async fn connect_and_discover(device: BleDevice) -> Result<Connected, String> {
         services.push(desc);
         characteristics.push(list);
     }
-    let channel = choose_ble_channel(&services);
     Ok(Connected {
         peripheral,
         name,
         services,
         characteristics,
-        channel,
     })
-}
-
-/// Connects, reads what the device offers and disconnects again, without
-/// writing anything to it.
-pub fn inspect_ble_device(device: &BleDevice) -> Result<BleInspection, String> {
-    let device = device.clone();
-    run(OPEN_LIMIT, async move {
-        let c = connect_and_discover(device).await?;
-        let _ = c.peripheral.disconnect().await;
-        Ok(BleInspection {
-            recognised: is_obd_adapter(&c.name, &c.channel),
-            name: c.name,
-            services: c.services,
-            channel: c.channel,
-        })
-    })?
 }
 
 struct Shared {
@@ -523,6 +491,10 @@ impl Transport for BleTransport {
     fn name(&self) -> String {
         self.name.clone()
     }
+
+    fn lost(&mut self) -> bool {
+        self.disconnected()
+    }
 }
 
 impl Drop for BleTransport {
@@ -535,126 +507,6 @@ impl Drop for BleTransport {
             let _ = tokio::time::timeout(Duration::from_millis(3000), p.disconnect()).await;
         });
     }
-}
-
-/// Developer aid behind `--ble-probe id|auto`: lists the Bluetooth devices,
-/// connects to the given one (or the first adapter) over LE or, failing
-/// that, classic Bluetooth, sends ATZ and prints everything. Devices that
-/// are not OBD adapters are only looked at.
-/// Returns the exit code: 0 fine, 1 failed, 2 nothing to connect to.
-pub fn ble_probe(wanted: &str, out: &mut dyn std::io::Write) -> i32 {
-    let (devices, error) = match crate::bluetooth::scan_bluetooth_devices(5000) {
-        Ok(list) => (list, String::new()),
-        Err(e) => (Vec::new(), e),
-    };
-    let _ = writeln!(
-        out,
-        "{} device(s){}{}",
-        devices.len(),
-        if error.is_empty() { "" } else { ", error: " },
-        error
-    );
-    for d in &devices {
-        let kind = if d.low_energy && d.classic {
-            "LE+BR"
-        } else if d.classic {
-            "classic"
-        } else {
-            "LE"
-        };
-        let _ = writeln!(
-            out,
-            "  {:<40} {:<30} {:<8} rssi {:>4} score {}",
-            d.id, d.name, kind, d.rssi, d.score
-        );
-    }
-    let automatic = wanted == "auto";
-    let mut target = devices
-        .iter()
-        .find(|d| {
-            if automatic {
-                d.score >= 3
-            } else {
-                d.id == wanted
-            }
-        })
-        .cloned()
-        .unwrap_or_default();
-    if target.id.is_empty() && !automatic {
-        target.id = wanted.to_string();
-        target.low_energy = true;
-    }
-    if target.id.is_empty() {
-        return 2;
-    }
-    let _ = writeln!(out, "connecting to {} ...", target.id);
-
-    // Only adapters get a command; other devices are just looked at. A
-    // classic device has nothing to look at without connecting, so it is
-    // left alone entirely.
-    if target.score < 3 {
-        if !target.low_energy {
-            let _ = writeln!(out, "not an OBD adapter by name, nothing sent");
-            return 0;
-        }
-        return match inspect_ble_device(&target) {
-            Ok(seen) => {
-                let _ = writeln!(
-                    out,
-                    "LE channel {}",
-                    if seen.channel.valid() {
-                        seen.channel.profile.as_str()
-                    } else {
-                        "none"
-                    }
-                );
-                let _ = writeln!(out, "not an OBD adapter by name, nothing sent");
-                0
-            }
-            Err(e) => {
-                let _ = writeln!(out, "LE open failed: {e}");
-                1
-            }
-        };
-    }
-    let mut transport: Option<Box<dyn Transport>> = None;
-    if target.low_energy || !target.classic {
-        match BleTransport::open(&target) {
-            Ok(t) => {
-                let _ = writeln!(out, "LE channel {}", t.profile());
-                transport = Some(Box::new(t));
-            }
-            Err(e) => {
-                let _ = writeln!(out, "LE open failed: {e}");
-            }
-        }
-    }
-    #[cfg(feature = "bt-classic")]
-    if transport.is_none() && target.classic {
-        match crate::bt_classic::RfcommTransport::open(&target) {
-            Ok(t) => {
-                let _ = writeln!(out, "classic serial port open");
-                transport = Some(Box::new(t));
-            }
-            Err(e) => {
-                let _ = writeln!(out, "classic open failed: {e}");
-            }
-        }
-    }
-    let Some(mut transport) = transport else {
-        return 1;
-    };
-    let _ = writeln!(out, "sending ATZ");
-    transport.write(b"ATZ\r");
-    let mut reply = Vec::new();
-    for _ in 0..20 {
-        if reply.contains(&b'>') {
-            break;
-        }
-        reply.extend(transport.read(250));
-    }
-    let _ = writeln!(out, "reply: {}", String::from_utf8_lossy(&reply));
-    if reply.is_empty() { 1 } else { 0 }
 }
 
 #[cfg(test)]

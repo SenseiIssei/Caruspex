@@ -30,7 +30,7 @@ pub fn plug_text() -> &'static str {
 }
 
 /// The warning every truck user needs: 24 V.
-pub fn voltage_text() -> &'static str {
+pub(crate) fn voltage_text() -> &'static str {
     l(
         "Lkw haben meist 24 V. Viele billige ELM327-Adapter sind nur für 12 V gebaut und gehen daran kaputt: nur einen Adapter nehmen, der 24 V ausdrücklich verträgt.",
         "Trucks mostly run on 24 V. Many cheap ELM327 adapters are built for 12 V only and break on it: use only an adapter that is rated for 24 V.",

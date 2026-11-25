@@ -36,21 +36,21 @@ use temperatures::{check_coolant, check_oil};
 
 /// The SPNs the rules read.
 pub mod spn {
-    pub const ENGINE_SPEED: u32 = 190;
-    pub const ENGINE_LOAD: u32 = 92;
-    pub const COOLANT_TEMP: u32 = 110;
-    pub const COOLANT_LEVEL: u32 = 111;
-    pub const OIL_TEMP: u32 = 175;
-    pub const OIL_PRESSURE: u32 = 100;
-    pub const BATTERY: u32 = 168;
-    pub const CHARGING: u32 = 167;
-    pub const DEF_LEVEL: u32 = 1761;
-    pub const SOOT_LOAD: u32 = 3719;
-    pub const ASH_LOAD: u32 = 3720;
-    pub const REGENERATION: u32 = 3700;
-    pub const DPF_STATE: u32 = 3701;
-    pub const BOOST: u32 = 102;
-    pub const INTAKE_TEMP: u32 = 105;
+    pub(crate) const ENGINE_SPEED: u32 = 190;
+    pub(crate) const ENGINE_LOAD: u32 = 92;
+    pub(crate) const COOLANT_TEMP: u32 = 110;
+    pub(crate) const COOLANT_LEVEL: u32 = 111;
+    pub(crate) const OIL_TEMP: u32 = 175;
+    pub(crate) const OIL_PRESSURE: u32 = 100;
+    pub(crate) const BATTERY: u32 = 168;
+    pub(crate) const CHARGING: u32 = 167;
+    pub(crate) const DEF_LEVEL: u32 = 1761;
+    pub(crate) const SOOT_LOAD: u32 = 3719;
+    pub(crate) const ASH_LOAD: u32 = 3720;
+    pub(crate) const REGENERATION: u32 = 3700;
+    pub(crate) const DPF_STATE: u32 = 3701;
+    pub(crate) const BOOST: u32 = 102;
+    pub(crate) const INTAKE_TEMP: u32 = 105;
     pub const ENGINE_HOURS: u32 = 247;
 
     /// Every SPN the health check samples while it listens.
@@ -78,7 +78,7 @@ pub mod spn {
     /// 4334), SCR efficiency (4364), NOx limits exceeded for lack of
     /// reagent or its quality (4094, 4096) and the operator inducement
     /// (5245, 5246) that ends in reduced power.
-    pub const DEF_SYSTEM: [u32; 12] = [
+    pub(crate) const DEF_SYSTEM: [u32; 12] = [
         1761, 3031, 3517, 3364, 3516, 3361, 4334, 4364, 4094, 4096, 5245, 5246,
     ];
 }
@@ -87,48 +87,48 @@ pub mod spn {
 /// the common workshop values, and the texts say where makes differ.
 pub mod limits {
     /// 1/min above which the engine counts as running.
-    pub const RUNNING_RPM: f64 = 400.0;
+    pub(crate) const RUNNING_RPM: f64 = 400.0;
     /// 1/min below which it is off.
-    pub const STOPPED_RPM: f64 = 50.0;
+    pub(crate) const STOPPED_RPM: f64 = 50.0;
     /// 1/min up to which a running engine counts as idling.
-    pub const IDLE_MAX_RPM: f64 = 1000.0;
+    pub(crate) const IDLE_MAX_RPM: f64 = 1000.0;
     /// °C from which the engine counts as warm.
-    pub const WARM: f64 = 60.0;
-    pub const COOLANT_WARNING: f64 = 100.0;
-    pub const COOLANT_CRITICAL: f64 = 105.0;
+    pub(crate) const WARM: f64 = 60.0;
+    pub(crate) const COOLANT_WARNING: f64 = 100.0;
+    pub(crate) const COOLANT_CRITICAL: f64 = 105.0;
     /// % in the expansion tank.
-    pub const COOLANT_LEVEL_WARNING: f64 = 80.0;
-    pub const COOLANT_LEVEL_CRITICAL: f64 = 40.0;
-    pub const OIL_TEMP_WARNING: f64 = 115.0;
-    pub const OIL_TEMP_CRITICAL: f64 = 130.0;
+    pub(crate) const COOLANT_LEVEL_WARNING: f64 = 80.0;
+    pub(crate) const COOLANT_LEVEL_CRITICAL: f64 = 40.0;
+    pub(crate) const OIL_TEMP_WARNING: f64 = 115.0;
+    pub(crate) const OIL_TEMP_CRITICAL: f64 = 130.0;
     /// kPa at warm idle. Many makers give about 70 kPa (10 psi) as the
     /// lowest allowed value at idle.
-    pub const OIL_IDLE_CRITICAL: f64 = 70.0;
-    pub const OIL_IDLE_WARNING: f64 = 105.0;
+    pub(crate) const OIL_IDLE_CRITICAL: f64 = 70.0;
+    pub(crate) const OIL_IDLE_WARNING: f64 = 105.0;
     /// Above this the battery reading belongs to a 24 V system.
-    pub const TWELVE_VOLT_MAX: f64 = 16.0;
+    pub(crate) const TWELVE_VOLT_MAX: f64 = 16.0;
     /// 24 V system, engine running.
-    pub const CHARGING_NONE_24: f64 = 25.5;
-    pub const CHARGING_LOW_24: f64 = 26.8;
-    pub const CHARGING_HIGH_24: f64 = 29.8;
+    pub(crate) const CHARGING_NONE_24: f64 = 25.5;
+    pub(crate) const CHARGING_LOW_24: f64 = 26.8;
+    pub(crate) const CHARGING_HIGH_24: f64 = 29.8;
     /// 24 V system, engine off.
-    pub const REST_FLAT_24: f64 = 23.6;
-    pub const REST_LOW_24: f64 = 24.4;
+    pub(crate) const REST_FLAT_24: f64 = 23.6;
+    pub(crate) const REST_LOW_24: f64 = 24.4;
     /// %: below this the engine soon loses power (operator inducement).
-    pub const DEF_CRITICAL: f64 = 5.0;
-    pub const DEF_WARNING: f64 = 15.0;
+    pub(crate) const DEF_CRITICAL: f64 = 5.0;
+    pub(crate) const DEF_WARNING: f64 = 15.0;
     /// % soot load from which a regeneration is due soon.
-    pub const SOOT_WARNING: f64 = 75.0;
-    pub const SOOT_CRITICAL: f64 = 100.0;
+    pub(crate) const SOOT_WARNING: f64 = 75.0;
+    pub(crate) const SOOT_CRITICAL: f64 = 100.0;
     /// % ash load from which the filter needs cleaning soon.
-    pub const ASH_WARNING: f64 = 80.0;
+    pub(crate) const ASH_WARNING: f64 = 80.0;
     /// °C in the intake manifold behind the charge air cooler.
-    pub const INTAKE_WARNING: f64 = 75.0;
+    pub(crate) const INTAKE_WARNING: f64 = 75.0;
     /// % engine load from which boost is judged.
-    pub const BOOST_LOAD: f64 = 40.0;
+    pub(crate) const BOOST_LOAD: f64 = 40.0;
     /// kPa boost under load below which the turbo or the charge air path
     /// is suspect.
-    pub const BOOST_LOW: f64 = 50.0;
+    pub(crate) const BOOST_LOW: f64 = 50.0;
 }
 
 /// The four lamps of one unit (from its DM1).

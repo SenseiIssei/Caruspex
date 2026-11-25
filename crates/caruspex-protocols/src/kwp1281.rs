@@ -34,11 +34,11 @@ impl Ecu {
     pub const Abs: Ecu = Ecu(0x03);
     pub const Airbag: Ecu = Ecu(0x15);
     pub const InstrumentCluster: Ecu = Ecu(0x17);
-    pub const CentralElectrics: Ecu = Ecu(0x09);
-    pub const ComfortSystem: Ecu = Ecu(0x46);
+    pub(crate) const CentralElectrics: Ecu = Ecu(0x09);
+    pub(crate) const ComfortSystem: Ecu = Ecu(0x46);
     pub const Immobilizer: Ecu = Ecu(0x25);
-    pub const AirConditioning: Ecu = Ecu(0x08);
-    pub const SteeringWheel: Ecu = Ecu(0x16);
+    pub(crate) const AirConditioning: Ecu = Ecu(0x08);
+    pub(crate) const SteeringWheel: Ecu = Ecu(0x16);
     pub const Radio: Ecu = Ecu(0x56);
 }
 
@@ -104,9 +104,6 @@ pub mod block {
     // adaptation": a unit could take it as a save of the channel.
     /// Read an adaptation channel; only this one is used today.
     pub const READ_ADAPTATION: u8 = 0x21;
-    pub const TEST_ADAPTATION: u8 = 0x22;
-    pub const SAVE_ADAPTATION: u8 = 0x2A;
-    pub const LOGIN: u8 = 0x2B;
     pub const ASCII_DATA: u8 = 0xF6;
     pub const FAULT_LIST: u8 = 0xFC;
     pub const GROUP_READING: u8 = 0xE7;
@@ -197,7 +194,7 @@ impl<S: ByteStream> Kwp1281<S> {
 
     /// Address of the control unit, so fault numbers are interpreted
     /// correctly. With `attach` the caller has to set it.
-    pub fn set_ecu(&mut self, ecu: Ecu) {
+    pub(crate) fn set_ecu(&mut self, ecu: Ecu) {
         self.ecu = ecu;
     }
 
@@ -207,10 +204,6 @@ impl<S: ByteStream> Kwp1281<S> {
 
     pub fn identification(&self) -> &[String] {
         &self.identification
-    }
-
-    pub fn block_counter(&self) -> u8 {
-        self.counter
     }
 
     // --- Byte-by-byte rhythm ------------------------------------------------

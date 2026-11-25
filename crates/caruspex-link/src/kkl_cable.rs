@@ -14,10 +14,8 @@ use caruspex_i18n::l;
 
 use crate::serial::PortInfo;
 
-/// The latency timer of the FTDI driver out of the box.
-pub const LATENCY_DEFAULT_MS: u32 = 16;
 /// The value to set; anything above gets the hint.
-pub const LATENCY_GOOD_MS: u32 = 1;
+pub(crate) const LATENCY_GOOD_MS: u32 = 1;
 
 /// Which USB serial chip sits in the cable.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -122,7 +120,8 @@ impl CableFacts {
 
     /// True when the latency timer is known to be higher than the K-line
     /// likes.
-    pub fn latency_too_high(&self) -> bool {
+    #[cfg(test)]
+    pub(crate) fn latency_too_high(&self) -> bool {
         self.latency_ms.is_some_and(|ms| ms > LATENCY_GOOD_MS)
     }
 
@@ -141,7 +140,7 @@ impl CableFacts {
 }
 
 /// The hint for a latency timer that is set too high.
-pub fn latency_hint(ms: u32) -> String {
+pub(crate) fn latency_hint(ms: u32) -> String {
     l(
         "Der Latenz-Timer des FTDI-Treibers steht auf %1 ms. Für die K-Line besser 1 ms: Geräte-Manager öffnen, Anschlüsse (COM & LPT), den USB Serial Port doppelt anklicken, Anschlusseinstellungen, Erweitert, unter BM Options Latency Timer (msec) auf 1 stellen, mit OK bestätigen und das Kabel einmal ab- und wieder anstecken. Caruspex ändert diese Einstellung nicht selbst.",
         "The latency timer of the FTDI driver is set to %1 ms. The K-line works better with 1 ms: open the Device Manager, Ports (COM & LPT), double-click the USB Serial Port, Port Settings, Advanced, under BM Options set Latency Timer (msec) to 1, confirm with OK and unplug the cable once. Caruspex does not change this setting itself.",
@@ -151,7 +150,7 @@ pub fn latency_hint(ms: u32) -> String {
 
 /// The latency timer of the FTDI driver behind a port, read only.
 #[cfg(windows)]
-pub fn read_latency_timer(device: &str) -> Option<u32> {
+pub(crate) fn read_latency_timer(device: &str) -> Option<u32> {
     // The FTDI driver keeps its settings per device under Enum\FTDIBUS:
     // <VID_0403+PID_6001+serial>\0000\Device Parameters with PortName and
     // LatencyTimer. Reading the registry needs no rights and opens nothing.
@@ -186,7 +185,7 @@ pub fn read_latency_timer(device: &str) -> Option<u32> {
 
 /// The latency timer of the ftdi_sio driver, from sysfs.
 #[cfg(target_os = "linux")]
-pub fn read_latency_timer(device: &str) -> Option<u32> {
+pub(crate) fn read_latency_timer(device: &str) -> Option<u32> {
     let name = device.rsplit('/').next()?;
     let text = std::fs::read_to_string(format!("/sys/bus/usb-serial/devices/{name}/latency_timer"))
         .ok()?;
@@ -194,7 +193,7 @@ pub fn read_latency_timer(device: &str) -> Option<u32> {
 }
 
 #[cfg(not(any(windows, target_os = "linux")))]
-pub fn read_latency_timer(_device: &str) -> Option<u32> {
+pub(crate) fn read_latency_timer(_device: &str) -> Option<u32> {
     None
 }
 

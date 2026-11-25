@@ -47,7 +47,7 @@ pub struct LiveFrame {
 
 /// How long a value stays valid for the next frames, seconds. The live loop
 /// reads PIDs in rounds; a value older than this belongs to another moment.
-pub const VALUE_MAX_AGE_S: f64 = 2.0;
+pub(crate) const VALUE_MAX_AGE_S: f64 = 2.0;
 
 /// The mode 01 PIDs of a request such as "010C0B0F" or "01 0C 0B" (the ELM
 /// answer count digit at the end, as in "010C1", is ignored).

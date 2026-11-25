@@ -352,7 +352,7 @@ kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 - [x] Antworten mehrere Steuergeräte auf eine PID, behält in der Live-Ansicht und im Mitschnitt das Motorsteuergerät den Wert (an der Adresse erkannt wie bei `ecu_role`: 7E8, 18DAF110, Quellbyte 10 auf K-Line und J1850), sonst die erste andere Antwort; vorher gewann die zuerst fertige Nachricht, also beim Getriebe-Einzelrahmen zwischen den Rahmen der Motorantwort das Getriebe. Klein
   Stand: getestet mit geskripteten Antworten (Getriebe zuerst, verschachtelte Rahmen, nur das Getriebe kennt die PID) und mit Mitschnitten auf 29 Bit und KWP; die Tempotests laufen unverändert durch. Ohne Header (keine Adressen) bleibt es bei der ersten Antwort, an echten Autos mit zwei antwortenden Steuergeräten ungetestet.
 
-## Empfohlene Reihenfolge
+## Empfohlene Reihenfolge (ab 0.8.0, abgearbeitet bis auf das, was ein echtes Auto, Geld oder andere Leute braucht)
 
 1. Phase 13 (aktuell bleiben): klein, schützt alles Weitere
 2. Gebrauchtwagen-Check, "Was soll ich jetzt tun?" und Einsteigermodus aus Phase 14: der größte Nutzen für normale Halter
@@ -369,3 +369,125 @@ kommt ein echtes Modell dazu, wenn es eines mit freier Lizenz gibt.
 - VAG TP 2.0 über ELM327 (siehe Phase 6), dafür bleibt KKL
 - Kennfelder schreiben, Flashen, Prüfsummen oder Flash-Dateiformate, auch nicht aus dem Tuning-Simulator: der rechnet nur, echtes Tuning gehört in eine Werkstatt mit Abnahme
 - Konstruktionsdaten und Stromlaufpläne der Hersteller im 3D-Modell: sie sind nur gegen Lizenz zu haben, deshalb zeigt Phase 20 Lage, Geräte und Busse statt jedes einzelnen Drahts
+
+# Großer Ausbauplan ab 0.24
+
+Stand 25.11.2026, nach Version 0.23.0. Ziel: Caruspex soll für Halter und kleine Werkstätten die erste Wahl unter den freien Programmen sein und neben bezahlten bestehen, ohne je zu codieren oder zu flashen. Aufwand wie oben: Klein (Tage), Mittel (eine bis zwei Wochen), Groß (mehrere Wochen). Jeder Punkt nennt, woran man sieht, dass er fertig ist, und wie das geprüft wird. Was nicht allein am Rechner geht, trägt ein Zeichen:
+
+- **[Auto]** braucht ein echtes Auto oder echte Hardware
+- **[Leute]** braucht andere Menschen (Tester, Muttersprachler)
+- **[Quelle]** braucht eine frei nutzbare Quelle, die noch fehlt oder noch zu prüfen ist
+- **[Geld]** kostet etwas
+- **[Entscheidung]** braucht ein Ja des Maintainers
+
+## Was andere heute besser machen
+
+Angesehen am 25.11.2026 auf den Seiten der Anbieter. Preise sind Momentaufnahmen. "Nicht nachgesehen" heißt: die Seite ließ sich nicht öffnen oder nennt es nicht.
+
+| Programm | Preis, Plattform | Macht es besser als Caruspex | Was davon für Caruspex in Frage kommt |
+|---|---|---|---|
+| [VCDS](https://store.ross-tech.com/) (Ross-Tech) | Interface mit Programm ab 199 US-Dollar, Windows | VAG am tiefsten: Codierung, Anpassung, Stellglieder, beschriftete Messwerte, und jahrelang am Auto erprobt | Vollscan als Protokoll zum Vergleichen (22.3), Erprobung (22.1); Codieren nicht |
+| [FORScan](https://forscan.org/download.html) | Grundfunktionen frei, Erweiterung mit Lizenz; Windows, iOS, Android | Ford, Lincoln, Mercury, Mazda: alle Module mit Namen, Werkstattfunktionen, Programmierung | Modulnamen und Bedeutungen nur aus freier Quelle (24.1, 24.3) |
+| [OBDeleven](https://obdeleven.com/plans) | Abo, Preis nicht nachgesehen; Android, iOS | Codieren per Tipp, freigeschaltete VAG-Autos mit SFD | nichts, das ist Schreiben |
+| [Carly](https://www.mycarly.com/blog/carly/how-much-does-carly-actually-cost-2026-edition/) | Adapter 64,80 Euro plus Abo; iOS, Android | Gebrauchtwagen-Prüfung mit Kilometervergleich über viele Steuergeräte, Codieren | Kilometervergleich gibt es hier schon; mehr dokumentierte Kennungen (24.3) |
+| [Carista](https://carista.com/) | Adapter mit Jahresabo 69,99 Pfund; iOS, Android | Servicerückstellung, Batterie anlernen, Handbremse in Servicestellung | [Entscheidung], siehe "Nicht geplant" |
+| [BimmerLink und BimmerCode](https://www.bimmercode.app/) | Preise nicht nachgesehen; iOS, Android, BimmerCode auch Windows und macOS | BMW: Codieren, Batterie anlernen, gut gepflegte [Adapterliste](https://www.bimmercode.app/adapters/) | eine geprüfte Adapterliste (22.1) |
+| [AlfaOBD](https://www.alfaobd.com/download.html) | 49 bis 56,70 US-Dollar; Windows, Android | Fiat, Alfa, Chrysler, Jeep 1994 bis 2025 mit Werkstattfunktionen | Modulnamen, Quelle fehlt |
+| [Car Scanner ELM OBD2](https://www.carscanner.info/) | frei mit günstiger Vollversion (Preis nur in Suchtreffern); iOS, Android | sehr viele Autos erprobt, eigene Anzeigetafeln, läuft auf dem Telefon | Anzeigetafeln und Warnschwellen (25.1), Android fertig machen (26.1) |
+| [OBD Fusion](https://www.obdsoftware.net/software/obdfusion) | Preis nicht nachgesehen; iOS, Android | CarPlay und Android Auto, Fahrten auf der Karte | 26.3 |
+| [BlueDriver](https://us.bluedriver.com/) | Adapter 99,95 US-Dollar; iOS, Android | Reparaturhinweise aus bestätigten Reparaturen je Modell und Code | 24.1: Häufigkeiten aus gemeinfreien Meldungen statt erfundener Ursachen |
+| [FIXD](https://www.fixd.com/) | Sensor 59,99 US-Dollar plus Abo; iOS, Android | Klartext, Kostenschätzung, Fachleute am Telefon | Klartext gibt es hier schon in 18 Sprachen, ohne Abo |
+| [LeafSpy](https://apps.apple.com/gb/app/leafspy-pro/id967376861), [Scan My Tesla](https://apps.apple.com/us/app/scan-my-tesla/id1503080791) | je 10 bis 20 US-Dollar (nur Suchtreffer) | ein Elektroauto ganz: jede Zelle, Verlauf des Akkuzustands | Akkubericht mit Verlauf (25.3) |
+| Handgeräte wie [XTOOL D7](https://www.xtoolglobal.com/products/xtool-d7) | etwa 330 bis 420 US-Dollar mit drei Jahren Updates (nur Suchtreffer) | alles in einem Gerät, Servicefunktionen, Stellglieder | kein Vergleich beim Preis, aber beim Verständnis für Laien |
+
+Freie Programme ([DDT4All](https://github.com/cedricp/ddt4all), [AndrOBD](https://github.com/fr3ts0n/AndrOBD), [EdiabasLib und Deep OBD](https://github.com/uholeschak/ediabaslib), [OpenVehicleDiag](https://github.com/rnd-ash/OpenVehicleDiag), [OBDium](https://github.com/provrb/obdium), alle GPL-3.0; [SavvyCAN](https://github.com/collin80/SavvyCAN), [odxtools](https://github.com/mercedes-benz/odxtools), [OVMS](https://github.com/openvehicles/Open-Vehicle-Monitoring-System-3), MIT): DDT4All geht bei Renault und Deep OBD bei BMW tiefer, SavvyCAN ist beim Mitschneiden und Entschlüsseln von CAN klar voraus, odxtools liest Herstellerbeschreibungen. Keins davon hat Erklärungen für Laien in 18 Sprachen, Gebrauchtwagen-Prüfung, Lkw und Röntgenansicht zugleich. Code und Daten aus den GPL-Programmen kommen nicht herein.
+
+Das Wichtigste, was bezahlte Programme voraushaben, ist keine Funktion: sie sind an tausenden Autos erprobt. Fast alles in Caruspex lief nur gegen Nachbildungen. Deshalb steht die Erprobung vorn.
+
+## Phase 22: Am echten Auto bewiesen
+
+- [ ] 22.1 "Erster Test am Auto" auch für CAN, nach dem Vorbild der KKL-Seite: ein Knopf führt durch Adapterprüfung, Verbinden, Fehlerspeicher, Live-Werte, Steuergeräte-Suchlauf (nur lesend), am Ende ein Bericht mit Urteil je Schritt, der geschwärzte Mitschnitt und das vorausgefüllte GitHub-Formular. Daraus entsteht eine Tabelle "Geprüft mit" (Adapter mal Auto mal Schritt) in README und Doku. Nutzen sehr hoch, Aufwand Mittel, **[Leute]** für die Berichte
+  Fertig, wenn die Seite gegen das Demo-Auto, den Demo-Lkw und eine Aufnahme durchläuft, kein schreibender Befehl hinausgeht (Zähler im nachgebauten Auto wie beim A2) und die Tabelle aus eingecheckten Berichten erzeugt wird. Erfolg: zehn Berichte von zehn Marken in drei Monaten.
+- [ ] 22.2 Mitschnitte als Prüfkorpus: geteilte Aufnahmen unter `data/recordings/` (geschwärzt, mit Einverständnis im Formular, CC0), ein Test spielt jede ab und vergleicht Fehler, Werte, Steuergeräte und Prüfurteile mit einem eingecheckten Ergebnis. Nutzen hoch, Aufwand Klein, **[Leute]** **[Entscheidung]** (Lizenz im Formular)
+  Fertig, wenn der Test mit drei eigenen Demo-Aufnahmen läuft und ein absichtlich falscher Wert ihn brechen lässt.
+- [ ] 22.3 Vollscan merken und vergleichen: jeder Suchlauf aller Steuergeräte kommt mit Software-Ständen und Codes in die Garage, dazu ein Protokoll als Text und PDF wie ein Werkstatt-Scan und der Vergleich zweier Scans (neu, weg, gleich, anderer Software-Stand, anderes Steuergerät). Die Garage kennt heute nur die OBD-Codes eines Checks. Nutzen hoch (Vorher und nachher in der Werkstatt, zwei Besichtigungen eines Gebrauchtwagens), Aufwand Mittel
+  Fertig, wenn zwei Läufe am Demo-Auto mit einem gelöschten Steuergerät dazwischen genau diesen Unterschied zeigen, alte Garagendateien weiter geladen werden und der Vergleich als PDF in allen Sprachen geht.
+- [ ] 22.4 Offene Hardware-Punkte der früheren Phasen abarbeiten: OBDLink mit STN-Bündeln am Auto, ENET am BMW, KKL am A2, K+DCAN, PCAN und Kvaser, J2534 mit 32 und 64 Bit, Lkw, Telefon. Nutzen sehr hoch, Aufwand Mittel, **[Auto]**
+  Fertig, wenn jeder Weg mindestens einen Bericht aus 22.1 hat.
+- [ ] 22.5 Verbindungsverlust auch bei PCAN und Kvaser erkennen und am echten Adapter nachmessen: Kabel ziehen, WLAN verlassen, Bluetooth ausschalten, Adapter vom Auto abziehen, jeweils ruhend und während der Messung. Nutzen mittel, Aufwand Klein, **[Auto]**
+  Fertig, wenn jede Zeit in `docs/performance.md` gemessen steht; seit 0.24 stehen dort nur die Werte aus den Tests und aus den Einstellungen des Keepalive.
+
+## Phase 23: Kleine Dinge, die man jeden Tag merkt
+
+- [ ] 23.1 "Neu verbinden" nach einem Abriss: ein Knopf in der Meldung und auf Wunsch von selbst (drei Versuche auf dem gemerkten Weg, abschaltbar), danach geht eine laufende Messung weiter. Die Fehler und Werte von vorher bleiben sichtbar und sind als "vor dem Abriss gelesen" gekennzeichnet, statt zu verschwinden. Nutzen hoch, Aufwand Klein
+  Fertig, wenn das Demo-Auto mit `CARUSPEX_DEMO_UNPLUG` und einem Wiederkommen den Ablauf im Test durchläuft.
+- [ ] 23.2 Warnschwellen mit Ton in Live-Werten und Fahrmodus (Kühlmittel, Öl, Spannung, Ladedruck, frei wählbar je Wert), mit Pause gegen Dauerton. Nutzen hoch, Aufwand Klein
+  Fertig, wenn ein Test mit einer nachgebauten Kurve genau einmal je Überschreitung meldet und die Texte in 18 Sprachen stehen.
+- [ ] 23.3 Zwei fertige Texte zeigen, die in 18 Sprachen übersetzt sind und nirgends erscheinen: `drive_cycle_basics` (wie der Selbsttest am ehesten gelingt) und `manufacturer_note` in "Prüfen und AU" bei offenen Prüfungen, dazu die Reihenfolge aus `guides_for_incomplete`. Nutzen mittel, Aufwand Klein
+- [ ] 23.4 64-Bit-J2534-Treiber auch im Hilfsprogramm laden (eine 64-Bit-Ausgabe der Brücke): ein hängender oder abstürzender Treiber nimmt dann nie Caruspex mit. Nutzen mittel, Aufwand Klein
+  Fertig, wenn der Test mit dem nachgebauten Treiber auch über die 64-Bit-Brücke läuft und ein absichtlicher Absturz nur die Verbindung kostet.
+- [ ] 23.5 Verbinden erklärt sich selbst: während der Suche steht da, was gerade versucht wird (Anschluss, Geschwindigkeit, Protokoll) und wie lange es noch dauern kann, statt nur "Verbinde ...". Nutzen mittel, Aufwand Klein
+- [ ] 23.6 Meldungen unten rechts decken in kleinen Fenstern den Verbinden-Knopf zu: anderen Platz wählen, wenn sie etwas Klickbares verdecken. Nutzen klein, Aufwand Klein
+
+## Phase 24: Mehr wissen, nur aus freien Quellen
+
+- [ ] 24.1 "Wie oft kommt das bei diesem Modell vor?": aus den Beschwerden der NHTSA (auf [data.gov](https://catalog.data.gov/dataset/nhtsas-office-of-defects-investigation-odi-complaints) als gemeinfrei geführt) zählen, welche Fehlercodes und Bauteile bei einem Modell und Baujahr genannt werden, und beim Code anzeigen, sinngemäß: "In so vielen US-Meldungen zu diesem Modell genannt, am häufigsten zusammen mit der Zündspule". Nur gezählt und in eigenen Worten, keine Meldung wird wiedergegeben, immer mit dem Hinweis USA und Meldungen statt Diagnosen. Nutzen sehr hoch (das, wofür BlueDriver und FIXD Geld nehmen), Aufwand Mittel, **[Quelle]** teils geprüft: die Lizenz der Beschwerden steht fest, die der Rückrufdatei ist noch nachzulesen
+  Fertig, wenn ein Generator eine Tabelle unter 1 MB erzeugt, eine Mindestzahl (etwa 20 Meldungen) vor Zufall schützt, 20 Stichproben von Hand stimmen und die Rechnung in `tools/` nachvollziehbar ist.
+- [ ] 24.2 Rückrufe je Modell ohne Netz (NHTSA-Datei, USA) und ein Knopf, der die amtliche Seite des Landes öffnet (KBA, DVSA und so weiter), ohne VIN in der Adresse. Nutzen hoch für Gebrauchtwagen, Aufwand Klein, **[Quelle]** Lizenz der Rückrufdatei nachlesen; für die KBA-Datenbank wurde keine freie Lizenz gefunden, deshalb nur der Link
+- [ ] 24.3 Eigene Herstellerdaten laden: Wer eine ODX- oder PDX-Datei besitzt (ISO 22901), lädt sie auf seinem Rechner; Caruspex liest daraus Namen von Steuergeräten, Fehlerbedeutungen und lesbare Werte (Dienste 22 und 19, sonst nichts). Nichts davon kommt ins Repo, nichts verlässt den Rechner. [odxtools](https://github.com/mercedes-benz/odxtools) (MIT) zeigt, wie das Format aufgebaut ist. Nutzen sehr hoch für Werkstätten und Bastler, kein freies Programm für Laien kann das, Aufwand Groß, **[Entscheidung]** (Urheberrecht: nur Dateien, die der Nutzer haben darf; Hinweis beim Laden)
+  Fertig, wenn die MIT-Beispieldatei von odxtools geladen ist, ein nachgebautes Steuergerät danach mit Namen und Werten erscheint, schreibende und Routine-Dienste der Datei nachweislich ignoriert werden (Test über die Erlaubnisliste) und der Parser im Fuzz-Test nicht abstürzt.
+- [ ] 24.4 OBD über UDS vollständig (SAE J1979-2, in Kalifornien ab Modelljahr 2027, siehe [CARB](https://ww2.arb.ca.gov/sae-j1979-2-guidance), nur Suchtreffer): Freeze Frames und Testergebnisse fehlen noch in dieser Betriebsart. Nutzen steigt jedes Jahr, Aufwand Mittel, **[Quelle]** **[Geld]** (die Norm kostet; Aufbau aus freien Unterlagen oder Mitschnitten eines solchen Autos)
+- [ ] 24.5 Verbrauch und Motordaten je EU-Auto aus den CO2-Daten der EU-Umweltagentur (Inhalte der Agentur stehen unter [CC BY 4.0](https://www.eea.europa.eu/en/legal-notice)): Leistung, Hubraum, Normverbrauch zur Typgenehmigung, für den Vergleich im Bordcomputer. Nutzen mittel, Aufwand Mittel, **[Quelle]** Felder und Lizenz des Datensatzes selbst noch prüfen
+- [ ] 24.6 Die Arbeit an Herstellercodes, Buchsen, OBDb und opendbc geht weiter wie in Phase 15. Laufend
+
+## Phase 25: Messen und verstehen
+
+- [ ] 25.1 Eigene Anzeigetafeln: Kacheln, Rundinstrumente und Kurven frei anordnen, mehrere Tafeln speichern, je Auto in der Garage, als Datei teilen. Nutzen hoch, Aufwand Mittel
+  Fertig, wenn eine Tafel mit zwölf Werten am Demo-Auto höchstens so viel Rechenzeit braucht wie die Live-Seite heute (`tools/ui_measure.py`) und im Fahrmodus groß erscheint.
+- [ ] 25.2 Fahrten vergleichen: zwei Mitschnitte übereinander, an der Drehzahl oder am Tempo ausgerichtet, Unterschied je Wert, dazu fertige Auswertungen (Aufwärmkurve, Kraftstofftrimm nach Last, Ladedruck Soll gegen Ist, Anlasserspannung über Monate). Nutzen hoch (schleichende Defekte), Aufwand Mittel
+  Fertig, wenn zwei Demo-Mitschnitte mit eingebautem Unterschied (Nebenluft) genau diesen zeigen.
+- [ ] 25.3 Akkubericht für Elektroautos: Zustand mit Spanne statt einer Scheinzahl, Zellunterschiede, Temperatur, Verlauf über die Zeit, eine geführte Ladung als Gegenprobe, PDF für Verkauf und Kauf. Dazu beobachten, was Euro 7 ([Verordnung 2024/1257](https://eur-lex.europa.eu/eli/reg/2024/1257/oj)) und der Batteriepass ab Februar 2027 ([Verordnung 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542/oj)) an auslesbarem Akkuzustand bringen; die Artikel sind noch nachzulesen. Nutzen sehr hoch und wachsend, Aufwand Mittel, **[Auto]** für die Glaubwürdigkeit
+  Fertig, wenn der Bericht aus Aufnahmen von drei Modellen entsteht und jede Zahl ihre Herkunft nennt (Steuergerät, Rechnung, Schätzung).
+- [ ] 25.4 CAN mithören für Bastler (Profimodus, nur raw CAN): Liste der Kennungen mit Änderung, Rate, DBC laden (opendbc), Signal suchen ("ich blinke jetzt"), Export als DBC und CSV. Nur hören, nie senden. Nutzen mittel, Aufwand Mittel, **[Auto]** zum Beweisen
+  Fertig, wenn ein nachgebauter Bus mit 2 000 Rahmen je Sekunde ohne Verlust angezeigt wird.
+- [ ] 25.5 Motorgeräusch und Zylinder: Laufunruhe aus Drehzahl und Aussetzern je Zylinder, Kompressionsvergleich aus dem Spannungseinbruch beim Anlassen, beides als Hinweis, nicht als Messung. Nutzen mittel, Aufwand Mittel, **[Auto]**
+
+## Phase 26: Dort, wo die Leute sind
+
+- [ ] 26.1 Android als richtige Ausgabe: Schlüssel anlegen, im Release-Lauf signieren, F-Droid vorbereiten, am Telefon mit USB, WLAN, Bluetooth und BLE prüfen. Nutzen sehr hoch (die meisten Vergleichsprogramme sind Telefon-Apps), Aufwand Mittel, **[Entscheidung]** (Schlüssel und vier Geheimnisse legt der Maintainer an) **[Auto]**
+  Fertig, wenn die APK im Release steht, sich über die vorige installieren lässt und 22.1 auf dem Telefon läuft.
+- [ ] 26.2 Windows signieren über die [SignPath Foundation](https://signpath.org/terms.html) (kostenlos für freie Projekte; das Zertifikat lautet auf die Stiftung, jede Signatur wird von Hand freigegeben, alle brauchen Zwei-Faktor-Anmeldung, die Startseite nennt die Regeln). Danach verschwindet die SmartScreen-Warnung mit der Zeit. Nutzen hoch, Aufwand Klein bis Mittel, **[Entscheidung]** (Antrag, ein weiterer Dienst im Release-Lauf; Signierreihenfolge und `latest.json` bleiben, deshalb zuerst auf einem Probelauf)
+  Fertig, wenn eine Probeversion signiert ist, die Updater-Signatur danach über die signierte Datei läuft und `tools/release_assets.py verify` wie bisher besteht.
+- [ ] 26.3 Auf dem Handy im Auto: große Anzeige im Querformat, Vorlesen von Warnungen, später Android Auto (nur Ansicht, die Regeln von Google für den Fahrmodus). Nutzen mittel, Aufwand Mittel, **[Auto]**
+- [ ] 26.4 Im Browser ausprobieren: die Demo ohne Installation auf der Doku-Seite. Dafür lohnt `caruspex-wasm`: gemessen 1,46 MB (0,39 MB gepackt) für alle Regeln, Codes und den Katalog ohne Sprachen, je Sprache etwa 0,17 MB dazu; vorher müssen die Zeilenumwandlungen aus `app/src-tauri` in ein eigenes Crate (`docs/performance.md`). Nutzen hoch (wer es sieht, lädt es eher), Aufwand Groß, **[Entscheidung]** (Pages einschalten)
+  Fertig, wenn die Seite unter 2 MB gepackt startet, kein Netzverkehr außer den eigenen Dateien entsteht und die portierten Regeln aus `app/src/api/mock` gelöscht sind.
+- [ ] 26.5 Winget, Homebrew, Flathub, Snap einreichen (Vorlagen liegen seit 0.14 bereit). Nutzen hoch, Aufwand Klein, **[Entscheidung]**
+- [ ] 26.6 iOS wie in Phase 19: nur mit Entwicklerkonto. **[Geld]**
+- [ ] 26.7 Übersetzungen gegenlesen lassen, mit einer Weblate-Seite statt JSON-Dateien von Hand (Weblate hat einen kostenlosen Tarif für freie Projekte, Bedingungen noch nachzulesen). Nutzen mittel, Aufwand Klein, **[Leute]** **[Entscheidung]**
+
+## Phase 27: Verlässlich bleiben
+
+- [ ] 27.1 Vorschau und Rust vergleichen: ein Rust-Test schreibt für 50 Eingaben die Ergebnisse von Gesundheitscheck, Gebrauchtwagen, Ratgeber und Batterie als JSON, ein Vitest-Lauf rechnet dieselben in `app/src/api/mock`. Fängt das Auseinanderlaufen für einen Bruchteil der Arbeit von 26.4 und entfällt mit ihr. Nutzen mittel, Aufwand Klein
+- [ ] 27.2 Die App von außen prüfen: `tauri-driver` klickt auf Windows und Linux in der CI durch die zehn wichtigsten Wege am Demo-Auto. Nutzen hoch (jede Version), Aufwand Mittel
+- [ ] 27.3 Testabdeckung mit `cargo llvm-cov` einmal messen und die Lücken in den Protokollen schließen, nicht als Zahl zum Vorzeigen. Nutzen mittel, Aufwand Klein
+- [ ] 27.4 `unreachable_pub` als Regel im Arbeitsbereich: danach heißt `pub` wirklich öffentlich (heute 45 Stellen). Vorher für Windows, Linux, macOS und Android geprüft, sonst bricht die CI. Nutzen klein, Aufwand Klein
+- [ ] 27.5 Fuzzing über Nacht (wöchentlicher Lauf, Korpus aus 22.2) für Antworten, Mitschnitte, CSV und später ODX. Nutzen mittel, Aufwand Klein
+- [ ] 27.6 Tag nach gemergtem Release-PR von selbst setzen: nur ein Vorschlag. Spart einen Handgriff, nimmt aber den letzten Moment zum Nachsehen, und ein Token mit Schreibrecht käme in den Lauf. Nutzen klein, Aufwand Klein, **[Entscheidung]**, Empfehlung: nein
+- [ ] 27.7 GTK 3 verlassen, sobald tauri und wry es tun: gtk 0.19 und webkit2gtk 3.0 gibt es (Rust 1.92), wry 0.57 nutzt noch 0.18. Erledigt die offene Meldung zu `glib` (RUSTSEC-2024-0429) und zwei Ausnahmen in `tools/audit_exceptions.toml`. Aufwand Klein, sobald es geht
+
+## Empfohlene Reihenfolge ab 0.24
+
+Nach Nutzen und Aufwand, zuerst was ohne Warten auf andere geht:
+
+1. 22.1 Erster Test am Auto für CAN, mit 22.2: macht aus jedem Nutzer einen Prüfer und ist die Voraussetzung, um überhaupt besser als die Bezahlten zu sein
+2. 24.1 Häufigkeit je Modell aus gemeinfreien Meldungen: der größte sichtbare Unterschied für Halter, ganz am Rechner zu bauen
+3. 22.3 Vollscan merken und vergleichen: das, was Werkstätten an VCDS schätzen
+4. 23.1 bis 23.3 Neu verbinden, Warnschwellen, die zwei fertigen Texte: klein und täglich spürbar
+5. 26.1 und 26.2 Android und signiertes Windows, sobald die Entscheidungen gefallen sind
+6. 25.3 Akkubericht, 25.1 Anzeigetafeln
+7. 24.3 ODX laden: groß, aber ohne Gegenstück bei den Freien
+8. 26.4 Browser-Demo, dann fällt 27.1 weg
+
+## Nicht geplant, auch wenn andere es haben
+
+Codieren, Anpassen, Anlernen, Servicerückstellung per Schreibdienst, Programmieren, Schlüssel, SFD- und SGW-Freischaltung (nach Suchtreffern verlangt VW dafür eine Anmeldung am Server und Stellantis eine über AutoAuth), Regeneration des Partikelfilters von Hand: das sind Eingriffe ins Auto. Ob Caruspex dort je etwas anbietet, entscheidet der Maintainer, nicht dieser Plan.

@@ -29,7 +29,7 @@ fn not_connected() -> String {
 }
 
 /// The protocol name shown in the interface.
-pub fn tp20_label() -> &'static str {
+pub(crate) fn tp20_label() -> &'static str {
     "KWP2000 (TP 2.0)"
 }
 
@@ -57,10 +57,6 @@ impl<L: MessageLink> VagTp20<L> {
 
     pub fn link(&self) -> &L {
         &self.link
-    }
-
-    pub fn link_mut(&mut self) -> &mut L {
-        &mut self.link
     }
 
     fn log(&self, line: &str) {

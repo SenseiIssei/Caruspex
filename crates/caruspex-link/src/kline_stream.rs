@@ -27,7 +27,7 @@ const INTER_BYTE_MS: u64 = 60;
 
 /// The ten bits of the 5-baud wake-up address: start bit, 7 data bits (LSB
 /// first), odd parity, stop bit. `true` is a one (line released).
-pub fn wake_up_bits(address: u8) -> [bool; 10] {
+pub(crate) fn wake_up_bits(address: u8) -> [bool; 10] {
     let mut bits = [false; 10]; // bits[0] is the start bit
     let mut ones = 0;
     for i in 0..7 {

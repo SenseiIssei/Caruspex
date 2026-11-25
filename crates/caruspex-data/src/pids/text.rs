@@ -6,7 +6,7 @@ fn status(value: f64, de: &'static str, en: &'static str) -> String {
     format!("{}{}", l(de, en), value as i32)
 }
 
-pub fn fuel_status_text(value: f64) -> String {
+pub(crate) fn fuel_status_text(value: f64) -> String {
     match value as i32 {
         0 => l(
             "Motor aus oder nicht vorhanden",
@@ -38,7 +38,7 @@ pub fn fuel_status_text(value: f64) -> String {
     }
 }
 
-pub fn secondary_air_text(value: f64) -> String {
+pub(crate) fn secondary_air_text(value: f64) -> String {
     match value as i32 {
         1 => l("vor dem Katalysator", "upstream of the catalytic converter").to_string(),
         2 => l(
@@ -60,7 +60,7 @@ pub fn secondary_air_text(value: f64) -> String {
     }
 }
 
-pub fn obd_standard_text(value: f64) -> String {
+pub(crate) fn obd_standard_text(value: f64) -> String {
     let text = match value as i32 {
         1 => l("OBD-II (Kalifornien)", "OBD-II (California)"),
         2 => l("OBD (Bundesstaaten USA)", "OBD (federal, USA)"),
@@ -124,7 +124,7 @@ pub fn obd_standard_text(value: f64) -> String {
     text.to_string()
 }
 
-pub fn emission_design_text(value: f64) -> String {
+pub(crate) fn emission_design_text(value: f64) -> String {
     match value as i32 {
         0x0E => l("Nutzfahrzeug Euro IV (B1)", "Heavy duty Euro IV (B1)").to_string(),
         0x0F => l("Nutzfahrzeug Euro V (B2)", "Heavy duty Euro V (B2)").to_string(),
@@ -133,7 +133,7 @@ pub fn emission_design_text(value: f64) -> String {
     }
 }
 
-pub fn fuel_type_text(value: f64) -> String {
+pub(crate) fn fuel_type_text(value: f64) -> String {
     let text = match value as i32 {
         0 => l("nicht angegeben", "not available"),
         1 => l("Benzin", "Gasoline"),
@@ -170,7 +170,7 @@ pub fn fuel_type_text(value: f64) -> String {
     text.to_string()
 }
 
-pub fn on_off_text(value: f64) -> String {
+pub(crate) fn on_off_text(value: f64) -> String {
     if value != 0.0 {
         l("an", "on")
     } else {
@@ -179,7 +179,7 @@ pub fn on_off_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn active_text(value: f64) -> String {
+pub(crate) fn active_text(value: f64) -> String {
     if value != 0.0 {
         l("aktiv", "active")
     } else {
@@ -188,7 +188,7 @@ pub fn active_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn engine_type_text(value: f64) -> String {
+pub(crate) fn engine_type_text(value: f64) -> String {
     if value != 0.0 {
         l("Diesel (Selbstzünder)", "Diesel (compression ignition)")
     } else {
@@ -197,7 +197,7 @@ pub fn engine_type_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn automatic_range_text(value: f64) -> String {
+pub(crate) fn automatic_range_text(value: f64) -> String {
     if value != 0.0 {
         l("Fahrstufe eingelegt", "drive range engaged")
     } else {
@@ -206,7 +206,7 @@ pub fn automatic_range_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn manual_gear_text(value: f64) -> String {
+pub(crate) fn manual_gear_text(value: f64) -> String {
     if value != 0.0 {
         l("Gang eingelegt", "in gear")
     } else {
@@ -219,7 +219,7 @@ pub fn manual_gear_text(value: f64) -> String {
 }
 
 /// Boost pressure and turbocharger control: two bits per control loop.
-pub fn control_loop_text(value: f64) -> String {
+pub(crate) fn control_loop_text(value: f64) -> String {
     match value as i32 {
         1 => l("gesteuert (offener Regelkreis)", "open loop"),
         2 => l("geregelt (geschlossener Regelkreis)", "closed loop"),
@@ -230,7 +230,7 @@ pub fn control_loop_text(value: f64) -> String {
 }
 
 /// NOx and particulate "not to exceed" control area (heavy duty diesels).
-pub fn nte_text(value: f64) -> String {
+pub(crate) fn nte_text(value: f64) -> String {
     let v = value as i32;
     let mut parts: Vec<&str> = Vec::new();
     if v & 0x01 != 0 {
@@ -257,7 +257,7 @@ pub fn nte_text(value: f64) -> String {
     parts.join(", ")
 }
 
-pub fn regeneration_text(value: f64) -> String {
+pub(crate) fn regeneration_text(value: f64) -> String {
     if value != 0.0 {
         l("läuft gerade", "in progress")
     } else {
@@ -266,7 +266,7 @@ pub fn regeneration_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn regeneration_type_text(value: f64) -> String {
+pub(crate) fn regeneration_type_text(value: f64) -> String {
     if value != 0.0 {
         l(
             "aktiv (vom Motor ausgelöst)",
@@ -281,7 +281,7 @@ pub fn regeneration_type_text(value: f64) -> String {
     .to_string()
 }
 
-pub fn gear_text(value: f64) -> String {
+pub(crate) fn gear_text(value: f64) -> String {
     let gear = value as i32;
     if gear == 0 {
         return l("Leerlauf", "neutral").to_string();
@@ -290,7 +290,7 @@ pub fn gear_text(value: f64) -> String {
 }
 
 /// Which oxygen sensors are fitted (PID 0x13 and 0x1D).
-pub fn o2_present_text(mask: i32, banks: i32, per_bank: i32) -> String {
+pub(crate) fn o2_present_text(mask: i32, banks: i32, per_bank: i32) -> String {
     let mut out = String::new();
     for bank in 0..banks {
         let sensors: Vec<String> = (0..per_bank)

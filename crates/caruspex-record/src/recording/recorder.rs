@@ -267,6 +267,10 @@ impl Transport for RecordingTransport {
             .as_ref()
             .is_some_and(|t| t.count_hint_allowed())
     }
+
+    fn lost(&mut self) -> bool {
+        lock(&self.shared.inner).as_mut().is_some_and(|t| t.lost())
+    }
 }
 
 /// The running recording of this session, if any.

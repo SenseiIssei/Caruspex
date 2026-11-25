@@ -173,7 +173,7 @@ fn pick_in_service(
 
 /// Full lower-case 128-bit form without braces; 16- and 32-bit short forms
 /// are expanded with the Bluetooth base UUID. Empty for garbage.
-pub fn normalize_ble_uuid(uuid: &str) -> String {
+pub(crate) fn normalize_ble_uuid(uuid: &str) -> String {
     let mut s: String = uuid
         .chars()
         .filter(|&c| c != '{' && c != '}' && !c.is_ascii_whitespace() && c != '\x0B')
@@ -201,7 +201,7 @@ pub fn normalize_ble_uuid(uuid: &str) -> String {
 /// The best serial channel on the device: known adapter profiles first, then
 /// any vendor service with a notify and a write characteristic. Standard
 /// services (generic access, device information, battery) are never used.
-pub fn choose_ble_channel(services: &[BleServiceDesc]) -> BleChannel {
+pub(crate) fn choose_ble_channel(services: &[BleServiceDesc]) -> BleChannel {
     for profile in known_profiles() {
         for (i, service) in services.iter().enumerate() {
             if normalize_ble_uuid(&service.uuid) != profile.service {
@@ -299,7 +299,7 @@ pub fn scan_score(name: &str, profile: Option<&str>) -> i32 {
 /// name, or offer one of the vendor services only OBD adapters use (vLinker,
 /// OBDLink/LELink). Nothing, not even switching on notifications, goes to
 /// any other device.
-pub fn is_obd_adapter(name: &str, channel: &BleChannel) -> bool {
+pub(crate) fn is_obd_adapter(name: &str, channel: &BleChannel) -> bool {
     channel.valid()
         && (obd_adapter_name_score(name) >= 3
             || channel.profile == "vLinker"

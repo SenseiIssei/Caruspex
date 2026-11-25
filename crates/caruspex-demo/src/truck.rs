@@ -99,7 +99,7 @@ const KM_PER_SECOND: f64 = 0.012;
 
 /// The NAME of the other diagnostic tool [`TruckSim::with_tool_on_f9`]
 /// puts on the bus: lower than any tool that can take any address.
-pub const OTHER_TOOL_NAME: u64 = 0x0081_0000_0000_1234;
+pub(crate) const OTHER_TOOL_NAME: u64 = 0x0081_0000_0000_1234;
 
 fn id(priority: u32, pgn: u32, destination: u8, source: u8) -> u32 {
     let pf = (pgn >> 8) & 0xFF;
@@ -205,7 +205,7 @@ impl TruckSim {
 
     /// The dashboard shows 200 000 km less than engine and tachograph, as
     /// after a turned back or swapped instrument cluster.
-    pub fn with_odometer_mismatch(mut self) -> Self {
+    pub(crate) fn with_odometer_mismatch(mut self) -> Self {
         self.dashboard_offset_km = -200_000.0;
         self
     }
@@ -217,7 +217,8 @@ impl TruckSim {
     }
 
     /// True while the engine still reports its two active faults.
-    pub fn has_active_faults(&self) -> bool {
+    #[cfg(test)]
+    pub(crate) fn has_active_faults(&self) -> bool {
         self.active
     }
 

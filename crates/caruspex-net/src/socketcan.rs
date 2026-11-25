@@ -19,6 +19,13 @@ struct SocketCanLink {
     socket: libc::c_int,
     interface: String,
     fd: bool,
+    /// The kernel said that the interface is gone.
+    gone: bool,
+}
+
+/// Errors of a raw CAN socket whose interface was unplugged or taken down.
+fn interface_gone(code: i32) -> bool {
+    matches!(code, libc::ENODEV | libc::ENXIO | libc::ENETDOWN)
 }
 
 /// The smallest CAN FD data length that holds `n` bytes (DLC 9 to 15 are
@@ -44,6 +51,12 @@ impl Drop for SocketCanLink {
 }
 
 impl SocketCanLink {
+    /// After a failed call: remembers whether the interface is gone.
+    fn note_error(&mut self) {
+        let code = std::io::Error::last_os_error().raw_os_error().unwrap_or(0);
+        self.gone |= interface_gone(code);
+    }
+
     fn send_fd(&mut self, frame: &CanFrame) -> bool {
         // SAFETY: canfd_frame is plain data, all zero is a valid value.
         let mut f: libc::canfd_frame = unsafe { std::mem::zeroed() };
@@ -65,6 +78,9 @@ impl SocketCanLink {
                 size_of::<libc::canfd_frame>(),
             )
         };
+        if written < 0 {
+            self.note_error();
+        }
         written == size_of::<libc::canfd_frame>() as isize
     }
 }
@@ -96,7 +112,29 @@ impl CanLink for SocketCanLink {
                 size_of::<libc::can_frame>(),
             )
         };
+        if written < 0 {
+            self.note_error();
+        }
         written == size_of::<libc::can_frame>() as isize
+    }
+
+    fn lost(&mut self) -> bool {
+        if !self.gone {
+            let mut code: libc::c_int = 0;
+            let mut length = size_of::<libc::c_int>() as libc::socklen_t;
+            // SAFETY: code and length are valid for the size given.
+            let got = unsafe {
+                libc::getsockopt(
+                    self.socket,
+                    libc::SOL_SOCKET,
+                    libc::SO_ERROR,
+                    (&mut code as *mut libc::c_int).cast::<libc::c_void>(),
+                    &mut length,
+                )
+            };
+            self.gone = got == 0 && interface_gone(code);
+        }
+        self.gone
     }
 
     fn receive(&mut self, timeout_ms: u64) -> Option<CanFrame> {
@@ -127,6 +165,9 @@ impl CanLink for SocketCanLink {
         } else if got == size_of::<libc::can_frame>() as isize {
             8
         } else {
+            if got < 0 {
+                self.note_error();
+            }
             return None;
         };
         if f.can_id & (libc::CAN_ERR_FLAG | libc::CAN_RTR_FLAG) != 0 {
@@ -261,6 +302,7 @@ pub(crate) fn open(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String
         socket: s,
         interface: interface.to_string(),
         fd,
+        gone: false,
     }))
 }
 
@@ -286,6 +328,9 @@ mod tests {
         assert!(open(&"x".repeat(64), false).is_err());
         assert_eq!(fd_length(9), 12);
         assert_eq!(fd_length(64), 64);
+        assert!(interface_gone(libc::ENODEV));
+        assert!(!interface_gone(libc::EAGAIN));
+        assert!(!interface_gone(libc::ENOBUFS));
     }
 
     // All traffic in one test, so no two tests read each other's frames.

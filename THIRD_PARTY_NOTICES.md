@@ -61,7 +61,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | alloc-no-stdlib | 3.0.0 | BSD-3-Clause | https://github.com/dropbox/rust-alloc-no-stdlib |
 | alloc-stdlib | 0.3.0 | BSD-3-Clause | https://github.com/dropbox/rust-alloc-no-stdlib |
 | android_system_properties | 0.1.6 | MIT OR Apache-2.0 | https://github.com/nical/android_system_properties |
-| anyhow | 1.0.104 | MIT OR Apache-2.0 | https://github.com/dtolnay/anyhow |
+| anyhow | 1.0.105 | MIT OR Apache-2.0 | https://github.com/dtolnay/anyhow |
 | async-broadcast | 0.7.2 | MIT OR Apache-2.0 | https://github.com/smol-rs/async-broadcast |
 | async-channel | 2.5.0 | Apache-2.0 OR MIT | https://github.com/smol-rs/async-channel |
 | async-executor | 1.14.1 | Apache-2.0 OR MIT | https://github.com/smol-rs/async-executor |
@@ -90,7 +90,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | bluez-async | 0.9.0 | MIT OR Apache-2.0 | https://github.com/bluez-rs/bluez-async/ |
 | bluez-generated | 0.4.0 | MIT OR Apache-2.0 | https://github.com/bluez-rs/bluez-async/ |
 | brotli | 9.1.3 | BSD-3-Clause AND MIT | https://github.com/dropbox/rust-brotli |
-| brotli-decompressor | 6.3.2 | BSD-3-Clause/MIT | https://github.com/dropbox/rust-brotli-decompressor |
+| brotli-decompressor | 6.4.0 | BSD-3-Clause/MIT | https://github.com/dropbox/rust-brotli-decompressor |
 | bs58 | 0.5.1 | MIT/Apache-2.0 | https://github.com/Nullus157/bs58-rs |
 | btleplug | 0.13.5 | MIT/Apache-2.0/BSD-3-Clause | https://github.com/deviceplug/btleplug |
 | bumpalo | 3.20.4 | MIT OR Apache-2.0 | https://github.com/fitzgen/bumpalo |
@@ -109,7 +109,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | combine | 4.6.9 | MIT | https://github.com/Marwes/combine |
 | concurrent-queue | 2.5.0 | Apache-2.0 OR MIT | https://github.com/smol-rs/concurrent-queue |
 | const-oid | 0.10.3 | Apache-2.0 OR MIT | https://github.com/RustCrypto/formats |
-| cookie | 0.18.2 | MIT OR Apache-2.0 | https://github.com/SergioBenitez/cookie-rs |
+| cookie | 0.18.3 | MIT OR Apache-2.0 | https://github.com/SergioBenitez/cookie-rs |
 | cookie_store | 0.22.1 | MIT OR Apache-2.0 | https://github.com/pfernie/cookie_store |
 | core-foundation | 0.10.1 | MIT OR Apache-2.0 | https://github.com/servo/core-foundation-rs |
 | core-foundation-sys | 0.8.7 | MIT OR Apache-2.0 | https://github.com/servo/core-foundation-rs |
@@ -117,7 +117,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | core-graphics-types | 0.2.0 | MIT OR Apache-2.0 | https://github.com/servo/core-foundation-rs |
 | cpufeatures | 0.2.17 | MIT OR Apache-2.0 | https://github.com/RustCrypto/utils |
 | cpufeatures | 0.3.1 | MIT OR Apache-2.0 | https://github.com/RustCrypto/utils |
-| crc32fast | 1.5.5 | MIT OR Apache-2.0 | https://github.com/srijs/rust-crc32fast |
+| crc32fast | 1.5.6 | MIT OR Apache-2.0 | https://github.com/srijs/rust-crc32fast |
 | crossbeam-channel | 0.5.17 | MIT OR Apache-2.0 | https://github.com/crossbeam-rs/crossbeam |
 | crossbeam-utils | 0.8.23 | MIT OR Apache-2.0 | https://github.com/crossbeam-rs/crossbeam |
 | crypto-common | 0.1.7 | MIT OR Apache-2.0 | https://github.com/RustCrypto/traits |
@@ -145,7 +145,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | dlopen2_derive | 0.4.3 | MIT | https://github.com/OpenByteDev/dlopen2 |
 | document-features | 0.2.12 | MIT OR Apache-2.0 | https://github.com/slint-ui/document-features |
 | dom_query | 0.28.0 | MIT | https://github.com/niklak/dom_query |
-| dom_query | 0.29.0 | MIT | https://github.com/niklak/dom_query |
+| dom_query | 0.30.0 | MIT | https://github.com/niklak/dom_query |
 | dpi | 0.1.2 | Apache-2.0 AND MIT | https://github.com/rust-windowing/winit |
 | dtoa | 1.0.11 | MIT OR Apache-2.0 | https://github.com/dtolnay/dtoa |
 | dtoa-short | 0.3.5 | MPL-2.0 | https://github.com/upsuper/dtoa-short |
@@ -216,7 +216,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | http-body-util | 0.1.5 | MIT | https://github.com/hyperium/http-body |
 | httparse | 1.10.1 | MIT OR Apache-2.0 | https://github.com/seanmonstar/httparse |
 | hybrid-array | 0.4.15 | MIT OR Apache-2.0 | https://github.com/RustCrypto/hybrid-array |
-| hyper | 1.12.0 | MIT | https://github.com/hyperium/hyper |
+| hyper | 1.13.0 | MIT | https://github.com/hyperium/hyper |
 | hyper-util | 0.1.21 | MIT | https://github.com/hyperium/hyper-util |
 | iana-time-zone | 0.1.65 | MIT OR Apache-2.0 | https://github.com/strawlab/iana-time-zone |
 | iana-time-zone-haiku | 0.1.2 | MIT OR Apache-2.0 | https://github.com/strawlab/iana-time-zone |
@@ -243,11 +243,11 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | javascriptcore-rs | 1.1.2 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
 | javascriptcore-rs-sys | 1.1.1 | MIT | https://github.com/tauri-apps/javascriptcore-rs |
 | jiff | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff | 1.0.2 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff | 1.0.3 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-core | 0.1.8 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-core | 1.0.1 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-core | 1.0.2 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-static | 0.2.46 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
-| jiff-static | 1.0.2 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
+| jiff-static | 1.0.3 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb | 0.1.10 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb | 1.0.0 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
 | jiff-tzdb-platform | 0.1.3 | Unlicense OR MIT | https://github.com/BurntSushi/jiff |
@@ -274,7 +274,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | link-section | 0.19.4 | Apache-2.0 OR MIT | https://github.com/mmastrac/linktime |
 | linux-raw-sys | 0.12.1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/sunfishcode/linux-raw-sys |
 | litemap | 0.8.3 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
-| litrs | 1.0.1 | MIT OR Apache-2.0 | https://github.com/LukasKalbertodt/litrs |
+| litrs | 1.1.0 | MIT OR Apache-2.0 | https://github.com/LukasKalbertodt/litrs |
 | lock_api | 0.4.14 | MIT OR Apache-2.0 | https://github.com/Amanieu/parking_lot |
 | log | 0.4.35 | MIT OR Apache-2.0 | https://github.com/rust-lang/log |
 | mach2 | 0.4.3 | BSD-2-Clause OR MIT OR Apache-2.0 | https://github.com/JohnTitor/mach2 |
@@ -398,7 +398,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | servo_arc | 0.4.3 | MIT OR Apache-2.0 | https://github.com/servo/stylo |
 | servo_arc | 0.5.0 | MIT OR Apache-2.0 | https://github.com/servo/stylo |
 | sha2 | 0.10.9 | MIT OR Apache-2.0 | https://github.com/RustCrypto/hashes |
-| sha2 | 0.11.1 | MIT OR Apache-2.0 | https://github.com/RustCrypto/hashes |
+| sha2 | 0.11.2 | MIT OR Apache-2.0 | https://github.com/RustCrypto/hashes |
 | signal-hook-registry | 1.4.8 | MIT OR Apache-2.0 | https://github.com/vorner/signal-hook |
 | simd-adler32 | 0.3.10 | MIT | https://github.com/mcountryman/simd-adler32 |
 | simd_cesu8 | 1.2.0 | Apache-2.0 OR MIT | https://github.com/seancroach/simd_cesu8 |
@@ -449,13 +449,13 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | tokio-macros | 2.7.2 | MIT | https://github.com/tokio-rs/tokio |
 | tokio-stream | 0.1.19 | MIT | https://github.com/tokio-rs/tokio |
 | tokio-util | 0.7.20 | MIT | https://github.com/tokio-rs/tokio |
-| toml | 1.2.2+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml | 1.2.3+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_datetime | 0.6.3 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_datetime | 1.1.3+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_edit | 0.19.15 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_edit | 0.20.2 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
-| toml_edit | 0.25.20+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
-| toml_parser | 1.1.6+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml_edit | 0.25.21+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
+| toml_parser | 1.1.7+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | toml_writer | 1.2.0+spec-1.1.0 | MIT OR Apache-2.0 | https://github.com/toml-rs/toml |
 | tower | 0.5.3 | MIT | https://github.com/tower-rs/tower |
 | tower-http | 0.6.11 | MIT | https://github.com/tower-rs/tower-http |
@@ -543,7 +543,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | winreg | 0.56.0 | MIT | https://github.com/gentoo90/winreg-rs |
 | wit-bindgen | 0.57.1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | https://github.com/bytecodealliance/wit-bindgen |
 | writeable | 0.6.4 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
-| wry | 0.57.3 | Apache-2.0 OR MIT | https://github.com/tauri-apps/wry |
+| wry | 0.57.4 | Apache-2.0 OR MIT | https://github.com/tauri-apps/wry |
 | x11 | 2.21.0 | MIT | https://github.com/AltF02/x11-rs.git |
 | x11-dl | 2.21.0 | MIT | https://github.com/AltF02/x11-rs.git |
 | xml | 1.4.0 | MIT | https://github.com/kornelski/xml-rs |
@@ -559,7 +559,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 | zerotrie | 0.2.5 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | zerovec | 0.11.9 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
 | zerovec-derive | 0.11.7 | Unicode-3.0 | https://github.com/unicode-org/icu4x |
-| zlib-rs | 0.6.8 | Zlib | https://github.com/trifectatechfoundation/zlib-rs |
+| zlib-rs | 0.6.9 | Zlib | https://github.com/trifectatechfoundation/zlib-rs |
 | zmij | 1.0.23 | MIT | https://github.com/dtolnay/zmij |
 | zvariant | 5.15.1 | MIT | https://github.com/z-galaxy/zbus/ |
 | zvariant_derive | 5.15.1 | MIT | https://github.com/z-galaxy/zbus/ |
@@ -597,7 +597,7 @@ licensed under CC BY-SA 4.0, not under the MIT licence of the code.
 
 ### Text 1
 
-Used by: adler2 2.0.1, anyhow 1.0.104, async-channel 2.5.0, async-executor 1.14.1, async-io 2.6.0, async-lock 3.5.0, async-process 2.5.0, async-recursion 1.2.0, async-signal 0.2.14, async-task 4.7.1, async-trait 0.1.92, atk 0.18.2, atk-sys 0.18.2, atomic-waker 1.1.2, blocking 1.7.0, cairo-rs 0.18.5, cairo-sys-rs 0.18.2, camino 1.2.6, cargo-platform 0.1.9, cargo_metadata 0.19.2, concurrent-queue 2.5.0, ctor 1.0.14, displaydoc 0.2.7, dtoa 1.0.11, dyn-clone 1.0.20, endi 1.1.1, erased-serde 0.4.11, event-listener 5.4.2, event-listener-strategy 0.5.4, fastrand 2.5.0, futures-lite 2.6.1, gdk 0.18.2, gdk-pixbuf 0.18.5, gdk-pixbuf-sys 0.18.0, gdk-sys 0.18.2, gdkwayland-sys 0.18.2, gdkx11 0.18.2, gdkx11-sys 0.18.2, gio 0.18.4, gio-sys 0.18.1, glib 0.18.5, glib-macros 0.18.5, glib-sys 0.18.1, gobject-sys 0.18.0, gtk 0.18.2, gtk-sys 0.18.2, gtk3-macros 0.18.2, hermit-abi 0.5.3, itoa 1.0.19, jni-macros 0.22.4, libappindicator-sys 0.9.0, link-section 0.19.4, linux-raw-sys 0.12.1, num_enum 0.7.6, num_enum_derive 0.7.6, objc2-app-kit 0.3.2, objc2-cloud-kit 0.3.2, objc2-core-bluetooth 0.3.2, objc2-core-data 0.3.2, objc2-core-foundation 0.3.2, objc2-core-graphics 0.3.2, objc2-core-image 0.3.2, objc2-core-location 0.3.2, objc2-core-text 0.3.2, objc2-foundation 0.3.2, objc2-io-surface 0.3.2, objc2-quartz-core 0.3.2, objc2-ui-kit 0.3.2, objc2-user-notifications 0.3.2, objc2-web-kit 0.3.2, once_cell 1.21.4, ordered-stream 0.2.0, pango 0.18.3, pango-sys 0.18.0, parking 2.2.1, pin-project-lite 0.2.18, piper 0.2.5, polling 3.11.0, portable-atomic 1.15.0, portable-atomic-util 0.2.8, proc-macro-crate 1.3.1, proc-macro-crate 2.0.2, proc-macro-crate 3.5.0, proc-macro2 1.0.107, quote 1.0.47, r-efi 5.3.0, r-efi 6.0.0, ref-cast 1.0.27, ref-cast-impl 1.0.27, rustc-hash 2.1.3, rustix 1.1.6, rustversion 1.0.23, semver 1.0.28, serde 1.0.229, serde-untagged 0.1.9, serde_core 1.0.229, serde_derive 1.0.229, serde_derive_internals 0.29.1, serde_json 1.0.154, serde_repr 0.1.21, servo_arc 0.4.3, servo_arc 0.5.0, simd_cesu8 1.2.0, siphasher 1.0.4, syn 1.0.109, syn 2.0.119, syn 3.0.10, thiserror 1.0.69, thiserror 2.0.21, thiserror-impl 1.0.69, thiserror-impl 2.0.21, tinyvec 1.13.3, typeid 1.0.3, unicode-ident 1.0.27, utf8-zero 0.8.1, wasi 0.11.1+wasi-snapshot-preview1, wasip2 1.0.4+wasi-0.2.12, wasm-streams 0.5.0, webview2-com 0.39.1, webview2-com-macros 0.8.1, webview2-com-sys 0.39.1, winnow 0.5.40, winnow 1.0.5, wit-bindgen 0.57.1, x11 2.21.0, x11-dl 2.21.0, zmij 1.0.23, zvariant_utils 4.2.0.
+Used by: adler2 2.0.1, anyhow 1.0.105, async-channel 2.5.0, async-executor 1.14.1, async-io 2.6.0, async-lock 3.5.0, async-process 2.5.0, async-recursion 1.2.0, async-signal 0.2.14, async-task 4.7.1, async-trait 0.1.92, atk 0.18.2, atk-sys 0.18.2, atomic-waker 1.1.2, blocking 1.7.0, cairo-rs 0.18.5, cairo-sys-rs 0.18.2, camino 1.2.6, cargo-platform 0.1.9, cargo_metadata 0.19.2, concurrent-queue 2.5.0, ctor 1.0.14, displaydoc 0.2.7, dtoa 1.0.11, dyn-clone 1.0.20, endi 1.1.1, erased-serde 0.4.11, event-listener 5.4.2, event-listener-strategy 0.5.4, fastrand 2.5.0, futures-lite 2.6.1, gdk 0.18.2, gdk-pixbuf 0.18.5, gdk-pixbuf-sys 0.18.0, gdk-sys 0.18.2, gdkwayland-sys 0.18.2, gdkx11 0.18.2, gdkx11-sys 0.18.2, gio 0.18.4, gio-sys 0.18.1, glib 0.18.5, glib-macros 0.18.5, glib-sys 0.18.1, gobject-sys 0.18.0, gtk 0.18.2, gtk-sys 0.18.2, gtk3-macros 0.18.2, hermit-abi 0.5.3, itoa 1.0.19, jni-macros 0.22.4, libappindicator-sys 0.9.0, link-section 0.19.4, linux-raw-sys 0.12.1, num_enum 0.7.6, num_enum_derive 0.7.6, objc2-app-kit 0.3.2, objc2-cloud-kit 0.3.2, objc2-core-bluetooth 0.3.2, objc2-core-data 0.3.2, objc2-core-foundation 0.3.2, objc2-core-graphics 0.3.2, objc2-core-image 0.3.2, objc2-core-location 0.3.2, objc2-core-text 0.3.2, objc2-foundation 0.3.2, objc2-io-surface 0.3.2, objc2-quartz-core 0.3.2, objc2-ui-kit 0.3.2, objc2-user-notifications 0.3.2, objc2-web-kit 0.3.2, once_cell 1.21.4, ordered-stream 0.2.0, pango 0.18.3, pango-sys 0.18.0, parking 2.2.1, pin-project-lite 0.2.18, piper 0.2.5, polling 3.11.0, portable-atomic 1.15.0, portable-atomic-util 0.2.8, proc-macro-crate 1.3.1, proc-macro-crate 2.0.2, proc-macro-crate 3.5.0, proc-macro2 1.0.107, quote 1.0.47, r-efi 5.3.0, r-efi 6.0.0, ref-cast 1.0.27, ref-cast-impl 1.0.27, rustc-hash 2.1.3, rustix 1.1.6, rustversion 1.0.23, semver 1.0.28, serde 1.0.229, serde-untagged 0.1.9, serde_core 1.0.229, serde_derive 1.0.229, serde_derive_internals 0.29.1, serde_json 1.0.154, serde_repr 0.1.21, servo_arc 0.4.3, servo_arc 0.5.0, simd_cesu8 1.2.0, siphasher 1.0.4, syn 1.0.109, syn 2.0.119, syn 3.0.10, thiserror 1.0.69, thiserror 2.0.21, thiserror-impl 1.0.69, thiserror-impl 2.0.21, tinyvec 1.13.3, typeid 1.0.3, unicode-ident 1.0.27, utf8-zero 0.8.1, wasi 0.11.1+wasi-snapshot-preview1, wasip2 1.0.4+wasi-0.2.12, wasm-streams 0.5.0, webview2-com 0.39.1, webview2-com-macros 0.8.1, webview2-com-sys 0.39.1, winnow 0.5.40, winnow 1.0.5, wit-bindgen 0.57.1, x11 2.21.0, x11-dl 2.21.0, zmij 1.0.23, zvariant_utils 4.2.0.
 
 ```text
 Permission is hereby granted, free of charge, to any
@@ -627,7 +627,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 2
 
-Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.46, jiff 1.0.2, jiff-core 0.1.8, jiff-core 1.0.1, jiff-static 0.2.46, jiff-static 1.0.2, jiff-tzdb 0.1.10, jiff-tzdb 1.0.0, jiff-tzdb-platform 0.1.3, jiff-tzdb-platform 1.0.0, memchr 2.8.3, walkdir 2.5.1.
+Used by: aho-corasick 1.1.5, byteorder 1.5.0, jiff 0.2.46, jiff 1.0.3, jiff-core 0.1.8, jiff-core 1.0.2, jiff-static 0.2.46, jiff-static 1.0.3, jiff-tzdb 0.1.10, jiff-tzdb 1.0.0, jiff-tzdb-platform 0.1.3, jiff-tzdb-platform 1.0.0, memchr 2.8.3, walkdir 2.5.1.
 
 ```text
 The MIT License (MIT)
@@ -655,7 +655,7 @@ THE SOFTWARE.
 
 ### Text 3
 
-Used by: alloc-no-stdlib 3.0.0, brotli 9.1.3, brotli-decompressor 6.3.2.
+Used by: alloc-no-stdlib 3.0.0, brotli 9.1.3, brotli-decompressor 6.4.0.
 
 ```text
 Copyright (c) 2016 Dropbox, Inc.
@@ -2231,7 +2231,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 27
 
-Used by: cookie 0.18.2.
+Used by: cookie 0.18.3.
 
 ```text
 Copyright (c) 2017 Sergio Benitez
@@ -2356,7 +2356,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 31
 
-Used by: crc32fast 1.5.5.
+Used by: crc32fast 1.5.6.
 
 ```text
 MIT License
@@ -3193,7 +3193,7 @@ SOFTWARE.
 
 ### Text 48
 
-Used by: dom_query 0.28.0, dom_query 0.29.0.
+Used by: dom_query 0.28.0, dom_query 0.30.0.
 
 ```text
 MIT License
@@ -4422,7 +4422,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 78
 
-Used by: hyper 1.12.0.
+Used by: hyper 1.13.0.
 
 ```text
 Copyright (c) 2014-2026 Sean McArthur
@@ -5147,7 +5147,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### Text 104
 
-Used by: litrs 1.0.1.
+Used by: litrs 1.1.0.
 
 ```text
 Copyright (c) 2020 Project Developers
@@ -6885,7 +6885,7 @@ SOFTWARE.
 
 ### Text 143
 
-Used by: serde_spanned 0.6.9, serde_spanned 1.1.3, toml 1.2.2+spec-1.1.0, toml_datetime 1.1.3+spec-1.1.0, toml_edit 0.19.15, toml_edit 0.20.2, toml_edit 0.25.20+spec-1.1.0, toml_parser 1.1.6+spec-1.1.0, toml_writer 1.2.0+spec-1.1.0.
+Used by: serde_spanned 0.6.9, serde_spanned 1.1.3, toml 1.2.3+spec-1.1.0, toml_datetime 1.1.3+spec-1.1.0, toml_edit 0.19.15, toml_edit 0.20.2, toml_edit 0.25.21+spec-1.1.0, toml_parser 1.1.7+spec-1.1.0, toml_writer 1.2.0+spec-1.1.0.
 
 ```text
 Copyright (c) Individual contributors
@@ -6982,7 +6982,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 147
 
-Used by: sha2 0.11.1.
+Used by: sha2 0.11.2.
 
 ```text
 Copyright (c) 2016-2026 The RustCrypto Project Developers
@@ -8463,7 +8463,7 @@ THE SOFTWARE.
 
 ### Text 192
 
-Used by: wry 0.57.3.
+Used by: wry 0.57.4.
 
 ```text
 MIT License
@@ -8615,7 +8615,7 @@ DEALINGS IN THE SOFTWARE.
 
 ### Text 197
 
-Used by: zlib-rs 0.6.8.
+Used by: zlib-rs 0.6.9.
 
 ```text
 (C) 2024 Trifecta Tech Foundation

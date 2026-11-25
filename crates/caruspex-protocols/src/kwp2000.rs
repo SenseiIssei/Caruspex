@@ -39,9 +39,6 @@ pub mod service {
     pub const READ_DTC_BY_STATUS: u8 = 0x18;
     pub const READ_ECU_IDENTIFICATION: u8 = 0x1A;
     pub const READ_DATA_BY_LOCAL_ID: u8 = 0x21;
-    pub const SECURITY_ACCESS: u8 = 0x27;
-    pub const START_ROUTINE_BY_LOCAL_ID: u8 = 0x31;
-    pub const STOP_ROUTINE_BY_LOCAL_ID: u8 = 0x32;
     pub const TESTER_PRESENT: u8 = 0x3E;
     pub const STOP_COMMUNICATION: u8 = 0x82;
     pub const NEGATIVE: u8 = 0x7F;
@@ -49,7 +46,6 @@ pub mod service {
 
 /// Session types. 0x89 is the usual diagnostic session at VAG.
 pub mod session {
-    pub const DEFAULT: u8 = 0x81;
     pub const DIAGNOSTICS: u8 = 0x89;
     pub const ADAPTATION: u8 = 0x85;
 }
@@ -232,7 +228,12 @@ pub fn negative_response_text(code: u8) -> String {
 /// A KWP2000 fault entry takes three bytes: two for the number, one for the
 /// status. `ecu_address` is the address of the reporting control unit; it
 /// decides what a VAG number means. -1 if unknown.
-pub fn decode_kwp2000_fault(high: u8, low: u8, status: u8, ecu_address: i32) -> Kwp1281Fault {
+pub(crate) fn decode_kwp2000_fault(
+    high: u8,
+    low: u8,
+    status: u8,
+    ecu_address: i32,
+) -> Kwp1281Fault {
     let code = (i32::from(high) << 8) | i32::from(low);
     Kwp1281Fault {
         code,
@@ -246,7 +247,7 @@ pub fn decode_kwp2000_fault(high: u8, low: u8, status: u8, ecu_address: i32) -> 
 
 /// The readable text of a ReadEcuIdentification 0x9B answer (part number
 /// and description), service byte first.
-pub fn identification_text(reply: &[u8]) -> String {
+pub(crate) fn identification_text(reply: &[u8]) -> String {
     reply
         .iter()
         .skip(1)
@@ -258,7 +259,7 @@ pub fn identification_text(reply: &[u8]) -> String {
 
 /// The entries of a ReadDTCByStatus answer (0x58, count, three bytes per
 /// fault) from the control unit at `ecu_address`.
-pub fn faults_from_reply(reply: &[u8], ecu_address: u8) -> Vec<Kwp1281Fault> {
+pub(crate) fn faults_from_reply(reply: &[u8], ecu_address: u8) -> Vec<Kwp1281Fault> {
     let mut out = Vec::new();
     if reply.len() < 2 {
         return out; // response without entries
@@ -284,7 +285,7 @@ pub fn faults_from_reply(reply: &[u8], ecu_address: u8) -> Vec<Kwp1281Fault> {
 
 /// The values of a ReadDataByLocalIdentifier answer: 0x61, group number,
 /// then three bytes per display field.
-pub fn values_from_reply(reply: &[u8]) -> Vec<MeasuringValue> {
+pub(crate) fn values_from_reply(reply: &[u8]) -> Vec<MeasuringValue> {
     reply
         .get(2..)
         .unwrap_or_default()
@@ -304,7 +305,7 @@ pub fn kwp_checksum(bytes: &[u8]) -> u8 {
 /// data length), target, source, data and checksum. Data longer than 63
 /// bytes moves its length into a byte of its own after the addresses.
 /// VAG and BMW frame it the same way on the K-line, BMW-FAST too.
-pub fn kwp_frame(target: u8, source: u8, payload: &[u8]) -> Vec<u8> {
+pub(crate) fn kwp_frame(target: u8, source: u8, payload: &[u8]) -> Vec<u8> {
     let mut frame = Vec::with_capacity(payload.len() + 5);
     if payload.len() <= 0x3F {
         frame.extend_from_slice(&[0x80 | payload.len() as u8, target, source]);
@@ -319,7 +320,7 @@ pub fn kwp_frame(target: u8, source: u8, payload: &[u8]) -> Vec<u8> {
 /// Reads one KWP2000 message with address header from the line: the
 /// target, the source and the data. `first_ms` is how long the first
 /// byte may take (P2), `byte_ms` the gap between two bytes after it.
-pub fn read_kwp_message<S: ByteStream + ?Sized>(
+pub(crate) fn read_kwp_message<S: ByteStream + ?Sized>(
     stream: &mut S,
     first_ms: u64,
     byte_ms: u64,

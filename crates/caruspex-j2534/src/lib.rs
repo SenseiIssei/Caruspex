@@ -21,9 +21,9 @@ mod bridge;
 mod dll;
 mod wire;
 
-pub use api::{Ioctl, IoctlOut, Message, PassThru, constants, dll_machine, is_32bit_dll};
+pub use api::{Ioctl, IoctlOut, Message, PassThru, constants, is_32bit_dll};
 #[cfg(windows)]
 pub use bridge::serve_pipe;
-pub use bridge::{BRIDGE_EXE, Bridge, bridge_next_to_program, serve};
+pub use bridge::{Bridge, bridge_next_to_program, serve};
 #[cfg(windows)]
 pub use dll::{Dll, LoadError};

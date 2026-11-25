@@ -16,6 +16,7 @@ use serde_json::json;
 
 #[cfg(not(target_os = "android"))]
 use super::ble;
+use super::link::{abandonable, open_serial_port};
 use super::{Job, Worker};
 // Android: USB adapters and classic Bluetooth through the Java side.
 #[cfg(target_os = "android")]
@@ -108,6 +109,7 @@ impl Worker {
             self.elm.set_headers(true);
         }
         self.obd_ready = true;
+        self.watch_link();
         self.batch_refused.clear();
         self.uds_bus = StnBus::HighSpeed;
         // The extra CAN buses an OBDLink can switch to ("ms", "sw"), for the
@@ -175,6 +177,10 @@ impl Worker {
             self.prefer_protocol.clear();
             return;
         }
+        if self.stop_connecting() {
+            self.prefer_protocol.clear();
+            return;
+        }
         // A CAN interface always "answers" (its ELM front end is ours); a
         // bit rate chosen now that differs from the remembered one is
         // still worth its own try.
@@ -237,17 +243,24 @@ impl Worker {
                 ));
             }
             for (i, &b) in bauds.iter().enumerate() {
-                let mut candidate = SerialTransport::new();
-                if let Err(e) = candidate.open(candidate_device, b) {
-                    // While searching, ports that do not open (paired
-                    // Bluetooth ports out of reach) say nothing about the
-                    // adapter; one that opened before counts.
-                    if !(searching && any_opened) {
-                        self.port_failed(&e);
-                    }
-                    error = e;
-                    break;
+                let opened = open_serial_port(&self.interrupt, candidate_device, b);
+                if self.stop_connecting() {
+                    return;
                 }
+                let candidate = match opened {
+                    Some(Ok(port)) => port,
+                    Some(Err(e)) => {
+                        // While searching, ports that do not open (paired
+                        // Bluetooth ports out of reach) say nothing about the
+                        // adapter; one that opened before counts.
+                        if !(searching && any_opened) {
+                            self.port_failed(&e);
+                        }
+                        error = e;
+                        break;
+                    }
+                    None => return,
+                };
                 any_opened = true;
                 if !self.facts.bauds_tried.contains(&b) {
                     self.facts.bauds_tried.push(b);
@@ -271,6 +284,7 @@ impl Worker {
                         self.refresh_status_and_faults();
                         return;
                     }
+                    Err(_) if self.stop_connecting() => return,
                     Err(e) => {
                         // The adapter understood this rate, the car is the
                         // problem: other rates will not help. While
@@ -342,13 +356,24 @@ impl Worker {
         self.busy(true);
         self.set_elm_log();
         self.begin_connect(LinkKind::Wifi);
-        let mut transport = TcpTransport::new();
-        if let Err(error) = transport.open(host, port.clamp(0, 65535) as u16) {
-            self.busy(false);
-            self.port_failed(&error);
-            self.connect_failed(error);
+        let (address, number) = (host.to_string(), port.clamp(0, 65535) as u16);
+        let opened = abandonable(&self.interrupt, move || {
+            let mut transport = TcpTransport::new();
+            transport.open(&address, number).map(|()| transport)
+        });
+        if self.stop_connecting() {
             return;
         }
+        let transport = match opened {
+            Some(Ok(transport)) => transport,
+            Some(Err(error)) => {
+                self.busy(false);
+                self.port_failed(&error);
+                self.connect_failed(error);
+                return;
+            }
+            None => return,
+        };
         self.route = ConnectRoute {
             kind: "tcp".into(),
             device: format!("{host}:{port}"),
@@ -380,7 +405,11 @@ impl Worker {
                 "Suche Bluetooth-Adapter ...",
                 "Searching for Bluetooth adapters ...",
             ));
-            match ble::candidates() {
+            let found = abandonable(&self.interrupt, ble::candidates);
+            if self.stop_connecting() {
+                return;
+            }
+            match found.unwrap_or_else(|| Ok(Vec::new())) {
                 Ok(list) if !list.is_empty() => {
                     self.facts.device_found = Some(true);
                     list
@@ -422,15 +451,21 @@ impl Worker {
                     ),
                     &[&shown],
                 ));
-                match ble::open(&d) {
-                    Ok((t, profile)) => {
+                let target = d.clone();
+                let opened = abandonable(&self.interrupt, move || ble::open(&target));
+                if self.stop_connecting() {
+                    return;
+                }
+                match opened {
+                    Some(Ok((t, profile))) => {
                         self.log(args(
                             &w("Kanal gefunden (%1)", "Channel found (%1)"),
                             &[&profile],
                         ));
                         transport = Some(t);
                     }
-                    Err(e) => {
+                    None => return,
+                    Some(Err(e)) => {
                         self.log(e.clone());
                         error = e;
                     }
@@ -444,9 +479,15 @@ impl Worker {
                     ),
                     &[&shown],
                 ));
-                match ble::open_classic(&d) {
-                    Ok(t) => transport = Some(t),
-                    Err(e) => {
+                let target = d.clone();
+                let opened = abandonable(&self.interrupt, move || ble::open_classic(&target));
+                if self.stop_connecting() {
+                    return;
+                }
+                match opened {
+                    Some(Ok(t)) => transport = Some(t),
+                    None => return,
+                    Some(Err(e)) => {
                         self.log(e.clone());
                         error = e;
                     }
@@ -475,6 +516,7 @@ impl Worker {
                     self.refresh_status_and_faults();
                     return;
                 }
+                Err(_) if self.stop_connecting() => return,
                 Err(e) => {
                     self.log(e.clone());
                     error = e;
@@ -496,14 +538,20 @@ impl Worker {
                 "Searching for the car on the network (ENET and DoIP) ...",
             ));
         }
-        let car = match open_network_car(host) {
-            Ok(car) => car,
-            Err(error) => {
+        let address = host.to_string();
+        let opened = abandonable(&self.interrupt, move || open_network_car(&address));
+        if self.stop_connecting() {
+            return;
+        }
+        let car = match opened {
+            Some(Ok(car)) => car,
+            Some(Err(error)) => {
                 self.busy(false);
                 self.facts.port_opened = Some(false);
                 self.connect_failed(error);
                 return;
             }
+            None => return,
         };
         let vin = if car.vin.is_empty() {
             String::new()
@@ -599,7 +647,16 @@ impl Worker {
             adapter,
             ..caruspex_demo::DemoOptions::default()
         });
-        let ok = self.finish_connect(Box::new(demo), "6", true);
+        // CARUSPEX_DEMO_UNPLUG=<seconds> pulls the demo car's cable after that
+        // time, to see what a lost connection looks like.
+        let unplug = std::env::var("CARUSPEX_DEMO_UNPLUG")
+            .ok()
+            .and_then(|s| s.parse::<f64>().ok());
+        let transport: Box<dyn Transport> = match unplug {
+            Some(seconds) => Box::new(caruspex_demo::Unplugged::after(demo, seconds)),
+            None => Box::new(demo),
+        };
+        let ok = self.finish_connect(transport, "6", true);
         self.busy(false);
         if ok {
             self.refresh_status_and_faults();
@@ -675,10 +732,7 @@ impl Worker {
     }
 
     pub(super) fn close_adapter(&mut self) {
-        self.stop_live();
-        self.forget_can_link();
-        self.elm.disconnect();
-        self.obd_ready = false;
+        self.end_connection();
         self.emit("closed", json!({}));
     }
 }

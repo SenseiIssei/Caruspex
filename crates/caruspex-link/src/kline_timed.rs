@@ -25,13 +25,11 @@ use crate::serial::Serial;
 use crate::transport::{ByteStream, LineParity};
 
 /// 5 baud: 200 ms per bit.
-pub const BIT_US: u64 = 200_000;
+pub(crate) const BIT_US: u64 = 200_000;
 /// ISO 9141-2 allows 5 % on the bit time.
 pub const BIT_TOLERANCE_US: u64 = 10_000;
 /// Beyond this many control units no longer recognise the address.
 pub const BIT_LIMIT_US: u64 = 20_000;
-/// W1 max: the sync byte comes within 300 ms of the address.
-pub const SYNC_MAX_US: u64 = 300_000;
 /// W4 max: the inverted second key byte must be on the line within 50 ms.
 pub const REPLY_MAX_US: u64 = 50_000;
 /// The idle time before the address, as in KLineStream.
@@ -304,10 +302,6 @@ impl<L: RawKLine> TimedKLine<L> {
         self.baud_after_init = baud;
     }
 
-    pub fn baud_after_init(&self) -> u32 {
-        self.baud_after_init
-    }
-
     /// The measurements of the last wake-up, taken out.
     pub fn take_trace(&mut self) -> Option<WakeTrace> {
         self.trace.take()
@@ -319,10 +313,6 @@ impl<L: RawKLine> TimedKLine<L> {
 
     pub fn line_mut(&mut self) -> &mut L {
         &mut self.line
-    }
-
-    pub fn into_line(self) -> L {
-        self.line
     }
 
     /// Waits on the line's clock, with the line idle.

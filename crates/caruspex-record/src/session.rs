@@ -32,12 +32,12 @@ use caruspex_link::Elm327;
 use caruspex_protocols::{Uds, UdsRefusal};
 
 /// Without a request for this long a unit gets 3E 00 before the next values.
-pub const KEEP_ALIVE_MS: u64 = 2000;
+pub(crate) const KEEP_ALIVE_MS: u64 = 2000;
 /// After this long without a request the unit has most likely left the
 /// session by itself (S3 is 5 s); it is entered again instead of kept.
-pub const ASSUME_LEFT_MS: u64 = 4500;
+pub(crate) const ASSUME_LEFT_MS: u64 = 4500;
 /// A refused session is not asked for again before this.
-pub const RETRY_MS: u64 = 30_000;
+pub(crate) const RETRY_MS: u64 = 30_000;
 /// Timeout of the session requests.
 const SESSION_TIMEOUT_MS: u64 = 1000;
 

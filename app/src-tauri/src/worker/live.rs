@@ -89,9 +89,9 @@ impl Worker {
             slice.push(self.poll_pids[self.poll_index % n]);
             self.poll_index = (self.poll_index + 1) % n;
         }
-        for value in self.with_obd(|o| o.read_live_batch(&slice, false)) {
-            self.emit_live(to_row(&value));
-        }
+        let values = self.with_obd(|o| o.read_live_batch(&slice, false));
+        let rows: Vec<LiveRow> = values.iter().map(to_row).collect();
+        self.emit_live(&rows);
     }
 
     // --- Manufacturer and user values (CustomPids) ------------------------------
@@ -139,6 +139,7 @@ impl Worker {
         let mut ok = 0;
         let mut bad = 0;
         let mut first_error = String::new();
+        let mut rows = Vec::new();
         let readings = {
             // The reader restores the normal OBD addressing when it goes out
             // of scope, so the next OBD request works as before. The
@@ -153,7 +154,7 @@ impl Worker {
                 ok += 1;
                 let mut row = to_row(&r.value);
                 row.session = r.session;
-                self.emit_live(row);
+                rows.push(row);
             } else {
                 bad += 1;
                 if pid.session != 0 {
@@ -161,13 +162,14 @@ impl Worker {
                     let mut row = to_row(&r.value);
                     row.text = l("nicht verfügbar", "unavailable").to_string();
                     row.reason = r.error.clone();
-                    self.emit_live(row);
+                    rows.push(row);
                 }
                 if first_error.is_empty() {
                     first_error = r.error;
                 }
             }
         }
+        self.emit_live(&rows);
         (ok, bad, first_error)
     }
 

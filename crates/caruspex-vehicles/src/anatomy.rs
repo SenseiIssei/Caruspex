@@ -56,11 +56,11 @@ pub struct Measured {
 }
 
 /// Bits of [`Dimensions::measured`]: which values are real.
-pub const MEASURED_LENGTH: u8 = 1;
-pub const MEASURED_WIDTH: u8 = 2;
-pub const MEASURED_HEIGHT: u8 = 4;
-pub const MEASURED_WHEELBASE: u8 = 8;
-pub const MEASURED_TRACK: u8 = 16;
+pub(crate) const MEASURED_LENGTH: u8 = 1;
+pub(crate) const MEASURED_WIDTH: u8 = 2;
+pub(crate) const MEASURED_HEIGHT: u8 = 4;
+pub(crate) const MEASURED_WHEELBASE: u8 = 8;
+pub(crate) const MEASURED_TRACK: u8 = 16;
 
 /// Outer dimensions in millimetres.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -186,7 +186,7 @@ pub fn typical_dimensions(body: BodyType, year: i32) -> Dimensions {
 }
 
 /// The Wikidata values of a generation, if it has any.
-pub fn measured_for(g: &VehicleGeneration) -> Option<&'static Measured> {
+pub(crate) fn measured_for(g: &VehicleGeneration) -> Option<&'static Measured> {
     MEASURED
         .binary_search_by(|m| {
             (
@@ -207,7 +207,7 @@ pub fn measured_for(g: &VehicleGeneration) -> Option<&'static Measured> {
 /// Typical dimensions with the real values put in. A value Wikidata lacks
 /// follows the real ones in proportion: wheelbase and length from each
 /// other, track from the width, so a short car keeps a short wheelbase.
-pub fn merge_measured(typical: Dimensions, m: &Measured) -> Dimensions {
+pub(crate) fn merge_measured(typical: Dimensions, m: &Measured) -> Dimensions {
     let ratio = |real: u32, typ: u32, value: u32| -> u32 {
         if real == 0 || typ == 0 {
             value

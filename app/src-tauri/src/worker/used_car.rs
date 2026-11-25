@@ -226,10 +226,12 @@ impl Worker {
         let read = self.with_obd(|o| o.read_faults());
         input.faults_read = read.is_ok();
         let faults = read.unwrap_or_default();
-        self.emit(
-            "faults",
-            json!({ "rows": faults.iter().map(fault_row).collect::<Vec<_>>() }),
-        );
+        if input.faults_read {
+            self.emit(
+                "faults",
+                json!({ "rows": faults.iter().map(fault_row).collect::<Vec<_>>() }),
+            );
+        }
         let permanent = l("dauerhaft", "permanent");
         input.faults = faults
             .iter()
@@ -268,7 +270,7 @@ impl Worker {
             let Some(value) = self.with_obd(|o| o.read_live(pid)) else {
                 continue;
             };
-            self.emit_live(to_row(&value));
+            self.emit_live(&[to_row(&value)]);
             let v = Some(value.value);
             match pid {
                 0xA6 => input.odometer_km = v,
@@ -305,7 +307,7 @@ impl Worker {
             };
             for (pid, reading) in odometers.iter().zip(readings) {
                 if reading.ok {
-                    self.emit_live(to_row(&reading.value));
+                    self.emit_live(&[to_row(&reading.value)]);
                     input.other_mileage.push(MileageReading {
                         source: pid.name.clone(),
                         km: reading.value.value,
@@ -372,9 +374,8 @@ impl Worker {
                 })
                 .collect();
             health.add_snapshot(&snapshot, t);
-            for value in &values {
-                self.emit_live(to_row(value));
-            }
+            let rows: Vec<LiveRow> = values.iter().map(to_row).collect();
+            self.emit_live(&rows);
             let elapsed = app_seconds() - start;
             let left = (live_seconds - elapsed as i32).max(0);
             progress(
@@ -401,6 +402,11 @@ impl Worker {
             });
         }
 
+        if self.elm.known_lost() {
+            // Half a check says nothing about the car; "closed" follows.
+            self.busy(false);
+            return;
+        }
         let report = evaluate_used_car(&input);
         let row = used_car_row(&input, &report);
         progress(self, w("Fertig", "Done"), 100);
@@ -439,7 +445,7 @@ impl Worker {
         let mut got = std::collections::HashMap::new();
         for (v, reading) in values.iter().zip(readings) {
             if reading.ok {
-                self.emit_live(to_row(&reading.value));
+                self.emit_live(&[to_row(&reading.value)]);
                 got.insert(v.short_en, reading.value.value);
             } else if facts.error.is_empty() {
                 facts.error = reading.error;

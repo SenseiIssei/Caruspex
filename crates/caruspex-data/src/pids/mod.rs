@@ -101,11 +101,13 @@ pub const fn live_key(pid: i32, sub: i32) -> i32 {
     (pid & 0xFF) | (sub << 8)
 }
 
-pub const fn live_key_pid(key: i32) -> i32 {
+#[cfg(test)]
+pub(crate) const fn live_key_pid(key: i32) -> i32 {
     key & 0xFF
 }
 
-pub const fn live_key_sub(key: i32) -> i32 {
+#[cfg(test)]
+pub(crate) const fn live_key_sub(key: i32) -> i32 {
     key >> 8
 }
 
@@ -143,7 +145,7 @@ pub struct PidValueSpec {
 }
 
 impl PidValueSpec {
-    pub fn is_available(&self, data: &[i32]) -> bool {
+    pub(crate) fn is_available(&self, data: &[i32]) -> bool {
         if data.len() < self.need_bytes {
             return false;
         }
@@ -156,7 +158,7 @@ impl PidValueSpec {
     }
 
     /// The number the raw bytes stand for.
-    pub fn calculate(&self, data: &[i32]) -> f64 {
+    pub(crate) fn calculate(&self, data: &[i32]) -> f64 {
         (self.calc)(data)
     }
 
@@ -193,7 +195,8 @@ pub struct PidSpec {
 
 impl PidSpec {
     /// The number the raw bytes stand for (primary value).
-    pub fn calculate(&self, data: &[i32]) -> f64 {
+    #[cfg(test)]
+    pub(crate) fn calculate(&self, data: &[i32]) -> f64 {
         (self.calc)(data)
     }
 
@@ -220,7 +223,8 @@ pub fn find_pid(pid: i32) -> Option<&'static PidSpec> {
 }
 
 /// Looks up a single value by its key (see `live_key`).
-pub fn find_pid_value(key: i32) -> Option<&'static PidValueSpec> {
+#[cfg(test)]
+pub(crate) fn find_pid_value(key: i32) -> Option<&'static PidValueSpec> {
     let spec = find_pid(live_key_pid(key))?;
     let sub = live_key_sub(key);
     if sub < 0 {
@@ -230,7 +234,8 @@ pub fn find_pid_value(key: i32) -> Option<&'static PidValueSpec> {
 }
 
 /// Number of individual values over all PIDs.
-pub fn pid_value_count() -> usize {
+#[cfg(test)]
+pub(crate) fn pid_value_count() -> usize {
     pid_table().iter().map(|s| s.values.len()).sum()
 }
 

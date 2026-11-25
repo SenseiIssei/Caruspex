@@ -39,6 +39,11 @@ pub trait CanLink: Send {
     fn fd(&self) -> bool {
         false
     }
+    /// The interface is known to be gone (unplugged, taken down), see
+    /// [`Transport::lost`].
+    fn lost(&mut self) -> bool {
+        false
+    }
 }
 
 /// A [`CanLink`] that several users share, one call at a time: the ELM
@@ -72,6 +77,9 @@ impl CanLink for SharedCanLink {
     }
     fn fd(&self) -> bool {
         self.lock().fd()
+    }
+    fn lost(&mut self) -> bool {
+        self.lock().lost()
     }
 }
 
@@ -626,6 +634,10 @@ impl Transport for CanElm {
         self.name.clone()
     }
 
+    fn lost(&mut self) -> bool {
+        self.link.lost()
+    }
+
     fn iso_tp_batch(&mut self) -> Option<&mut dyn IsoTpBatch> {
         if self.monitoring { None } else { Some(self) }
     }
@@ -1005,6 +1017,10 @@ impl CanLink for SlcanLink {
         }
         name
     }
+
+    fn lost(&mut self) -> bool {
+        self.serial.lost()
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1021,18 +1037,6 @@ pub fn socket_can_interfaces() -> Vec<String> {
     {
         Vec::new()
     }
-}
-
-/// The interface must already be up at the right bit rate
-/// (ip link set can0 up type can bitrate 500000).
-pub fn open_socket_can(interface: &str) -> Result<Box<dyn CanLink>, String> {
-    open_socket_can_with(interface, false)
-}
-
-/// SocketCAN with CAN FD: the interface must be up with FD on (ip link set
-/// can0 up type can bitrate 500000 dbitrate 2000000 fd on).
-pub fn open_socket_can_fd(interface: &str) -> Result<Box<dyn CanLink>, String> {
-    open_socket_can_with(interface, true)
 }
 
 fn open_socket_can_with(interface: &str, fd: bool) -> Result<Box<dyn CanLink>, String> {
@@ -1136,7 +1140,7 @@ pub enum KLineKind {
 
 /// The driver DLL for a registered device name, a DLL path as it is, or the
 /// first usable driver when `place` is empty.
-pub fn j2534_library(place: &str) -> String {
+pub(crate) fn j2534_library(place: &str) -> String {
     let all = j2534_devices();
     let mut library = place.to_string();
     for d in &all {

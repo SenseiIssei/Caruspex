@@ -10,7 +10,6 @@ use crate::transport::{IsoTpBatch, LogFn, Transport};
 
 mod j1939;
 mod stn;
-pub use j1939::parse_j1939_line;
 pub use stn::{StnBus, split_batch_answer, stn_buses};
 
 /// Default wait of [`Elm327::send`] in milliseconds.
@@ -673,6 +672,9 @@ pub struct Elm327 {
     interrupt: Option<Arc<AtomicBool>>,
     /// The last command got nothing back at all, not even a prompt.
     silent: bool,
+    /// The transport said that the way to the adapter is gone
+    /// ([`Elm327::link_lost`]).
+    lost: bool,
 }
 
 /// Reads until a prompt came or `ms` passed; true if the prompt came.
@@ -756,6 +758,7 @@ impl Elm327 {
             answer_counts: Vec::new(),
             interrupt: None,
             silent: false,
+            lost: false,
         }
     }
 
@@ -775,6 +778,59 @@ impl Elm327 {
         raised(self.interrupt.as_deref())
     }
 
+    /// The way to the adapter is gone for good ([`Transport::lost`]): the
+    /// cable was pulled, the connection closed. Asks the transport, sends
+    /// nothing. Every command returns at once from then on, so a scan over
+    /// a hundred control units ends instead of waiting for each of them.
+    pub fn link_lost(&mut self) -> bool {
+        if !self.lost && self.transport.as_mut().is_some_and(|t| t.lost()) {
+            self.lost = true;
+        }
+        self.lost
+    }
+
+    /// What [`Elm327::link_lost`] or a command found out, without asking
+    /// again.
+    pub fn known_lost(&self) -> bool {
+        self.lost
+    }
+
+    /// From now on every command returns at once without being sent, until
+    /// the next connect: the way to the adapter counts as gone.
+    pub fn give_up(&mut self) {
+        self.lost = true;
+        self.silent = true;
+    }
+
+    /// The last command got nothing back at all, not even a prompt: the
+    /// adapter is gone or hung. A "NO DATA" of the car is an answer.
+    pub fn silent(&self) -> bool {
+        self.silent
+    }
+
+    /// Whether an adapter that fell silent is still there: asks for its name
+    /// (ATI, which changes nothing in adapter or car) up to `tries` times.
+    /// True as soon as anything comes back.
+    pub fn answers(&mut self, tries: u32, timeout_ms: u64) -> bool {
+        (0..tries).any(|_| {
+            self.at("I", timeout_ms);
+            !self.silent && !self.lost
+        })
+    }
+
+    /// The answer to a command when the way to the adapter is gone.
+    fn lost_result() -> ElmResult {
+        ElmResult {
+            status: ElmStatus::AdapterError,
+            message: l(
+                "Die Verbindung zum Adapter ist weg.",
+                "The connection to the adapter is gone.",
+            )
+            .to_string(),
+            ..ElmResult::default()
+        }
+    }
+
     /// The answer to a command that was cut short or not sent because the
     /// interrupt flag is up.
     fn interrupted_result() -> ElmResult {
@@ -788,9 +844,6 @@ impl Elm327 {
     pub fn set_log(&mut self, log: LogFn) {
         self.log = Some(log);
     }
-    pub fn clear_log(&mut self) {
-        self.log = None;
-    }
 
     fn log(&self, line: &str) {
         if let Some(log) = &self.log {
@@ -803,9 +856,6 @@ impl Elm327 {
     /// not everything is set to the same value.
     pub fn set_timeout_scale(&mut self, scale: f64) {
         self.timeout_scale = if scale > 0.0 { scale } else { 1.0 };
-    }
-    pub fn timeout_scale(&self) -> f64 {
-        self.timeout_scale
     }
     /// Log every sent line together with its response.
     pub fn set_verbose(&mut self, verbose: bool) {
@@ -849,9 +899,6 @@ impl Elm327 {
     /// The transport in use, if any. Elm327 keeps ownership.
     pub fn transport(&self) -> Option<&dyn Transport> {
         self.transport.as_deref()
-    }
-    pub fn transport_mut(&mut self) -> Option<&mut (dyn Transport + 'static)> {
-        self.transport.as_deref_mut()
     }
     /// Several ISO-TP sessions at once, when connected through a raw CAN
     /// interface; `None` for a real ELM327 (and while recording, so the
@@ -965,6 +1012,9 @@ impl Elm327 {
         if raised(interrupt) {
             return Self::interrupted_result();
         }
+        if self.lost {
+            return Self::lost_result();
+        }
         t.flush_input();
         let mut line = command.as_bytes().to_vec();
         line.push(b'\r');
@@ -986,6 +1036,11 @@ impl Elm327 {
                     prompt = true;
                     break;
                 }
+            } else if t.lost() {
+                // Nothing will come any more.
+                self.lost = true;
+                self.silent = true;
+                return Self::lost_result();
             }
             if raised(interrupt) {
                 break;
@@ -1024,6 +1079,16 @@ impl Elm327 {
         }
         if sent == "ATH0" || sent == "ATZ" || sent == "ATD" || sent == "ATWS" {
             self.headers = false;
+        }
+        // "Nobody there" may mean that the interface itself is gone: a raw
+        // CAN interface answers through the front end in the program, which
+        // knows no more than that nothing came.
+        if result.lines.len() == 1
+            && ["NO DATA", "UNABLE TO CONNECT", "CAN ERROR"]
+                .iter()
+                .any(|word| starts_with_upper(&result.lines[0], word))
+        {
+            self.link_lost();
         }
         // Any setting may change who answers (headers, filters, the target
         // address, the protocol): the answer counts learned so far no longer
@@ -1391,12 +1456,17 @@ impl Elm327 {
         let deadline = now_ms() + duration_ms;
         let complete = |b: &[u8]| b.iter().filter(|&&c| c == b'\r').count();
         while now_ms() < deadline && complete(&buffer) <= max_lines && !raised(interrupt) {
-            buffer.extend(t.read(50));
+            let chunk = t.read(50);
+            if chunk.is_empty() && t.lost() {
+                self.lost = true;
+                break;
+            }
+            buffer.extend(chunk);
             if buffer.contains(&b'>') {
                 break; // stopped by itself (BUFFER FULL)
             }
         }
-        if !buffer.contains(&b'>') {
+        if !self.lost && !buffer.contains(&b'>') {
             // Any character ends the monitor; the prompt follows.
             t.write(b"\r");
             let stop = now_ms() + 1500;
@@ -1577,6 +1647,8 @@ impl Elm327 {
         protocol_order: &str,
     ) -> Result<(), String> {
         self.transport = Some(transport);
+        self.silent = false;
+        self.lost = false;
         self.connected = false;
         self.j1939_kbit = 0;
         self.j1939_header = None;
@@ -1757,6 +1829,7 @@ impl Elm327 {
             self.at("PC", 2000);
         }
         self.silent = false;
+        self.lost = false;
         self.transport = None;
         self.connected = false;
         self.headers = false;

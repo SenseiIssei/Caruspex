@@ -120,11 +120,11 @@ pub struct TripSummary {
 /// Thresholds of the eco score.
 pub mod eco {
     /// m/s^2, about 9 km/h per second.
-    pub const HARSH_ACCEL: f64 = 2.5;
+    pub(crate) const HARSH_ACCEL: f64 = 2.5;
     /// m/s^2.
-    pub const HARSH_BRAKE: f64 = -3.0;
-    pub const HIGH_RPM_PETROL: f64 = 3000.0;
-    pub const HIGH_RPM_DIESEL: f64 = 2500.0;
+    pub(crate) const HARSH_BRAKE: f64 = -3.0;
+    pub(crate) const HIGH_RPM_PETROL: f64 = 3000.0;
+    pub(crate) const HIGH_RPM_DIESEL: f64 = 2500.0;
 }
 
 const PID_RPM: i32 = 0x0C;
@@ -249,11 +249,11 @@ impl TripComputer {
     }
 
     /// Kg air per kg fuel.
-    pub fn stoichiometric_ratio(fuel: FuelType) -> f64 {
+    pub(crate) fn stoichiometric_ratio(fuel: FuelType) -> f64 {
         if fuel == FuelType::Diesel { 14.5 } else { 14.7 }
     }
 
-    pub fn density_kg_per_litre(fuel: FuelType) -> f64 {
+    pub(crate) fn density_kg_per_litre(fuel: FuelType) -> f64 {
         if fuel == FuelType::Diesel {
             0.832
         } else {
@@ -261,7 +261,7 @@ impl TripComputer {
         }
     }
 
-    pub fn co2_kg_per_litre(fuel: FuelType) -> f64 {
+    pub(crate) fn co2_kg_per_litre(fuel: FuelType) -> f64 {
         if fuel == FuelType::Diesel { 2.65 } else { 2.37 }
     }
 

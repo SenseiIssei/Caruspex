@@ -47,8 +47,8 @@ export default function GaragePage() {
   }, [sessionVin, identity]);
 
   // Odometer of the connected car, for the service plan.
-  useBackendEvent("live_value", ({ row }) => {
-    if (row.pid === 0xa6) setCurrentKm(row.value);
+  useBackendEvent("live_values", ({ rows }) => {
+    for (const row of rows) if (row.pid === 0xa6) setCurrentKm(row.value);
   });
 
   useAppEvent<string>("dev:page", (name) => {

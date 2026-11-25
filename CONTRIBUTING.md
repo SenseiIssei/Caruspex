@@ -115,7 +115,8 @@ These help most while developing:
 | `--report <file>` | After connecting, write a diagnostic report (PDF, or HTML for `.html`) and quit; `--report-wait <ms>` (default 8000). |
 | `--tcp`, `--port`, `--bluetooth`, `--enet`, `--can` | Connect to a real adapter at start, see `caruspex --help`. |
 
-Environment variables for tests: `CARUSPEX_GARAGE=<file.json>` uses a throwaway garage instead of yours (the
+Environment variables for tests: `CARUSPEX_DEMO_UNPLUG=<seconds>` pulls the demo car's cable after that time, to
+see what a lost connection looks like. `CARUSPEX_GARAGE=<file.json>` uses a throwaway garage instead of yours (the
 screenshot and smoke test scripts do that), `CARUSPEX_CRASH_DIR` moves the crash reports.
 
 Example: `cargo run -p caruspex-app -- --demo --mode pro --language en --page faults --shot faults.png --size 1440x920`.

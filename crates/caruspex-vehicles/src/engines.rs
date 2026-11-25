@@ -80,14 +80,14 @@ pub fn engine_codes(g: &VehicleGeneration) -> Vec<(&'static str, EngineFuel)> {
 }
 
 /// Whether the engine has a map-controlled thermostat.
-pub fn map_thermostat(code: &str) -> bool {
+pub(crate) fn map_thermostat(code: &str) -> bool {
     MAP_THERMOSTAT
         .iter()
         .any(|(prefix, _)| code.starts_with(prefix))
 }
 
 /// Target values of one engine.
-pub fn targets_for_code(code: &str, fuel: EngineFuel) -> EngineTargets {
+pub(crate) fn targets_for_code(code: &str, fuel: EngineFuel) -> EngineTargets {
     let (idle_min, idle_max) = match fuel {
         EngineFuel::Petrol => (600.0, 950.0),
         EngineFuel::Diesel => (650.0, 950.0),

@@ -129,6 +129,7 @@ export function refreshStatusAndFaults(): void {
 
 async function connectDemo(): Promise<void> {
   if (link.connected) closeLink(false);
+  const attempt = ++link.attempt;
   emit("busy", { active: true });
   log("ATZ");
   await wait(250);
@@ -137,6 +138,11 @@ async function connectDemo(): Promise<void> {
   await wait(350);
   log(`0100: ${PROTOCOL_TEXT}`);
   await wait(250);
+  if (attempt !== link.attempt) {
+    // Cancelled in the meantime.
+    emit("busy", { active: false });
+    return;
+  }
   car.restart();
   link.connected = true;
   emit("connected", { adapter: ADAPTER_VERSION, transport: L("Demo-Fahrzeug (eingebaut)", "Demo vehicle (built-in)"), protocol: PROTOCOL_TEXT, rawCan: false, stnBuses: [] });
@@ -147,7 +153,9 @@ async function connectDemo(): Promise<void> {
 // A failed attempt, with the checklist of the connection assistant built
 // from what the attempt would have found out in a browser.
 async function noHardware(error: string, facts?: ConnectFacts): Promise<void> {
+  const attempt = ++link.attempt;
   await busy(() => wait(900));
+  if (attempt !== link.attempt) return;
   emit("failed", facts ? { error, help: connectHelp(facts) } : { error });
 }
 
@@ -161,6 +169,7 @@ function stopLiveLoop(silent = false): void {
 }
 
 function closeLink(notify = true): void {
+  link.attempt++;
   stopLiveLoop(true);
   if (link.recording) {
     emit("recording_state", { active: false, path: link.recording, exchanges: link.exchanges, error: "" });
@@ -190,6 +199,7 @@ function pollTick(): void {
   const t0 = car.now();
   const sample = simulate(t0);
   const asked: number[] = [];
+  const rows: LiveRow[] = [];
   for (let i = 0; i < 6 && i < link.livePids.length; i++) {
     const pid = link.livePids[link.liveIndex % link.livePids.length]!;
     link.liveIndex = (link.liveIndex + 1) % link.livePids.length;
@@ -198,10 +208,11 @@ function pollTick(): void {
     const keys = pid > 0xff ? [pid] : keysOfPid(pid);
     for (const key of keys) {
       const row = liveRow(key, sample, car, t0, appSeconds());
-      if (row) emit("live_value", { row });
+      if (row) rows.push(row);
     }
     if (link.recording) link.exchanges++;
   }
+  emit("live_values", { rows });
   // The worker logs each request of a tick with its answer when the raw log
   // is on (Elm327::request); the log panel and its cost are part of a live
   // session in the app, so the preview sends the same number of lines.
@@ -361,7 +372,7 @@ export const sessionHandlers: PartialHandlers = {
       emit("freeze_frames", { frames });
       for (const pid of [0x05, 0x2f, 0x42, 0xa6]) {
         const row = readLive(pid);
-        if (row) emit("live_value", { row });
+        if (row) emit("live_values", { rows: [row] });
       }
     });
   },

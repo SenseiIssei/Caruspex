@@ -12,6 +12,7 @@ authors.workspace = true
 caruspex-i18n.workspace = true
 serialport.workspace = true
 log.workspace = true
+socket2 = { version = "0.6.5", features = ["all"] }
 btleplug = { workspace = true, optional = true }
 tokio = { workspace = true, optional = true }
 futures = { version = "0.3.31", optional = true }

@@ -12,12 +12,14 @@
 use std::collections::VecDeque;
 use std::path::PathBuf;
 use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
 use caruspex_i18n::l;
 use caruspex_j2534::constants::{
-    CAN_29BIT_ID, CAN_ID_BOTH, FIVE_BAUD_INVERTED_KEY_BYTE, FIVE_BAUD_MOD, ISO9141_K_LINE_ONLY,
-    ISO9141_NO_CHECKSUM, LOOPBACK, P3_MIN, PASS_FILTER, PROTOCOL_CAN, PROTOCOL_FD_CAN,
-    PROTOCOL_ISO9141, PROTOCOL_ISO14230, START_OF_MESSAGE, TX_MSG_TYPE,
+    CAN_29BIT_ID, CAN_ID_BOTH, ERR_BRIDGE, ERR_BRIDGE_TIMEOUT, ERR_DEVICE_NOT_CONNECTED,
+    FIVE_BAUD_INVERTED_KEY_BYTE, FIVE_BAUD_MOD, ISO9141_K_LINE_ONLY, ISO9141_NO_CHECKSUM, LOOPBACK,
+    P3_MIN, PASS_FILTER, PROTOCOL_CAN, PROTOCOL_FD_CAN, PROTOCOL_ISO9141, PROTOCOL_ISO14230,
+    START_OF_MESSAGE, TX_MSG_TYPE,
 };
 use caruspex_j2534::{Bridge, Dll, Ioctl, IoctlOut, LoadError, Message, PassThru};
 use caruspex_link::ByteStream;
@@ -127,6 +129,10 @@ struct Driver {
     channel: u32,
     /// The device is open, so Drop closes it.
     opened: bool,
+    /// The driver said that its device is gone, or the 32-bit helper ended.
+    gone: bool,
+    /// The driver in the 32-bit helper did not come back in time.
+    timed_out: bool,
 }
 
 impl Driver {
@@ -137,6 +143,8 @@ impl Driver {
             device: 0,
             channel: 0,
             opened: false,
+            gone: false,
+            timed_out: false,
         };
         match driver.api.open() {
             Ok(device) => {
@@ -144,14 +152,17 @@ impl Driver {
                 driver.opened = true;
                 Ok(driver)
             }
-            Err(_) => Err(format!(
-                "{}{}",
-                l(
-                    "Das J2534-Gerät antwortet nicht: ",
-                    "The J2534 device does not answer: "
-                ),
-                driver.last()
-            )),
+            Err(code) => {
+                driver.note_error(code);
+                Err(format!(
+                    "{}{}",
+                    l(
+                        "Das J2534-Gerät antwortet nicht: ",
+                        "The J2534 device does not answer: "
+                    ),
+                    driver.last()
+                ))
+            }
         }
     }
 
@@ -160,6 +171,13 @@ impl Driver {
     }
 
     fn last(&mut self) -> String {
+        if self.timed_out {
+            return l(
+                "Der Treiber hat zu lange nicht geantwortet und wurde beendet.",
+                "The driver did not answer for too long and was ended.",
+            )
+            .into();
+        }
         self.api.last_error()
     }
 
@@ -169,7 +187,10 @@ impl Driver {
                 self.channel = channel;
                 Ok(())
             }
-            Err(_) => Err(self.last()),
+            Err(code) => {
+                self.note_error(code);
+                Err(self.last())
+            }
         }
     }
 
@@ -209,13 +230,40 @@ impl Driver {
     }
 
     fn write(&mut self, message: &Message) -> bool {
-        self.api.write(self.channel, message, 100) == Ok(1)
+        match self.api.write(self.channel, message, 100) {
+            Ok(sent) => sent == 1,
+            Err(code) => {
+                self.note_error(code);
+                false
+            }
+        }
+    }
+
+    fn note_error(&mut self, code: i32) {
+        self.timed_out |= code == ERR_BRIDGE_TIMEOUT;
+        self.gone |= matches!(
+            code,
+            ERR_DEVICE_NOT_CONNECTED | ERR_BRIDGE | ERR_BRIDGE_TIMEOUT
+        );
     }
 
     /// The next message within `timeout_ms`, echoes and indications included.
     fn read(&mut self, timeout_ms: u64) -> Option<Message> {
         let timeout = u32::try_from(timeout_ms).unwrap_or(u32::MAX);
-        self.api.read(self.channel, timeout).ok().flatten()
+        let started = Instant::now();
+        match self.api.read(self.channel, timeout) {
+            Ok(message) => message,
+            Err(code) => {
+                self.note_error(code);
+                if self.gone {
+                    // A dead device refuses at once; the callers read in a
+                    // loop until their deadline and would spin a core.
+                    let wait = Duration::from_millis(timeout_ms);
+                    std::thread::sleep(wait.saturating_sub(started.elapsed()));
+                }
+                None
+            }
+        }
     }
 
     fn battery_voltage(&mut self) -> Option<f64> {
@@ -309,6 +357,10 @@ impl CanLink for J2534Link {
 
     fn fd(&self) -> bool {
         self.protocol == PROTOCOL_FD_CAN
+    }
+
+    fn lost(&mut self) -> bool {
+        self.driver.gone
     }
 }
 

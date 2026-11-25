@@ -23,7 +23,7 @@ use crate::out::{flush, say, say_err};
 
 /// The languages whose letters WinAnsi has: German, English and the
 /// Western European ones, and Indonesian (plain Latin letters).
-pub const PDF_LANGUAGES: [Language; 8] = [
+pub(crate) const PDF_LANGUAGES: [Language; 8] = [
     Language::German,
     Language::English,
     Language::Spanish,

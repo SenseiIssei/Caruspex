@@ -112,7 +112,7 @@ pub struct Lamps {
 impl Lamps {
     /// From the lamp status byte and the flash byte: two bits each, MIL in
     /// the top bits, then red stop, amber warning and protect.
-    pub fn from_bytes(status: u8, flash: u8) -> Lamps {
+    pub(crate) fn from_bytes(status: u8, flash: u8) -> Lamps {
         let lamp = |shift: u8| Lamp {
             state: LampState::from_bits(status >> shift),
             flash: LampFlash::from_bits(flash >> shift),
@@ -186,7 +186,7 @@ impl SpnConversion {
     }
 
     /// The CM bit that goes with the layout.
-    pub fn cm_bit(self) -> bool {
+    pub(crate) fn cm_bit(self) -> bool {
         self != SpnConversion::V4
     }
 }
@@ -284,7 +284,7 @@ pub struct DiagnosticMessage {
 /// Reads a DM1 or DM2 (also DM6, DM12, DM23, which share the layout).
 /// The entry "SPN 0, FMI 0" means "no fault" and is left out, as are the
 /// padding bytes (FF) at the end.
-pub fn decode_dm(data: &[u8], older: Option<SpnConversion>) -> DiagnosticMessage {
+pub(crate) fn decode_dm(data: &[u8], older: Option<SpnConversion>) -> DiagnosticMessage {
     if data.len() < 2 {
         return DiagnosticMessage::default();
     }
@@ -305,7 +305,8 @@ pub fn decode_dm(data: &[u8], older: Option<SpnConversion>) -> DiagnosticMessage
 
 /// A DM1 or DM2 as it goes on the bus: at least eight bytes, a message
 /// without faults carries the "no fault" entry.
-pub fn encode_dm(lamps: Lamps, dtcs: &[J1939Dtc]) -> Vec<u8> {
+#[cfg(test)]
+pub(crate) fn encode_dm(lamps: Lamps, dtcs: &[J1939Dtc]) -> Vec<u8> {
     let mut out = lamps.to_bytes().to_vec();
     if dtcs.is_empty() {
         out.extend_from_slice(&[0, 0, 0, 0]);

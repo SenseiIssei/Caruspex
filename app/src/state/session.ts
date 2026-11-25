@@ -384,8 +384,15 @@ export function startSession(): void {
     toast(error, "error", 6000);
   });
 
-  on("closed", () => {
-    session.set({ ...resetVehicle(), recording: false, link: "offline", linkText: t(MW, "Nicht verbunden"), servicesDue: 0 });
+  on("closed", ({ lost }) => {
+    session.set({
+      ...resetVehicle(),
+      recording: false,
+      link: lost ? "error" : "offline",
+      linkText: lost ? t(MW, "Verbindung verloren") : t(MW, "Nicht verbunden"),
+      servicesDue: 0,
+    });
+    if (lost) toast(lost, "error", 6000);
     appendLog(t(MW, "Verbindung getrennt."));
   });
 
@@ -431,10 +438,12 @@ export function startSession(): void {
   );
   on("supported_pids", ({ pids }) => session.set({ supportedPids: pids }));
 
-  on("live_value", ({ row }) => {
-    live.set(row.pid, row);
-    liveFrames.mark(row.pid);
-    if (row.pid !== 0xa6) return;
+  on("live_values", ({ rows }) => {
+    for (const row of rows) {
+      live.set(row.pid, row);
+      liveFrames.mark(row.pid);
+    }
+    if (!rows.some((row) => row.pid === 0xa6)) return;
     // The odometer often arrives after the faults: store it with the check
     // of this session (it replaces the one from a minute ago).
     const vin = session.get().vin;

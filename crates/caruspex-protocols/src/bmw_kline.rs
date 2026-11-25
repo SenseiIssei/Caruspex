@@ -58,10 +58,10 @@ pub mod ds2 {
 
     pub const OK: u8 = 0xA0;
     pub const BUSY: u8 = 0xA1;
-    pub const REJECTED: u8 = 0xA2;
-    pub const PARAMETER: u8 = 0xB0;
-    pub const FUNCTION: u8 = 0xB1;
-    pub const NOT_ACKNOWLEDGED: u8 = 0xFF;
+    pub(crate) const REJECTED: u8 = 0xA2;
+    pub(crate) const PARAMETER: u8 = 0xB0;
+    pub(crate) const FUNCTION: u8 = 0xB1;
+    pub(crate) const NOT_ACKNOWLEDGED: u8 = 0xFF;
 }
 
 /// KWP2000 services in the BMW variant (ISO 14230-3 numbers).
@@ -74,7 +74,7 @@ pub mod kwp {
     pub const TESTER_PRESENT: u8 = 0x3E;
     pub const NEGATIVE: u8 = 0x7F;
     /// 7F xx 78: the answer takes longer.
-    pub const RESPONSE_PENDING: u8 = 0x78;
+    pub(crate) const RESPONSE_PENDING: u8 = 0x78;
 }
 
 /// How long the first answer byte may take, normally and in the scan,
@@ -194,7 +194,7 @@ impl BmwModule {
 /// The DS2 modules of the older E series (E36 late, E38, E39, E46, E53,
 /// E83, E85), engine first. The numbers are the device ids of the I-bus
 /// and K-bus, which DS2 shares.
-pub const DS2_MODULES: &[BmwModule] = &[
+pub(crate) const DS2_MODULES: &[BmwModule] = &[
     BmwModule::new(0x12, "DME/DDE", Kind::Engine),
     BmwModule::new(0x32, "EGS", Kind::Gearbox),
     BmwModule::new(0x56, "ABS/ASC/DSC", Kind::Brakes),
@@ -210,7 +210,7 @@ pub const DS2_MODULES: &[BmwModule] = &[
 
 /// The KWP2000 modules of the E60 generation (E60 to E65, E87, E90 up to
 /// 03/2007); the F series kept most of these addresses.
-pub const KWP_MODULES: &[BmwModule] = &[
+pub(crate) const KWP_MODULES: &[BmwModule] = &[
     BmwModule::new(0x12, "DME/DDE", Kind::Engine),
     BmwModule::new(0x18, "EGS", Kind::Gearbox),
     BmwModule::new(0x29, "DSC", Kind::Brakes),
@@ -227,7 +227,7 @@ pub const KWP_MODULES: &[BmwModule] = &[
 /// The name of the unit at `address` as reached with `protocol`. The same
 /// number means different units in the two address maps (0x60 is the park
 /// distance control on DS2 and the instrument cluster on KWP2000).
-pub fn module_name(address: u8, protocol: BmwProtocol) -> String {
+pub(crate) fn module_name(address: u8, protocol: BmwProtocol) -> String {
     let lists: [&[BmwModule]; 2] = if protocol == BmwProtocol::Ds2 {
         [DS2_MODULES, KWP_MODULES]
     } else {
@@ -297,14 +297,14 @@ fn hex(bytes: &[u8]) -> String {
 // --- DS2 framing --------------------------------------------------------------
 
 /// DS2 checksum: XOR over every byte before it.
-pub fn ds2_checksum(bytes: &[u8]) -> u8 {
+pub(crate) fn ds2_checksum(bytes: &[u8]) -> u8 {
     bytes.iter().fold(0, |x, &b| x ^ b)
 }
 
 /// A DS2 request: address, length of the whole frame (address, length,
 /// data and checksum), data, XOR checksum. `None` when the data does not
 /// fit the length byte.
-pub fn ds2_frame(address: u8, data: &[u8]) -> Option<Vec<u8>> {
+pub(crate) fn ds2_frame(address: u8, data: &[u8]) -> Option<Vec<u8>> {
     let length = u8::try_from(data.len() + 3).ok()?;
     let mut frame = Vec::with_capacity(data.len() + 3);
     frame.push(address);
@@ -324,7 +324,7 @@ pub struct Ds2Reply {
 }
 
 /// Checks length and checksum of a whole DS2 answer.
-pub fn parse_ds2_frame(frame: &[u8]) -> Result<Ds2Reply, String> {
+pub(crate) fn parse_ds2_frame(frame: &[u8]) -> Result<Ds2Reply, String> {
     if frame.len() < 4 || usize::from(frame[1]) != frame.len() {
         return Err(format!(
             "{}{}",
@@ -357,7 +357,7 @@ pub fn parse_ds2_frame(frame: &[u8]) -> Result<Ds2Reply, String> {
 }
 
 /// Plain text for a DS2 status byte other than A0.
-pub fn ds2_status_text(status: u8) -> String {
+pub(crate) fn ds2_status_text(status: u8) -> String {
     match status {
         ds2::BUSY => l(
             "Steuergerät beschäftigt, später erneut versuchen",
@@ -398,7 +398,7 @@ pub struct BmwFault {
 }
 
 /// The honest text for a BMW code.
-pub fn bmw_fault_text() -> String {
+pub(crate) fn bmw_fault_text() -> String {
     l(
         "BMW-spezifisch, Text nur mit Herstellerdaten",
         "BMW specific, text only with manufacturer data",
@@ -410,7 +410,7 @@ pub fn bmw_fault_text() -> String {
 /// unit and is only described in BMW's own data; most units put the count
 /// first and then entries of equal size that begin with the fault
 /// location. That common case is read, anything else is kept as raw bytes.
-pub fn ds2_faults(data: &[u8]) -> Vec<BmwFault> {
+pub(crate) fn ds2_faults(data: &[u8]) -> Vec<BmwFault> {
     let Some((&count, rest)) = data.split_first() else {
         return Vec::new();
     };
@@ -448,7 +448,7 @@ pub fn ds2_faults(data: &[u8]) -> Vec<BmwFault> {
 /// two bytes of code and one status byte per entry. Bits 6 and 5 of the
 /// status are the storage state of ISO 14230-3; both set means present at
 /// the time of the request.
-pub fn kwp_faults(reply: &[u8]) -> Vec<BmwFault> {
+pub(crate) fn kwp_faults(reply: &[u8]) -> Vec<BmwFault> {
     let Some(&count) = reply.get(1) else {
         return Vec::new();
     };
@@ -472,7 +472,7 @@ pub fn kwp_faults(reply: &[u8]) -> Vec<BmwFault> {
 /// The readable part of an identification answer: every run of at least
 /// three printable characters (part number, supplier, dates), or the bytes
 /// as hex when there is none.
-pub fn identification_text(data: &[u8]) -> String {
+pub(crate) fn identification_text(data: &[u8]) -> String {
     let mut runs: Vec<String> = Vec::new();
     let mut current = String::new();
     for &b in data {
@@ -685,7 +685,7 @@ impl<S: ByteStream> BmwKLine<S> {
 
     /// One DS2 request; the data after the status byte A0. A busy unit is
     /// asked again a few times.
-    pub fn ds2_request(&mut self, address: u8, data: &[u8]) -> Result<Vec<u8>, BmwError> {
+    pub(crate) fn ds2_request(&mut self, address: u8, data: &[u8]) -> Result<Vec<u8>, BmwError> {
         if !request_allowed(BmwProtocol::Ds2, data) {
             return Err(BmwError::Failed(not_allowed()));
         }
@@ -750,7 +750,7 @@ impl<S: ByteStream> BmwKLine<S> {
     }
 
     /// Ends an open KWP2000 session; harmless when none is open.
-    pub fn stop_session(&mut self) {
+    pub(crate) fn stop_session(&mut self) {
         let Some(address) = self.session.take() else {
             return;
         };
@@ -762,7 +762,7 @@ impl<S: ByteStream> BmwKLine<S> {
 
     /// One KWP2000 or BMW-FAST request; the positive answer, service byte
     /// first. A unit that asks for more time (7F xx 78) gets it.
-    pub fn kwp_request(
+    pub(crate) fn kwp_request(
         &mut self,
         protocol: BmwProtocol,
         address: u8,
